@@ -115,6 +115,6 @@ public enum AbnormalEffect
 			if (eff.getName().equals(name))
 				return eff;
 		}
-		throw new NoSuchElementException("AbnormalEffect not found for name: '"+name+ "'.\n Please check "+AbnormalEffect.class.getCanonicalName());
+		throw new NoSuchElementException(AbnormalEffect.class.getSimpleName() + ": Abnormal effect not found for name: " + name + "!");
 	}
 }

@@ -88,10 +88,7 @@ public abstract class BaseRecievePacket
 	public final byte[] readB(int length)
 	{
 		byte[] result = new byte[length];
-		for (int i = 0; i < length; i++)
-		{
-			result[i] = _decrypt[_off + i];
-		}
+		System.arraycopy(_decrypt, _off, result, 0, length);
 		_off += length;
 		return result;
 	}

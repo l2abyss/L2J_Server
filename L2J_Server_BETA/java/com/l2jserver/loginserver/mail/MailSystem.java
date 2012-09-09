@@ -93,7 +93,7 @@ public class MailSystem
 						
 						bis.read(raw);
 						String html = new String(raw, "UTF-8");
-						html = html.replaceAll("\r\n", "\n");
+						html = html.replaceAll(Config.EOL, "\n");
 						html = html.replace("%servermail%", Config.EMAIL_SERVERINFO_ADDRESS);
 						html = html.replace("%servername%", Config.EMAIL_SERVERINFO_NAME);
 						

@@ -179,7 +179,7 @@ public class Announcements
 			String line = null;
 			while ((line = lnr.readLine()) != null)
 			{
-				StringTokenizer st = new StringTokenizer(line, "\n\r");
+				StringTokenizer st = new StringTokenizer(line, Config.EOL);
 				if (st.hasMoreTokens())
 				{
 					list.add(st.nextToken());
@@ -214,7 +214,7 @@ public class Announcements
 			for (String announce : list)
 			{
 				save.write(announce);
-				save.write("\r\n");
+				save.write(Config.EOL);
 			}
 		}
 		catch (IOException e)

@@ -201,7 +201,7 @@ public final class L2ScriptEngineManager
 					
 					String[] parts = line.trim().split("#");
 					
-					if ((parts.length > 0) && !parts[0].startsWith("#") && (parts[0].length() > 0))
+					if ((parts.length > 0) && !parts[0].isEmpty() && (parts[0].charAt(0) != '#'))
 					{
 						line = parts[0];
 						
@@ -477,19 +477,19 @@ public final class L2ScriptEngineManager
 			final File file = new File(dir + "/" + name);
 			try (FileOutputStream fos = new FileOutputStream(file))
 			{
-				String errorHeader = "Error on: " + file.getCanonicalPath() + "\r\nLine: " + e.getLineNumber() + " - Column: " + e.getColumnNumber() + "\r\n\r\n";
+				String errorHeader = "Error on: " + file.getCanonicalPath() + Config.EOL + "Line: " + e.getLineNumber() + " - Column: " + e.getColumnNumber() + Config.EOL + Config.EOL;
 				fos.write(errorHeader.getBytes());
 				fos.write(e.getMessage().getBytes());
 				_log.warning("Failed executing script: " + script.getAbsolutePath() + ". See " + file.getName() + " for details.");
 			}
 			catch (IOException ioe)
 			{
-				_log.log(Level.WARNING, "Failed executing script: " + script.getAbsolutePath() + "\r\n" + e.getMessage() + "Additionally failed when trying to write an error report on script directory. Reason: " + ioe.getMessage(), ioe);
+				_log.log(Level.WARNING, "Failed executing script: " + script.getAbsolutePath() + Config.EOL + e.getMessage() + "Additionally failed when trying to write an error report on script directory. Reason: " + ioe.getMessage(), ioe);
 			}
 		}
 		else
 		{
-			_log.log(Level.WARNING, "Failed executing script: " + script.getAbsolutePath() + "\r\n" + e.getMessage() + "Additionally failed when trying to write an error report on script directory.", e);
+			_log.log(Level.WARNING, "Failed executing script: " + script.getAbsolutePath() + Config.EOL + e.getMessage() + "Additionally failed when trying to write an error report on script directory.", e);
 		}
 	}
 	

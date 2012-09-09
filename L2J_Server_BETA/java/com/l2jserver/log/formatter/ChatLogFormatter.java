@@ -19,17 +19,11 @@ import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
+import com.l2jserver.Config;
 import com.l2jserver.util.StringUtil;
-
-/**
- * This class ...
- * @version $Revision: 1.1.4.1 $ $Date: 2005/02/06 16:14:46 $
- */
 
 public class ChatLogFormatter extends Formatter
 {
-	private static final String CRLF = "\r\n";
-	
 	private final SimpleDateFormat dateFmt = new SimpleDateFormat("dd MMM H:mm:ss");
 	
 	@Override
@@ -46,7 +40,7 @@ public class ChatLogFormatter extends Formatter
 			}
 		}
 		
-		StringUtil.append(output, record.getMessage(), CRLF);
+		StringUtil.append(output, record.getMessage(), Config.EOL);
 		
 		return output.toString();
 	}

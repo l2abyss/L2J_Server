@@ -32,17 +32,11 @@ import com.l2jserver.util.StringUtil;
 
 public class PostBBSManager extends BaseBBSManager
 {
-	private Map<Topic, Post> _postByTopic;
-	
-	protected PostBBSManager()
-	{
-		_postByTopic = new FastMap<>();
-	}
+	private Map<Topic, Post> _postByTopic = new FastMap<>();
 	
 	public Post getGPosttByTopic(Topic t)
 	{
-		Post post = null;
-		post = _postByTopic.get(t);
+		Post post = _postByTopic.get(t);
 		if (post == null)
 		{
 			post = new Post(t);
@@ -220,7 +214,6 @@ public class PostBBSManager extends BaseBBSManager
 		
 		String mes = p.getCPost(0).postTxt.replace(">", "&gt;");
 		mes = mes.replace("<", "&lt;");
-		mes = mes.replace("\n", "<br1>");
 		
 		final String html = StringUtil.concat("<html><body><br><br>"
 				+ "<table border=0 width=610><tr><td width=10></td><td width=600 align=left>"

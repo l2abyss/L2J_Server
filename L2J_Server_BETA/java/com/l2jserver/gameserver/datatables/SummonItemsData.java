@@ -28,17 +28,12 @@ import com.l2jserver.gameserver.model.L2SummonItem;
  */
 public class SummonItemsData
 {
-	protected static final Logger _log = Logger.getLogger(SummonItemsData.class.getName());
-	private final Map<Integer, L2SummonItem> _summonitems = new HashMap<>();
-	
-	public static SummonItemsData getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	private static final Logger _log = Logger.getLogger(SummonItemsData.class.getName());
+	private static final Map<Integer, L2SummonItem> _summonitems = new HashMap<>();
 	
 	protected SummonItemsData()
 	{
-		try (Scanner s = new Scanner(new File(Config.DATAPACK_ROOT + "/data/summon_items.csv")))
+		try (Scanner s = new Scanner(new File(Config.DATAPACK_ROOT, "data/summon_items.csv")))
 		{
 			int lineCount = 0;
 			
@@ -48,17 +43,12 @@ public class SummonItemsData
 				
 				String line = s.nextLine();
 				
-				if (line.startsWith("#"))
-				{
-					continue;
-				}
-				else if (line.isEmpty())
+				if (line.isEmpty() || (line.charAt(0) == '#'))
 				{
 					continue;
 				}
 				
 				String[] lineSplit = line.split(";");
-				boolean ok = true;
 				int itemID = 0, npcID = 0;
 				byte summonType = 0;
 				int despawn = -1;
@@ -77,16 +67,9 @@ public class SummonItemsData
 				{
 					_log.warning(getClass().getSimpleName() + ": Error in line " + lineCount + " -> incomplete/invalid data or wrong seperator!");
 					_log.warning("		" + line);
-					ok = false;
-				}
-				
-				if (!ok)
-				{
 					continue;
 				}
-				
-				L2SummonItem summonitem = new L2SummonItem(itemID, npcID, summonType, despawn);
-				_summonitems.put(itemID, summonitem);
+				_summonitems.put(itemID, new L2SummonItem(itemID, npcID, summonType, despawn));
 			}
 			
 			_log.info(getClass().getSimpleName() + ": Loaded " + _summonitems.size() + " summon items.");
@@ -113,6 +96,11 @@ public class SummonItemsData
 			result[i++] = si.getItemId();
 		}
 		return result;
+	}
+	
+	public static SummonItemsData getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

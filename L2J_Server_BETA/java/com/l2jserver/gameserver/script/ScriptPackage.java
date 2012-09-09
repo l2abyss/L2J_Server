@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import com.l2jserver.Config;
+
 import javolution.util.FastList;
 
 /**
@@ -104,25 +106,25 @@ public class ScriptPackage
 		StringBuilder out = new StringBuilder();
 		out.append("Package Name: ");
 		out.append(getName());
-		out.append('\n');
+		out.append(Config.EOL);
 		
 		if (!getScriptFiles().isEmpty())
 		{
-			out.append("Xml Script Files...\n");
+			out.append("Xml Script Files..." + Config.EOL);
 			for (ScriptDocument script : getScriptFiles())
 			{
 				out.append(script.getName());
-				out.append('\n');
+				out.append(Config.EOL);
 			}
 		}
 		
 		if (!getOtherFiles().isEmpty())
 		{
-			out.append("Other Files...\n");
+			out.append("Other Files..." + Config.EOL);
 			for (String fileName : getOtherFiles())
 			{
 				out.append(fileName);
-				out.append('\n');
+				out.append(Config.EOL);
 			}
 		}
 		return out.toString();

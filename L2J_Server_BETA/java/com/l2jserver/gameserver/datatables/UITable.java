@@ -58,7 +58,7 @@ public class UITable
 			String line = null;
 			while ((line = lnr.readLine()) != null)
 			{
-				if (line.trim().length() == 0 || line.startsWith("#"))
+				if (line.trim().isEmpty() || (line.charAt(0) == '#'))
 					continue;
 				
 				StringTokenizer st = new StringTokenizer(line, ";");
@@ -89,7 +89,7 @@ public class UITable
 			String line = null;
 			while ((line = lnr.readLine()) != null)
 			{
-				if (line.trim().length() == 0 || line.startsWith("#"))
+				if (line.trim().isEmpty() || (line.charAt(0) == '#'))
 					continue;
 				
 				StringTokenizer st = new StringTokenizer(line, ";");

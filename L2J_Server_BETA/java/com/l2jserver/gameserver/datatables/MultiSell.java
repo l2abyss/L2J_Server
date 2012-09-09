@@ -268,7 +268,7 @@ public class MultiSell
 					{
 						
 						list.setUseRate(Double.valueOf(attribute.getNodeValue()));
-						if(list.getUseRate() == 0.0)
+						if(list.getUseRate() <= 1e-6)
 							throw new NumberFormatException("The value cannot be 0"); //threat 0 as invalid value
 					}
 					catch (NumberFormatException e)

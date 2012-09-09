@@ -559,7 +559,7 @@ public final class Util
 	*/
 	public static void fillMultiEditContent(L2PcInstance activeChar, String text)
 	{
-		text = text.replaceAll("<br>", "\n");
+		text = text.replaceAll("<br>", Config.EOL);
 		List<String> arg = new FastList<>();
 		arg.add("0");
 		arg.add("0");

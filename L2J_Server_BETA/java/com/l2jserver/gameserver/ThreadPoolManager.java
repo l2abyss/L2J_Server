@@ -332,8 +332,7 @@ public class ThreadPoolManager
 		@Override
 		public Thread newThread(Runnable r)
 		{
-			Thread t = new Thread(_group, r);
-			t.setName(_name + "-" + _threadNumber.getAndIncrement());
+			Thread t = new Thread(_group, r, _name + "-" + _threadNumber.getAndIncrement());
 			t.setPriority(_prio);
 			return t;
 		}
@@ -393,23 +392,23 @@ public class ThreadPoolManager
 			int count = ptf.getGroup().activeCount();
 			Thread[] threads = new Thread[count + 2];
 			ptf.getGroup().enumerate(threads);
-			StringUtil.append(sb, "General Packet Thread Pool:\r\n" + "Tasks in the queue: ", String.valueOf(_generalPacketsThreadPool.getQueue().size()), "\r\n"
-					+ "Showing threads stack trace:\r\n" + "There should be ", String.valueOf(count), " Threads\r\n");
+			StringUtil.append(sb, "General Packet Thread Pool:" + Config.EOL + "Tasks in the queue: ", String.valueOf(_generalPacketsThreadPool.getQueue().size()), Config.EOL
+					+ "Showing threads stack trace:" + Config.EOL + "There should be ", String.valueOf(count), " Threads" + Config.EOL);
 			for (Thread t : threads)
 			{
 				if (t == null)
 					continue;
 				
-				StringUtil.append(sb, t.getName(), "\r\n");
+				StringUtil.append(sb, t.getName(), Config.EOL);
 				for (StackTraceElement ste : t.getStackTrace())
 				{
-					StringUtil.append(sb, ste.toString(), "\r\n");
+					StringUtil.append(sb, ste.toString(), Config.EOL);
 				}
 			}
 		}
 		
-		sb.append("Packet Tp stack traces printed.\r\n");
-		
+		sb.append("Packet Tp stack traces printed.");
+		sb.append(Config.EOL);
 		return sb.toString();
 	}
 	
@@ -424,24 +423,24 @@ public class ThreadPoolManager
 			int count = ptf.getGroup().activeCount();
 			Thread[] threads = new Thread[count + 2];
 			ptf.getGroup().enumerate(threads);
-			StringUtil.append(sb, "I/O Packet Thread Pool:\r\n" + "Tasks in the queue: ", String.valueOf(_ioPacketsThreadPool.getQueue().size()), "\r\n"
-					+ "Showing threads stack trace:\r\n" + "There should be ", String.valueOf(count), " Threads\r\n");
+			StringUtil.append(sb, "I/O Packet Thread Pool:" + Config.EOL + "Tasks in the queue: ", String.valueOf(_ioPacketsThreadPool.getQueue().size()), Config.EOL
+					+ "Showing threads stack trace:" + Config.EOL + "There should be ", String.valueOf(count), " Threads" + Config.EOL);
 			
 			for (Thread t : threads)
 			{
 				if (t == null)
 					continue;
 				
-				StringUtil.append(sb, t.getName(), "\r\n");
+				StringUtil.append(sb, t.getName(), Config.EOL);
 				
 				for (StackTraceElement ste : t.getStackTrace())
 				{
-					StringUtil.append(sb, ste.toString(), "\r\n");
+					StringUtil.append(sb, ste.toString(), Config.EOL);
 				}
 			}
 		}
 		
-		sb.append("Packet Tp stack traces printed.\r\n");
+		sb.append("Packet Tp stack traces printed." + Config.EOL);
 		
 		return sb.toString();
 	}
@@ -457,24 +456,24 @@ public class ThreadPoolManager
 			int count = ptf.getGroup().activeCount();
 			Thread[] threads = new Thread[count + 2];
 			ptf.getGroup().enumerate(threads);
-			StringUtil.append(sb, "General Thread Pool:\r\n" + "Tasks in the queue: ", String.valueOf(_generalThreadPool.getQueue().size()), "\r\n"
-					+ "Showing threads stack trace:\r\n" + "There should be ", String.valueOf(count), " Threads\r\n");
+			StringUtil.append(sb, "General Thread Pool:" + Config.EOL + "Tasks in the queue: ", String.valueOf(_generalThreadPool.getQueue().size()), Config.EOL
+					+ "Showing threads stack trace:" + Config.EOL + "There should be ", String.valueOf(count), " Threads" + Config.EOL);
 			
 			for (Thread t : threads)
 			{
 				if (t == null)
 					continue;
 				
-				StringUtil.append(sb, t.getName(), "\r\n");
+				StringUtil.append(sb, t.getName(), Config.EOL);
 				
 				for (StackTraceElement ste : t.getStackTrace())
 				{
-					StringUtil.append(sb, ste.toString(), "\r\n");
+					StringUtil.append(sb, ste.toString(), Config.EOL);
 				}
 			}
 		}
 		
-		sb.append("Packet Tp stack traces printed.\r\n");
+		sb.append("Packet Tp stack traces printed." + Config.EOL);
 		
 		return sb.toString();
 	}

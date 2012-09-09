@@ -30,12 +30,12 @@ public class FileWriterStdout extends BufferedWriter
 	
 	public void println() throws IOException
 	{
-		append("\n");
+		append(System.getProperty("line.separator"));
 	}
 	
 	public void println(String line) throws IOException
 	{
-		append(line + "\n");
+		append(line + System.getProperty("line.separator"));
 	}
 	
 	public void print(String text) throws IOException

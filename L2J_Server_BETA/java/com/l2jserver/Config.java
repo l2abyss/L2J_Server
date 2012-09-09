@@ -56,6 +56,11 @@ public final class Config
 	private static final Logger _log = Logger.getLogger(Config.class.getName());
 	
 	// --------------------------------------------------
+	// Constants
+	// --------------------------------------------------
+	public static final String EOL = System.getProperty("line.separator");
+	
+	// --------------------------------------------------
 	// L2J Property File Definitions
 	// --------------------------------------------------
 	public static final String CHARACTER_CONFIG_FILE = "./config/Character.properties";
@@ -2041,7 +2046,7 @@ public final class Config
 			CUSTOM_MULTISELL_LOAD = Boolean.parseBoolean(General.getProperty("CustomMultisellLoad", "false"));
 			ALT_BIRTHDAY_GIFT = Integer.parseInt(General.getProperty("AltBirthdayGift", "22187"));
 			ALT_BIRTHDAY_MAIL_SUBJECT = General.getProperty("AltBirthdayMailSubject", "Happy Birthday!");
-			ALT_BIRTHDAY_MAIL_TEXT = General.getProperty("AltBirthdayMailText", "Hello Adventurer!! Seeing as you're one year older now, I thought I would send you some birthday cheer :) Please find your birthday pack attached. May these gifts bring you joy and happiness on this very special day.\n\nSincerely, Alegria");
+			ALT_BIRTHDAY_MAIL_TEXT = General.getProperty("AltBirthdayMailText", "Hello Adventurer!! Seeing as you're one year older now, I thought I would send you some birthday cheer :) Please find your birthday pack attached. May these gifts bring you joy and happiness on this very special day." + EOL + EOL + "Sincerely, Alegria");
 			ENABLE_BLOCK_CHECKER_EVENT = Boolean.parseBoolean(General.getProperty("EnableBlockCheckerEvent", "false"));
 			MIN_BLOCK_CHECKER_TEAM_MEMBERS = Integer.parseInt(General.getProperty("BlockCheckerMinTeamMembers", "2"));
 			if (MIN_BLOCK_CHECKER_TEAM_MEMBERS < 1)
@@ -2938,7 +2943,7 @@ public final class Config
 				String line = null;
 				while ((line = lnr.readLine()) != null)
 				{
-					if (line.trim().isEmpty() || line.startsWith("#"))
+					if (line.trim().isEmpty() || (line.charAt(0) == '#'))
 					{
 						continue;
 					}

@@ -189,8 +189,15 @@ public final class SystemMessage extends L2GameServerPacket
 	/**
 	 * Appends a Castle name parameter type, the name will be read from CastleName-e.dat.<br>
 	 * <ul>
-	 * <li>0-8 Castle names</li>
-	 * <li>9-64 Clan Hall names</li>
+	 * <li>1-9 Castle names</li>
+	 * <li>21 Fortress of Resistance</li>
+	 * <li>22-33 Clan Hall names</li>
+	 * <li>34 Devastated Castle</li>
+	 * <li>35 Bandit Stronghold</li>
+	 * <li>36-61 Clan Hall names</li>
+	 * <li>62 Rainbow Springs</li>
+	 * <li>63 Wild Beast Reserve</li>
+	 * <li>64 Fortress of the Dead</li>
 	 * <li>81-89 Territory names</li>
 	 * <li>90-100 null</li>
 	 * <li>101-121 Fortress names</li>

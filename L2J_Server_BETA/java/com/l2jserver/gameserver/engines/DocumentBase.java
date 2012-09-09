@@ -1063,7 +1063,7 @@ public abstract class DocumentBase
 	{
 		String name = n.getAttributes().getNamedItem("name").getNodeValue().trim();
 		String value = n.getAttributes().getNamedItem("val").getNodeValue().trim();
-		char ch = value.length() == 0 ? ' ' : value.charAt(0);
+		char ch = value.isEmpty() ? ' ' : value.charAt(0);
 		if (ch == '#' || ch == '-' || Character.isDigit(ch))
 			set.set(name, String.valueOf(getValue(value, level)));
 		else

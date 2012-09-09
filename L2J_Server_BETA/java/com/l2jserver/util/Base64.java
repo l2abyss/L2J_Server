@@ -970,7 +970,7 @@ public class Base64
 				if (encode && breakLines && lineLength >= MAX_LINE_LENGTH)
 				{
 					lineLength = 0;
-					return '\n';
+					return NEW_LINE;
 				}
 				// This isn't important when decoding but throwing an extra "if" seems just as wasteful.
 				lineLength++;

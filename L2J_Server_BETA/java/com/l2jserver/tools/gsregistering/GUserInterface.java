@@ -42,6 +42,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import com.l2jserver.Config;
 import com.l2jserver.loginserver.GameServerTable;
 import com.l2jserver.tools.images.ImagesTable;
 
@@ -190,12 +191,12 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		if (getBundle() != null)
 		{
 			title = getBundle().getString("error");
-			msg += '\n' + getBundle().getString("reason") + ' ' + t.getLocalizedMessage();
+			msg += Config.EOL + getBundle().getString("reason") + ' ' + t.getLocalizedMessage();
 		}
 		else
 		{
 			title = "Error";
-			msg += "\nCause: " + t.getLocalizedMessage();
+			msg += Config.EOL + "Cause: " + t.getLocalizedMessage();
 		}
 		JOptionPane.showMessageDialog(getFrame(), msg, title, JOptionPane.ERROR_MESSAGE);
 	}
@@ -281,7 +282,7 @@ public class GUserInterface extends BaseGameServerRegister implements ActionList
 		}
 		else if (cmd.equals("about"))
 		{
-			JOptionPane.showMessageDialog(getFrame(), getBundle().getString("credits") + "\nhttp://www.l2jserver.com\n\n" + getBundle().getString("icons") + "\n\n" + getBundle().getString("langText") + '\n' + getBundle().getString("translation"), getBundle().getString("aboutItem"), JOptionPane.INFORMATION_MESSAGE, ImagesTable.getImage("l2jserverlogo.png"));
+			JOptionPane.showMessageDialog(getFrame(), getBundle().getString("credits") + Config.EOL + "http://www.l2jserver.com" + Config.EOL + Config.EOL + getBundle().getString("icons") + Config.EOL + Config.EOL + getBundle().getString("langText") + Config.EOL + getBundle().getString("translation"), getBundle().getString("aboutItem"), JOptionPane.INFORMATION_MESSAGE, ImagesTable.getImage("l2jserverlogo.png"));
 		}
 		else if (cmd.equals("removeAll"))
 		{

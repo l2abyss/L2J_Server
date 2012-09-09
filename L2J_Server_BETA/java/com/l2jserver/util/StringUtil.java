@@ -14,6 +14,8 @@
  */
 package com.l2jserver.util;
 
+import com.l2jserver.Config;
+
 import javolution.text.TextBuilder;
 
 /**
@@ -271,7 +273,7 @@ public final class StringUtil
 		final TextBuilder sbString = TextBuilder.newInstance();
 		for (final StackTraceElement element : trace)
 		{
-			sbString.append(element.toString()).append('\n');
+			sbString.append(element.toString()).append(Config.EOL);
 		}
 		
 		String result = sbString.toString();

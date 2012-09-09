@@ -19,14 +19,14 @@ import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
+import com.l2jserver.Config;
 import com.l2jserver.util.StringUtil;
 
 /**
- * @author zabbix Lets drink to code!
+ * @author zabbix
  */
 public class AuditFormatter extends Formatter
 {
-	private static final String CRLF = "\r\n";
 	private final SimpleDateFormat dateFmt = new SimpleDateFormat("dd MMM H:mm:ss");
 	
 	@Override
@@ -47,7 +47,7 @@ public class AuditFormatter extends Formatter
 			}
 		}
 		
-		output.append(CRLF);
+		output.append(Config.EOL);
 		return output.toString();
 	}
 }

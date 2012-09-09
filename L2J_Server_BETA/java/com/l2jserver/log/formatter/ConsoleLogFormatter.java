@@ -17,6 +17,7 @@ package com.l2jserver.log.formatter;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
+import com.l2jserver.Config;
 import com.l2jserver.util.StringUtil;
 import com.l2jserver.util.Util;
 
@@ -26,9 +27,6 @@ import com.l2jserver.util.Util;
  */
 public class ConsoleLogFormatter extends Formatter
 {
-	// private static final String _ = " ";
-	private static final String CRLF = "\r\n";
-	
 	@Override
 	public String format(LogRecord record)
 	{
@@ -37,13 +35,13 @@ public class ConsoleLogFormatter extends Formatter
 		// output.append(_);
 		// output.append(record.getLoggerName());
 		// output.append(_);
-		StringUtil.append(output, record.getMessage(), CRLF);
+		StringUtil.append(output, record.getMessage(), Config.EOL);
 		
 		if (record.getThrown() != null)
 		{
 			try
 			{
-				StringUtil.append(output, Util.getStackTrace(record.getThrown()), CRLF);
+				StringUtil.append(output, Util.getStackTrace(record.getThrown()), Config.EOL);
 			}
 			catch (Exception ex)
 			{

@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -26,7 +27,6 @@ import com.l2jserver.util.StringUtil;
 
 public class EnchantFormatter extends Formatter
 {
-	private static final String CRLF = "\r\n";
 	private final SimpleDateFormat dateFmt = new SimpleDateFormat("dd MMM H:mm:ss");
 	
 	@Override
@@ -81,7 +81,7 @@ public class EnchantFormatter extends Formatter
 			}
 		}
 		
-		output.append(CRLF);
+		output.append(Config.EOL);
 		return output.toString();
 	}
 }

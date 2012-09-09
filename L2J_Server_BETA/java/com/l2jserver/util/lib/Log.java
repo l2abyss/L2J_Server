@@ -22,6 +22,8 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.l2jserver.Config;
+
 /**
  * @version 0.1, 2005-06-06
  * @author Balancer
@@ -39,7 +41,7 @@ public class Log
 		final File file = new File("log/game/" + (curr != null ? curr : "") + (cat != null ? cat : "unk") + ".txt");
 		try (FileWriter save = new FileWriter(file, true))
 		{
-			save.write("[" + date + "] " + text + "\n");
+			save.write("[" + date + "] " + text + Config.EOL);
 		}
 		catch (IOException e)
 		{

@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
@@ -28,7 +29,6 @@ import com.l2jserver.util.StringUtil;
 
 public class DamageFormatter extends Formatter
 {
-	private static final String CRLF = "\r\n";
 	private final SimpleDateFormat dateFmt = new SimpleDateFormat("yy.MM.dd H:mm:ss");
 	
 	@Override
@@ -76,7 +76,7 @@ public class DamageFormatter extends Formatter
 			}
 		}
 		
-		output.append(CRLF);
+		output.append(Config.EOL);
 		return output.toString();
 	}
 }

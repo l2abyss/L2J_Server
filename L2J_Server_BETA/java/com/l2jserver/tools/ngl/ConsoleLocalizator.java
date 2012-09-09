@@ -31,6 +31,8 @@ import com.sun.jna.ptr.IntByReference;
  */
 public class ConsoleLocalizator extends LocalizationParser
 {
+	public static final String EOL = System.getProperty("line.separator");
+	
 	private WinConsole _wcon;
 	private Pointer _stdout;
 	private static PrintStream _out;
@@ -115,7 +117,7 @@ public class ConsoleLocalizator extends LocalizationParser
 			{
 				// UTF-8 Not Supported
 				_out = new PrintStream(System.out, true);
-				directPrint("Your system doesn't support UTF-8 encoding\n");
+				directPrint("Your system doesn't support UTF-8 encoding" + EOL);
 			}
 		}
 	}
@@ -144,7 +146,7 @@ public class ConsoleLocalizator extends LocalizationParser
 	 */
 	public void println()
 	{
-		directPrint("\n");
+		directPrint(EOL);
 	}
 	
 	/**
@@ -157,11 +159,11 @@ public class ConsoleLocalizator extends LocalizationParser
 		String msg = getStringFromId(id);
 		if (msg == null)
 		{
-			msg = formatText("Untranslated id: %s\n", id);
+			msg = formatText("Untranslated id: %s" + EOL, id);
 		}
 		else
 		{
-			msg = formatText(msg + "\n", args);
+			msg = formatText(msg + EOL, args);
 		}
 		directPrint(msg);
 	}

@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
+import com.l2jserver.Config;
 import com.l2jserver.util.StringUtil;
 
 /**
@@ -27,13 +28,12 @@ import com.l2jserver.util.StringUtil;
  */
 public class FileLogFormatter extends Formatter
 {
-	private static final String CRLF = "\r\n";
 	private static final String _ = "\t";
 	private final SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss,SSS");
 	
 	@Override
 	public String format(LogRecord record)
 	{
-		return StringUtil.concat(dateFmt.format(new Date(record.getMillis())), _, record.getLevel().getName(), _, String.valueOf(record.getThreadID()), _, record.getLoggerName(), _, record.getMessage(), CRLF);
+		return StringUtil.concat(dateFmt.format(new Date(record.getMillis())), _, record.getLevel().getName(), _, String.valueOf(record.getThreadID()), _, record.getLoggerName(), _, record.getMessage(), Config.EOL);
 	}
 }

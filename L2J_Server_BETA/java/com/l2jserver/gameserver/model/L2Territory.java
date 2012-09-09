@@ -88,7 +88,7 @@ public class L2Territory
 		double dy1 = p1._y - y;
 		double dy2 = p2._y - y;
 		
-		if(Math.signum(dy1) == Math.signum(dy2))
+		if(Math.abs(Math.signum(dy1) - Math.signum(dy2)) <= 1e-6)
 			return false;
 		
 		double dx1 = p1._x - x;

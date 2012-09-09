@@ -176,7 +176,7 @@ public class FortSiegeManager
 			for (int i = 1; i < 5; i++)
 			{
 				String _spawnParams = siegeSettings.getProperty(fort.getName().replace(" ", "") + "Commander" + i, "");
-				if (_spawnParams.length() == 0)
+				if (_spawnParams.isEmpty())
 					break;
 				StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
 				
@@ -201,7 +201,7 @@ public class FortSiegeManager
 			for (int i = 1; i < 4; i++)
 			{
 				String _spawnParams = siegeSettings.getProperty(fort.getName().replace(" ", "") + "Flag" + i, "");
-				if (_spawnParams.length() == 0)
+				if (_spawnParams.isEmpty())
 					break;
 				StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
 				

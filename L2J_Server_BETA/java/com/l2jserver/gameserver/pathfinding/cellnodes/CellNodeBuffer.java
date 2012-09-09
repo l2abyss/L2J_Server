@@ -354,7 +354,7 @@ public class CellNodeBuffer
 		final int dY = y - _targetY;
 		final int dZ = z - _targetZ;
 		// Math.abs(dx) + Math.abs(dy) + Math.abs(dz) / 16
-		double result = Math.sqrt((dX * dX) + (dY * dY) + ((dZ * dZ) / 256));
+		double result = Math.sqrt((dX * dX) + (dY * dY) + ((dZ * dZ) / 256.0));
 		if (result > weight)
 		{
 			result += weight;

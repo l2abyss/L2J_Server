@@ -23,7 +23,7 @@ import java.util.Map.Entry;
 import org.mmocore.network.IAcceptFilter;
 
 /**
- * Formatted Forsaiken's IPv4 filter [DrHouse]
+ * IPv4 filter.
  * @author Forsaiken
  */
 public class IPv4Filter implements IAcceptFilter, Runnable
@@ -34,8 +34,7 @@ public class IPv4Filter implements IAcceptFilter, Runnable
 	public IPv4Filter()
 	{
 		_ipFloodMap = new HashMap<>();
-		Thread t = new Thread(this);
-		t.setName(getClass().getSimpleName());
+		Thread t = new Thread(this, getClass().getSimpleName());
 		t.setDaemon(true);
 		t.start();
 	}

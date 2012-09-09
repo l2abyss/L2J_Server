@@ -209,7 +209,7 @@ public class GameStatusThread extends Thread
 				{
 					handler.useCommand(_usrCommand, _print, _cSocket, _uptime);
 				}
-				else if (_usrCommand.equalsIgnoreCase("quit") || _usrCommand.equalsIgnoreCase("exit") || (_usrCommand.length() == 0))
+				else if (_usrCommand.equalsIgnoreCase("quit") || _usrCommand.equalsIgnoreCase("exit") || _usrCommand.isEmpty())
 				{
 					/* Do Nothing :p - Just here to save us from the "Command Not Understood" Text */
 				}

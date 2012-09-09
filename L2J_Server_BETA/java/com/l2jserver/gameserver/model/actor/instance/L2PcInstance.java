@@ -1786,7 +1786,7 @@ public final class L2PcInstance extends L2Playable
 		if (event == null)
 			event = "";
 		QuestState qs = getQuestState(quest);
-		if (qs == null && event.length() == 0)
+		if (qs == null && event.isEmpty())
 			return retval;
 		if (qs == null)
 		{

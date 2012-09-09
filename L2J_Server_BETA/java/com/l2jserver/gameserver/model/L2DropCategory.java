@@ -60,7 +60,7 @@ public class L2DropCategory
 					{
 						d.setMinDrop(drop.getMinDrop());
 						d.setMaxDrop(drop.getMaxDrop());
-						if (d.getChance() != drop.getChance())
+						if (Math.abs(d.getChance() - drop.getChance()) >= 1e-6)
 						{
 							// Re-calculate Chance
 							_categoryChance -= d.getChance();

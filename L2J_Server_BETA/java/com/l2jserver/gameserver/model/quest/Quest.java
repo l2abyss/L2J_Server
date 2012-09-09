@@ -2876,14 +2876,11 @@ public class Quest extends ManagedScript
 			{
 				if (item.getItemId() == itemId)
 				{
-					try
-					{
-						count += item.getCount();
-					}
-					catch (Exception e)
+					if (count + item.getCount() > Long.MAX_VALUE)
 					{
 						return Long.MAX_VALUE;
 					}
+					count += item.getCount();
 				}
 			}
 		}

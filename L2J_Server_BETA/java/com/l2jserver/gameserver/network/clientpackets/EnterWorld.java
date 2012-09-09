@@ -450,8 +450,8 @@ public class EnterWorld extends L2GameClientPacket
 		
 		activeChar.sendPacket(SystemMessageId.WELCOME_TO_LINEAGE);
 		
-		activeChar.sendMessage(getText("VGhpcyBTZXJ2ZXIgdXNlcyBMMkosIGEgUHJvamVjdCBmb3VuZGVkIGJ5IEwyQ2hlZg==\n"));
-		activeChar.sendMessage(getText("YW5kIGRldmVsb3BlZCBieSB0aGUgTDJKIERldiBUZWFtIGF0IHd3dy5sMmpzZXJ2ZXIuY29t\n"));
+		activeChar.sendMessage(getText("VGhpcyBTZXJ2ZXIgdXNlcyBMMkosIGEgUHJvamVjdCBmb3VuZGVkIGJ5IEwyQ2hlZg==" + Config.EOL));
+		activeChar.sendMessage(getText("YW5kIGRldmVsb3BlZCBieSB0aGUgTDJKIERldiBUZWFtIGF0IHd3dy5sMmpzZXJ2ZXIuY29t" + Config.EOL));
 		
 		if (Config.DISPLAY_SERVER_VERSION)
 		{
@@ -465,7 +465,7 @@ public class EnterWorld extends L2GameClientPacket
 				activeChar.sendMessage(getText("TDJKIERhdGFQYWNrIFZlcnNpb246") + " " + Config.DATAPACK_VERSION);
 			}
 		}
-		activeChar.sendMessage(getText("Q29weXJpZ2h0IDIwMDQtMjAxMg==\n"));
+		activeChar.sendMessage(getText("Q29weXJpZ2h0IDIwMDQtMjAxMg==" + Config.EOL));
 		
 		SevenSigns.getInstance().sendCurrentPeriodMsg(activeChar);
 		Announcements.getInstance().showAnnouncements(activeChar);
@@ -475,7 +475,7 @@ public class EnterWorld extends L2GameClientPacket
 			NpcHtmlMessage notice = new NpcHtmlMessage(1);
 			notice.setFile(activeChar.getHtmlPrefix(), "data/html/clanNotice.htm");
 			notice.replace("%clan_name%", activeChar.getClan().getName());
-			notice.replace("%notice_text%", activeChar.getClan().getNotice().replaceAll("\r\n", "<br>"));
+			notice.replace("%notice_text%", activeChar.getClan().getNotice());
 			notice.disableValidation();
 			sendPacket(notice);
 		}

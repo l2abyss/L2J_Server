@@ -249,7 +249,7 @@ public class LoginStatusThread extends Thread
 				else if (_usrCommand.equals("quit"))
 				{ /* Do Nothing :p - Just here to save us from the "Command Not Understood" Text */
 				}
-				else if (_usrCommand.length() == 0)
+				else if (_usrCommand.isEmpty())
 				{ /* Do Nothing Again - Same reason as the quit part */
 				}
 				else

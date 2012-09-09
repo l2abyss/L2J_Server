@@ -209,7 +209,7 @@ public class SevenSigns
 		
 		// Thanks to http://rainbow.arch.scriptmania.com/scripts/timezone_countdown.html for help with this.
 		double numSecs = (milliToChange / 1000) % 60;
-		double countDown = ((milliToChange / 1000) - numSecs) / 60;
+		double countDown = ((milliToChange / 1000.0) - numSecs) / 60;
 		int numMins = (int) Math.floor(countDown % 60);
 		countDown = (countDown - numMins) / 60;
 		int numHours = (int) Math.floor(countDown % 24);

@@ -393,7 +393,7 @@ public class GeoPathFinding extends PathFinding
 			String line;
 			while ((line = lnr.readLine()) != null)
 			{
-				if (line.trim().length() == 0)
+				if (line.trim().isEmpty())
 				{
 					continue;
 				}
@@ -414,7 +414,7 @@ public class GeoPathFinding extends PathFinding
 	{
 		if ((rx < Config.WORLD_X_MIN) || (rx > Config.WORLD_X_MAX) || (ry < Config.WORLD_Y_MIN) || (ry > Config.WORLD_Y_MAX))
 		{
-			_log.warning("Failed to Load PathNode File: invalid region " + rx + "," + ry + "\n");
+			_log.warning("Failed to Load PathNode File: invalid region " + rx + "," + ry + Config.EOL);
 			return;
 		}
 		short regionoffset = getRegionOffset(rx, ry);

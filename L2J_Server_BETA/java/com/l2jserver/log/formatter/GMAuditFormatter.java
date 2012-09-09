@@ -17,11 +17,13 @@ package com.l2jserver.log.formatter;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
+import com.l2jserver.Config;
+
 public class GMAuditFormatter extends Formatter
 {
 	@Override
 	public String format(LogRecord record)
 	{
-		return record.getMessage() + "\r\n";
+		return record.getMessage() + Config.EOL;
 	}
 }

@@ -37,14 +37,14 @@ public class L2NpcWalkerNode
 	public L2NpcWalkerNode(int routeId, NpcStringId npcString, String chatText, int moveX, int moveY, int moveZ, int delay, boolean running)
 	{
 		super();
-		this._routeId = routeId;
-		this._chatString = chatText;
-		this._npcString = npcString;
-		this._moveX = moveX;
-		this._moveY = moveY;
-		this._moveZ = moveZ;
-		this._delay = delay;
-		this._running = running;
+		_routeId = routeId;
+		_chatString = chatText;
+		_npcString = npcString;
+		_moveX = moveX;
+		_moveY = moveY;
+		_moveZ = moveZ;
+		_delay = delay;
+		_running = running;
 	}
 	
 	public int getRouteId()

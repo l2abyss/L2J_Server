@@ -50,12 +50,9 @@ public final class LambdaCalc extends Lambda
 	public void addFunc(Func f)
 	{
 		int len = funcs.length;
-		Func[] tmp = new Func[len + 1];
-		for (int i = 0; i < len; i++)
-		{
-			tmp[i] = funcs[i];
-		}
-		tmp[len] = f;
-		funcs = tmp;
+		Func[] dest = new Func[len + 1];
+		System.arraycopy(funcs, 0, dest, 0, len);
+		dest[len] = f;
+		funcs = dest;
 	}
 }

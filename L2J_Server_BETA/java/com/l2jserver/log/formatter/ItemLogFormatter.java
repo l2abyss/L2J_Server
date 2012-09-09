@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.util.StringUtil;
 
@@ -27,7 +28,6 @@ import com.l2jserver.util.StringUtil;
  */
 public class ItemLogFormatter extends Formatter
 {
-	private static final String CRLF = "\r\n";
 	private final SimpleDateFormat dateFmt = new SimpleDateFormat("dd MMM H:mm:ss");
 	
 	@Override
@@ -61,7 +61,7 @@ public class ItemLogFormatter extends Formatter
 				output.append(p.toString()/* + ":" + ((L2Object)p).getObjectId() */);
 			}
 		}
-		output.append(CRLF);
+		output.append(Config.EOL);
 		
 		return output.toString();
 	}

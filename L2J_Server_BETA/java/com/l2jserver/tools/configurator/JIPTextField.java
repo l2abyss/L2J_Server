@@ -216,7 +216,7 @@ public class JIPTextField extends JPanel implements FocusListener
 	{
 		for (int i = 0; i < 4; i++)
 		{
-			if (_textFields[i].getText().length() != 0)
+			if (!_textFields[i].getText().isEmpty())
 			{
 				return false;
 			}

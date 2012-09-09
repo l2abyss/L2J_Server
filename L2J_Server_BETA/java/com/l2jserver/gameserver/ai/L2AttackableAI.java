@@ -2524,7 +2524,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	 */
 	public void setTimepass(int TP)
 	{
-		this.timepass = TP;
+		timepass = TP;
 	}
 	
 	/**

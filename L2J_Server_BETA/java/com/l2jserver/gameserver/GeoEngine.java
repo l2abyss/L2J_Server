@@ -195,7 +195,7 @@ public class GeoEngine extends GeoData
 		int cy = getCell(gy);
 		int rx = (gx >> 11) + Config.WORLD_X_MIN;
 		int ry = (gy >> 11) + Config.WORLD_X_MAX;
-		String out = rx + ";" + ry + ";" + bx + ";" + by + ";" + cx + ";" + cy + ";" + gm.getZ() + ";" + comment + "\n";
+		String out = rx + ";" + ry + ";" + bx + ";" + by + ";" + cx + ";" + cy + ";" + gm.getZ() + ";" + comment + Config.EOL;
 		try
 		{
 			_geoBugsOut.write(out.getBytes());
@@ -554,14 +554,14 @@ public class GeoEngine extends GeoData
 					d += delta_B;
 					next_x += inc_x;
 					tempz = nCanMoveNext(x, y, (int) z, next_x, next_y, tz);
-					if (tempz == Double.MIN_VALUE)
+					if (tempz <= 1e-6)
 						return new Location((x << 4) + L2World.MAP_MIN_X, (y << 4) + L2World.MAP_MIN_Y, (int) z);
 					
 					z = tempz;
 					next_y += inc_y;
 					//_log.warning("2: next_x:"+next_x+" next_y"+next_y);
 					tempz = nCanMoveNext(next_x, y, (int) z, next_x, next_y, tz);
-					if (tempz == Double.MIN_VALUE)
+					if (tempz <= 1e-6)
 						return new Location((x << 4) + L2World.MAP_MIN_X, (y << 4) + L2World.MAP_MIN_Y, (int) z);
 					
 					z = tempz;
@@ -572,7 +572,7 @@ public class GeoEngine extends GeoData
 					next_x += inc_x;
 					//_log.warning("3: next_x:"+next_x+" next_y"+next_y);
 					tempz = nCanMoveNext(x, y, (int) z, next_x, next_y, tz);
-					if (tempz == Double.MIN_VALUE)
+					if (tempz <= 1e-6)
 						return new Location((x << 4) + L2World.MAP_MIN_X, (y << 4) + L2World.MAP_MIN_Y, (int) z);
 					
 					z = tempz;
@@ -593,14 +593,14 @@ public class GeoEngine extends GeoData
 					d += delta_B;
 					next_y += inc_y;
 					tempz = nCanMoveNext(x, y, (int) z, next_x, next_y, tz);
-					if (tempz == Double.MIN_VALUE)
+					if (tempz <= 1e-6)
 						return new Location((x << 4) + L2World.MAP_MIN_X, (y << 4) + L2World.MAP_MIN_Y, (int) z);
 					
 					z = tempz;
 					next_x += inc_x;
 					//_log.warning("5: next_x:"+next_x+" next_y"+next_y);
 					tempz = nCanMoveNext(x, next_y, (int) z, next_x, next_y, tz);
-					if (tempz == Double.MIN_VALUE)
+					if (tempz <= 1e-6)
 						return new Location((x << 4) + L2World.MAP_MIN_X, (y << 4) + L2World.MAP_MIN_Y, (int) z);
 
 					z = tempz;
@@ -611,7 +611,7 @@ public class GeoEngine extends GeoData
 					next_y += inc_y;
 					//_log.warning("6: next_x:"+next_x+" next_y"+next_y);
 					tempz = nCanMoveNext(x, y, (int) z, next_x, next_y, tz);
-					if (tempz == Double.MIN_VALUE)
+					if (tempz <= 1e-6)
 						return new Location((x << 4) + L2World.MAP_MIN_X, (y << 4) + L2World.MAP_MIN_Y, (int) z);
 					
 					z = tempz;
@@ -656,7 +656,7 @@ public class GeoEngine extends GeoData
 			String line;
 			while ((line = lnr.readLine()) != null)
 			{
-				if (line.trim().length() == 0)
+				if (line.trim().isEmpty())
 					continue;
 				StringTokenizer st = new StringTokenizer(line, "_");
 				byte rx = Byte.parseByte(st.nextToken());
@@ -705,7 +705,7 @@ public class GeoEngine extends GeoData
 	{
 		if (rx < Config.WORLD_X_MIN || rx > Config.WORLD_X_MAX || ry < Config.WORLD_Y_MIN || ry > Config.WORLD_Y_MAX)
 		{
-			_log.warning("Failed to Load GeoFile: invalid region " + rx +","+ ry + "\n");
+			_log.warning("Failed to Load GeoFile: invalid region " + rx +","+ ry + Config.EOL);
 			return false;
 		}
 		String fname = rx + "_" + ry + ".l2j";

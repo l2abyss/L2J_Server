@@ -415,7 +415,7 @@ public class RaidBossSpawnManager
 	
 	public String getRaidBossStatus(int bossId)
 	{
-		String msg = "RaidBoss Status....\n";
+		String msg = "RaidBoss Status..." + Config.EOL;
 		
 		if (_bosses == null)
 		{

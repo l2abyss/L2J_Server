@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.l2jserver.Config;
 import com.l2jserver.util.lib.Log;
 
 public class GMAudit
@@ -45,7 +46,7 @@ public class GMAudit
 		final SimpleDateFormat _formatter = new SimpleDateFormat("dd/MM/yyyy H:mm:ss");
 		try (FileWriter save = new FileWriter(file, true))
 		{
-			save.write(_formatter.format(new Date()) + ">" + gmName + ">" + action + ">" + target + ">" + params + "\r\n");
+			save.write(_formatter.format(new Date()) + ">" + gmName + ">" + action + ">" + target + ">" + params + Config.EOL);
 		}
 		catch (IOException e)
 		{

@@ -495,7 +495,7 @@ public final class QuestState
 		}
 		
 		final String variable = _vars.get(var);
-		if ((variable == null) || (variable.length() == 0))
+		if ((variable == null) || variable.isEmpty())
 		{
 			return 0;
 		}

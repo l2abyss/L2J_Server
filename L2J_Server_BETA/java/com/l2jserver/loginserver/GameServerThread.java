@@ -126,7 +126,7 @@ public class GameServerThread extends Thread
 				
 				if (Config.DEBUG)
 				{
-					_log.warning("[C]\n" + Util.printData(data));
+					_log.warning("[C]" + Config.EOL + Util.printData(data));
 				}
 				
 				L2JGameServerPacketHandler.handlePacket(data, this);
@@ -237,7 +237,7 @@ public class GameServerThread extends Thread
 			NewCrypt.appendChecksum(data);
 			if (Config.DEBUG)
 			{
-				_log.finest("[S] " + sl.getClass().getSimpleName() + ":\n" + Util.printData(data));
+				_log.finest("[S] " + sl.getClass().getSimpleName() + ":" + Config.EOL + Util.printData(data));
 			}
 			_blowfish.crypt(data, 0, data.length);
 			

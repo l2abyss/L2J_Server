@@ -87,7 +87,7 @@ public class ScriptExecutor
 				line = line.trim();
 				if (!line.isEmpty())
 				{
-					sb.append(line + "\n");
+					sb.append(line + System.getProperty("line.separator"));
 				}
 				
 				if (line.endsWith(";"))

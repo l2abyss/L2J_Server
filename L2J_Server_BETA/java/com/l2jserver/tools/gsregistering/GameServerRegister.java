@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
+import com.l2jserver.Config;
 import com.l2jserver.loginserver.GameServerTable;
 
 public class GameServerRegister extends BaseGameServerRegister
@@ -59,7 +60,7 @@ public class GameServerRegister extends BaseGameServerRegister
 		{
 			hr();
 			System.out.println("GSRegister");
-			System.out.println('\n');
+			System.out.println(Config.EOL);
 			System.out.println("1 - " + getBundle().getString("cmdMenuRegister"));
 			System.out.println("2 - " + getBundle().getString("cmdMenuListNames"));
 			System.out.println("3 - " + getBundle().getString("cmdMenuRemoveGS"));
@@ -93,14 +94,14 @@ public class GameServerRegister extends BaseGameServerRegister
 							System.exit(0);
 							break;
 						default:
-							System.out.printf(getBundle().getString("invalidChoice") + '\n', choice);
+							System.out.printf(getBundle().getString("invalidChoice") + Config.EOL, choice);
 							choiceOk = false;
 					}
 					
 				}
 				catch (NumberFormatException nfe)
 				{
-					System.out.printf(getBundle().getString("invalidChoice") + '\n', choice);
+					System.out.printf(getBundle().getString("invalidChoice") + Config.EOL, choice);
 				}
 			}
 			while (!choiceOk);
@@ -112,7 +113,7 @@ public class GameServerRegister extends BaseGameServerRegister
 	 */
 	private void hr()
 	{
-		System.out.println("_____________________________________________________\n");
+		System.out.println("_____________________________________________________" + Config.EOL);
 	}
 	
 	/**
@@ -215,7 +216,7 @@ public class GameServerRegister extends BaseGameServerRegister
 				}
 				else
 				{
-					System.out.printf(getBundle().getString("invalidChoice") + '\n', choice);
+					System.out.printf(getBundle().getString("invalidChoice") + Config.EOL, choice);
 				}
 			}
 		}
@@ -240,7 +241,7 @@ public class GameServerRegister extends BaseGameServerRegister
 			}
 			catch (NumberFormatException e)
 			{
-				System.out.printf(getBundle().getString("invalidChoice") + '\n', line);
+				System.out.printf(getBundle().getString("invalidChoice") + Config.EOL, line);
 			}
 		}
 		while (id == Integer.MIN_VALUE);
@@ -248,17 +249,17 @@ public class GameServerRegister extends BaseGameServerRegister
 		String name = GameServerTable.getInstance().getServerNameById(id);
 		if (name == null)
 		{
-			System.out.printf(getBundle().getString("noNameForId") + '\n', id);
+			System.out.printf(getBundle().getString("noNameForId") + Config.EOL, id);
 		}
 		else
 		{
 			if (GameServerTable.getInstance().hasRegisteredGameServerOnId(id))
 			{
-				System.out.printf(getBundle().getString("confirmRemoveText") + '\n', id, name);
+				System.out.printf(getBundle().getString("confirmRemoveText") + Config.EOL, id, name);
 				try
 				{
 					BaseGameServerRegister.unregisterGameServer(id);
-					System.out.printf(getBundle().getString("unregisterOk") + '\n', id);
+					System.out.printf(getBundle().getString("unregisterOk") + Config.EOL, id);
 				}
 				catch (SQLException e)
 				{
@@ -268,7 +269,7 @@ public class GameServerRegister extends BaseGameServerRegister
 			}
 			else
 			{
-				System.out.printf(getBundle().getString("noServerForId") + '\n', id);
+				System.out.printf(getBundle().getString("noServerForId") + Config.EOL, id);
 			}
 		}
 		
@@ -289,7 +290,7 @@ public class GameServerRegister extends BaseGameServerRegister
 			}
 			catch (NumberFormatException e)
 			{
-				System.out.printf(getBundle().getString("invalidChoice") + '\n', line);
+				System.out.printf(getBundle().getString("invalidChoice") + Config.EOL, line);
 			}
 		}
 		while (id == Integer.MIN_VALUE);
@@ -297,7 +298,7 @@ public class GameServerRegister extends BaseGameServerRegister
 		String name = GameServerTable.getInstance().getServerNameById(id);
 		if (name == null)
 		{
-			System.out.printf(getBundle().getString("noNameForId") + '\n', id);
+			System.out.printf(getBundle().getString("noNameForId") + Config.EOL, id);
 		}
 		else
 		{
@@ -329,12 +330,12 @@ public class GameServerRegister extends BaseGameServerRegister
 		if (getBundle() != null)
 		{
 			title = getBundle().getString("error");
-			msg += '\n' + getBundle().getString("reason") + ' ' + t.getLocalizedMessage();
+			msg += Config.EOL + getBundle().getString("reason") + ' ' + t.getLocalizedMessage();
 		}
 		else
 		{
 			title = "Error";
-			msg += "\nCause: " + t.getLocalizedMessage();
+			msg += Config.EOL + "Cause: " + t.getLocalizedMessage();
 		}
 		System.out.println(title + ": " + msg);
 	}

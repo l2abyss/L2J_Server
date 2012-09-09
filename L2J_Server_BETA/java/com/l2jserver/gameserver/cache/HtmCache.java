@@ -31,18 +31,17 @@ import com.l2jserver.util.file.filter.HTMLFilter;
  */
 public class HtmCache
 {
-	private static Logger _log = Logger.getLogger(HtmCache.class.getName());
+	private static final Logger _log = Logger.getLogger(HtmCache.class.getName());
 	
 	private static final HTMLFilter htmlFilter = new HTMLFilter();
 	
-	private final Map<String, String> _cache;
+	private static final Map<String, String> _cache = new L2FastMap<>(Config.LAZY_CACHE);
 	
 	private int _loadedFiles;
 	private long _bytesBuffLen;
 	
 	protected HtmCache()
 	{
-		_cache = new L2FastMap<>(Config.LAZY_CACHE);
 		reload();
 	}
 	
@@ -117,7 +116,6 @@ public class HtmCache
 			
 			bis.read(raw);
 			content = new String(raw, "UTF-8");
-			content = content.replaceAll("\r\n", "\n");
 			
 			String oldContent = _cache.get(relpath);
 			if (oldContent == null)

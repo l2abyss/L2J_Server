@@ -591,7 +591,7 @@ public class PcStat extends PlayableStat
 			points = Math.max(_vitalityPoints + points, MIN_VITALITY_POINTS);
 		}
 		
-		if (points == _vitalityPoints)
+		if (Math.abs(points - _vitalityPoints) <= 1e-6)
 			return;
 		
 		_vitalityPoints = points;
