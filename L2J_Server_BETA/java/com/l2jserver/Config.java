@@ -14,6 +14,8 @@
  */
 package com.l2jserver;
 
+import info.tak11.subnet.Subnet;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,15 +23,22 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigInteger;
+import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -4289,8 +4298,8 @@ public final class Config
 	
 	private static class IPConfigData extends DocumentParser
 	{
-		private static final List<String> subnets = new ArrayList<>(5);
-		private static final List<String> hosts = new ArrayList<>(5);
+		private static final List<String> _subnets = new ArrayList<>(5);
+		private static final List<String> _hosts = new ArrayList<>(5);
 		
 		public IPConfigData()
 		{
@@ -4300,7 +4309,17 @@ public final class Config
 		@Override
 		public void load()
 		{
-			parseFile(new File(IP_CONFIG_FILE));
+			File f = new File(IP_CONFIG_FILE);
+			if (f.exists())
+			{
+				_log.log(Level.INFO, "Network Config: ipconfig.xml exists using manual configuration...");
+				parseFile(new File(IP_CONFIG_FILE));
+			}
+			else // Auto configuration...
+			{
+				_log.log(Level.INFO, "Network Config: ipconfig.xml doesn't exists using automatic configuration...");
+				autoIpConfig();
+			}
 		}
 		
 		@Override
@@ -4316,10 +4335,10 @@ public final class Config
 						if ("define".equalsIgnoreCase(d.getNodeName()))
 						{
 							attrs = d.getAttributes();
-							subnets.add(attrs.getNamedItem("subnet").getNodeValue());
-							hosts.add(attrs.getNamedItem("address").getNodeValue());
+							_subnets.add(attrs.getNamedItem("subnet").getNodeValue());
+							_hosts.add(attrs.getNamedItem("address").getNodeValue());
 							
-							if (hosts.size() != subnets.size())
+							if (_hosts.size() != _subnets.size())
 							{
 								_log.log(Level.WARNING, "Failed to Load " + IP_CONFIG_FILE + " File - subnets does not match server addresses.");
 							}
@@ -4330,33 +4349,94 @@ public final class Config
 					if (att == null)
 					{
 						_log.log(Level.WARNING, "Failed to load " + IP_CONFIG_FILE + " file - default server address is missing.");
-						hosts.add("127.0.0.1");
+						_hosts.add("127.0.0.1");
 					}
 					else
 					{
-						hosts.add(att.getNodeValue());
+						_hosts.add(att.getNodeValue());
 					}
-					subnets.add("0.0.0.0/0");
+					_subnets.add("0.0.0.0/0");
 				}
+			}
+		}
+		
+		protected void autoIpConfig()
+		{
+			String externalIp = "127.0.0.1";
+			try 
+			{
+				URL autoIp = new URL("http://api.externalip.net/ip/");
+				try (BufferedReader in = new BufferedReader(new InputStreamReader(autoIp.openStream())))
+				{
+					externalIp = in.readLine();
+				}
+			}
+			catch (IOException e)
+			{
+				_log.log(Level.INFO, "Network Config: Failed to connect to api.externalip.net please check your internet connection using 127.0.0.1!");
+				externalIp = "127.0.0.1";
+			}
+			
+			try
+			{
+				Enumeration<NetworkInterface> niList = NetworkInterface.getNetworkInterfaces();
+				
+				Subnet sub = new Subnet();
+				while (niList.hasMoreElements())
+				{
+					NetworkInterface ni = niList.nextElement();
+					
+					if (!ni.isUp() || ni.isVirtual())
+						continue;
+					
+					if (!ni.isLoopback() && ni.getHardwareAddress().length != 6)
+						continue;
+					
+					for (InterfaceAddress ia : ni.getInterfaceAddresses())
+					{
+						if (ia.getAddress() instanceof Inet6Address)
+							continue;
+						
+						sub.setIPAddress(ia.getAddress().getHostAddress());
+						sub.setMaskedBits(ia.getNetworkPrefixLength());
+						String subnet = sub.getSubnetAddress() + '/' + sub.getMaskedBits();
+						if (!_subnets.contains(subnet) && !subnet.equals("0.0.0.0/0"))
+						{
+							_subnets.add(subnet);
+							_hosts.add(sub.getIPAddress());
+							_log.log(Level.INFO, "Network Config: Adding new subnet: " + subnet + " address: " + sub.getIPAddress());
+						}
+					}
+				}
+				
+				// External host and subnet
+				_hosts.add(externalIp);
+				_subnets.add("0.0.0.0/0");
+				_log.log(Level.INFO, "Network Config: Adding new subnet: 0.0.0.0/0 address: " + externalIp);
+			}
+			catch (SocketException e)
+			{
+				_log.log(Level.INFO, "Network Config: Configuration failed please configure manually using ipconfig.xml", e);
+				System.exit(0);
 			}
 		}
 		
 		protected List<String> getSubnets()
 		{
-			if (subnets.isEmpty())
+			if (_subnets.isEmpty())
 			{
 				return Arrays.asList("0.0.0.0/0");
 			}
-			return subnets;
+			return _subnets;
 		}
 		
 		protected List<String> getHosts()
 		{
-			if (hosts.isEmpty())
+			if (_hosts.isEmpty())
 			{
 				return Arrays.asList("127.0.0.1");
 			}
-			return hosts;
+			return _hosts;
 		}
 	}
 }

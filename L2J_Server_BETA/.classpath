@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="dist/libs/netcon-1.7.jar" />
 	<classpathentry kind="lib" path="dist/libs/smtp.jar" />
 	<classpathentry kind="lib" path="dist/libs/trove-3.0.3.jar" />
+	<classpathentry kind="lib" path="dist/libs/Subnet.jar" />
 	<classpathentry kind="output" path="bin" />
 </classpath>
