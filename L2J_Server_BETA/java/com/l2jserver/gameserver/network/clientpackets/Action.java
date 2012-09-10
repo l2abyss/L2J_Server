@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -89,7 +90,7 @@ public final class Action extends L2GameClientPacket
 			return;
 		}
 		
-		if (!obj.isTargetable() && !activeChar.isGM())
+		if (!obj.isTargetable() && !activeChar.canOverrideCond(PcCondOverride.TARGET_ALL))
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -103,7 +104,7 @@ public final class Action extends L2GameClientPacket
 		}
 		
 		// Only GMs can directly interact with invisible characters
-		if (obj.isPlayer() && obj.getActingPlayer().getAppearance().getInvisible() && !activeChar.isGM())
+		if (obj.isPlayer() && obj.getActingPlayer().getAppearance().getInvisible() && !activeChar.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;

@@ -23,6 +23,7 @@ import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2SquadTrainer;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.AcquireSkillType;
@@ -393,7 +394,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 	
 	protected int validateCondition(L2PcInstance player)
 	{
-		if (player.isGM())
+		if (player.canOverrideCond(PcCondOverride.CASTLE_CONDITIONS))
 		{
 			return COND_OWNER;
 		}

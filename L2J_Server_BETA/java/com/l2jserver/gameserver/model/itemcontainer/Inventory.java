@@ -30,6 +30,7 @@ import com.l2jserver.gameserver.datatables.ArmorSetsData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.L2ArmorSet;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.L2Armor;
@@ -1308,7 +1309,7 @@ public abstract class Inventory extends ItemContainer
 		{
 			L2PcInstance player = (L2PcInstance)getOwner();
 			
-			if (!player.isGM() && !player.isHero() && item.isHeroItem())
+			if (!player.canOverrideCond(PcCondOverride.ITEM_CONDITIONS) && !player.isHero() && item.isHeroItem())
 				return;
 		}
 		
@@ -1578,7 +1579,7 @@ public abstract class Inventory extends ItemContainer
 					{
 						L2PcInstance player = (L2PcInstance)getOwner();
 						
-						if (!player.isGM() && !player.isHero() && item.isHeroItem())
+						if (!player.canOverrideCond(PcCondOverride.ITEM_CONDITIONS) && !player.isHero() && item.isHeroItem())
 							item.setLocation(ItemLocation.INVENTORY);
 					}
 					

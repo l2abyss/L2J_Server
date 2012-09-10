@@ -15,6 +15,7 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 
 public class L2ManorManagerInstance extends L2MerchantInstance
@@ -40,7 +41,7 @@ public class L2ManorManagerInstance extends L2MerchantInstance
 			return;
 		}
 		
-		if (!player.isGM()
+		if (!player.canOverrideCond(PcCondOverride.CASTLE_CONDITIONS)
 				&& getCastle() != null
 				&& getCastle().getCastleId() > 0
 				&& player.isClanLeader()

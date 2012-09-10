@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.HennaData;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.L2Henna;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -78,7 +79,7 @@ public final class RequestHennaEquip extends L2GameClientPacket
 		else
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_DRAW_SYMBOL);
-			if (!activeChar.isGM() && !henna.isAllowedClass(activeChar.getClassId()))
+			if (!activeChar.canOverrideCond(PcCondOverride.ITEM_CONDITIONS) && !henna.isAllowedClass(activeChar.getClassId()))
 			{
 				Util.handleIllegalPlayerAction(activeChar, "Exploit attempt: Character " + activeChar.getName() + " of account " + activeChar.getAccountName() + " tryed to add a forbidden henna.", Config.DEFAULT_PUNISH);
 			}

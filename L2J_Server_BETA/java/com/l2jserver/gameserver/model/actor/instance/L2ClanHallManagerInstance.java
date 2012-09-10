@@ -25,6 +25,7 @@ import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2TeleportLocation;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.clanhall.AuctionableHall;
@@ -1394,8 +1395,10 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 	
 	protected int validateCondition(L2PcInstance player)
 	{
-		if (getClanHall() == null) return COND_ALL_FALSE;
-		if (player.isGM()) return COND_OWNER;
+		if (getClanHall() == null)
+			return COND_ALL_FALSE;
+		if (player.canOverrideCond(PcCondOverride.CLANHALL_CONDITIONS))
+			return COND_OWNER;
 		if (player.getClan() != null)
 		{
 			if (getClanHall().getOwnerId() == player.getClanId())

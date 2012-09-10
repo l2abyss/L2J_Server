@@ -20,6 +20,7 @@ import com.l2jserver.gameserver.instancemanager.GrandBossManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -81,7 +82,7 @@ public class L2SkillTeleport extends L2Skill
 				return;
 			}
 			
-			if (GrandBossManager.getInstance().getZone(activeChar) != null && !activeChar.isGM())
+			if (GrandBossManager.getInstance().getZone(activeChar) != null && !activeChar.canOverrideCond(PcCondOverride.SKILL_CONDITIONS))
 			{
 				activeChar.sendPacket(SystemMessageId.YOU_MAY_NOT_SUMMON_FROM_YOUR_CURRENT_LOCATION);
 				return;

@@ -19,6 +19,7 @@ import javolution.util.FastList;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2ClassMasterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -436,7 +437,7 @@ public class PcStat extends PlayableStat
 		val += Config.RUN_SPD_BOOST;
 		
 		// Apply max run speed cap.
-		if (val > Config.MAX_RUN_SPEED && !getActiveChar().isGM())
+		if (val > Config.MAX_RUN_SPEED && !getActiveChar().canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
 			return Config.MAX_RUN_SPEED;
 		
 		return val;
@@ -447,7 +448,7 @@ public class PcStat extends PlayableStat
 	{
 		int val = super.getPAtkSpd();
 		
-		if (val > Config.MAX_PATK_SPEED && !getActiveChar().isGM())
+		if (val > Config.MAX_PATK_SPEED && !getActiveChar().canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
 			return Config.MAX_PATK_SPEED;
 		
 		return val;
@@ -458,7 +459,7 @@ public class PcStat extends PlayableStat
 	{
 		int val = super.getEvasionRate(target);
 		
-		if (val > Config.MAX_EVASION && !getActiveChar().isGM())
+		if (val > Config.MAX_EVASION && !getActiveChar().canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
 			return Config.MAX_EVASION;
 		
 		return val;
@@ -469,7 +470,7 @@ public class PcStat extends PlayableStat
 	{
 		int val = super.getMAtkSpd();
 		
-		if (val > Config.MAX_MATK_SPEED && !getActiveChar().isGM())
+		if (val > Config.MAX_MATK_SPEED && !getActiveChar().canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
 			return Config.MAX_MATK_SPEED;
 		
 		return val;

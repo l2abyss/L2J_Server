@@ -39,6 +39,7 @@ import com.l2jserver.gameserver.model.CombatFlag;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2SiegeClan;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.L2SiegeClan.SiegeClanType;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -920,7 +921,7 @@ public class FortSiege implements Siegable
 		
 		for (L2PcInstance player : players)
 		{
-			if (player.isGM() || player.isInJail())
+			if (player.canOverrideCond(PcCondOverride.FORTRESS_CONDITIONS) || player.isInJail())
 			{
 				continue;
 			}

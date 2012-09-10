@@ -18,6 +18,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.instancemanager.TownManager;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Summon;
@@ -330,7 +331,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			if (_invisible)
 			{
 				L2PcInstance tmp = getClient().getActiveChar();
-				if (tmp != null && tmp.isGM())
+				if (tmp != null && tmp.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
 					gmSeeInvis = true;
 			}
 			

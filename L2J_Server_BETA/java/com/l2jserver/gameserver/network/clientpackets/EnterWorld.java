@@ -46,6 +46,7 @@ import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2ClassMasterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -555,11 +556,7 @@ public class EnterWorld extends L2GameClientPacket
 		}
 		
 		// Attacker or spectator logging in to a siege zone. Actually should be checked for inside castle only?
-		if (!activeChar.isGM()
-		// inside siege zone
-		&& activeChar.isInsideZone(L2Character.ZONE_SIEGE)
-		// but non-participant or attacker
-		&& (!activeChar.isInSiege() || (activeChar.getSiegeState() < 2)))
+		if (!activeChar.canOverrideCond(PcCondOverride.ZONE_CONDITIONS) && activeChar.isInsideZone(L2Character.ZONE_SIEGE) && (!activeChar.isInSiege() || (activeChar.getSiegeState() < 2)))
 		{
 			activeChar.teleToLocation(MapRegionManager.TeleportWhereType.Town);
 		}

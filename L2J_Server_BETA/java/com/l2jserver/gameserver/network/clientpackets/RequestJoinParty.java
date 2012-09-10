@@ -18,6 +18,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AskJoinParty;
@@ -69,7 +70,7 @@ public final class RequestJoinParty extends L2GameClientPacket
 			return;
 		}
 		
-		if (!requestor.isGM() && target.getAppearance().getInvisible())
+		if (!requestor.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS) && target.getAppearance().getInvisible())
 		{
 			requestor.sendPacket(SystemMessageId.TARGET_IS_INCORRECT);
 			return;

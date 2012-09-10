@@ -45,6 +45,7 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.handler.ISkillHandler;
 import com.l2jserver.gameserver.handler.SkillHandler;
 import com.l2jserver.gameserver.instancemanager.DimensionalRiftManager;
+import com.l2jserver.gameserver.instancemanager.GlobalVariablesManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager.TeleportWhereType;
@@ -61,6 +62,7 @@ import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcWalkerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -239,6 +241,11 @@ public abstract class L2Character extends L2Object
 	private final ReentrantLock _teleportLock;
 	
 	private int _team;
+	
+	protected long _exceptions = 0L;
+	
+	public final String COND_EXCEPTIONS = "COND_EX_" + getObjectId();
+	
 	/**
 	 * @return True if debugging is enabled for this L2Character
 	 */
@@ -7961,5 +7968,28 @@ public abstract class L2Character extends L2Object
 			return true;
 		}
 		return isSummon() && ((L2Summon) this).getChargedSpiritShot() == L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT;
+	}
+	
+	public void addOverrideCond(PcCondOverride... excs)
+	{
+		for (PcCondOverride exc : excs)
+		{
+			_exceptions |= exc.getMask();
+		}
+		GlobalVariablesManager.getInstance().storeVariable(COND_EXCEPTIONS, Long.toString(_exceptions));
+	}
+	
+	public void removeOverridedCond(PcCondOverride... excs)
+	{
+		for (PcCondOverride exc : excs)
+		{
+			_exceptions &= ~exc.getMask();
+		}
+		GlobalVariablesManager.getInstance().storeVariable(COND_EXCEPTIONS, Long.toString(_exceptions));
+	}
+	
+	public boolean canOverrideCond(PcCondOverride excs)
+	{
+		return (_exceptions & excs.getMask()) == excs.getMask();
 	}
 }

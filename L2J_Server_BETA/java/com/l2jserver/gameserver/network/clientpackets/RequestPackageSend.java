@@ -85,7 +85,7 @@ public class RequestPackageSend extends L2GameClientPacket
 			return;
 		
 		L2Npc manager = player.getLastFolkNPC();
-		if ((manager == null || !player.isInsideRadius(manager, L2Npc.INTERACTION_DISTANCE, false, false)) && !player.isGM())
+		if ((manager == null || !player.isInsideRadius(manager, L2Npc.INTERACTION_DISTANCE, false, false)))
 			return;
 		
 		if (player.getActiveEnchantItem() != null)

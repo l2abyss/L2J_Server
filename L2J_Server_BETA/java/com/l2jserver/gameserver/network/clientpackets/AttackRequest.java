@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 
@@ -74,7 +75,7 @@ public final class AttackRequest extends L2GameClientPacket
 			return;
 		}
 		
-		else if (!target.isTargetable() && !activeChar.isGM())
+		else if (!target.isTargetable() && !activeChar.canOverrideCond(PcCondOverride.TARGET_ALL))
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -89,7 +90,7 @@ public final class AttackRequest extends L2GameClientPacket
 		}
 		
 		// Only GMs can directly attack invisible characters
-		else if (target.isPlayer() && target.getActingPlayer().getAppearance().getInvisible() && !activeChar.isGM())
+		else if (target.isPlayer() && target.getActingPlayer().getAppearance().getInvisible() && !activeChar.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;

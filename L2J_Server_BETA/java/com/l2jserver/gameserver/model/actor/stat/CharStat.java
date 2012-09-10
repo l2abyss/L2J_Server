@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.actor.stat;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.Elementals;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -207,7 +208,7 @@ public class CharStat
 			return 1;
 		
 		int val = (int) Math.round(calcStat(Stats.EVASION_RATE, 0, target, null));
-		if (val > Config.MAX_EVASION && !_activeChar.isGM())
+		if (val > Config.MAX_EVASION && !_activeChar.canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
 			val = Config.MAX_EVASION;
 		return val;
 	}
@@ -393,7 +394,7 @@ public class CharStat
 		if  (Config.L2JMOD_CHAMPION_ENABLE && _activeChar.isChampion())
 			bonusSpdAtk = Config.L2JMOD_CHAMPION_SPD_ATK;
 		double val = calcStat(Stats.MAGIC_ATTACK_SPEED, _activeChar.getTemplate().getBaseMAtkSpd() * bonusSpdAtk, null, null);
-		if (val > Config.MAX_MATK_SPEED && !_activeChar.isGM())
+		if (val > Config.MAX_MATK_SPEED && !_activeChar.canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
 			val = Config.MAX_MATK_SPEED;
 		return (int) val;
 	}

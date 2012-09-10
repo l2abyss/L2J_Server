@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Decoy;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -100,7 +101,7 @@ public class CharInfo extends L2GameServerPacket
 		if (_invisible)
 		{
 			L2PcInstance tmp = getClient().getActiveChar();
-			if (tmp != null && tmp.isGM())
+			if (tmp != null && tmp.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
 				gmSeeInvis = true;
 		}
 		

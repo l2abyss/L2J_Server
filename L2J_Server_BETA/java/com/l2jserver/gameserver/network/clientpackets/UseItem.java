@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.ai.NextAction.NextActionCallback;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
@@ -243,7 +244,7 @@ public final class UseItem extends L2GameClientPacket
 						return;
 					
 					// Don't allow other Race to Wear Kamael exclusive Weapons.
-					if (!item.isEquipped() && item.getItem() instanceof L2Weapon && !activeChar.isGM())
+					if (!item.isEquipped() && item.isWeapon() && !activeChar.canOverrideCond(PcCondOverride.ITEM_CONDITIONS))
 					{
 						L2Weapon wpn = (L2Weapon)item.getItem();
 						

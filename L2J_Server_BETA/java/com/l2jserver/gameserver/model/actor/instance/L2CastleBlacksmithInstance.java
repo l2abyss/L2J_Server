@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 
@@ -109,7 +110,7 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 	
 	protected int validateCondition(L2PcInstance player)
 	{
-		if (player.isGM())
+		if (player.canOverrideCond(PcCondOverride.CASTLE_CONDITIONS))
 			return COND_OWNER;
 		
 		if (getCastle() != null && getCastle().getCastleId() > 0)
