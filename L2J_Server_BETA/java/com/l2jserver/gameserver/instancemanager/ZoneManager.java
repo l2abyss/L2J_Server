@@ -55,18 +55,16 @@ public class ZoneManager extends DocumentParser
 	private List<L2ItemInstance> _debugItems;
 	
 	/**
-	 * @return
+	 * Instantiates a new zone manager.
 	 */
-	public static final ZoneManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	protected ZoneManager()
 	{
 		load();
 	}
 	
+	/**
+	 * Reload.
+	 */
 	public void reload()
 	{
 		// Get the world regions
@@ -86,11 +84,11 @@ public class ZoneManager extends DocumentParser
 		}
 		
 		// Clear zones
-		for (int x = 0; x < worldRegions.length; x++)
+		for (L2WorldRegion[] worldRegion : worldRegions)
 		{
-			for (int y = 0; y < worldRegions[x].length; y++)
+			for (int y = 0; y < worldRegion.length; y++)
 			{
-				worldRegions[x][y].getZones().clear();
+				worldRegion[y].getZones().clear();
 				count++;
 			}
 		}
@@ -130,8 +128,10 @@ public class ZoneManager extends DocumentParser
 			{
 				attrs = n.getAttributes();
 				attribute = attrs.getNamedItem("enabled");
-				if (attribute != null && !Boolean.parseBoolean(attribute.getNodeValue()))
+				if ((attribute != null) && !Boolean.parseBoolean(attribute.getNodeValue()))
+				{
 					continue;
+				}
 				
 				for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 				{
@@ -141,15 +141,23 @@ public class ZoneManager extends DocumentParser
 						
 						attribute = attrs.getNamedItem("id");
 						if (attribute != null)
+						{
 							zoneId = Integer.parseInt(attribute.getNodeValue());
+						}
 						else
+						{
 							zoneId = _lastDynamicId++;
+						}
 						
 						attribute = attrs.getNamedItem("name");
 						if (attribute != null)
+						{
 							zoneName = attribute.getNodeValue();
+						}
 						else
+						{
 							zoneName = null;
+						}
 						
 						minZ = parseInt(attrs, "minZ");
 						maxZ = parseInt(attrs, "maxZ");
@@ -194,7 +202,7 @@ public class ZoneManager extends DocumentParser
 							
 							coords = rs.toArray(new int[rs.size()][2]);
 							
-							if (coords == null || coords.length == 0)
+							if ((coords == null) || (coords.length == 0))
 							{
 								_log.warning(getClass().getSimpleName() + ": ZoneData: missing data for zone: " + zoneId + " XML file: " + getCurrentFile().getName());
 								continue;
@@ -208,7 +216,9 @@ public class ZoneManager extends DocumentParser
 							if (zoneShape.equalsIgnoreCase("Cuboid"))
 							{
 								if (coords.length == 2)
+								{
 									temp.setZone(new ZoneCuboid(coords[0][0], coords[1][0], coords[0][1], coords[1][1], minZ, maxZ));
+								}
 								else
 								{
 									_log.warning(getClass().getSimpleName() + ": ZoneData: Missing cuboid vertex in sql data for zone: " + zoneId + " in file: " + getCurrentFile().getName());
@@ -241,8 +251,10 @@ public class ZoneManager extends DocumentParser
 								// at x,y and a radius
 								attrs = d.getAttributes();
 								final int zoneRad = Integer.parseInt(attrs.getNamedItem("rad").getNodeValue());
-								if (coords.length == 1 && zoneRad > 0)
+								if ((coords.length == 1) && (zoneRad > 0))
+								{
 									temp.setZone(new ZoneCylinder(coords[0][0], coords[0][1], minZ, maxZ, zoneRad));
+								}
 								else
 								{
 									_log.warning(getClass().getSimpleName() + ": ZoneData: Bad data for zone: " + zoneId + " in file: " + getCurrentFile().getName());
@@ -266,7 +278,7 @@ public class ZoneManager extends DocumentParser
 								
 								temp.setParameter(name, val);
 							}
-							else if ("spawn".equalsIgnoreCase(cd.getNodeName()) && temp instanceof L2ZoneRespawn)
+							else if ("spawn".equalsIgnoreCase(cd.getNodeName()) && (temp instanceof L2ZoneRespawn))
 							{
 								attrs = cd.getAttributes();
 								int spawnX = Integer.parseInt(attrs.getNamedItem("X").getNodeValue());
@@ -275,7 +287,7 @@ public class ZoneManager extends DocumentParser
 								Node val = attrs.getNamedItem("type");
 								((L2ZoneRespawn) temp).parseLoc(spawnX, spawnY, spawnZ, val == null ? null : val.getNodeValue());
 							}
-							else if ("race".equalsIgnoreCase(cd.getNodeName()) && temp instanceof L2RespawnZone)
+							else if ("race".equalsIgnoreCase(cd.getNodeName()) && (temp instanceof L2RespawnZone))
 							{
 								attrs = cd.getAttributes();
 								String race = attrs.getNamedItem("name").getNodeValue();
@@ -285,10 +297,14 @@ public class ZoneManager extends DocumentParser
 							}
 						}
 						if (checkId(zoneId))
+						{
 							_log.config(getClass().getSimpleName() + ": Caution: Zone (" + zoneId + ") from file: " + getCurrentFile().getName() + " overrides previos definition.");
+						}
 						
-						if (zoneName != null && !zoneName.isEmpty())
+						if ((zoneName != null) && !zoneName.isEmpty())
+						{
 							temp.setName(zoneName);
+						}
 						
 						addZone(zoneId, temp);
 						
@@ -331,6 +347,10 @@ public class ZoneManager extends DocumentParser
 		_log.info(getClass().getSimpleName() + ": Loaded " + _classZones.size() + " zone classes and " + getSize() + " zones in " + (started / 1000) + " seconds.");
 	}
 	
+	/**
+	 * Gets the size.
+	 * @return the size
+	 */
 	public int getSize()
 	{
 		int i = 0;
@@ -341,21 +361,28 @@ public class ZoneManager extends DocumentParser
 		return i;
 	}
 	
+	/**
+	 * Check id.
+	 * @param id the id
+	 * @return true, if successful
+	 */
 	public boolean checkId(int id)
 	{
 		for (Map<Integer, ? extends L2ZoneType> map : _classZones.values())
 		{
 			if (map.containsKey(id))
+			{
 				return true;
+			}
 		}
 		return false;
 	}
 	
 	/**
-	 * Add new zone
-	 * @param <T>
-	 * @param id
-	 * @param zone
+	 * Add new zone.
+	 * @param <T> the generic type
+	 * @param id the id
+	 * @param zone the zone
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends L2ZoneType> void addZone(Integer id, T zone)
@@ -368,7 +395,9 @@ public class ZoneManager extends DocumentParser
 			_classZones.put(zone.getClass(), map);
 		}
 		else
+		{
 			map.put(id, zone);
+		}
 	}
 	
 	/**
@@ -388,8 +417,8 @@ public class ZoneManager extends DocumentParser
 	}
 	
 	/**
-	 * Return all zones by class type
-	 * @param <T>
+	 * Return all zones by class type.
+	 * @param <T> the generic type
 	 * @param zoneType Zone class
 	 * @return Collection of zones
 	 */
@@ -400,9 +429,9 @@ public class ZoneManager extends DocumentParser
 	}
 	
 	/**
-	 * Get zone by ID
-	 * @param id
-	 * @return
+	 * Get zone by ID.
+	 * @param id the id
+	 * @return the zone by id
 	 * @see #getZoneById(int, Class)
 	 */
 	public L2ZoneType getZoneById(int id)
@@ -410,16 +439,18 @@ public class ZoneManager extends DocumentParser
 		for (Map<Integer, ? extends L2ZoneType> map : _classZones.values())
 		{
 			if (map.containsKey(id))
+			{
 				return map.get(id);
+			}
 		}
 		return null;
 	}
 	
 	/**
-	 * Get zone by ID and zone class
-	 * @param <T>
-	 * @param id
-	 * @param zoneType
+	 * Get zone by ID and zone class.
+	 * @param <T> the generic type
+	 * @param id the id
+	 * @param zoneType the zone type
 	 * @return zone
 	 */
 	@SuppressWarnings("unchecked")
@@ -429,8 +460,8 @@ public class ZoneManager extends DocumentParser
 	}
 	
 	/**
-	 * Returns all zones from where the object is located
-	 * @param object
+	 * Returns all zones from where the object is located.
+	 * @param object the object
 	 * @return zones
 	 */
 	public List<L2ZoneType> getZones(L2Object object)
@@ -439,22 +470,25 @@ public class ZoneManager extends DocumentParser
 	}
 	
 	/**
-	 * @param <T>
-	 * @param object
-	 * @param type
+	 * Gets the zone.
+	 * @param <T> the generic type
+	 * @param object the object
+	 * @param type the type
 	 * @return zone from where the object is located by type
 	 */
 	public <T extends L2ZoneType> T getZone(L2Object object, Class<T> type)
 	{
 		if (object == null)
+		{
 			return null;
+		}
 		return getZone(object.getX(), object.getY(), object.getZ(), type);
 	}
 	
 	/**
-	 * Returns all zones from given coordinates (plane)
-	 * @param x
-	 * @param y
+	 * Returns all zones from given coordinates (plane).
+	 * @param x the x
+	 * @param y the y
 	 * @return zones
 	 */
 	public List<L2ZoneType> getZones(int x, int y)
@@ -464,16 +498,18 @@ public class ZoneManager extends DocumentParser
 		for (L2ZoneType zone : region.getZones())
 		{
 			if (zone.isInsideZone(x, y))
+			{
 				temp.add(zone);
+			}
 		}
 		return temp;
 	}
 	
 	/**
-	 * Returns all zones from given coordinates
-	 * @param x
-	 * @param y
-	 * @param z
+	 * Returns all zones from given coordinates.
+	 * @param x the x
+	 * @param y the y
+	 * @param z the z
 	 * @return zones
 	 */
 	public List<L2ZoneType> getZones(int x, int y, int z)
@@ -483,17 +519,20 @@ public class ZoneManager extends DocumentParser
 		for (L2ZoneType zone : region.getZones())
 		{
 			if (zone.isInsideZone(x, y, z))
+			{
 				temp.add(zone);
+			}
 		}
 		return temp;
 	}
 	
 	/**
-	 * @param <T>
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param type
+	 * Gets the zone.
+	 * @param <T> the generic type
+	 * @param x the x
+	 * @param y the y
+	 * @param z the z
+	 * @param type the type
 	 * @return zone from given coordinates
 	 */
 	@SuppressWarnings("unchecked")
@@ -503,44 +542,64 @@ public class ZoneManager extends DocumentParser
 		for (L2ZoneType zone : region.getZones())
 		{
 			if (zone.isInsideZone(x, y, z) && type.isInstance(zone))
+			{
 				return (T) zone;
-		}
-		return null;
-	}
-	
-	public final L2ArenaZone getArena(L2Character character)
-	{
-		if (character == null)
-			return null;
-		
-		for (L2ZoneType temp : ZoneManager.getInstance().getZones(character.getX(), character.getY(), character.getZ()))
-		{
-			if (temp instanceof L2ArenaZone && temp.isCharacterInZone(character))
-				return ((L2ArenaZone) temp);
-		}
-		
-		return null;
-	}
-	
-	public final L2OlympiadStadiumZone getOlympiadStadium(L2Character character)
-	{
-		if (character == null)
-			return null;
-		
-		for (L2ZoneType temp : ZoneManager.getInstance().getZones(character.getX(), character.getY(), character.getZ()))
-		{
-			if (temp instanceof L2OlympiadStadiumZone && temp.isCharacterInZone(character))
-				return ((L2OlympiadStadiumZone) temp);
+			}
 		}
 		return null;
 	}
 	
 	/**
-	 * For testing purposes only
-	 * @param <T>
-	 * @param obj
-	 * @param type
-	 * @return
+	 * Gets the arena.
+	 * @param character the character
+	 * @return the arena
+	 */
+	public final L2ArenaZone getArena(L2Character character)
+	{
+		if (character == null)
+		{
+			return null;
+		}
+		
+		for (L2ZoneType temp : ZoneManager.getInstance().getZones(character.getX(), character.getY(), character.getZ()))
+		{
+			if ((temp instanceof L2ArenaZone) && temp.isCharacterInZone(character))
+			{
+				return ((L2ArenaZone) temp);
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Gets the olympiad stadium.
+	 * @param character the character
+	 * @return the olympiad stadium
+	 */
+	public final L2OlympiadStadiumZone getOlympiadStadium(L2Character character)
+	{
+		if (character == null)
+		{
+			return null;
+		}
+		
+		for (L2ZoneType temp : ZoneManager.getInstance().getZones(character.getX(), character.getY(), character.getZ()))
+		{
+			if ((temp instanceof L2OlympiadStadiumZone) && temp.isCharacterInZone(character))
+			{
+				return ((L2OlympiadStadiumZone) temp);
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * For testing purposes only.
+	 * @param <T> the generic type
+	 * @param obj the obj
+	 * @param type the type
+	 * @return the closest zone
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends L2ZoneType> T getClosestZone(L2Object obj, Class<T> type)
@@ -569,12 +628,14 @@ public class ZoneManager extends DocumentParser
 	public List<L2ItemInstance> getDebugItems()
 	{
 		if (_debugItems == null)
+		{
 			_debugItems = new ArrayList<>();
+		}
 		return _debugItems;
 	}
 	
 	/**
-	 * Remove all debug items from l2world
+	 * Remove all debug items from l2world.
 	 */
 	public void clearDebugItems()
 	{
@@ -585,15 +646,31 @@ public class ZoneManager extends DocumentParser
 			{
 				L2ItemInstance item = it.next();
 				if (item != null)
+				{
 					item.decayMe();
+				}
 				it.remove();
 			}
 		}
 	}
 	
+	/**
+	 * Gets the settings.
+	 * @param name the name
+	 * @return the settings
+	 */
 	public static AbstractZoneSettings getSettings(String name)
 	{
 		return _settings.get(name);
+	}
+	
+	/**
+	 * Gets the single instance of ZoneManager.
+	 * @return single instance of ZoneManager
+	 */
+	public static final ZoneManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

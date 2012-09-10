@@ -158,7 +158,7 @@ public class Quest extends ManagedScript
 		
 		private static Map<String, PlaySound> soundPackets = new HashMap<>();
 		
-		QuestSound(PlaySound playSound)
+		private QuestSound(PlaySound playSound)
 		{
 			_playSound = playSound;
 		}

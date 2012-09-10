@@ -48,15 +48,6 @@ public class GeoData
 	}
 	
 	/**
-	 * Gets the single instance of GeoData.
-	 * @return single instance of GeoData
-	 */
-	public static GeoData getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
-	/**
 	 * Gets the type.
 	 * @param x the x coordinate
 	 * @param y the y coordinate
@@ -112,8 +103,8 @@ public class GeoData
 	 */
 	public boolean canSeeTarget(L2Object cha, L2Object target)
 	{
-		//If geodata is off do simple check :]
-		//Don't allow casting on players on different dungeon levels etc
+		// If geodata is off do simple check :]
+		// Don't allow casting on players on different dungeon levels etc
 		return (Math.abs(target.getZ() - cha.getZ()) < 1000);
 	}
 	
@@ -179,7 +170,7 @@ public class GeoData
 	 */
 	public short getHeightAndNSWE(int x, int y, int z)
 	{
-		return (short)((z << 1) | 15);
+		return (short) ((z << 1) | 15);
 	}
 	
 	/**
@@ -221,7 +212,7 @@ public class GeoData
 	 */
 	public void addGeoDataBug(L2PcInstance gm, String comment)
 	{
-		//Do Nothing
+		// Do Nothing
 	}
 	
 	/**
@@ -254,6 +245,15 @@ public class GeoData
 	public boolean hasGeo(int x, int y)
 	{
 		return false;
+	}
+	
+	/**
+	 * Gets the single instance of GeoData.
+	 * @return single instance of GeoData
+	 */
+	public static GeoData getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder
