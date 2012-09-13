@@ -83,6 +83,7 @@ public class L2ClanMember
 		{
 			throw new IllegalArgumentException("Cannot create a Clan Member if player has a null clan.");
 		}
+		_player = player;
 		_clan = clan;
 		_name = player.getName();
 		_level = player.getLevel();
