@@ -98,6 +98,13 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 		}
 		else if (command.startsWith("LearnSubClassSkill"))
 		{
+			if (!canTransform(player))
+			{
+				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				html.setFile(player.getHtmlPrefix(), htmlFolder + "master_transformation004.htm");
+				player.sendPacket(html);
+				return;
+			}
 			if (player.isSubClassActive())
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
