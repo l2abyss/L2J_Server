@@ -22,10 +22,13 @@ import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.ai.L2SummonAI;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.handler.IItemHandler;
+import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2WorldRegion;
+import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.actor.L2Attackable.AggroInfo;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
@@ -41,6 +44,7 @@ import com.l2jserver.gameserver.model.itemcontainer.PetInventory;
 import com.l2jserver.gameserver.model.items.L2EtcItem;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.type.L2ActionType;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
@@ -68,14 +72,13 @@ public abstract class L2Summon extends L2Playable
 	private boolean _follow = true;
 	private boolean _previousFollowStatus = true;
 	
-	private int _chargedSoulShot;
-	private int _chargedSpiritShot;
-	
 	//  /!\ BLACK MAGIC /!\
 	// we dont have walk speed in pet data so for now use runspd / 3
 	public static final int WALK_SPEED_MULTIPLIER = 3;
 	
 	public boolean _restoreSummon = true;
+	
+	private int _shotsMask = 0;
 	
 	public class AIAccessor extends L2Character.AIAccessor
 	{
@@ -293,16 +296,6 @@ public abstract class L2Summon extends L2Playable
 		return 1;
 	}
 	
-	public void setChargedSoulShot(int shotType)
-	{
-		_chargedSoulShot = shotType;
-	}
-	
-	public void setChargedSpiritShot(int shotType)
-	{
-		_chargedSpiritShot = shotType;
-	}
-	
 	public void followOwner()
 	{
 		setFollowStatus(true);
@@ -468,16 +461,6 @@ public abstract class L2Summon extends L2Playable
 	public boolean isAutoAttackable(L2Character attacker)
 	{
 		return _owner.isAutoAttackable(attacker);
-	}
-	
-	public int getChargedSoulShot()
-	{
-		return _chargedSoulShot;
-	}
-	
-	public int getChargedSpiritShot()
-	{
-		return _chargedSpiritShot;
 	}
 	
 	public int getControlObjectId()
@@ -943,5 +926,66 @@ public abstract class L2Summon extends L2Playable
 	public boolean isSummon()
 	{
 		return true;
+	}
+		
+	@Override
+	public boolean isChargedShot(ShotType type)
+	{
+		return (_shotsMask & type.getMask()) == type.getMask();
+	}
+	
+	@Override
+	public void setChargedShot(ShotType type, boolean charged)
+	{
+		if (charged)
+		{
+			_shotsMask |= type.getMask();
+		}
+		else
+		{
+			_shotsMask &= ~ type.getMask();
+		}
+	}
+	
+	@Override
+	public void rechargeShots(boolean physical, boolean magic)
+	{
+		L2ItemInstance item;
+		IItemHandler handler;
+		
+		if (getOwner().getAutoSoulShot() == null || getOwner().getAutoSoulShot().isEmpty())
+			return;
+		
+		for (int itemId : getOwner().getAutoSoulShot())
+		{
+			item = getInventory().getItemByItemId(itemId);
+			
+			if (item != null)
+			{
+				if (magic)
+				{
+					if (item.getItem().getDefaultAction() == L2ActionType.summon_spiritshot)
+					{
+						handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
+						if (handler != null)
+							handler.useItem(getOwner(), item, false);
+					}
+				}
+				
+				if (physical)
+				{
+					if (item.getItem().getDefaultAction() == L2ActionType.summon_soulshot)
+					{
+						handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
+						if (handler != null)
+							handler.useItem(getOwner(), item, false);
+					}
+				}
+			}
+			else
+			{
+				getOwner().removeAutoSoulShot(itemId);
+			}
+		}
 	}
 }

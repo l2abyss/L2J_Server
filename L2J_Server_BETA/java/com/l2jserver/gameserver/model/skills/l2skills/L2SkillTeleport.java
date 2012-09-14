@@ -21,6 +21,7 @@ import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.PcCondOverride;
+import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -55,6 +56,8 @@ public class L2SkillTeleport extends L2Skill
 	@Override
 	public void useSkill(L2Character activeChar, L2Object[] targets)
 	{	
+		boolean bss = isMagic() && activeChar.isChargedShot(ShotType.BLESSED_SPIRITSHOTS);
+		
 		if (activeChar.isPlayer())
 		{
 			// Thanks nbd
@@ -165,7 +168,7 @@ public class L2SkillTeleport extends L2Skill
 				}
 			}
 			
-			activeChar.spsUncharge(this);
+			activeChar.setChargedShot(bss ? ShotType.BLESSED_SPIRITSHOTS : ShotType.SPIRITSHOTS, false);
 		}
 		catch (Exception e)
 		{

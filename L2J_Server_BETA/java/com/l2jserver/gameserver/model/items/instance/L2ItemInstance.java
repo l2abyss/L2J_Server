@@ -45,6 +45,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.NullKnownList;
@@ -152,20 +153,7 @@ public final class L2ItemInstance extends L2Object
 	private long _dropTime;
 	
 	private boolean _published = false;
-	
-	public static final int CHARGED_NONE = 0;
-	public static final int CHARGED_SOULSHOT = 1;
-	public static final int CHARGED_SPIRITSHOT = 1;
-	// public static final int CHARGED_BLESSED_SOULSHOT = 2; // It's a really exists? ;-)
-	public static final int CHARGED_BLESSED_SPIRITSHOT = 2;
-	
-	/** Item charged with SoulShot (type of SoulShot) */
-	private int _chargedSoulshot = CHARGED_NONE;
-	/** Item charged with SpiritShot (type of SpiritShot) */
-	private int _chargedSpiritshot = CHARGED_NONE;
-	
-	private boolean _chargedFishtshot = false;
-	
+		
 	private boolean _protected;
 	
 	public static final int UNCHANGED = 0;
@@ -184,6 +172,8 @@ public final class L2ItemInstance extends L2Object
 	public ScheduledFuture<?> _lifeTimeTask;
 	
 	private final DropProtection _dropProtection = new DropProtection();
+	
+	private int _shotsMask = 0;
 	
 	/**
 	 * Constructor of the L2ItemInstance from the objectId and the itemId.
@@ -1300,7 +1290,7 @@ public final class L2ItemInstance extends L2Object
 					InventoryUpdate iu = new InventoryUpdate();
 					for (L2ItemInstance item : unequiped)
 					{
-						player.checkSShotsMatch(null, item);
+						item.unChargeAllShots();
 						iu.addModifiedItem(item);
 					}
 					player.sendPacket(iu);
@@ -1363,52 +1353,6 @@ public final class L2ItemInstance extends L2Object
 	public boolean isAutoAttackable(L2Character attacker)
 	{
 		return false;
-	}
-	
-	/**
-	 * Returns the type of charge with SoulShot of the item.
-	 * @return int (CHARGED_NONE, CHARGED_SOULSHOT)
-	 */
-	public int getChargedSoulshot()
-	{
-		return _chargedSoulshot;
-	}
-	
-	/**
-	 * Returns the type of charge with SpiritShot of the item
-	 * @return int (CHARGED_NONE, CHARGED_SPIRITSHOT, CHARGED_BLESSED_SPIRITSHOT)
-	 */
-	public int getChargedSpiritshot()
-	{
-		return _chargedSpiritshot;
-	}
-	
-	public boolean getChargedFishshot()
-	{
-		return _chargedFishtshot;
-	}
-	
-	/**
-	 * Sets the type of charge with SoulShot of the item
-	 * @param type : int (CHARGED_NONE, CHARGED_SOULSHOT)
-	 */
-	public void setChargedSoulshot(int type)
-	{
-		_chargedSoulshot = type;
-	}
-	
-	/**
-	 * Sets the type of charge with SpiritShot of the item
-	 * @param type : int (CHARGED_NONE, CHARGED_SPIRITSHOT, CHARGED_BLESSED_SPIRITSHOT)
-	 */
-	public void setChargedSpiritshot(int type)
-	{
-		_chargedSpiritshot = type;
-	}
-	
-	public void setChargedFishshot(boolean type)
-	{
-		_chargedFishtshot = type;
 	}
 	
 	/**
@@ -1815,7 +1759,7 @@ public final class L2ItemInstance extends L2Object
 				InventoryUpdate iu = new InventoryUpdate();
 				for (L2ItemInstance item : unequiped)
 				{
-					player.checkSShotsMatch(null, item);
+					item.unChargeAllShots();
 					iu.addModifiedItem(item);
 				}
 				player.sendPacket(iu);
@@ -2226,5 +2170,29 @@ public final class L2ItemInstance extends L2Object
 		html.setHtml(content);
 		html.replace("%itemId%", String.valueOf(getObjectId()));
 		activeChar.sendPacket(html);
+	}
+		
+	@Override
+	public boolean isChargedShot(ShotType type)
+	{
+		return (_shotsMask & type.getMask()) == type.getMask();
+	}
+	
+	@Override
+	public void setChargedShot(ShotType type, boolean charged)
+	{
+		if (charged)
+		{
+			_shotsMask |= type.getMask();
+		}
+		else
+		{
+			_shotsMask &= ~ type.getMask();
+		}
+	}
+	
+	public void unChargeAllShots()
+	{
+		_shotsMask = 0;
 	}
 }

@@ -807,10 +807,38 @@ public abstract class L2Object
 	/**
 	 * Check if the object is in the given zone Id.
 	 * @param zone the zone Id to check
-	 * @return {code true} if the object is in that zone Id
+	 * @return {@code true} if the object is in that zone Id
 	 */
 	public boolean isInsideZone(ZoneId zone)
 	{
 		return false;
+	}
+	
+	/**
+	 * Check if current object has charged shot.
+	 * @param type of the shot to be checked.
+	 * @return {@code true} if the object has charged shot
+	 */
+	public boolean isChargedShot(ShotType type)
+	{
+		return false;
+	}
+	
+	/**
+	 * Charging shot into the current object.
+	 * @param type of the shot to be charged.
+	 * @param charged
+	 */
+	public void setChargedShot(ShotType type, boolean charged)
+	{	
+	}
+	
+	/**
+	 * Try to recharge a shot.
+	 * @param physical skill are using Soul shots.
+	 * @param magical skill are using Spirit shots.
+	 */
+	public void rechargeShots(boolean physical, boolean magical)
+	{
 	}
 }

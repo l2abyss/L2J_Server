@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.effects.L2Effect;
@@ -53,7 +54,7 @@ public class L2SkillChargeDmg extends L2Skill
 			// thanks Diego Vargas of L2Guru: 70*((0.8+0.201*No.Charges) * (PATK+POWER)) / PDEF
 			modifier = 0.8 + 0.201 * (getNumCharges() + caster.getActingPlayer().getCharges());
 		}
-		boolean soul = caster.isSoulshotCharged(this);
+		boolean ss = isPhysical() && caster.isChargedShot(ShotType.SOULSHOTS);
 		
 		for (L2Character target: (L2Character[]) targets)
 		{
@@ -90,7 +91,7 @@ public class L2SkillChargeDmg extends L2Skill
 			if (getBaseCritRate() > 0 && !isStaticDamage())
 				crit = Formulas.calcCrit(this.getBaseCritRate() * 10 * BaseStats.STR.calcBonus(caster), true, target);
 			// damage calculation, crit is static 2x
-			double damage = isStaticDamage() ? getPower() : Formulas.calcPhysDam(caster, target, this, shld, false, false, soul);
+			double damage = isStaticDamage() ? getPower() : Formulas.calcPhysDam(caster, target, this, shld, false, false, ss);
 			if (crit)
 				damage *= 2;
 			
@@ -186,6 +187,7 @@ public class L2SkillChargeDmg extends L2Skill
 			getEffectsSelf(caster);
 		}
 		
-		caster.ssUncharge(this);
+		// Consume shot
+		caster.setChargedShot(ShotType.SOULSHOTS, false);
 	}
 }

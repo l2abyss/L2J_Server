@@ -717,18 +717,7 @@ public final class Formulas
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
 		damage += calcValakasTrait(attacker, target, skill);
-		if (attacker.isNpc())
-		{
-			if (((L2Npc) attacker)._soulshotcharged)
-			{
-				ss = true;
-			}
-			else
-			{
-				ss = false;
-			}
-			((L2Npc) attacker)._soulshotcharged = false;
-		}
+		
 		// Def bonusses in PvP fight
 		if (isPvP)
 		{
@@ -998,19 +987,6 @@ public final class Formulas
 		final boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
 		double mAtk = attacker.getMAtk(target, skill);
 		double mDef = target.getMDef(attacker, skill);
-		// AI SpiritShot
-		if (attacker.isNpc())
-		{
-			if (((L2Npc) attacker)._spiritshotcharged)
-			{
-				ss = true;
-			}
-			else
-			{
-				ss = false;
-			}
-			((L2Npc) attacker)._spiritshotcharged = false;
-		}
 		// --------------------------------
 		// Pvp bonuses for def
 		if (isPvP)
@@ -2376,19 +2352,6 @@ public final class Formulas
 	
 	public static double calcManaDam(L2Character attacker, L2Character target, L2Skill skill, boolean ss, boolean bss)
 	{
-		// AI SpiritShot
-		if (attacker.isNpc())
-		{
-			if (((L2Npc) attacker)._spiritshotcharged)
-			{
-				ss = true;
-			}
-			else
-			{
-				ss = false;
-			}
-			((L2Npc) attacker)._spiritshotcharged = false;
-		}
 		// Mana Burn = (SQR(M.Atk)*Power*(Target Max MP/97))/M.Def
 		double mAtk = attacker.getMAtk(target, skill);
 		double mDef = target.getMDef(attacker, skill);

@@ -186,8 +186,7 @@ public final class RequestDropItem extends L2GameClientPacket
 			InventoryUpdate iu = new InventoryUpdate();
 			for (L2ItemInstance itm : unequiped)
 			{
-				activeChar.checkSShotsMatch(null, itm);
-				
+				itm.unChargeAllShots();
 				iu.addModifiedItem(itm);
 			}
 			activeChar.sendPacket(iu);

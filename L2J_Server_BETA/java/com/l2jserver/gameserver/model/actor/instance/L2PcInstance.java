@@ -129,6 +129,7 @@ import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.PartyMatchWaitingList;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.ShortCuts;
+import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.TerritoryWard;
 import com.l2jserver.gameserver.model.TimeStamp;
 import com.l2jserver.gameserver.model.TradeList;
@@ -2461,22 +2462,6 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	public void checkSShotsMatch(L2ItemInstance equipped, L2ItemInstance unequipped)
-	{
-		if (unequipped == null)
-			return;
-		
-		unequipped.setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
-		unequipped.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
-		
-		// on retail auto shots never disabled on uneqip
-		/*if (unequipped.getItem().getType2() == L2Item.TYPE2_WEAPON &&
-				(equipped == null ? true : equipped.getItem().getItemGradeSPlus() != unequipped.getItem().getItemGradeSPlus()))
-		{
-			disableAutoShotByCrystalType(unequipped.getItem().getItemGradeSPlus());
-		}*/
-	}
-	
 	public void useEquippableItem(L2ItemInstance item, boolean abortAttack)
 	{
 		// Equip or unEquip
@@ -2484,11 +2469,6 @@ public final class L2PcInstance extends L2Playable
 		final boolean isEquiped = item.isEquipped();
 		final int oldInvLimit = getInventoryLimit();
 		SystemMessage sm = null;
-		if ((item.getItem().getBodyPart() & L2Item.SLOT_MULTI_ALLWEAPON) != 0)
-		{
-			L2ItemInstance old = getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
-			checkSShotsMatch(item, old);
-		}
 		
 		if(!fireEquipmentListeners(isEquiped,item))
 		{
@@ -2540,7 +2520,7 @@ public final class L2PcInstance extends L2Playable
 				
 				if ((item.getItem().getBodyPart() & L2Item.SLOT_MULTI_ALLWEAPON) != 0)
 				{
-					rechargeAutoSoulShot(true, true, false);
+					rechargeShots(true, true);
 				}
 			}
 			else
@@ -9821,7 +9801,8 @@ public final class L2PcInstance extends L2Playable
 		return _activeSoulShots;
 	}
 	
-	public void rechargeAutoSoulShot(boolean physical, boolean magic, boolean summon)
+	@Override
+	public void rechargeShots(boolean physical, boolean magic)
 	{
 		L2ItemInstance item;
 		IItemHandler handler;
@@ -9837,7 +9818,7 @@ public final class L2PcInstance extends L2Playable
 			{
 				if (magic)
 				{
-					if (item.getItem().getDefaultAction() == (summon ? L2ActionType.summon_spiritshot : L2ActionType.spiritshot))
+					if (item.getItem().getDefaultAction() == L2ActionType.spiritshot)
 					{
 						handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
 						if (handler != null)
@@ -9847,7 +9828,7 @@ public final class L2PcInstance extends L2Playable
 				
 				if (physical)
 				{
-					if (item.getItem().getDefaultAction() == (summon ? L2ActionType.summon_soulshot : L2ActionType.soulshot))
+					if (item.getItem().getDefaultAction() == L2ActionType.soulshot)
 					{
 						handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
 						if (handler != null)
@@ -15199,6 +15180,23 @@ public final class L2PcInstance extends L2Playable
 	public boolean isPlayer()
 	{
 		return true;
+	}
+	
+	@Override
+	public boolean isChargedShot(ShotType type)
+	{
+		L2ItemInstance weapon = getActiveWeaponInstance();
+		return weapon != null && weapon.isChargedShot(type);
+	}
+	
+	@Override
+	public void setChargedShot(ShotType type, boolean charged)
+	{
+		L2ItemInstance weapon = getActiveWeaponInstance();
+		if (weapon != null)
+		{
+			weapon.setChargedShot(type, charged);
+		}
 	}
 	
 	// LISTENERS

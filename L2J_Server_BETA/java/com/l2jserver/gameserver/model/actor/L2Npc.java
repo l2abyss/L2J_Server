@@ -39,6 +39,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
+import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.actor.instance.L2ClanHallManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoormenInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FestivalGuideInstance;
@@ -131,12 +132,8 @@ public class L2Npc extends L2Character
 	private double _currentCollisionHeight; // used for npc grow effect skills
 	private double _currentCollisionRadius; // used for npc grow effect skills
 	
-	public boolean _soulshotcharged = false;
-	public boolean _spiritshotcharged = false;
 	private int _soulshotamount = 0;
 	private int _spiritshotamount = 0;
-	public boolean _ssrecharged = true;
-	public boolean _spsrecharged = true;
 	private int _displayEffect = 0;
 	
 	/**
@@ -145,6 +142,8 @@ public class L2Npc extends L2Character
 	private L2Character _summoner = null;
 	
 	private final L2NpcAIData _staticAIData = getTemplate().getAIDataStatic();
+	
+	private int _shotsMask = 0;
 	
 	//AI Recall
 	public int getSoulShot()
@@ -165,56 +164,6 @@ public class L2Npc extends L2Character
 	public int getSpiritShotChance()
 	{
 		return _staticAIData.getSpiritShotChance();
-	}
-	
-	public boolean useSoulShot()
-	{
-		if (_soulshotcharged)
-			return true;
-		if (_ssrecharged)
-		{
-			_soulshotamount = getSoulShot();
-			_ssrecharged = false;
-		}
-		else if (_soulshotamount > 0)
-		{
-			if (Rnd.get(100) <= getSoulShotChance())
-			{
-				_soulshotamount = _soulshotamount - 1;
-				Broadcast.toSelfAndKnownPlayersInRadius(this, new MagicSkillUse(this, this, 2154, 1, 0, 0), 600);
-				_soulshotcharged = true;
-			}
-		}
-		else
-			return false;
-		
-		return _soulshotcharged;
-	}
-	
-	public boolean useSpiritShot()
-	{
-		if (_spiritshotcharged)
-			return true;
-		
-		//_spiritshotcharged = false;
-		if (_spsrecharged)
-		{
-			_spiritshotamount = getSpiritShot();
-			_spsrecharged = false;
-		}
-		else if (_spiritshotamount > 0)
-		{
-			if (Rnd.get(100) <= getSpiritShotChance())
-			{
-				_spiritshotamount = _spiritshotamount - 1;
-				Broadcast.toSelfAndKnownPlayersInRadius(this, new MagicSkillUse(this, this, 2061, 1, 0, 0), 600);
-				_spiritshotcharged = true;
-			}
-		}
-		else
-			return false;
-		
-		return _spiritshotcharged;
 	}
 	
 	public int getEnemyRange()
@@ -1721,5 +1670,60 @@ public class L2Npc extends L2Character
 	public boolean isWalker()
 	{
 		return WalkingManager.getInstance().isRegistered(this);
+	}
+		
+	@Override
+	public boolean isChargedShot(ShotType type)
+	{
+		return (_shotsMask & type.getMask()) == type.getMask();
+	}
+	
+	@Override
+	public void setChargedShot(ShotType type, boolean charged)
+	{
+		if (charged)
+		{
+			_shotsMask |= type.getMask();
+		}
+		else
+		{
+			_shotsMask &= ~ type.getMask();
+		}
+	}
+	
+	@Override
+	public void rechargeShots(boolean physical, boolean magic)
+	{
+		if (_soulshotamount > 0 || _spiritshotamount > 0)
+		{
+			if (physical)
+			{
+				if (_soulshotamount == 0)
+				{
+					return;
+				}
+				else if (Rnd.get(100) > getSoulShotChance())
+				{
+					return;
+				}
+				_soulshotamount--;
+				Broadcast.toSelfAndKnownPlayersInRadius(this, new MagicSkillUse(this, this, 2154, 1, 0, 0), 600);
+				setChargedShot(ShotType.SOULSHOTS, true);
+			}
+			if (magic)
+			{
+				if (_spiritshotamount == 0)
+				{
+					return;
+				}
+				else if (Rnd.get(100) > getSpiritShotChance())
+				{
+					return;
+				}
+				_spiritshotamount--;
+				Broadcast.toSelfAndKnownPlayersInRadius(this, new MagicSkillUse(this, this, 2061, 1, 0, 0), 600);
+				setChargedShot(ShotType.SPIRITSHOTS, true);
+			}
+		}
 	}
 }

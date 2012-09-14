@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -56,6 +57,10 @@ public class L2SkillDrain extends L2Skill
 			return;
 		}
 		
+		boolean ss = isPhysical() && activeChar.isChargedShot(ShotType.SOULSHOTS);
+		boolean sps = isMagic() && activeChar.isChargedShot(ShotType.SPIRITSHOTS);
+		boolean bss = isMagic() && activeChar.isChargedShot(ShotType.BLESSED_SPIRITSHOTS);
+		
 		for (L2Character target : (L2Character[]) targets)
 		{
 			if (target.isAlikeDead() && (getTargetType() != L2TargetType.TARGET_CORPSE_MOB))
@@ -70,7 +75,7 @@ public class L2SkillDrain extends L2Skill
 			
 			boolean mcrit = Formulas.calcMCrit(activeChar.getMCriticalHit(target, this));
 			byte shld = Formulas.calcShldUse(activeChar, target, this);
-			int damage = isStaticDamage() ? (int) getPower() : (int) Formulas.calcMagicDam(activeChar, target, this, shld, activeChar.isSpiritshotCharged(this), activeChar.isBlessedSpiritshotCharged(this), mcrit);
+			int damage = isStaticDamage() ? (int) getPower() : (int) Formulas.calcMagicDam(activeChar, target, this, shld, sps, bss, mcrit);
 			
 			int _drain = 0;
 			int _cp = (int) target.getCurrentCp();
@@ -148,7 +153,7 @@ public class L2SkillDrain extends L2Skill
 					{
 						// activate attacked effects, if any
 						target.stopSkillEffects(getId());
-						if (Formulas.calcSkillSuccess(activeChar, target, this, shld, false, activeChar.isSpiritshotCharged(this), activeChar.isBlessedSpiritshotCharged(this)))
+						if (Formulas.calcSkillSuccess(activeChar, target, this, shld, ss, sps, bss))
 						{
 							getEffects(activeChar, target);
 						}
@@ -180,7 +185,8 @@ public class L2SkillDrain extends L2Skill
 		}
 		// cast self effect if any
 		getEffectsSelf(activeChar);
-		activeChar.spsUncharge(this);
+		// Consume shot
+		activeChar.setChargedShot(bss ? ShotType.BLESSED_SPIRITSHOTS : ShotType.SPIRITSHOTS, false);
 	}
 	
 	public void useCubicSkill(L2CubicInstance activeCubic, L2Object[] targets)

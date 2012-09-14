@@ -97,7 +97,9 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 							sm.addItemName(item);// Update Message by rocknow
 							activeChar.sendPacket(sm);
 							
-							activeChar.rechargeAutoSoulShot(true, true, true);
+							activeChar.rechargeShots(true, true);
+							activeChar.getPet().rechargeShots(true, true);
+							
 						}
 						else
 							activeChar.sendPacket(SystemMessageId.NO_SERVITOR_CANNOT_AUTOMATE_USE);
@@ -126,7 +128,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 						sm.addItemName(item);// Update Message by rocknow
 						activeChar.sendPacket(sm);
 						
-						activeChar.rechargeAutoSoulShot(true, true, false);
+						activeChar.rechargeShots(true, true);
 					}
 				}
 			}

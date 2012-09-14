@@ -130,20 +130,6 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		if (_count > itemToRemove.getCount())
 			count = itemToRemove.getCount();
 		
-		if (itemToRemove.isEquipped())
-		{
-			L2ItemInstance[] unequiped = activeChar.getInventory().unEquipItemInSlotAndRecord(itemToRemove.getLocationSlot());
-			InventoryUpdate iu = new InventoryUpdate();
-			for (L2ItemInstance item : unequiped)
-			{
-				activeChar.checkSShotsMatch(null, item);
-				
-				iu.addModifiedItem(item);
-			}
-			activeChar.sendPacket(iu);
-			activeChar.broadcastUserInfo();
-		}
-		
 		if (itemToRemove.getItem().isPetItem())
 		{
 			if (activeChar.getPet() != null && activeChar.getPet().getControlObjectId() == _objectId)

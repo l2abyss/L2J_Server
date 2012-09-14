@@ -890,6 +890,14 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	}
 	
 	/**
+	 * @return Returns true to set physical skills.
+	 */
+	public final boolean isPhysical()
+	{
+		return _magic == 0;
+	}
+	
+	/**
 	 * @return Returns true to set magic skills.
 	 */
 	public final boolean isMagic()

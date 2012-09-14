@@ -63,6 +63,7 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.PcCondOverride;
+import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcWalkerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -862,10 +863,7 @@ public abstract class L2Character extends L2Object
 		}
 		
 		stopEffectsOnAction();
-		
-		// Get the active weapon instance (always equipped in the right hand)
-		L2ItemInstance weaponInst = getActiveWeaponInstance();
-		
+				
 		// Get the active weapon item corresponding to the active weapon instance (always equipped in the right hand)
 		L2Weapon weaponItem = getActiveWeaponItem();
 		
@@ -1015,25 +1013,11 @@ public abstract class L2Character extends L2Object
 		if (Config.ALT_GAME_TIREDNESS)
 			setCurrentCp(getCurrentCp() - 10);
 		
-		// Recharge any active auto soulshot tasks for player (or player's summon if one exists).
-		if (isPlayer() || isSummon())
-			getActingPlayer().rechargeAutoSoulShot(true, false, isSummon());
+		// Recharge any active auto soulshot tasks for current L2Character instance.
+		rechargeShots(true, false);
 		
 		// Verify if soulshots are charged.
-		boolean wasSSCharged;
-		
-		if (isSummon() && !(isPet() && weaponInst != null))
-			wasSSCharged = (((L2Summon) this).getChargedSoulShot() != L2ItemInstance.CHARGED_NONE);
-		else
-			wasSSCharged = (weaponInst != null && weaponInst.getChargedSoulshot() != L2ItemInstance.CHARGED_NONE);
-		
-		if (isL2Attackable())
-		{
-			if (((L2Npc) this).useSoulShot())
-			{
-				wasSSCharged = true;
-			}
-		}
+		boolean wasSSCharged = isChargedShot(ShotType.SOULSHOTS);
 		
 		// Get the Attack Speed of the L2Character (delay (in milliseconds) before next attack)
 		int timeAtk = calculateTimeBetweenAttacks(target, weaponItem);
@@ -1100,10 +1084,7 @@ public abstract class L2Character extends L2Object
 			 */
 
 			// If we didn't miss the hit, discharge the shoulshots, if any
-			if (isSummon() && !(isPet() && weaponInst != null))
-				((L2Summon) this).setChargedSoulShot(L2ItemInstance.CHARGED_NONE);
-			else if (weaponInst != null)
-				weaponInst.setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
+			setChargedShot(ShotType.SOULSHOTS, false);
 			
 			if (player != null)
 			{
@@ -1282,18 +1263,7 @@ public abstract class L2Character extends L2Object
 		}
 		
 		// Create a new hit task with Medium priority
-		if (isL2Attackable())
-		{
-			if (((L2Attackable) this)._soulshotcharged)
-			{
-				// Create a new hit task with Medium priority
-				ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage1, crit1, miss1, true, shld1), sAtk);
-			}
-			else
-				ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage1, crit1, miss1, false, shld1), sAtk);
-		}
-		else
-			ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage1, crit1, miss1, attack.soulshot, shld1), sAtk);
+		ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage1, crit1, miss1, attack.soulshot, shld1), sAtk);
 		
 		// Calculate and set the disable delay of the bow in function of the Attack Speed
 		_disableCrossBowAttackEndTime = (sAtk + reuse) / GameTimeController.MILLIS_IN_TICK + GameTimeController.getGameTicks();
@@ -1364,33 +1334,13 @@ public abstract class L2Character extends L2Object
 			damage2 /= 2;
 		}
 		
-		if (isL2Attackable())
-		{
-			if (((L2Attackable) this)._soulshotcharged)
-			{
-				
-				// Create a new hit task with Medium priority for hit 1
-				ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage1, crit1, miss1, true, shld1), sAtk / 2);
-				
-				// Create a new hit task with Medium priority for hit 2 with a higher delay
-				ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage2, crit2, miss2, true, shld2), sAtk);
-			}
-			else
-			{
-				ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage1, crit1, miss1, false, shld1), sAtk / 2);
-				
-				// Create a new hit task with Medium priority for hit 2 with a higher delay
-				ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage2, crit2, miss2, false, shld2), sAtk);
-			}
-		}
-		else
-		{
-			// Create a new hit task with Medium priority for hit 1
-			ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage1, crit1, miss1, attack.soulshot, shld1), sAtk / 2);
-			
-			// Create a new hit task with Medium priority for hit 2 with a higher delay
-			ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage2, crit2, miss2, attack.soulshot, shld2), sAtk);
-		}
+		
+		// Create a new hit task with Medium priority for hit 1
+		ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage1, crit1, miss1, attack.soulshot, shld1), sAtk / 2);
+		
+		// Create a new hit task with Medium priority for hit 2 with a higher delay
+		ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage2, crit2, miss2, attack.soulshot, shld2), sAtk);
+		
 		
 		// Add those hits to the Server-Client packet Attack
 		attack.hit(attack.createHit(target, damage1, miss1, crit1, shld1), attack.createHit(target, damage2, miss2, crit2, shld2));
@@ -1554,18 +1504,7 @@ public abstract class L2Character extends L2Object
 		}
 		
 		// Create a new hit task with Medium priority
-		if (isL2Attackable())
-		{
-			if (((L2Attackable) this)._soulshotcharged)
-			{
-				ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage1, crit1, miss1, true, shld1), sAtk);
-			}
-			else
-				ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage1, crit1, miss1, false, shld1), sAtk);
-			
-		}
-		else
-			ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage1, crit1, miss1, attack.soulshot, shld1), sAtk);
+		ThreadPoolManager.getInstance().scheduleAi(new HitTask(target, damage1, crit1, miss1, attack.soulshot, shld1), sAtk);
 		
 		// Add this hit to the Server-Client packet Attack
 		attack.hit(attack.createHit(target, damage1, miss1, crit1, shld1));
@@ -1651,17 +1590,15 @@ public abstract class L2Character extends L2Object
 			}
 			return;
 		}
-
+		
 		// Override casting type
 		if (skill.isSimultaneousCast() && !simultaneously)
 			simultaneously = true;
 		
 		stopEffectsOnAction();
 		
-		//Recharge AutoSoulShot
-		if (isPlayer() || isSummon())
-			getActingPlayer().rechargeAutoSoulShot(skill.useSoulShot(), skill.useSpiritShot(), isSummon());
-				
+		rechargeShots(skill.useSoulShot(), skill.useSpiritShot());
+		
 		// Set the target of the skill in function of Skill Type and Target Type
 		L2Character target = null;
 		// Get all possible targets of the skill in a table in function of the skill target type
@@ -1810,34 +1747,12 @@ public abstract class L2Character extends L2Object
 				coolTime = Formulas.calcAtkSpd(this, skill, coolTime);
 		}
 		
-		int shotSave = L2ItemInstance.CHARGED_NONE;
-		
 		// Calculate altered Cast Speed due to BSpS/SpS
-		L2ItemInstance weaponInst = getActiveWeaponInstance();
-		if (weaponInst != null)
+		if (skill.isMagic() && !effectWhileCasting)
 		{
-			if (skill.isMagic() && !effectWhileCasting)
+			if (isChargedShot(ShotType.SPIRITSHOTS) || isChargedShot(ShotType.BLESSED_SPIRITSHOTS))
 			{
-				if (weaponInst.getChargedSpiritshot() != L2ItemInstance.CHARGED_NONE)
-				{
-					// Using SPS/BSPS Casting Time of Magic Skills is reduced in 40%
-					hitTime = (int) (0.60 * hitTime);
-					coolTime = (int) (0.60 * coolTime);
-				}
-			}
-			
-			// Save shots value for repeats
-			if (skill.useSoulShot())
-				shotSave = weaponInst.getChargedSoulshot();
-			else if (skill.useSpiritShot())
-				shotSave = weaponInst.getChargedSpiritshot();
-		}
-		
-		if (isNpc())
-		{
-			// Using SPS/BSPS Casting Time of Magic Skills is reduced in 40%
-			if (((L2Npc) this).useSpiritShot())
-			{
+				// Using SPS/BSPS Casting Time of Magic Skills is reduced in 40%
 				hitTime = (int) (0.60 * hitTime);
 				coolTime = (int) (0.60 * coolTime);
 			}
@@ -1851,7 +1766,9 @@ public abstract class L2Character extends L2Object
 		}
 		// if basic hitTime is higher than 500 than the min hitTime is 500
 		else if (skill.getHitTime() >= 500 && hitTime < 500)
+		{
 			hitTime = 500;
+		}
 		
 		// queue herbs and potions
 		if (isCastingSimultaneouslyNow() && simultaneously)
@@ -2009,7 +1926,7 @@ public abstract class L2Character extends L2Object
 		if (skill.getFlyType() != null)
 			ThreadPoolManager.getInstance().scheduleEffect(new FlyToLocationTask(this, target, skill), 50);
 		
-		MagicUseTask mut = new MagicUseTask(targets, skill, hitTime, coolTime, simultaneously, shotSave);
+		MagicUseTask mut = new MagicUseTask(targets, skill, hitTime, coolTime, simultaneously);
 		
 		// launch the magic in hitTime milliseconds
 		if (hitTime > 410)
@@ -2939,9 +2856,8 @@ public abstract class L2Character extends L2Object
 		int coolTime;
 		int phase;
 		boolean simultaneously;
-		int shots;
 		
-		public MagicUseTask(L2Object[] tgts, L2Skill s, int hit, int coolT, boolean simultaneous, int shot)
+		public MagicUseTask(L2Object[] tgts, L2Skill s, int hit, int coolT, boolean simultaneous)
 		{
 			targets = tgts;
 			skill = s;
@@ -2950,7 +2866,6 @@ public abstract class L2Character extends L2Object
 			hitTime = hit;
 			coolTime = coolT;
 			simultaneously = simultaneous;
-			shots = shot;
 		}
 		
 		@Override
@@ -6484,9 +6399,9 @@ public abstract class L2Character extends L2Object
 				if (weaponInst != null)
 				{
 					if (mut.skill.useSoulShot())
-						weaponInst.setChargedSoulshot(mut.shots);
+						setChargedShot(ShotType.SOULSHOTS, true);
 					else if (mut.skill.useSpiritShot())
-						weaponInst.setChargedSpiritshot(mut.shots);
+						setChargedShot(ShotType.SPIRITSHOTS, true);
 				}
 			}
 			
@@ -6980,9 +6895,7 @@ public abstract class L2Character extends L2Object
 			angleDiff += 360;
 		if (angleDiff >= 360 - maxAngleDiff)
 			angleDiff -= 360;
-		if (Math.abs(angleDiff) <= maxAngleDiff)
-			return true;
-		return false;
+		return Math.abs(angleDiff) <= maxAngleDiff;
 	}
 	
 	/**
@@ -7003,9 +6916,7 @@ public abstract class L2Character extends L2Object
 			angleDiff += 360;
 		if (angleDiff >= 360 - maxAngleDiff)
 			angleDiff -= 360;
-		if (Math.abs(angleDiff) <= maxAngleDiff)
-			return true;
-		return false;
+		return Math.abs(angleDiff) <= maxAngleDiff;
 	}
 	
 	public boolean isInFrontOfTarget()
@@ -7577,6 +7488,29 @@ public abstract class L2Character extends L2Object
 		}
 	}
 	
+	public void addOverrideCond(PcCondOverride... excs)
+	{
+		for (PcCondOverride exc : excs)
+		{
+			_exceptions |= exc.getMask();
+		}
+		GlobalVariablesManager.getInstance().storeVariable(COND_EXCEPTIONS, Long.toString(_exceptions));
+	}
+	
+	public void removeOverridedCond(PcCondOverride... excs)
+	{
+		for (PcCondOverride exc : excs)
+		{
+			_exceptions &= ~exc.getMask();
+		}
+		GlobalVariablesManager.getInstance().storeVariable(COND_EXCEPTIONS, Long.toString(_exceptions));
+	}
+	
+	public boolean canOverrideCond(PcCondOverride excs)
+	{
+		return (_exceptions & excs.getMask()) == excs.getMask();
+	}
+	
 	// LISTENERS
 	
 	/**
@@ -7841,132 +7775,5 @@ public abstract class L2Character extends L2Object
 	public static void removeGlobalSkillUseListener(SkillUseListener listener)
 	{
 		globalSkillUseListeners.remove(listener);
-	}
-	
-	/**
-	 * Sets the character's spiritshot charge to none, if the skill allows it.
-	 * @param skill 
-	 */
-	public void spsUncharge(L2Skill skill)
-	{
-		if (!skill.isStatic())
-			spsUncharge();
-	}
-	
-	/**
-	 * Sets the character's spiritshot charge to none.
-	 */
-	public void spsUncharge()
-	{	
-		if (isPlayer())
-		{
-			L2ItemInstance weapon = getActiveWeaponInstance();
-			if (weapon != null)
-			{
-				weapon.setChargedSpiritshot(L2ItemInstance.CHARGED_NONE);
-			}
-		}
-		else if (isSummon()) // If is not player, check for summon.
-		{
-			((L2Summon) this).setChargedSpiritShot(L2ItemInstance.CHARGED_NONE);
-		}
-		else if (isNpc())
-		{
-			((L2Npc) this)._spiritshotcharged = false;
-		}
-	}
-	
-	/**
-	 * Sets the character's soulshot charge to none, if the skill allows it.
-	 * @param skill 
-	 */
-	public void ssUncharge(L2Skill skill)
-	{
-		if (!skill.isStatic())
-			ssUncharge();
-	}
-	
-	/**
-	 * Sets the character's soulshot charge to none.
-	 */
-	public void ssUncharge()
-	{
-		if (isPlayer())
-		{
-			L2ItemInstance weapon = getActiveWeaponInstance();
-			if (weapon != null)
-			{
-				weapon.setChargedSoulshot(L2ItemInstance.CHARGED_NONE);
-			}
-		}
-		else if (isSummon()) // If is not player, check for summon.
-		{
-			((L2Summon) this).setChargedSoulShot(L2ItemInstance.CHARGED_NONE);
-		}
-		else if (isNpc())
-		{
-			((L2Npc) this)._soulshotcharged = false;
-		}
-	}
-		
-	public boolean isSoulshotCharged(L2Skill skill)
-	{
-		L2ItemInstance weapon = getActiveWeaponInstance();
-		if (isPlayer() && !skill.isMagic() && (weapon != null) && (weapon.getChargedSoulshot() == L2ItemInstance.CHARGED_SOULSHOT))
-		{
-			return true;
-		}
-		else if (isNpc() && ((L2Npc) this)._soulshotcharged)
-		{
-			return true;
-		}
-		return isSummon() && ((L2Summon) this).getChargedSoulShot() == L2ItemInstance.CHARGED_SOULSHOT;
-	}
-	
-	public boolean isSpiritshotCharged(L2Skill skill)
-	{
-		L2ItemInstance weapon = getActiveWeaponInstance();
-		if (isPlayer() && skill.isMagic() && (weapon != null) && (weapon.getChargedSpiritshot() == L2ItemInstance.CHARGED_SPIRITSHOT))
-		{
-			return true;
-		}
-		else if (isNpc() && ((L2Npc) this)._spiritshotcharged)
-		{
-			return true;
-		}
-		return isSummon() && ((L2Summon) this).getChargedSpiritShot() == L2ItemInstance.CHARGED_SPIRITSHOT;
-	}
-	
-	public boolean isBlessedSpiritshotCharged(L2Skill skill)
-	{
-		L2ItemInstance weaponInst = getActiveWeaponInstance();
-		if (isPlayer() && skill.isMagic() && weaponInst != null && weaponInst.getChargedSpiritshot() == L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT)
-		{
-			return true;
-		}
-		return isSummon() && ((L2Summon) this).getChargedSpiritShot() == L2ItemInstance.CHARGED_BLESSED_SPIRITSHOT;
-	}
-	
-	public void addOverrideCond(PcCondOverride... excs)
-	{
-		for (PcCondOverride exc : excs)
-		{
-			_exceptions |= exc.getMask();
-		}
-		GlobalVariablesManager.getInstance().storeVariable(COND_EXCEPTIONS, Long.toString(_exceptions));
-	}
-	
-	public void removeOverridedCond(PcCondOverride... excs)
-	{
-		for (PcCondOverride exc : excs)
-		{
-			_exceptions &= ~exc.getMask();
-		}
-		GlobalVariablesManager.getInstance().storeVariable(COND_EXCEPTIONS, Long.toString(_exceptions));
-	}
-	
-	public boolean canOverrideCond(PcCondOverride excs)
-	{
-		return (_exceptions & excs.getMask()) == excs.getMask();
 	}
 }

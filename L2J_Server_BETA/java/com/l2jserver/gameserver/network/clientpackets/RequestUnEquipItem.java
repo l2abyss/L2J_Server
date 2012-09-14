@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.model.items.L2EtcItem;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
@@ -101,15 +100,6 @@ public class RequestUnEquipItem extends L2GameClientPacket
 		}
 		
 		final L2ItemInstance[] unequipped = activeChar.getInventory().unEquipItemInBodySlotAndRecord(_slot);
-		final InventoryUpdate iu = new InventoryUpdate();
-		for (L2ItemInstance itm : unequipped)
-		{
-			activeChar.checkSShotsMatch(null, itm);
-			iu.addModifiedItem(itm);
-		}
-		
-		// Show the update in the inventory.
-		activeChar.sendPacket(iu);
 		activeChar.broadcastUserInfo();
 		
 		// This can be 0 if the user pressed the right mouse button twice very fast.
