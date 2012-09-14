@@ -179,13 +179,24 @@ public class SkillTable
 		VOID_FLOW(3631, 1),
 		THE_VICTOR_OF_WAR(5074, 1),
 		THE_VANQUISHED_OF_WAR(5075, 1),
-		SPECIAL_TREE_RECOVERY_BONUS(2139, 1);
+		SPECIAL_TREE_RECOVERY_BONUS(2139, 1),
+		WEAPON_GRADE_PENALTY(6209, 1);
 		
 		private final SkillHolder _holder;
 		
 		private FrequentSkill(int id, int level)
 		{
 			_holder = new SkillHolder(id, level);
+		}
+		
+		public int getId()
+		{
+			return _holder.getSkillId();
+		}
+		
+		public int getLevel()
+		{
+			return _holder.getSkillLvl();
 		}
 		
 		public L2Skill getSkill()

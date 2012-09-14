@@ -1934,15 +1934,18 @@ public final class L2ItemInstance extends L2Object
 		if (!hasPassiveSkills())
 			return;
 		
-		L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
+		final L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
 		
 		if (player != null)
 		{
 			for (SkillHolder sh : getItem().getSkills())
 			{
 				if (sh.getSkill().isPassive())
+				{
 					player.addSkill(sh.getSkill(), false);
+				}
 			}
+			player.refreshExpertisePenalty();
 		}
 	}
 	
@@ -1951,15 +1954,18 @@ public final class L2ItemInstance extends L2Object
 		if (!hasPassiveSkills())
 			return;
 		
-		L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
+		final L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
 		
 		if (player != null)
 		{
 			for (SkillHolder sh : getItem().getSkills())
 			{
 				if (sh.getSkill().isPassive())
+				{
 					player.removeSkill(sh.getSkill(), false, true);
+				}
 			}
+			player.refreshExpertisePenalty();
 		}
 	}
 	
