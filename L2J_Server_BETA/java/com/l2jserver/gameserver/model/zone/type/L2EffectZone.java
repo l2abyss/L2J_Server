@@ -27,6 +27,7 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.TaskZoneSettings;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.StringUtil;
@@ -146,10 +147,10 @@ public class L2EffectZone extends L2ZoneType
 		}
 		if (character.isPlayer())
 		{
-			character.setInsideZone(L2Character.ZONE_ALTERED, true);
+			character.setInsideZone(ZoneId.ALTERED, true);
 			if (_isShowDangerIcon)
 			{
-				character.setInsideZone(L2Character.ZONE_DANGERAREA, true);
+				character.setInsideZone(ZoneId.DANGER_AREA, true);
 				character.sendPacket(new EtcStatusUpdate(character.getActingPlayer()));
 			}
 		}
@@ -160,11 +161,11 @@ public class L2EffectZone extends L2ZoneType
 	{
 		if (character.isPlayer())
 		{
-			character.setInsideZone(L2Character.ZONE_ALTERED, false);
+			character.setInsideZone(ZoneId.ALTERED, false);
 			if (_isShowDangerIcon)
 			{
-				character.setInsideZone(L2Character.ZONE_DANGERAREA, false);
-				if (!character.isInsideZone(L2Character.ZONE_DANGERAREA))
+				character.setInsideZone(ZoneId.DANGER_AREA, false);
+				if (!character.isInsideZone(ZoneId.DANGER_AREA))
 					character.sendPacket(new EtcStatusUpdate(character.getActingPlayer()));
 			}
 		}

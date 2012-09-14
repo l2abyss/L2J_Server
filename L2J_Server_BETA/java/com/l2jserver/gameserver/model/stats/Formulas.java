@@ -69,6 +69,7 @@ import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncMoveSpeed;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncPAtkMod;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncPAtkSpeed;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncPDefMod;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.model.zone.type.L2CastleZone;
 import com.l2jserver.gameserver.model.zone.type.L2ClanHallZone;
 import com.l2jserver.gameserver.model.zone.type.L2FortZone;
@@ -299,7 +300,7 @@ public final class Formulas
 				}
 			}
 			
-			if (player.isInsideZone(L2Character.ZONE_CLANHALL) && (player.getClan() != null) && (player.getClan().getHideoutId() > 0))
+			if (player.isInsideZone(ZoneId.CLAN_HALL) && (player.getClan() != null) && (player.getClan().getHideoutId() > 0))
 			{
 				L2ClanHallZone zone = ZoneManager.getInstance().getZone(player, L2ClanHallZone.class);
 				int posChIndex = zone == null ? -1 : zone.getClanHallId();
@@ -317,7 +318,7 @@ public final class Formulas
 				}
 			}
 			
-			if (player.isInsideZone(L2Character.ZONE_CASTLE) && (player.getClan() != null) && (player.getClan().getCastleId() > 0))
+			if (player.isInsideZone(ZoneId.CASTLE) && (player.getClan() != null) && (player.getClan().getCastleId() > 0))
 			{
 				L2CastleZone zone = ZoneManager.getInstance().getZone(player, L2CastleZone.class);
 				int posCastleIndex = zone == null ? -1 : zone.getCastleId();
@@ -335,7 +336,7 @@ public final class Formulas
 				}
 			}
 			
-			if (player.isInsideZone(L2Character.ZONE_FORT) && (player.getClan() != null) && (player.getClan().getFortId() > 0))
+			if (player.isInsideZone(ZoneId.FORT) && (player.getClan() != null) && (player.getClan().getFortId() > 0))
 			{
 				L2FortZone zone = ZoneManager.getInstance().getZone(player, L2FortZone.class);
 				int posFortIndex = zone == null ? -1 : zone.getFortId();
@@ -354,7 +355,7 @@ public final class Formulas
 			}
 			
 			// Mother Tree effect is calculated at last
-			if (player.isInsideZone(L2Character.ZONE_MOTHERTREE))
+			if (player.isInsideZone(ZoneId.MOTHER_TREE))
 			{
 				L2MotherTreeZone zone = ZoneManager.getInstance().getZone(player, L2MotherTreeZone.class);
 				int hpBonus = zone == null ? 0 : zone.getHpRegenBonus();
@@ -416,14 +417,14 @@ public final class Formulas
 			}
 			
 			// Mother Tree effect is calculated at last'
-			if (player.isInsideZone(L2Character.ZONE_MOTHERTREE))
+			if (player.isInsideZone(ZoneId.MOTHER_TREE))
 			{
 				L2MotherTreeZone zone = ZoneManager.getInstance().getZone(player, L2MotherTreeZone.class);
 				int mpBonus = zone == null ? 0 : zone.getMpRegenBonus();
 				mpRegenBonus += mpBonus;
 			}
 			
-			if (player.isInsideZone(L2Character.ZONE_CLANHALL) && (player.getClan() != null) && (player.getClan().getHideoutId() > 0))
+			if (player.isInsideZone(ZoneId.CLAN_HALL) && (player.getClan() != null) && (player.getClan().getHideoutId() > 0))
 			{
 				L2ClanHallZone zone = ZoneManager.getInstance().getZone(player, L2ClanHallZone.class);
 				int posChIndex = zone == null ? -1 : zone.getClanHallId();
@@ -441,7 +442,7 @@ public final class Formulas
 				}
 			}
 			
-			if (player.isInsideZone(L2Character.ZONE_CASTLE) && (player.getClan() != null) && (player.getClan().getCastleId() > 0))
+			if (player.isInsideZone(ZoneId.CASTLE) && (player.getClan() != null) && (player.getClan().getCastleId() > 0))
 			{
 				L2CastleZone zone = ZoneManager.getInstance().getZone(player, L2CastleZone.class);
 				int posCastleIndex = zone == null ? -1 : zone.getCastleId();
@@ -459,7 +460,7 @@ public final class Formulas
 				}
 			}
 			
-			if (player.isInsideZone(L2Character.ZONE_FORT) && (player.getClan() != null) && (player.getClan().getFortId() > 0))
+			if (player.isInsideZone(ZoneId.FORT) && (player.getClan() != null) && (player.getClan().getFortId() > 0))
 			{
 				L2FortZone zone = ZoneManager.getInstance().getZone(player, L2FortZone.class);
 				int posFortIndex = zone == null ? -1 : zone.getFortId();

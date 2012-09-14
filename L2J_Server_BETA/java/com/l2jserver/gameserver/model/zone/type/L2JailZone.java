@@ -18,6 +18,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
@@ -36,15 +37,15 @@ public class L2JailZone extends L2ZoneType
 	{
 		if (character.isPlayer())
 		{
-			character.setInsideZone(L2Character.ZONE_JAIL, true);
+			character.setInsideZone(ZoneId.JAIL, true);
 			if (Config.JAIL_IS_PVP)
 			{
-				character.setInsideZone(L2Character.ZONE_PVP, true);
+				character.setInsideZone(ZoneId.PVP, true);
 				character.sendPacket(SystemMessageId.ENTERED_COMBAT_ZONE);
 			}
 			if (Config.JAIL_DISABLE_TRANSACTION)
 			{
-				character.setInsideZone(L2Character.ZONE_NOSTORE, true);
+				character.setInsideZone(ZoneId.NO_STORE, true);
 			}
 		}
 	}
@@ -54,10 +55,10 @@ public class L2JailZone extends L2ZoneType
 	{
 		if (character.isPlayer())
 		{
-			character.setInsideZone(L2Character.ZONE_JAIL, false);
+			character.setInsideZone(ZoneId.JAIL, false);
 			if (Config.JAIL_IS_PVP)
 			{
-				character.setInsideZone(L2Character.ZONE_PVP, false);
+				character.setInsideZone(ZoneId.PVP, false);
 				character.sendPacket(SystemMessageId.LEFT_COMBAT_ZONE);
 			}
 			if (character.getActingPlayer().isInJail())
@@ -68,7 +69,7 @@ public class L2JailZone extends L2ZoneType
 			}
 			if (Config.JAIL_DISABLE_TRANSACTION)
 			{
-				character.setInsideZone(L2Character.ZONE_NOSTORE, false);
+				character.setInsideZone(ZoneId.NO_STORE, false);
 			}
 		}
 	}

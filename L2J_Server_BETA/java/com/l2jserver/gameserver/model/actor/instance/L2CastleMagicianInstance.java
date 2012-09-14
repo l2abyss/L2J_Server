@@ -24,11 +24,11 @@ import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2SquadTrainer;
 import com.l2jserver.gameserver.model.PcCondOverride;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.AcquireSkillType;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -459,7 +459,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 			return false;
 		}
 		
-		if (clanLeader.isInsideZone(L2Character.ZONE_NOSUMMONFRIEND))
+		if (clanLeader.isInsideZone(ZoneId.NO_SUMMON_FRIEND))
 		{
 			//TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");

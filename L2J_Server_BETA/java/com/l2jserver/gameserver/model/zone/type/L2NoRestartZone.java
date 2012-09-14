@@ -19,6 +19,7 @@ import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 
 /**
  * A simple no restart zone
@@ -69,7 +70,7 @@ public class L2NoRestartZone extends L2ZoneType
 		
 		if (character.isPlayer())
 		{
-			character.setInsideZone(L2Character.ZONE_NORESTART, true);
+			character.setInsideZone(ZoneId.NO_RESTART, true);
 			L2PcInstance player = (L2PcInstance) character;
 			
 			if ((player.getZoneRestartLimitTime() > 0) && (player.getZoneRestartLimitTime() < System.currentTimeMillis()))
@@ -90,7 +91,7 @@ public class L2NoRestartZone extends L2ZoneType
 		
 		if (character.isPlayer())
 		{
-			character.setInsideZone(L2Character.ZONE_NORESTART, false);
+			character.setInsideZone(ZoneId.NO_RESTART, false);
 		}
 	}
 	

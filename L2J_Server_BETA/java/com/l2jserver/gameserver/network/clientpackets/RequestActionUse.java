@@ -31,7 +31,6 @@ import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2ManufactureList;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2BabyPetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
@@ -42,6 +41,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ChairSit;
@@ -207,7 +207,7 @@ public final class RequestActionUse extends L2GameClientPacket
 						return;
 					}
 					
-					if ((target.getActingPlayer() != null) && (pet.getOwner().getSiegeState() > 0) && pet.getOwner().isInsideZone(L2Character.ZONE_SIEGE) && (target.getActingPlayer().getSiegeState() == pet.getOwner().getSiegeState()) && (target.getActingPlayer() != pet.getOwner()) && (target.getActingPlayer().getSiegeSide() == pet.getOwner().getSiegeSide()))
+					if ((target.getActingPlayer() != null) && (pet.getOwner().getSiegeState() > 0) && pet.getOwner().isInsideZone(ZoneId.SIEGE) && (target.getActingPlayer().getSiegeState() == pet.getOwner().getSiegeState()) && (target.getActingPlayer() != pet.getOwner()) && (target.getActingPlayer().getSiegeSide() == pet.getOwner().getSiegeSide()))
 					{
 						//
 						if (TerritoryWarManager.getInstance().isTWInProgress())

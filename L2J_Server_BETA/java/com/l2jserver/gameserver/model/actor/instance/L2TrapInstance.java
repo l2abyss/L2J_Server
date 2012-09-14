@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.Quest.TrapAction;
 import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
@@ -92,7 +93,7 @@ public class L2TrapInstance extends L2Trap
 	public void onSpawn()
 	{
 		super.onSpawn();
-		_isInArena = isInsideZone(ZONE_PVP) && !isInsideZone(ZONE_SIEGE);
+		_isInArena = isInsideZone(ZoneId.PVP) && !isInsideZone(ZoneId.SIEGE);
 		_playersWhoDetectedMe.clear();
 	}
 	

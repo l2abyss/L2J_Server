@@ -20,6 +20,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ServerObjectInfo;
 
@@ -33,7 +34,7 @@ public class L2WaterZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_WATER, true);
+		character.setInsideZone(ZoneId.WATER, true);
 		
 		// TODO: update to only send speed status when that packet is known
 		if (character.isPlayer())
@@ -69,7 +70,7 @@ public class L2WaterZone extends L2ZoneType
 	@Override
 	protected void onExit(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_WATER, false);
+		character.setInsideZone(ZoneId.WATER, false);
 		
 		// TODO: update to only send speed status when that packet is known
 		if (character.isPlayer())

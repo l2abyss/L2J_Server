@@ -17,8 +17,8 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.TaskPriority;
 import com.l2jserver.gameserver.geoeditorcon.GeoEditorListener;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.serverpackets.GetOnVehicle;
 import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 
@@ -132,7 +132,7 @@ public class ValidatePosition extends L2GameClientPacket
 					&& GeoEditorListener.getInstance().getThread().isSend(activeChar))
 				GeoEditorListener.getInstance().getThread().sendGmPosition(_x,_y,(short)_z);
 		
-		if (activeChar.isFlying() || activeChar.isInsideZone(L2Character.ZONE_WATER))
+		if (activeChar.isFlying() || activeChar.isInsideZone(ZoneId.WATER))
 		{
 			activeChar.setXYZ(realX, realY, _z);
 			if (diffSq > 90000) // validate packet, may also cause z bounce if close to land

@@ -14,8 +14,8 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.stats.Env;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 
 /**
  * The Class ConditionPlayerLandingZone.
@@ -38,6 +38,6 @@ public class ConditionPlayerLandingZone extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return env.getCharacter().isInsideZone(L2Character.ZONE_LANDING) == _val;
+		return env.getCharacter().isInsideZone(ZoneId.LANDING) == _val;
 	}
 }

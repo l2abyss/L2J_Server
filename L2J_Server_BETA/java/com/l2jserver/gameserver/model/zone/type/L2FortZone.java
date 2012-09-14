@@ -18,6 +18,7 @@ import com.l2jserver.gameserver.instancemanager.MapRegionManager.TeleportWhereTy
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 
 /**
  * A castle zone
@@ -48,13 +49,13 @@ public class L2FortZone extends L2ZoneRespawn
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_FORT, true);
+		character.setInsideZone(ZoneId.FORT, true);
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_FORT, false);
+		character.setInsideZone(ZoneId.FORT, false);
 	}
 	
 	@Override

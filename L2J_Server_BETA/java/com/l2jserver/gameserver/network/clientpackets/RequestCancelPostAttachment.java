@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import static com.l2jserver.gameserver.model.actor.L2Character.ZONE_PEACE;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.instancemanager.MailManager;
 import com.l2jserver.gameserver.model.L2World;
@@ -24,6 +22,7 @@ import com.l2jserver.gameserver.model.entity.Message;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExChangePostState;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
@@ -67,7 +66,7 @@ public final class RequestCancelPostAttachment extends L2GameClientPacket
 			return;
 		}
 		
-		if (!activeChar.isInsideZone(ZONE_PEACE))
+		if (!activeChar.isInsideZone(ZoneId.PEACE))
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_CANCEL_NOT_IN_PEACE_ZONE);
 			return;

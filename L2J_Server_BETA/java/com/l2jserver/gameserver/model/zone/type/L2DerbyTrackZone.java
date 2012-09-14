@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 
 /**
  * The Monster Derby Track Zone
@@ -33,7 +34,7 @@ public class L2DerbyTrackZone extends L2ZoneType
 	{
 		if (character.isPlayable())
 		{
-			character.setInsideZone(L2Character.ZONE_MONSTERTRACK, true);
+			character.setInsideZone(ZoneId.MONSTER_TRACK, true);
 		}
 	}
 	
@@ -42,7 +43,7 @@ public class L2DerbyTrackZone extends L2ZoneType
 	{
 		if (character.isPlayable())
 		{
-			character.setInsideZone(L2Character.ZONE_MONSTERTRACK, false);
+			character.setInsideZone(ZoneId.MONSTER_TRACK, false);
 		}
 	}
 	

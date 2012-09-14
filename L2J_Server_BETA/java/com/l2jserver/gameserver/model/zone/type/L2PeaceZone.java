@@ -19,6 +19,7 @@ import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 
 /**
  * A Peace Zone
@@ -52,12 +53,12 @@ public class L2PeaceZone extends L2ZoneType
 		
 		if (Config.PEACE_ZONE_MODE != 2)
 		{
-			character.setInsideZone(L2Character.ZONE_PEACE, true);
+			character.setInsideZone(ZoneId.PEACE, true);
 		}
 		
 		if (!getAllowStore())
 		{
-			character.setInsideZone(L2Character.ZONE_NOSTORE, true);
+			character.setInsideZone(ZoneId.NO_STORE, true);
 		}
 	}
 	
@@ -66,12 +67,12 @@ public class L2PeaceZone extends L2ZoneType
 	{
 		if (Config.PEACE_ZONE_MODE != 2)
 		{
-			character.setInsideZone(L2Character.ZONE_PEACE, false);
+			character.setInsideZone(ZoneId.PEACE, false);
 		}
 		
 		if (!getAllowStore())
 		{
-			character.setInsideZone(L2Character.ZONE_NOSTORE, false);
+			character.setInsideZone(ZoneId.NO_STORE, false);
 		}
 	}
 	

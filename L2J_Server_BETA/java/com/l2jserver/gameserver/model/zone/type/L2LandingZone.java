@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 
 /**
  * A landing zone
@@ -33,7 +34,7 @@ public class L2LandingZone extends L2ZoneType
 	{
 		if (character.isPlayer())
 		{
-			character.setInsideZone(L2Character.ZONE_LANDING, true);
+			character.setInsideZone(ZoneId.LANDING, true);
 		}
 	}
 	
@@ -42,7 +43,7 @@ public class L2LandingZone extends L2ZoneType
 	{
 		if (character.isPlayer())
 		{
-			character.setInsideZone(L2Character.ZONE_LANDING, false);
+			character.setInsideZone(ZoneId.LANDING, false);
 		}
 	}
 	

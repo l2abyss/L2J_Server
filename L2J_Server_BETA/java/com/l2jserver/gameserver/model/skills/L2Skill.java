@@ -59,6 +59,7 @@ import com.l2jserver.gameserver.model.stats.BaseStats;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.gameserver.model.stats.Stats;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
@@ -1437,12 +1438,12 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				if (targetPlayer.inObserverMode())
 					return false;
 				
-				if (skill.isOffensive() && player.getSiegeState() > 0 && player.isInsideZone(L2Character.ZONE_SIEGE)
+				if (skill.isOffensive() && player.getSiegeState() > 0 && player.isInsideZone(ZoneId.SIEGE)
 						&& player.getSiegeState() == targetPlayer.getSiegeState()
 						&& player.getSiegeSide() == targetPlayer.getSiegeSide())
 					return false;
 				
-				if (skill.isOffensive() && target.isInsideZone(L2Character.ZONE_PEACE))
+				if (skill.isOffensive() && target.isInsideZone(ZoneId.PEACE))
 					return false;
 				
 				if (player.isInParty() && targetPlayer.isInParty())
@@ -1460,7 +1461,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				if (!TvTEvent.checkForTvTSkill(player, targetPlayer, skill))
 					return false;
 				
-				if (!sourceInArena && !(targetPlayer.isInsideZone(L2Character.ZONE_PVP) && !targetPlayer.isInsideZone(L2Character.ZONE_SIEGE)))
+				if (!sourceInArena && !(targetPlayer.isInsideZone(ZoneId.PVP) && !targetPlayer.isInsideZone(ZoneId.SIEGE)))
 				{
 					if (player.getAllyId() != 0 && player.getAllyId() == targetPlayer.getAllyId())
 						return false;

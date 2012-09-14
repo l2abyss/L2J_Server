@@ -24,18 +24,15 @@ import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.TownManager;
 import com.l2jserver.gameserver.model.L2TeleportLocation;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 
-
 /**
  * @author NightMarez
- * @version $Revision: 1.3.2.2.2.5 $ $Date: 2005/03/27 15:29:32 $
- *
  */
 public final class L2TeleporterInstance extends L2Npc
 {
@@ -229,7 +226,7 @@ public final class L2TeleporterInstance extends L2Npc
 				return;
 			}
 			else if (TownManager.townHasCastleInSiege(list.getLocX(), list.getLocY())
-					&& isInsideZone(L2Character.ZONE_TOWN))
+					&& isInsideZone(ZoneId.TOWN))
 			{
 				player.sendPacket(SystemMessageId.NO_PORT_THAT_IS_IN_SIGE);
 				return;

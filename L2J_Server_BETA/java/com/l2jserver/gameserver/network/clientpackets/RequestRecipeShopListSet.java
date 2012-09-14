@@ -24,8 +24,8 @@ import com.l2jserver.gameserver.datatables.RecipeData;
 import com.l2jserver.gameserver.model.L2ManufactureItem;
 import com.l2jserver.gameserver.model.L2ManufactureList;
 import com.l2jserver.gameserver.model.L2RecipeList;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.RecipeShopMsg;
@@ -89,7 +89,7 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 			return;
 		}
 		
-		if (player.isInsideZone(L2Character.ZONE_NOSTORE))
+		if (player.isInsideZone(ZoneId.NO_STORE))
 		{
 			player.sendPacket(SystemMessageId.NO_PRIVATE_WORKSHOP_HERE);
 			player.sendPacket(ActionFailed.STATIC_PACKET);

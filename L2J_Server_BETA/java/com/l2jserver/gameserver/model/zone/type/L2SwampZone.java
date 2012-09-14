@@ -19,6 +19,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 
 /**
  * another type of zone where your speed is changed
@@ -87,7 +88,7 @@ public class L2SwampZone extends L2ZoneType
 			}
 		}
 		
-		character.setInsideZone(L2Character.ZONE_SWAMP, true);
+		character.setInsideZone(ZoneId.SWAMP, true);
 		if (character.isPlayer())
 		{
 			character.getActingPlayer().broadcastUserInfo();
@@ -98,9 +99,9 @@ public class L2SwampZone extends L2ZoneType
 	protected void onExit(L2Character character)
 	{
 		// don't broadcast info if not needed
-		if (character.isInsideZone(L2Character.ZONE_SWAMP))
+		if (character.isInsideZone(ZoneId.SWAMP))
 		{
-			character.setInsideZone(L2Character.ZONE_SWAMP, false);
+			character.setInsideZone(ZoneId.SWAMP, false);
 			if (character.isPlayer())
 			{
 				character.getActingPlayer().broadcastUserInfo();

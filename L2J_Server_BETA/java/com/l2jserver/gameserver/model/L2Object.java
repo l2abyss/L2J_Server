@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.model.actor.knownlist.ObjectKnownList;
 import com.l2jserver.gameserver.model.actor.poly.ObjectPoly;
 import com.l2jserver.gameserver.model.actor.position.ObjectPosition;
 import com.l2jserver.gameserver.model.entity.Instance;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExSendUIEvent;
@@ -801,5 +802,15 @@ public abstract class L2Object
 	public boolean isTargetable()
 	{
 		return true;
+	}
+	
+	/**
+	 * Check if the object is in the given zone Id.
+	 * @param zone the zone Id to check
+	 * @return {code true} if the object is in that zone Id
+	 */
+	public boolean isInsideZone(ZoneId zone)
+	{
+		return false;
 	}
 }

@@ -20,6 +20,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 
 /**
  * A castle zone
@@ -49,7 +50,7 @@ public class L2CastleZone extends L2ZoneRespawn
 	{
 		if (getCastle() != null)
 		{
-			character.setInsideZone(L2Character.ZONE_CASTLE, true);
+			character.setInsideZone(ZoneId.CASTLE, true);
 		}
 	}
 	
@@ -58,7 +59,7 @@ public class L2CastleZone extends L2ZoneRespawn
 	{
 		if (getCastle() != null)
 		{
-			character.setInsideZone(L2Character.ZONE_CASTLE, false);
+			character.setInsideZone(ZoneId.CASTLE, false);
 		}
 	}
 	

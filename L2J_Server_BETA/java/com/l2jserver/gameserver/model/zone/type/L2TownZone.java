@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 
 /**
  * A Town zone
@@ -53,13 +54,13 @@ public class L2TownZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_TOWN, true);
+		character.setInsideZone(ZoneId.TOWN, true);
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_TOWN, false);
+		character.setInsideZone(ZoneId.TOWN, false);
 	}
 	
 	@Override

@@ -44,6 +44,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -678,7 +679,7 @@ public abstract class L2Summon extends L2Playable
 				return false;
 			}
 			
-			if (target.getActingPlayer() != null && this.getOwner().getSiegeState() > 0 && this.getOwner().isInsideZone(L2Character.ZONE_SIEGE) && target.getActingPlayer().getSiegeState() == this.getOwner().getSiegeState() && target.getActingPlayer() != this.getOwner() && target.getActingPlayer().getSiegeSide() == this.getOwner().getSiegeSide())
+			if (target.getActingPlayer() != null && getOwner().getSiegeState() > 0 && getOwner().isInsideZone(ZoneId.SIEGE) && target.getActingPlayer().getSiegeState() == getOwner().getSiegeState() && target.getActingPlayer() != getOwner() && target.getActingPlayer().getSiegeSide() == getOwner().getSiegeSide())
 			{
 				//
 				if (TerritoryWarManager.getInstance().isTWInProgress())

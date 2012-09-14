@@ -34,6 +34,7 @@ import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
 public class L2SkillSiegeFlag extends L2Skill
@@ -166,7 +167,7 @@ public class L2SkillSiegeFlag extends L2Skill
 			text = "You must be a clan leader to place a flag.";
 		else if (castle.getSiege().getAttackerClan(player.getClan()).getNumFlags() >= SiegeManager.getInstance().getFlagMaxCount())
 			text = "You have already placed the maximum number of flags possible.";
-		else if (!player.isInsideZone(L2Character.ZONE_HQ))
+		else if (!player.isInsideZone(ZoneId.HQ))
 			player.sendPacket(SystemMessageId.NOT_SET_UP_BASE_HERE);
 		else
 			return true;
@@ -202,7 +203,7 @@ public class L2SkillSiegeFlag extends L2Skill
 			text = "You must be a clan leader to place a flag.";
 		else if (fort.getSiege().getAttackerClan(player.getClan()).getNumFlags() >= FortSiegeManager.getInstance().getFlagMaxCount())
 			text = "You have already placed the maximum number of flags possible.";
-		else if (!player.isInsideZone(L2Character.ZONE_HQ))
+		else if (!player.isInsideZone(ZoneId.HQ))
 			player.sendPacket(SystemMessageId.NOT_SET_UP_BASE_HERE);
 		else
 			return true;
@@ -239,7 +240,7 @@ public class L2SkillSiegeFlag extends L2Skill
 			text = "You must be an attacker to place a flag.";
 		else if (hall.getSiege().getAttackerClan(player.getClan()).getNumFlags() > Config.CHS_MAX_FLAGS_PER_CLAN)
 			text = "You have already placed the maximum number of flags possible.";
-		else if (!player.isInsideZone(L2Character.ZONE_HQ))
+		else if (!player.isInsideZone(ZoneId.HQ))
 			player.sendPacket(SystemMessageId.NOT_SET_UP_BASE_HERE);
 		else if(!hall.getSiege().canPlantFlag())
 			text = "You cannot place a flag on this siege.";
@@ -279,7 +280,7 @@ public class L2SkillSiegeFlag extends L2Skill
 			player.sendPacket(SystemMessageId.NOT_ANOTHER_HEADQUARTERS);
 		else if (TerritoryWarManager.getInstance().getFlagForClan(player.getClan()) != null && !isOutPost)
 			player.sendPacket(SystemMessageId.A_FLAG_IS_ALREADY_BEING_DISPLAYED_ANOTHER_FLAG_CANNOT_BE_DISPLAYED);
-		else if (!player.isInsideZone(L2Character.ZONE_HQ))
+		else if (!player.isInsideZone(ZoneId.HQ))
 			player.sendPacket(SystemMessageId.NOT_SET_UP_BASE_HERE);
 		else
 			return true;

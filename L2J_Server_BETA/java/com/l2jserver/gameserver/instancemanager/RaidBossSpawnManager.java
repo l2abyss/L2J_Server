@@ -133,9 +133,6 @@ public class RaidBossSpawnManager
 			bossId = npcId;
 		}
 		
-		/* (non-Javadoc)
-		 * @see java.lang.Runnable#run()
-		 */
 		@Override
 		public void run()
 		{
@@ -215,7 +212,6 @@ public class RaidBossSpawnManager
 			info.set("currentMP", boss.getCurrentMp());
 			info.set("respawnTime", 0L);
 		}
-		
 		_storedInfo.put(boss.getNpcId(), info);
 	}
 	
@@ -358,7 +354,7 @@ public class RaidBossSpawnManager
 	}
 	
 	/**
-	 * Update db.
+	 * Update database.
 	 */
 	private void updateDb()
 	{

@@ -16,6 +16,7 @@ package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 
 /**
  * @author UnAfraid
@@ -54,11 +55,11 @@ public class L2ConditionZone extends L2ZoneType
 		{
 			if (NO_BOOKMARK)
 			{
-				character.setInsideZone(L2Character.ZONE_NOBOOKMARK, true);
+				character.setInsideZone(ZoneId.NO_BOOKMARK, true);
 			}
 			if (NO_ITEM_DROP)
 			{
-				character.setInsideZone(L2Character.ZONE_NOITEMDROP, true);
+				character.setInsideZone(ZoneId.NO_ITEM_DROP, true);
 			}
 		}
 	}
@@ -70,11 +71,11 @@ public class L2ConditionZone extends L2ZoneType
 		{
 			if (NO_BOOKMARK)
 			{
-				character.setInsideZone(L2Character.ZONE_NOBOOKMARK, false);
+				character.setInsideZone(ZoneId.NO_BOOKMARK, false);
 			}
 			if (NO_ITEM_DROP)
 			{
-				character.setInsideZone(L2Character.ZONE_NOITEMDROP, false);
+				character.setInsideZone(ZoneId.NO_ITEM_DROP, false);
 			}
 		}
 	}

@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
@@ -156,9 +157,9 @@ public class L2SiegeZone extends L2ZoneType
 	{
 		if (getSettings().isActiveSiege())
 		{
-			character.setInsideZone(L2Character.ZONE_PVP, true);
-			character.setInsideZone(L2Character.ZONE_SIEGE, true);
-			character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, true); // FIXME: Custom ?
+			character.setInsideZone(ZoneId.PVP, true);
+			character.setInsideZone(ZoneId.SIEGE, true);
+			character.setInsideZone(ZoneId.NO_SUMMON_FRIEND, true); // FIXME: Custom ?
 			
 			if (character.isPlayer())
 			{
@@ -185,9 +186,9 @@ public class L2SiegeZone extends L2ZoneType
 	@Override
 	protected void onExit(L2Character character)
 	{
-		character.setInsideZone(L2Character.ZONE_PVP, false);
-		character.setInsideZone(L2Character.ZONE_SIEGE, false);
-		character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false); // FIXME: Custom ?
+		character.setInsideZone(ZoneId.PVP, false);
+		character.setInsideZone(ZoneId.SIEGE, false);
+		character.setInsideZone(ZoneId.NO_SUMMON_FRIEND, false); // FIXME: Custom ?
 		if (getSettings().isActiveSiege())
 		{
 			if (character.isPlayer())
@@ -279,9 +280,9 @@ public class L2SiegeZone extends L2ZoneType
 				if (character == null)
 					continue;
 				
-				character.setInsideZone(L2Character.ZONE_PVP, false);
-				character.setInsideZone(L2Character.ZONE_SIEGE, false);
-				character.setInsideZone(L2Character.ZONE_NOSUMMONFRIEND, false);
+				character.setInsideZone(ZoneId.PVP, false);
+				character.setInsideZone(ZoneId.SIEGE, false);
+				character.setInsideZone(ZoneId.NO_SUMMON_FRIEND, false);
 				
 				if (character.isPlayer())
 				{

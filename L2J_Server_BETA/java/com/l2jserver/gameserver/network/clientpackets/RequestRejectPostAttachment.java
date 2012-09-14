@@ -14,13 +14,12 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import static com.l2jserver.gameserver.model.actor.L2Character.ZONE_PEACE;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.instancemanager.MailManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Message;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExChangePostState;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -54,7 +53,7 @@ public final class RequestRejectPostAttachment extends L2GameClientPacket
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("rejectattach"))
 			return;
 		
-		if (!activeChar.isInsideZone(ZONE_PEACE))
+		if (!activeChar.isInsideZone(ZoneId.PEACE))
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_USE_MAIL_OUTSIDE_PEACE_ZONE);
 			return;

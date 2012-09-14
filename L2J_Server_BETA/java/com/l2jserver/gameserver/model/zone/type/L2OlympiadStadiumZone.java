@@ -31,6 +31,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
 import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMatchEnd;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadUserInfo;
@@ -170,7 +171,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 		{
 			if (getSettings().getOlympiadTask().isBattleStarted())
 			{
-				character.setInsideZone(L2Character.ZONE_PVP, true);
+				character.setInsideZone(ZoneId.PVP, true);
 				if (character.isPlayer())
 				{
 					character.sendPacket(SystemMessageId.ENTERED_COMBAT_ZONE);
@@ -208,7 +209,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 		{
 			if (getSettings().getOlympiadTask().isBattleStarted())
 			{
-				character.setInsideZone(L2Character.ZONE_PVP, false);
+				character.setInsideZone(ZoneId.PVP, false);
 				if (character.isPlayer())
 				{
 					character.sendPacket(SystemMessageId.LEFT_COMBAT_ZONE);
@@ -237,13 +238,13 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 			
 			if (battleStarted)
 			{
-				character.setInsideZone(L2Character.ZONE_PVP, true);
+				character.setInsideZone(ZoneId.PVP, true);
 				if (character.isPlayer())
 					character.sendPacket(sm);
 			}
 			else
 			{
-				character.setInsideZone(L2Character.ZONE_PVP, false);
+				character.setInsideZone(ZoneId.PVP, false);
 				if (character.isPlayer())
 				{
 					character.sendPacket(sm);

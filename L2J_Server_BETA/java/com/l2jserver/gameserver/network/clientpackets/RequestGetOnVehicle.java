@@ -15,9 +15,9 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.instancemanager.BoatManager;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.GetOnVehicle;
 import com.l2jserver.gameserver.util.Point3D;
@@ -78,7 +78,7 @@ public final class RequestGetOnVehicle extends L2GameClientPacket
 		activeChar.broadcastPacket(new GetOnVehicle(activeChar.getObjectId(), boat.getObjectId(), _pos));
 		
 		activeChar.setXYZ(boat.getX(), boat.getY(), boat.getZ());
-		activeChar.setInsideZone(L2Character.ZONE_PEACE, true);
+		activeChar.setInsideZone(ZoneId.PEACE, true);
 		activeChar.revalidateZone(true);
 	}
 	

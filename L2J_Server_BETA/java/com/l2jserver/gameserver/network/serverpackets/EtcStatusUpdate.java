@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.CharEffectList;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 
 /**
  * @author Luca Baldi
@@ -40,7 +40,7 @@ public class EtcStatusUpdate extends L2GameServerPacket
 		writeD(_activeChar.getCharges()); // 1-7 increase force, lvl
 		writeD(_activeChar.getWeightPenalty()); // 1-4 weight penalty, lvl (1=50%, 2=66.6%, 3=80%, 4=100%)
 		writeD((_activeChar.getMessageRefusal() || _activeChar.isChatBanned() || _activeChar.isSilenceMode()) ? 1 : 0); // 1 = block all chat
-		writeD(_activeChar.isInsideZone(L2Character.ZONE_DANGERAREA) ? 1 : 0); // 1 = danger area
+		writeD(_activeChar.isInsideZone(ZoneId.DANGER_AREA) ? 1 : 0); // 1 = danger area
 		writeD(_activeChar.getExpertiseWeaponPenalty()); // Weapon Grade Penalty [1-4]
 		writeD(_activeChar.getExpertiseArmorPenalty()); // Armor Grade Penalty [1-4]
 		writeD(_activeChar.isAffected(CharEffectList.EFFECT_FLAG_CHARM_OF_COURAGE) ? 1 : 0); // 1 = charm of courage (allows resurrection on the same spot upon death on the siege battlefield)
