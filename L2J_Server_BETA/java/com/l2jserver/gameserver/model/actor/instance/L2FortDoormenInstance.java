@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 
-
 public class L2FortDoormenInstance extends L2DoormenInstance
 {
 	public L2FortDoormenInstance(int objectID, L2NpcTemplate template)
@@ -37,11 +36,17 @@ public class L2FortDoormenInstance extends L2DoormenInstance
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		
 		if (!isOwnerClan(player))
+		{
 			html.setFile(player.getHtmlPrefix(), "data/html/doormen/" + getTemplate().getNpcId() + "-no.htm");
+		}
 		else if (isUnderSiege())
+		{
 			html.setFile(player.getHtmlPrefix(), "data/html/doormen/" + getTemplate().getNpcId() + "-busy.htm");
+		}
 		else
+		{
 			html.setFile(player.getHtmlPrefix(), "data/html/doormen/" + getTemplate().getNpcId() + ".htm");
+		}
 		
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
@@ -74,10 +79,12 @@ public class L2FortDoormenInstance extends L2DoormenInstance
 	@Override
 	protected final boolean isOwnerClan(L2PcInstance player)
 	{
-		if (player.getClan() != null && getFort() != null && getFort().getOwnerClan() != null)
+		if ((player.getClan() != null) && (getFort() != null) && (getFort().getOwnerClan() != null))
 		{
 			if (player.getClanId() == getFort().getOwnerClan().getClanId())
+			{
 				return true;
+			}
 		}
 		return false;
 	}

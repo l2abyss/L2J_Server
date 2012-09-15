@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.network.serverpackets.VehicleStarted;
 
 /**
  * @author Maktakien, reworked by DS
- * 
  */
 public class L2BoatInstance extends L2Vehicle
 {
@@ -51,7 +50,9 @@ public class L2BoatInstance extends L2Vehicle
 	{
 		final boolean result = super.moveToNextRoutePoint();
 		if (result)
+		{
 			broadcastPacket(new VehicleDeparture(this));
+		}
 		
 		return result;
 	}
@@ -63,9 +64,13 @@ public class L2BoatInstance extends L2Vehicle
 		
 		final Location loc = getOustLoc();
 		if (player.isOnline())
+		{
 			player.teleToLocation(loc.getX(), loc.getY(), loc.getZ());
+		}
 		else
+		{
 			player.setXYZInvisible(loc.getX(), loc.getY(), loc.getZ()); // disconnects handling
+		}
 	}
 	
 	@Override

@@ -34,17 +34,16 @@ import com.l2jserver.util.StringUtil;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.1.2.1.2.2 $ $Date: 2005/03/02 15:38:41 $
  */
 public class MacroList
 {
 	private static Logger _log = Logger.getLogger(MacroList.class.getName());
 	
-	private L2PcInstance _owner;
+	private final L2PcInstance _owner;
 	private int _revision;
 	private int _macroId;
-	private Map<Integer, L2Macro> _macroses = new FastMap<>();
+	private final Map<Integer, L2Macro> _macroses = new FastMap<>();
 	
 	public MacroList(L2PcInstance owner)
 	{
@@ -53,7 +52,8 @@ public class MacroList
 		_macroId = 1000;
 	}
 	
-	public int getRevision() {
+	public int getRevision()
+	{
 		return _revision;
 	}
 	
@@ -64,21 +64,28 @@ public class MacroList
 	
 	public L2Macro getMacro(int id)
 	{
-		return _macroses.get(id-1);
+		return _macroses.get(id - 1);
 	}
 	
 	public void registerMacro(L2Macro macro)
 	{
-		if (macro.id == 0) {
+		if (macro.id == 0)
+		{
 			macro.id = _macroId++;
 			while (_macroses.get(macro.id) != null)
+			{
 				macro.id = _macroId++;
+			}
 			_macroses.put(macro.id, macro);
 			registerMacroInDb(macro);
-		} else {
+		}
+		else
+		{
 			L2Macro old = _macroses.put(macro.id, macro);
 			if (old != null)
+			{
 				deleteMacroFromDb(old);
+			}
 			registerMacroInDb(macro);
 		}
 		sendUpdate();
@@ -87,28 +94,36 @@ public class MacroList
 	public void deleteMacro(int id)
 	{
 		L2Macro toRemove = _macroses.get(id);
-		if(toRemove != null)
+		if (toRemove != null)
 		{
 			deleteMacroFromDb(toRemove);
 		}
 		_macroses.remove(id);
 		
 		L2ShortCut[] allShortCuts = _owner.getAllShortCuts();
-		for (L2ShortCut sc : allShortCuts) {
-			if (sc.getId() == id && sc.getType() == L2ShortCut.TYPE_MACRO)
+		for (L2ShortCut sc : allShortCuts)
+		{
+			if ((sc.getId() == id) && (sc.getType() == L2ShortCut.TYPE_MACRO))
+			{
 				_owner.deleteShortCut(sc.getSlot(), sc.getPage());
+			}
 		}
 		
 		sendUpdate();
 	}
 	
-	public void sendUpdate() {
+	public void sendUpdate()
+	{
 		_revision++;
 		L2Macro[] all = getAllMacroses();
-		if (all.length == 0) {
+		if (all.length == 0)
+		{
 			_owner.sendPacket(new SendMacroList(_revision, all.length, null));
-		} else {
-			for (L2Macro m : all) {
+		}
+		else
+		{
+			for (L2Macro m : all)
+			{
 				_owner.sendPacket(new SendMacroList(_revision, all.length, m));
 			}
 		}
@@ -126,23 +141,20 @@ public class MacroList
 			statement.setString(5, macro.descr);
 			statement.setString(6, macro.acronym);
 			final StringBuilder sb = new StringBuilder(300);
-			for (L2MacroCmd cmd : macro.commands) {
-				StringUtil.append(sb,
-						String.valueOf(cmd.type),
-						",",
-						String.valueOf(cmd.d1),
-						",",
-						String.valueOf(cmd.d2)
-				);
+			for (L2MacroCmd cmd : macro.commands)
+			{
+				StringUtil.append(sb, String.valueOf(cmd.type), ",", String.valueOf(cmd.d1), ",", String.valueOf(cmd.d2));
 				
-				if (cmd.cmd != null && cmd.cmd.length() > 0) {
+				if ((cmd.cmd != null) && (cmd.cmd.length() > 0))
+				{
 					StringUtil.append(sb, ",", cmd.cmd);
 				}
 				
 				sb.append(';');
 			}
 			
-			if (sb.length() > 255) {
+			if (sb.length() > 255)
+			{
 				sb.setLength(255);
 			}
 			
@@ -157,7 +169,7 @@ public class MacroList
 	}
 	
 	/**
-	 * @param macro 
+	 * @param macro
 	 */
 	private void deleteMacroFromDb(L2Macro macro)
 	{
@@ -191,17 +203,22 @@ public class MacroList
 				String descr = rset.getString("descr");
 				String acronym = rset.getString("acronym");
 				List<L2MacroCmd> commands = FastList.newInstance();
-				StringTokenizer st1 = new StringTokenizer(rset.getString("commands"),";");
-				while (st1.hasMoreTokens()) {
-					StringTokenizer st = new StringTokenizer(st1.nextToken(),",");
-					if(st.countTokens() < 3)
+				StringTokenizer st1 = new StringTokenizer(rset.getString("commands"), ";");
+				while (st1.hasMoreTokens())
+				{
+					StringTokenizer st = new StringTokenizer(st1.nextToken(), ",");
+					if (st.countTokens() < 3)
+					{
 						continue;
+					}
 					int type = Integer.parseInt(st.nextToken());
 					int d1 = Integer.parseInt(st.nextToken());
 					int d2 = Integer.parseInt(st.nextToken());
 					String cmd = "";
 					if (st.hasMoreTokens())
+					{
 						cmd = st.nextToken();
+					}
 					L2MacroCmd mcmd = new L2MacroCmd(commands.size(), type, d1, d2, cmd);
 					commands.add(mcmd);
 				}

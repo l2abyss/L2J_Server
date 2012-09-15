@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.model.entity;
 
-import gnu.trove.map.hash.TIntIntHashMap;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -59,6 +57,8 @@ import com.l2jserver.gameserver.model.zone.type.L2ResidenceTeleportZone;
 import com.l2jserver.gameserver.model.zone.type.L2SiegeZone;
 import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
+
+import gnu.trove.map.hash.TIntIntHashMap;
 
 public class Castle
 {

@@ -15,21 +15,20 @@
 package com.l2jserver.gameserver.model;
 
 /**
- * This class describes a RecipeList component (1 line of the recipe : Item-Quantity needed).<BR><BR>
+ * This class describes a RecipeList component (1 line of the recipe : Item-Quantity needed).
  */
 public class L2RecipeInstance
 {
 	/** The Identifier of the item needed in the L2RecipeInstance */
-	private int _itemId;
+	private final int _itemId;
 	
 	/** The item quantity needed in the L2RecipeInstance */
-	private int _quantity;
-	
+	private final int _quantity;
 	
 	/**
-	 * Constructor of L2RecipeInstance (create a new line in a RecipeList).<BR><BR>
-	 * @param itemId 
-	 * @param quantity 
+	 * Constructor of L2RecipeInstance (create a new line in a RecipeList).
+	 * @param itemId
+	 * @param quantity
 	 */
 	public L2RecipeInstance(int itemId, int quantity)
 	{

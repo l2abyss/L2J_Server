@@ -27,7 +27,9 @@ public final class ShortCutInit extends L2GameServerPacket
 		_activeChar = activeChar;
 		
 		if (_activeChar == null)
+		{
 			return;
+		}
 		
 		_shortCuts = _activeChar.getAllShortCuts();
 	}
@@ -41,7 +43,7 @@ public final class ShortCutInit extends L2GameServerPacket
 		for (L2ShortCut sc : _shortCuts)
 		{
 			writeD(sc.getType());
-			writeD(sc.getSlot() + sc.getPage() * 12);
+			writeD(sc.getSlot() + (sc.getPage() * 12));
 			
 			switch (sc.getType())
 			{

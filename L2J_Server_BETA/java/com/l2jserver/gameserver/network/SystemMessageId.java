@@ -3273,13 +3273,13 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 569<br>
-	 * Message: Caution -- this item's price greatly differs from non-player run shops. Do you wish to continue? 
+	 * Message: Caution -- this item's price greatly differs from non-player run shops. Do you wish to continue?
 	 */
 	
 	/**
 	 * ID: 570<br>
 	 * ID: 571<br>
-	 * Message: How many  $s1(s) do you want to purchase?
+	 * Message: How many $s1(s) do you want to purchase?
 	 */
 	
 	/**
@@ -13392,7 +13392,7 @@ public final class SystemMessageId
 	 */
 	public static final SystemMessageId NPCS_RECAPTURED_FORTRESS;
 	
-	/** 
+	/**
 	 * ID: 2277<br>
 	 * Message: Party of $s1
 	 */
@@ -13408,18 +13408,15 @@ public final class SystemMessageId
 	 */
 	
 	/**
-	 * ID: 2280
-	 * Message: Damage is decreased because $c1 resisted $c2's magic.
+	 * ID: 2280 Message: Damage is decreased because $c1 resisted $c2's magic.
 	 */
 	
 	/**
-	 * ID: 2281
-	 * Message: $c1 hit you for $s3 damage and hit your servitor for $s4.
+	 * ID: 2281 Message: $c1 hit you for $s3 damage and hit your servitor for $s4.
 	 */
 	
 	/**
-	 * ID: 2282
-	 * Message: Leave Fantasy Isle.
+	 * ID: 2282 Message: Leave Fantasy Isle.
 	 */
 	
 	/**

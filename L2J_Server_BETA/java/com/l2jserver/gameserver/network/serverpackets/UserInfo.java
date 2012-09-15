@@ -59,17 +59,27 @@ public final class UserInfo extends L2GameServerPacket
 		if (_activeChar.getSiegeState() == 1)
 		{
 			if (_territoryId == 0)
+			{
 				_relation |= 0x180;
+			}
 			else
+			{
 				_relation |= 0x1000;
+			}
 		}
 		if (_activeChar.getSiegeState() == 2)
+		{
 			_relation |= 0x80;
+		}
 		// _isDisguised = TerritoryWarManager.getInstance().isDisguised(character.getObjectId());
 		if (_activeChar.isInAirShip() && _activeChar.getAirShip().isCaptain(_activeChar))
+		{
 			_airShipHelm = _activeChar.getAirShip().getHelmItemId();
+		}
 		else
+		{
 			_airShipHelm = 0;
+		}
 	}
 	
 	@Override
@@ -231,12 +241,16 @@ public final class UserInfo extends L2GameServerPacket
 		
 		String title = _activeChar.getTitle();
 		if (_activeChar.getAppearance().getInvisible() && _activeChar.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
+		{
 			title = "Invisible";
+		}
 		if (_activeChar.getPoly().isMorphed())
 		{
 			L2NpcTemplate polyObj = NpcTable.getInstance().getTemplate(_activeChar.getPoly().getPolyId());
 			if (polyObj != null)
+			{
 				title += " - " + polyObj.getName();
+			}
 		}
 		writeS(title);
 		
@@ -275,7 +289,7 @@ public final class UserInfo extends L2GameServerPacket
 		writeD(0x00); // special effects? circles around player...
 		writeD(_activeChar.getMaxCp());
 		writeD((int) _activeChar.getCurrentCp());
-		writeC(_activeChar.isMounted() || _airShipHelm != 0 ? 0 : _activeChar.getEnchantEffect());
+		writeC(_activeChar.isMounted() || (_airShipHelm != 0) ? 0 : _activeChar.getEnchantEffect());
 		
 		writeC(_activeChar.getTeam()); // team circle around feet 1= Blue, 2 = red
 		

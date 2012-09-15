@@ -46,5 +46,5 @@ public class ChangeWaitType extends L2GameServerPacket
 		writeD(_x);
 		writeD(_y);
 		writeD(_z);
-	}	
+	}
 }

@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.network.serverpackets.RecipeShopSellList;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.1.2.1.2.2 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class RequestRecipeShopManagePrev extends L2GameClientPacket
@@ -37,8 +36,10 @@ public final class RequestRecipeShopManagePrev extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
-		if (player == null || player.getTarget() == null)
+		if ((player == null) || (player.getTarget() == null))
+		{
 			return;
+		}
 		
 		// Player shouldn't be able to set stores if he/she is alike dead (dead or fake death)
 		if (player.isAlikeDead())
@@ -48,9 +49,11 @@ public final class RequestRecipeShopManagePrev extends L2GameClientPacket
 		}
 		
 		if (!(player.getTarget() instanceof L2PcInstance))
+		{
 			return;
-		L2PcInstance target = (L2PcInstance)player.getTarget();
-		player.sendPacket(new RecipeShopSellList(player,target));
+		}
+		L2PcInstance target = (L2PcInstance) player.getTarget();
+		player.sendPacket(new RecipeShopSellList(player, target));
 	}
 	
 	@Override

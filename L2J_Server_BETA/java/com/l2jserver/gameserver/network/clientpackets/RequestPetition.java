@@ -22,11 +22,13 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * <p>Format: (c) Sd
+ * <p>
+ * Format: (c) Sd
  * <ul>
  * <li>S: content</li>
  * <li>d: type</li>
- * </ul></p>
+ * </ul>
+ * </p>
  * @author -Wooden-, TempyIncursion
  */
 public final class RequestPetition extends L2GameClientPacket
@@ -34,13 +36,13 @@ public final class RequestPetition extends L2GameClientPacket
 	private static final String _C__89_RequestPetition = "[C] 89 RequestPetition";
 	
 	private String _content;
-	private int _type;       // 1 = on : 0 = off;
+	private int _type; // 1 = on : 0 = off;
 	
 	@Override
 	protected void readImpl()
 	{
 		_content = readS();
-		_type    = readD();
+		_type = readD();
 	}
 	
 	@Override
@@ -48,7 +50,9 @@ public final class RequestPetition extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		if (!AdminTable.getInstance().isGmOnline(false))
 		{

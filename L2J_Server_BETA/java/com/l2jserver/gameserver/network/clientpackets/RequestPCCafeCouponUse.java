@@ -14,11 +14,9 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-
 /**
  * Format: (ch) S
- * @author  -Wooden-
- * TODO: GodKratos: This packet is wrong in Gracia Final!!
+ * @author -Wooden- TODO: GodKratos: This packet is wrong in Gracia Final!!
  */
 public final class RequestPCCafeCouponUse extends L2GameClientPacket
 {

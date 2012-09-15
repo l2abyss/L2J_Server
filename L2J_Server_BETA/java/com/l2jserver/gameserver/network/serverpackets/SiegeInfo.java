@@ -59,7 +59,9 @@ public class SiegeInfo extends L2GameServerPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		writeC(0xc9);
 		if (_castle != null)
@@ -81,7 +83,9 @@ public class SiegeInfo extends L2GameServerPacket
 					writeS(owner.getAllyName()); // Ally Name
 				}
 				else
+				{
 					_log.warning("Null owner for castle: " + _castle.getName());
+				}
 			}
 			else
 			{
@@ -114,7 +118,9 @@ public class SiegeInfo extends L2GameServerPacket
 					writeS(owner.getAllyName()); // Ally Name
 				}
 				else
+				{
 					_log.warning("Null owner for siegable hall: " + _hall.getName());
+				}
 			}
 			else
 			{

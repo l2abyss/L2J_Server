@@ -25,7 +25,9 @@ public class PrivateStoreMsgBuy extends L2GameServerPacket
 	{
 		_objId = player.getObjectId();
 		if (player.getBuyList() != null)
+		{
 			_storeMsg = player.getBuyList().getTitle();
+		}
 	}
 	
 	@Override

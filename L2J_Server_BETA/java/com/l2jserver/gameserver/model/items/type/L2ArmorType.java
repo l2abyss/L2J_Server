@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.model.items.type;
 
 /**
  * Description of Armor Type
- *
  */
 
 public enum L2ArmorType implements L2ItemType
@@ -27,7 +26,7 @@ public enum L2ArmorType implements L2ItemType
 	MAGIC("Magic"),
 	SIGIL("Sigil"),
 	
-	//L2J CUSTOM
+	// L2J CUSTOM
 	SHIELD("Shield");
 	
 	final int _mask;

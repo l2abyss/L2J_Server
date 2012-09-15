@@ -29,9 +29,9 @@ import com.l2jserver.gameserver.model.zone.TaskZoneSettings;
  */
 public class L2DynamicZone extends L2ZoneType
 {
-	private L2WorldRegion _region;
-	private L2Character _owner;
-	private L2Skill _skill;
+	private final L2WorldRegion _region;
+	private final L2Character _owner;
+	private final L2Skill _skill;
 	
 	public L2DynamicZone(L2WorldRegion region, L2Character owner, L2Skill skill)
 	{
@@ -94,8 +94,10 @@ public class L2DynamicZone extends L2ZoneType
 	
 	protected void remove()
 	{
-		if (getSettings().getTask() == null || _skill == null)
+		if ((getSettings().getTask() == null) || (_skill == null))
+		{
 			return;
+		}
 		
 		getSettings().getTask().cancel(false);
 		

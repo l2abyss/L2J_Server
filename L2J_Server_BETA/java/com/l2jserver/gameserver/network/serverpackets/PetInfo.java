@@ -132,10 +132,14 @@ public class PetInfo extends L2GameServerPacket
 		writeQ(_summon.getStat().getExp());
 		
 		if (_summon.getExpForThisLevel() > _summon.getStat().getExp())
+		{
 			writeQ(_summon.getStat().getExp());// 0% absolute value
+		}
 		else
+		{
 			writeQ(_summon.getExpForThisLevel());// 0% absolute value
-			
+		}
+		
 		writeQ(_summon.getExpForNextLevel());// 100% absoulte value
 		writeD(_summon instanceof L2PetInstance ? _summon.getInventory().getTotalWeight() : 0);// weight
 		writeD(_summon.getMaxLoad());// max weight it can carry
@@ -163,23 +167,35 @@ public class PetInfo extends L2GameServerPacket
 		
 		int form = 0;
 		final int npcId = _summon.getNpcId();
-		if (npcId == 16041 || npcId == 16042)
+		if ((npcId == 16041) || (npcId == 16042))
 		{
 			if (_summon.getLevel() > 84)
+			{
 				form = 3;
+			}
 			else if (_summon.getLevel() > 79)
+			{
 				form = 2;
+			}
 			else if (_summon.getLevel() > 74)
+			{
 				form = 1;
+			}
 		}
-		else if (npcId == 16025 || npcId == 16037)
+		else if ((npcId == 16025) || (npcId == 16037))
 		{
 			if (_summon.getLevel() > 69)
+			{
 				form = 3;
+			}
 			else if (_summon.getLevel() > 64)
+			{
 				form = 2;
+			}
 			else if (_summon.getLevel() > 59)
+			{
 				form = 1;
+			}
 		}
 		writeD(form);// CT1.5 Pet form and skills
 		writeD(_summon.getSpecialEffect());

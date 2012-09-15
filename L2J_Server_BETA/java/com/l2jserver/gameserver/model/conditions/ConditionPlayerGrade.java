@@ -47,7 +47,7 @@ public final class ConditionPlayerGrade extends Condition
 	}
 	
 	/**
-	 * @see com.l2jserver.gameserver.model.conditions.Condition#testImpl(com.l2jserver.gameserver.model.stats.Env)
+	 * 
 	 */
 	@Override
 	public boolean testImpl(Env env)

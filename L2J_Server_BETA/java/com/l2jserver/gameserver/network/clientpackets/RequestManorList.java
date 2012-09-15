@@ -20,9 +20,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ExSendManorList;
 
 /**
- * Format: ch
- * c (id) 0xD0
- * h (subid) 0x01
+ * Format: ch c (id) 0xD0 h (subid) 0x01
  * @author l3x
  */
 public class RequestManorList extends L2GameClientPacket
@@ -39,7 +37,9 @@ public class RequestManorList extends L2GameClientPacket
 	{
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
+		{
 			return;
+		}
 		FastList<String> manorsName = new FastList<>();
 		manorsName.add("gludio");
 		manorsName.add("dion");

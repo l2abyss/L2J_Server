@@ -41,7 +41,6 @@ public final class L2Armor extends L2Item
 	/**
 	 * Constructor for Armor.
 	 * @param set the StatsSet designating the set of couples (key,value) characterizing the armor.
-	 * @see L2Item constructor
 	 */
 	public L2Armor(StatsSet set)
 	{

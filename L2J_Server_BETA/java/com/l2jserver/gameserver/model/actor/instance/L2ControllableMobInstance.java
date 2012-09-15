@@ -22,12 +22,11 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 
 /**
  * @author littlecrow
- *
  */
 public class L2ControllableMobInstance extends L2MonsterInstance
 {
 	private boolean _isInvul;
-	private L2ControllableMobAI _aiBackup;	// to save ai, avoiding beeing detached
+	private L2ControllableMobAI _aiBackup; // to save ai, avoiding beeing detached
 	
 	protected class ControllableAIAcessor extends AIAccessor
 	{
@@ -37,7 +36,6 @@ public class L2ControllableMobInstance extends L2MonsterInstance
 			// do nothing, AI of controllable mobs can't be detached automatically
 		}
 	}
-	
 	
 	@Override
 	public boolean isAggressive()
@@ -64,12 +62,12 @@ public class L2ControllableMobInstance extends L2MonsterInstance
 		L2CharacterAI ai = _ai; // copy handle
 		if (ai == null)
 		{
-			synchronized(this)
+			synchronized (this)
 			{
-				if (_ai == null && _aiBackup == null)
+				if ((_ai == null) && (_aiBackup == null))
 				{
 					_ai = new L2ControllableMobAI(new ControllableAIAcessor());
-					_aiBackup = (L2ControllableMobAI)_ai;
+					_aiBackup = (L2ControllableMobAI) _ai;
 				}
 				else
 				{
@@ -96,7 +94,9 @@ public class L2ControllableMobInstance extends L2MonsterInstance
 	public boolean doDie(L2Character killer)
 	{
 		if (!super.doDie(killer))
+		{
 			return false;
+		}
 		
 		removeAI();
 		return true;

@@ -39,16 +39,22 @@ public class L2SkillElemental extends L2Skill
 		_seeds[2] = set.getInteger("seed3", 0);
 		
 		if (set.getInteger("seed_any", 0) == 1)
+		{
 			_seedAny = true;
+		}
 		else
+		{
 			_seedAny = false;
+		}
 	}
 	
 	@Override
 	public void useSkill(L2Character activeChar, L2Object[] targets)
 	{
 		if (activeChar.isAlikeDead())
+		{
 			return;
+		}
 		
 		L2ItemInstance weaponInst = activeChar.getActiveWeaponInstance();
 		
@@ -68,17 +74,19 @@ public class L2SkillElemental extends L2Skill
 		for (L2Character target : (L2Character[]) targets)
 		{
 			if (target.isAlikeDead())
+			{
 				continue;
+			}
 			
 			boolean charged = true;
 			if (!_seedAny)
 			{
-				for (int i = 0; i < _seeds.length; i++)
+				for (int _seed : _seeds)
 				{
-					if (_seeds[i] != 0)
+					if (_seed != 0)
 					{
-						L2Effect e = target.getFirstEffect(_seeds[i]);
-						if (e == null || !e.getInUse())
+						L2Effect e = target.getFirstEffect(_seed);
+						if ((e == null) || !e.getInUse())
 						{
 							charged = false;
 							break;
@@ -89,12 +97,12 @@ public class L2SkillElemental extends L2Skill
 			else
 			{
 				charged = false;
-				for (int i = 0; i < _seeds.length; i++)
+				for (int _seed : _seeds)
 				{
-					if (_seeds[i] != 0)
+					if (_seed != 0)
 					{
-						L2Effect e = target.getFirstEffect(_seeds[i]);
-						if (e != null && e.getInUse())
+						L2Effect e = target.getFirstEffect(_seed);
+						if ((e != null) && e.getInUse())
 						{
 							charged = true;
 							break;

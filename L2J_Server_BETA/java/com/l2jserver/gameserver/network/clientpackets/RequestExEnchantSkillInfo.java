@@ -21,11 +21,7 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillInfo;
 
 /**
- * Format (ch) dd
- * c: (id) 0xD0
- * h: (subid) 0x06
- * d: skill id
- * d: skill lvl
+ * Format (ch) dd c: (id) 0xD0 h: (subid) 0x06 d: skill id d: skill lvl
  * @author -Wooden-
  */
 public final class RequestExEnchantSkillInfo extends L2GameClientPacket
@@ -45,29 +41,39 @@ public final class RequestExEnchantSkillInfo extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (_skillId <= 0 || _skillLvl <= 0) // minimal sanity check
+		if ((_skillId <= 0) || (_skillLvl <= 0))
+		{
 			return;
-
+		}
+		
 		L2PcInstance activeChar = getClient().getActiveChar();
 		
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		if (activeChar.getLevel() < 76)
+		{
 			return;
+		}
 		
 		final L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLvl);
-		if (skill == null || skill.getId() != _skillId)
+		if ((skill == null) || (skill.getId() != _skillId))
 		{
 			return;
 		}
 		
 		if (EnchantGroupsData.getInstance().getSkillEnchantmentBySkillId(_skillId) == null)
+		{
 			return;
+		}
 		
 		int playerSkillLvl = activeChar.getSkillLevel(_skillId);
-		if (playerSkillLvl == -1 || playerSkillLvl != _skillLvl)
+		if ((playerSkillLvl == -1) || (playerSkillLvl != _skillLvl))
+		{
 			return;
+		}
 		
 		activeChar.sendPacket(new ExEnchantSkillInfo(_skillId, _skillLvl));
 	}

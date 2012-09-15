@@ -237,7 +237,8 @@ public final class RequestRestartPoint extends L2GameClientPacket
 				{
 					activeChar.doRevive(100.00);
 				}
-				else // Festival Participant
+				else
+				// Festival Participant
 				{
 					instanceId = activeChar.getInstanceId();
 					loc = new Location(activeChar);

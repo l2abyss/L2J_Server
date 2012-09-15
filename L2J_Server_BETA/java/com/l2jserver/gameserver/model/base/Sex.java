@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.model.base;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.2.4.1 $ $Date: 2005/03/27 15:29:32 $
  */
 public class Sex

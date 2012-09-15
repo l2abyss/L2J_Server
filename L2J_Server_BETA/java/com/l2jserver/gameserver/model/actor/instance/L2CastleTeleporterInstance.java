@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import gnu.trove.procedure.TObjectProcedure;
-
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +27,8 @@ import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
+
+import gnu.trove.procedure.TObjectProcedure;
 
 /**
  * @author Kerberos
@@ -60,13 +60,17 @@ public final class L2CastleTeleporterInstance extends L2Npc
 			int delay;
 			if (!getTask())
 			{
-				if (getCastle().getSiege().getIsInProgress() && getCastle().getSiege().getControlTowerCount() == 0)
+				if (getCastle().getSiege().getIsInProgress() && (getCastle().getSiege().getControlTowerCount() == 0))
+				{
 					delay = 480000;
+				}
 				else
+				{
 					delay = 30000;
+				}
 				
 				setTask(true);
-				ThreadPoolManager.getInstance().scheduleGeneral(new oustAllPlayers(), delay );
+				ThreadPoolManager.getInstance().scheduleGeneral(new oustAllPlayers(), delay);
 			}
 			
 			String filename = "data/html/castleteleporter/MassGK-1.htm";
@@ -84,13 +88,19 @@ public final class L2CastleTeleporterInstance extends L2Npc
 		String filename;
 		if (!getTask())
 		{
-			if (getCastle().getSiege().getIsInProgress() && getCastle().getSiege().getControlTowerCount() == 0)
+			if (getCastle().getSiege().getIsInProgress() && (getCastle().getSiege().getControlTowerCount() == 0))
+			{
 				filename = "data/html/castleteleporter/MassGK-2.htm";
+			}
 			else
+			{
 				filename = "data/html/castleteleporter/MassGK.htm";
+			}
 		}
 		else
+		{
 			filename = "data/html/castleteleporter/MassGK-1.htm";
+		}
 		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
@@ -139,7 +149,9 @@ public final class L2CastleTeleporterInstance extends L2Npc
 		public final boolean execute(final L2PcInstance player)
 		{
 			if (_region == MapRegionManager.getInstance().getMapRegionLocId(player.getX(), player.getY()))
+			{
 				player.sendPacket(_cs);
+			}
 			return true;
 		}
 	}

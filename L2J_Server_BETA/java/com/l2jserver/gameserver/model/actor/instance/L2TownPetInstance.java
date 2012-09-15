@@ -28,7 +28,6 @@ import com.l2jserver.util.Rnd;
 /**
  * @author Kerberos
  */
-
 public class L2TownPetInstance extends L2Npc
 {
 	int randomX, randomY, spawnX, spawnY;
@@ -39,13 +38,18 @@ public class L2TownPetInstance extends L2Npc
 		setInstanceType(InstanceType.L2TownPetInstance);
 		
 		if (Config.ALLOW_PET_WALKERS)
+		{
 			ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new RandomWalkTask(), 2000, 4000);
+		}
 	}
 	
 	@Override
 	public void onAction(L2PcInstance player, boolean interact)
 	{
-		if (!canTarget(player)) return;
+		if (!canTarget(player))
+		{
+			return;
+		}
 		
 		if (this != player.getTarget())
 		{
@@ -80,17 +84,23 @@ public class L2TownPetInstance extends L2Npc
 		spawnX = getX();
 		spawnY = getY();
 	}
+	
 	public class RandomWalkTask implements Runnable
 	{
 		@Override
 		public void run()
 		{
-			if(!isInActiveRegion()) return; // but rather the AI should be turned off completely..
-			randomX = spawnX + Rnd.get(2*50)-50;
-			randomY = spawnY + Rnd.get(2*50)-50;
+			if (!isInActiveRegion())
+			{
+				return; // but rather the AI should be turned off completely..
+			}
+			randomX = (spawnX + Rnd.get(2 * 50)) - 50;
+			randomY = (spawnY + Rnd.get(2 * 50)) - 50;
 			setRunning();
 			if ((randomX != getX()) && (randomY != getY()))
-				getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(randomX,randomY,getZ(),0));
+			{
+				getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(randomX, randomY, getZ(), 0));
+			}
 		}
 	}
 }

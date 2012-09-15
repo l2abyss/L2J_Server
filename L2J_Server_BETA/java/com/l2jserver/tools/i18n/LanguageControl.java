@@ -53,7 +53,8 @@ public class LanguageControl extends Control
 			String bundleName = toBundleName(baseName, locale);
 			String resourceName = LANGUAGES_DIRECTORY + toResourceName(bundleName, format);
 			
-			try (FileInputStream fis = new FileInputStream(resourceName); BufferedInputStream bis = new BufferedInputStream(fis))
+			try (FileInputStream fis = new FileInputStream(resourceName);
+				BufferedInputStream bis = new BufferedInputStream(fis))
 			{
 				bundle = new PropertyResourceBundle(bis);
 			}

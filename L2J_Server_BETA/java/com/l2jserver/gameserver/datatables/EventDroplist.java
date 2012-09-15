@@ -29,7 +29,7 @@ import com.l2jserver.gameserver.script.EventDrop;
  * Each Special Event has a start and end date to stop to drop extra Items automatically.
  */
 public class EventDroplist
-{	
+{
 	/**
 	 * The table containing all DataDrop object
 	 */

@@ -34,7 +34,6 @@ import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SellList;
 import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 
-
 /**
  * @author Kerberos
  */
@@ -73,7 +72,9 @@ public class L2MerchantSummonInstance extends L2ServitorInstance
 			L2WorldRegion oldRegion = getWorldRegion();
 			decayMe();
 			if (oldRegion != null)
+			{
 				oldRegion.removeFromZones(this);
+			}
 			getKnownList().removeAllKnownObjects();
 			setTarget(null);
 		}
@@ -176,7 +177,9 @@ public class L2MerchantSummonInstance extends L2ServitorInstance
 				player.getAI().setIntention(CtrlIntention.AI_INTENTION_INTERACT, this);
 			}
 			else
+			{
 				showMessageWindow(player);
+			}
 		}
 		// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
 		player.sendPacket(ActionFailed.STATIC_PACKET);
@@ -190,7 +193,9 @@ public class L2MerchantSummonInstance extends L2ServitorInstance
 		if (actualCommand.equalsIgnoreCase("Buy"))
 		{
 			if (st.countTokens() < 1)
+			{
 				return;
+			}
 			
 			final int val = Integer.parseInt(st.nextToken());
 			showBuyWindow(player, val);
@@ -208,18 +213,20 @@ public class L2MerchantSummonInstance extends L2ServitorInstance
 		player.tempInventoryDisable();
 		
 		if (Config.DEBUG)
+		{
 			_log.fine("Showing buylist");
+		}
 		
 		L2TradeList list = TradeController.getInstance().getBuyList(val);
 		
-		if (list != null && list.getNpcId().equals(String.valueOf(getNpcId())))
+		if ((list != null) && list.getNpcId().equals(String.valueOf(getNpcId())))
 		{
 			player.sendPacket(new BuyList(list, player.getAdena(), taxRate));
 			player.sendPacket(new ExBuySellListPacket(player, list, taxRate, false));
 		}
 		else
 		{
-			_log.warning("possible client hacker: "+player.getName()+" attempting to buy from GM shop! < Ban him!");
+			_log.warning("possible client hacker: " + player.getName() + " attempting to buy from GM shop! < Ban him!");
 			_log.warning("buylist id:" + val);
 		}
 		
@@ -229,12 +236,16 @@ public class L2MerchantSummonInstance extends L2ServitorInstance
 	protected final void showSellWindow(L2PcInstance player)
 	{
 		if (Config.DEBUG)
+		{
 			_log.fine("Showing selllist");
+		}
 		
 		player.sendPacket(new SellList(player));
 		
 		if (Config.DEBUG)
+		{
 			_log.fine("Showing sell window");
+		}
 		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
@@ -242,7 +253,7 @@ public class L2MerchantSummonInstance extends L2ServitorInstance
 	private void showMessageWindow(L2PcInstance player)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
-		final String filename = "data/html/merchant/"+getNpcId()+".htm";
+		final String filename = "data/html/merchant/" + getNpcId() + ".htm";
 		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));

@@ -52,7 +52,7 @@ public enum L2EtcItemType implements L2ItemType
 	ANCIENT_CRYSTAL_ENCHANT_AM(30, "ancient_crystal_enchant_am"),
 	RUNE_SELECT(31, "rune_select"),
 	RUNE(32, "rune"),
-
+	
 	// L2J CUSTOM, BACKWARD COMPATIBILITY
 	SHOT(33, "Shot"),
 	HERB(34, "Herb");

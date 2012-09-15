@@ -26,7 +26,7 @@ public final class RequestSkillList extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		//Trigger skill.
+		// Trigger skill.
 	}
 	
 	@Override

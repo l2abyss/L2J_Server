@@ -40,7 +40,9 @@ public class L2NoLandingZone extends L2ZoneType
 			dismountDelay = Integer.parseInt(value);
 		}
 		else
+		{
 			super.setParameter(name, value);
+		}
 	}
 	
 	@Override

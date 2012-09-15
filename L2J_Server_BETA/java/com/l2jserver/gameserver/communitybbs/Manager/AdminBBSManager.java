@@ -37,13 +37,11 @@ public class AdminBBSManager extends BaseBBSManager
 		}
 		if (command.startsWith("admin_bbs"))
 		{
-			separateAndSend("<html><body><br><br><center>This Page is only an exemple :)<br><br>command=" + command
-					+ "</center></body></html>", activeChar);
+			separateAndSend("<html><body><br><br><center>This Page is only an exemple :)<br><br>command=" + command + "</center></body></html>", activeChar);
 		}
 		else
 		{
-			ShowBoard sb = new ShowBoard("<html><body><br><br><center>the command: " + command
-					+ " is not implemented yet</center><br><br></body></html>", "101");
+			ShowBoard sb = new ShowBoard("<html><body><br><br><center>the command: " + command + " is not implemented yet</center><br><br></body></html>", "101");
 			activeChar.sendPacket(sb);
 			activeChar.sendPacket(new ShowBoard(null, "102"));
 			activeChar.sendPacket(new ShowBoard(null, "103"));

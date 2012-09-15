@@ -30,17 +30,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class ForumsBBSManager extends BaseBBSManager
 {
 	private static Logger _log = Logger.getLogger(ForumsBBSManager.class.getName());
-	private List<Forum> _table;
+	private final List<Forum> _table;
 	private int _lastid = 1;
-	
-	/**
-	 * Gets the single instance of ForumsBBSManager.
-	 * @return single instance of ForumsBBSManager
-	 */
-	public static ForumsBBSManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
 	
 	/**
 	 * Instantiates a new forums bbs manager.
@@ -71,7 +62,9 @@ public class ForumsBBSManager extends BaseBBSManager
 	public void initRoot()
 	{
 		for (Forum f : _table)
+		{
 			f.vload();
+		}
 		_log.info("Loaded " + _table.size() + " forums. Last forum id used: " + _lastid);
 	}
 	
@@ -82,7 +75,9 @@ public class ForumsBBSManager extends BaseBBSManager
 	public void addForum(Forum ff)
 	{
 		if (ff == null)
+		{
 			return;
+		}
 		
 		_table.add(ff);
 		
@@ -160,6 +155,15 @@ public class ForumsBBSManager extends BaseBBSManager
 	public void parsewrite(String ar1, String ar2, String ar3, String ar4, String ar5, L2PcInstance activeChar)
 	{
 		
+	}
+	
+	/**
+	 * Gets the single instance of ForumsBBSManager.
+	 * @return single instance of ForumsBBSManager
+	 */
+	public static ForumsBBSManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

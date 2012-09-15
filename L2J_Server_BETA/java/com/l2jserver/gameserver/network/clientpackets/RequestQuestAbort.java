@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.network.serverpackets.QuestList;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.3.4.2 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class RequestQuestAbort extends L2GameClientPacket
@@ -43,7 +42,9 @@ public final class RequestQuestAbort extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		Quest qe = QuestManager.getInstance().getQuest(_questId);
 		if (qe != null)
@@ -57,13 +58,17 @@ public final class RequestQuestAbort extends L2GameClientPacket
 			else
 			{
 				if (Config.DEBUG)
-					_log.info("Player '"+activeChar.getName()+"' try to abort quest "+qe.getName()+" but he didn't have it started.");
+				{
+					_log.info("Player '" + activeChar.getName() + "' try to abort quest " + qe.getName() + " but he didn't have it started.");
+				}
 			}
 		}
 		else
 		{
 			if (Config.DEBUG)
-				_log.warning("Quest (id='"+_questId+"') not found.");
+			{
+				_log.warning("Quest (id='" + _questId + "') not found.");
+			}
 		}
 	}
 	

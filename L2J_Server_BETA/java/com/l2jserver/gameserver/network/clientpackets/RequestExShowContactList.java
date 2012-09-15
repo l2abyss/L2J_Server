@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.network.serverpackets.ExShowContactList;
 
 /**
  * Format: (ch)
- * 
  * @author mrTJO & UnAfraid
  */
 public final class RequestExShowContactList extends L2GameClientPacket
@@ -37,11 +36,15 @@ public final class RequestExShowContactList extends L2GameClientPacket
 	public void runImpl()
 	{
 		if (!Config.ALLOW_MAIL)
+		{
 			return;
+		}
 		
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		activeChar.sendPacket(new ExShowContactList(activeChar));
 	}

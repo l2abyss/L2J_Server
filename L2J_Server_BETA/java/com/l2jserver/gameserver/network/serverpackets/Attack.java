@@ -41,14 +41,20 @@ public class Attack extends L2GameServerPacket
 				return;
 			}
 			if (soulshot)
+			{
 				_flags = HITFLAG_USESS | _ssGrade;
+			}
 			if (crit)
+			{
 				_flags |= HITFLAG_CRIT;
+			}
 			// dirty fix for lags on olympiad
-			if (shld > 0 && !(target instanceof L2PcInstance && ((L2PcInstance) target).isInOlympiadMode()))
+			if ((shld > 0) && !((target instanceof L2PcInstance) && ((L2PcInstance) target).isInOlympiadMode()))
+			{
 				_flags |= HITFLAG_SHLD;
-			// if (shld > 0)
-			// _flags |= HITFLAG_SHLD;
+				// if (shld > 0)
+				// _flags |= HITFLAG_SHLD;
+			}
 		}
 	}
 	
@@ -128,12 +134,14 @@ public class Attack extends L2GameServerPacket
 		writeH(_hits.length - 1);
 		// prevent sending useless packet while there is only one target.
 		if (_hits.length > 1)
+		{
 			for (Hit hit : _hits)
 			{
 				writeD(hit._targetId);
 				writeD(hit._damage);
 				writeC(hit._flags);
 			}
+		}
 		
 		writeD(_tx);
 		writeD(_ty);

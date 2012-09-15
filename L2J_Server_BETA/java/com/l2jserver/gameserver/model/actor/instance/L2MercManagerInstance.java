@@ -37,10 +37,14 @@ public final class L2MercManagerInstance extends L2MerchantInstance
 	{
 		int condition = validateCondition(player);
 		if (condition <= COND_ALL_FALSE)
+		{
 			return;
+		}
 		
 		if (condition == COND_BUSY_BECAUSE_OF_SIEGE)
+		{
 			return;
+		}
 		else if (condition == COND_OWNER)
 		{
 			StringTokenizer st = new StringTokenizer(command, " ");
@@ -48,12 +52,16 @@ public final class L2MercManagerInstance extends L2MerchantInstance
 			
 			String val = "";
 			if (st.countTokens() >= 1)
+			{
 				val = st.nextToken();
+			}
 			
 			if (actualCommand.equalsIgnoreCase("hire"))
 			{
 				if (val.isEmpty())
+				{
 					return;
+				}
 				
 				showBuyWindow(player, Integer.parseInt(val));
 				return;
@@ -70,9 +78,13 @@ public final class L2MercManagerInstance extends L2MerchantInstance
 		
 		int condition = validateCondition(player);
 		if (condition == COND_BUSY_BECAUSE_OF_SIEGE)
+		{
 			filename = "data/html/mercmanager/mercmanager-busy.htm"; // Busy because of siege
-		else if (condition == COND_OWNER) // Clan owns castle
+		}
+		else if (condition == COND_OWNER)
+		{
 			filename = "data/html/mercmanager/mercmanager.htm"; // Owner message window
+		}
 		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
@@ -84,16 +96,20 @@ public final class L2MercManagerInstance extends L2MerchantInstance
 	
 	private int validateCondition(L2PcInstance player)
 	{
-		if (getCastle() != null && getCastle().getCastleId() > 0)
+		if ((getCastle() != null) && (getCastle().getCastleId() > 0))
 		{
 			if (player.getClan() != null)
 			{
 				if (getCastle().getSiege().getIsInProgress())
+				{
 					return COND_BUSY_BECAUSE_OF_SIEGE; // Busy because of siege
+				}
 				else if (getCastle().getOwnerId() == player.getClanId()) // Clan owns castle
 				{
 					if ((player.getClanPrivileges() & L2Clan.CP_CS_MERCENARIES) == L2Clan.CP_CS_MERCENARIES)
+					{
 						return COND_OWNER;
+					}
 				}
 			}
 		}

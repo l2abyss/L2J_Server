@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.2.2.1.2.4 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class RequestPrivateStoreSell extends L2GameClientPacket
@@ -42,7 +41,7 @@ public final class RequestPrivateStoreSell extends L2GameClientPacket
 	{
 		_storePlayerId = readD();
 		int count = readD();
-		if (count <= 0 || count > Config.MAX_ITEM_IN_PACKET || count * BATCH_LENGTH != _buf.remaining())
+		if ((count <= 0) || (count > Config.MAX_ITEM_IN_PACKET) || ((count * BATCH_LENGTH) != _buf.remaining()))
 		{
 			return;
 		}
@@ -52,12 +51,12 @@ public final class RequestPrivateStoreSell extends L2GameClientPacket
 		{
 			int objectId = readD();
 			int itemId = readD();
-			readH(); //TODO analyse this
-			readH(); //TODO analyse this
+			readH(); // TODO analyse this
+			readH(); // TODO analyse this
 			long cnt = readQ();
 			long price = readQ();
 			
-			if (objectId < 1 || itemId < 1 || cnt < 1 || price < 0)
+			if ((objectId < 1) || (itemId < 1) || (cnt < 1) || (price < 0))
 			{
 				_items = null;
 				return;
@@ -71,7 +70,9 @@ public final class RequestPrivateStoreSell extends L2GameClientPacket
 	{
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
+		{
 			return;
+		}
 		
 		if (_items == null)
 		{
@@ -87,24 +88,36 @@ public final class RequestPrivateStoreSell extends L2GameClientPacket
 		
 		L2PcInstance object = L2World.getInstance().getPlayer(_storePlayerId);
 		if (object == null)
+		{
 			return;
+		}
 		
 		L2PcInstance storePlayer = object;
 		if (!player.isInsideRadius(storePlayer, INTERACTION_DISTANCE, true, false))
+		{
 			return;
+		}
 		
-		if (player.getInstanceId() != storePlayer.getInstanceId() && player.getInstanceId() != -1)
+		if ((player.getInstanceId() != storePlayer.getInstanceId()) && (player.getInstanceId() != -1))
+		{
 			return;
+		}
 		
 		if (storePlayer.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_BUY)
+		{
 			return;
+		}
 		
 		if (player.isCursedWeaponEquipped())
+		{
 			return;
+		}
 		
 		TradeList storeList = storePlayer.getBuyList();
 		if (storeList == null)
+		{
 			return;
+		}
 		
 		if (!player.getAccessLevel().allowTransaction())
 		{

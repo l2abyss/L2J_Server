@@ -35,14 +35,16 @@ public final class RequestSentPostList extends L2GameClientPacket
 	public void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null || !Config.ALLOW_MAIL)
-			return;
-		
-		/*if (!activeChar.isInsideZone(ZONE_PEACE))
+		if ((activeChar == null) || !Config.ALLOW_MAIL)
 		{
-			activeChar.sendPacket(SystemMessageId.CANT_USE_MAIL_OUTSIDE_PEACE_ZONE);
 			return;
-		}*/
+		}
+		
+		// if (!activeChar.isInsideZone(ZoneId.PEACE))
+		// {
+		// activeChar.sendPacket(SystemMessageId.CANT_USE_MAIL_OUTSIDE_PEACE_ZONE);
+		// return;
+		// }
 		
 		activeChar.sendPacket(new ExShowSentPostList(activeChar.getObjectId()));
 	}

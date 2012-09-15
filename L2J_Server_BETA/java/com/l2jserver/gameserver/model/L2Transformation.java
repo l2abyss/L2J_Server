@@ -17,8 +17,7 @@ package com.l2jserver.gameserver.model;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public abstract class L2Transformation implements Cloneable, Runnable
 {
@@ -36,11 +35,10 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	private L2PcInstance _player;
 	
 	/**
-	 * 
 	 * @param id Internal id that server will use to associate this transformation
 	 * @param graphicalId Client visible transformation id
 	 * @param collisionRadius Collision Radius of the player while transformed
-	 * @param collisionHeight  Collision Height of the player while transformed
+	 * @param collisionHeight Collision Height of the player while transformed
 	 */
 	public L2Transformation(int id, int graphicalId, double collisionRadius, double collisionHeight)
 	{
@@ -52,10 +50,9 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	}
 	
 	/**
-	 * 
 	 * @param id Internal id(will be used also as client graphical id) that server will use to associate this transformation
 	 * @param collisionRadius Collision Radius of the player while transformed
-	 * @param collisionHeight  Collision Height of the player while transformed
+	 * @param collisionHeight Collision Height of the player while transformed
 	 */
 	public L2Transformation(int id, double collisionRadius, double collisionHeight)
 	{
@@ -63,9 +60,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	}
 	
 	/**
-	 * 
-	 * @param id Internal id(will be used also as client graphical id) that server will use to associate this transformation
-	 * Used for stances
+	 * @param id Internal id(will be used also as client graphical id) that server will use to associate this transformation Used for stances
 	 */
 	public L2Transformation(int id)
 	{
@@ -105,7 +100,9 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	public double getCollisionRadius()
 	{
 		if (isStance())
+		{
 			return _player.getCollisionRadius();
+		}
 		return _collisionRadius;
 	}
 	
@@ -115,7 +112,9 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	public double getCollisionHeight()
 	{
 		if (isStance())
+		{
 			return _player.getCollisionHeight();
+		}
 		return _collisionHeight;
 	}
 	
@@ -165,7 +164,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	{
 		try
 		{
-			L2Transformation transformation = (L2Transformation) this.clone();
+			L2Transformation transformation = (L2Transformation) clone();
 			transformation.setPlayer(player);
 			return transformation;
 		}
@@ -197,10 +196,10 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	{
 		return true;
 	}
-
+	
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName()+" [_id=" + _id + ", _graphicalId=" + _graphicalId + ", _collisionRadius=" + _collisionRadius + ", _collisionHeight=" + _collisionHeight + ", _isStance=" + _isStance + "]";
+		return getClass().getSimpleName() + " [_id=" + _id + ", _graphicalId=" + _graphicalId + ", _collisionRadius=" + _collisionRadius + ", _collisionHeight=" + _collisionHeight + ", _isStance=" + _isStance + "]";
 	}
 }

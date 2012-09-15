@@ -21,9 +21,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 
 /**
- * 
  * @author DrHouse
- *
  */
 public class DropProtection implements Runnable
 {
@@ -54,16 +52,23 @@ public class DropProtection implements Runnable
 	public synchronized boolean tryPickUp(L2PcInstance actor)
 	{
 		if (!_isProtected)
+		{
 			return true;
+		}
 		
 		if (_owner == actor)
+		{
 			return true;
+		}
 		
-		if (_owner.getParty() != null && _owner.getParty() == actor.getParty())
+		if ((_owner.getParty() != null) && (_owner.getParty() == actor.getParty()))
+		{
 			return true;
+		}
 		
-		/*if (_owner.getClan() != null && _owner.getClan() == actor.getClan())
-			return true;*/
+		/*
+		 * if (_owner.getClan() != null && _owner.getClan() == actor.getClan()) return true;
+		 */
 		
 		return false;
 	}
@@ -76,7 +81,9 @@ public class DropProtection implements Runnable
 	public synchronized void unprotect()
 	{
 		if (_task != null)
+		{
 			_task.cancel(false);
+		}
 		_isProtected = false;
 		_owner = null;
 		_task = null;
@@ -89,7 +96,9 @@ public class DropProtection implements Runnable
 		_isProtected = true;
 		
 		if ((_owner = player) == null)
+		{
 			throw new NullPointerException("Trying to protect dropped item to null owner");
+		}
 		
 		_task = ThreadPoolManager.getInstance().scheduleGeneral(this, PROTECTED_MILLIS_TIME);
 	}

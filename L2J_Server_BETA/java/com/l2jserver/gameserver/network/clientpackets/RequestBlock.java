@@ -35,9 +35,9 @@ public final class RequestBlock extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		_type = readD(); //0x00 - block, 0x01 - unblock, 0x03 - allblock, 0x04 - allunblock
+		_type = readD(); // 0x00 - block, 0x01 - unblock, 0x03 - allblock, 0x04 - allunblock
 		
-		if (_type == BLOCK || _type == UNBLOCK)
+		if ((_type == BLOCK) || (_type == UNBLOCK))
 		{
 			_name = readS();
 		}
@@ -51,7 +51,9 @@ public final class RequestBlock extends L2GameClientPacket
 		final int targetAL = CharNameTable.getInstance().getAccessLevelById(targetId);
 		
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		switch (_type)
 		{
@@ -73,22 +75,28 @@ public final class RequestBlock extends L2GameClientPacket
 				}
 				
 				if (activeChar.getObjectId() == targetId)
+				{
 					return;
+				}
 				
 				if (_type == BLOCK)
+				{
 					BlockList.addToBlockList(activeChar, targetId);
+				}
 				else
+				{
 					BlockList.removeFromBlockList(activeChar, targetId);
+				}
 				break;
 			case BLOCKLIST:
 				BlockList.sendListToOwner(activeChar);
 				break;
 			case ALLBLOCK:
-				activeChar.sendPacket(SystemMessageId.MESSAGE_REFUSAL_MODE);//Update by rocknow
+				activeChar.sendPacket(SystemMessageId.MESSAGE_REFUSAL_MODE);
 				BlockList.setBlockAll(activeChar, true);
 				break;
 			case ALLUNBLOCK:
-				activeChar.sendPacket(SystemMessageId.MESSAGE_ACCEPTANCE_MODE);//Update by rocknow
+				activeChar.sendPacket(SystemMessageId.MESSAGE_ACCEPTANCE_MODE);
 				BlockList.setBlockAll(activeChar, false);
 				break;
 			default:

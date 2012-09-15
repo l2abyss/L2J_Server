@@ -23,15 +23,13 @@ import com.l2jserver.util.Rnd;
 
 /**
  * A not so primitive npoly zone
- *
- *
- * @author  durgus
+ * @author durgus
  */
 public class ZoneNPoly extends L2ZoneForm
 {
-	private Polygon _p;
-	private int _z1;
-	private int _z2;
+	private final Polygon _p;
+	private final int _z1;
+	private final int _z2;
 	
 	/**
 	 * @param x
@@ -50,7 +48,7 @@ public class ZoneNPoly extends L2ZoneForm
 	@Override
 	public boolean isInsideZone(int x, int y, int z)
 	{
-		return (_p.contains(x, y) && z >= _z1 && z <= _z2);
+		return (_p.contains(x, y) && (z >= _z1) && (z <= _z2));
 	}
 	
 	@Override
@@ -70,16 +68,15 @@ public class ZoneNPoly extends L2ZoneForm
 		{
 			test = Math.pow(_x[i] - x, 2) + Math.pow(_y[i] - y, 2);
 			if (test < shortestDist)
+			{
 				shortestDist = test;
+			}
 		}
 		
 		return Math.sqrt(shortestDist);
 	}
 	
-	/* getLowZ() / getHighZ() - These two functions were added to cope with the demand of the new
-	 * fishing algorithms, wich are now able to correctly place the hook in the water, thanks to getHighZ().
-	 * getLowZ() was added, considering potential future modifications.
-	 */
+	// getLowZ() / getHighZ() - These two functions were added to cope with the demand of the new fishing algorithms, wich are now able to correctly place the hook in the water, thanks to getHighZ(). getLowZ() was added, considering potential future modifications.
 	@Override
 	public int getLowZ()
 	{
@@ -91,7 +88,7 @@ public class ZoneNPoly extends L2ZoneForm
 	{
 		return _z2;
 	}
-
+	
 	@Override
 	public void visualizeZone(int z)
 	{
@@ -103,15 +100,17 @@ public class ZoneNPoly extends L2ZoneForm
 			int nextIndex = i + 1;
 			// ending point to first one
 			if (nextIndex == _x.length)
+			{
 				nextIndex = 0;
+			}
 			int vx = _x[nextIndex] - _x[i];
 			int vy = _y[nextIndex] - _y[i];
-			float lenght = (float) Math.sqrt(vx*vx + vy*vy);
+			float lenght = (float) Math.sqrt((vx * vx) + (vy * vy));
 			lenght /= STEP;
 			for (int o = 1; o <= lenght; o++)
 			{
-				float k = o/lenght;
-				dropDebugItem(PcInventory.ADENA_ID, 1, (int) (_x[i] + k*vx), (int) (_y[i] + k*vy), z);
+				float k = o / lenght;
+				dropDebugItem(PcInventory.ADENA_ID, 1, (int) (_x[i] + (k * vx)), (int) (_y[i] + (k * vy)), z);
 			}
 		}
 	}
@@ -130,12 +129,17 @@ public class ZoneNPoly extends L2ZoneForm
 		y = Rnd.get(_minY, _maxY);
 		
 		int antiBlocker = 0;
-		while (!_p.contains(x, y) && antiBlocker++ < 1000)
+		while (!_p.contains(x, y) && (antiBlocker++ < 1000))
 		{
 			x = Rnd.get(_minX, _maxX);
 			y = Rnd.get(_minY, _maxY);
 		}
 		
-		return new int[] { x, y, GeoEngine.getInstance().getHeight(x, y, _z1) };
+		return new int[]
+		{
+			x,
+			y,
+			GeoEngine.getInstance().getHeight(x, y, _z1)
+		};
 	}
 }

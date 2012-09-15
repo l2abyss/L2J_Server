@@ -15,9 +15,8 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 /**
- * Format: (c) S
- * S: pledge name?
- * @author  -Wooden-
+ * Format: (c) S S: pledge name?
+ * @author -Wooden-
  */
 public class RequestPledgeExtendedInfo extends L2GameClientPacket
 {
@@ -35,7 +34,7 @@ public class RequestPledgeExtendedInfo extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		//TODO: Implement
+		// TODO: Implement
 	}
 	
 	@Override

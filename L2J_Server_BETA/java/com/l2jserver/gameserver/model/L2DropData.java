@@ -17,12 +17,8 @@ package com.l2jserver.gameserver.model;
 import java.util.Arrays;
 
 /**
-/*
- *
- * Special thanks to nuocnam
- * Author: LittleVexy
- *
- * @version $Revision: 1.1.4.4 $ $Date: 2005/03/29 23:15:15 $
+ * Special thanks to nuocnam.
+ * @author LittleVexy
  */
 public class L2DropData
 {
@@ -106,6 +102,7 @@ public class L2DropData
 	{
 		_chance = chance;
 	}
+	
 	/**
 	 * Returns the stateID.
 	 * @return String[]
@@ -148,7 +145,7 @@ public class L2DropData
 	 */
 	public boolean isQuestDrop()
 	{
-		return _questID != null && _stateID != null;
+		return (_questID != null) && (_stateID != null);
 	}
 	
 	/**
@@ -158,8 +155,7 @@ public class L2DropData
 	@Override
 	public String toString()
 	{
-		String out = "ItemID: " + getItemId() + " Min: " + getMinDrop() +
-		" Max: " + getMaxDrop() + " Chance: " + (getChance() / 10000.0) + "%";
+		String out = "ItemID: " + getItemId() + " Min: " + getMinDrop() + " Max: " + getMaxDrop() + " Chance: " + (getChance() / 10000.0) + "%";
 		if (isQuestDrop())
 		{
 			out += " QuestID: " + getQuestID() + " StateID's: " + Arrays.toString(getStateIDs());
@@ -168,33 +164,35 @@ public class L2DropData
 		return out;
 	}
 	
-	/**
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode()
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + _itemId;
+		result = (prime * result) + _itemId;
 		return result;
 	}
 	
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj)
 	{
 		if (this == obj)
+		{
 			return true;
+		}
 		if (obj == null)
+		{
 			return false;
+		}
 		if (!(obj instanceof L2DropData))
+		{
 			return false;
+		}
 		final L2DropData other = (L2DropData) obj;
 		if (_itemId != other._itemId)
+		{
 			return false;
+		}
 		return true;
 	}
 }

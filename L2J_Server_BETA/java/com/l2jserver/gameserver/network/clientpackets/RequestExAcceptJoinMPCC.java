@@ -38,17 +38,19 @@ public final class RequestExAcceptJoinMPCC extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
-		if(player != null)
+		if (player != null)
 		{
 			L2PcInstance requestor = player.getActiveRequester();
 			SystemMessage sm;
 			if (requestor == null)
+			{
 				return;
+			}
 			
 			if (_response == 1)
 			{
 				boolean newCc = false;
-				if(!requestor.getParty().isInCommandChannel())
+				if (!requestor.getParty().isInCommandChannel())
 				{
 					new L2CommandChannel(requestor); // Create new CC
 					sm = SystemMessage.getSystemMessage(SystemMessageId.COMMAND_CHANNEL_FORMED);

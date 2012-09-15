@@ -33,7 +33,22 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 	private boolean _hasEvolve = false;
 	
 	// list of clan halls with evolve function, should be sorted
-	private static final int[] CH_WITH_EVOLVE = {36, 37, 38, 39, 40, 41, 51, 52, 53, 54, 55, 56, 57};
+	private static final int[] CH_WITH_EVOLVE =
+	{
+		36,
+		37,
+		38,
+		39,
+		40,
+		41,
+		51,
+		52,
+		53,
+		54,
+		55,
+		56,
+		57
+	};
 	
 	public L2ClanHallDoormenInstance(int objectID, L2NpcTemplate template)
 	{
@@ -50,7 +65,9 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 			{
 				StringTokenizer st = new StringTokenizer(command, " ");
 				if (st.countTokens() < 2)
+				{
 					return;
+				}
 				
 				st.nextToken();
 				boolean ok = false;
@@ -74,9 +91,13 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 				}
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				if (ok)
+				{
 					html.setFile(player.getHtmlPrefix(), "data/html/clanHallDoormen/evolve-ok.htm");
+				}
 				else
+				{
 					html.setFile(player.getHtmlPrefix(), "data/html/clanHallDoormen/evolve-no.htm");
+				}
 				player.sendPacket(html);
 				return;
 			}
@@ -109,7 +130,7 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 			}
 			else
 			{
-				if (owner != null && owner.getLeader() != null)
+				if ((owner != null) && (owner.getLeader() != null))
 				{
 					html.setFile(player.getHtmlPrefix(), "data/html/clanHallDoormen/doormen-no.htm");
 					html.replace("%leadername%", owner.getLeaderName());
@@ -123,7 +144,9 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 			}
 		}
 		else
+		{
 			return;
+		}
 		
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
@@ -159,8 +182,10 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 				{
 					_clanHall = ClanHallManager.getInstance().getNearbyClanHall(getX(), getY(), 500);
 					if (_clanHall != null)
+					{
 						_hasEvolve = Arrays.binarySearch(CH_WITH_EVOLVE, _clanHall.getId()) >= 0;
-						_init = true;
+					}
+					_init = true;
 				}
 			}
 		}
@@ -170,10 +195,12 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 	@Override
 	protected final boolean isOwnerClan(L2PcInstance player)
 	{
-		if (player.getClan() != null && getClanHall() != null)
+		if ((player.getClan() != null) && (getClanHall() != null))
 		{
 			if (player.getClanId() == getClanHall().getOwnerId())
+			{
 				return true;
+			}
 		}
 		return false;
 	}

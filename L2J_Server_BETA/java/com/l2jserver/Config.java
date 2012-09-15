@@ -2281,7 +2281,7 @@ public final class Config
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.WARNING, "Error while loading Player XP percent lost!",  e);
+				_log.log(Level.WARNING, "Error while loading Player XP percent lost!", e);
 			}
 			
 			String[] rateDropItemsById = RatesSettings.getProperty("RateDropItemsById", "").split(";");
@@ -4315,7 +4315,8 @@ public final class Config
 				_log.log(Level.INFO, "Network Config: ipconfig.xml exists using manual configuration...");
 				parseFile(new File(IP_CONFIG_FILE));
 			}
-			else // Auto configuration...
+			else
+			// Auto configuration...
 			{
 				_log.log(Level.INFO, "Network Config: ipconfig.xml doesn't exists using automatic configuration...");
 				autoIpConfig();
@@ -4363,7 +4364,7 @@ public final class Config
 		protected void autoIpConfig()
 		{
 			String externalIp = "127.0.0.1";
-			try 
+			try
 			{
 				URL autoIp = new URL("http://api.externalip.net/ip/");
 				try (BufferedReader in = new BufferedReader(new InputStreamReader(autoIp.openStream())))
@@ -4387,15 +4388,21 @@ public final class Config
 					NetworkInterface ni = niList.nextElement();
 					
 					if (!ni.isUp() || ni.isVirtual())
+					{
 						continue;
+					}
 					
-					if (!ni.isLoopback() && ni.getHardwareAddress().length != 6)
+					if (!ni.isLoopback() && (ni.getHardwareAddress().length != 6))
+					{
 						continue;
+					}
 					
 					for (InterfaceAddress ia : ni.getInterfaceAddresses())
 					{
 						if (ia.getAddress() instanceof Inet6Address)
+						{
 							continue;
+						}
 						
 						sub.setIPAddress(ia.getAddress().getHostAddress());
 						sub.setMaskedBits(ia.getNetworkPrefixLength());

@@ -49,8 +49,7 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 	private int _currentPos;
 	
 	/**
-	 * Constructor of L2CharacterAI.<BR><BR>
-	 *
+	 * Constructor of L2CharacterAI.
 	 * @param accessor The AI accessor of the L2Character
 	 */
 	public L2NpcWalkerAI(L2Character.AIAccessor accessor)
@@ -58,16 +57,22 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 		super(accessor);
 		
 		if (!Config.ALLOW_NPC_WALKERS)
+		{
 			return;
+		}
 		
 		_route = NpcWalkerRoutesData.getInstance().getRouteForNpc(getActor().getNpcId());
 		
 		// Here we need 1 second initial delay cause getActor().hasAI() will return null...
 		// Constructor of L2NpcWalkerAI is called faster then ai object is attached in L2NpcWalkerInstance
 		if (_route != null)
+		{
 			ThreadPoolManager.getInstance().scheduleAiAtFixedRate(this, 1000, 1000);
+		}
 		else
-			_log.warning(getClass().getSimpleName()+": Missing route data! Npc: "+_actor);
+		{
+			_log.warning(getClass().getSimpleName() + ": Missing route data! Npc: " + _actor);
+		}
 	}
 	
 	@Override
@@ -80,7 +85,9 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 	protected void onEvtThink()
 	{
 		if (!Config.ALLOW_NPC_WALKERS)
+		{
 			return;
+		}
 		
 		if (isWalkingToNextPoint())
 		{
@@ -89,7 +96,9 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 		}
 		
 		if (_nextMoveTime < System.currentTimeMillis())
+		{
 			walkToLocation();
+		}
 	}
 	
 	/**
@@ -120,20 +129,26 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 			NpcStringId npcString = _route.get(_currentPos).getNpcString();
 			String chat = null;
 			if (npcString == null)
+			{
 				chat = _route.get(_currentPos).getChatText();
+			}
 			
-			if ((npcString != null) || (chat != null && !chat.isEmpty()))
+			if ((npcString != null) || ((chat != null) && !chat.isEmpty()))
+			{
 				getActor().broadcastChat(chat, npcString);
+			}
 			
-			//time in millis
+			// time in millis
 			long delay = _route.get(_currentPos).getDelay() * 1000;
 			
-			//sleeps between each move
+			// sleeps between each move
 			if (delay < 0)
 			{
 				delay = DEFAULT_MOVE_DELAY;
 				if (Config.DEVELOPER)
+				{
 					_log.warning(getClass().getSimpleName() + ": Wrong Delay Set in Npc Walker Functions = " + delay + " secs, using default delay: " + DEFAULT_MOVE_DELAY + " secs instead.");
+				}
 			}
 			
 			_nextMoveTime = System.currentTimeMillis() + delay;
@@ -144,27 +159,34 @@ public class L2NpcWalkerAI extends L2CharacterAI implements Runnable
 	private void walkToLocation()
 	{
 		if (_currentPos < (_route.size() - 1))
+		{
 			_currentPos++;
+		}
 		else
+		{
 			_currentPos = 0;
+		}
 		
 		boolean moveType = _route.get(_currentPos).getRunning();
 		
 		/**
-		 * false - walking
-		 * true - Running
+		 * false - walking true - Running
 		 */
 		if (moveType)
+		{
 			getActor().setRunning();
+		}
 		else
+		{
 			getActor().setWalking();
+		}
 		
-		//now we define destination
+		// now we define destination
 		int destinationX = _route.get(_currentPos).getMoveX();
 		int destinationY = _route.get(_currentPos).getMoveY();
 		int destinationZ = _route.get(_currentPos).getMoveZ();
 		
-		//notify AI of MOVE_TO
+		// notify AI of MOVE_TO
 		setWalkingToNextPoint(true);
 		
 		setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(destinationX, destinationY, destinationZ, 0));

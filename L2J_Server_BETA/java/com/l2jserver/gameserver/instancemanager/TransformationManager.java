@@ -22,13 +22,13 @@ import com.l2jserver.gameserver.model.L2Transformation;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * @author  KenM
+ * @author KenM
  */
 public class TransformationManager
 {
 	private static final Logger _log = Logger.getLogger(TransformationManager.class.getName());
 	
-	private Map<Integer, L2Transformation> _transformations = new HashMap<>();
+	private final Map<Integer, L2Transformation> _transformations = new HashMap<>();
 	
 	protected TransformationManager()
 	{
@@ -41,7 +41,7 @@ public class TransformationManager
 	
 	public boolean transformPlayer(int id, L2PcInstance player)
 	{
-		L2Transformation template = this.getTransformationById(id);
+		L2Transformation template = getTransformationById(id);
 		if (template != null)
 		{
 			L2Transformation trans = template.createTransformationForPlayer(player);

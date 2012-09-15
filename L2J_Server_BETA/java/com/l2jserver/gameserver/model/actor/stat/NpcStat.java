@@ -31,18 +31,28 @@ public class NpcStat extends CharStat
 	}
 	
 	@Override
-	public L2Npc getActiveChar() { return (L2Npc)super.getActiveChar(); }
+	public L2Npc getActiveChar()
+	{
+		return (L2Npc) super.getActiveChar();
+	}
 	
 	@Override
-	public int getWalkSpeed(){ return (int) calcStat(Stats.WALK_SPEED, getActiveChar().getTemplate().getBaseWalkSpd(), null, null);}
+	public int getWalkSpeed()
+	{
+		return (int) calcStat(Stats.WALK_SPEED, getActiveChar().getTemplate().getBaseWalkSpd(), null, null);
+	}
 	
 	@Override
 	public float getMovementSpeedMultiplier()
 	{
 		if (getActiveChar() == null)
+		{
 			return 1;
+		}
 		if (getActiveChar().isRunning())
-			return getRunSpeed() * 1f / getActiveChar().getTemplate().getBaseRunSpd();
-		return getWalkSpeed() * 1f / getActiveChar().getTemplate().getBaseWalkSpd();
+		{
+			return (getRunSpeed() * 1f) / getActiveChar().getTemplate().getBaseRunSpd();
+		}
+		return (getWalkSpeed() * 1f) / getActiveChar().getTemplate().getBaseWalkSpd();
 	}
 }

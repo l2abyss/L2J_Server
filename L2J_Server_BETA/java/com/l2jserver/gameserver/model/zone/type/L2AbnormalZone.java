@@ -19,10 +19,8 @@ import com.l2jserver.gameserver.model.effects.AbnormalEffect;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
- * L2AbnormalZone zones give entering players abnormal effects
- * Default effect is big head
- *
- * @author  durgus
+ * L2AbnormalZone zones give entering players abnormal effects Default effect is big head
+ * @author durgus
  */
 public class L2AbnormalZone extends L2ZoneType
 {
@@ -46,7 +44,9 @@ public class L2AbnormalZone extends L2ZoneType
 			special = Integer.parseInt(value);
 		}
 		else
+		{
 			super.setParameter(name, value);
+		}
 	}
 	
 	@Override

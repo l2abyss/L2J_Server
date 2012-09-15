@@ -36,12 +36,16 @@ public class CharPosition extends ObjectPosition
 	@Override
 	public final void setWorldRegion(L2WorldRegion value)
 	{
-		if(getWorldRegion() != null && getActiveObject() instanceof L2Character) // confirm revalidation of old region's zones
+		if ((getWorldRegion() != null) && (getActiveObject() instanceof L2Character)) // confirm revalidation of old region's zones
 		{
 			if (value != null)
-				getWorldRegion().revalidateZones((L2Character)getActiveObject());    // at world region change
+			{
+				getWorldRegion().revalidateZones((L2Character) getActiveObject()); // at world region change
+			}
 			else
-				getWorldRegion().removeFromZones((L2Character)getActiveObject());    // at world region change
+			{
+				getWorldRegion().removeFromZones((L2Character) getActiveObject()); // at world region change
+			}
 		}
 		super.setWorldRegion(value);
 	}

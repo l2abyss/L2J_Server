@@ -40,9 +40,13 @@ public final class L2ClanTraderInstance extends L2Npc
 		if (command.equalsIgnoreCase("crp"))
 		{
 			if (player.getClan().getLevel() > 4)
+			{
 				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-2.htm");
+			}
 			else
+			{
 				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-1.htm");
+			}
 			
 			sendHtmlMessage(player, html);
 			return;
@@ -80,20 +84,24 @@ public final class L2ClanTraderInstance extends L2Npc
 				player.getClan().addReputationScore(reputation, true);
 				player.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(player.getClan()));
 				
-				SystemMessage sm =  SystemMessage.getSystemMessage(SystemMessageId.CLAN_ADDED_S1S_POINTS_TO_REPUTATION_SCORE);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_ADDED_S1S_POINTS_TO_REPUTATION_SCORE);
 				sm.addNumber(reputation);
 				player.sendPacket(sm);
 				
 				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-ExchangeSuccess.htm");
 			}
 			else
+			{
 				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-ExchangeFailed.htm");
+			}
 			
 			sendHtmlMessage(player, html);
 			return;
 		}
 		else
+		{
 			super.onBypassFeedback(player, command);
+		}
 	}
 	
 	private void sendHtmlMessage(L2PcInstance player, NpcHtmlMessage html)
@@ -109,7 +117,9 @@ public final class L2ClanTraderInstance extends L2Npc
 		String filename = "data/html/clantrader/" + getNpcId() + "-no.htm";
 		
 		if (player.isClanLeader())
+		{
 			filename = "data/html/clantrader/" + getNpcId() + ".htm";
+		}
 		
 		NpcHtmlMessage html = new NpcHtmlMessage(1);
 		html.setFile(player.getHtmlPrefix(), filename);
@@ -123,9 +133,13 @@ public final class L2ClanTraderInstance extends L2Npc
 		String pom = "";
 		
 		if (val == 0)
+		{
 			pom = "" + npcId;
+		}
 		else
+		{
 			pom = npcId + "-" + val;
+		}
 		
 		return "data/html/clantrader/" + pom + ".htm";
 	}

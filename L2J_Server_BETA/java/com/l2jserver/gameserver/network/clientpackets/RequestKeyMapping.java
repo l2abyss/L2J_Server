@@ -19,34 +19,31 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ExUISetting;
 
 /**
- *
- * @author  KenM / mrTJO
+ * @author KenM / mrTJO
  */
 public class RequestKeyMapping extends L2GameClientPacket
 {
 	private static String _C__D0_21_REQUESTKEYMAPPING = "[C] D0:21 RequestKeyMapping";
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
 	@Override
 	protected void readImpl()
 	{
 		// trigger (no data)
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		if (Config.STORE_UI_SETTINGS)
+		{
 			activeChar.sendPacket(new ExUISetting(activeChar));
+		}
 	}
 	
 	@Override
@@ -55,9 +52,6 @@ public class RequestKeyMapping extends L2GameClientPacket
 		return false;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

@@ -37,9 +37,6 @@ public class GameServerListener extends FloodProtectedListener
 		setName(getClass().getSimpleName());
 	}
 	
-	/**
-	 * @see com.l2jserver.loginserver.FloodProtectedListener#addClient(java.net.Socket)
-	 */
 	@Override
 	public void addClient(Socket s)
 	{

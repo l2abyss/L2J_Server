@@ -153,7 +153,7 @@ public final class L2ItemInstance extends L2Object
 	private long _dropTime;
 	
 	private boolean _published = false;
-		
+	
 	private boolean _protected;
 	
 	public static final int UNCHANGED = 0;
@@ -186,8 +186,10 @@ public final class L2ItemInstance extends L2Object
 		setInstanceType(InstanceType.L2ItemInstance);
 		_itemId = itemId;
 		_item = ItemTable.getInstance().getTemplate(itemId);
-		if (_itemId == 0 || _item == null)
+		if ((_itemId == 0) || (_item == null))
+		{
 			throw new IllegalArgumentException();
+		}
 		super.setName(_item.getName());
 		setCount(1);
 		_loc = ItemLocation.VOID;
@@ -211,7 +213,9 @@ public final class L2ItemInstance extends L2Object
 		_itemId = item.getItemId();
 		_item = item;
 		if (_itemId == 0)
+		{
 			throw new IllegalArgumentException();
+		}
 		super.setName(_item.getName());
 		setCount(1);
 		_loc = ItemLocation.VOID;
@@ -274,7 +278,7 @@ public final class L2ItemInstance extends L2Object
 			ItemsOnGroundManager.getInstance().removeObject(this);
 		}
 		
-		if (!Config.DISABLE_TUTORIAL && (itemId == PcInventory.ADENA_ID || itemId == 6353))
+		if (!Config.DISABLE_TUTORIAL && ((itemId == PcInventory.ADENA_ID) || (itemId == 6353)))
 		{
 			// Note from UnAfraid:
 			// Unhardcode this?
@@ -282,8 +286,10 @@ public final class L2ItemInstance extends L2Object
 			if (actor != null)
 			{
 				QuestState qs = actor.getQuestState("255_Tutorial");
-				if (qs != null && qs.getQuest() != null)
+				if ((qs != null) && (qs.getQuest() != null))
+				{
 					qs.getQuest().notifyEvent("CE" + itemId, null, actor);
+				}
 			}
 		}
 		// outside of synchronized to avoid deadlocks
@@ -304,13 +310,15 @@ public final class L2ItemInstance extends L2Object
 		
 		if (Config.LOG_ITEMS)
 		{
-			if (!Config.LOG_ITEMS_SMALL_LOG || (Config.LOG_ITEMS_SMALL_LOG && (getItem().isEquipable() || getItem().getItemId() == ADENA_ID)))
+			if (!Config.LOG_ITEMS_SMALL_LOG || (Config.LOG_ITEMS_SMALL_LOG && (getItem().isEquipable() || (getItem().getItemId() == ADENA_ID))))
 			{
 				LogRecord record = new LogRecord(Level.INFO, "SETOWNER:" + process);
 				record.setLoggerName("item");
 				record.setParameters(new Object[]
 				{
-					this, creator, reference
+					this,
+					creator,
+					reference
 				});
 				_logItems.log(record);
 			}
@@ -326,10 +334,14 @@ public final class L2ItemInstance extends L2Object
 					referenceName = (((L2Object) reference).getName() != null ? ((L2Object) reference).getName() : "no-name");
 				}
 				else if (reference instanceof String)
+				{
 					referenceName = (String) reference;
+				}
 				String targetName = (creator.getTarget() != null ? creator.getTarget().getName() : "no-target");
 				if (Config.GMAUDIT)
+				{
 					GMAudit.auditGMAction(creator.getName() + " [" + creator.getObjectId() + "]", process + "(id: " + getItemId() + " name: " + getName() + ")", targetName, "L2Object referencing this action is: " + referenceName);
+				}
 			}
 		}
 	}
@@ -341,7 +353,9 @@ public final class L2ItemInstance extends L2Object
 	public void setOwnerId(int owner_id)
 	{
 		if (owner_id == _ownerId)
+		{
 			return;
+		}
 		
 		// Remove any inventory skills from the old owner.
 		removeSkillsFromOwner();
@@ -381,12 +395,14 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public void setLocation(ItemLocation loc, int loc_data)
 	{
-		if (loc == _loc && loc_data == _locData)
+		if ((loc == _loc) && (loc_data == _locData))
+		{
 			return;
+		}
 		
 		// Remove any inventory skills from the old owner.
 		removeSkillsFromOwner();
-				
+		
 		_loc = loc;
 		_locData = loc_data;
 		_storedInDb = false;
@@ -443,7 +459,7 @@ public final class L2ItemInstance extends L2Object
 		long old = getCount();
 		long max = getItemId() == ADENA_ID ? MAX_ADENA : Integer.MAX_VALUE;
 		
-		if (count > 0 && getCount() > max - count)
+		if ((count > 0) && (getCount() > (max - count)))
 		{
 			setCount(max);
 		}
@@ -459,15 +475,18 @@ public final class L2ItemInstance extends L2Object
 		
 		_storedInDb = false;
 		
-		if (Config.LOG_ITEMS && process != null)
+		if (Config.LOG_ITEMS && (process != null))
 		{
-			if (!Config.LOG_ITEMS_SMALL_LOG || (Config.LOG_ITEMS_SMALL_LOG && (_item.isEquipable() || _item.getItemId() == ADENA_ID)))
+			if (!Config.LOG_ITEMS_SMALL_LOG || (Config.LOG_ITEMS_SMALL_LOG && (_item.isEquipable() || (_item.getItemId() == ADENA_ID))))
 			{
 				LogRecord record = new LogRecord(Level.INFO, "CHANGE:" + process);
 				record.setLoggerName("item");
 				record.setParameters(new Object[]
 				{
-					this, "PrevCount(" + old + ")", creator, reference
+					this,
+					"PrevCount(" + old + ")",
+					creator,
+					reference
 				});
 				_logItems.log(record);
 			}
@@ -483,10 +502,14 @@ public final class L2ItemInstance extends L2Object
 					referenceName = (((L2Object) reference).getName() != null ? ((L2Object) reference).getName() : "no-name");
 				}
 				else if (reference instanceof String)
+				{
 					referenceName = (String) reference;
+				}
 				String targetName = (creator.getTarget() != null ? creator.getTarget().getName() : "no-target");
 				if (Config.GMAUDIT)
+				{
 					GMAudit.auditGMAction(creator.getName() + " [" + creator.getObjectId() + "]", process + "(id: " + getItemId() + " objId: " + getObjectId() + " name: " + getName() + " count: " + count + ")", targetName, "L2Object referencing this action is: " + referenceName);
+				}
 			}
 		}
 	}
@@ -494,7 +517,7 @@ public final class L2ItemInstance extends L2Object
 	// No logging (function designed for shots only)
 	public void changeCountWithoutTrace(int count, L2PcInstance creator, Object reference)
 	{
-		this.changeCount(null, count, creator, reference);
+		changeCount(null, count, creator, reference);
 	}
 	
 	/**
@@ -503,8 +526,10 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public int isEnchantable()
 	{
-		if (getLocation() == ItemLocation.INVENTORY || getLocation() == ItemLocation.PAPERDOLL)
+		if ((getLocation() == ItemLocation.INVENTORY) || (getLocation() == ItemLocation.PAPERDOLL))
+		{
 			return getItem().isEnchantable();
+		}
 		return 0;
 	}
 	
@@ -514,7 +539,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public boolean isEquipable()
 	{
-		return !(_item.getBodyPart() == 0 || _item.getItemType() == L2EtcItemType.ARROW || _item.getItemType() == L2EtcItemType.BOLT || _item.getItemType() == L2EtcItemType.LURE);
+		return !((_item.getBodyPart() == 0) || (_item.getItemType() == L2EtcItemType.ARROW) || (_item.getItemType() == L2EtcItemType.BOLT) || (_item.getItemType() == L2EtcItemType.LURE));
 	}
 	
 	/**
@@ -523,7 +548,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public boolean isEquipped()
 	{
-		return _loc == ItemLocation.PAPERDOLL || _loc == ItemLocation.PET_EQUIP;
+		return (_loc == ItemLocation.PAPERDOLL) || (_loc == ItemLocation.PET_EQUIP);
 	}
 	
 	/**
@@ -532,7 +557,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public int getLocationSlot()
 	{
-		assert _loc == ItemLocation.PAPERDOLL || _loc == ItemLocation.PET_EQUIP || _loc == ItemLocation.INVENTORY || _loc == ItemLocation.MAIL || _loc == ItemLocation.FREIGHT;
+		assert (_loc == ItemLocation.PAPERDOLL) || (_loc == ItemLocation.PET_EQUIP) || (_loc == ItemLocation.INVENTORY) || (_loc == ItemLocation.MAIL) || (_loc == ItemLocation.FREIGHT);
 		return _locData;
 	}
 	
@@ -769,12 +794,16 @@ public final class L2ItemInstance extends L2Object
 	{
 		// equipped, hero and quest items
 		if (isEquipped() || !_item.isDepositable())
+		{
 			return false;
+		}
 		if (!isPrivateWareHouse)
 		{
 			// augmented not tradeable
 			if (!isTradeable() || isShadowItem())
+			{
 				return false;
+			}
 		}
 		
 		return true;
@@ -833,11 +862,11 @@ public final class L2ItemInstance extends L2Object
 	{
 		return ((!isEquipped()) // Not equipped
 			&& (getItem().getType2() != L2Item.TYPE2_QUEST) // Not Quest Item
-			&& (getItem().getType2() != L2Item.TYPE2_MONEY || getItem().getType1() != L2Item.TYPE1_SHIELD_ARMOR) // not money, not shield
-			&& (player.getPet() == null || getObjectId() != player.getPet().getControlObjectId()) // Not Control item of currently summoned pet
+			&& ((getItem().getType2() != L2Item.TYPE2_MONEY) || (getItem().getType1() != L2Item.TYPE1_SHIELD_ARMOR)) // not money, not shield
+			&& ((player.getPet() == null) || (getObjectId() != player.getPet().getControlObjectId())) // Not Control item of currently summoned pet
 			&& (player.getActiveEnchantItem() != this) // Not momentarily used enchant scroll
-			&& (allowAdena || getItemId() != PcInventory.ADENA_ID) // Not Adena
-			&& (player.getCurrentSkill() == null || player.getCurrentSkill().getSkill().getItemConsumeId() != getItemId()) && (!player.isCastingSimultaneouslyNow() || player.getLastSimultaneousSkillCast() == null || player.getLastSimultaneousSkillCast().getItemConsumeId() != getItemId()) && (allowNonTradeable || isTradeable() && (!(getItem().getItemType() == L2EtcItemType.PET_COLLAR && player.havePetInvItems()))));
+			&& (allowAdena || (getItemId() != PcInventory.ADENA_ID)) // Not Adena
+			&& ((player.getCurrentSkill() == null) || (player.getCurrentSkill().getSkill().getItemConsumeId() != getItemId())) && (!player.isCastingSimultaneouslyNow() || (player.getLastSimultaneousSkillCast() == null) || (player.getLastSimultaneousSkillCast().getItemConsumeId() != getItemId())) && (allowNonTradeable || (isTradeable() && (!((getItem().getItemType() == L2EtcItemType.PET_COLLAR) && player.havePetInvItems())))));
 	}
 	
 	/**
@@ -855,7 +884,9 @@ public final class L2ItemInstance extends L2Object
 	public void setEnchantLevel(int enchantLevel)
 	{
 		if (_enchantLevel == enchantLevel)
+		{
 			return;
+		}
 		_enchantLevel = enchantLevel;
 		_storedInDb = false;
 	}
@@ -887,7 +918,9 @@ public final class L2ItemInstance extends L2Object
 	{
 		// there shall be no previous augmentation..
 		if (_augmentation != null)
+		{
 			return false;
+		}
 		if (!fireAugmentListeners(true, augmentation))
 		{
 			return false;
@@ -910,7 +943,9 @@ public final class L2ItemInstance extends L2Object
 	public void removeAugmentation()
 	{
 		if (_augmentation == null)
+		{
 			return;
+		}
 		if (!fireAugmentListeners(true, _augmentation))
 		{
 			return;
@@ -943,8 +978,10 @@ public final class L2ItemInstance extends L2Object
 					int aug_attributes = rs.getInt(1);
 					int aug_skillId = rs.getInt(2);
 					int aug_skillLevel = rs.getInt(3);
-					if (aug_attributes != -1 && aug_skillId != -1 && aug_skillLevel != -1)
+					if ((aug_attributes != -1) && (aug_skillId != -1) && (aug_skillLevel != -1))
+					{
 						_augmentation = new L2Augmentation(rs.getInt("augAttributes"), rs.getInt("augSkillId"), rs.getInt("augSkillLevel"));
+					}
 				}
 			}
 			
@@ -955,8 +992,10 @@ public final class L2ItemInstance extends L2Object
 				{
 					byte elem_type = rs.getByte(1);
 					int elem_value = rs.getInt(2);
-					if (elem_type != -1 && elem_value != -1)
+					if ((elem_type != -1) && (elem_value != -1))
+					{
 						applyAttribute(elem_type, elem_value);
+					}
 				}
 			}
 		}
@@ -1011,7 +1050,9 @@ public final class L2ItemInstance extends L2Object
 			statement.close();
 			
 			if (_elementals == null)
+			{
 				return;
+			}
 			
 			statement = con.prepareStatement("INSERT INTO item_elementals VALUES(?,?,?)");
 			
@@ -1040,11 +1081,15 @@ public final class L2ItemInstance extends L2Object
 	public Elementals getElemental(byte attribute)
 	{
 		if (_elementals == null)
+		{
 			return null;
+		}
 		for (Elementals elm : _elementals)
 		{
 			if (elm.getElement() == attribute)
+			{
 				return elm;
+			}
 		}
 		return null;
 	}
@@ -1052,40 +1097,58 @@ public final class L2ItemInstance extends L2Object
 	public byte getAttackElementType()
 	{
 		if (!isWeapon())
+		{
 			return -2;
+		}
 		else if (getItem().getElementals() != null)
+		{
 			return getItem().getElementals()[0].getElement();
+		}
 		else if (_elementals != null)
+		{
 			return _elementals[0].getElement();
+		}
 		return -2;
 	}
 	
 	public int getAttackElementPower()
 	{
 		if (!isWeapon())
+		{
 			return 0;
+		}
 		else if (getItem().getElementals() != null)
+		{
 			return getItem().getElementals()[0].getValue();
+		}
 		else if (_elementals != null)
+		{
 			return _elementals[0].getValue();
+		}
 		return 0;
 	}
 	
 	public int getElementDefAttr(byte element)
 	{
 		if (!isArmor())
+		{
 			return 0;
+		}
 		else if (getItem().getElementals() != null)
 		{
 			Elementals elm = getItem().getElemental(element);
 			if (elm != null)
+			{
 				return elm.getValue();
+			}
 		}
 		else if (_elementals != null)
 		{
 			Elementals elm = getElemental(element);
 			if (elm != null)
+			{
 				return elm.getValue();
+			}
 		}
 		return 0;
 	}
@@ -1139,13 +1202,13 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public void clearElementAttr(byte element)
 	{
-		if (getElemental(element) == null && element != -1)
+		if ((getElemental(element) == null) && (element != -1))
 		{
 			return;
 		}
 		
 		Elementals[] array = null;
-		if (element != -1 && _elementals != null && _elementals.length > 1)
+		if ((element != -1) && (_elementals != null) && (_elementals.length > 1))
 		{
 			array = new Elementals[_elementals.length - 1];
 			int i = 0;
@@ -1198,7 +1261,9 @@ public final class L2ItemInstance extends L2Object
 			{
 				// decrease mana
 				if (_shadowItem != null)
+				{
 					_shadowItem.decreaseMana(true);
+				}
 			}
 			catch (Exception e)
 			{
@@ -1242,17 +1307,27 @@ public final class L2ItemInstance extends L2Object
 	public void decreaseMana(boolean resetConsumingMana, int count)
 	{
 		if (!isShadowItem())
+		{
 			return;
+		}
 		
-		if (_mana - count >= 0)
+		if ((_mana - count) >= 0)
+		{
 			_mana -= count;
+		}
 		else
+		{
 			_mana = 0;
+		}
 		
 		if (_storedInDb)
+		{
 			_storedInDb = false;
+		}
 		if (resetConsumingMana)
+		{
 			_consumingMana = false;
+		}
 		
 		final L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
 		if (player != null)
@@ -1340,7 +1415,9 @@ public final class L2ItemInstance extends L2Object
 	public void scheduleConsumeManaTask()
 	{
 		if (_consumingMana)
+		{
 			return;
+		}
 		_consumingMana = true;
 		ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleConsumeManaTask(this), MANA_CONSUMPTION_RATE);
 	}
@@ -1385,7 +1462,7 @@ public final class L2ItemInstance extends L2Object
 		{
 			if (_existsInDb)
 			{
-				if (_ownerId == 0 || _loc == ItemLocation.VOID || _loc == ItemLocation.REFUND || (getCount() == 0 && _loc != ItemLocation.LEASE))
+				if ((_ownerId == 0) || (_loc == ItemLocation.VOID) || (_loc == ItemLocation.REFUND) || ((getCount() == 0) && (_loc != ItemLocation.LEASE)))
 				{
 					removeFromDb();
 				}
@@ -1396,7 +1473,7 @@ public final class L2ItemInstance extends L2Object
 			}
 			else
 			{
-				if (_ownerId == 0 || _loc == ItemLocation.VOID || _loc == ItemLocation.REFUND || (getCount() == 0 && _loc != ItemLocation.LEASE))
+				if ((_ownerId == 0) || (_loc == ItemLocation.VOID) || (_loc == ItemLocation.REFUND) || ((getCount() == 0) && (_loc != ItemLocation.LEASE)))
 				{
 					return;
 				}
@@ -1462,7 +1539,9 @@ public final class L2ItemInstance extends L2Object
 		
 		// load augmentation and elemental enchant
 		if (inst.isEquipable())
+		{
 			inst.restoreAttributes();
+		}
 		
 		return inst;
 	}
@@ -1504,7 +1583,7 @@ public final class L2ItemInstance extends L2Object
 		{
 			assert _itm.getPosition().getWorldRegion() == null;
 			
-			if (Config.GEODATA > 0 && _dropper != null)
+			if ((Config.GEODATA > 0) && (_dropper != null))
 			{
 				Location dropDest = GeoData.getInstance().moveCheck(_dropper.getX(), _dropper.getY(), _dropper.getZ(), _x, _y, _z, _dropper.getInstanceId());
 				_x = dropDest.getX();
@@ -1513,10 +1592,14 @@ public final class L2ItemInstance extends L2Object
 			}
 			
 			if (_dropper != null)
+			{
 				setInstanceId(_dropper.getInstanceId()); // Inherit instancezone when dropped in visible world
+			}
 			else
+			{
 				setInstanceId(0); // No dropper? Make it a global item...
-				
+			}
+			
 			synchronized (_itm)
 			{
 				// Set the x,y,z position of the L2ItemInstance dropped and update its _worldregion
@@ -1536,7 +1619,9 @@ public final class L2ItemInstance extends L2Object
 			// Add the L2ItemInstance dropped in the world as a visible object
 			L2World.getInstance().addVisibleObject(_itm, _itm.getPosition().getWorldRegion());
 			if (Config.SAVE_DROPPED_ITEM)
+			{
 				ItemsOnGroundManager.getInstance().save(_itm);
+			}
 			_itm.setDropperObjectId(0); // Set the dropper Id back to 0 so it no longer shows the drop packet
 		}
 	}
@@ -1558,10 +1643,14 @@ public final class L2ItemInstance extends L2Object
 		assert _existsInDb;
 		
 		if (_wear)
+		{
 			return;
+		}
 		
 		if (_storedInDb)
+		{
 			return;
+		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("UPDATE items SET owner_id=?,count=?,loc=?,loc_data=?,enchant_level=?,custom_type1=?,custom_type2=?,mana_left=?,time=? " + "WHERE object_id = ?"))
@@ -1591,10 +1680,12 @@ public final class L2ItemInstance extends L2Object
 	 */
 	private void insertIntoDb()
 	{
-		assert !_existsInDb && getObjectId() != 0;
+		assert !_existsInDb && (getObjectId() != 0);
 		
 		if (_wear)
+		{
 			return;
+		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("INSERT INTO items (owner_id,item_id,count,loc,loc_data,enchant_level,object_id,custom_type1,custom_type2,mana_left,time) " + "VALUES (?,?,?,?,?,?,?,?,?,?,?)"))
@@ -1616,9 +1707,13 @@ public final class L2ItemInstance extends L2Object
 			_storedInDb = true;
 			
 			if (_augmentation != null)
+			{
 				updateItemAttributes(con);
+			}
 			if (_elementals != null)
+			{
 				updateItemElements(con);
+			}
 		}
 		catch (Exception e)
 		{
@@ -1634,7 +1729,9 @@ public final class L2ItemInstance extends L2Object
 		assert _existsInDb;
 		
 		if (_wear)
+		{
 			return;
+		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
@@ -1674,7 +1771,9 @@ public final class L2ItemInstance extends L2Object
 	public void resetOwnerTimer()
 	{
 		if (itemLootShedule != null)
+		{
 			itemLootShedule.cancel(true);
+		}
 		itemLootShedule = null;
 	}
 	
@@ -1700,7 +1799,7 @@ public final class L2ItemInstance extends L2Object
 	
 	public boolean isNightLure()
 	{
-		return ((_itemId >= 8505 && _itemId <= 8513) || _itemId == 8485);
+		return (((_itemId >= 8505) && (_itemId <= 8513)) || (_itemId == 8485));
 	}
 	
 	public void setCountDecrease(boolean decrease)
@@ -1726,7 +1825,9 @@ public final class L2ItemInstance extends L2Object
 	public void restoreInitCount()
 	{
 		if (_decrease)
+		{
 			setCount(_initCount);
+		}
 	}
 	
 	public boolean isTimeLimitedItem()
@@ -1794,13 +1895,19 @@ public final class L2ItemInstance extends L2Object
 	public void scheduleLifeTimeTask()
 	{
 		if (!isTimeLimitedItem())
+		{
 			return;
+		}
 		if (getRemainingTime() <= 0)
+		{
 			endOfLife();
+		}
 		else
 		{
 			if (_lifeTimeTask != null)
+			{
 				_lifeTimeTask.cancel(false);
+			}
 			_lifeTimeTask = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleLifeTimeTask(this), getRemainingTime());
 		}
 	}
@@ -1821,7 +1928,9 @@ public final class L2ItemInstance extends L2Object
 			try
 			{
 				if (_limitedItem != null)
+				{
 					_limitedItem.endOfLife();
+				}
 			}
 			catch (Exception e)
 			{
@@ -1833,17 +1942,25 @@ public final class L2ItemInstance extends L2Object
 	public void updateElementAttrBonus(L2PcInstance player)
 	{
 		if (_elementals == null)
+		{
 			return;
+		}
 		for (Elementals elm : _elementals)
+		{
 			elm.updateBonus(player, isArmor());
+		}
 	}
 	
 	public void removeElementAttrBonus(L2PcInstance player)
 	{
 		if (_elementals == null)
+		{
 			return;
+		}
 		for (Elementals elm : _elementals)
+		{
 			elm.removeBonus(player);
+		}
 	}
 	
 	public void setDropperObjectId(int id)
@@ -1855,9 +1972,13 @@ public final class L2ItemInstance extends L2Object
 	public void sendInfo(L2PcInstance activeChar)
 	{
 		if (_dropperObjectId != 0)
+		{
 			activeChar.sendPacket(new DropItem(this, _dropperObjectId));
+		}
 		else
+		{
 			activeChar.sendPacket(new SpawnItem(this));
+		}
 	}
 	
 	public final DropProtection getDropProtection()
@@ -1879,7 +2000,9 @@ public final class L2ItemInstance extends L2Object
 	public void decayMe()
 	{
 		if (Config.SAVE_DROPPED_ITEM)
+		{
 			ItemsOnGroundManager.getInstance().removeObject(this);
+		}
 		super.decayMe();
 	}
 	
@@ -1890,8 +2013,10 @@ public final class L2ItemInstance extends L2Object
 	
 	public boolean isElementable()
 	{
-		if (getLocation() == ItemLocation.INVENTORY || getLocation() == ItemLocation.PAPERDOLL)
+		if ((getLocation() == ItemLocation.INVENTORY) || (getLocation() == ItemLocation.PAPERDOLL))
+		{
 			return getItem().isElementable();
+		}
 		return false;
 	}
 	
@@ -1911,10 +2036,14 @@ public final class L2ItemInstance extends L2Object
 		int enchant = getEnchantLevel();
 		
 		if (player == null)
+		{
 			return enchant;
+		}
 		
-		if (player.isInOlympiadMode() && Config.ALT_OLY_ENCHANT_LIMIT >= 0 && enchant > Config.ALT_OLY_ENCHANT_LIMIT)
+		if (player.isInOlympiadMode() && (Config.ALT_OLY_ENCHANT_LIMIT >= 0) && (enchant > Config.ALT_OLY_ENCHANT_LIMIT))
+		{
 			enchant = Config.ALT_OLY_ENCHANT_LIMIT;
+		}
 		
 		return enchant;
 	}
@@ -1926,13 +2055,15 @@ public final class L2ItemInstance extends L2Object
 	
 	public boolean hasPassiveSkills()
 	{
-		return getItemType() == L2EtcItemType.RUNE && getLocation() == ItemLocation.INVENTORY && getOwnerId() > 0 && getItem().hasSkills();
+		return (getItemType() == L2EtcItemType.RUNE) && (getLocation() == ItemLocation.INVENTORY) && (getOwnerId() > 0) && getItem().hasSkills();
 	}
 	
 	public void giveSkillsToOwner()
 	{
 		if (!hasPassiveSkills())
+		{
 			return;
+		}
 		
 		final L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
 		
@@ -1945,14 +2076,15 @@ public final class L2ItemInstance extends L2Object
 					player.addSkill(sh.getSkill(), false);
 				}
 			}
-			player.refreshExpertisePenalty();
 		}
 	}
 	
 	public void removeSkillsFromOwner()
 	{
 		if (!hasPassiveSkills())
+		{
 			return;
+		}
 		
 		final L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
 		
@@ -1965,7 +2097,6 @@ public final class L2ItemInstance extends L2Object
 					player.removeSkill(sh.getSkill(), false, true);
 				}
 			}
-			player.refreshExpertisePenalty();
 		}
 	}
 	
@@ -1983,7 +2114,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	private boolean firePickupListeners(L2PcInstance actor)
 	{
-		if (!dropListeners.isEmpty() && actor != null)
+		if (!dropListeners.isEmpty() && (actor != null))
 		{
 			ItemPickupEvent event = new ItemPickupEvent();
 			event.setItem(this);
@@ -1992,7 +2123,9 @@ public final class L2ItemInstance extends L2Object
 			for (DropListener listener : dropListeners)
 			{
 				if (!listener.onPickup(event))
+				{
 					return false;
+				}
 			}
 		}
 		return true;
@@ -2006,7 +2139,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	private boolean fireAugmentListeners(boolean isAugment, L2Augmentation augmentation)
 	{
-		if (!augmentListeners.isEmpty() && augmentation != null)
+		if (!augmentListeners.isEmpty() && (augmentation != null))
 		{
 			AugmentEvent event = new AugmentEvent();
 			event.setAugmentation(augmentation);
@@ -2017,7 +2150,9 @@ public final class L2ItemInstance extends L2Object
 				if (isAugment)
 				{
 					if (!listener.onAugment(event))
+					{
 						return false;
+					}
 				}
 				else
 				{
@@ -2091,14 +2226,13 @@ public final class L2ItemInstance extends L2Object
 	{
 		dropListeners.remove(listener);
 	}
-
+	
 	public int getEquipReuseDelay()
 	{
-	        return _item.getEquipReuseDelay();
+		return _item.getEquipReuseDelay();
 	}
 	
 	/**
-	 * 
 	 * @param activeChar
 	 * @param command
 	 */
@@ -2122,7 +2256,7 @@ public final class L2ItemInstance extends L2Object
 			
 			if (q != null)
 			{
-				if ((q.getQuestIntId() >= 1 && q.getQuestIntId() < 20000) && (activeChar.getWeightPenalty() >= 3 || !activeChar.isInventoryUnder90(true)))
+				if (((q.getQuestIntId() >= 1) && (q.getQuestIntId() < 20000)) && ((activeChar.getWeightPenalty() >= 3) || !activeChar.isInventoryUnder90(true)))
 				{
 					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
 					return;
@@ -2130,7 +2264,7 @@ public final class L2ItemInstance extends L2Object
 				
 				if (qs == null)
 				{
-					if (q.getQuestIntId() >= 1 && q.getQuestIntId() < 20000)
+					if ((q.getQuestIntId() >= 1) && (q.getQuestIntId() < 20000))
 					{
 						if (activeChar.getAllActiveQuests().length > 40)
 						{
@@ -2142,14 +2276,20 @@ public final class L2ItemInstance extends L2Object
 				}
 			}
 			else
+			{
 				content = Quest.getNoQuestMsg(activeChar);
+			}
 			
 			if (qs != null)
 			{
-				if (event != null && !qs.getQuest().notifyItemEvent(this, activeChar, event))
+				if ((event != null) && !qs.getQuest().notifyItemEvent(this, activeChar, event))
+				{
 					return;
+				}
 				else if (!qs.getQuest().notifyItemTalk(this, activeChar))
+				{
 					return;
+				}
 				
 				questName = qs.getQuest().getName();
 				String stateId = State.getStateName(qs.getState());
@@ -2158,7 +2298,9 @@ public final class L2ItemInstance extends L2Object
 			}
 			
 			if (content != null)
+			{
 				showChatWindow(activeChar, content);
+			}
 			
 			// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
@@ -2166,7 +2308,6 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * 
 	 * @param activeChar
 	 * @param content
 	 */
@@ -2177,7 +2318,7 @@ public final class L2ItemInstance extends L2Object
 		html.replace("%itemId%", String.valueOf(getObjectId()));
 		activeChar.sendPacket(html);
 	}
-		
+	
 	@Override
 	public boolean isChargedShot(ShotType type)
 	{
@@ -2193,7 +2334,7 @@ public final class L2ItemInstance extends L2Object
 		}
 		else
 		{
-			_shotsMask &= ~ type.getMask();
+			_shotsMask &= ~type.getMask();
 		}
 	}
 	

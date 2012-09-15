@@ -58,12 +58,16 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (_skillId <= 0 || _skillLvl <= 0) // minimal sanity check
+		if ((_skillId <= 0) || (_skillLvl <= 0))
+		{
 			return;
-
+		}
+		
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
+		{
 			return;
+		}
 		
 		if (player.getClassId().level() < 3) // requires to have 3rd class quest completed
 		{
@@ -142,9 +146,12 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 				{
 					LogRecord record = new LogRecord(Level.INFO, "Safe Success");
 					record.setParameters(new Object[]
-					                                {
-							player, skill, spb, rate
-					                                });
+					{
+						player,
+						skill,
+						spb,
+						rate
+					});
 					record.setLoggerName("skill");
 					_logEnchant.log(record);
 				}
@@ -168,9 +175,12 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 				{
 					LogRecord record = new LogRecord(Level.INFO, "Safe Fail");
 					record.setParameters(new Object[]
-					                                {
-							player, skill, spb, rate
-					                                });
+					{
+						player,
+						skill,
+						spb,
+						rate
+					});
 					record.setLoggerName("skill");
 					_logEnchant.log(record);
 				}

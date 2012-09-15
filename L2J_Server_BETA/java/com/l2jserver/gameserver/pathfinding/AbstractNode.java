@@ -44,9 +44,6 @@ public abstract class AbstractNode
 		_loc = l;
 	}
 	
-	/**
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode()
 	{
@@ -56,9 +53,6 @@ public abstract class AbstractNode
 		return result;
 	}
 	
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj)
 	{

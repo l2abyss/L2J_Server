@@ -38,16 +38,24 @@ public final class L2ObservationInstance extends L2Npc
 		if (isInsideRadius(-79884, 86529, 50, true) || isInsideRadius(-78858, 111358, 50, true) || isInsideRadius(-76973, 87136, 50, true) || isInsideRadius(-75850, 111968, 50, true))
 		{
 			if (val == 0)
+			{
 				filename = "data/html/observation/" + getNpcId() + "-Oracle.htm";
+			}
 			else
+			{
 				filename = "data/html/observation/" + getNpcId() + "-Oracle-" + val + ".htm";
+			}
 		}
 		else
 		{
 			if (val == 0)
+			{
 				filename = "data/html/observation/" + getNpcId() + ".htm";
+			}
 			else
+			{
 				filename = "data/html/observation/" + getNpcId() + "-" + val + ".htm";
+			}
 		}
 		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());

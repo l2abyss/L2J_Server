@@ -182,9 +182,6 @@ public class TvTManager
 			_startTime = startTime;
 		}
 		
-		/**
-		 * @see java.lang.Runnable#run()
-		 */
 		@Override
 		public void run()
 		{

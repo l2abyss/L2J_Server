@@ -20,10 +20,9 @@ import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
  * @author UnAfraid
- *
  */
 public abstract class RequestBypassToServerListener extends L2JListener
-{	
+{
 	public RequestBypassToServerListener()
 	{
 		register();

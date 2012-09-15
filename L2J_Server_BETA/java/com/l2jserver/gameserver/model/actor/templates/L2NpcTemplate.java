@@ -358,7 +358,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 			}
 		}
 	}
-
+	
 	public void removeQuest(Quest q)
 	{
 		for (Entry<QuestEventType, List<Quest>> entry : _questEvents.entrySet())
@@ -370,7 +370,9 @@ public final class L2NpcTemplate extends L2CharTemplate
 				{
 					Quest q1 = it.next();
 					if (q1 == q)
+					{
 						it.remove();
+					}
 				}
 				
 				if (entry.getValue().isEmpty())

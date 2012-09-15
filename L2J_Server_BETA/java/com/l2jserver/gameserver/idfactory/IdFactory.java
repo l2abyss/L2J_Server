@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.idfactory;
 
-import gnu.trove.list.array.TIntArrayList;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,6 +24,8 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
+
+import gnu.trove.list.array.TIntArrayList;
 
 /**
  * This class ...

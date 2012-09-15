@@ -17,34 +17,33 @@ package com.l2jserver.gameserver.model;
 import com.l2jserver.gameserver.datatables.AdminTable;
 
 /**
- * @author FBIagent<br>
+ * @author FBIagent
  */
 public class L2AdminCommandAccessRight
-{	
-	/** The admin command<br> */
+{
+	/** The admin command */
 	private String _adminCommand = null;
-	/** The access levels which can use the admin command<br> */
-	private int _accessLevel;
-	private boolean _requireConfirm;
+	/** The access levels which can use the admin command. */
+	private final int _accessLevel;
+	private final boolean _requireConfirm;
 	
 	public L2AdminCommandAccessRight(StatsSet set)
 	{
 		_adminCommand = set.getString("command");
 		_requireConfirm = set.getBool("confirmDlg", false);
-		_accessLevel = set.getInteger("accessLevel", 7);		
+		_accessLevel = set.getInteger("accessLevel", 7);
 	}
 	
 	public L2AdminCommandAccessRight(String command, boolean confirm, int level)
 	{
 		_adminCommand = command;
 		_requireConfirm = confirm;
-		_accessLevel = level;		
+		_accessLevel = level;
 	}
 	
 	/**
-	 * Returns the admin command the access right belongs to<br><br>
-	 * 
-	 * @return String: the admin command the access right belongs to<br>
+	 * Returns the admin command the access right belongs to
+	 * @return the admin command the access right belongs to
 	 */
 	public String getAdminCommand()
 	{
@@ -52,18 +51,16 @@ public class L2AdminCommandAccessRight
 	}
 	
 	/**
-	 * Checks if the given characterAccessLevel is allowed to use the admin command which belongs to this access right<br><br>
-	 * 
+	 * Checks if the given characterAccessLevel is allowed to use the admin command which belongs to this access right.
 	 * @param characterAccessLevel
-	 * 
-	 * @return boolean: true if characterAccessLevel is allowed to use the admin command which belongs to this access right, otherwise false<br>
+	 * @return true if characterAccessLevel is allowed to use the admin command which belongs to this access right, otherwise false<br>
 	 */
 	public boolean hasAccess(L2AccessLevel characterAccessLevel)
 	{
 		L2AccessLevel accessLevel = AdminTable.getInstance().getAccessLevel(_accessLevel);
-		return (accessLevel.getLevel() == characterAccessLevel.getLevel() || characterAccessLevel.hasChildAccess(accessLevel));
+		return ((accessLevel.getLevel() == characterAccessLevel.getLevel()) || characterAccessLevel.hasChildAccess(accessLevel));
 	}
-
+	
 	public boolean getRequireConfirm()
 	{
 		return _requireConfirm;

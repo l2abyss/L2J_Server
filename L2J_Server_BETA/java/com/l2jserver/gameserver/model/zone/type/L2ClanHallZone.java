@@ -46,12 +46,18 @@ public class L2ClanHallZone extends L2ZoneRespawn
 			// Register self to the correct clan hall
 			ClanHall hall = ClanHallManager.getInstance().getClanHallById(_clanHallId);
 			if (hall == null)
+			{
 				_log.warning("L2ClanHallZone: Clan hall with id " + _clanHallId + " does not exist!");
+			}
 			else
+			{
 				hall.setZone(this);
+			}
 		}
 		else
+		{
 			super.setParameter(name, value);
+		}
 	}
 	
 	@Override
@@ -64,7 +70,9 @@ public class L2ClanHallZone extends L2ZoneRespawn
 			
 			AuctionableHall clanHall = ClanHallManager.getInstance().getAuctionableHallById(_clanHallId);
 			if (clanHall == null)
+			{
 				return;
+			}
 			
 			// Send decoration packet
 			AgitDecoInfo deco = new AgitDecoInfo(clanHall);
@@ -101,8 +109,10 @@ public class L2ClanHallZone extends L2ZoneRespawn
 		TeleportWhereType type = TeleportWhereType.ClanHall_banish;
 		for (L2PcInstance temp : getPlayersInside())
 		{
-			if (temp.getClanId() == owningClanId && owningClanId != 0)
+			if ((temp.getClanId() == owningClanId) && (owningClanId != 0))
+			{
 				continue;
+			}
 			
 			temp.teleToLocation(type);
 		}

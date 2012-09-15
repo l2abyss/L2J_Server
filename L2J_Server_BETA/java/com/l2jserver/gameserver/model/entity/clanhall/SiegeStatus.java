@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.model.entity.clanhall;
 
 /**
  * @author BiggBoss
- *
  */
 public enum SiegeStatus
 {

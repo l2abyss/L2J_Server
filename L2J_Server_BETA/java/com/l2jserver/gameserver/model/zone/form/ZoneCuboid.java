@@ -23,13 +23,11 @@ import com.l2jserver.util.Rnd;
 
 /**
  * A primitive rectangular zone
- *
- *
- * @author  durgus
+ * @author durgus
  */
 public class ZoneCuboid extends L2ZoneForm
 {
-	private int _z1, _z2;
+	private final int _z1, _z2;
 	Rectangle _r;
 	
 	public ZoneCuboid(int x1, int x2, int y1, int y2, int z1, int z2)
@@ -48,7 +46,7 @@ public class ZoneCuboid extends L2ZoneForm
 	@Override
 	public boolean isInsideZone(int x, int y, int z)
 	{
-		return (_r.contains(x, y) && z >= _z1 && z <= _z2);
+		return (_r.contains(x, y) && (z >= _z1) && (z <= _z2));
 	}
 	
 	@Override
@@ -68,22 +66,27 @@ public class ZoneCuboid extends L2ZoneForm
 		
 		test = Math.pow(_x1 - x, 2) + Math.pow(_y2 - y, 2);
 		if (test < shortestDist)
+		{
 			shortestDist = test;
+		}
 		
 		test = Math.pow(_x2 - x, 2) + Math.pow(_y1 - y, 2);
 		if (test < shortestDist)
+		{
 			shortestDist = test;
+		}
 		
 		test = Math.pow(_x2 - x, 2) + Math.pow(_y2 - y, 2);
 		if (test < shortestDist)
+		{
 			shortestDist = test;
+		}
 		
 		return Math.sqrt(shortestDist);
 	}
 	
-	/* getLowZ() / getHighZ() - These two functions were added to cope with the demand of the new
-	 * fishing algorithms, which are now able to correctly place the hook in the water, thanks to getHighZ().
-	 * getLowZ() was added, considering potential future modifications.
+	/*
+	 * getLowZ() / getHighZ() - These two functions were added to cope with the demand of the new fishing algorithms, which are now able to correctly place the hook in the water, thanks to getHighZ(). getLowZ() was added, considering potential future modifications.
 	 */
 	@Override
 	public int getLowZ()
@@ -105,13 +108,13 @@ public class ZoneCuboid extends L2ZoneForm
 		int _y1 = _r.y;
 		int _y2 = _r.y + _r.height;
 		
-		//x1->x2
+		// x1->x2
 		for (int x = _x1; x < _x2; x = x + STEP)
 		{
 			dropDebugItem(PcInventory.ADENA_ID, 1, x, _y1, z);
 			dropDebugItem(PcInventory.ADENA_ID, 1, x, _y2, z);
 		}
-		//y1->y2
+		// y1->y2
 		for (int y = _y1; y < _y2; y = y + STEP)
 		{
 			dropDebugItem(PcInventory.ADENA_ID, 1, _x1, y, z);
@@ -125,7 +128,11 @@ public class ZoneCuboid extends L2ZoneForm
 		int x = Rnd.get(_r.x, _r.x + _r.width);
 		int y = Rnd.get(_r.y, _r.y + _r.height);
 		
-		return new int[] { x, y, GeoEngine.getInstance().getHeight(x, y, _z1) };
+		return new int[]
+		{
+			x,
+			y,
+			GeoEngine.getInstance().getHeight(x, y, _z1)
+		};
 	}
 }
-

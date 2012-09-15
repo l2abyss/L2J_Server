@@ -39,11 +39,15 @@ public class PlayableStat extends CharStat
 	
 	public boolean addExp(long value)
 	{
-		if ((getExp() + value) < 0 || (value > 0 && getExp() == (getExpForLevel(getMaxLevel()) - 1)))
+		if (((getExp() + value) < 0) || ((value > 0) && (getExp() == (getExpForLevel(getMaxLevel()) - 1))))
+		{
 			return true;
+		}
 		
-		if (getExp() + value >= getExpForLevel(getMaxLevel()))
+		if ((getExp() + value) >= getExpForLevel(getMaxLevel()))
+		{
 			value = getExpForLevel(getMaxLevel()) - 1 - getExp();
+		}
 		
 		setExp(getExp() + value);
 		
@@ -59,20 +63,26 @@ public class PlayableStat extends CharStat
 		for (byte tmp = level; tmp <= getMaxLevel(); tmp++)
 		{
 			if (getExp() >= getExpForLevel(tmp))
+			{
 				continue;
+			}
 			level = --tmp;
 			break;
 		}
-		if (level != getLevel() && level >= minimumLevel)
-			addLevel((byte)(level - getLevel()));
+		if ((level != getLevel()) && (level >= minimumLevel))
+		{
+			addLevel((byte) (level - getLevel()));
+		}
 		
 		return true;
 	}
 	
 	public boolean removeExp(long value)
 	{
-		if ((getExp() - value) < 0 )
-			value = getExp()-1;
+		if ((getExp() - value) < 0)
+		{
+			value = getExp() - 1;
+		}
 		
 		setExp(getExp() - value);
 		
@@ -87,12 +97,16 @@ public class PlayableStat extends CharStat
 		for (byte tmp = level; tmp <= getMaxLevel(); tmp++)
 		{
 			if (getExp() >= getExpForLevel(tmp))
+			{
 				continue;
+			}
 			level = --tmp;
 			break;
 		}
-		if (level != getLevel() && level >= minimumLevel)
-			addLevel((byte)(level - getLevel()));
+		if ((level != getLevel()) && (level >= minimumLevel))
+		{
+			addLevel((byte) (level - getLevel()));
+		}
 		return true;
 	}
 	
@@ -100,8 +114,14 @@ public class PlayableStat extends CharStat
 	{
 		boolean expAdded = false;
 		boolean spAdded = false;
-		if (addToExp >= 0) expAdded = addExp(addToExp);
-		if (addToSp >= 0) spAdded = addSp(addToSp);
+		if (addToExp >= 0)
+		{
+			expAdded = addExp(addToExp);
+		}
+		if (addToSp >= 0)
+		{
+			spAdded = addSp(addToSp);
+		}
 		
 		return expAdded || spAdded;
 	}
@@ -110,40 +130,58 @@ public class PlayableStat extends CharStat
 	{
 		boolean expRemoved = false;
 		boolean spRemoved = false;
-		if (removeExp > 0) expRemoved = removeExp(removeExp);
-		if (removeSp > 0) spRemoved = removeSp(removeSp);
+		if (removeExp > 0)
+		{
+			expRemoved = removeExp(removeExp);
+		}
+		if (removeSp > 0)
+		{
+			spRemoved = removeSp(removeSp);
+		}
 		
 		return expRemoved || spRemoved;
 	}
 	
 	public boolean addLevel(byte value)
 	{
-		if (getLevel() + value > getMaxLevel() - 1)
+		if ((getLevel() + value) > (getMaxLevel() - 1))
 		{
-			if (getLevel() < getMaxLevel() - 1)
-				value = (byte)(getMaxLevel() - 1 - getLevel());
+			if (getLevel() < (getMaxLevel() - 1))
+			{
+				value = (byte) (getMaxLevel() - 1 - getLevel());
+			}
 			else
+			{
 				return false;
+			}
 		}
 		
-		boolean levelIncreased = (getLevel() + value > getLevel());
+		boolean levelIncreased = ((getLevel() + value) > getLevel());
 		value += getLevel();
 		setLevel(value);
 		
 		// Sync up exp with current level
-		if (getExp() >= getExpForLevel(getLevel() + 1) || getExpForLevel(getLevel()) > getExp()) setExp(getExpForLevel(getLevel()));
-		
-		if (!levelIncreased && getActiveChar() instanceof L2PcInstance && !((L2PcInstance)(getActiveChar())).isGM() && Config.DECREASE_SKILL_LEVEL)
+		if ((getExp() >= getExpForLevel(getLevel() + 1)) || (getExpForLevel(getLevel()) > getExp()))
 		{
-			((L2PcInstance)(getActiveChar())).checkPlayerSkills();
+			setExp(getExpForLevel(getLevel()));
 		}
 		
-		if (!levelIncreased) return false;
+		if (!levelIncreased && (getActiveChar() instanceof L2PcInstance) && !((L2PcInstance) (getActiveChar())).isGM() && Config.DECREASE_SKILL_LEVEL)
+		{
+			((L2PcInstance) (getActiveChar())).checkPlayerSkills();
+		}
+		
+		if (!levelIncreased)
+		{
+			return false;
+		}
 		
 		getActiveChar().getStatus().setCurrentHp(getActiveChar().getStat().getMaxHp());
 		getActiveChar().getStatus().setCurrentMp(getActiveChar().getStat().getMaxMp());
 		if (getActiveChar() instanceof L2PcInstance)
+		{
 			CommunityServerThread.getInstance().sendPacket(new WorldInfo((L2PcInstance) getActiveChar(), null, WorldInfo.TYPE_UPDATE_PLAYER_DATA));
+		}
 		
 		return true;
 	}
@@ -157,10 +195,14 @@ public class PlayableStat extends CharStat
 		}
 		int currentSp = getSp();
 		if (currentSp == Integer.MAX_VALUE)
+		{
 			return false;
+		}
 		
-		if (currentSp > Integer.MAX_VALUE - value)
+		if (currentSp > (Integer.MAX_VALUE - value))
+		{
 			value = Integer.MAX_VALUE - currentSp;
+		}
 		
 		setSp(currentSp + value);
 		return true;
@@ -170,25 +212,32 @@ public class PlayableStat extends CharStat
 	{
 		int currentSp = getSp();
 		if (currentSp < value)
+		{
 			value = currentSp;
+		}
 		setSp(getSp() - value);
 		return true;
 	}
 	
-	public long getExpForLevel(int level) { return level; }
+	public long getExpForLevel(int level)
+	{
+		return level;
+	}
 	
 	@Override
 	public int getRunSpeed()
 	{
 		int val = super.getRunSpeed();
 		if (getActiveChar().isInsideZone(ZoneId.WATER))
+		{
 			val /= 2;
+		}
 		
 		if (getActiveChar().isInsideZone(ZoneId.SWAMP))
 		{
 			L2SwampZone zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
 			int bonus = zone == null ? 0 : zone.getMoveBonus();
-			double dbonus = bonus / 100.0; //%
+			double dbonus = bonus / 100.0; // %
 			val += val * dbonus;
 		}
 		
@@ -198,7 +247,7 @@ public class PlayableStat extends CharStat
 	@Override
 	public L2Playable getActiveChar()
 	{
-		return (L2Playable)super.getActiveChar();
+		return (L2Playable) super.getActiveChar();
 	}
 	
 	public int getMaxLevel()

@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.network.serverpackets.ShowTownMap;
 import com.l2jserver.gameserver.network.serverpackets.StaticObject;
 
 /**
- * GODSON ROX!
+ * @author godson
  */
 public class L2StaticObjectInstance extends L2Character
 {
@@ -39,27 +39,48 @@ public class L2StaticObjectInstance extends L2Character
 	/** The interaction distance of the L2StaticObjectInstance */
 	public static final int INTERACTION_DISTANCE = 150;
 	
-	private int _staticObjectId;
-	private int _meshIndex = 0;     // 0 - static objects, alternate static objects
-	private int _type = -1;         // 0 - map signs, 1 - throne , 2 - arena signs
+	private final int _staticObjectId;
+	private int _meshIndex = 0; // 0 - static objects, alternate static objects
+	private int _type = -1; // 0 - map signs, 1 - throne , 2 - arena signs
 	private ShowTownMap _map;
 	
 	/** This class may be created only by L2Character and only for AI */
 	public class AIAccessor extends L2Character.AIAccessor
 	{
-		protected AIAccessor() {}
+		protected AIAccessor()
+		{
+		}
+		
 		@Override
-		public L2StaticObjectInstance getActor() { return L2StaticObjectInstance.this; }
+		public L2StaticObjectInstance getActor()
+		{
+			return L2StaticObjectInstance.this;
+		}
+		
 		@Override
-		public void moveTo(int x, int y, int z, int offset) {}
+		public void moveTo(int x, int y, int z, int offset)
+		{
+		}
+		
 		@Override
-		public void moveTo(int x, int y, int z) {}
+		public void moveTo(int x, int y, int z)
+		{
+		}
+		
 		@Override
-		public void stopMove(L2CharPosition pos) {}
+		public void stopMove(L2CharPosition pos)
+		{
+		}
+		
 		@Override
-		public void doAttack(L2Character target) {}
+		public void doAttack(L2Character target)
+		{
+		}
+		
 		@Override
-		public void doCast(L2Skill skill) {}
+		public void doCast(L2Skill skill)
+		{
+		}
 	}
 	
 	@Override
@@ -67,6 +88,7 @@ public class L2StaticObjectInstance extends L2Character
 	{
 		return null;
 	}
+	
 	/**
 	 * @return Returns the StaticObjectId.
 	 */
@@ -76,11 +98,11 @@ public class L2StaticObjectInstance extends L2Character
 	}
 	
 	/**
-	 * @param objectId 
-	 * @param template 
-	 * @param staticId 
+	 * @param objectId
+	 * @param template
+	 * @param staticId
 	 */
-	public L2StaticObjectInstance(int objectId,L2CharTemplate template, int staticId)
+	public L2StaticObjectInstance(int objectId, L2CharTemplate template, int staticId)
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2StaticObjectInstance);
@@ -90,7 +112,7 @@ public class L2StaticObjectInstance extends L2Character
 	@Override
 	public final StaticObjectKnownList getKnownList()
 	{
-		return (StaticObjectKnownList)super.getKnownList();
+		return (StaticObjectKnownList) super.getKnownList();
 	}
 	
 	@Override
@@ -102,7 +124,7 @@ public class L2StaticObjectInstance extends L2Character
 	@Override
 	public final StaticObjStat getStat()
 	{
-		return (StaticObjStat)super.getStat();
+		return (StaticObjStat) super.getStat();
 	}
 	
 	@Override
@@ -114,7 +136,7 @@ public class L2StaticObjectInstance extends L2Character
 	@Override
 	public final StaticObjStatus getStatus()
 	{
-		return (StaticObjStatus)super.getStatus();
+		return (StaticObjStatus) super.getStatus();
 	}
 	
 	@Override
@@ -135,7 +157,7 @@ public class L2StaticObjectInstance extends L2Character
 	
 	public void setMap(String texture, int x, int y)
 	{
-		_map = new ShowTownMap("town_map."+texture, x, y);
+		_map = new ShowTownMap("town_map." + texture, x, y);
 	}
 	
 	public ShowTownMap getMap()
@@ -150,7 +172,7 @@ public class L2StaticObjectInstance extends L2Character
 	}
 	
 	/**
-	 * Return null.<BR><BR>
+	 * Return null.
 	 */
 	@Override
 	public L2ItemInstance getActiveWeaponInstance()
@@ -183,24 +205,27 @@ public class L2StaticObjectInstance extends L2Character
 	}
 	
 	/**
-	 * Set the meshIndex of the object<BR><BR>
-	 * 
-	 * <B><U> Values </U> :</B><BR><BR>
-	 * <li> default textures : 0</li>
-	 * <li> alternate textures : 1 </li><BR><BR>
+	 * Set the meshIndex of the object.<br>
+	 * <B><U> Values </U> :</B>
+	 * <ul>
+	 * <li>default textures : 0</li>
+	 * <li>alternate textures : 1</li>
+	 * </ul>
 	 * @param meshIndex
 	 */
-	public void setMeshIndex (int meshIndex)
+	public void setMeshIndex(int meshIndex)
 	{
 		_meshIndex = meshIndex;
 		this.broadcastPacket(new StaticObject(this));
 	}
 	
 	/**
-	 * <B><U> Values </U> :</B><BR><BR>
-	 * <li> default textures : 0</li>
-	 * <li> alternate textures : 1 </li><BR><BR>
-	 * @return the meshIndex of the object.
+	 * <B><U> Values </U> :</B>
+	 * <ul>
+	 * <li>default textures : 0</li>
+	 * <li>alternate textures : 1</li>
+	 * </ul>
+	 * @return the meshIndex of the object
 	 */
 	public int getMeshIndex()
 	{
@@ -208,7 +233,9 @@ public class L2StaticObjectInstance extends L2Character
 	}
 	
 	@Override
-	public void updateAbnormalEffect() {}
+	public void updateAbnormalEffect()
+	{
+	}
 	
 	@Override
 	public void sendInfo(L2PcInstance activeChar)

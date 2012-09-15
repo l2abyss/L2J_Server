@@ -44,8 +44,7 @@ public class Post
 		public String postTxt;
 	}
 	
-	private List<CPost> _post;
-	//public enum ConstructorType {REPLY, CREATE };
+	private final List<CPost> _post;
 	
 	/**
 	 * @param _PostOwner
@@ -55,7 +54,7 @@ public class Post
 	 * @param _PostForumID
 	 * @param txt
 	 */
-	public Post(String _PostOwner,int _PostOwnerID,long date,int tid,int _PostForumID,String txt)
+	public Post(String _PostOwner, int _PostOwnerID, long date, int tid, int _PostForumID, String txt)
 	{
 		_post = new FastList<>();
 		CPost cp = new CPost();
@@ -100,9 +99,9 @@ public class Post
 	public CPost getCPost(int id)
 	{
 		int i = 0;
-		for(CPost cp : _post)
+		for (CPost cp : _post)
 		{
-			if(i++ == id)
+			if (i++ == id)
 			{
 				return cp;
 			}
@@ -138,7 +137,7 @@ public class Post
 			ps.setInt(2, t.getID());
 			try (ResultSet rs = ps.executeQuery())
 			{
-				while(rs.next())
+				while (rs.next())
 				{
 					CPost cp = new CPost();
 					cp.postId = rs.getInt("post_id");
@@ -154,7 +153,7 @@ public class Post
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Data error on Post " + t.getForumID() + "/"+t.getID()+" : " + e.getMessage(), e);
+			_log.log(Level.WARNING, "Data error on Post " + t.getForumID() + "/" + t.getID() + " : " + e.getMessage(), e);
 		}
 	}
 	

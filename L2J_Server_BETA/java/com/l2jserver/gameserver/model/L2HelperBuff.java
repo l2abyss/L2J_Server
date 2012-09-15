@@ -15,33 +15,34 @@
 package com.l2jserver.gameserver.model;
 
 /**
- * This class represents a Newbie Helper Buff
- *
- * Author: Ayor
+ * This class represents a Newbie Helper Buff Author: Ayor
  */
 
 public class L2HelperBuff
 {
 	/** Min level that the player must achieve to obtain this buff from Newbie Helper */
-	private int _lowerLevel;
+	private final int _lowerLevel;
 	
 	/** Max level that the player mustn't exceed if it want to obtain this buff from Newbie Helper */
-	private int _upperLevel;
+	private final int _upperLevel;
 	
 	/** Identifier of the skill (buff) that the Newbie Helper must cast */
-	private int _skillID;
+	private final int _skillID;
 	
 	/** Level of the skill (buff) that the Newbie Helper must cast */
-	private int _skillLevel;
+	private final int _skillLevel;
 	
-	/** If True only Magus class will obtain this Buff <BR>
-	 *  If False only Fighter class will obtain this Buff */
+	/**
+	 * If True only Magus class will obtain this Buff <BR>
+	 * If False only Fighter class will obtain this Buff
+	 */
 	private boolean _isMagicClass;
 	
 	private boolean _forSummon = false;
+	
 	/**
-	 * Constructor of L2HelperBuff.<BR><BR>
-	 * @param set 
+	 * Constructor of L2HelperBuff.
+	 * @param set
 	 */
 	public L2HelperBuff(StatsSet set)
 	{
@@ -51,12 +52,18 @@ public class L2HelperBuff
 		_skillID = set.getInteger("skillID");
 		_skillLevel = set.getInteger("skillLevel");
 		if ("true".equals(set.getString("forSummon")))
+		{
 			_forSummon = true;
+		}
 		
 		if ("false".equals(set.getString("isMagicClass")))
+		{
 			_isMagicClass = false;
+		}
 		else
+		{
 			_isMagicClass = true;
+		}
 		
 	}
 	

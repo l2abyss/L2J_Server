@@ -44,7 +44,10 @@ public final class RequestJoinDominionWar extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null) return;
+		if (activeChar == null)
+		{
+			return;
+		}
 		L2Clan clan = activeChar.getClan();
 		int castleId = _territoryId - 80;
 		
@@ -53,7 +56,7 @@ public final class RequestJoinDominionWar extends L2GameClientPacket
 			activeChar.sendPacket(SystemMessageId.NOT_TERRITORY_REGISTRATION_PERIOD);
 			return;
 		}
-		else if (clan != null && TerritoryWarManager.getInstance().getTerritory(castleId).getOwnerClan() == clan)
+		else if ((clan != null) && (TerritoryWarManager.getInstance().getTerritory(castleId).getOwnerClan() == clan))
 		{
 			activeChar.sendPacket(SystemMessageId.THE_TERRITORY_OWNER_CLAN_CANNOT_PARTICIPATE_AS_MERCENARIES);
 			return;
@@ -67,7 +70,10 @@ public final class RequestJoinDominionWar extends L2GameClientPacket
 				return;
 			}
 			
-			if (clan == null) return;
+			if (clan == null)
+			{
+				return;
+			}
 			
 			if (_isJoining == 1)
 			{
@@ -84,11 +90,13 @@ public final class RequestJoinDominionWar extends L2GameClientPacket
 				TerritoryWarManager.getInstance().registerClan(castleId, clan);
 			}
 			else
+			{
 				TerritoryWarManager.getInstance().removeClan(castleId, clan);
+			}
 		}
 		else
 		{
-			if (activeChar.getLevel() < 40 || activeChar.getClassId().level() < 2)
+			if ((activeChar.getLevel() < 40) || (activeChar.getClassId().level() < 2))
 			{
 				// TODO: punish player
 				return;
@@ -100,8 +108,7 @@ public final class RequestJoinDominionWar extends L2GameClientPacket
 					activeChar.sendPacket(SystemMessageId.YOU_ALREADY_REQUESTED_TW_REGISTRATION);
 					return;
 				}
-				else if (clan != null &&
-						TerritoryWarManager.getInstance().checkIsRegistered(-1, clan))
+				else if ((clan != null) && TerritoryWarManager.getInstance().checkIsRegistered(-1, clan))
 				{
 					activeChar.sendPacket(SystemMessageId.YOU_ALREADY_REQUESTED_TW_REGISTRATION);
 					return;
@@ -109,7 +116,9 @@ public final class RequestJoinDominionWar extends L2GameClientPacket
 				TerritoryWarManager.getInstance().registerMerc(castleId, activeChar);
 			}
 			else
+			{
 				TerritoryWarManager.getInstance().removeMerc(castleId, activeChar);
+			}
 		}
 		activeChar.sendPacket(new ExShowDominionRegistry(castleId, activeChar));
 	}

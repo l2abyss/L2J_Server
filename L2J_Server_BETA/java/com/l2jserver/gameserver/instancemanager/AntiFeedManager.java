@@ -58,29 +58,41 @@ public class AntiFeedManager
 	public final boolean check(L2Character attacker, L2Character target)
 	{
 		if (!Config.L2JMOD_ANTIFEED_ENABLE)
+		{
 			return true;
+		}
 		
 		if (target == null)
+		{
 			return false;
+		}
 		
 		final L2PcInstance targetPlayer = target.getActingPlayer();
 		if (targetPlayer == null)
+		{
 			return false;
+		}
 		
-		if (Config.L2JMOD_ANTIFEED_INTERVAL > 0 && _lastDeathTimes.containsKey(targetPlayer.getObjectId()))
+		if ((Config.L2JMOD_ANTIFEED_INTERVAL > 0) && _lastDeathTimes.containsKey(targetPlayer.getObjectId()))
+		{
 			return (System.currentTimeMillis() - _lastDeathTimes.get(targetPlayer.getObjectId())) > Config.L2JMOD_ANTIFEED_INTERVAL;
+		}
 		
-		if (Config.L2JMOD_ANTIFEED_DUALBOX && attacker != null)
+		if (Config.L2JMOD_ANTIFEED_DUALBOX && (attacker != null))
 		{
 			final L2PcInstance attackerPlayer = attacker.getActingPlayer();
 			if (attackerPlayer == null)
+			{
 				return false;
+			}
 			
 			final L2GameClient targetClient = targetPlayer.getClient();
 			final L2GameClient attackerClient = attackerPlayer.getClient();
-			if (targetClient == null || attackerClient == null || targetClient.isDetached() || attackerClient.isDetached())
+			if ((targetClient == null) || (attackerClient == null) || targetClient.isDetached() || attackerClient.isDetached())
+			{
 				// unable to check ip address
 				return !Config.L2JMOD_ANTIFEED_DISCONNECTED_AS_DUALBOX;
+			}
 			
 			return !targetClient.getConnectionAddress().equals(attackerClient.getConnectionAddress());
 		}
@@ -103,7 +115,9 @@ public class AntiFeedManager
 	public final void registerEvent(int eventId)
 	{
 		if (!_eventIPs.containsKey(eventId))
+		{
 			_eventIPs.put(eventId, new FastMap<Integer, Connections>());
+		}
 	}
 	
 	/**
@@ -128,12 +142,16 @@ public class AntiFeedManager
 	public final boolean tryAddClient(int eventId, L2GameClient client, int max)
 	{
 		if (client == null)
+		{
 			return false; // unable to determine IP address
-			
+		}
+		
 		final Map<Integer, Connections> event = _eventIPs.get(eventId);
 		if (event == null)
+		{
 			return false; // no such event registered
-			
+		}
+		
 		final Integer addrHash = Integer.valueOf(client.getConnectionAddress().hashCode());
 		int limit = max;
 		if (Config.L2JMOD_DUALBOX_CHECK_WHITELIST.containsKey(addrHash))
@@ -165,21 +183,29 @@ public class AntiFeedManager
 	{
 		final L2GameClient client = player.getClient();
 		if (client == null)
+		{
 			return false; // unable to determine IP address
-			
+		}
+		
 		final Map<Integer, Connections> event = _eventIPs.get(eventId);
 		if (event == null)
+		{
 			return false; // no such event registered
-			
+		}
+		
 		final Integer addrHash = Integer.valueOf(client.getConnectionAddress().hashCode());
 		Connections conns = event.get(addrHash);
 		if (conns == null)
+		{
 			return false; // address not registered
-			
+		}
+		
 		synchronized (event)
 		{
 			if (conns.testAndDecrement())
+			{
 				event.remove(addrHash);
+			}
 		}
 		
 		return true;
@@ -192,7 +218,9 @@ public class AntiFeedManager
 	public final void onDisconnect(L2GameClient client)
 	{
 		if (client == null)
+		{
 			return;
+		}
 		
 		final Integer addrHash = Integer.valueOf(client.getConnectionAddress().hashCode());
 		_eventIPs.executeForEachValue(new DisconnectProcedure(addrHash));
@@ -206,7 +234,9 @@ public class AntiFeedManager
 	{
 		final Map<Integer, Connections> event = _eventIPs.get(eventId);
 		if (event != null)
+		{
 			event.clear();
+		}
 	}
 	
 	/**
@@ -227,7 +257,9 @@ public class AntiFeedManager
 	public final int getLimit(L2GameClient client, int max)
 	{
 		if (client == null)
+		{
 			return max;
+		}
 		
 		final Integer addrHash = Integer.valueOf(client.getConnectionAddress().hashCode());
 		int limit = max;
@@ -263,7 +295,9 @@ public class AntiFeedManager
 		public final synchronized boolean testAndDecrement()
 		{
 			if (_num > 0)
+			{
 				_num--;
+			}
 			
 			return _num == 0;
 		}
@@ -287,7 +321,9 @@ public class AntiFeedManager
 				synchronized (event)
 				{
 					if (conns.testAndDecrement())
+					{
 						event.remove(_addrHash);
+					}
 				}
 			}
 			return true;

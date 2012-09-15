@@ -18,9 +18,8 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 
 /**
  * This class ...
- *
  * @version $Revision: $ $Date: $
- * @author  LBaldi
+ * @author LBaldi
  */
 public class L2AdventurerInstance extends L2NpcInstance
 {
@@ -36,9 +35,13 @@ public class L2AdventurerInstance extends L2NpcInstance
 		String pom = "";
 		
 		if (val == 0)
+		{
 			pom = "" + npcId;
+		}
 		else
+		{
 			pom = npcId + "-" + val;
+		}
 		
 		return "data/html/adventurer_guildsman/" + pom + ".htm";
 	}

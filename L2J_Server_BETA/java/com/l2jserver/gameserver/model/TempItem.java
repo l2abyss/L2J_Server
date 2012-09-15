@@ -24,10 +24,10 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
  */
 public final class TempItem
 {
-	private int _itemId;
+	private final int _itemId;
 	private int _quantity;
-	private int _referencePrice;
-	private String _itemName;
+	private final int _referencePrice;
+	private final String _itemName;
 	
 	/**
 	 * @param item

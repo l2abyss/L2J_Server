@@ -33,7 +33,7 @@ import com.l2jserver.gameserver.network.communityserver.writepackets.GameServerA
 import com.l2jserver.util.Rnd;
 
 /**
- * @authors  Forsaiken, Gigiikun
+ * @authors Forsaiken, Gigiikun
  */
 public final class InitCS extends BaseReadPacket
 {
@@ -56,7 +56,7 @@ public final class InitCS extends BaseReadPacket
 		{
 			final KeyFactory kfac = KeyFactory.getInstance("RSA");
 			final RSAPublicKeySpec kspec1 = new RSAPublicKeySpec(new BigInteger(key), RSAKeyGenParameterSpec.F4);
-			final RSAPublicKey publicKey = (RSAPublicKey)kfac.generatePublic(kspec1);
+			final RSAPublicKey publicKey = (RSAPublicKey) kfac.generatePublic(kspec1);
 			
 			final byte[] privateKey = new byte[40];
 			Rnd.nextBytes(privateKey);

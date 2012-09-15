@@ -32,13 +32,19 @@ public final class ExItemAuctionInfoPacket extends L2GameServerPacket
 	public ExItemAuctionInfoPacket(final boolean refresh, final ItemAuction currentAuction, final ItemAuction nextAuction)
 	{
 		if (currentAuction == null)
+		{
 			throw new NullPointerException();
+		}
 		
 		if (currentAuction.getAuctionState() != ItemAuctionState.STARTED)
+		{
 			_timeRemaining = 0;
+		}
 		else
+		{
 			_timeRemaining = (int) (currentAuction.getFinishingTimeRemaining() / 1000); // in seconds
-			
+		}
+		
 		_refresh = refresh;
 		_currentAuction = currentAuction;
 		_nextAuction = nextAuction;

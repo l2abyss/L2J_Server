@@ -15,8 +15,7 @@
 package com.l2jserver.gameserver.model.effects;
 
 /**
- *
- * @author  nBd
+ * @author nBd
  */
 public enum L2EffectType
 {

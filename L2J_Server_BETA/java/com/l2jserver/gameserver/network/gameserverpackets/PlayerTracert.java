@@ -21,8 +21,7 @@ import com.l2jserver.util.network.BaseSendablePacket;
  */
 public class PlayerTracert extends BaseSendablePacket
 {
-	public PlayerTracert(String account, String pcIp,
-			String hop1, String hop2, String hop3, String hop4)
+	public PlayerTracert(String account, String pcIp, String hop1, String hop2, String hop3, String hop4)
 	{
 		writeC(0x07);
 		writeS(account);

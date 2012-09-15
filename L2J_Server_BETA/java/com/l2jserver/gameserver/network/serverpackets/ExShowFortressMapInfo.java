@@ -44,7 +44,7 @@ public class ExShowFortressMapInfo extends L2GameServerPacket
 		writeD(_fortress.getFortSize()); // barracks count
 		
 		FastList<SiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(_fortress.getFortId());
-		if (commanders != null && commanders.size() != 0 && _fortress.getSiege().getIsInProgress())
+		if ((commanders != null) && (commanders.size() != 0) && _fortress.getSiege().getIsInProgress())
 		{
 			switch (commanders.size())
 			{
@@ -53,9 +53,13 @@ public class ExShowFortressMapInfo extends L2GameServerPacket
 					for (SiegeSpawn spawn : commanders)
 					{
 						if (isSpawned(spawn.getNpcId()))
+						{
 							writeD(0);
+						}
 						else
+						{
 							writeD(1);
+						}
 					}
 					break;
 				}
@@ -66,11 +70,17 @@ public class ExShowFortressMapInfo extends L2GameServerPacket
 					{
 						count++;
 						if (count == 4)
+						{
 							writeD(1); // TODO: control room emulated
+						}
 						if (isSpawned(spawn.getNpcId()))
+						{
 							writeD(0);
+						}
 						else
+						{
 							writeD(1);
+						}
 					}
 					break;
 				}

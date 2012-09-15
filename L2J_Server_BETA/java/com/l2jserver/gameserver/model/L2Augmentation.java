@@ -28,8 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 
 /**
  * Used to store an augmentation and its boni
- *
- * @author  durgus
+ * @author durgus
  */
 public final class L2Augmentation
 {
@@ -51,19 +50,19 @@ public final class L2Augmentation
 	
 	public static class AugmentationStatBoni
 	{
-		private Stats _stats[];
-		private float _values[];
+		private final Stats _stats[];
+		private final float _values[];
 		private boolean _active;
 		
 		public AugmentationStatBoni(int augmentationId)
 		{
 			_active = false;
-			FastList <AugmentationData.AugStat> as = AugmentationData.getInstance().getAugStatsById(augmentationId);
+			FastList<AugmentationData.AugStat> as = AugmentationData.getInstance().getAugStatsById(augmentationId);
 			
 			_stats = new Stats[as.size()];
 			_values = new float[as.size()];
 			
-			int i=0;
+			int i = 0;
 			for (AugmentationData.AugStat aStat : as)
 			{
 				_stats[i] = aStat.getStat();
@@ -75,10 +74,15 @@ public final class L2Augmentation
 		public void applyBonus(L2PcInstance player)
 		{
 			// make sure the bonuses are not applied twice..
-			if (_active) return;
+			if (_active)
+			{
+				return;
+			}
 			
-			for (int i=0; i < _stats.length; i++)
+			for (int i = 0; i < _stats.length; i++)
+			{
 				player.addStatFunc(new FuncAdd(_stats[i], 0x40, this, new LambdaConst(_values[i])));
+			}
 			
 			_active = true;
 		}
@@ -157,9 +161,13 @@ public final class L2Augmentation
 		if (_skill != null)
 		{
 			if (_skill.isPassive())
+			{
 				player.removeSkill(_skill, false, true);
+			}
 			else
+			{
 				player.removeSkill(_skill, false, false);
+			}
 			
 			player.sendSkillList();
 		}

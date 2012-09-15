@@ -54,23 +54,29 @@ public class EnchantItem
 	public final boolean isValid(L2ItemInstance enchantItem)
 	{
 		if (enchantItem == null)
+		{
 			return false;
-		
+		}
 		else if (enchantItem.isEnchantable() == 0)
+		{
 			return false;
-		
+		}
 		else if (!isValidItemType(enchantItem.getItem().getType2()))
+		{
 			return false;
-		
-		else if (_maxEnchantLevel != 0 && enchantItem.getEnchantLevel() >= _maxEnchantLevel)
+		}
+		else if ((_maxEnchantLevel != 0) && (enchantItem.getEnchantLevel() >= _maxEnchantLevel))
+		{
 			return false;
-		
+		}
 		else if (_grade != enchantItem.getItem().getItemGradeSPlus())
+		{
 			return false;
-		
-		else if ((enchantItem.isEnchantable() > 1 && (_itemIds.isEmpty() || !_itemIds.contains(enchantItem.getItemId())))
-				|| !_itemIds.isEmpty() && !_itemIds.contains(enchantItem.getItemId()))
+		}
+		else if (((enchantItem.isEnchantable() > 1) && (_itemIds.isEmpty() || !_itemIds.contains(enchantItem.getItemId()))) || (!_itemIds.isEmpty() && !_itemIds.contains(enchantItem.getItemId())))
+		{
 			return false;
+		}
 		
 		return true;
 	}
@@ -81,7 +87,7 @@ public class EnchantItem
 		{
 			return _isWeapon;
 		}
-		else if (type2 == L2Item.TYPE2_SHIELD_ARMOR || type2 == L2Item.TYPE2_ACCESSORY)
+		else if ((type2 == L2Item.TYPE2_SHIELD_ARMOR) || (type2 == L2Item.TYPE2_ACCESSORY))
 		{
 			return !_isWeapon;
 		}

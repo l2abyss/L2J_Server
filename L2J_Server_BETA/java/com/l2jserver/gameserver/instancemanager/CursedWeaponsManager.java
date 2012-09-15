@@ -51,7 +51,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Broadcast;
 
 /**
- * UnAfraid: TODO: Rewrite with DocumentParser 
+ * UnAfraid: TODO: Rewrite with DocumentParser
  * @author Micht
  */
 public class CursedWeaponsManager
@@ -70,7 +70,9 @@ public class CursedWeaponsManager
 		_cursedWeapons = new HashMap<>();
 		
 		if (!Config.ALLOW_CURSED_WEAPONS)
+		{
 			return;
+		}
 		
 		load();
 		restore();
@@ -200,12 +202,12 @@ public class CursedWeaponsManager
 	}
 	
 	private final void controlPlayers()
-	{		
+	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			// TODO: See comments below...
 			// This entire for loop should NOT be necessary, since it is already handled by
-			// CursedWeapon.endOfLife().  However, if we indeed *need* to duplicate it for safety,
+			// CursedWeapon.endOfLife(). However, if we indeed *need* to duplicate it for safety,
 			// then we'd better make sure that it FULLY cleans up inactive cursed weapons!
 			// Undesired effects result otherwise, such as player with no zariche but with karma
 			// or a lost-child entry in the cursed weapons table, without a corresponding one in items...
@@ -216,7 +218,9 @@ public class CursedWeaponsManager
 				for (CursedWeapon cw : _cursedWeapons.values())
 				{
 					if (cw.isActivated())
+					{
 						continue;
+					}
 					
 					// Do an item check to be sure that the cursed weapon isn't hold by someone
 					int itemId = cw.getItemId();
@@ -267,19 +271,22 @@ public class CursedWeaponsManager
 	
 	public synchronized void checkDrop(L2Attackable attackable, L2PcInstance player)
 	{
-		if (attackable instanceof L2DefenderInstance || attackable instanceof L2RiftInvaderInstance
-				|| attackable instanceof L2FestivalMonsterInstance || attackable instanceof L2GuardInstance
-				|| attackable instanceof L2GrandBossInstance || attackable instanceof L2FeedableBeastInstance
-				|| attackable instanceof L2FortCommanderInstance)
+		if ((attackable instanceof L2DefenderInstance) || (attackable instanceof L2RiftInvaderInstance) || (attackable instanceof L2FestivalMonsterInstance) || (attackable instanceof L2GuardInstance) || (attackable instanceof L2GrandBossInstance) || (attackable instanceof L2FeedableBeastInstance) || (attackable instanceof L2FortCommanderInstance))
+		{
 			return;
+		}
 		
 		for (CursedWeapon cw : _cursedWeapons.values())
 		{
 			if (cw.isActive())
+			{
 				continue;
+			}
 			
 			if (cw.checkDrop(attackable, player))
+			{
 				break;
+			}
 		}
 	}
 	
@@ -289,14 +296,11 @@ public class CursedWeaponsManager
 		if (player.isCursedWeaponEquipped()) // cannot own 2 cursed swords
 		{
 			CursedWeapon cw2 = _cursedWeapons.get(player.getCursedWeaponEquippedId());
-			/* TODO: give the bonus level in a more appropriate manner.
-			 *  The following code adds "_stageKills" levels.  This will also show in the char status.
-			 * I do not have enough info to know if the bonus should be shown in the pk count, or if it
-			 * should be a full "_stageKills" bonus or just the remaining from the current count till the
-			 * of the current stage...
-			 * This code is a TEMP fix, so that the cursed weapon's bonus level can be observed with as
-			 * little change in the code as possible, until proper info arises.
-			 */
+			// TODO: give the bonus level in a more appropriate manner.
+			// The following code adds "_stageKills" levels. This will also show in the char status.
+			// I do not have enough info to know if the bonus should be shown in the pk count, or if it
+			// should be a full "_stageKills" bonus or just the remaining from the current count till the of the current stage...
+			// This code is a TEMP fix, so that the cursed weapon's bonus level can be observed with as little change in the code as possible, until proper info arises.
 			cw2.setNbKills(cw2.getStageKills() - 1);
 			cw2.increaseKills();
 			
@@ -305,7 +309,9 @@ public class CursedWeaponsManager
 			cw.endOfLife(); // expire the weapon and clean up.
 		}
 		else
+		{
 			cw.activate(player, item);
+		}
 	}
 	
 	public void drop(int itemId, L2Character killer)
@@ -337,11 +343,13 @@ public class CursedWeaponsManager
 	public void checkPlayer(L2PcInstance player)
 	{
 		if (player == null)
+		{
 			return;
+		}
 		
 		for (CursedWeapon cw : _cursedWeapons.values())
 		{
-			if (cw.isActivated() && player.getObjectId() == cw.getPlayerId())
+			if (cw.isActivated() && (player.getObjectId() == cw.getPlayerId()))
 			{
 				cw.setPlayer(player);
 				cw.setItem(player.getInventory().getItemByItemId(cw.getItemId()));
@@ -350,7 +358,7 @@ public class CursedWeaponsManager
 				
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_MINUTE_OF_USAGE_TIME_ARE_LEFT_FOR_S1);
 				sm.addString(cw.getName());
-				//sm.addItemName(cw.getItemId());
+				// sm.addItemName(cw.getItemId());
 				sm.addNumber((int) ((cw.getEndTime() - System.currentTimeMillis()) / 60000));
 				player.sendPacket(sm);
 			}
@@ -360,8 +368,12 @@ public class CursedWeaponsManager
 	public int checkOwnsWeaponId(int ownerId)
 	{
 		for (CursedWeapon cw : _cursedWeapons.values())
-			if (cw.isActivated() && ownerId == cw.getPlayerId())
+		{
+			if (cw.isActivated() && (ownerId == cw.getPlayerId()))
+			{
 				return cw.getItemId();
+			}
+		}
 		return -1;
 	}
 	

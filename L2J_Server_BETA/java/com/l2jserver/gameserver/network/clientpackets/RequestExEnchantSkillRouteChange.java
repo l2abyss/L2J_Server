@@ -58,12 +58,16 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (_skillId <= 0 || _skillLvl <= 0) // minimal sanity check
+		if ((_skillId <= 0) || (_skillLvl <= 0))
+		{
 			return;
-
+		}
+		
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
+		{
 			return;
+		}
 		
 		if (player.getClassId().level() < 3) // requires to have 3rd class quest completed
 		{
@@ -106,7 +110,7 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 		
 		int currentEnchantLevel = beforeEnchantSkillLevel % 100;
 		// is the requested level valid?
-		if (currentEnchantLevel != _skillLvl % 100)
+		if (currentEnchantLevel != (_skillLvl % 100))
 		{
 			return;
 		}
@@ -151,7 +155,7 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 			
 			int levelPenalty = Rnd.get(Math.min(4, currentEnchantLevel));
 			_skillLvl -= levelPenalty;
-			if (_skillLvl % 100 == 0)
+			if ((_skillLvl % 100) == 0)
 			{
 				_skillLvl = s.getBaseLevel();
 			}
@@ -164,9 +168,11 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 				{
 					LogRecord record = new LogRecord(Level.INFO, "Route Change");
 					record.setParameters(new Object[]
-					                                {
-							player, skill, spb
-					                                });
+					{
+						player,
+						skill,
+						spb
+					});
 					record.setLoggerName("skill");
 					_logEnchant.log(record);
 				}

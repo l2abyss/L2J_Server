@@ -87,7 +87,9 @@ public class FriendListExtended extends L2GameServerPacket
 			}
 			
 			if (player1.isOnline())
+			{
 				online = true;
+			}
 			
 			classid = player1.getClassId().getId();
 			level = player1.getLevel();

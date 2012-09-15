@@ -31,7 +31,7 @@ public final class L2ArmorSet
 	private final List<Integer> _legs;
 	private final List<Integer> _head;
 	private final List<Integer> _gloves;
-	private final List<Integer> _feet;	
+	private final List<Integer> _feet;
 	private final List<Integer> _shield;
 	
 	private final List<SkillHolder> _skills;
@@ -135,9 +135,7 @@ public final class L2ArmorSet
 	
 	/**
 	 * Checks if player have equipped all items from set (not checking shield)
-	 * 
-	 * @param player
-	 *            whose inventory is being checked
+	 * @param player whose inventory is being checked
 	 * @return True if player equips whole set
 	 */
 	public boolean containAll(L2PcInstance player)
@@ -155,29 +153,47 @@ public final class L2ArmorSet
 		int feet = 0;
 		
 		if (legsItem != null)
+		{
 			legs = legsItem.getItemId();
+		}
 		if (headItem != null)
+		{
 			head = headItem.getItemId();
+		}
 		if (glovesItem != null)
+		{
 			gloves = glovesItem.getItemId();
+		}
 		if (feetItem != null)
+		{
 			feet = feetItem.getItemId();
+		}
 		
 		return containAll(_chestId, legs, head, gloves, feet);
 	}
 	
 	public boolean containAll(int chest, int legs, int head, int gloves, int feet)
 	{
-		if (_chestId != 0 &&_chestId != chest)
+		if ((_chestId != 0) && (_chestId != chest))
+		{
 			return false;
+		}
 		if (!_legs.isEmpty() && !_legs.contains(legs))
+		{
 			return false;
+		}
 		if (!_head.isEmpty() && !_head.contains(head))
+		{
 			return false;
+		}
 		if (!_gloves.isEmpty() && !_gloves.contains(gloves))
+		{
 			return false;
+		}
 		if (!_feet.isEmpty() && !_feet.contains(feet))
+		{
 			return false;
+		}
 		
 		return true;
 	}
@@ -216,13 +232,15 @@ public final class L2ArmorSet
 		Inventory inv = player.getInventory();
 		
 		L2ItemInstance shieldItem = inv.getPaperdollItem(Inventory.PAPERDOLL_LHAND);
-		return (shieldItem != null && _shield.contains(Integer.valueOf(shieldItem.getItemId())));
+		return ((shieldItem != null) && _shield.contains(Integer.valueOf(shieldItem.getItemId())));
 	}
 	
 	public boolean containShield(int shield_id)
 	{
 		if (_shield.isEmpty())
+		{
 			return false;
+		}
 		
 		return _shield.contains(Integer.valueOf(shield_id));
 	}
@@ -245,7 +263,9 @@ public final class L2ArmorSet
 	{
 		// Player don't have full set
 		if (!containAll(player))
+		{
 			return false;
+		}
 		
 		Inventory inv = player.getInventory();
 		
@@ -255,16 +275,26 @@ public final class L2ArmorSet
 		L2ItemInstance glovesItem = inv.getPaperdollItem(Inventory.PAPERDOLL_GLOVES);
 		L2ItemInstance feetItem = inv.getPaperdollItem(Inventory.PAPERDOLL_FEET);
 		
-		if (chestItem == null || chestItem.getEnchantLevel() < 6)
+		if ((chestItem == null) || (chestItem.getEnchantLevel() < 6))
+		{
 			return false;
-		if (!_legs.isEmpty() && (legsItem == null || legsItem.getEnchantLevel() < 6))
+		}
+		if (!_legs.isEmpty() && ((legsItem == null) || (legsItem.getEnchantLevel() < 6)))
+		{
 			return false;
-		if (!_gloves.isEmpty() && (glovesItem == null || glovesItem.getEnchantLevel() < 6))
+		}
+		if (!_gloves.isEmpty() && ((glovesItem == null) || (glovesItem.getEnchantLevel() < 6)))
+		{
 			return false;
-		if (!_head.isEmpty() && (headItem == null || headItem.getEnchantLevel() < 6))
+		}
+		if (!_head.isEmpty() && ((headItem == null) || (headItem.getEnchantLevel() < 6)))
+		{
 			return false;
-		if (!_feet.isEmpty() && (feetItem == null || feetItem.getEnchantLevel() < 6))
+		}
+		if (!_feet.isEmpty() && ((feetItem == null) || (feetItem.getEnchantLevel() < 6)))
+		{
 			return false;
+		}
 		
 		return true;
 	}

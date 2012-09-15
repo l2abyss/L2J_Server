@@ -43,12 +43,16 @@ public final class RequestReceivedPost extends L2GameClientPacket
 	public void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null || !Config.ALLOW_MAIL)
+		if ((activeChar == null) || !Config.ALLOW_MAIL)
+		{
 			return;
+		}
 		
 		final Message msg = MailManager.getInstance().getMessage(_msgId);
 		if (msg == null)
+		{
 			return;
+		}
 		
 		if (!activeChar.isInsideZone(ZoneId.PEACE) && msg.hasAttachments())
 		{
@@ -58,13 +62,14 @@ public final class RequestReceivedPost extends L2GameClientPacket
 		
 		if (msg.getReceiverId() != activeChar.getObjectId())
 		{
-			Util.handleIllegalPlayerAction(activeChar,
-					"Player "+activeChar.getName()+" tried to receive not own post!", Config.DEFAULT_PUNISH);
+			Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to receive not own post!", Config.DEFAULT_PUNISH);
 			return;
 		}
 		
 		if (msg.isDeletedByReceiver())
+		{
 			return;
+		}
 		
 		activeChar.sendPacket(new ExReplyReceivedPost(msg));
 		activeChar.sendPacket(new ExChangePostState(true, _msgId, Message.READED));

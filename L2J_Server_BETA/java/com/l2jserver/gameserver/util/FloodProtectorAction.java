@@ -80,7 +80,7 @@ public final class FloodProtectorAction
 	{
 		final int curTick = GameTimeController.getGameTicks();
 		
-		if (_client.getActiveChar() != null && _client.getActiveChar().canOverrideCond(PcCondOverride.FLOOD_CONDITIONS))
+		if ((_client.getActiveChar() != null) && _client.getActiveChar().canOverrideCond(PcCondOverride.FLOOD_CONDITIONS))
 		{
 			return true;
 		}

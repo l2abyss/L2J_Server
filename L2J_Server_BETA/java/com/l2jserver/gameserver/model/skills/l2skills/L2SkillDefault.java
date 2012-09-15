@@ -20,9 +20,11 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 
-public class L2SkillDefault extends L2Skill {
+public class L2SkillDefault extends L2Skill
+{
 	
-	public L2SkillDefault(StatsSet set) {
+	public L2SkillDefault(StatsSet set)
+	{
 		super(set);
 	}
 	

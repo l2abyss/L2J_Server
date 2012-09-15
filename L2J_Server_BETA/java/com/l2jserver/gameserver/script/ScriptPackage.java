@@ -21,9 +21,9 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import com.l2jserver.Config;
-
 import javolution.util.FastList;
+
+import com.l2jserver.Config;
 
 /**
  * @author Luis Arias

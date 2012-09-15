@@ -19,9 +19,9 @@ package com.l2jserver.gameserver.model.itemauction;
  */
 public enum ItemAuctionState
 {
-	CREATED((byte)0),
-	STARTED((byte)1),
-	FINISHED((byte)2);
+	CREATED((byte) 0),
+	STARTED((byte) 1),
+	FINISHED((byte) 2);
 	
 	private final byte _stateId;
 	
@@ -40,7 +40,9 @@ public enum ItemAuctionState
 		for (final ItemAuctionState state : ItemAuctionState.values())
 		{
 			if (state.getStateId() == stateId)
+			{
 				return state;
+			}
 		}
 		return null;
 	}

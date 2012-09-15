@@ -71,7 +71,7 @@ public class L2ResidenceTeleportZone extends L2ZoneRespawn
 	{
 		for (L2PcInstance player : getPlayersInside())
 		{
-			if (player != null && player.isOnline())
+			if ((player != null) && player.isOnline())
 			{
 				player.teleToLocation(getSpawnLoc(), 200);
 			}

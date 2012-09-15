@@ -21,11 +21,10 @@ import com.l2jserver.gameserver.model.actor.L2Character.AIAccessor;
 
 /**
  * @author BiggBoss
- *
  */
 public final class L2SpecialSiegeGuardAI extends L2SiegeGuardAI
 {
-	private ArrayList<Integer> _allied;
+	private final ArrayList<Integer> _allied;
 	
 	/**
 	 * @param accessor
@@ -44,8 +43,10 @@ public final class L2SpecialSiegeGuardAI extends L2SiegeGuardAI
 	@Override
 	protected boolean autoAttackCondition(L2Character target)
 	{
-		if(_allied.contains(target.getObjectId()))
+		if (_allied.contains(target.getObjectId()))
+		{
 			return false;
+		}
 		
 		return super.autoAttackCondition(target);
 	}

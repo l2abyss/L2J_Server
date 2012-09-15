@@ -63,9 +63,13 @@ public final class L2WorldRegion
 		
 		// default a newly initialized region to inactive, unless always on is specified
 		if (Config.GRIDS_ALWAYS_ON)
+		{
 			_active = true;
+		}
 		else
+		{
 			_active = false;
+		}
 		_zones = new FastList<>();
 	}
 	
@@ -90,12 +94,16 @@ public final class L2WorldRegion
 		// Once the teleport is COMPLETED, revalidation occurs safely, at that time.
 		
 		if (character.isTeleporting())
+		{
 			return;
+		}
 		
 		for (L2ZoneType z : getZones())
 		{
 			if (z != null)
+			{
 				z.revalidateInZone(character);
+			}
 		}
 	}
 	
@@ -104,7 +112,9 @@ public final class L2WorldRegion
 		for (L2ZoneType z : getZones())
 		{
 			if (z != null)
+			{
 				z.removeCharacter(character);
+			}
 		}
 	}
 	
@@ -133,19 +143,29 @@ public final class L2WorldRegion
 			if (e instanceof L2PeaceZone)
 			{
 				if (e.isInsideZone(x, up, z))
+				{
 					return false;
+				}
 				
 				if (e.isInsideZone(x, down, z))
+				{
 					return false;
+				}
 				
 				if (e.isInsideZone(left, y, z))
+				{
 					return false;
+				}
 				
 				if (e.isInsideZone(right, y, z))
+				{
 					return false;
+				}
 				
 				if (e.isInsideZone(x, y, z))
+				{
 					return false;
+				}
 			}
 		}
 		return true;
@@ -156,7 +176,9 @@ public final class L2WorldRegion
 		for (L2ZoneType z : getZones())
 		{
 			if (z != null)
+			{
 				z.onDieInside(character);
+			}
 		}
 	}
 	
@@ -165,7 +187,9 @@ public final class L2WorldRegion
 		for (L2ZoneType z : getZones())
 		{
 			if (z != null)
+			{
 				z.onReviveInside(character);
+			}
 		}
 	}
 	
@@ -186,17 +210,25 @@ public final class L2WorldRegion
 			{
 				// for each neighbor, if it's not active, activate.
 				for (L2WorldRegion neighbor : getSurroundingRegions())
+				{
 					neighbor.setActive(true);
+				}
 			}
 			else
 			{
 				if (areNeighborsEmpty())
+				{
 					setActive(false);
+				}
 				
 				// check and deactivate
 				for (L2WorldRegion neighbor : getSurroundingRegions())
+				{
 					if (neighbor.areNeighborsEmpty())
+					{
 						neighbor.setActive(false);
+					}
+				}
 			}
 		}
 	}
@@ -256,7 +288,9 @@ public final class L2WorldRegion
 					((L2Attackable) o).getStatus().startHpMpRegeneration();
 				}
 				else if (o instanceof L2Npc)
+				{
 					((L2Npc) o).startRandomAnimationTimer();
+				}
 			}
 			
 			_log.fine(c + " mobs were turned on");
@@ -276,12 +310,18 @@ public final class L2WorldRegion
 	{
 		// if this region is occupied, return false.
 		if (isActive() && !_allPlayable.isEmpty())
+		{
 			return false;
+		}
 		
 		// if any one of the neighbors is occupied, return false
 		for (L2WorldRegion neighbor : _surroundingRegions)
+		{
 			if (neighbor.isActive() && !neighbor._allPlayable.isEmpty())
+			{
 				return false;
+			}
+		}
 		
 		// in all other cases, return true.
 		return true;
@@ -294,7 +334,9 @@ public final class L2WorldRegion
 	public void setActive(boolean value)
 	{
 		if (_active == value)
+		{
 			return;
+		}
 		
 		_active = value;
 		
@@ -304,15 +346,17 @@ public final class L2WorldRegion
 		// TODO
 		// turn the geodata on or off to match the region's activation.
 		if (value)
+		{
 			_log.fine("Starting Grid " + _tileX + "," + _tileY);
+		}
 		else
+		{
 			_log.fine("Stoping Grid " + _tileX + "," + _tileY);
+		}
 	}
 	
-	/** Immediately sets self as active and starts a timer to set neighbors as active
-	 * this timer is to avoid turning on neighbors in the case when a person just
-	 * teleported into a region and then teleported out immediately...there is no
-	 * reason to activate all the neighbors in that case.
+	/**
+	 * Immediately sets self as active and starts a timer to set neighbors as active this timer is to avoid turning on neighbors in the case when a person just teleported into a region and then teleported out immediately...there is no reason to activate all the neighbors in that case.
 	 */
 	private void startActivation()
 	{
@@ -333,10 +377,8 @@ public final class L2WorldRegion
 		}
 	}
 	
-	/** starts a timer to set neighbors (including self) as inactive
-	 * this timer is to avoid turning off neighbors in the case when a person just
-	 * moved out of a region that he may very soon return to.  There is no reason
-	 * to turn self & neighbors off in that case.
+	/**
+	 * starts a timer to set neighbors (including self) as inactive this timer is to avoid turning off neighbors in the case when a person just moved out of a region that he may very soon return to. There is no reason to turn self & neighbors off in that case.
 	 */
 	private void startDeactivation()
 	{
@@ -350,22 +392,23 @@ public final class L2WorldRegion
 			}
 			
 			// start a timer to "suggest" a deactivate to self and neighbors.
-			// suggest means: first check if a neighbor has L2PcInstances in it.  If not, deactivate.
+			// suggest means: first check if a neighbor has L2PcInstances in it. If not, deactivate.
 			_neighborsTask = ThreadPoolManager.getInstance().scheduleGeneral(new NeighborsTask(false), 1000 * Config.GRID_NEIGHBOR_TURNOFF_TIME);
 		}
 	}
 	
 	/**
 	 * Add the L2Object in the L2ObjectHashSet(L2Object) _visibleObjects containing L2Object visible in this L2WorldRegion <BR>
-	 * If L2Object is a L2PcInstance, Add the L2PcInstance in the L2ObjectHashSet(L2PcInstance) _allPlayable
-	 * containing L2PcInstance of all player in game in this L2WorldRegion <BR>
+	 * If L2Object is a L2PcInstance, Add the L2PcInstance in the L2ObjectHashSet(L2PcInstance) _allPlayable containing L2PcInstance of all player in game in this L2WorldRegion <BR>
 	 * Assert : object.getCurrentWorldRegion() == this
-	 * @param object 
+	 * @param object
 	 */
 	public void addVisibleObject(L2Object object)
 	{
 		if (object == null)
+		{
 			return;
+		}
 		
 		assert object.getWorldRegion() == this;
 		
@@ -377,23 +420,25 @@ public final class L2WorldRegion
 			
 			// if this is the first player to enter the region, activate self & neighbors
 			if ((_allPlayable.size() == 1) && (!Config.GRIDS_ALWAYS_ON))
+			{
 				startActivation();
+			}
 		}
 	}
 	
 	/**
-	 * Remove the L2Object from the L2ObjectHashSet(L2Object) _visibleObjects in this L2WorldRegion <BR><BR>
-	 *
-	 * If L2Object is a L2PcInstance, remove it from the L2ObjectHashSet(L2PcInstance) _allPlayable of this L2WorldRegion <BR>
+	 * Remove the L2Object from the L2ObjectHashSet(L2Object) _visibleObjects in this L2WorldRegion. If L2Object is a L2PcInstance, remove it from the L2ObjectHashSet(L2PcInstance) _allPlayable of this L2WorldRegion <BR>
 	 * Assert : object.getCurrentWorldRegion() == this || object.getCurrentWorldRegion() == null
-	 * @param object 
+	 * @param object
 	 */
 	public void removeVisibleObject(L2Object object)
 	{
 		if (object == null)
+		{
 			return;
+		}
 		
-		assert object.getWorldRegion() == this || object.getWorldRegion() == null;
+		assert (object.getWorldRegion() == this) || (object.getWorldRegion() == null);
 		
 		_visibleObjects.remove(object.getObjectId());
 		
@@ -402,7 +447,9 @@ public final class L2WorldRegion
 			_allPlayable.remove(object.getObjectId());
 			
 			if (_allPlayable.isEmpty() && !Config.GRIDS_ALWAYS_ON)
+			{
 				startDeactivation();
+			}
 		}
 	}
 	

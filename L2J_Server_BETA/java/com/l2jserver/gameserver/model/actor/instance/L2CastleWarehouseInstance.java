@@ -29,7 +29,7 @@ public class L2CastleWarehouseInstance extends L2WarehouseInstance
 	protected static final int COND_OWNER = 2;
 	
 	/**
-	 * @param objectId 
+	 * @param objectId
 	 * @param template
 	 */
 	public L2CastleWarehouseInstance(int objectId, L2NpcTemplate template)
@@ -47,7 +47,7 @@ public class L2CastleWarehouseInstance extends L2WarehouseInstance
 	@Override
 	public void showChatWindow(L2PcInstance player, int val)
 	{
-		player.sendPacket( ActionFailed.STATIC_PACKET );
+		player.sendPacket(ActionFailed.STATIC_PACKET);
 		String filename = "data/html/castlewarehouse/castlewarehouse-no.htm";
 		
 		int condition = validateCondition(player);
@@ -55,13 +55,19 @@ public class L2CastleWarehouseInstance extends L2WarehouseInstance
 		if (condition > COND_ALL_FALSE)
 		{
 			if (condition == COND_BUSY_BECAUSE_OF_SIEGE)
+			{
 				filename = "data/html/castlewarehouse/castlewarehouse-busy.htm";
+			}
 			else if (condition == COND_OWNER)
 			{
 				if (val == 0)
+				{
 					filename = "data/html/castlewarehouse/castlewarehouse.htm";
+				}
 				else
+				{
 					filename = "data/html/castlewarehouse/castlewarehouse-" + val + ".htm";
+				}
 			}
 		}
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
@@ -74,16 +80,22 @@ public class L2CastleWarehouseInstance extends L2WarehouseInstance
 	protected int validateCondition(L2PcInstance player)
 	{
 		if (player.canOverrideCond(PcCondOverride.CASTLE_CONDITIONS))
+		{
 			return COND_OWNER;
+		}
 		
-		if (getCastle() != null && getCastle().getCastleId() > 0)
+		if ((getCastle() != null) && (getCastle().getCastleId() > 0))
 		{
 			if (player.getClan() != null)
 			{
 				if (getCastle().getZone().isActive())
+				{
 					return COND_BUSY_BECAUSE_OF_SIEGE;
+				}
 				else if (getCastle().getOwnerId() == player.getClanId())
+				{
 					return COND_OWNER;
+				}
 			}
 		}
 		return COND_ALL_FALSE;

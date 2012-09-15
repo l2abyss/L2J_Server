@@ -22,9 +22,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 
 /**
- * 
  * @author DS
- *
  */
 public class PcRefund extends ItemContainer
 {

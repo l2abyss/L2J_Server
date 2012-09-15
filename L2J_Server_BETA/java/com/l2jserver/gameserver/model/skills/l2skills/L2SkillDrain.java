@@ -122,7 +122,7 @@ public class L2SkillDrain extends L2Skill
 				
 				activeChar.sendDamageMessage(target, damage, mcrit, false, false);
 				
-				if (Config.LOG_GAME_DAMAGE && activeChar.isPlayable() && damage > Config.LOG_GAME_DAMAGE_THRESHOLD)
+				if (Config.LOG_GAME_DAMAGE && activeChar.isPlayable() && (damage > Config.LOG_GAME_DAMAGE_THRESHOLD))
 				{
 					LogRecord record = new LogRecord(Level.INFO, "");
 					record.setParameters(new Object[]
@@ -171,7 +171,7 @@ public class L2SkillDrain extends L2Skill
 			}
 			
 			// Check to see if we should do the decay right after the cast
-			if (target.isDead() && getTargetType() == L2TargetType.TARGET_CORPSE_MOB && target.isNpc())
+			if (target.isDead() && (getTargetType() == L2TargetType.TARGET_CORPSE_MOB) && target.isNpc())
 			{
 				((L2Npc) target).endDecayTask();
 			}

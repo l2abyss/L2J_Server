@@ -33,13 +33,13 @@ import com.l2jserver.gameserver.network.communityserver.writepackets.InitWorldIn
 import com.l2jserver.gameserver.network.communityserver.writepackets.WorldInfo;
 
 /**
- * @authors  Forsaiken, Gigiikun
+ * @authors Forsaiken, Gigiikun
  */
 public final class RequestWorldInfo extends BaseReadPacket
 {
-	public static final byte SERVER_LOAD						= 0;
-	public static final byte PLAYER_DATA_UPDATE					= 1;
-	public static final byte CLAN_DATA_UPDATE					= 2;
+	public static final byte SERVER_LOAD = 0;
+	public static final byte PLAYER_DATA_UPDATE = 1;
+	public static final byte CLAN_DATA_UPDATE = 2;
 	private static Logger _log = Logger.getLogger(WorldInfo.class.getName());
 	private final CommunityServerThread _cst;
 	private static final int MAX_ARRAY = 10; // set this with caution, 8192 is the max packet size!!!
@@ -55,7 +55,7 @@ public final class RequestWorldInfo extends BaseReadPacket
 	@Override
 	public final void run()
 	{
-		switch(_type)
+		switch (_type)
 		{
 			case SERVER_LOAD:
 				// clans data
@@ -129,13 +129,17 @@ public final class RequestWorldInfo extends BaseReadPacket
 				int playerObjId = super.readD();
 				L2PcInstance player = L2World.getInstance().getPlayer(playerObjId);
 				if (player != null)
+				{
 					_cst.sendPacket(new WorldInfo(player, null, WorldInfo.TYPE_UPDATE_PLAYER_DATA));
+				}
 				break;
 			case CLAN_DATA_UPDATE:
 				int clanObjId = super.readD();
 				L2Clan clan = ClanTable.getInstance().getClan(clanObjId);
 				if (clan != null)
+				{
 					_cst.sendPacket(new WorldInfo(null, clan, WorldInfo.TYPE_UPDATE_CLAN_DATA));
+				}
 				break;
 		}
 	}

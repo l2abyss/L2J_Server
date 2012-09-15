@@ -60,7 +60,7 @@ public class L2FortZone extends L2ZoneRespawn
 	
 	@Override
 	public void onDieInside(L2Character character)
-	{	
+	{
 	}
 	
 	@Override
@@ -81,8 +81,10 @@ public class L2FortZone extends L2ZoneRespawn
 		TeleportWhereType type = TeleportWhereType.Fortress_banish;
 		for (L2PcInstance temp : getPlayersInside())
 		{
-			if (temp.getClanId() == owningClanId && owningClanId != 0)
+			if ((temp.getClanId() == owningClanId) && (owningClanId != 0))
+			{
 				continue;
+			}
 			
 			temp.teleToLocation(type);
 		}

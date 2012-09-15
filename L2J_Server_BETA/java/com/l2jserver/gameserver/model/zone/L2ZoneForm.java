@@ -20,8 +20,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * Abstract base class for any zone form
- *
- * @author  durgus
+ * @author durgus
  */
 public abstract class L2ZoneForm
 {
@@ -33,11 +32,11 @@ public abstract class L2ZoneForm
 	
 	public abstract double getDistanceToZone(int x, int y);
 	
-	public abstract int getLowZ(); //Support for the ability to extract the z coordinates of zones.
+	public abstract int getLowZ(); // Support for the ability to extract the z coordinates of zones.
 	
-	public abstract int getHighZ(); //New fishing patch makes use of that to get the Z for the hook
+	public abstract int getHighZ(); // New fishing patch makes use of that to get the Z for the hook
 	
-	//landing coordinates.
+	// landing coordinates.
 	
 	protected boolean lineSegmentsIntersect(int ax1, int ay1, int ax2, int ay2, int bx1, int by1, int bx2, int by2)
 	{
@@ -50,7 +49,7 @@ public abstract class L2ZoneForm
 	{
 		L2ItemInstance item = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
 		item.setCount(num);
-		item.spawnMe(x,y,z+5);
+		item.spawnMe(x, y, z + 5);
 		ZoneManager.getInstance().getDebugItems().add(item);
 	}
 	

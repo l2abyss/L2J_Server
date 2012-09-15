@@ -37,7 +37,7 @@ public class OfflineTradersTable
 {
 	private static Logger _log = Logger.getLogger(OfflineTradersTable.class.getName());
 	
-	//SQL DEFINITIONS
+	// SQL DEFINITIONS
 	private static final String SAVE_OFFLINE_STATUS = "INSERT INTO character_offline_trade (`charId`,`time`,`type`,`title`) VALUES (?,?,?,?)";
 	private static final String SAVE_ITEMS = "INSERT INTO character_offline_trade_items (`charId`,`item`,`count`,`price`) VALUES (?,?,?,?)";
 	private static final String CLEAR_OFFLINE_TABLE = "DELETE FROM character_offline_trade";
@@ -57,23 +57,25 @@ public class OfflineTradersTable
 			stm2.execute();
 			con.setAutoCommit(false); // avoid halfway done
 			
-			//TextBuilder items = TextBuilder.newInstance();
+			// TextBuilder items = TextBuilder.newInstance();
 			for (L2PcInstance pc : L2World.getInstance().getAllPlayersArray())
 			{
 				try
 				{
-					if ((pc.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE) && (pc.getClient() == null || pc.getClient().isDetached()))
+					if ((pc.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE) && ((pc.getClient() == null) || pc.getClient().isDetached()))
 					{
-						stm3.setInt(1, pc.getObjectId()); //Char Id
+						stm3.setInt(1, pc.getObjectId()); // Char Id
 						stm3.setLong(2, pc.getOfflineStartTime());
-						stm3.setInt(3, pc.getPrivateStoreType()); //store type
+						stm3.setInt(3, pc.getPrivateStoreType()); // store type
 						String title = null;
 						
 						switch (pc.getPrivateStoreType())
 						{
 							case L2PcInstance.STORE_PRIVATE_BUY:
 								if (!Config.OFFLINE_TRADE_ENABLE)
+								{
 									continue;
+								}
 								title = pc.getBuyList().getTitle();
 								for (TradeItem i : pc.getBuyList().getItems())
 								{
@@ -88,7 +90,9 @@ public class OfflineTradersTable
 							case L2PcInstance.STORE_PRIVATE_SELL:
 							case L2PcInstance.STORE_PRIVATE_PACKAGE_SELL:
 								if (!Config.OFFLINE_TRADE_ENABLE)
+								{
 									continue;
+								}
 								title = pc.getSellList().getTitle();
 								for (TradeItem i : pc.getSellList().getItems())
 								{
@@ -102,7 +106,9 @@ public class OfflineTradersTable
 								break;
 							case L2PcInstance.STORE_PRIVATE_MANUFACTURE:
 								if (!Config.OFFLINE_CRAFT_ENABLE)
+								{
 									continue;
+								}
 								title = pc.getCreateList().getStoreName();
 								for (L2ManufactureItem i : pc.getCreateList().getList())
 								{
@@ -129,7 +135,7 @@ public class OfflineTradersTable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while saving offline traders: " + e,e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while saving offline traders: " + e, e);
 		}
 	}
 	
@@ -150,12 +156,16 @@ public class OfflineTradersTable
 					cal.setTimeInMillis(time);
 					cal.add(Calendar.DAY_OF_YEAR, Config.OFFLINE_MAX_DAYS);
 					if (cal.getTimeInMillis() <= System.currentTimeMillis())
+					{
 						continue;
+					}
 				}
 				
 				int type = rs.getInt("type");
 				if (type == L2PcInstance.STORE_PRIVATE_NONE)
+				{
 					continue;
+				}
 				
 				L2PcInstance player = null;
 				
@@ -183,7 +193,9 @@ public class OfflineTradersTable
 									while (items.next())
 									{
 										if (player.getBuyList().addItemByItemId(items.getInt(2), items.getLong(3), items.getLong(4)) == null)
+										{
 											throw new NullPointerException();
+										}
 									}
 									player.getBuyList().setTitle(rs.getString("title"));
 									break;
@@ -192,7 +204,9 @@ public class OfflineTradersTable
 									while (items.next())
 									{
 										if (player.getSellList().addItem(items.getInt(2), items.getLong(3), items.getLong(4)) == null)
+										{
 											throw new NullPointerException();
+										}
 									}
 									player.getSellList().setTitle(rs.getString("title"));
 									player.getSellList().setPackaged(type == L2PcInstance.STORE_PRIVATE_PACKAGE_SELL);
@@ -211,7 +225,9 @@ public class OfflineTradersTable
 					}
 					player.sitDown();
 					if (Config.OFFLINE_SET_NAME_COLOR)
+					{
 						player.getAppearance().setNameColor(Config.OFFLINE_NAME_COLOR);
+					}
 					player.setPrivateStoreType(type);
 					player.setOnlineStatus(true, true);
 					player.restoreEffects();
@@ -220,7 +236,7 @@ public class OfflineTradersTable
 				}
 				catch (Exception e)
 				{
-					_log.log(Level.WARNING, getClass().getSimpleName() + ": Error loading trader: "+player,e);
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Error loading trader: " + player, e);
 					if (player != null)
 					{
 						player.deleteMe();
@@ -228,7 +244,7 @@ public class OfflineTradersTable
 				}
 			}
 			
-			_log.info(getClass().getSimpleName() + ": Loaded: " +nTraders+ " offline trader(s)");
+			_log.info(getClass().getSimpleName() + ": Loaded: " + nTraders + " offline trader(s)");
 			
 			try (Statement stm1 = con.createStatement())
 			{
@@ -238,7 +254,7 @@ public class OfflineTradersTable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while loading offline traders: ",e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while loading offline traders: ", e);
 		}
 	}
 	

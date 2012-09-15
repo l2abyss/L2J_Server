@@ -22,7 +22,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
-
 public class L2SkillAppearance extends L2Skill
 {
 	private final int _faceId;
@@ -49,11 +48,17 @@ public class L2SkillAppearance extends L2Skill
 				{
 					L2PcInstance targetPlayer = target.getActingPlayer();
 					if (_faceId >= 0)
+					{
 						targetPlayer.getAppearance().setFace(_faceId);
+					}
 					if (_hairColorId >= 0)
+					{
 						targetPlayer.getAppearance().setHairColor(_hairColorId);
+					}
 					if (_hairStyleId >= 0)
+					{
 						targetPlayer.getAppearance().setHairStyle(_hairStyleId);
+					}
 					
 					targetPlayer.broadcastUserInfo();
 				}

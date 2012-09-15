@@ -21,7 +21,7 @@ import com.l2jserver.gameserver.network.serverpackets.PledgePowerGradeList;
 
 /**
  * Format: (ch)
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public final class RequestPledgePowerGradeList extends L2GameClientPacket
 {

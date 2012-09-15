@@ -39,9 +39,6 @@ public final class LoginOk extends L2LoginServerPacket
 		_loginOk2 = sessionKey.loginOkID2;
 	}
 	
-	/**
-	 * @see org.mmocore.network.SendablePacket#write()
-	 */
 	@Override
 	protected void write()
 	{

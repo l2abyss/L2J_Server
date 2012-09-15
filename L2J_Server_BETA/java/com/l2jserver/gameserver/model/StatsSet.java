@@ -74,9 +74,13 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			throw new IllegalArgumentException("Boolean value required, but not specified");
+		}
 		if (val instanceof Boolean)
+		{
 			return ((Boolean) val).booleanValue();
+		}
 		try
 		{
 			return Boolean.parseBoolean((String) val);
@@ -97,9 +101,13 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			return deflt;
+		}
 		if (val instanceof Boolean)
+		{
 			return ((Boolean) val).booleanValue();
+		}
 		try
 		{
 			return Boolean.parseBoolean((String) val);
@@ -120,9 +128,13 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			return deflt;
+		}
 		if (val instanceof Number)
+		{
 			return ((Number) val).byteValue();
+		}
 		try
 		{
 			return Byte.parseByte((String) val);
@@ -142,9 +154,13 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			throw new IllegalArgumentException("Byte value required, but not specified");
+		}
 		if (val instanceof Number)
+		{
 			return ((Number) val).byteValue();
+		}
 		try
 		{
 			return Byte.parseByte((String) val);
@@ -165,7 +181,9 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			throw new IllegalArgumentException("Byte value required, but not specified");
+		}
 		if (val instanceof Number)
 		{
 			byte[] result =
@@ -211,9 +229,13 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			return deflt;
+		}
 		if (val instanceof Number)
+		{
 			return ((Number) val).shortValue();
+		}
 		try
 		{
 			return Short.parseShort((String) val);
@@ -233,9 +255,13 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			throw new IllegalArgumentException("Short value required, but not specified");
+		}
 		if (val instanceof Number)
+		{
 			return ((Number) val).shortValue();
+		}
 		try
 		{
 			return Short.parseShort((String) val);
@@ -284,9 +310,13 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			return deflt;
+		}
 		if (val instanceof Number)
+		{
 			return ((Number) val).intValue();
+		}
 		try
 		{
 			return Integer.parseInt((String) val);
@@ -307,7 +337,9 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			throw new IllegalArgumentException("Integer value required, but not specified");
+		}
 		if (val instanceof Number)
 		{
 			int[] result =
@@ -352,9 +384,13 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			throw new IllegalArgumentException("Integer value required, but not specified");
+		}
 		if (val instanceof Number)
+		{
 			return ((Number) val).longValue();
+		}
 		try
 		{
 			return Long.parseLong((String) val);
@@ -375,9 +411,13 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			return deflt;
+		}
 		if (val instanceof Number)
+		{
 			return ((Number) val).longValue();
+		}
 		try
 		{
 			return Long.parseLong((String) val);
@@ -397,9 +437,13 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			throw new IllegalArgumentException("Float value required, but not specified");
+		}
 		if (val instanceof Number)
+		{
 			return ((Number) val).floatValue();
+		}
 		try
 		{
 			return (float) Double.parseDouble((String) val);
@@ -420,9 +464,13 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			return deflt;
+		}
 		if (val instanceof Number)
+		{
 			return ((Number) val).floatValue();
+		}
 		try
 		{
 			return (float) Double.parseDouble((String) val);
@@ -442,9 +490,13 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			throw new IllegalArgumentException("Float value required, but not specified");
+		}
 		if (val instanceof Number)
+		{
 			return ((Number) val).doubleValue();
+		}
 		try
 		{
 			return Double.parseDouble((String) val);
@@ -465,9 +517,13 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			return deflt;
+		}
 		if (val instanceof Number)
+		{
 			return ((Number) val).doubleValue();
+		}
 		try
 		{
 			return Double.parseDouble((String) val);
@@ -487,7 +543,9 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			throw new IllegalArgumentException("String value required, but not specified");
+		}
 		return String.valueOf(val);
 	}
 	
@@ -501,7 +559,9 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			return deflt;
+		}
 		return String.valueOf(val);
 	}
 	
@@ -517,9 +577,13 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			throw new IllegalArgumentException("Enum value of type " + enumClass.getName() + " required, but not specified");
+		}
 		if (enumClass.isInstance(val))
+		{
 			return (T) val;
+		}
 		try
 		{
 			return Enum.valueOf(enumClass, String.valueOf(val));
@@ -543,9 +607,13 @@ public final class StatsSet
 	{
 		Object val = _set.get(name);
 		if (val == null)
+		{
 			return deflt;
+		}
 		if (enumClass.isInstance(val))
+		{
 			return (T) val;
+		}
 		try
 		{
 			return Enum.valueOf(enumClass, String.valueOf(val));
@@ -597,8 +665,8 @@ public final class StatsSet
 	 */
 	public void safeSet(String name, int value, int min, int max, String reference)
 	{
-		assert !((min <= max && (value < min || value >= max)));
-		if (min <= max && (value < min || value >= max))
+		assert !(((min <= max) && ((value < min) || (value >= max))));
+		if ((min <= max) && ((value < min) || (value >= max)))
 		{
 			_log.log(Level.SEVERE, "Incorrect value: " + value + "for: " + name + "Ref: " + reference);
 		}

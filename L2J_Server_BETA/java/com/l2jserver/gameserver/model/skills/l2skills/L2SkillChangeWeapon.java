@@ -28,7 +28,6 @@ import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- *
  * @author nBd
  */
 public class L2SkillChangeWeapon extends L2Skill
@@ -42,36 +41,45 @@ public class L2SkillChangeWeapon extends L2Skill
 		super(set);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.model.skills.L2Skill#useSkill(com.l2jserver.gameserver.model.actor.L2Character, com.l2jserver.gameserver.model.L2Object[])
-	 */
 	@Override
 	public void useSkill(L2Character caster, L2Object[] targets)
 	{
-		if(caster.isAlikeDead())
+		if (caster.isAlikeDead())
+		{
 			return;
+		}
 		
 		if (!caster.isPlayer())
+		{
 			return;
+		}
 		
 		L2PcInstance player = caster.getActingPlayer();
 		
 		if (player.isEnchanting())
+		{
 			return;
+		}
 		
 		L2Weapon weaponItem = player.getActiveWeaponItem();
 		
 		if (weaponItem == null)
+		{
 			return;
+		}
 		
 		L2ItemInstance wpn = player.getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
 		if (wpn == null)
+		{
 			wpn = player.getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
+		}
 		
 		if (wpn != null)
 		{
 			if (wpn.isAugmented())
+			{
 				return;
+			}
 			
 			int newItemId = 0;
 			int enchantLevel = 0;
@@ -83,14 +91,17 @@ public class L2SkillChangeWeapon extends L2Skill
 				enchantLevel = wpn.getEnchantLevel();
 				elementals = wpn.getElementals() == null ? null : wpn.getElementals()[0];
 				
-				
 				if (newItemId == -1)
+				{
 					return;
+				}
 				
 				L2ItemInstance[] unequiped = player.getInventory().unEquipItemInBodySlotAndRecord(wpn.getItem().getBodyPart());
 				InventoryUpdate iu = new InventoryUpdate();
-				for (L2ItemInstance item: unequiped)
+				for (L2ItemInstance item : unequiped)
+				{
 					iu.addModifiedItem(item);
+				}
 				
 				player.sendPacket(iu);
 				
@@ -98,7 +109,7 @@ public class L2SkillChangeWeapon extends L2Skill
 				{
 					byte count = 0;
 					
-					for (L2ItemInstance item: unequiped)
+					for (L2ItemInstance item : unequiped)
 					{
 						if (!(item.getItem() instanceof L2Weapon))
 						{
@@ -122,7 +133,9 @@ public class L2SkillChangeWeapon extends L2Skill
 					}
 					
 					if (count == unequiped.length)
+					{
 						return;
+					}
 				}
 				else
 				{
@@ -132,15 +145,21 @@ public class L2SkillChangeWeapon extends L2Skill
 				L2ItemInstance destroyItem = player.getInventory().destroyItem("ChangeWeapon", wpn, player, null);
 				
 				if (destroyItem == null)
+				{
 					return;
+				}
 				
 				L2ItemInstance newItem = player.getInventory().addItem("ChangeWeapon", newItemId, 1, player, destroyItem);
 				
 				if (newItem == null)
+				{
 					return;
+				}
 				
-				if (elementals != null && elementals.getElement() != -1 && elementals.getValue() != -1)
+				if ((elementals != null) && (elementals.getElement() != -1) && (elementals.getValue() != -1))
+				{
 					newItem.setElementAttr(elementals.getElement(), elementals.getValue());
+				}
 				newItem.setEnchantLevel(enchantLevel);
 				player.getInventory().equipItem(newItem);
 				

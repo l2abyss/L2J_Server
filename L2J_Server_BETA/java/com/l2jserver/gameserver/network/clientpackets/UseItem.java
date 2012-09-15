@@ -47,7 +47,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.18.2.7.2.9 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class UseItem extends L2GameClientPacket
@@ -73,9 +72,11 @@ public final class UseItem extends L2GameClientPacket
 		@Override
 		public void run()
 		{
-			//If character is still engaged in strike we should not change weapon
+			// If character is still engaged in strike we should not change weapon
 			if (activeChar.isAttackingNow())
+			{
 				return;
+			}
 			
 			// Equip or unEquip
 			activeChar.useEquippableItem(item, false);
@@ -105,10 +106,14 @@ public final class UseItem extends L2GameClientPacket
 		
 		// Flood protect UseItem
 		if (!getClient().getFloodProtectors().getUseItem().tryPerformAction("use item"))
+		{
 			return;
+		}
 		
 		if (activeChar.getActiveTradeList() != null)
+		{
 			activeChar.cancelActiveTrade();
+		}
 		
 		if (activeChar.getPrivateStoreType() != 0)
 		{
@@ -119,7 +124,9 @@ public final class UseItem extends L2GameClientPacket
 		
 		final L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
 		if (item == null)
+		{
 			return;
+		}
 		
 		if (item.getItem().getType2() == L2Item.TYPE2_QUEST)
 		{
@@ -128,11 +135,7 @@ public final class UseItem extends L2GameClientPacket
 		}
 		
 		// No UseItem is allowed while the player is in special conditions
-		if (activeChar.isStunned()
-				|| activeChar.isParalyzed()
-				|| activeChar.isSleeping()
-				|| activeChar.isAfraid()
-				|| activeChar.isAlikeDead())
+		if (activeChar.isStunned() || activeChar.isParalyzed() || activeChar.isSleeping() || activeChar.isAfraid() || activeChar.isAlikeDead())
 		{
 			return;
 		}
@@ -147,7 +150,9 @@ public final class UseItem extends L2GameClientPacket
 		}
 		
 		if (!item.isEquipped() && !item.getItem().checkCondition(activeChar, activeChar, true))
+		{
 			return;
+		}
 		
 		_itemId = item.getItemId();
 		if (!activeChar.getInventory().canManipulateWithItemId(_itemId))
@@ -156,14 +161,14 @@ public final class UseItem extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.isFishing() && (_itemId < 6535 || _itemId > 6540))
+		if (activeChar.isFishing() && ((_itemId < 6535) || (_itemId > 6540)))
 		{
 			// You cannot do anything else while fishing
 			activeChar.sendPacket(SystemMessageId.CANNOT_DO_WHILE_FISHING_3);
 			return;
 		}
-
-		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && activeChar.getKarma() > 0)
+		
+		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && (activeChar.getKarma() > 0))
 		{
 			SkillHolder[] sHolders = item.getItem().getSkills();
 			if (sHolders != null)
@@ -171,11 +176,13 @@ public final class UseItem extends L2GameClientPacket
 				for (SkillHolder sHolder : sHolders)
 				{
 					L2Skill skill = sHolder.getSkill();
-					if (skill != null && (skill.getSkillType() == L2SkillType.TELEPORT || skill.getSkillType() == L2SkillType.RECALL))
+					if ((skill != null) && ((skill.getSkillType() == L2SkillType.TELEPORT) || (skill.getSkillType() == L2SkillType.RECALL)))
+					{
 						return;
+					}
 				}
 			}
-
+			
 		}
 		
 		// If the item has reuse time and it has not passed.
@@ -192,7 +199,7 @@ public final class UseItem extends L2GameClientPacket
 				return;
 			}
 			
-			final long reuseOnGroup = activeChar.getReuseDelayOnGroup(sharedReuseGroup); 
+			final long reuseOnGroup = activeChar.getReuseDelayOnGroup(sharedReuseGroup);
 			if (reuseOnGroup > 0)
 			{
 				reuseData(activeChar, item);
@@ -204,16 +211,20 @@ public final class UseItem extends L2GameClientPacket
 		if (item.isEquipable())
 		{
 			// Don't allow to put formal wear while a cursed weapon is equipped.
-			if (activeChar.isCursedWeaponEquipped() && _itemId == 6408)
+			if (activeChar.isCursedWeaponEquipped() && (_itemId == 6408))
 			{
 				return;
 			}
 			
 			// Equip or unEquip
 			if (FortSiegeManager.getInstance().isCombat(_itemId))
-				return;	//no message
+			{
+				return; // no message
+			}
 			else if (activeChar.isCombatFlagEquipped())
+			{
 				return;
+			}
 			
 			switch (item.getItem().getBodyPart())
 			{
@@ -222,7 +233,7 @@ public final class UseItem extends L2GameClientPacket
 				case L2Item.SLOT_R_HAND:
 				{
 					// Prevent players to equip weapon while wearing combat flag
-					if (activeChar.getActiveWeaponItem() != null && activeChar.getActiveWeaponItem().getItemId() == 9819)
+					if ((activeChar.getActiveWeaponItem() != null) && (activeChar.getActiveWeaponItem().getItemId() == 9819))
 					{
 						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 						return;
@@ -241,12 +252,14 @@ public final class UseItem extends L2GameClientPacket
 					
 					// Don't allow weapon/shield equipment if a cursed weapon is equipped.
 					if (activeChar.isCursedWeaponEquipped())
+					{
 						return;
+					}
 					
 					// Don't allow other Race to Wear Kamael exclusive Weapons.
 					if (!item.isEquipped() && item.isWeapon() && !activeChar.canOverrideCond(PcCondOverride.ITEM_CONDITIONS))
 					{
-						L2Weapon wpn = (L2Weapon)item.getItem();
+						L2Weapon wpn = (L2Weapon) item.getItem();
 						
 						switch (activeChar.getRace())
 						{
@@ -288,9 +301,7 @@ public final class UseItem extends L2GameClientPacket
 				case L2Item.SLOT_FULL_ARMOR:
 				case L2Item.SLOT_LEGS:
 				{
-					if (activeChar.getRace() == Race.Kamael &&
-							(item.getItem().getItemType() == L2ArmorType.HEAVY
-									||item.getItem().getItemType() == L2ArmorType.MAGIC))
+					if ((activeChar.getRace() == Race.Kamael) && ((item.getItem().getItemType() == L2ArmorType.HEAVY) || (item.getItem().getItemType() == L2ArmorType.MAGIC)))
 					{
 						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 						return;
@@ -299,7 +310,7 @@ public final class UseItem extends L2GameClientPacket
 				}
 				case L2Item.SLOT_DECO:
 				{
-					if (!item.isEquipped() && activeChar.getInventory().getMaxTalismanCount() == 0)
+					if (!item.isEquipped() && (activeChar.getInventory().getMaxTalismanCount() == 0))
 					{
 						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 						return;
@@ -333,13 +344,13 @@ public final class UseItem extends L2GameClientPacket
 		}
 		else
 		{
-			if(activeChar.isCastingNow() && !(item.isPotion() || item.isElixir()))
+			if (activeChar.isCastingNow() && !(item.isPotion() || item.isElixir()))
 			{
 				return;
 			}
 			
 			final L2Weapon weaponItem = activeChar.getActiveWeaponItem();
-			if ((weaponItem != null && weaponItem.getItemType() == L2WeaponType.FISHINGROD) && ((_itemId >= 6519 && _itemId <= 6527) || (_itemId >= 7610 && _itemId <= 7613) || (_itemId >= 7807 && _itemId <= 7809) || (_itemId >= 8484 && _itemId <= 8486) || (_itemId >= 8505 && _itemId <= 8513)))
+			if (((weaponItem != null) && (weaponItem.getItemType() == L2WeaponType.FISHINGROD)) && (((_itemId >= 6519) && (_itemId <= 6527)) || ((_itemId >= 7610) && (_itemId <= 7613)) || ((_itemId >= 7807) && (_itemId <= 7809)) || ((_itemId >= 8484) && (_itemId <= 8486)) || ((_itemId >= 8505) && (_itemId <= 8513))))
 			{
 				activeChar.getInventory().setPaperdollItem(Inventory.PAPERDOLL_LHAND, item);
 				activeChar.broadcastUserInfo();
@@ -382,7 +393,7 @@ public final class UseItem extends L2GameClientPacket
 		final long remainingTime = activeChar.getItemRemainingReuseTime(item.getObjectId());
 		final int hours = (int) (remainingTime / 3600000L);
 		final int minutes = (int) (remainingTime % 3600000L) / 60000;
-		final int seconds = (int) (remainingTime / 1000 % 60);
+		final int seconds = (int) ((remainingTime / 1000) % 60);
 		if (hours > 0)
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1);

@@ -67,9 +67,6 @@ public class RequestServerList extends L2LoginClientPacket
 		return false;
 	}
 	
-	/**
-	 * @see org.mmocore.network.ReceivablePacket#run()
-	 */
 	@Override
 	public void run()
 	{

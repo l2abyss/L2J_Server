@@ -24,7 +24,7 @@ import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 
 public class L2TvTEventNpcInstance extends L2Npc
 {
-	private static final String htmlPath="data/html/mods/TvTEvent/";
+	private static final String htmlPath = "data/html/mods/TvTEvent/";
 	
 	public L2TvTEventNpcInstance(int objectId, L2NpcTemplate template)
 	{
@@ -42,7 +42,9 @@ public class L2TvTEventNpcInstance extends L2Npc
 	public void showChatWindow(L2PcInstance playerInstance, int val)
 	{
 		if (playerInstance == null)
+		{
 			return;
+		}
 		
 		if (TvTEvent.isParticipating())
 		{
@@ -50,9 +52,13 @@ public class L2TvTEventNpcInstance extends L2Npc
 			final String htmContent;
 			
 			if (!isParticipant)
+			{
 				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath + "Participation.htm");
+			}
 			else
+			{
 				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath + "RemoveParticipation.htm");
+			}
 			
 			if (htmContent != null)
 			{
@@ -65,9 +71,11 @@ public class L2TvTEventNpcInstance extends L2Npc
 				npcHtmlMessage.replace("%team1playercount%", String.valueOf(teamsPlayerCounts[0]));
 				npcHtmlMessage.replace("%team2name%", Config.TVT_EVENT_TEAM_2_NAME);
 				npcHtmlMessage.replace("%team2playercount%", String.valueOf(teamsPlayerCounts[1]));
-				npcHtmlMessage.replace("%playercount%", String.valueOf(teamsPlayerCounts[0]+teamsPlayerCounts[1]));
+				npcHtmlMessage.replace("%playercount%", String.valueOf(teamsPlayerCounts[0] + teamsPlayerCounts[1]));
 				if (!isParticipant)
+				{
 					npcHtmlMessage.replace("%fee%", TvTEvent.getParticipationFee());
+				}
 				
 				playerInstance.sendPacket(npcHtmlMessage);
 			}
@@ -83,7 +91,7 @@ public class L2TvTEventNpcInstance extends L2Npc
 				NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
 				
 				npcHtmlMessage.setHtml(htmContent);
-				//npcHtmlMessage.replace("%objectId%", String.valueOf(getObjectId()));
+				// npcHtmlMessage.replace("%objectId%", String.valueOf(getObjectId()));
 				npcHtmlMessage.replace("%team1name%", Config.TVT_EVENT_TEAM_1_NAME);
 				npcHtmlMessage.replace("%team1playercount%", String.valueOf(teamsPlayerCounts[0]));
 				npcHtmlMessage.replace("%team1points%", String.valueOf(teamsPointsCounts[0]));

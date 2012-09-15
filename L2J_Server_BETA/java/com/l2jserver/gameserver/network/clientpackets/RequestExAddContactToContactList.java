@@ -19,9 +19,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ExConfirmAddingContact;
 
 /**
- * Format: (ch)S
- * S: Character Name
- * 
+ * Format: (ch)S S: Character Name
  * @author UnAfraid & mrTJO
  */
 public class RequestExAddContactToContactList extends L2GameClientPacket
@@ -34,28 +32,33 @@ public class RequestExAddContactToContactList extends L2GameClientPacket
 	{
 		_name = readS();
 	}
-
+	
 	@Override
 	protected void runImpl()
 	{
 		if (!Config.ALLOW_MAIL)
+		{
 			return;
+		}
 		
 		if (_name == null)
+		{
 			return;
+		}
 		
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		boolean charAdded = activeChar.getContactList().add(_name);
 		activeChar.sendPacket(new ExConfirmAddingContact(_name, charAdded));
 	}
-
 	
 	@Override
 	public String getType()
 	{
 		return _C__D0_84_REQUESTEXADDCONTACTTOCONTACTLIST;
-	}	
+	}
 }

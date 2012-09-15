@@ -33,25 +33,33 @@ public class L2SkillDecoy extends L2Skill
 	{
 		super(set);
 		_npcId = set.getInteger("npcId", 0);
-		_summonTotalLifeTime= set.getInteger("summonTotalLifeTime", 20000);
+		_summonTotalLifeTime = set.getInteger("summonTotalLifeTime", 20000);
 	}
 	
 	@Override
 	public void useSkill(L2Character caster, L2Object[] targets)
 	{
 		if (caster.isAlikeDead() || !caster.isPlayer())
+		{
 			return;
+		}
 		
 		if (_npcId == 0)
+		{
 			return;
+		}
 		
 		final L2PcInstance activeChar = caster.getActingPlayer();
 		
 		if (activeChar.inObserverMode())
+		{
 			return;
+		}
 		
-		if (activeChar.getPet() != null || activeChar.isMounted())
+		if ((activeChar.getPet() != null) || activeChar.isMounted())
+		{
 			return;
+		}
 		
 		L2NpcTemplate DecoyTemplate = NpcTable.getInstance().getTemplate(_npcId);
 		final L2DecoyInstance Decoy = new L2DecoyInstance(IdFactory.getInstance().getNextId(), DecoyTemplate, activeChar, this);
@@ -59,7 +67,7 @@ public class L2SkillDecoy extends L2Skill
 		Decoy.setCurrentMp(Decoy.getMaxMp());
 		Decoy.setHeading(activeChar.getHeading());
 		activeChar.setDecoy(Decoy);
-		//L2World.getInstance().storeObject(Decoy);
+		// L2World.getInstance().storeObject(Decoy);
 		Decoy.spawnMe(activeChar.getX(), activeChar.getY(), activeChar.getZ());
 	}
 	

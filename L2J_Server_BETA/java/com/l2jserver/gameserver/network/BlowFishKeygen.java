@@ -17,8 +17,8 @@ package com.l2jserver.gameserver.network;
 import com.l2jserver.util.Rnd;
 
 /**
- * Blowfish keygen for GameServer client connections
- * @author  KenM
+ * Blowfish keygen for GameServer client connections.
+ * @author KenM
  */
 public class BlowFishKeygen
 {

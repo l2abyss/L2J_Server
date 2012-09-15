@@ -113,12 +113,12 @@ public class L2DamageZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (getSettings().getTask() == null && (_damageHPPerSec != 0 || _damageMPPerSec != 0))
+		if ((getSettings().getTask() == null) && ((_damageHPPerSec != 0) || (_damageMPPerSec != 0)))
 		{
 			L2PcInstance player = character.getActingPlayer();
 			if (getCastle() != null) // Castle zone
 			{
-				if (!(getCastle().getSiege().getIsInProgress() && player != null && player.getSiegeState() != 2)) // Siege and no defender
+				if (!(getCastle().getSiege().getIsInProgress() && (player != null) && (player.getSiegeState() != 2))) // Siege and no defender
 				{
 					return;
 				}
@@ -126,8 +126,10 @@ public class L2DamageZone extends L2ZoneType
 			
 			synchronized (this)
 			{
-				if (getSettings().getTask()  == null)
+				if (getSettings().getTask() == null)
+				{
 					getSettings().setTask(ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplyDamage(this), _startTask, _reuseTask));
+				}
 			}
 		}
 	}
@@ -135,7 +137,7 @@ public class L2DamageZone extends L2ZoneType
 	@Override
 	protected void onExit(L2Character character)
 	{
-		if (_characterList.isEmpty() && getSettings().getTask() != null)
+		if (_characterList.isEmpty() && (getSettings().getTask() != null))
 		{
 			stopTask();
 		}
@@ -161,8 +163,10 @@ public class L2DamageZone extends L2ZoneType
 	
 	protected Castle getCastle()
 	{
-		if (_castleId > 0 && _castle == null)
+		if ((_castleId > 0) && (_castle == null))
+		{
 			_castle = CastleManager.getInstance().getCastleById(_castleId);
+		}
 		
 		return _castle;
 	}
@@ -201,22 +205,28 @@ public class L2DamageZone extends L2ZoneType
 			
 			for (L2Character temp : _dmgZone.getCharactersInside())
 			{
-				if (temp != null && !temp.isDead())
+				if ((temp != null) && !temp.isDead())
 				{
 					if (siege)
 					{
 						// during siege defenders not affected
 						final L2PcInstance player = temp.getActingPlayer();
-						if (player != null && player.isInSiege() && player.getSiegeState() == 2)
+						if ((player != null) && player.isInSiege() && (player.getSiegeState() == 2))
+						{
 							continue;
+						}
 					}
 					
 					double multiplier = 1 + (temp.calcStat(Stats.DAMAGE_ZONE_VULN, 0, null, null) / 100);
 					
 					if (getHPDamagePerSecond() != 0)
+					{
 						temp.reduceCurrentHp(_dmgZone.getHPDamagePerSecond() * multiplier, null, null);
+					}
 					if (getMPDamagePerSecond() != 0)
+					{
 						temp.reduceCurrentMp(_dmgZone.getMPDamagePerSecond() * multiplier);
+					}
 				}
 			}
 		}

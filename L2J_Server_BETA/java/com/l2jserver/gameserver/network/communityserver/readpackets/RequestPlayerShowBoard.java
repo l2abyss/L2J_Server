@@ -21,11 +21,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.CSShowComBoard;
 
 /**
- * @authors  Forsaiken, Gigiikun
+ * @authors Forsaiken, Gigiikun
  */
 public final class RequestPlayerShowBoard extends BaseReadPacket
 {
-	//private static final Logger _log = Logger.getLogger(RequestPlayerShowBoard.class.getName());
+	// private static final Logger _log = Logger.getLogger(RequestPlayerShowBoard.class.getName());
 	
 	public RequestPlayerShowBoard(final byte[] data)
 	{
@@ -41,7 +41,9 @@ public final class RequestPlayerShowBoard extends BaseReadPacket
 		
 		L2PcInstance player = L2World.getInstance().getPlayer(playerObjId);
 		if (player == null)
+		{
 			return;
+		}
 		
 		player.sendPacket(new CSShowComBoard(html));
 	}

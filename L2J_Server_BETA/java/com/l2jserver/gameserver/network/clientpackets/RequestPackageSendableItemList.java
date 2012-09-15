@@ -19,8 +19,7 @@ import com.l2jserver.gameserver.network.serverpackets.PackageSendableList;
 
 /**
  * @author -Wooden-
- * @author UnAfraid
- * Thanks mrTJO
+ * @author UnAfraid Thanks mrTJO
  */
 public class RequestPackageSendableItemList extends L2GameClientPacket
 {

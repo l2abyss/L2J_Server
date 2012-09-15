@@ -81,9 +81,6 @@ public final class LoginFail extends L2LoginServerPacket
 		_reason = reason;
 	}
 	
-	/**
-	 * @see org.mmocore.network.SendablePacket#write()
-	 */
 	@Override
 	protected void write()
 	{

@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 public class TerritoryWard
 {
-	//private static final Logger _log = Logger.getLogger(CombatFlag.class.getName());
+	// private static final Logger _log = Logger.getLogger(CombatFlag.class.getName());
 	
 	protected L2PcInstance _player = null;
 	public int playerId = 0;
@@ -37,15 +37,15 @@ public class TerritoryWard
 	private Location _location;
 	private Location _oldLocation;
 	
-	private int _itemId;
+	private final int _itemId;
 	private int _ownerCastleId;
 	
-	private int _territoryId;
+	private final int _territoryId;
 	
 	public TerritoryWard(int territory_id, int x, int y, int z, int heading, int item_id, int castleId, L2Npc npc)
 	{
 		_territoryId = territory_id;
-		_location = new Location(x,y,z,heading);
+		_location = new Location(x, y, z, heading);
 		_itemId = item_id;
 		_ownerCastleId = castleId;
 		_npc = npc;
@@ -83,8 +83,10 @@ public class TerritoryWard
 	
 	public synchronized void spawnBack()
 	{
-		if ( _player != null )
+		if (_player != null)
+		{
 			dropIt();
+		}
 		
 		// Init the dropped L2WardInstance and add it in the world as a visible object at the position where last Pc got it
 		_npc = TerritoryWarManager.getInstance().spawnNPC(36491 + _territoryId, _oldLocation);
@@ -92,8 +94,10 @@ public class TerritoryWard
 	
 	public synchronized void spawnMe()
 	{
-		if ( _player != null )
+		if (_player != null)
+		{
 			dropIt();
+		}
 		
 		// Init the dropped L2WardInstance and add it in the world as a visible object at the position where Pc was last
 		_npc = TerritoryWarManager.getInstance().spawnNPC(36491 + _territoryId, _location);
@@ -101,10 +105,14 @@ public class TerritoryWard
 	
 	public synchronized void unSpawnMe()
 	{
-		if ( _player != null )
+		if (_player != null)
+		{
 			dropIt();
-		if (_npc != null && !_npc.isDecayed())
+		}
+		if ((_npc != null) && !_npc.isDecayed())
+		{
 			_npc.deleteMe();
+		}
 	}
 	
 	public boolean activate(L2PcInstance player, L2ItemInstance item)
@@ -127,14 +135,18 @@ public class TerritoryWard
 		// Player holding it data
 		_player = player;
 		playerId = _player.getObjectId();
-		_oldLocation = new Location(_npc.getX(),_npc.getY(),_npc.getZ(),_npc.getHeading());
+		_oldLocation = new Location(_npc.getX(), _npc.getY(), _npc.getZ(), _npc.getHeading());
 		_npc = null;
 		
 		// Equip with the weapon
 		if (item == null)
+		{
 			_item = ItemTable.getInstance().createItem("Combat", _itemId, 1, null, null);
+		}
 		else
+		{
 			_item = item;
+		}
 		_player.getInventory().equipItem(_item);
 		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_EQUIPPED);
 		sm.addItemName(_item);
@@ -147,7 +159,10 @@ public class TerritoryWard
 			iu.addItem(_item);
 			_player.sendPacket(iu);
 		}
-		else _player.sendPacket(new ItemList(_player, false));
+		else
+		{
+			_player.sendPacket(new ItemList(_player, false));
+		}
 		
 		// Refresh player stats
 		_player.broadcastUserInfo();
@@ -166,7 +181,7 @@ public class TerritoryWard
 		_player.destroyItem("CombatFlag", _item, null, true);
 		_item = null;
 		_player.broadcastUserInfo();
-		_location = new Location(_player.getX(),_player.getY(),_player.getZ(),_player.getHeading());
+		_location = new Location(_player.getX(), _player.getY(), _player.getZ(), _player.getHeading());
 		_player = null;
 		playerId = 0;
 	}

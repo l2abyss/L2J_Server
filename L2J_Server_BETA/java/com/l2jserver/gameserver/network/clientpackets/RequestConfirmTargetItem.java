@@ -21,7 +21,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExPutItemResultForVariatio
 
 /**
  * Format:(ch) d
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public final class RequestConfirmTargetItem extends AbstractRefinePacket
 {
@@ -39,11 +39,15 @@ public final class RequestConfirmTargetItem extends AbstractRefinePacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		final L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_itemObjId);
 		if (item == null)
+		{
 			return;
+		}
 		
 		if (!isValid(activeChar, item))
 		{

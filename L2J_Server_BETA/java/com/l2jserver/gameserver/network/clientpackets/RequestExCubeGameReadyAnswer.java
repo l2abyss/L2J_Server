@@ -18,9 +18,7 @@ import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * Format: chddd
- * d: Arena
- * d: Answer
+ * Format: chddd d: Arena d: Answer
  * @author mrTJO
  */
 public final class RequestExCubeGameReadyAnswer extends L2GameClientPacket
@@ -44,8 +42,11 @@ public final class RequestExCubeGameReadyAnswer extends L2GameClientPacket
 	{
 		L2PcInstance player = getClient().getActiveChar();
 		
-		if(player == null) return;
-
+		if (player == null)
+		{
+			return;
+		}
+		
 		switch (_answer)
 		{
 			case 0:
@@ -56,7 +57,7 @@ public final class RequestExCubeGameReadyAnswer extends L2GameClientPacket
 				HandysBlockCheckerManager.getInstance().increaseArenaVotes(_arena);
 				break;
 			default:
-				_log.warning("Unknown Cube Game Answer ID: "+_answer);
+				_log.warning("Unknown Cube Game Answer ID: " + _answer);
 				break;
 		}
 	}

@@ -33,7 +33,9 @@ public class ExMultiPartyCommandChannelInfo extends L2GameServerPacket
 	protected void writeImpl()
 	{
 		if (_channel == null)
+		{
 			return;
+		}
 		
 		writeC(0xFE);
 		writeH(0x31);

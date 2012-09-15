@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.serverpackets.ExRpItemLink;
 
 /**
- * @author  KenM
+ * @author KenM
  */
 public class RequestExRqItemLink extends L2GameClientPacket
 {
@@ -38,13 +38,13 @@ public class RequestExRqItemLink extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2GameClient client = this.getClient();
+		L2GameClient client = getClient();
 		if (client != null)
 		{
 			L2Object object = L2World.getInstance().findObject(_objectId);
 			if (object instanceof L2ItemInstance)
 			{
-				L2ItemInstance item = (L2ItemInstance)object;
+				L2ItemInstance item = (L2ItemInstance) object;
 				if (item.isPublished())
 				{
 					client.sendPacket(new ExRpItemLink(item));
@@ -52,7 +52,9 @@ public class RequestExRqItemLink extends L2GameClientPacket
 				else
 				{
 					if (Config.DEBUG)
-						_log.info(getClient()+" requested item link for item which wasnt published! ID:"+_objectId);
+					{
+						_log.info(getClient() + " requested item link for item which wasnt published! ID:" + _objectId);
+					}
 				}
 			}
 		}

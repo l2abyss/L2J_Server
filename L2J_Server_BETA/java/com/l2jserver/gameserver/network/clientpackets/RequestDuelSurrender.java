@@ -17,9 +17,8 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.gameserver.instancemanager.DuelManager;
 
 /**
- * Format:(ch)
- * just a trigger
- * @author  -Wooden-
+ * Format:(ch) just a trigger
+ * @author -Wooden-
  */
 public final class RequestDuelSurrender extends L2GameClientPacket
 {

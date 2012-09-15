@@ -29,9 +29,6 @@ public final class PlayOk extends L2LoginServerPacket
 		_playOk2 = sessionKey.playOkID2;
 	}
 	
-	/**
-	 * @see org.mmocore.network.SendablePacket#write()
-	 */
 	@Override
 	protected void write()
 	{

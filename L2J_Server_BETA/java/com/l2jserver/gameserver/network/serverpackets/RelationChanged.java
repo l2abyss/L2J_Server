@@ -70,7 +70,9 @@ public final class RelationChanged extends L2GameServerPacket
 	public void addRelation(L2Playable activeChar, int relation, boolean autoattackable)
 	{
 		if (activeChar.getActingPlayer().getAppearance().getInvisible())
+		{
 			throw new IllegalArgumentException("Cannot add insivisble character to multi relation packet");
+		}
 		Relation r = new Relation();
 		r._objId = activeChar.getObjectId();
 		r._relation = relation;
@@ -93,7 +95,9 @@ public final class RelationChanged extends L2GameServerPacket
 		{
 			writeD(_multi.size());
 			for (Relation r : _multi)
+			{
 				writeRelation(r);
+			}
 			FastList.recycle((FastList<?>) _multi);
 		}
 	}

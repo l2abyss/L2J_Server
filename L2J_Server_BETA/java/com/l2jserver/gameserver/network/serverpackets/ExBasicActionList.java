@@ -65,8 +65,8 @@ public final class ExBasicActionList extends L2GameServerPacket
 	static
 	{
 		int count1 = 74; // 0 <-> (count1 - 1)
-		int count2 = 99; // 1000 <-> (1000 + count2 - 1) //Update by rocknow
-		int count3 = 16; // 5000 <-> (5000 + count3 - 1) //Update by rocknow
+		int count2 = 99; // 1000 <-> (1000 + count2 - 1)
+		int count3 = 16; // 5000 <-> (5000 + count3 - 1)
 		_defaultActionList = new int[count1 + count2 + count3];
 		int i;
 		
@@ -107,9 +107,9 @@ public final class ExBasicActionList extends L2GameServerPacket
 		writeC(0xfe);
 		writeH(0x5f);
 		writeD(_actionIds.length);
-		for (int i = 0; i < _actionIds.length; i++)
+		for (int _actionId : _actionIds)
 		{
-			writeD(_actionIds[i]);
+			writeD(_actionId);
 		}
 	}
 }

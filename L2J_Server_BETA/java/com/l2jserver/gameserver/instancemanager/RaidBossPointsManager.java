@@ -128,8 +128,10 @@ public class RaidBossPointsManager
 		tmpPoint = _list.get(ownerId);
 		int totalPoints = 0;
 		
-		if (tmpPoint == null || tmpPoint.isEmpty())
+		if ((tmpPoint == null) || tmpPoint.isEmpty())
+		{
 			return 0;
+		}
 		
 		for (int points : tmpPoint.values())
 		{
@@ -162,7 +164,9 @@ public class RaidBossPointsManager
 	{
 		Map<Integer, Integer> rank = getRankList();
 		if (rank.containsKey(playerObjId))
+		{
 			return rank.get(playerObjId);
+		}
 		return 0;
 	}
 	

@@ -37,11 +37,7 @@ import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.util.Rnd;
 
 /**
- * Format (ch) dd
- * c: (id) 0xD0
- * h: (subid) 0x06
- * d: skill id
- * d: skill lvl
+ * Format (ch) dd c: (id) 0xD0 h: (subid) 0x06 d: skill id d: skill lvl
  * @author -Wooden-
  */
 public final class RequestExEnchantSkill extends L2GameClientPacket
@@ -62,12 +58,16 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (_skillId <= 0 || _skillLvl <= 0) // minimal sanity check
+		if ((_skillId <= 0) || (_skillLvl <= 0))
+		{
 			return;
-
+		}
+		
 		final L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
+		{
 			return;
+		}
 		
 		if (player.getClassId().level() < 3) // requires to have 3rd class quest completed
 		{
@@ -110,7 +110,7 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 		if (player.getSp() >= requiredSp)
 		{
 			// only first lvl requires book
-			final boolean usesBook = _skillLvl % 100 == 1; // 101, 201, 301 ...
+			final boolean usesBook = (_skillLvl % 100) == 1; // 101, 201, 301 ...
 			final int reqItemId = EnchantGroupsData.NORMAL_ENCHANT_BOOK;
 			final L2ItemInstance spb = player.getInventory().getItemByItemId(reqItemId);
 			
@@ -147,7 +147,13 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 				if (Config.LOG_SKILL_ENCHANTS)
 				{
 					final LogRecord record = new LogRecord(Level.INFO, "Success");
-					record.setParameters(new Object[] { player, skill, spb, rate });
+					record.setParameters(new Object[]
+					{
+						player,
+						skill,
+						spb,
+						rate
+					});
 					record.setLoggerName("skill");
 					_logEnchant.log(record);
 				}
@@ -173,7 +179,13 @@ public final class RequestExEnchantSkill extends L2GameClientPacket
 				if (Config.LOG_SKILL_ENCHANTS)
 				{
 					final LogRecord record = new LogRecord(Level.INFO, "Fail");
-					record.setParameters(new Object[] { player, skill, spb, rate });
+					record.setParameters(new Object[]
+					{
+						player,
+						skill,
+						spb,
+						rate
+					});
 					record.setLoggerName("skill");
 					_logEnchant.log(record);
 				}

@@ -31,36 +31,32 @@ import com.l2jserver.gameserver.communitybbs.Manager.TopicBBSManager;
 
 public class Forum
 {
-	//type
+	// type
 	public static final int ROOT = 0;
 	public static final int NORMAL = 1;
 	public static final int CLAN = 2;
 	public static final int MEMO = 3;
 	public static final int MAIL = 4;
-	//perm
+	// perm
 	public static final int INVISIBLE = 0;
 	public static final int ALL = 1;
 	public static final int CLANMEMBERONLY = 2;
 	public static final int OWNERONLY = 3;
 	
 	private static Logger _log = Logger.getLogger(Forum.class.getName());
-	private List<Forum> _children;
-	private Map<Integer, Topic> _topic;
-	private int _forumId;
+	private final List<Forum> _children;
+	private final Map<Integer, Topic> _topic;
+	private final int _forumId;
 	private String _forumName;
-	//private int _ForumParent;
 	private int _forumType;
 	private int _forumPost;
 	private int _forumPerm;
-	private Forum _fParent;
+	private final Forum _fParent;
 	private int _ownerID;
 	private boolean _loaded = false;
 	
 	/**
-	 * Creates new instance of Forum. When you create new forum, use
-	 * {@link com.l2jserver.gameserver.communitybbs.Manager.ForumsBBSManager#
-	 * addForum(com.l2jserver.gameserver.communitybbs.BB.Forum)} to add forum
-	 * to the forums manager.
+	 * Creates new instance of Forum. When you create new forum, use {@link com.l2jserver.gameserver.communitybbs.Manager.ForumsBBSManager# addForum(com.l2jserver.gameserver.communitybbs.BB.Forum)} to add forum to the forums manager.
 	 * @param Forumid
 	 * @param FParent
 	 */
@@ -70,9 +66,6 @@ public class Forum
 		_fParent = FParent;
 		_children = new FastList<>();
 		_topic = new FastMap<>();
-		
-		/*load();
-		getChildren();	*/
 	}
 	
 	/**
@@ -80,13 +73,12 @@ public class Forum
 	 * @param parent
 	 * @param type
 	 * @param perm
-	 * @param OwnerID 
+	 * @param OwnerID
 	 */
 	public Forum(String name, Forum parent, int type, int perm, int OwnerID)
 	{
 		_forumName = name;
 		_forumId = ForumsBBSManager.getInstance().getANewID();
-		//_ForumParent = parent.getID();
 		_forumType = type;
 		_forumPost = 0;
 		_forumPerm = perm;
@@ -110,7 +102,6 @@ public class Forum
 				if (rs.next())
 				{
 					_forumName = rs.getString("forum_name");
-					//_ForumParent = result.getInt("forum_parent");
 					_forumPost = rs.getInt("forum_post");
 					_forumType = rs.getInt("forum_type");
 					_forumPerm = rs.getInt("forum_perm");
@@ -252,9 +243,6 @@ public class Forum
 		}
 	}
 	
-	/**
-	 *
-	 */
 	public void vload()
 	{
 		if (!_loaded)

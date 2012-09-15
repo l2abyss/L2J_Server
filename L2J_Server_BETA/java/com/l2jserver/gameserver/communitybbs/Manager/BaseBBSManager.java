@@ -30,7 +30,9 @@ public abstract class BaseBBSManager
 	protected void separateAndSend(String html, L2PcInstance acha)
 	{
 		if (html == null)
+		{
 			return;
+		}
 		if (html.length() < 4090)
 		{
 			acha.sendPacket(new ShowBoard(html, "101"));
@@ -56,7 +58,7 @@ public abstract class BaseBBSManager
 	
 	/**
 	 * @param html
-	 * @param acha 
+	 * @param acha
 	 */
 	protected void send1001(String html, L2PcInstance acha)
 	{
@@ -67,7 +69,7 @@ public abstract class BaseBBSManager
 	}
 	
 	/**
-	 * @param acha 
+	 * @param acha
 	 */
 	protected void send1002(L2PcInstance acha)
 	{
@@ -78,7 +80,7 @@ public abstract class BaseBBSManager
 	 * @param activeChar
 	 * @param string
 	 * @param string2
-	 * @param string3 
+	 * @param string3
 	 */
 	protected void send1002(L2PcInstance activeChar, String string, String string2, String string3)
 	{

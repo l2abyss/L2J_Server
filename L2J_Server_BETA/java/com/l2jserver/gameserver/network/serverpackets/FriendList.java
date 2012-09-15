@@ -53,8 +53,10 @@ public class FriendList extends L2GameServerPacket
 			String name = CharNameTable.getInstance().getNameById(objId);
 			L2PcInstance player1 = L2World.getInstance().getPlayer(objId);
 			boolean online = false;
-			if (player1 != null && player1.isOnline())
+			if ((player1 != null) && player1.isOnline())
+			{
 				online = true;
+			}
 			_info.add(new FriendInfo(objId, name, online));
 		}
 	}

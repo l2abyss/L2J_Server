@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.network.serverpackets.SiegeAttackerList;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.3.4.2 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class RequestSiegeAttackerList extends L2GameClientPacket
@@ -50,7 +49,7 @@ public final class RequestSiegeAttackerList extends L2GameClientPacket
 		else
 		{
 			SiegableHall hall = CHSiegeManager.getInstance().getSiegableHall(_castleId);
-			if(hall != null)
+			if (hall != null)
 			{
 				SiegeAttackerList sal = new SiegeAttackerList(hall);
 				sendPacket(sal);

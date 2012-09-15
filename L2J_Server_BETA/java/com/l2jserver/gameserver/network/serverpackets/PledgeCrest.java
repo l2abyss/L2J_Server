@@ -38,6 +38,8 @@ public final class PledgeCrest extends L2GameServerPacket
 			writeB(_data);
 		}
 		else
+		{
 			writeD(0);
+		}
 	}
 }

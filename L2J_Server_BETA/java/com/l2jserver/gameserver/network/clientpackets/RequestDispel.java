@@ -31,9 +31,6 @@ public class RequestDispel extends L2GameClientPacket
 	private int _skillId;
 	private int _skillLevel;
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#readImpl()
-	 */
 	@Override
 	protected void readImpl()
 	{
@@ -42,9 +39,6 @@ public class RequestDispel extends L2GameClientPacket
 		_skillLevel = readD();
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#runImpl()
-	 */
 	@Override
 	protected void runImpl()
 	{
@@ -88,9 +82,6 @@ public class RequestDispel extends L2GameClientPacket
 		}
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.clientpackets.L2GameClientPacket#getType()
-	 */
 	@Override
 	public String getType()
 	{

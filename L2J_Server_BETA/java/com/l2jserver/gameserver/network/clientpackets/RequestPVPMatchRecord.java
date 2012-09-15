@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 /**
- * @author  KenM
+ * @author KenM
  */
 public class RequestPVPMatchRecord extends L2GameClientPacket
 {

@@ -28,14 +28,13 @@ import com.l2jserver.gameserver.model.L2TeleportLocation;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.3.2.2.2.3 $ $Date: 2005/03/27 15:29:18 $
  */
 public class TeleportLocationTable
 {
 	private static Logger _log = Logger.getLogger(TeleportLocationTable.class.getName());
 	
-	private Map<Integer, L2TeleportLocation> _teleports = new HashMap<>();
+	private final Map<Integer, L2TeleportLocation> _teleports = new HashMap<>();
 	
 	protected TeleportLocationTable()
 	{

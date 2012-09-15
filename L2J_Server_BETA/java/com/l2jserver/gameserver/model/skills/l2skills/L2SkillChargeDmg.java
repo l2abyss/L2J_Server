@@ -52,18 +52,20 @@ public class L2SkillChargeDmg extends L2Skill
 		if (caster.isPlayer())
 		{
 			// thanks Diego Vargas of L2Guru: 70*((0.8+0.201*No.Charges) * (PATK+POWER)) / PDEF
-			modifier = 0.8 + 0.201 * (getNumCharges() + caster.getActingPlayer().getCharges());
+			modifier = 0.8 + (0.201 * (getNumCharges() + caster.getActingPlayer().getCharges()));
 		}
 		boolean ss = isPhysical() && caster.isChargedShot(ShotType.SOULSHOTS);
 		
-		for (L2Character target: (L2Character[]) targets)
+		for (L2Character target : (L2Character[]) targets)
 		{
 			if (target.isAlikeDead())
+			{
 				continue;
+			}
 			
-			//	Calculate skill evasion
+			// Calculate skill evasion
 			boolean skillIsEvaded = Formulas.calcPhysicalSkillEvasion(target, this);
-			if(skillIsEvaded)
+			if (skillIsEvaded)
 			{
 				if (caster.isPlayer())
 				{
@@ -78,22 +80,26 @@ public class L2SkillChargeDmg extends L2Skill
 					target.getActingPlayer().sendPacket(sm);
 				}
 				
-				//no futher calculations needed.
+				// no futher calculations needed.
 				continue;
 			}
 			
 			// TODO: should we use dual or not?
 			// because if so, damage are lowered but we don't do anything special with dual then
 			// like in doAttackHitByDual which in fact does the calcPhysDam call twice
-			//boolean dual  = caster.isUsingDualWeapon();
+			// boolean dual = caster.isUsingDualWeapon();
 			byte shld = Formulas.calcShldUse(caster, target, this);
 			boolean crit = false;
-			if (getBaseCritRate() > 0 && !isStaticDamage())
-				crit = Formulas.calcCrit(this.getBaseCritRate() * 10 * BaseStats.STR.calcBonus(caster), true, target);
+			if ((getBaseCritRate() > 0) && !isStaticDamage())
+			{
+				crit = Formulas.calcCrit(getBaseCritRate() * 10 * BaseStats.STR.calcBonus(caster), true, target);
+			}
 			// damage calculation, crit is static 2x
 			double damage = isStaticDamage() ? getPower() : Formulas.calcPhysDam(caster, target, this, shld, false, false, ss);
 			if (crit)
+			{
 				damage *= 2;
+			}
 			
 			if (damage > 0)
 			{
@@ -130,20 +136,26 @@ public class L2SkillChargeDmg extends L2Skill
 					}
 				}
 				
-				double finalDamage = isStaticDamage() ? damage : damage*modifier;
+				double finalDamage = isStaticDamage() ? damage : damage * modifier;
 				
-				if (Config.LOG_GAME_DAMAGE
-						&& caster.isPlayable()
-						&& damage > Config.LOG_GAME_DAMAGE_THRESHOLD)
+				if (Config.LOG_GAME_DAMAGE && caster.isPlayable() && (damage > Config.LOG_GAME_DAMAGE_THRESHOLD))
 				{
 					LogRecord record = new LogRecord(Level.INFO, "");
-					record.setParameters(new Object[]{caster, " did damage ", (int)damage, this, " to ", target});
+					record.setParameters(new Object[]
+					{
+						caster,
+						" did damage ",
+						(int) damage,
+						this,
+						" to ",
+						target
+					});
 					record.setLoggerName("pdam");
 					_logDamage.log(record);
 				}
 				
 				target.reduceCurrentHp(finalDamage, caster, this);
-
+				
 				// vengeance reflected damage
 				if ((reflect & Formulas.SKILL_REFLECT_VENGEANCE) != 0)
 				{
@@ -161,11 +173,11 @@ public class L2SkillChargeDmg extends L2Skill
 					}
 					// Formula from Diego Vargas post: http://www.l2guru.com/forum/showthread.php?p=3122630
 					// 1189 x Your PATK / PDEF of target
-					double vegdamage = (1189 * target.getPAtk(caster) / (double)caster.getPDef(target));
+					double vegdamage = ((1189 * target.getPAtk(caster)) / (double) caster.getPDef(target));
 					caster.reduceCurrentHp(vegdamage, target, this);
 				}
 				
-				caster.sendDamageMessage(target, (int)finalDamage, false, crit, false);
+				caster.sendDamageMessage(target, (int) finalDamage, false, crit, false);
 				
 			}
 			else
@@ -178,9 +190,9 @@ public class L2SkillChargeDmg extends L2Skill
 		if (hasSelfEffects())
 		{
 			L2Effect effect = caster.getFirstEffect(getId());
-			if (effect != null && effect.isSelfEffect())
+			if ((effect != null) && effect.isSelfEffect())
 			{
-				//Replace old effect with new one.
+				// Replace old effect with new one.
 				effect.exit();
 			}
 			// cast self effect if any

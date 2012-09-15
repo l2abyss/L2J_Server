@@ -37,7 +37,7 @@ public class ExShowReceivedPostList extends L2GameServerPacket
 		writeC(0xFE);
 		writeH(0xAA);
 		writeD((int) (System.currentTimeMillis() / 1000));
-		if (_inbox != null && _inbox.size() > 0)
+		if ((_inbox != null) && (_inbox.size() > 0))
 		{
 			writeD(_inbox.size());
 			for (Message msg : _inbox)

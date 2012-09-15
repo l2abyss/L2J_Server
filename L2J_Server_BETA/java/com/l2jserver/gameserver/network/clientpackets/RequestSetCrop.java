@@ -32,18 +32,11 @@ import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.util.Util;
 
 /**
- * Format: (ch) dd [dddc]
- * d - manor id
- * d - size
- * [
- * d - crop id
- * d - sales
- * d - price
- * c - reward type
- * ]
+ * Format: (ch) dd [dddc] d - manor id d - size [ d - crop id d - sales d - price c - reward type ]
  * @author l3x
  */
-public class RequestSetCrop extends L2GameClientPacket {
+public class RequestSetCrop extends L2GameClientPacket
+{
 	private static final String _C__D0_04_REQUESTSETCROP = "[C] D0:04 RequestSetCrop";
 	
 	private static final int BATCH_LENGTH = 21; // length of the one item
@@ -56,9 +49,7 @@ public class RequestSetCrop extends L2GameClientPacket {
 	{
 		_manorId = readD();
 		int count = readD();
-		if (count <= 0
-				|| count > Config.MAX_ITEM_IN_PACKET
-				|| count * BATCH_LENGTH != _buf.remaining())
+		if ((count <= 0) || (count > Config.MAX_ITEM_IN_PACKET) || ((count * BATCH_LENGTH) != _buf.remaining()))
 		{
 			return;
 		}
@@ -70,7 +61,7 @@ public class RequestSetCrop extends L2GameClientPacket {
 			long sales = readQ();
 			long price = readQ();
 			int type = readC();
-			if (itemId < 1 || sales < 0 || price < 0)
+			if ((itemId < 1) || (sales < 0) || (price < 0))
 			{
 				_items = null;
 				return;
@@ -83,33 +74,45 @@ public class RequestSetCrop extends L2GameClientPacket {
 	protected void runImpl()
 	{
 		if (_items == null)
+		{
 			return;
+		}
 		
 		L2PcInstance player = getClient().getActiveChar();
 		// check player privileges
-		if (player == null
-				|| player.getClan() == null
-				|| (player.getClanPrivileges() & L2Clan.CP_CS_MANOR_ADMIN) == 0)
+		if ((player == null) || (player.getClan() == null) || ((player.getClanPrivileges() & L2Clan.CP_CS_MANOR_ADMIN) == 0))
+		{
 			return;
+		}
 		
 		// check castle owner
 		Castle currentCastle = CastleManager.getInstance().getCastleById(_manorId);
 		if (currentCastle.getOwnerId() != player.getClanId())
+		{
 			return;
+		}
 		
 		L2Object manager = player.getTarget();
 		
 		if (!(manager instanceof L2CastleChamberlainInstance))
+		{
 			manager = player.getLastFolkNPC();
+		}
 		
 		if (!(manager instanceof L2CastleChamberlainInstance))
+		{
 			return;
+		}
 		
-		if (((L2CastleChamberlainInstance)manager).getCastle() != currentCastle)
+		if (((L2CastleChamberlainInstance) manager).getCastle() != currentCastle)
+		{
 			return;
+		}
 		
 		if (!player.isInsideRadius(manager, INTERACTION_DISTANCE, true, false))
+		{
 			return;
+		}
 		
 		List<CropProcure> crops = new ArrayList<>(_items.length);
 		for (Crop i : _items)
@@ -117,11 +120,7 @@ public class RequestSetCrop extends L2GameClientPacket {
 			CropProcure s = i.getCrop();
 			if (s == null)
 			{
-				Util.handleIllegalPlayerAction(player, "Warning!! Character "
-						+ player.getName() + " of account "
-						+ player.getAccountName()
-						+ " tried to overflow while setting manor.",
-						Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " tried to overflow while setting manor.", Config.DEFAULT_PUNISH);
 				return;
 			}
 			crops.add(s);
@@ -129,7 +128,9 @@ public class RequestSetCrop extends L2GameClientPacket {
 		
 		currentCastle.setCropProcure(crops, CastleManorManager.PERIOD_NEXT);
 		if (Config.ALT_MANOR_SAVE_ALL_ACTIONS)
+		{
 			currentCastle.saveCropData(CastleManorManager.PERIOD_NEXT);
+		}
 	}
 	
 	private static class Crop
@@ -149,8 +150,10 @@ public class RequestSetCrop extends L2GameClientPacket {
 		
 		public CropProcure getCrop()
 		{
-			if (_sales != 0 && (MAX_ADENA / _sales) < _price)
+			if ((_sales != 0) && ((MAX_ADENA / _sales) < _price))
+			{
 				return null;
+			}
 			
 			return CastleManorManager.getInstance().getNewCropProcure(_itemId, _sales, _type, _price, _sales);
 		}

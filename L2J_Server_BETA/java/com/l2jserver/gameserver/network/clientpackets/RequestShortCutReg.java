@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.network.serverpackets.ShortCutRegister;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.3.4.3 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class RequestShortCutReg extends L2GameClientPacket
@@ -52,10 +51,14 @@ public final class RequestShortCutReg extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
-		if (_page > 10 || _page < 0)
+		if ((_page > 10) || (_page < 0))
+		{
 			return;
+		}
 		
 		switch (_type)
 		{

@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +42,8 @@ import com.l2jserver.gameserver.model.base.SubClass;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.skills.L2Skill;
+
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
  * This class loads and manage the characters and pledges skills trees.<br>

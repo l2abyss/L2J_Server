@@ -54,13 +54,12 @@ public class L2SiegeZone extends L2ZoneType
 		setSettings(settings);
 	}
 	
-
 	private final class Settings extends AbstractZoneSettings
 	{
 		private int _siegableId = -1;
 		private Siegable _siege = null;
 		private boolean _isActiveSiege = false;
-
+		
 		public Settings()
 		{
 		}
@@ -167,14 +166,14 @@ public class L2SiegeZone extends L2ZoneType
 				if (plyer.isRegisteredOnThisSiegeField(getSettings().getSiegeableId()))
 				{
 					plyer.setIsInSiege(true); // in siege
-					if (getSettings().getSiege().giveFame() && getSettings().getSiege().getFameFrequency() > 0)
+					if (getSettings().getSiege().giveFame() && (getSettings().getSiege().getFameFrequency() > 0))
 					{
 						plyer.startFameTask(getSettings().getSiege().getFameFrequency() * 1000, getSettings().getSiege().getFameAmount());
 					}
 				}
 				
 				character.sendPacket(SystemMessageId.ENTERED_COMBAT_ZONE);
-				if (!Config.ALLOW_WYVERN_DURING_SIEGE && plyer.getMountType() == 2)
+				if (!Config.ALLOW_WYVERN_DURING_SIEGE && (plyer.getMountType() == 2))
 				{
 					plyer.sendPacket(SystemMessageId.AREA_CANNOT_BE_ENTERED_WHILE_MOUNTED_WYVERN);
 					plyer.enteredNoLanding(DISMOUNT_DELAY);
@@ -212,7 +211,7 @@ public class L2SiegeZone extends L2ZoneType
 			activeChar.stopFameTask();
 			activeChar.setIsInSiege(false);
 			
-			if (getSettings().getSiege() instanceof FortSiege && activeChar.getInventory().getItemByItemId(9819) != null)
+			if ((getSettings().getSiege() instanceof FortSiege) && (activeChar.getInventory().getItemByItemId(9819) != null))
 			{
 				// drop combat flag
 				Fort fort = FortManager.getInstance().getFortById(getSettings().getSiegeableId());
@@ -246,7 +245,9 @@ public class L2SiegeZone extends L2ZoneType
 				int lvl = 1;
 				final L2Effect e = character.getFirstEffect(5660);
 				if (e != null)
+				{
 					lvl = Math.min(lvl + e.getLevel(), 5);
+				}
 				
 				final L2Skill skill = SkillTable.getInstance().getInfo(5660, lvl);
 				if (skill != null)
@@ -269,7 +270,9 @@ public class L2SiegeZone extends L2ZoneType
 			for (L2Character character : getCharactersInside())
 			{
 				if (character != null)
+				{
 					onEnter(character);
+				}
 			}
 		}
 		else
@@ -278,7 +281,9 @@ public class L2SiegeZone extends L2ZoneType
 			for (L2Character character : getCharactersInside())
 			{
 				if (character == null)
+				{
 					continue;
+				}
 				
 				character.setInsideZone(ZoneId.PVP, false);
 				character.setInsideZone(ZoneId.SIEGE, false);
@@ -312,7 +317,9 @@ public class L2SiegeZone extends L2ZoneType
 		for (L2PcInstance player : getPlayersInside())
 		{
 			if (player != null)
+			{
 				player.sendMessage(message);
+			}
 		}
 	}
 	
@@ -346,7 +353,9 @@ public class L2SiegeZone extends L2ZoneType
 		for (L2PcInstance temp : getPlayersInside())
 		{
 			if (temp.getClanId() == owningClanId)
+			{
 				continue;
+			}
 			
 			temp.teleToLocation(type);
 		}

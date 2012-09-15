@@ -27,7 +27,6 @@ import com.l2jserver.util.Rnd;
 
 /**
  * @author Nemesiss
- *
  */
 public class L2SkillCreateItem extends L2Skill
 {
@@ -43,18 +42,17 @@ public class L2SkillCreateItem extends L2Skill
 		_randomCount = set.getInteger("random_count", 1);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.model.skills.L2Skill#useSkill(com.l2jserver.gameserver.model.actor.L2Character, com.l2jserver.gameserver.model.L2Object[])
-	 */
 	@Override
 	public void useSkill(L2Character activeChar, L2Object[] targets)
 	{
 		L2PcInstance player = activeChar.getActingPlayer();
 		if (activeChar.isAlikeDead())
+		{
 			return;
+		}
 		if (activeChar.isPlayable())
 		{
-			if (_createItemId == null || _createItemCount == 0)
+			if ((_createItemId == null) || (_createItemCount == 0))
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_PREPARED_FOR_REUSE);
 				sm.addSkillName(this);

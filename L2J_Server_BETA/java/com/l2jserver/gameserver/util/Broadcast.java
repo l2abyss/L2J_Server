@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.util;
 
-import gnu.trove.procedure.TObjectProcedure;
-
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +26,8 @@ import com.l2jserver.gameserver.network.serverpackets.CharInfo;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.RelationChanged;
+
+import gnu.trove.procedure.TObjectProcedure;
 
 /**
  * This class ...
@@ -153,16 +153,22 @@ public final class Broadcast
 	public static void toSelfAndKnownPlayersInRadius(L2Character character, L2GameServerPacket mov, int radius)
 	{
 		if (radius < 0)
+		{
 			radius = 600;
+		}
 		
 		if (character instanceof L2PcInstance)
+		{
 			character.sendPacket(mov);
+		}
 		
 		Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
 		for (L2PcInstance player : plrs)
 		{
-			if (player != null && Util.checkIfInRange(radius, character, player, false))
+			if ((player != null) && Util.checkIfInRange(radius, character, player, false))
+			{
 				player.sendPacket(mov);
+			}
 		}
 	}
 	

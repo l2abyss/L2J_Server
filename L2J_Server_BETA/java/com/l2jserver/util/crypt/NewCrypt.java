@@ -44,7 +44,6 @@ public final class NewCrypt
 	 * Equivalent to calling {@link #verifyChecksum(byte[], int, int)} with parameters (raw, 0, raw.length)
 	 * @param raw data array to be verified
 	 * @return true when the checksum of the data is valid, false otherwise
-	 * @see #verifyChecksum(byte[], int, int)
 	 */
 	public static boolean verifyChecksum(final byte[] raw)
 	{

@@ -627,18 +627,22 @@ public class LoginController
 				if (!ipWhiteList.isEmpty() && !ipWhiteList.contains(address))
 				{
 					if (Config.LOG_LOGIN_CONTROLLER)
+					{
 						Log.add("'" + user + "' " + address.getHostAddress() + " - ERR : INCORRECT IP", "loginlog");
+					}
 					return false;
 				}
 				
 				if (!ipBlackList.isEmpty() && ipBlackList.contains(address))
 				{
 					if (Config.LOG_LOGIN_CONTROLLER)
+					{
 						Log.add("'" + user + "' " + address.getHostAddress() + " - ERR : BLACKLISTED IP", "loginlog");
+					}
 					return false;
 				}
 			}
-
+			
 			// check password hash
 			ok = Arrays.equals(hash, expected);
 			if (ok)

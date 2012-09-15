@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.model.olympiad;
 
-import gnu.trove.map.hash.TIntIntHashMap;
-
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -45,6 +43,8 @@ import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.L2FastList;
+
+import gnu.trove.map.hash.TIntIntHashMap;
 
 /**
  * @author godson
@@ -157,11 +157,6 @@ public class Olympiad
 	protected ScheduledFuture<?> _scheduledValdationTask;
 	protected ScheduledFuture<?> _gameManager = null;
 	protected ScheduledFuture<?> _gameAnnouncer = null;
-	
-	public static Olympiad getInstance()
-	{
-		return SingletonHolder._instance;
-	}
 	
 	protected Olympiad()
 	{
@@ -1156,7 +1151,6 @@ public class Olympiad
 	 * Gets how many matches a noble character did in the week
 	 * @param objId id of a noble character
 	 * @return number of weekly competitions done
-	 * @see #getRemainingWeeklyMatches(int)
 	 */
 	public int getCompetitionDoneWeek(int objId)
 	{
@@ -1171,7 +1165,6 @@ public class Olympiad
 	 * Gets how many classed matches a noble character did in the week
 	 * @param objId id of a noble character
 	 * @return number of weekly <i>classed</i> competitions done
-	 * @see #getRemainingWeeklyMatchesClassed(int)
 	 */
 	public int getCompetitionDoneWeekClassed(int objId)
 	{
@@ -1186,7 +1179,6 @@ public class Olympiad
 	 * Gets how many non classed matches a noble character did in the week
 	 * @param objId id of a noble character
 	 * @return number of weekly <i>non classed</i> competitions done
-	 * @see #getRemainingWeeklyMatchesNonClassed(int)
 	 */
 	public int getCompetitionDoneWeekNonClassed(int objId)
 	{
@@ -1201,7 +1193,6 @@ public class Olympiad
 	 * Gets how many team matches a noble character did in the week
 	 * @param objId id of a noble character
 	 * @return number of weekly <i>team</i> competitions done
-	 * @see #getRemainingWeeklyMatchesTeam(int)
 	 */
 	public int getCompetitionDoneWeekTeam(int objId)
 	{
@@ -1216,8 +1207,6 @@ public class Olympiad
 	 * Number of remaining matches a noble character can join in the week
 	 * @param objId id of a noble character
 	 * @return difference between maximum allowed weekly matches and currently done weekly matches.
-	 * @see #getCompetitionDoneWeek(int)
-	 * @see Config#ALT_OLY_MAX_WEEKLY_MATCHES
 	 */
 	public int getRemainingWeeklyMatches(int objId)
 	{
@@ -1228,8 +1217,6 @@ public class Olympiad
 	 * Number of remaining <i>classed</i> matches a noble character can join in the week
 	 * @param objId id of a noble character
 	 * @return difference between maximum allowed weekly classed matches and currently done weekly classed matches.
-	 * @see #getCompetitionDoneWeekClassed(int)
-	 * @see Config#ALT_OLY_MAX_WEEKLY_MATCHES_CLASSED
 	 */
 	public int getRemainingWeeklyMatchesClassed(int objId)
 	{
@@ -1240,8 +1227,6 @@ public class Olympiad
 	 * Number of remaining <i>non classed</i> matches a noble character can join in the week
 	 * @param objId id of a noble character
 	 * @return difference between maximum allowed weekly non classed matches and currently done weekly non classed matches.
-	 * @see #getCompetitionDoneWeekNonClassed(int)
-	 * @see Config#ALT_OLY_MAX_WEEKLY_MATCHES_NON_CLASSED
 	 */
 	public int getRemainingWeeklyMatchesNonClassed(int objId)
 	{
@@ -1252,8 +1237,6 @@ public class Olympiad
 	 * Number of remaining <i>team</i> matches a noble character can join in the week
 	 * @param objId id of a noble character
 	 * @return difference between maximum allowed weekly team matches and currently done weekly team matches.
-	 * @see #getCompetitionDoneWeekTeam(int)
-	 * @see Config#ALT_OLY_MAX_WEEKLY_MATCHES_TEAM
 	 */
 	public int getRemainingWeeklyMatchesTeam(int objId)
 	{
@@ -1282,6 +1265,11 @@ public class Olympiad
 	protected static StatsSet addNobleStats(int charId, StatsSet data)
 	{
 		return _nobles.put(Integer.valueOf(charId), data);
+	}
+	
+	public static Olympiad getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

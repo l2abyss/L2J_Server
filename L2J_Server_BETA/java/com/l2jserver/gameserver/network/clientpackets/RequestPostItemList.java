@@ -37,11 +37,15 @@ public final class RequestPostItemList extends L2GameClientPacket
 	public void runImpl()
 	{
 		if (!Config.ALLOW_MAIL || !Config.ALLOW_ATTACHMENTS)
+		{
 			return;
+		}
 		
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		if (!activeChar.isInsideZone(ZoneId.PEACE))
 		{

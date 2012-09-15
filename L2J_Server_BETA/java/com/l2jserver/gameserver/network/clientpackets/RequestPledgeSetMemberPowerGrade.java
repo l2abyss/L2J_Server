@@ -20,7 +20,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * Format: (ch) Sd
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public final class RequestPledgeSetMemberPowerGrade extends L2GameClientPacket
 {
@@ -40,21 +40,31 @@ public final class RequestPledgeSetMemberPowerGrade extends L2GameClientPacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		final L2Clan clan = activeChar.getClan();
 		if (clan == null)
+		{
 			return;
+		}
 		
 		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_MANAGE_RANKS) != L2Clan.CP_CL_MANAGE_RANKS)
+		{
 			return;
+		}
 		
 		final L2ClanMember member = clan.getClanMember(_member);
 		if (member == null)
+		{
 			return;
+		}
 		
 		if (member.getObjectId() == clan.getLeaderId())
+		{
 			return;
+		}
 		
 		if (member.getPledgeType() == L2Clan.SUBUNIT_ACADEMY)
 		{

@@ -31,14 +31,14 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.entity.ActionKey;
 
 /**
- * @author  mrTJO
+ * @author mrTJO
  */
 public class UITable
 {
 	private static final Logger _log = Logger.getLogger(UITable.class.getName());
 	
-	private Map<Integer, List<ActionKey>> _storedKeys = new HashMap<>();
-	private Map<Integer, List<Integer>> _storedCategories = new HashMap<>();
+	private final Map<Integer, List<ActionKey>> _storedKeys = new HashMap<>();
+	private final Map<Integer, List<Integer>> _storedCategories = new HashMap<>();
 	
 	protected UITable()
 	{
@@ -59,7 +59,9 @@ public class UITable
 			while ((line = lnr.readLine()) != null)
 			{
 				if (line.trim().isEmpty() || (line.charAt(0) == '#'))
+				{
 					continue;
+				}
 				
 				StringTokenizer st = new StringTokenizer(line, ";");
 				
@@ -90,7 +92,9 @@ public class UITable
 			while ((line = lnr.readLine()) != null)
 			{
 				if (line.trim().isEmpty() || (line.charAt(0) == '#'))
+				{
 					continue;
+				}
 				
 				StringTokenizer st = new StringTokenizer(line, ";");
 				
@@ -117,7 +121,9 @@ public class UITable
 	private void insertCategory(int cat, int cmd)
 	{
 		if (_storedCategories.containsKey(cat))
+		{
 			_storedCategories.get(cat).add(cmd);
+		}
 		else
 		{
 			List<Integer> tmp = new ArrayList<>();
@@ -130,7 +136,9 @@ public class UITable
 	{
 		ActionKey tmk = new ActionKey(cat, cmdId, key, tgKey1, tgKey2, show);
 		if (_storedKeys.containsKey(cat))
+		{
 			_storedKeys.get(cat).add(tmk);
+		}
 		else
 		{
 			List<ActionKey> tmp = new ArrayList<>();

@@ -23,15 +23,14 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * Format:(ch) Sd
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public final class RequestDuelStart extends L2GameClientPacket
 {
 	private static final String _C__D0_1B_REQUESTDUELSTART = "[C] D0:1B RequestDuelStart";
-
+	
 	private String _player;
 	private int _partyDuel;
-	
 	
 	@Override
 	protected void readImpl()
@@ -46,7 +45,9 @@ public final class RequestDuelStart extends L2GameClientPacket
 		L2PcInstance activeChar = getClient().getActiveChar();
 		L2PcInstance targetChar = L2World.getInstance().getPlayer(_player);
 		if (activeChar == null)
+		{
 			return;
+		}
 		if (targetChar == null)
 		{
 			activeChar.sendPacket(SystemMessageId.THERE_IS_NO_OPPONENT_TO_RECEIVE_YOUR_CHALLENGE_FOR_A_DUEL);
@@ -112,7 +113,10 @@ public final class RequestDuelStart extends L2GameClientPacket
 			L2PcInstance partyLeader = null; // snatch party leader of targetChar's party
 			for (L2PcInstance temp : targetChar.getParty().getMembers())
 			{
-				if (partyLeader == null) partyLeader = temp;
+				if (partyLeader == null)
+				{
+					partyLeader = temp;
+				}
 				if (!temp.canDuel())
 				{
 					activeChar.sendPacket(SystemMessageId.THE_OPPOSING_PARTY_IS_CURRENTLY_UNABLE_TO_ACCEPT_A_CHALLENGE_TO_A_DUEL);
@@ -129,7 +133,9 @@ public final class RequestDuelStart extends L2GameClientPacket
 					partyLeader.sendPacket(new ExDuelAskStart(activeChar.getName(), _partyDuel));
 					
 					if (Config.DEBUG)
+					{
 						_log.fine(activeChar.getName() + " requested a duel with " + partyLeader.getName());
+					}
 					
 					SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.C1_PARTY_HAS_BEEN_CHALLENGED_TO_A_DUEL);
 					msg.addString(partyLeader.getName());
@@ -147,7 +153,8 @@ public final class RequestDuelStart extends L2GameClientPacket
 				}
 			}
 		}
-		else // 1vs1 duel
+		else
+		// 1vs1 duel
 		{
 			if (!targetChar.isProcessingRequest())
 			{
@@ -155,7 +162,9 @@ public final class RequestDuelStart extends L2GameClientPacket
 				targetChar.sendPacket(new ExDuelAskStart(activeChar.getName(), _partyDuel));
 				
 				if (Config.DEBUG)
+				{
 					_log.fine(activeChar.getName() + " requested a duel with " + targetChar.getName());
+				}
 				
 				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_BEEN_CHALLENGED_TO_A_DUEL);
 				msg.addString(targetChar.getName());

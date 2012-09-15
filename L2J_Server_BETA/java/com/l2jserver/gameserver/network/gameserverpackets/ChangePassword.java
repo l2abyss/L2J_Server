@@ -29,7 +29,7 @@ public class ChangePassword extends BaseSendablePacket
 		writeS(oldPass);
 		writeS(newPass);
 	}
-
+	
 	@Override
 	public byte[] getContent()
 	{

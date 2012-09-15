@@ -32,7 +32,7 @@ public class L2DoorAI extends L2CharacterAI
 		super(accessor);
 	}
 	
-	// rather stupid AI... well,  it's for doors :D
+	// rather stupid AI... well, it's for doors :D
 	@Override
 	protected void onIntentionIdle()
 	{
@@ -152,8 +152,8 @@ public class L2DoorAI extends L2CharacterAI
 	
 	private class onEventAttackedDoorTask implements Runnable
 	{
-		private L2DoorInstance _door;
-		private L2Character _attacker;
+		private final L2DoorInstance _door;
+		private final L2Character _attacker;
 		
 		public onEventAttackedDoorTask(L2DoorInstance door, L2Character attacker)
 		{
@@ -166,7 +166,7 @@ public class L2DoorAI extends L2CharacterAI
 		{
 			for (L2DefenderInstance guard : _door.getKnownDefenders())
 			{
-				if (_actor.isInsideRadius(guard, guard.getFactionRange(), false, true) && Math.abs(_attacker.getZ() - guard.getZ()) < 200)
+				if (_actor.isInsideRadius(guard, guard.getFactionRange(), false, true) && (Math.abs(_attacker.getZ() - guard.getZ()) < 200))
 				{
 					guard.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, _attacker, 15);
 				}

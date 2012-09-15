@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.util.Util;
 
 /**
  * Format(ch) d
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public final class RequestRefineCancel extends L2GameClientPacket
 {
@@ -43,7 +43,9 @@ public final class RequestRefineCancel extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		L2ItemInstance targetItem = activeChar.getInventory().getItemByObjectId(_targetItemObjId);
 		if (targetItem == null)
@@ -53,7 +55,7 @@ public final class RequestRefineCancel extends L2GameClientPacket
 		}
 		if (targetItem.getOwnerId() != activeChar.getObjectId())
 		{
-			Util.handleIllegalPlayerAction(getClient().getActiveChar(),"Warning!! Character "+getClient().getActiveChar().getName()+" of account "+getClient().getActiveChar().getAccountName()+" tryied to augment item that doesn't own.",Config.DEFAULT_PUNISH);
+			Util.handleIllegalPlayerAction(getClient().getActiveChar(), "Warning!! Character " + getClient().getActiveChar().getName() + " of account " + getClient().getActiveChar().getAccountName() + " tryied to augment item that doesn't own.", Config.DEFAULT_PUNISH);
 			return;
 		}
 		// cannot remove augmentation from a not augmented item
@@ -70,25 +72,41 @@ public final class RequestRefineCancel extends L2GameClientPacket
 		{
 			case L2Item.CRYSTAL_C:
 				if (targetItem.getCrystalCount() < 1720)
+				{
 					price = 95000;
+				}
 				else if (targetItem.getCrystalCount() < 2452)
+				{
 					price = 150000;
+				}
 				else
+				{
 					price = 210000;
+				}
 				break;
 			case L2Item.CRYSTAL_B:
 				if (targetItem.getCrystalCount() < 1746)
+				{
 					price = 240000;
+				}
 				else
+				{
 					price = 270000;
+				}
 				break;
 			case L2Item.CRYSTAL_A:
 				if (targetItem.getCrystalCount() < 2160)
+				{
 					price = 330000;
+				}
 				else if (targetItem.getCrystalCount() < 2824)
+				{
 					price = 390000;
+				}
 				else
+				{
 					price = 420000;
+				}
 				break;
 			case L2Item.CRYSTAL_S:
 				price = 480000;
@@ -97,7 +115,7 @@ public final class RequestRefineCancel extends L2GameClientPacket
 			case L2Item.CRYSTAL_S84:
 				price = 920000;
 				break;
-				// any other item type is not augmentable
+			// any other item type is not augmentable
 			default:
 				activeChar.sendPacket(new ExVariationCancelResult(0));
 				return;
@@ -113,7 +131,9 @@ public final class RequestRefineCancel extends L2GameClientPacket
 		
 		// unequip item
 		if (targetItem.isEquipped())
+		{
 			activeChar.disarmWeapons();
+		}
 		
 		// remove the augmentation
 		targetItem.removeAugmentation();

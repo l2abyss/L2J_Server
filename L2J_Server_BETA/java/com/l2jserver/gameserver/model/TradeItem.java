@@ -32,7 +32,12 @@ public class TradeItem
 	private final int _elemAtkPower;
 	private final int[] _elemDefAttr =
 	{
-		0, 0, 0, 0, 0, 0
+		0,
+		0,
+		0,
+		0,
+		0,
+		0
 	};
 	
 	public TradeItem(L2ItemInstance item, long count, long price)

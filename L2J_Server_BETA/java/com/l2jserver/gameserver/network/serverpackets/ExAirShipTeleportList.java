@@ -54,6 +54,8 @@ public class ExAirShipTeleportList extends L2GameServerPacket
 			}
 		}
 		else
+		{
 			writeD(0);
+		}
 	}
 }

@@ -22,11 +22,10 @@ import com.l2jserver.gameserver.model.actor.instance.L2ControllableMobInstance;
 
 /**
  * @author littlecrow
- *
  */
 public class MobGroupTable
 {
-	private Map<Integer, MobGroup> _groupMap;
+	private final Map<Integer, MobGroup> _groupMap;
 	
 	public static final int FOLLOW_RANGE = 300;
 	public static final int RANDOM_RANGE = 300;
@@ -59,8 +58,12 @@ public class MobGroupTable
 	public MobGroup getGroupForMob(L2ControllableMobInstance mobInst)
 	{
 		for (MobGroup mobGroup : _groupMap.values())
+		{
 			if (mobGroup.isGroupMember(mobInst))
+			{
 				return mobGroup;
+			}
+		}
 		
 		return null;
 	}

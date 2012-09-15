@@ -29,8 +29,7 @@ import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * Flying airships. Very similar to Maktakien boats (see L2BoatInstance) but these do fly :P
- *
- * @author  DrHouse, reworked by DS
+ * @author DrHouse, reworked by DS
  */
 public class L2AirShipInstance extends L2Vehicle
 {
@@ -107,7 +106,9 @@ public class L2AirShipInstance extends L2Vehicle
 	{
 		final boolean result = super.moveToNextRoutePoint();
 		if (result)
+		{
 			broadcastPacket(new ExMoveToLocationAirShip(this));
+		}
 		
 		return result;
 	}
@@ -116,10 +117,12 @@ public class L2AirShipInstance extends L2Vehicle
 	public boolean addPassenger(L2PcInstance player)
 	{
 		if (!super.addPassenger(player))
+		{
 			return false;
+		}
 		
 		player.setVehicle(this);
-		player.setInVehiclePosition(new Point3D(0,0,0));
+		player.setInVehiclePosition(new Point3D(0, 0, 0));
 		player.broadcastPacket(new ExGetOnAirShip(player, this));
 		player.getKnownList().removeAllKnownObjects();
 		player.setXYZ(getX(), getY(), getZ());
@@ -140,7 +143,9 @@ public class L2AirShipInstance extends L2Vehicle
 			player.revalidateZone(true);
 		}
 		else
+		{
 			player.setXYZInvisible(loc.getX(), loc.getY(), loc.getZ());
+		}
 	}
 	
 	@Override

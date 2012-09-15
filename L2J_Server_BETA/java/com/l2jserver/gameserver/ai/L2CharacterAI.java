@@ -56,14 +56,14 @@ import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.Rnd;
 
 /**
- * This class manages AI of L2Character.<BR><BR>
- *
- * L2CharacterAI :<BR><BR>
+ * This class manages AI of L2Character.<br>
+ * L2CharacterAI :
+ * <ul>
  * <li>L2AttackableAI</li>
  * <li>L2DoorAI</li>
  * <li>L2PlayerAI</li>
- * <li>L2SummonAI</li><BR><BR>
- *
+ * <li>L2SummonAI</li>
+ * </ul>
  */
 public class L2CharacterAI extends AbstractAI
 {
@@ -86,10 +86,8 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Constructor of L2CharacterAI.<BR><BR>
-	 *
+	 * Constructor of L2CharacterAI.
 	 * @param accessor The AI accessor of the L2Character
-	 *
 	 */
 	public L2CharacterAI(L2Character.AIAccessor accessor)
 	{
@@ -104,20 +102,22 @@ public class L2CharacterAI extends AbstractAI
 	@Override
 	protected void onEvtAttacked(L2Character attacker)
 	{
-		if (attacker instanceof L2Attackable && !((L2Attackable) attacker).isCoreAIDisabled())
+		if ((attacker instanceof L2Attackable) && !((L2Attackable) attacker).isCoreAIDisabled())
+		{
 			clientStartAutoAttack();
+		}
 	}
 	
 	/**
-	 * Manage the Idle Intention : Stop Attack, Movement and Stand Up the actor.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Set the AI Intention to AI_INTENTION_IDLE </li>
-	 * <li>Init cast and attack target </li>
-	 * <li>Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast) </li>
-	 * <li>Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast) </li>
-	 * <li>Stand up the actor server side AND client side by sending Server->Client packet ChangeWaitType (broadcast) </li><BR><BR>
-	 *
+	 * Manage the Idle Intention : Stop Attack, Movement and Stand Up the actor.<br>
+	 * <B><U> Actions</U> :</B>
+	 * <ul>
+	 * <li>Set the AI Intention to AI_INTENTION_IDLE</li>
+	 * <li>Init cast and attack target</li>
+	 * <li>Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)</li>
+	 * <li>Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)</li>
+	 * <li>Stand up the actor server side AND client side by sending Server->Client packet ChangeWaitType (broadcast)</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onIntentionIdle()
@@ -138,15 +138,15 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Manage the Active Intention : Stop Attack, Movement and Launch Think Event.<BR><BR>
-	 *
-	 * <B><U> Actions</U> : <I>if the Intention is not already Active</I></B><BR><BR>
-	 * <li>Set the AI Intention to AI_INTENTION_ACTIVE </li>
-	 * <li>Init cast and attack target </li>
-	 * <li>Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast) </li>
-	 * <li>Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast) </li>
-	 * <li>Launch the Think Event </li><BR><BR>
-	 *
+	 * Manage the Active Intention : Stop Attack, Movement and Launch Think Event.<br>
+	 * <B><U> Actions</U> : <I>if the Intention is not already Active</I></B>
+	 * <ul>
+	 * <li>Set the AI Intention to AI_INTENTION_ACTIVE</li>
+	 * <li>Init cast and attack target</li>
+	 * <li>Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)</li>
+	 * <li>Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)</li>
+	 * <li>Launch the Think Event</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onIntentionActive()
@@ -170,7 +170,9 @@ public class L2CharacterAI extends AbstractAI
 			// Also enable random animations for this L2Character if allowed
 			// This is only for mobs - town npcs are handled in their constructor
 			if (_actor instanceof L2Attackable)
+			{
 				((L2Npc) _actor).startRandomAnimationTimer();
+			}
 			
 			// Launch the Think Event
 			onEvtThink();
@@ -178,11 +180,11 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Manage the Rest Intention.<BR><BR>
-	 *
-	 * <B><U> Actions</U> : </B><BR><BR>
-	 * <li>Set the AI Intention to AI_INTENTION_IDLE </li><BR><BR>
-	 *
+	 * Manage the Rest Intention.<br>
+	 * <B><U> Actions</U> : </B>
+	 * <ul>
+	 * <li>Set the AI Intention to AI_INTENTION_IDLE</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onIntentionRest()
@@ -192,19 +194,19 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Manage the Attack Intention : Stop current Attack (if necessary), Start a new Attack and Launch Think Event.<BR><BR>
-	 *
-	 * <B><U> Actions</U> : </B><BR><BR>
-	 * <li>Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast) </li>
-	 * <li>Set the Intention of this AI to AI_INTENTION_ATTACK </li>
-	 * <li>Set or change the AI attack target </li>
-	 * <li>Start the actor Auto Attack client side by sending Server->Client packet AutoAttackStart (broadcast) </li>
-	 * <li>Launch the Think Event </li><BR><BR>
-	 *
-	 *
-	 * <B><U> Overridden in</U> :</B><BR><BR>
-	 * <li>L2AttackableAI : Calculate attack timeout</li><BR><BR>
-	 *
+	 * Manage the Attack Intention : Stop current Attack (if necessary), Start a new Attack and Launch Think Event.<br>
+	 * <B><U> Actions</U> : </B>
+	 * <ul>
+	 * <li>Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)</li>
+	 * <li>Set the Intention of this AI to AI_INTENTION_ATTACK</li>
+	 * <li>Set or change the AI attack target</li>
+	 * <li>Start the actor Auto Attack client side by sending Server->Client packet AutoAttackStart (broadcast)</li>
+	 * <li>Launch the Think Event</li>
+	 * </ul>
+	 * <B><U> Overridden in</U> :</B>
+	 * <ul>
+	 * <li>L2AttackableAI : Calculate attack timeout</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onIntentionAttack(L2Character target)
@@ -245,7 +247,9 @@ public class L2CharacterAI extends AbstractAI
 				
 			}
 			else
+			{
 				clientActionFailed(); // else client freezes until cancel target
+			}
 		}
 		else
 		{
@@ -263,21 +267,21 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Manage the Cast Intention : Stop current Attack, Init the AI in order to cast and Launch Think Event.<BR><BR>
-	 *
-	 * <B><U> Actions</U> : </B><BR><BR>
-	 * <li>Set the AI cast target </li>
-	 * <li>Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast) </li>
-	 * <li>Cancel action client side by sending Server->Client packet ActionFailed to the L2PcInstance actor </li>
-	 * <li>Set the AI skill used by INTENTION_CAST </li>
-	 * <li>Set the Intention of this AI to AI_INTENTION_CAST </li>
-	 * <li>Launch the Think Event </li><BR><BR>
-	 *
+	 * Manage the Cast Intention : Stop current Attack, Init the AI in order to cast and Launch Think Event.<br>
+	 * <B><U> Actions</U> : </B>
+	 * <ul>
+	 * <li>Set the AI cast target</li>
+	 * <li>Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)</li>
+	 * <li>Cancel action client side by sending Server->Client packet ActionFailed to the L2PcInstance actor</li>
+	 * <li>Set the AI skill used by INTENTION_CAST</li>
+	 * <li>Set the Intention of this AI to AI_INTENTION_CAST</li>
+	 * <li>Launch the Think Event</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onIntentionCast(L2Skill skill, L2Object target)
 	{
-		if (getIntention() == AI_INTENTION_REST && skill.isMagic())
+		if ((getIntention() == AI_INTENTION_REST) && skill.isMagic())
 		{
 			clientActionFailed();
 			_actor.setIsCastingNow(false);
@@ -295,7 +299,7 @@ public class L2CharacterAI extends AbstractAI
 			
 			// Cancel action client side by sending Server->Client packet ActionFailed to the L2PcInstance actor
 			// no need for second ActionFailed packet, abortAttack() already sent it
-			//clientActionFailed();
+			// clientActionFailed();
 		}
 		
 		// Set the AI skill used by INTENTION_CAST
@@ -309,13 +313,13 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Manage the Move To Intention : Stop current Attack and Launch a Move to Location Task.<BR><BR>
-	 *
-	 * <B><U> Actions</U> : </B><BR><BR>
-	 * <li>Stop the actor auto-attack server side AND client side by sending Server->Client packet AutoAttackStop (broadcast) </li>
-	 * <li>Set the Intention of this AI to AI_INTENTION_MOVE_TO </li>
-	 * <li>Move the actor to Location (x,y,z) server side AND client side by sending Server->Client packet CharMoveToLocation (broadcast) </li><BR><BR>
-	 *
+	 * Manage the Move To Intention : Stop current Attack and Launch a Move to Location Task.<br>
+	 * <B><U> Actions</U> : </B>
+	 * <ul>
+	 * <li>Stop the actor auto-attack server side AND client side by sending Server->Client packet AutoAttackStop (broadcast)</li>
+	 * <li>Set the Intention of this AI to AI_INTENTION_MOVE_TO</li>
+	 * <li>Move the actor to Location (x,y,z) server side AND client side by sending Server->Client packet CharMoveToLocation (broadcast)</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onIntentionMoveTo(L2CharPosition pos)
@@ -348,13 +352,13 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Manage the Follow Intention : Stop current Attack and Launch a Follow Task.<BR><BR>
-	 *
-	 * <B><U> Actions</U> : </B><BR><BR>
-	 * <li>Stop the actor auto-attack server side AND client side by sending Server->Client packet AutoAttackStop (broadcast) </li>
-	 * <li>Set the Intention of this AI to AI_INTENTION_FOLLOW </li>
-	 * <li>Create and Launch an AI Follow Task to execute every 1s </li><BR><BR>
-	 *
+	 * Manage the Follow Intention : Stop current Attack and Launch a Follow Task.<br>
+	 * <B><U> Actions</U> : </B>
+	 * <ul>
+	 * <li>Stop the actor auto-attack server side AND client side by sending Server->Client packet AutoAttackStop (broadcast)</li>
+	 * <li>Set the Intention of this AI to AI_INTENTION_FOLLOW</li>
+	 * <li>Create and Launch an AI Follow Task to execute every 1s</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onIntentionFollow(L2Character target)
@@ -405,13 +409,13 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Manage the PickUp Intention : Set the pick up target and Launch a Move To Pawn Task (offset=20).<BR><BR>
-	 *
-	 * <B><U> Actions</U> : </B><BR><BR>
-	 * <li>Set the AI pick up target </li>
-	 * <li>Set the Intention of this AI to AI_INTENTION_PICK_UP </li>
-	 * <li>Move the actor to Pawn server side AND client side by sending Server->Client packet MoveToPawn (broadcast) </li><BR><BR>
-	 *
+	 * Manage the PickUp Intention : Set the pick up target and Launch a Move To Pawn Task (offset=20).<br>
+	 * <B><U> Actions</U> : </B>
+	 * <ul>
+	 * <li>Set the AI pick up target</li>
+	 * <li>Set the Intention of this AI to AI_INTENTION_PICK_UP</li>
+	 * <li>Move the actor to Pawn server side AND client side by sending Server->Client packet MoveToPawn (broadcast)</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onIntentionPickUp(L2Object object)
@@ -433,15 +437,17 @@ public class L2CharacterAI extends AbstractAI
 		// Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)
 		clientStopAutoAttack();
 		
-		if (object instanceof L2ItemInstance && ((L2ItemInstance)object).getLocation() != ItemLocation.VOID)
+		if ((object instanceof L2ItemInstance) && (((L2ItemInstance) object).getLocation() != ItemLocation.VOID))
+		{
 			return;
+		}
 		
 		// Set the Intention of this AbstractAI to AI_INTENTION_PICK_UP
 		changeIntention(AI_INTENTION_PICK_UP, object, null);
 		
 		// Set the AI pick up target
 		setTarget(object);
-		if (object.getX() == 0 && object.getY() == 0) // TODO: Find the drop&spawn bug
+		if ((object.getX() == 0) && (object.getY() == 0)) // TODO: Find the drop&spawn bug
 		{
 			_log.warning("Object in coords 0,0 - using a temporary fix");
 			object.setXYZ(getActor().getX(), getActor().getY(), getActor().getZ() + 5);
@@ -452,14 +458,14 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Manage the Interact Intention : Set the interact target and Launch a Move To Pawn Task (offset=60).<BR><BR>
-	 *
-	 * <B><U> Actions</U> : </B><BR><BR>
-	 * <li>Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast) </li>
-	 * <li>Set the AI interact target </li>
-	 * <li>Set the Intention of this AI to AI_INTENTION_INTERACT </li>
-	 * <li>Move the actor to Pawn server side AND client side by sending Server->Client packet MoveToPawn (broadcast) </li><BR><BR>
-	 *
+	 * Manage the Interact Intention : Set the interact target and Launch a Move To Pawn Task (offset=60).<br>
+	 * <B><U> Actions</U> : </B>
+	 * <ul>
+	 * <li>Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)</li>
+	 * <li>Set the AI interact target</li>
+	 * <li>Set the Intention of this AI to AI_INTENTION_INTERACT</li>
+	 * <li>Move the actor to Pawn server side AND client side by sending Server->Client packet MoveToPawn (broadcast)</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onIntentionInteract(L2Object object)
@@ -495,7 +501,7 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Do nothing.<BR><BR>
+	 * Do nothing.
 	 */
 	@Override
 	protected void onEvtThink()
@@ -504,7 +510,7 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Do nothing.<BR><BR>
+	 * Do nothing.
 	 */
 	@Override
 	protected void onEvtAggression(L2Character target, int aggro)
@@ -513,15 +519,15 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Launch actions corresponding to the Event Stunned then onAttacked Event.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
+	 * Launch actions corresponding to the Event Stunned then onAttacked Event.<br>
+	 * <B><U> Actions</U> :</B>
+	 * <ul>
 	 * <li>Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)</li>
 	 * <li>Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)</li>
-	 * <li>Break an attack and send Server->Client ActionFailed packet and a System Message to the L2Character </li>
-	 * <li>Break a cast and send Server->Client ActionFailed packet and a System Message to the L2Character </li>
-	 * <li>Launch actions corresponding to the Event onAttacked (only for L2AttackableAI after the stunning periode) </li><BR><BR>
-	 *
+	 * <li>Break an attack and send Server->Client ActionFailed packet and a System Message to the L2Character</li>
+	 * <li>Break a cast and send Server->Client ActionFailed packet and a System Message to the L2Character</li>
+	 * <li>Launch actions corresponding to the Event onAttacked (only for L2AttackableAI after the stunning periode)</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onEvtStunned(L2Character attacker)
@@ -529,7 +535,9 @@ public class L2CharacterAI extends AbstractAI
 		// Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)
 		_actor.broadcastPacket(new AutoAttackStop(_actor.getObjectId()));
 		if (AttackStanceTaskManager.getInstance().hasAttackStanceTask(_actor))
+		{
 			AttackStanceTaskManager.getInstance().removeAttackStanceTask(_actor);
+		}
 		
 		// Stop Server AutoAttack also
 		setAutoAttacking(false);
@@ -547,7 +555,9 @@ public class L2CharacterAI extends AbstractAI
 		// Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)
 		_actor.broadcastPacket(new AutoAttackStop(_actor.getObjectId()));
 		if (AttackStanceTaskManager.getInstance().hasAttackStanceTask(_actor))
+		{
 			AttackStanceTaskManager.getInstance().removeAttackStanceTask(_actor);
+		}
 		
 		// Stop Server AutoAttack also
 		setAutoAttacking(false);
@@ -560,14 +570,14 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Launch actions corresponding to the Event Sleeping.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
+	 * Launch actions corresponding to the Event Sleeping.<br>
+	 * <B><U> Actions</U> :</B>
+	 * <ul>
 	 * <li>Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)</li>
 	 * <li>Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)</li>
-	 * <li>Break an attack and send Server->Client ActionFailed packet and a System Message to the L2Character </li>
-	 * <li>Break a cast and send Server->Client ActionFailed packet and a System Message to the L2Character </li><BR><BR>
-	 *
+	 * <li>Break an attack and send Server->Client ActionFailed packet and a System Message to the L2Character</li>
+	 * <li>Break a cast and send Server->Client ActionFailed packet and a System Message to the L2Character</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onEvtSleeping(L2Character attacker)
@@ -575,7 +585,9 @@ public class L2CharacterAI extends AbstractAI
 		// Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)
 		_actor.broadcastPacket(new AutoAttackStop(_actor.getObjectId()));
 		if (AttackStanceTaskManager.getInstance().hasAttackStanceTask(_actor))
+		{
 			AttackStanceTaskManager.getInstance().removeAttackStanceTask(_actor);
+		}
 		
 		// stop Server AutoAttack also
 		setAutoAttacking(false);
@@ -585,20 +597,20 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Launch actions corresponding to the Event Rooted.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
+	 * Launch actions corresponding to the Event Rooted.<br>
+	 * <B><U> Actions</U> :</B>
+	 * <ul>
 	 * <li>Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)</li>
-	 * <li>Launch actions corresponding to the Event onAttacked</li><BR><BR>
-	 *
+	 * <li>Launch actions corresponding to the Event onAttacked</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onEvtRooted(L2Character attacker)
 	{
 		// Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)
-		//_actor.broadcastPacket(new AutoAttackStop(_actor.getObjectId()));
-		//if (AttackStanceTaskManager.getInstance().hasAttackStanceTask(_actor))
-		//    AttackStanceTaskManager.getInstance().removeAttackStanceTask(_actor);
+		// _actor.broadcastPacket(new AutoAttackStop(_actor.getObjectId()));
+		// if (AttackStanceTaskManager.getInstance().hasAttackStanceTask(_actor))
+		// AttackStanceTaskManager.getInstance().removeAttackStanceTask(_actor);
 		
 		// Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)
 		clientStopMoving(null);
@@ -609,12 +621,12 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Launch actions corresponding to the Event Confused.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
+	 * Launch actions corresponding to the Event Confused.<br>
+	 * <B><U> Actions</U> :</B>
+	 * <ul>
 	 * <li>Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)</li>
-	 * <li>Launch actions corresponding to the Event onAttacked</li><BR><BR>
-	 *
+	 * <li>Launch actions corresponding to the Event onAttacked</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onEvtConfused(L2Character attacker)
@@ -627,11 +639,11 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Launch actions corresponding to the Event Muted.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Break a cast and send Server->Client ActionFailed packet and a System Message to the L2Character </li><BR><BR>
-	 *
+	 * Launch actions corresponding to the Event Muted.<br>
+	 * <B><U> Actions</U> :</B>
+	 * <ul>
+	 * <li>Break a cast and send Server->Client ActionFailed packet and a System Message to the L2Character</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onEvtMuted(L2Character attacker)
@@ -641,7 +653,7 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Do nothing.<BR><BR>
+	 * Do nothing.
 	 */
 	@Override
 	protected void onEvtEvaded(L2Character attacker)
@@ -650,11 +662,11 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Launch actions corresponding to the Event ReadyToAct.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Launch actions corresponding to the Event Think</li><BR><BR>
-	 *
+	 * Launch actions corresponding to the Event ReadyToAct.<br>
+	 * <B><U> Actions</U> :</B>
+	 * <ul>
+	 * <li>Launch actions corresponding to the Event Think</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onEvtReadyToAct()
@@ -664,7 +676,7 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Do nothing.<BR><BR>
+	 * Do nothing.
 	 */
 	@Override
 	protected void onEvtUserCmd(Object arg0, Object arg1)
@@ -673,12 +685,12 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Launch actions corresponding to the Event Arrived.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
+	 * Launch actions corresponding to the Event Arrived.<br>
+	 * <B><U> Actions</U> :</B>
+	 * <ul>
 	 * <li>If the Intention was AI_INTENTION_MOVE_TO, set the Intention to AI_INTENTION_ACTIVE</li>
-	 * <li>Launch actions corresponding to the Event Think</li><BR><BR>
-	 *
+	 * <li>Launch actions corresponding to the Event Think</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onEvtArrived()
@@ -686,7 +698,9 @@ public class L2CharacterAI extends AbstractAI
 		_accessor.getActor().revalidateZone(true);
 		
 		if (_accessor.getActor().moveToNextRoutePoint())
+		{
 			return;
+		}
 		
 		if (_accessor.getActor() instanceof L2Attackable)
 		{
@@ -694,24 +708,28 @@ public class L2CharacterAI extends AbstractAI
 		}
 		clientStoppedMoving();
 		
-		//Walking Manager support
+		// Walking Manager support
 		if (_actor instanceof L2Npc)
+		{
 			WalkingManager.getInstance().onArrived((L2Npc) _actor);
+		}
 		
 		// If the Intention was AI_INTENTION_MOVE_TO, set the Intention to AI_INTENTION_ACTIVE
 		if (getIntention() == AI_INTENTION_MOVE_TO)
+		{
 			setIntention(AI_INTENTION_ACTIVE);
+		}
 		
 		// Launch actions corresponding to the Event Think
 		onEvtThink();
 	}
 	
 	/**
-	 * Launch actions corresponding to the Event ArrivedRevalidate.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Launch actions corresponding to the Event Think</li><BR><BR>
-	 *
+	 * Launch actions corresponding to the Event ArrivedRevalidate.<br>
+	 * <B><U> Actions</U> :</B>
+	 * <ul>
+	 * <li>Launch actions corresponding to the Event Think</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onEvtArrivedRevalidate()
@@ -721,59 +739,57 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Launch actions corresponding to the Event ArrivedBlocked.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
+	 * Launch actions corresponding to the Event ArrivedBlocked.<br>
+	 * <B><U> Actions</U> :</B>
+	 * <ul>
 	 * <li>Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)</li>
 	 * <li>If the Intention was AI_INTENTION_MOVE_TO, set the Intention to AI_INTENTION_ACTIVE</li>
-	 * <li>Launch actions corresponding to the Event Think</li><BR><BR>
-	 *
+	 * <li>Launch actions corresponding to the Event Think</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onEvtArrivedBlocked(L2CharPosition blocked_at_pos)
 	{
 		// If the Intention was AI_INTENTION_MOVE_TO, set the Intention to AI_INTENTION_ACTIVE
-		if (getIntention() == AI_INTENTION_MOVE_TO || getIntention() == AI_INTENTION_CAST)
+		if ((getIntention() == AI_INTENTION_MOVE_TO) || (getIntention() == AI_INTENTION_CAST))
+		{
 			setIntention(AI_INTENTION_ACTIVE);
+		}
 		
 		// Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)
 		clientStopMoving(blocked_at_pos);
-		
-		/*if (Config.ACTIVATE_POSITION_RECORDER && Universe.getInstance().shouldLog(_accessor.getActor().getObjectId()))
-		{
-			if (!_accessor.getActor().isFlying())
-				Universe.getInstance().registerObstacle(blocked_at_pos.x, blocked_at_pos.y, blocked_at_pos.z);
-			if (_accessor.getActor() instanceof L2PcInstance)
-				((L2PcInstance) _accessor.getActor()).explore();
-		}*/
 		
 		// Launch actions corresponding to the Event Think
 		onEvtThink();
 	}
 	
 	/**
-	 * Launch actions corresponding to the Event ForgetObject.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>If the object was targeted  and the Intention was AI_INTENTION_INTERACT or AI_INTENTION_PICK_UP, set the Intention to AI_INTENTION_ACTIVE</li>
+	 * Launch actions corresponding to the Event ForgetObject.<br>
+	 * <B><U> Actions</U> :</B>
+	 * <ul>
+	 * <li>If the object was targeted and the Intention was AI_INTENTION_INTERACT or AI_INTENTION_PICK_UP, set the Intention to AI_INTENTION_ACTIVE</li>
 	 * <li>If the object was targeted to attack, stop the auto-attack, cancel target and set the Intention to AI_INTENTION_ACTIVE</li>
 	 * <li>If the object was targeted to cast, cancel target and set the Intention to AI_INTENTION_ACTIVE</li>
 	 * <li>If the object was targeted to follow, stop the movement, cancel AI Follow Task and set the Intention to AI_INTENTION_ACTIVE</li>
-	 * <li>If the targeted object was the actor , cancel AI target, stop AI Follow Task, stop the movement and set the Intention to AI_INTENTION_IDLE </li><BR><BR>
-	 *
+	 * <li>If the targeted object was the actor , cancel AI target, stop AI Follow Task, stop the movement and set the Intention to AI_INTENTION_IDLE</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onEvtForgetObject(L2Object object)
 	{
-		// If the object was targeted  and the Intention was AI_INTENTION_INTERACT or AI_INTENTION_PICK_UP, set the Intention to AI_INTENTION_ACTIVE
+		// If the object was targeted and the Intention was AI_INTENTION_INTERACT or AI_INTENTION_PICK_UP, set the Intention to AI_INTENTION_ACTIVE
 		if (getTarget() == object)
 		{
 			setTarget(null);
 			
 			if (getIntention() == AI_INTENTION_INTERACT)
+			{
 				setIntention(AI_INTENTION_ACTIVE);
+			}
 			else if (getIntention() == AI_INTENTION_PICK_UP)
+			{
 				setIntention(AI_INTENTION_ACTIVE);
+			}
 		}
 		
 		// Check if the object was targeted to attack
@@ -829,12 +845,12 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Launch actions corresponding to the Event Cancel.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
+	 * Launch actions corresponding to the Event Cancel.<br>
+	 * <B><U> Actions</U> :</B>
+	 * <ul>
 	 * <li>Stop an AI Follow Task</li>
-	 * <li>Launch actions corresponding to the Event Think</li><BR><BR>
-	 *
+	 * <li>Launch actions corresponding to the Event Think</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onEvtCancel()
@@ -845,19 +861,21 @@ public class L2CharacterAI extends AbstractAI
 		stopFollow();
 		
 		if (!AttackStanceTaskManager.getInstance().hasAttackStanceTask(_actor))
+		{
 			_actor.broadcastPacket(new AutoAttackStop(_actor.getObjectId()));
+		}
 		
 		// Launch actions corresponding to the Event Think
 		onEvtThink();
 	}
 	
 	/**
-	 * Launch actions corresponding to the Event Dead.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
+	 * Launch actions corresponding to the Event Dead.<br>
+	 * <B><U> Actions</U> :</B>
+	 * <ul>
 	 * <li>Stop an AI Follow Task</li>
-	 * <li>Kill the actor client side by sending Server->Client packet AutoAttackStop, StopMove/StopRotation, Die (broadcast)</li><BR><BR>
-	 *
+	 * <li>Kill the actor client side by sending Server->Client packet AutoAttackStop, StopMove/StopRotation, Die (broadcast)</li>
+	 * </ul>
 	 */
 	@Override
 	protected void onEvtDead()
@@ -869,15 +887,17 @@ public class L2CharacterAI extends AbstractAI
 		clientNotifyDead();
 		
 		if (!(_actor instanceof L2Playable))
+		{
 			_actor.setWalking();
+		}
 	}
 	
 	/**
-	 * Launch actions corresponding to the Event Fake Death.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
+	 * Launch actions corresponding to the Event Fake Death.<br>
+	 * <B><U> Actions</U> :</B>
+	 * <ul>
 	 * <li>Stop an AI Follow Task</li>
-	 *
+	 * </ul>
 	 */
 	@Override
 	protected void onEvtFakeDeath()
@@ -896,7 +916,7 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Do nothing.<BR><BR>
+	 * Do nothing.
 	 */
 	@Override
 	protected void onEvtFinishCasting()
@@ -913,15 +933,21 @@ public class L2CharacterAI extends AbstractAI
 		}
 		
 		if (offset < 0)
+		{
 			return false; // skill radius -1
+		}
 		
 		if (!_actor.isInsideRadius(worldPosition.getX(), worldPosition.getY(), offset + _actor.getTemplate().getCollisionRadius(), false))
 		{
 			if (_actor.isMovementDisabled())
+			{
 				return true;
+			}
 			
 			if (!_actor.isRunning() && !(this instanceof L2PlayerAI) && !(this instanceof L2SummonAI))
+			{
 				_actor.setRunning();
+			}
 			
 			stopFollow();
 			
@@ -931,7 +957,7 @@ public class L2CharacterAI extends AbstractAI
 			double dx = worldPosition.getX() - x;
 			double dy = worldPosition.getY() - y;
 			
-			double dist = Math.sqrt(dx * dx + dy * dy);
+			double dist = Math.sqrt((dx * dx) + (dy * dy));
 			
 			double sin = dy / dist;
 			double cos = dx / dist;
@@ -946,27 +972,28 @@ public class L2CharacterAI extends AbstractAI
 		}
 		
 		if (getFollowTarget() != null)
+		{
 			stopFollow();
+		}
 		
 		return false;
 	}
 	
 	/**
-	 * Manage the Move to Pawn action in function of the distance and of the Interact area.<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
+	 * Manage the Move to Pawn action in function of the distance and of the Interact area.<br>
+	 * <B><U> Actions</U> :</B>
+	 * <ul>
 	 * <li>Get the distance between the current position of the L2Character and the target (x,y)</li>
 	 * <li>If the distance > offset+20, move the actor (by running) to Pawn server side AND client side by sending Server->Client packet MoveToPawn (broadcast)</li>
-	 * <li>If the distance <= offset+20, Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)</li><BR><BR>
-	 *
-	 * <B><U> Example of use </U> :</B><BR><BR>
-	 * <li> L2PLayerAI, L2SummonAI</li><BR><BR>
-	 *
+	 * <li>If the distance <= offset+20, Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)</li>
+	 * </ul>
+	 * <B><U> Example of use </U> :</B>
+	 * <ul>
+	 * <li>L2PLayerAI, L2SummonAI</li>
+	 * </ul>
 	 * @param target The targeted L2Object
 	 * @param offset The Interact area radius
-	 *
 	 * @return True if a movement must be done
-	 *
 	 */
 	protected boolean maybeMoveToPawn(L2Object target, int offset)
 	{
@@ -977,11 +1004,15 @@ public class L2CharacterAI extends AbstractAI
 			return false;
 		}
 		if (offset < 0)
+		{
 			return false; // skill radius -1
+		}
 		
 		offset += _actor.getTemplate().getCollisionRadius();
 		if (target instanceof L2Character)
+		{
 			offset += ((L2Character) target).getTemplate().getCollisionRadius();
+		}
 		
 		if (!_actor.isInsideRadius(target, offset, false, false))
 		{
@@ -991,7 +1022,9 @@ public class L2CharacterAI extends AbstractAI
 				
 				// allow larger hit range when the target is moving (check is run only once per second)
 				if (!_actor.isInsideRadius(target, offset + 100, false, false))
+				{
 					return true;
+				}
 				stopFollow();
 				return false;
 			}
@@ -1001,16 +1034,17 @@ public class L2CharacterAI extends AbstractAI
 				// If player is trying attack target but he cannot move to attack target
 				// change his intention to idle
 				if (_actor.getAI().getIntention() == CtrlIntention.AI_INTENTION_ATTACK)
+				{
 					_actor.getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+				}
 				
 				return true;
 			}
 			
 			// while flying there is no move to cast
-			if (_actor.getAI().getIntention() == CtrlIntention.AI_INTENTION_CAST &&
-					_actor instanceof L2PcInstance && ((L2PcInstance)_actor).isTransformed())
+			if ((_actor.getAI().getIntention() == CtrlIntention.AI_INTENTION_CAST) && (_actor instanceof L2PcInstance) && ((L2PcInstance) _actor).isTransformed())
 			{
-				if (!((L2PcInstance)_actor).getTransformation().canStartFollowToCast())
+				if (!((L2PcInstance) _actor).getTransformation().canStartFollowToCast())
 				{
 					_actor.sendPacket(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED);
 					_actor.sendPacket(ActionFailed.STATIC_PACKET);
@@ -1020,15 +1054,21 @@ public class L2CharacterAI extends AbstractAI
 			
 			// If not running, set the L2Character movement type to run and send Server->Client packet ChangeMoveType to all others L2PcInstance
 			if (!_actor.isRunning() && !(this instanceof L2PlayerAI) && !(this instanceof L2SummonAI))
+			{
 				_actor.setRunning();
+			}
 			
 			stopFollow();
 			if ((target instanceof L2Character) && !(target instanceof L2DoorInstance))
 			{
 				if (((L2Character) target).isMoving())
+				{
 					offset -= 100;
+				}
 				if (offset < 5)
+				{
 					offset = 5;
+				}
 				
 				startFollow((L2Character) target, offset);
 			}
@@ -1041,7 +1081,9 @@ public class L2CharacterAI extends AbstractAI
 		}
 		
 		if (getFollowTarget() != null)
+		{
 			stopFollow();
+		}
 		
 		// Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)
 		// clientStopMoving(null);
@@ -1049,27 +1091,26 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Modify current Intention and actions if the target is lost or dead.<BR><BR>
-	 *
-	 * <B><U> Actions</U> : <I>If the target is lost or dead</I></B><BR><BR>
+	 * Modify current Intention and actions if the target is lost or dead.<br>
+	 * <B><U> Actions</U> : <I>If the target is lost or dead</I></B>
+	 * <ul>
 	 * <li>Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)</li>
 	 * <li>Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)</li>
-	 * <li>Set the Intention of this AbstractAI to AI_INTENTION_ACTIVE</li><BR><BR>
-	 *
-	 * <B><U> Example of use </U> :</B><BR><BR>
-	 * <li> L2PLayerAI, L2SummonAI</li><BR><BR>
-	 *
+	 * <li>Set the Intention of this AbstractAI to AI_INTENTION_ACTIVE</li>
+	 * </ul>
+	 * <B><U> Example of use </U> :</B>
+	 * <ul>
+	 * <li>L2PLayerAI, L2SummonAI</li>
+	 * </ul>
 	 * @param target The targeted L2Object
-	 *
 	 * @return True if the target is lost or dead (false if fakedeath)
-	 *
 	 */
 	protected boolean checkTargetLostOrDead(L2Character target)
 	{
-		if (target == null || target.isAlikeDead())
+		if ((target == null) || target.isAlikeDead())
 		{
-			//check if player is fakedeath
-			if (target instanceof L2PcInstance && ((L2PcInstance)target).isFakeDeath())
+			// check if player is fakedeath
+			if ((target instanceof L2PcInstance) && ((L2PcInstance) target).isFakeDeath())
 			{
 				target.stopFakeDeath(true);
 				return false;
@@ -1083,27 +1124,26 @@ public class L2CharacterAI extends AbstractAI
 	}
 	
 	/**
-	 * Modify current Intention and actions if the target is lost.<BR><BR>
-	 *
-	 * <B><U> Actions</U> : <I>If the target is lost</I></B><BR><BR>
+	 * Modify current Intention and actions if the target is lost.<br>
+	 * <B><U> Actions</U> : <I>If the target is lost</I></B>
+	 * <ul>
 	 * <li>Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)</li>
 	 * <li>Stop the actor movement server side AND client side by sending Server->Client packet StopMove/StopRotation (broadcast)</li>
-	 * <li>Set the Intention of this AbstractAI to AI_INTENTION_ACTIVE</li><BR><BR>
-	 *
-	 * <B><U> Example of use </U> :</B><BR><BR>
-	 * <li> L2PLayerAI, L2SummonAI</li><BR><BR>
-	 *
+	 * <li>Set the Intention of this AbstractAI to AI_INTENTION_ACTIVE</li>
+	 * </ul>
+	 * <B><U> Example of use </U> :</B>
+	 * <ul>
+	 * <li>L2PLayerAI, L2SummonAI</li>
+	 * </ul>
 	 * @param target The targeted L2Object
-	 *
 	 * @return True if the target is lost
-	 *
 	 */
 	protected boolean checkTargetLost(L2Object target)
 	{
 		// check if player is fakedeath
 		if (target instanceof L2PcInstance)
 		{
-			L2PcInstance target2 = (L2PcInstance) target; //convert object to chara
+			L2PcInstance target2 = (L2PcInstance) target; // convert object to chara
 			
 			if (target2.isFakeDeath())
 			{
@@ -1117,7 +1157,7 @@ public class L2CharacterAI extends AbstractAI
 			setIntention(AI_INTENTION_ACTIVE);
 			return true;
 		}
-		if (_actor != null && _skill != null && _skill.isOffensive() && _skill.getSkillRadius() > 0 && Config.GEODATA > 0 && !GeoData.getInstance().canSeeTarget(_actor, target))
+		if ((_actor != null) && (_skill != null) && _skill.isOffensive() && (_skill.getSkillRadius() > 0) && (Config.GEODATA > 0) && !GeoData.getInstance().canSeeTarget(_actor, target))
 		{
 			setIntention(AI_INTENTION_ACTIVE);
 			return true;
@@ -1140,7 +1180,7 @@ public class L2CharacterAI extends AbstractAI
 		public int lastDebuffTick = 0;
 		public List<L2Skill> cancelSkills = new FastList<>();
 		public List<L2Skill> healSkills = new FastList<>();
-		//public List<L2Skill> trickSkills = new FastList<>();
+		// public List<L2Skill> trickSkills = new FastList<>();
 		public List<L2Skill> generalDisablers = new FastList<>();
 		public List<L2Skill> sleepSkills = new FastList<>();
 		public List<L2Skill> rootSkills = new FastList<>();
@@ -1199,7 +1239,9 @@ public class L2CharacterAI extends AbstractAI
 			for (L2Skill sk : _actor.getAllSkills())
 			{
 				if (sk.isPassive())
+				{
 					continue;
+				}
 				int castRange = sk.getCastRange();
 				boolean hasLongRangeDamageSkill = false;
 				switch (sk.getSkillType())
@@ -1245,7 +1287,7 @@ public class L2CharacterAI extends AbstractAI
 						break;
 					case FEAR: // could be used as an alternative for healing?
 					case CONFUSION:
-						//  trickSkills.add(sk);
+						// trickSkills.add(sk);
 					case DEBUFF:
 						debuffSkills.add(sk);
 						break;
@@ -1269,10 +1311,14 @@ public class L2CharacterAI extends AbstractAI
 				{
 					hasLongRangeSkills = true;
 					if (hasLongRangeDamageSkill)
+					{
 						hasLongRangeDamageSkills = true;
+					}
 				}
 				if (castRange > maxCastRange)
+				{
 					maxCastRange = castRange;
+				}
 				
 			}
 			// Because of missing skills, some mages/balanced cannot play like mages
@@ -1314,55 +1360,74 @@ public class L2CharacterAI extends AbstractAI
 		public void update(L2Character target)
 		{
 			// update status once in 4 seconds
-			if (target == character && Rnd.nextInt(100) > 25)
+			if ((target == character) && (Rnd.nextInt(100) > 25))
+			{
 				return;
+			}
 			character = target;
 			if (target == null)
+			{
 				return;
+			}
 			isMage = false;
 			isBalanced = false;
 			isArcher = false;
 			isFighter = false;
 			isCanceled = false;
 			
-			if (target.getMAtk(null, null) > 1.5 * target.getPAtk(null))
+			if (target.getMAtk(null, null) > (1.5 * target.getPAtk(null)))
+			{
 				isMage = true;
-			else if (target.getPAtk(null) * 0.8 < target.getMAtk(null, null) || target.getMAtk(null, null) * 0.8 > target.getPAtk(null))
+			}
+			else if (((target.getPAtk(null) * 0.8) < target.getMAtk(null, null)) || ((target.getMAtk(null, null) * 0.8) > target.getPAtk(null)))
 			{
 				isBalanced = true;
 			}
 			else
 			{
 				L2Weapon weapon = target.getActiveWeaponItem();
-				if (weapon != null && (weapon.getItemType() == L2WeaponType.BOW || weapon.getItemType() == L2WeaponType.CROSSBOW))
+				if ((weapon != null) && ((weapon.getItemType() == L2WeaponType.BOW) || (weapon.getItemType() == L2WeaponType.CROSSBOW)))
+				{
 					isArcher = true;
+				}
 				else
+				{
 					isFighter = true;
+				}
 			}
-			if (target.getRunSpeed() < _actor.getRunSpeed() - 3)
+			if (target.getRunSpeed() < (_actor.getRunSpeed() - 3))
+			{
 				isSlower = true;
+			}
 			else
+			{
 				isSlower = false;
-			if (target.getMDef(null, null) * 1.2 > _actor.getMAtk(null, null))
+			}
+			if ((target.getMDef(null, null) * 1.2) > _actor.getMAtk(null, null))
+			{
 				isMagicResistant = true;
+			}
 			else
+			{
 				isMagicResistant = false;
+			}
 			if (target.getBuffCount() < 4)
+			{
 				isCanceled = true;
+			}
 		}
 	}
 	
 	public boolean canAura(L2Skill sk)
 	{
-		if(sk.getTargetType() == L2TargetType.TARGET_AURA
-				|| sk.getTargetType() == L2TargetType.TARGET_BEHIND_AURA
-				|| sk.getTargetType() == L2TargetType.TARGET_FRONT_AURA
-				|| (sk.getTargetType() == L2TargetType.TARGET_AURA_CORPSE_MOB))
+		if ((sk.getTargetType() == L2TargetType.TARGET_AURA) || (sk.getTargetType() == L2TargetType.TARGET_BEHIND_AURA) || (sk.getTargetType() == L2TargetType.TARGET_FRONT_AURA) || (sk.getTargetType() == L2TargetType.TARGET_AURA_CORPSE_MOB))
 		{
-			for(L2Object target:_actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
+			for (L2Object target : _actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
 			{
 				if (target == getAttackTarget())
+				{
 					return true;
+				}
 			}
 		}
 		return false;
@@ -1370,142 +1435,161 @@ public class L2CharacterAI extends AbstractAI
 	
 	public boolean canAOE(L2Skill sk)
 	{
-		if(sk.getSkillType() != L2SkillType.NEGATE || sk.getSkillType() != L2SkillType.CANCEL)
+		if ((sk.getSkillType() != L2SkillType.NEGATE) || (sk.getSkillType() != L2SkillType.CANCEL))
 		{
-			if(sk.getTargetType() == L2TargetType.TARGET_AURA
-					|| sk.getTargetType() == L2TargetType.TARGET_BEHIND_AURA
-					|| sk.getTargetType() == L2TargetType.TARGET_FRONT_AURA
-					|| (sk.getTargetType() == L2TargetType.TARGET_AURA_CORPSE_MOB))
+			if ((sk.getTargetType() == L2TargetType.TARGET_AURA) || (sk.getTargetType() == L2TargetType.TARGET_BEHIND_AURA) || (sk.getTargetType() == L2TargetType.TARGET_FRONT_AURA) || (sk.getTargetType() == L2TargetType.TARGET_AURA_CORPSE_MOB))
 			{
 				boolean cancast = true;
-				for(L2Character target:_actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
+				for (L2Character target : _actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
 				{
-					if(!GeoData.getInstance().canSeeTarget(_actor,target))
-						continue;
-					if(target instanceof L2Attackable)
+					if (!GeoData.getInstance().canSeeTarget(_actor, target))
 					{
-						L2Npc targets = ((L2Npc)target);
-						L2Npc actors = ((L2Npc)_actor);
+						continue;
+					}
+					if (target instanceof L2Attackable)
+					{
+						L2Npc targets = ((L2Npc) target);
+						L2Npc actors = ((L2Npc) _actor);
 						
-						if(targets.getEnemyClan() == null || actors.getClan() == null || !targets.getEnemyClan().equals(actors.getClan()) || (actors.getClan() == null && actors.getIsChaos() == 0))
+						if ((targets.getEnemyClan() == null) || (actors.getClan() == null) || !targets.getEnemyClan().equals(actors.getClan()) || ((actors.getClan() == null) && (actors.getIsChaos() == 0)))
+						{
 							continue;
+						}
 					}
 					L2Effect[] effects = target.getAllEffects();
-					for (int i = 0; effects != null && i < effects.length; i++)
+					for (int i = 0; (effects != null) && (i < effects.length); i++)
 					{
 						L2Effect effect = effects[i];
 						if (effect.getSkill() == sk)
 						{
-							cancast=false;
+							cancast = false;
 							break;
 						}
 					}
 				}
-				if(cancast)
+				if (cancast)
+				{
 					return true;
+				}
 			}
-			else if(sk.getTargetType() == L2TargetType.TARGET_AREA
-					|| sk.getTargetType() == L2TargetType.TARGET_BEHIND_AREA
-					|| sk.getTargetType() == L2TargetType.TARGET_FRONT_AREA)
+			else if ((sk.getTargetType() == L2TargetType.TARGET_AREA) || (sk.getTargetType() == L2TargetType.TARGET_BEHIND_AREA) || (sk.getTargetType() == L2TargetType.TARGET_FRONT_AREA))
 			{
 				boolean cancast = true;
-				for(L2Character target: getAttackTarget().getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
+				for (L2Character target : getAttackTarget().getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
 				{
-					if(!GeoData.getInstance().canSeeTarget(_actor,target) || target == null)
-						continue;
-					if(target instanceof L2Attackable)
+					if (!GeoData.getInstance().canSeeTarget(_actor, target) || (target == null))
 					{
-						L2Npc targets = ((L2Npc)target);
-						L2Npc actors = ((L2Npc)_actor);
-						if(targets.getEnemyClan() == null || actors.getClan() == null || !targets.getEnemyClan().equals(actors.getClan()) || (actors.getClan() == null && actors.getIsChaos() == 0))
+						continue;
+					}
+					if (target instanceof L2Attackable)
+					{
+						L2Npc targets = ((L2Npc) target);
+						L2Npc actors = ((L2Npc) _actor);
+						if ((targets.getEnemyClan() == null) || (actors.getClan() == null) || !targets.getEnemyClan().equals(actors.getClan()) || ((actors.getClan() == null) && (actors.getIsChaos() == 0)))
+						{
 							continue;
+						}
 					}
 					L2Effect[] effects = target.getAllEffects();
-					if (effects.length >0)
+					if (effects.length > 0)
+					{
 						cancast = true;
+					}
 				}
-				if(cancast)
+				if (cancast)
+				{
 					return true;
+				}
 			}
 		}
 		else
 		{
-			if(sk.getTargetType() == L2TargetType.TARGET_AURA
-					|| sk.getTargetType() == L2TargetType.TARGET_BEHIND_AURA
-					|| sk.getTargetType() == L2TargetType.TARGET_FRONT_AURA
-					|| (sk.getTargetType() == L2TargetType.TARGET_AURA_CORPSE_MOB))
+			if ((sk.getTargetType() == L2TargetType.TARGET_AURA) || (sk.getTargetType() == L2TargetType.TARGET_BEHIND_AURA) || (sk.getTargetType() == L2TargetType.TARGET_FRONT_AURA) || (sk.getTargetType() == L2TargetType.TARGET_AURA_CORPSE_MOB))
 			{
 				boolean cancast = false;
-				for(L2Character target:_actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
+				for (L2Character target : _actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
 				{
-					if(!GeoData.getInstance().canSeeTarget(_actor,target))
-						continue;
-					if(target instanceof L2Attackable)
+					if (!GeoData.getInstance().canSeeTarget(_actor, target))
 					{
-						L2Npc targets = ((L2Npc)target);
-						L2Npc actors = ((L2Npc)_actor);
-						if(targets.getEnemyClan() == null || actors.getClan() == null || !targets.getEnemyClan().equals(actors.getClan()) || (actors.getClan() == null && actors.getIsChaos() == 0))
+						continue;
+					}
+					if (target instanceof L2Attackable)
+					{
+						L2Npc targets = ((L2Npc) target);
+						L2Npc actors = ((L2Npc) _actor);
+						if ((targets.getEnemyClan() == null) || (actors.getClan() == null) || !targets.getEnemyClan().equals(actors.getClan()) || ((actors.getClan() == null) && (actors.getIsChaos() == 0)))
+						{
 							continue;
+						}
 					}
 					L2Effect[] effects = target.getAllEffects();
-					if (effects.length >0)
+					if (effects.length > 0)
+					{
 						cancast = true;
+					}
 				}
-				if(cancast)
+				if (cancast)
+				{
 					return true;
+				}
 			}
-			else if(sk.getTargetType() == L2TargetType.TARGET_AREA
-					|| sk.getTargetType() == L2TargetType.TARGET_BEHIND_AREA
-					|| sk.getTargetType() == L2TargetType.TARGET_FRONT_AREA)
+			else if ((sk.getTargetType() == L2TargetType.TARGET_AREA) || (sk.getTargetType() == L2TargetType.TARGET_BEHIND_AREA) || (sk.getTargetType() == L2TargetType.TARGET_FRONT_AREA))
 			{
 				boolean cancast = true;
-				for(L2Character target: getAttackTarget().getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
+				for (L2Character target : getAttackTarget().getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
 				{
-					if(!GeoData.getInstance().canSeeTarget(_actor,target))
-						continue;
-					if(target instanceof L2Attackable)
+					if (!GeoData.getInstance().canSeeTarget(_actor, target))
 					{
-						L2Npc targets = ((L2Npc)target);
-						L2Npc actors = ((L2Npc)_actor);
-						if(targets.getEnemyClan() == null || actors.getClan() == null || !targets.getEnemyClan().equals(actors.getClan()) || (actors.getClan() == null && actors.getIsChaos() == 0))
+						continue;
+					}
+					if (target instanceof L2Attackable)
+					{
+						L2Npc targets = ((L2Npc) target);
+						L2Npc actors = ((L2Npc) _actor);
+						if ((targets.getEnemyClan() == null) || (actors.getClan() == null) || !targets.getEnemyClan().equals(actors.getClan()) || ((actors.getClan() == null) && (actors.getIsChaos() == 0)))
+						{
 							continue;
+						}
 					}
 					L2Effect[] effects = target.getAllEffects();
-					for (int i = 0; effects != null && i < effects.length; i++)
+					for (int i = 0; (effects != null) && (i < effects.length); i++)
 					{
 						L2Effect effect = effects[i];
 						if (effect.getSkill() == sk)
 						{
-							cancast=false;
+							cancast = false;
 							break;
 						}
 					}
 				}
-				if(cancast)
+				if (cancast)
+				{
 					return true;
+				}
 			}
 		}
 		return false;
 	}
+	
 	public boolean canParty(L2Skill sk)
 	{
-		if(sk.getTargetType() == L2TargetType.TARGET_PARTY)
+		if (sk.getTargetType() == L2TargetType.TARGET_PARTY)
 		{
 			int count = 0;
 			int ccount = 0;
-			for(L2Character target:_actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
+			for (L2Character target : _actor.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius()))
 			{
-				if(!(target instanceof L2Attackable) || !GeoData.getInstance().canSeeTarget(_actor,target))
+				if (!(target instanceof L2Attackable) || !GeoData.getInstance().canSeeTarget(_actor, target))
 				{
 					continue;
 				}
-				L2Npc targets = ((L2Npc)target);
-				L2Npc actors = ((L2Npc)_actor);
-				if(actors.getFactionId() != null && targets.getFactionId().equals(actors.getFactionId()))
+				L2Npc targets = ((L2Npc) target);
+				L2Npc actors = ((L2Npc) _actor);
+				if ((actors.getFactionId() != null) && targets.getFactionId().equals(actors.getFactionId()))
 				{
 					count++;
 					L2Effect[] effects = target.getAllEffects();
-					for (int i = 0; effects != null && i < effects.length; i++)
+					for (int i = 0; (effects != null) && (i < effects.length); i++)
 					{
 						
 						L2Effect effect = effects[i];
@@ -1517,18 +1601,17 @@ public class L2CharacterAI extends AbstractAI
 					}
 				}
 			}
-			if(ccount < count)
+			if (ccount < count)
+			{
 				return true;
+			}
 			
 		}
 		return false;
 	}
+	
 	public boolean isParty(L2Skill sk)
 	{
-		if(sk.getTargetType() == L2TargetType.TARGET_PARTY)
-		{
-			return true;
-		}
-		return false;
+		return (sk.getTargetType() == L2TargetType.TARGET_PARTY);
 	}
 }

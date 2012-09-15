@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 /**
  * Used to Store data sent to Client for Character.<br>
  * Selection screen.
- *
  * @version $Revision: 1.2.2.2.2.4 $ $Date: 2005/03/27 15:29:33 $
  */
 public class CharSelectInfoPackage
@@ -45,7 +44,7 @@ public class CharSelectInfoPackage
 	private double _currentHp = 0;
 	private int _maxMp = 0;
 	private double _currentMp = 0;
-	private int[][] _paperdoll;
+	private final int[][] _paperdoll;
 	private int _karma = 0;
 	private int _pkKills = 0;
 	private int _pvpKills = 0;
@@ -302,7 +301,9 @@ public class CharSelectInfoPackage
 	public int getEnchantEffect()
 	{
 		if (_paperdoll[Inventory.PAPERDOLL_RHAND][2] > 0)
+		{
 			return _paperdoll[Inventory.PAPERDOLL_RHAND][2];
+		}
 		return _paperdoll[Inventory.PAPERDOLL_RHAND][2];
 	}
 	

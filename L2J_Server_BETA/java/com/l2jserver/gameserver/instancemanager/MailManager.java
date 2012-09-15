@@ -38,13 +38,13 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.L2FastMap;
 
 /**
- * @author Migi, DS<br>
+ * @author Migi, DS
  */
 public class MailManager
 {
 	private static Logger _log = Logger.getLogger(MailManager.class.getName());
 	
-	private Map<Integer, Message> _messages = new L2FastMap<>(true);
+	private final Map<Integer, Message> _messages = new L2FastMap<>(true);
 	
 	protected MailManager()
 	{
@@ -56,7 +56,7 @@ public class MailManager
 		int count = 0;
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM messages ORDER BY expiration");			
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM messages ORDER BY expiration");
 			ResultSet rset1 = statement.executeQuery();
 			while (rset1.next())
 			{
@@ -71,9 +71,13 @@ public class MailManager
 				long expiration = msg.getExpiration();
 				
 				if (expiration < System.currentTimeMillis())
+				{
 					ThreadPoolManager.getInstance().scheduleGeneral(new MessageDeletionTask(msgId), 10000);
+				}
 				else
+				{
 					ThreadPoolManager.getInstance().scheduleGeneral(new MessageDeletionTask(msgId), expiration - System.currentTimeMillis());
+				}
 			}
 			rset1.close();
 			statement.close();
@@ -100,10 +104,10 @@ public class MailManager
 		final int objectId = player.getObjectId();
 		for (Message msg : getMessages())
 		{
-			if (msg != null
-					&& msg.getReceiverId() == objectId
-					&& msg.isUnread())
+			if ((msg != null) && (msg.getReceiverId() == objectId) && msg.isUnread())
+			{
 				return true;
+			}
 		}
 		return false;
 	}
@@ -113,10 +117,10 @@ public class MailManager
 		int size = 0;
 		for (Message msg : getMessages())
 		{
-			if (msg != null
-					&& msg.getReceiverId() == objectId
-					&& !msg.isDeletedByReceiver())
+			if ((msg != null) && (msg.getReceiverId() == objectId) && !msg.isDeletedByReceiver())
+			{
 				size++;
+			}
 		}
 		return size;
 	}
@@ -126,10 +130,10 @@ public class MailManager
 		int size = 0;
 		for (Message msg : getMessages())
 		{
-			if (msg != null
-					&& msg.getSenderId() == objectId
-					&& !msg.isDeletedBySender())
+			if ((msg != null) && (msg.getSenderId() == objectId) && !msg.isDeletedBySender())
+			{
 				size++;
+			}
 		}
 		return size;
 	}
@@ -139,10 +143,10 @@ public class MailManager
 		List<Message> inbox = new FastList<>();
 		for (Message msg : getMessages())
 		{
-			if (msg != null
-					&& msg.getReceiverId() == objectId
-					&& !msg.isDeletedByReceiver())
+			if ((msg != null) && (msg.getReceiverId() == objectId) && !msg.isDeletedByReceiver())
+			{
 				inbox.add(msg);
+			}
 		}
 		return inbox;
 	}
@@ -152,10 +156,10 @@ public class MailManager
 		List<Message> outbox = new FastList<>();
 		for (Message msg : getMessages())
 		{
-			if (msg != null
-					&& msg.getSenderId() == objectId
-					&& !msg.isDeletedBySender())
+			if ((msg != null) && (msg.getSenderId() == objectId) && !msg.isDeletedBySender())
+			{
 				outbox.add(msg);
+			}
 		}
 		return outbox;
 	}
@@ -176,7 +180,9 @@ public class MailManager
 		
 		final L2PcInstance receiver = L2World.getInstance().getPlayer(msg.getReceiverId());
 		if (receiver != null)
+		{
 			receiver.sendPacket(ExNoticePostArrived.valueOf(true));
+		}
 		
 		ThreadPoolManager.getInstance().scheduleGeneral(new MessageDeletionTask(msg.getId()), msg.getExpiration() - System.currentTimeMillis());
 	}
@@ -197,7 +203,9 @@ public class MailManager
 		{
 			final Message msg = getMessage(_msgId);
 			if (msg == null)
+			{
 				return;
+			}
 			
 			if (msg.hasAttachments())
 			{
@@ -210,7 +218,9 @@ public class MailManager
 						sender.sendPacket(SystemMessageId.MAIL_RETURNED);
 					}
 					else
+					{
 						msg.getAttachments().returnToWh(null);
+					}
 					
 					msg.getAttachments().deleteMe();
 					msg.removeAttachments();
@@ -219,7 +229,7 @@ public class MailManager
 					if (receiver != null)
 					{
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.MAIL_RETURNED);
-						//sm.addString(msg.getReceiverName());
+						// sm.addString(msg.getReceiverName());
 						receiver.sendPacket(sm);
 					}
 				}

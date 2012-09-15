@@ -140,7 +140,7 @@ public abstract class ItemContainer
 	{
 		for (L2ItemInstance item : _items)
 		{
-			if ((item != null) && item.getObjectId() == objectId)
+			if ((item != null) && (item.getObjectId() == objectId))
 			{
 				return item;
 			}

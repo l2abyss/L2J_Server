@@ -22,7 +22,7 @@ public class VehiclePathPoint
 	public int moveSpeed;
 	public int rotationSpeed;
 	
-	public VehiclePathPoint(int _x,int _y,int _z)
+	public VehiclePathPoint(int _x, int _y, int _z)
 	{
 		x = _x;
 		y = _y;
@@ -31,7 +31,7 @@ public class VehiclePathPoint
 		rotationSpeed = 4000;
 	}
 	
-	public VehiclePathPoint(int _x,int _y,int _z,int _m,int _r)
+	public VehiclePathPoint(int _x, int _y, int _z, int _m, int _r)
 	{
 		x = _x;
 		y = _y;

@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExGetBossRecord;
 
 /**
  * Format: (ch) d
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public class RequestGetBossRecord extends L2GameClientPacket
 {
@@ -39,12 +39,14 @@ public class RequestGetBossRecord extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
-		if(activeChar == null)
+		if (activeChar == null)
+		{
 			return;
+		}
 		
 		if (_bossId != 0)
 		{
-			_log.info("C5: RequestGetBossRecord: d: "+_bossId+" ActiveChar: "+activeChar); // should be always 0, log it if isnt 0 for furture research
+			_log.info("C5: RequestGetBossRecord: d: " + _bossId + " ActiveChar: " + activeChar); // should be always 0, log it if isnt 0 for furture research
 		}
 		
 		int points = RaidBossPointsManager.getInstance().getPointsByOwnerId(activeChar.getObjectId());

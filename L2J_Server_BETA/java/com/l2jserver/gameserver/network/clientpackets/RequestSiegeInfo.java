@@ -15,9 +15,8 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 /**
- * Format: (c)
- * (no data, trigger)
- * @author  -Wooden-
+ * Format: (c) (no data, trigger)
+ * @author -Wooden-
  */
 public class RequestSiegeInfo extends L2GameClientPacket
 {

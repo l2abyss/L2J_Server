@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.network.serverpackets.CharInfo;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 
-
 public abstract class L2Decoy extends L2Character
 {
 	private final L2PcInstance _owner;
@@ -55,7 +54,9 @@ public abstract class L2Decoy extends L2Character
 		for (L2PcInstance player : plrs)
 		{
 			if (player != null)
+			{
 				player.sendPacket(new CharInfo(this));
+			}
 		}
 	}
 	
@@ -124,7 +125,9 @@ public abstract class L2Decoy extends L2Character
 		if (isVisible() && !isDead())
 		{
 			if (getWorldRegion() != null)
+			{
 				getWorldRegion().removeFromZones(this);
+			}
 			owner.setDecoy(null);
 			decayMe();
 			getKnownList().removeAllKnownObjects();
@@ -158,13 +161,17 @@ public abstract class L2Decoy extends L2Character
 	public void sendPacket(L2GameServerPacket mov)
 	{
 		if (getOwner() != null)
+		{
 			getOwner().sendPacket(mov);
+		}
 	}
 	
 	@Override
 	public void sendPacket(SystemMessageId id)
 	{
 		if (getOwner() != null)
+		{
 			getOwner().sendPacket(id);
+		}
 	}
 }

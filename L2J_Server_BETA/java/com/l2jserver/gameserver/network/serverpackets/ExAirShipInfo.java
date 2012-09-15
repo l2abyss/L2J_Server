@@ -17,7 +17,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
 
 public class ExAirShipInfo extends L2GameServerPacket
-{	
+{
 	// store some parameters, because they can be changed during broadcast
 	private final L2AirShipInstance _ship;
 	private final int _x, _y, _z, _heading, _moveSpeed, _rotationSpeed, _captain, _helm;
@@ -29,7 +29,7 @@ public class ExAirShipInfo extends L2GameServerPacket
 		_y = ship.getY();
 		_z = ship.getZ();
 		_heading = ship.getHeading();
-		_moveSpeed = (int)ship.getStat().getMoveSpeed();
+		_moveSpeed = (int) ship.getStat().getMoveSpeed();
 		_rotationSpeed = ship.getStat().getRotationSpeed();
 		_captain = ship.getCaptainId();
 		_helm = ship.getHelmObjectId();

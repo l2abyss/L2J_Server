@@ -41,11 +41,11 @@ public final class Attack extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		_objectId  = readD();
-		_originX  = readD();
-		_originY  = readD();
-		_originZ  = readD();
-		_attackId  = readC(); 	 // 0 for simple click   1 for shift-click
+		_objectId = readD();
+		_originX = readD();
+		_originY = readD();
+		_originZ = readD();
+		_attackId = readC(); // 0 for simple click 1 for shift-click
 	}
 	
 	@Override
@@ -81,7 +81,7 @@ public final class Attack extends L2GameClientPacket
 		
 		// Players can't attack objects in the other instances
 		// except from multiverse
-		else if (target.getInstanceId() != activeChar.getInstanceId() && activeChar.getInstanceId() != -1)
+		else if ((target.getInstanceId() != activeChar.getInstanceId()) && (activeChar.getInstanceId() != -1))
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -100,7 +100,7 @@ public final class Attack extends L2GameClientPacket
 		}
 		else
 		{
-			if ((target.getObjectId() != activeChar.getObjectId()) && activeChar.getPrivateStoreType() == 0 && activeChar.getActiveRequester() == null)
+			if ((target.getObjectId() != activeChar.getObjectId()) && (activeChar.getPrivateStoreType() == 0) && (activeChar.getActiveRequester() == null))
 			{
 				target.onForcedAttack(activeChar);
 			}

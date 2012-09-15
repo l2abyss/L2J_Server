@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.model;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.3 $ $Date: 2004/10/23 22:12:44 $
  */
 public class L2Macro
@@ -51,12 +50,12 @@ public class L2Macro
 	}
 	
 	/**
-	 * @param pId 
-	 * @param pIcon 
-	 * @param pName 
-	 * @param pDescr 
-	 * @param pAcronym 
-	 * @param pCommands 
+	 * @param pId
+	 * @param pIcon
+	 * @param pName
+	 * @param pDescr
+	 * @param pAcronym
+	 * @param pCommands
 	 */
 	public L2Macro(int pId, int pIcon, String pName, String pDescr, String pAcronym, L2MacroCmd[] pCommands)
 	{

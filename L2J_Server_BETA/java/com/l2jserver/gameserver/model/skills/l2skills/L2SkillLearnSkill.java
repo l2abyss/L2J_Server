@@ -34,7 +34,9 @@ public class L2SkillLearnSkill extends L2Skill
 		int[] ar2 = new int[ar.length];
 		
 		for (int i = 0; i < ar.length; i++)
+		{
 			ar2[i] = Integer.parseInt(ar[i]);
+		}
 		
 		_learnSkillId = ar2;
 		
@@ -42,10 +44,14 @@ public class L2SkillLearnSkill extends L2Skill
 		ar2 = new int[_learnSkillId.length];
 		
 		for (int i = 0; i < _learnSkillId.length; i++)
+		{
 			ar2[i] = 1;
+		}
 		
 		for (int i = 0; i < ar.length; i++)
+		{
 			ar2[i] = Integer.parseInt(ar[i]);
+		}
 		
 		_learnSkillLvl = ar2;
 	}
@@ -54,18 +60,22 @@ public class L2SkillLearnSkill extends L2Skill
 	public void useSkill(L2Character activeChar, L2Object[] targets)
 	{
 		if (!activeChar.isPlayer())
+		{
 			return;
+		}
 		
 		final L2PcInstance player = activeChar.getActingPlayer();
 		L2Skill newSkill;
 		
 		for (int i = 0; i < _learnSkillId.length; i++)
 		{
-			if (player.getSkillLevel(_learnSkillId[i]) < _learnSkillLvl[i] && _learnSkillId[i] != 0)
+			if ((player.getSkillLevel(_learnSkillId[i]) < _learnSkillLvl[i]) && (_learnSkillId[i] != 0))
 			{
 				newSkill = SkillTable.getInstance().getInfo(_learnSkillId[i], _learnSkillLvl[i]);
 				if (newSkill != null)
+				{
 					player.addSkill(newSkill, true);
+				}
 			}
 		}
 	}

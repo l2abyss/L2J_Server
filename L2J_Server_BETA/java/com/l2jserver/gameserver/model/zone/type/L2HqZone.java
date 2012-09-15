@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.model.zone.ZoneId;
 
 /**
  * Zone where 'Build Headquarters' is allowed.
- * 
  * @author Gnacik
  */
 public class L2HqZone extends L2ZoneType
@@ -39,7 +38,7 @@ public class L2HqZone extends L2ZoneType
 		}
 		else if ("fortId".equals(name))
 		{
-			// TODO			
+			// TODO
 		}
 		else if ("clanHallId".equals(name))
 		{

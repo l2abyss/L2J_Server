@@ -40,7 +40,6 @@ public class ConditionLogicNot extends Condition
 	/**
 	 * Sets the listener.
 	 * @param listener the new listener
-	 * @see com.l2jserver.gameserver.model.conditions.Condition#setListener(com.l2jserver.gameserver.model.conditions.ConditionListener)
 	 */
 	@Override
 	void setListener(ConditionListener listener)
@@ -60,7 +59,6 @@ public class ConditionLogicNot extends Condition
 	 * Test impl.
 	 * @param env the env
 	 * @return true, if successful
-	 * @see com.l2jserver.gameserver.model.conditions.Condition#testImpl(com.l2jserver.gameserver.model.stats.Env)
 	 */
 	@Override
 	public boolean testImpl(Env env)

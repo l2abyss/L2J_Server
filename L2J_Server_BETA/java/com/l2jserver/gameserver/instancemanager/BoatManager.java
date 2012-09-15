@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.procedure.TObjectProcedure;
-
 import java.util.Map;
 
 import javolution.util.FastMap;
@@ -30,10 +28,12 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
+import gnu.trove.procedure.TObjectProcedure;
+
 public class BoatManager
 {
-	private Map<Integer, L2BoatInstance> _boats = new FastMap<>();
-	private boolean[] _docksBusy = new boolean[3];
+	private final Map<Integer, L2BoatInstance> _boats = new FastMap<>();
+	private final boolean[] _docksBusy = new boolean[3];
 	
 	public static final int TALKING_ISLAND = 1;
 	public static final int GLUDIN_HARBOR = 2;
@@ -47,13 +47,17 @@ public class BoatManager
 	protected BoatManager()
 	{
 		for (int i = 0; i < _docksBusy.length; i++)
+		{
 			_docksBusy[i] = false;
+		}
 	}
 	
 	public L2BoatInstance getNewBoat(int boatId, int x, int y, int z, int heading)
 	{
 		if (!Config.ALLOW_BOAT)
+		{
 			return null;
+		}
 		
 		StatsSet npcDat = new StatsSet();
 		npcDat.set("npcId", boatId);
@@ -128,7 +132,8 @@ public class BoatManager
 			_docksBusy[h] = value;
 		}
 		catch (ArrayIndexOutOfBoundsException e)
-		{}
+		{
+		}
 	}
 	
 	/**
@@ -150,9 +155,9 @@ public class BoatManager
 	
 	/**
 	 * Broadcast one packet in both path points
-	 * @param point1 
-	 * @param point2 
-	 * @param packet 
+	 * @param point1
+	 * @param point2
+	 * @param packet
 	 */
 	public void broadcastPacket(VehiclePathPoint point1, VehiclePathPoint point2, L2GameServerPacket packet)
 	{
@@ -162,9 +167,9 @@ public class BoatManager
 	
 	/**
 	 * Broadcast several packets in both path points
-	 * @param point1 
-	 * @param point2 
-	 * @param packets 
+	 * @param point1
+	 * @param point2
+	 * @param packets
 	 */
 	public void broadcastPackets(VehiclePathPoint point1, VehiclePathPoint point2, L2GameServerPacket... packets)
 	{
@@ -176,7 +181,7 @@ public class BoatManager
 		VehiclePathPoint _point1, _point2;
 		L2GameServerPacket[] _packets;
 		
-		protected ForEachPlayerBroadcastPackets(VehiclePathPoint point1, VehiclePathPoint point2, L2GameServerPacket ... packets)
+		protected ForEachPlayerBroadcastPackets(VehiclePathPoint point1, VehiclePathPoint point2, L2GameServerPacket... packets)
 		{
 			_point1 = point1;
 			_point2 = point2;
@@ -190,19 +195,23 @@ public class BoatManager
 			{
 				double dx = (double) player.getX() - _point1.x;
 				double dy = (double) player.getY() - _point1.y;
-				if (Math.sqrt(dx * dx + dy * dy) < Config.BOAT_BROADCAST_RADIUS)
+				if (Math.sqrt((dx * dx) + (dy * dy)) < Config.BOAT_BROADCAST_RADIUS)
 				{
 					for (L2GameServerPacket p : _packets)
+					{
 						player.sendPacket(p);
+					}
 				}
 				else
 				{
 					dx = (double) player.getX() - _point2.x;
 					dy = (double) player.getY() - _point2.y;
-					if (Math.sqrt(dx * dx + dy * dy) < Config.BOAT_BROADCAST_RADIUS)
+					if (Math.sqrt((dx * dx) + (dy * dy)) < Config.BOAT_BROADCAST_RADIUS)
 					{
 						for (L2GameServerPacket p : _packets)
+						{
 							player.sendPacket(p);
+						}
 					}
 				}
 			}

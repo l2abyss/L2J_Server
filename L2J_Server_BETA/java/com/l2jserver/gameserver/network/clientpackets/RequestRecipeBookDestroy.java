@@ -26,8 +26,7 @@ public final class RequestRecipeBookDestroy extends L2GameClientPacket
 	private int _recipeID;
 	
 	/**
-	 * Unknown Packet:ad
-	 * 0000: ad 02 00 00 00
+	 * Unknown Packet:ad 0000: ad 02 00 00 00
 	 */
 	@Override
 	protected void readImpl()
@@ -40,21 +39,31 @@ public final class RequestRecipeBookDestroy extends L2GameClientPacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("RecipeDestroy"))
+		{
 			return;
+		}
 		
 		final L2RecipeList rp = RecipeData.getInstance().getRecipeList(_recipeID);
 		if (rp == null)
+		{
 			return;
+		}
 		activeChar.unregisterRecipeList(_recipeID);
 		
-		RecipeBookItemList response = new RecipeBookItemList(rp.isDwarvenRecipe(),activeChar.getMaxMp());
+		RecipeBookItemList response = new RecipeBookItemList(rp.isDwarvenRecipe(), activeChar.getMaxMp());
 		if (rp.isDwarvenRecipe())
+		{
 			response.addRecipes(activeChar.getDwarvenRecipeBook());
+		}
 		else
+		{
 			response.addRecipes(activeChar.getCommonRecipeBook());
+		}
 		
 		activeChar.sendPacket(response);
 	}

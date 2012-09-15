@@ -66,14 +66,16 @@ public class MagicSkillLaunched extends L2GameServerPacket
 		writeD(_skillId);
 		writeD(_skillLevel);
 		writeD(_numberOfTargets); // also failed or not?
-		if (_singleTargetId != 0 || _numberOfTargets == 0)
+		if ((_singleTargetId != 0) || (_numberOfTargets == 0))
 		{
 			writeD(_singleTargetId);
 		}
 		else
+		{
 			for (L2Object target : _targets)
 			{
 				writeD(target.getObjectId());
 			}
+		}
 	}
 }

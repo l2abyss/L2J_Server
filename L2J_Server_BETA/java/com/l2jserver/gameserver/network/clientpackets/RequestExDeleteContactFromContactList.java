@@ -18,9 +18,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * Format: (ch)S
- * S: Character Name
- * 
+ * Format: (ch)S S: Character Name
  * @author UnAfraid & mrTJO
  */
 public class RequestExDeleteContactFromContactList extends L2GameClientPacket
@@ -38,14 +36,20 @@ public class RequestExDeleteContactFromContactList extends L2GameClientPacket
 	protected void runImpl()
 	{
 		if (!Config.ALLOW_MAIL)
+		{
 			return;
+		}
 		
 		if (_name == null)
+		{
 			return;
+		}
 		
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		activeChar.getContactList().remove(_name);
 	}
@@ -54,5 +58,5 @@ public class RequestExDeleteContactFromContactList extends L2GameClientPacket
 	public String getType()
 	{
 		return _C__D0_85_REQUESTEXDELETECONTACTFROMCONTACTLIST;
-	}	
+	}
 }

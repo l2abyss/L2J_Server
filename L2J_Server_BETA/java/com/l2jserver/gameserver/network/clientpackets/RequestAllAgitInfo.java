@@ -18,7 +18,7 @@ import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.serverpackets.ExShowAgitInfo;
 
 /**
- * @author  KenM
+ * @author KenM
  */
 public class RequestAllAgitInfo extends L2GameClientPacket
 {

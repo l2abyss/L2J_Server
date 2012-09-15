@@ -30,15 +30,11 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * @author UnAfraid & mrTJO
- * TODO: System Messages:
- * 	ADD:
-		3223: The previous name is being registered. Please try again later.
- *	END OF ADD
- *	DEL
- * 		3219: $s1 was successfully deleted from your Contact List.
-		3217: The name is not currently registered.
-	END OF DEL
+ * TODO: System messages:<br>
+ * ADD: 3223: The previous name is being registered. Please try again later.<br>
+ * DEL 3219: $s1 was successfully deleted from your Contact List.<br>
+ * DEL 3217: The name is not currently registered.
+ * @author UnAfraid, mrTJO
  */
 public class L2ContactList
 {
@@ -49,7 +45,7 @@ public class L2ContactList
 	private final String QUERY_ADD = "INSERT INTO character_contacts (charId, contactId) VALUES (?, ?)";
 	private final String QUERY_REMOVE = "DELETE FROM character_contacts WHERE charId = ? and contactId = ?";
 	private final String QUERY_LOAD = "SELECT contactId FROM character_contacts WHERE charId = ?";
-		
+	
 	public L2ContactList(L2PcInstance player)
 	{
 		activeChar = player;
@@ -73,8 +69,10 @@ public class L2ContactList
 				{
 					contactId = rset.getInt(1);
 					contactName = CharNameTable.getInstance().getNameById(contactId);
-					if (contactName == null || contactName.equals(activeChar.getName()) || contactId == activeChar.getObjectId())
+					if ((contactName == null) || contactName.equals(activeChar.getName()) || (contactId == activeChar.getObjectId()))
+					{
 						continue;
+					}
 					
 					_contacts.add(contactName);
 				}
@@ -127,7 +125,7 @@ public class L2ContactList
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(QUERY_ADD))
-		{	
+		{
 			statement.setInt(1, activeChar.getObjectId());
 			statement.setInt(2, contactId);
 			statement.execute();
@@ -154,10 +152,9 @@ public class L2ContactList
 			activeChar.sendPacket(SystemMessageId.NAME_NOT_REGISTERED_ON_CONTACT_LIST);
 			return;
 		}
-		
 		else if (contactId < 1)
 		{
-			//TODO: Message?
+			// TODO: Message?
 			return;
 		}
 		

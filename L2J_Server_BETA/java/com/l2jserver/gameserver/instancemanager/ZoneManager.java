@@ -86,9 +86,9 @@ public class ZoneManager extends DocumentParser
 		// Clear zones
 		for (L2WorldRegion[] worldRegion : worldRegions)
 		{
-			for (int y = 0; y < worldRegion.length; y++)
+			for (L2WorldRegion element : worldRegion)
 			{
-				worldRegion[y].getZones().clear();
+				element.getZones().clear();
 				count++;
 			}
 		}

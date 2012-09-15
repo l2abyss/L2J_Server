@@ -2876,7 +2876,7 @@ public class Quest extends ManagedScript
 			{
 				if (item.getItemId() == itemId)
 				{
-					if (count + item.getCount() > Long.MAX_VALUE)
+					if ((count + item.getCount()) > Long.MAX_VALUE)
 					{
 						return Long.MAX_VALUE;
 					}

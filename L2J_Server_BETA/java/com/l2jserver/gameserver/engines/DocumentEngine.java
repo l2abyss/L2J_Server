@@ -48,10 +48,14 @@ public class DocumentEngine
 	{
 		hashFiles("data/stats/items", _itemFiles);
 		if (Config.CUSTOM_ITEMS_LOAD)
+		{
 			hashFiles("data/stats/items/custom", _itemFiles);
+		}
 		hashFiles("data/stats/skills", _skillFiles);
 		if (Config.CUSTOM_SKILLS_LOAD)
+		{
 			hashFiles("data/stats/skills/custom", _skillFiles);
+		}
 	}
 	
 	private void hashFiles(String dirname, List<File> hash)

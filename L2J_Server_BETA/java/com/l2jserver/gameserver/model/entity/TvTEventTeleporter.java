@@ -53,9 +53,7 @@ public class TvTEventTeleporter implements Runnable
 	 * 2. Remove all effects<br>
 	 * 3. Revive and full heal the player<br>
 	 * 4. Teleport the player<br>
-	 * 5. Broadcast status and user info<br>
-	 * <br>
-	 * @see java.lang.Runnable#run()
+	 * 5. Broadcast status and user info
 	 */
 	@Override
 	public void run()

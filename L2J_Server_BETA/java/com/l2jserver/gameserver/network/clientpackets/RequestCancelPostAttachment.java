@@ -50,19 +50,24 @@ public final class RequestCancelPostAttachment extends L2GameClientPacket
 	public void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null || !Config.ALLOW_MAIL || !Config.ALLOW_ATTACHMENTS)
+		if ((activeChar == null) || !Config.ALLOW_MAIL || !Config.ALLOW_ATTACHMENTS)
+		{
 			return;
+		}
 		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("cancelpost"))
+		{
 			return;
+		}
 		
 		Message msg = MailManager.getInstance().getMessage(_msgId);
 		if (msg == null)
+		{
 			return;
+		}
 		if (msg.getSenderId() != activeChar.getObjectId())
 		{
-			Util.handleIllegalPlayerAction(activeChar,
-					"Player "+activeChar.getName()+" tried to cancel not own post!", Config.DEFAULT_PUNISH);
+			Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to cancel not own post!", Config.DEFAULT_PUNISH);
 			return;
 		}
 		
@@ -97,7 +102,7 @@ public final class RequestCancelPostAttachment extends L2GameClientPacket
 		}
 		
 		final ItemContainer attachments = msg.getAttachments();
-		if (attachments == null || attachments.getSize() == 0)
+		if ((attachments == null) || (attachments.getSize() == 0))
 		{
 			activeChar.sendPacket(SystemMessageId.YOU_CANT_CANCEL_RECEIVED_MAIL);
 			return;
@@ -109,34 +114,37 @@ public final class RequestCancelPostAttachment extends L2GameClientPacket
 		for (L2ItemInstance item : attachments.getItems())
 		{
 			if (item == null)
+			{
 				continue;
+			}
 			
 			if (item.getOwnerId() != activeChar.getObjectId())
 			{
-				Util.handleIllegalPlayerAction(activeChar,
-						"Player "+activeChar.getName()+" tried to get not own item from cancelled attachment!", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to get not own item from cancelled attachment!", Config.DEFAULT_PUNISH);
 				return;
 			}
 			
 			if (!item.getLocation().equals(ItemLocation.MAIL))
 			{
-				Util.handleIllegalPlayerAction(activeChar,
-						"Player "+activeChar.getName()+" tried to get items not from mail !", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to get items not from mail !", Config.DEFAULT_PUNISH);
 				return;
 			}
 			
 			if (item.getLocationSlot() != msg.getId())
 			{
-				Util.handleIllegalPlayerAction(activeChar,
-						"Player "+activeChar.getName()+" tried to get items from different attachment!", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to get items from different attachment!", Config.DEFAULT_PUNISH);
 				return;
 			}
 			
 			weight += item.getCount() * item.getItem().getWeight();
 			if (!item.isStackable())
+			{
 				slots += item.getCount();
+			}
 			else if (activeChar.getInventory().getItemByItemId(item.getItemId()) == null)
+			{
 				slots++;
+			}
 		}
 		
 		if (!activeChar.getInventory().validateCapacity(slots))
@@ -156,19 +164,27 @@ public final class RequestCancelPostAttachment extends L2GameClientPacket
 		for (L2ItemInstance item : attachments.getItems())
 		{
 			if (item == null)
+			{
 				continue;
+			}
 			
 			long count = item.getCount();
 			final L2ItemInstance newItem = attachments.transferItem(attachments.getName(), item.getObjectId(), count, activeChar.getInventory(), activeChar, null);
 			if (newItem == null)
+			{
 				return;
+			}
 			
 			if (playerIU != null)
 			{
 				if (newItem.getCount() > count)
+				{
 					playerIU.addModifiedItem(newItem);
+				}
 				else
+				{
 					playerIU.addNewItem(newItem);
+				}
 			}
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_ACQUIRED_S2_S1);
 			sm.addItemName(item.getItemId());
@@ -180,9 +196,13 @@ public final class RequestCancelPostAttachment extends L2GameClientPacket
 		
 		// Send updated item list to the player
 		if (playerIU != null)
+		{
 			activeChar.sendPacket(playerIU);
+		}
 		else
+		{
 			activeChar.sendPacket(new ItemList(activeChar, false));
+		}
 		
 		// Update current load status on player
 		StatusUpdate su = new StatusUpdate(activeChar);

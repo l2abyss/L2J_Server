@@ -30,7 +30,7 @@ public final class L2FlyTerrainObjectInstance extends L2Npc
 	@Override
 	public void onSpawn()
 	{
-		this.setIsFlying(true);
+		setIsFlying(true);
 		super.onSpawn();
 	}
 	
@@ -44,8 +44,12 @@ public final class L2FlyTerrainObjectInstance extends L2Npc
 	public void onActionShift(L2PcInstance player)
 	{
 		if (player.isGM())
+		{
 			super.onActionShift(player);
+		}
 		else
+		{
 			player.sendPacket(ActionFailed.STATIC_PACKET);
+		}
 	}
 }

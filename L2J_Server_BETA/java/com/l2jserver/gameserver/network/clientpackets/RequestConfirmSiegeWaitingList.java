@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.network.serverpackets.SiegeDefenderList;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.3.4.2 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class RequestConfirmSiegeWaitingList extends L2GameClientPacket
@@ -46,37 +45,58 @@ public final class RequestConfirmSiegeWaitingList extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
-		if(activeChar == null) return;
+		if (activeChar == null)
+		{
+			return;
+		}
 		
 		// Check if the player has a clan
-		if (activeChar.getClan() == null) return;
+		if (activeChar.getClan() == null)
+		{
+			return;
+		}
 		
 		Castle castle = CastleManager.getInstance().getCastleById(_castleId);
-		if (castle == null) return;
+		if (castle == null)
+		{
+			return;
+		}
 		
 		// Check if leader of the clan who owns the castle?
-		if ((castle.getOwnerId() != activeChar.getClanId()) || (!activeChar.isClanLeader())) return;
+		if ((castle.getOwnerId() != activeChar.getClanId()) || (!activeChar.isClanLeader()))
+		{
+			return;
+		}
 		
 		L2Clan clan = ClanTable.getInstance().getClan(_clanId);
-		if (clan == null) return;
+		if (clan == null)
+		{
+			return;
+		}
 		
 		if (!castle.getSiege().getIsRegistrationOver())
 		{
 			if (_approved == 1)
 			{
 				if (castle.getSiege().checkIsDefenderWaiting(clan))
+				{
 					castle.getSiege().approveSiegeDefenderClan(_clanId);
+				}
 				else
+				{
 					return;
+				}
 			}
 			else
 			{
 				if ((castle.getSiege().checkIsDefenderWaiting(clan)) || (castle.getSiege().checkIsDefender(clan)))
+				{
 					castle.getSiege().removeSiegeClan(_clanId);
+				}
 			}
 		}
 		
-		//Update the defender list
+		// Update the defender list
 		activeChar.sendPacket(new SiegeDefenderList(castle));
 		
 	}

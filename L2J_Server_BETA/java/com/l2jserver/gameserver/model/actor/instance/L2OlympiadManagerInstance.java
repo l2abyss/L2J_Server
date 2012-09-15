@@ -20,12 +20,11 @@ import com.l2jserver.gameserver.model.olympiad.Olympiad;
 
 /**
  * Olympiad Npc's Instance
- *
  * @author godson
  */
 public class L2OlympiadManagerInstance extends L2Npc
 {
-	public L2OlympiadManagerInstance (int objectId, L2NpcTemplate template)
+	public L2OlympiadManagerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2OlympiadManagerInstance);
@@ -36,10 +35,12 @@ public class L2OlympiadManagerInstance extends L2Npc
 		String filename = Olympiad.OLYMPIAD_HTML_PATH;
 		
 		filename += "noble_desc" + val;
-		filename += (suffix != null)? suffix + ".htm" : ".htm";
+		filename += (suffix != null) ? suffix + ".htm" : ".htm";
 		
 		if (filename.equals(Olympiad.OLYMPIAD_HTML_PATH + "noble_desc0.htm"))
+		{
 			filename = Olympiad.OLYMPIAD_HTML_PATH + "noble_main.htm";
+		}
 		
 		showChatWindow(player, filename);
 	}

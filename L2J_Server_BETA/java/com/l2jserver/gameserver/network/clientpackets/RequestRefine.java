@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 
 /**
  * Format:(ch) dddd
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public final class RequestRefine extends AbstractRefinePacket
 {
@@ -49,33 +49,43 @@ public final class RequestRefine extends AbstractRefinePacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		L2ItemInstance targetItem = activeChar.getInventory().getItemByObjectId(_targetItemObjId);
 		if (targetItem == null)
+		{
 			return;
+		}
 		L2ItemInstance refinerItem = activeChar.getInventory().getItemByObjectId(_refinerItemObjId);
 		if (refinerItem == null)
+		{
 			return;
+		}
 		L2ItemInstance gemStoneItem = activeChar.getInventory().getItemByObjectId(_gemStoneItemObjId);
 		if (gemStoneItem == null)
+		{
 			return;
+		}
 		
 		if (!isValid(activeChar, targetItem, refinerItem, gemStoneItem))
 		{
-			activeChar.sendPacket(new ExVariationResult(0,0,0));
+			activeChar.sendPacket(new ExVariationResult(0, 0, 0));
 			activeChar.sendPacket(SystemMessageId.AUGMENTATION_FAILED_DUE_TO_INAPPROPRIATE_CONDITIONS);
 			return;
 		}
 		
 		final LifeStone ls = getLifeStone(refinerItem.getItemId());
 		if (ls == null)
+		{
 			return;
+		}
 		
 		final int lifeStoneLevel = ls.getLevel();
 		final int lifeStoneGrade = ls.getGrade();
 		if (_gemStoneCount != getGemStoneCount(targetItem.getItem().getItemGrade(), lifeStoneGrade))
 		{
-			activeChar.sendPacket(new ExVariationResult(0,0,0));
+			activeChar.sendPacket(new ExVariationResult(0, 0, 0));
 			activeChar.sendPacket(SystemMessageId.AUGMENTATION_FAILED_DUE_TO_INAPPROPRIATE_CONDITIONS);
 			return;
 		}
@@ -86,25 +96,31 @@ public final class RequestRefine extends AbstractRefinePacket
 			L2ItemInstance[] unequiped = activeChar.getInventory().unEquipItemInSlotAndRecord(targetItem.getLocationSlot());
 			InventoryUpdate iu = new InventoryUpdate();
 			for (L2ItemInstance itm : unequiped)
+			{
 				iu.addModifiedItem(itm);
+			}
 			activeChar.sendPacket(iu);
 			activeChar.broadcastUserInfo();
 		}
 		
 		// consume the life stone
 		if (!activeChar.destroyItem("RequestRefine", refinerItem, 1, null, false))
+		{
 			return;
+		}
 		
 		// consume the gemstones
 		if (!activeChar.destroyItem("RequestRefine", gemStoneItem, _gemStoneCount, null, false))
+		{
 			return;
+		}
 		
 		final L2Augmentation aug = AugmentationData.getInstance().generateRandomAugmentation(lifeStoneLevel, lifeStoneGrade, targetItem.getItem().getBodyPart());
 		targetItem.setAugmentation(aug);
 		
 		final int stat12 = 0x0000FFFF & aug.getAugmentationId();
 		final int stat34 = aug.getAugmentationId() >> 16;
-		activeChar.sendPacket(new ExVariationResult(stat12,stat34,1));
+		activeChar.sendPacket(new ExVariationResult(stat12, stat34, 1));
 		
 		InventoryUpdate iu = new InventoryUpdate();
 		iu.addModifiedItem(targetItem);

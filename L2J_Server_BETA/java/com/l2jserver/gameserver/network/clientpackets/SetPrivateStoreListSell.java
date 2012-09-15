@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.util.Util;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.2.2.1.2.5 $ $Date: 2005/03/27 15:29:30 $
  */
 public class SetPrivateStoreListSell extends L2GameClientPacket
@@ -47,7 +46,7 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 	{
 		_packageSale = (readD() == 1);
 		int count = readD();
-		if (count < 1 || count > Config.MAX_ITEM_IN_PACKET || count * BATCH_LENGTH != _buf.remaining())
+		if ((count < 1) || (count > Config.MAX_ITEM_IN_PACKET) || ((count * BATCH_LENGTH) != _buf.remaining()))
 		{
 			return;
 		}
@@ -59,7 +58,7 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 			long cnt = readQ();
 			long price = readQ();
 			
-			if (itemId < 1 || cnt < 1 || price < 0)
+			if ((itemId < 1) || (cnt < 1) || (price < 0))
 			{
 				_items = null;
 				return;
@@ -73,7 +72,9 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 	{
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
+		{
 			return;
+		}
 		
 		if (_items == null)
 		{
@@ -136,16 +137,24 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 		
 		player.sitDown();
 		if (_packageSale)
+		{
 			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_PACKAGE_SELL);
+		}
 		else
+		{
 			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_SELL);
+		}
 		
 		player.broadcastUserInfo();
 		
 		if (_packageSale)
+		{
 			player.broadcastPacket(new ExPrivateStoreSetWholeMsg(player));
+		}
 		else
+		{
 			player.broadcastPacket(new PrivateStoreMsgSell(player));
+		}
 	}
 	
 	private static class Item
@@ -164,7 +173,9 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 		public boolean addToTradeList(TradeList list)
 		{
 			if ((MAX_ADENA / _count) < _price)
+			{
 				return false;
+			}
 			
 			list.addItem(_itemId, _count, _price);
 			return true;

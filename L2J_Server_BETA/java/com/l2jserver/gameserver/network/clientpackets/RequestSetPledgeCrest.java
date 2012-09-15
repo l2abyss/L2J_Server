@@ -37,7 +37,9 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 	{
 		_length = readD();
 		if (_length > 256)
+		{
 			return;
+		}
 		
 		_data = new byte[_length];
 		readB(_data);
@@ -48,11 +50,15 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		L2Clan clan = activeChar.getClan();
 		if (clan == null)
+		{
 			return;
+		}
 		
 		if (clan.getDissolvingExpiryTime() > System.currentTimeMillis())
 		{
@@ -74,10 +80,12 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 		int crestId = -1;
 		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_REGISTER_CREST) == L2Clan.CP_CL_REGISTER_CREST)
 		{
-			if (_length == 0 || _data.length == 0)
+			if ((_length == 0) || (_data.length == 0))
 			{
 				if (clan.getCrestId() == 0)
+				{
 					return;
+				}
 				
 				crestId = 0;
 				activeChar.sendPacket(SystemMessageId.CLAN_CREST_HAS_BEEN_DELETED);
@@ -100,7 +108,7 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 				updated = true;
 			}
 		}
-		if (updated && crestId != -1)
+		if (updated && (crestId != -1))
 		{
 			clan.changeClanCrest(crestId);
 		}

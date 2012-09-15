@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.model.skills;
 
 /**
  * @author UnAfraid
- *
  */
 public enum L2TraitType
 {

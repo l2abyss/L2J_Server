@@ -45,7 +45,6 @@ public class L2EffectZone extends L2ZoneType
 	protected boolean _bypassConditions;
 	private boolean _isShowDangerIcon;
 	protected FastMap<Integer, Integer> _skills;
-
 	
 	public L2EffectZone(int id)
 	{
@@ -106,7 +105,9 @@ public class L2EffectZone extends L2ZoneType
 			{
 				String[] skillSplit = skill.split("-");
 				if (skillSplit.length != 2)
+				{
 					_log.warning(StringUtil.concat(getClass().getSimpleName() + ": invalid config property -> skillsIdLvl \"", skill, "\""));
+				}
 				else
 				{
 					try
@@ -128,7 +129,9 @@ public class L2EffectZone extends L2ZoneType
 			_isShowDangerIcon = Boolean.parseBoolean(value);
 		}
 		else
+		{
 			super.setParameter(name, value);
+		}
 	}
 	
 	@Override
@@ -141,7 +144,9 @@ public class L2EffectZone extends L2ZoneType
 				synchronized (this)
 				{
 					if (getSettings().getTask() == null)
+					{
 						getSettings().setTask(ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplySkill(), _initialDelay, _reuse));
+					}
 				}
 			}
 		}
@@ -166,10 +171,12 @@ public class L2EffectZone extends L2ZoneType
 			{
 				character.setInsideZone(ZoneId.DANGER_AREA, false);
 				if (!character.isInsideZone(ZoneId.DANGER_AREA))
+				{
 					character.sendPacket(new EtcStatusUpdate(character.getActingPlayer()));
+				}
 			}
 		}
-		if (_characterList.isEmpty() && getSettings().getTask() != null)
+		if (_characterList.isEmpty() && (getSettings().getTask() != null))
 		{
 			getSettings().clear();
 		}
@@ -202,7 +209,9 @@ public class L2EffectZone extends L2ZoneType
 			synchronized (this)
 			{
 				if (_skills == null)
+				{
 					_skills = new FastMap<Integer, Integer>(3).shared();
+				}
 			}
 		}
 		_skills.put(skillId, skillLvL);
@@ -211,13 +220,17 @@ public class L2EffectZone extends L2ZoneType
 	public void removeSkill(int skillId)
 	{
 		if (_skills != null)
+		{
 			_skills.remove(skillId);
+		}
 	}
 	
 	public void clearSkills()
 	{
 		if (_skills != null)
+		{
 			_skills.clear();
+		}
 	}
 	
 	public void setZoneEnabled(boolean val)
@@ -227,8 +240,10 @@ public class L2EffectZone extends L2ZoneType
 	
 	public int getSkillLevel(int skillId)
 	{
-		if (_skills == null || !_skills.containsKey(skillId))
+		if ((_skills == null) || !_skills.containsKey(skillId))
+		{
 			return 0;
+		}
 		return _skills.get(skillId);
 	}
 	
@@ -237,7 +252,9 @@ public class L2EffectZone extends L2ZoneType
 		protected ApplySkill()
 		{
 			if (_skills == null)
+			{
 				throw new IllegalStateException("No skills defined.");
+			}
 		}
 		
 		@Override
@@ -247,7 +264,7 @@ public class L2EffectZone extends L2ZoneType
 			{
 				for (L2Character temp : getCharactersInside())
 				{
-					if (temp != null && !temp.isDead())
+					if ((temp != null) && !temp.isDead())
 					{
 						if (Rnd.get(100) < getChance())
 						{

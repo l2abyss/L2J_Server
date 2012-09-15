@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.4.2.1.2.3 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class RequestReplyStopPledgeWar extends L2GameClientPacket
@@ -32,8 +31,9 @@ public final class RequestReplyStopPledgeWar extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		@SuppressWarnings("unused") String _reqName = readS();
-		_answer  = readD();
+		@SuppressWarnings("unused")
+		String _reqName = readS();
+		_answer = readD();
 	}
 	
 	@Override
@@ -41,10 +41,14 @@ public final class RequestReplyStopPledgeWar extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		L2PcInstance requestor = activeChar.getActiveRequester();
-		if(requestor == null)
+		if (requestor == null)
+		{
 			return;
+		}
 		
 		if (_answer == 1)
 		{

@@ -41,8 +41,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.util.Rnd;
 
 /**
- * Class For Castle Manor Manager Load manor data from DB Update/Reload/Delete
- * Handles all schedule for manor
+ * Class For Castle Manor Manager Load manor data from DB Update/Reload/Delete Handles all schedule for manor
  * @author l3x
  */
 public class CastleManorManager
@@ -191,10 +190,14 @@ public class CastleManorManager
 		
 		boolean isApproved;
 		if (_periodApprove.getTimeInMillis() > _manorRefresh.getTimeInMillis())
+		{
 			// Next approve period already scheduled
 			isApproved = (_manorRefresh.getTimeInMillis() > Calendar.getInstance().getTimeInMillis());
+		}
 		else
-			isApproved = (_periodApprove.getTimeInMillis() < Calendar.getInstance().getTimeInMillis() && _manorRefresh.getTimeInMillis() > Calendar.getInstance().getTimeInMillis());
+		{
+			isApproved = ((_periodApprove.getTimeInMillis() < Calendar.getInstance().getTimeInMillis()) && (_manorRefresh.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()));
+		}
 		
 		for (Castle c : CastleManager.getInstance().getCastles())
 		{
@@ -227,9 +230,13 @@ public class CastleManorManager
 					int price = rs.getInt("seed_price");
 					int period = rs.getInt("period");
 					if (period == PERIOD_CURRENT)
+					{
 						production.add(new SeedProduction(seedId, canProduce, price, startProduce));
+					}
 					else
+					{
 						productionNext.add(new SeedProduction(seedId, canProduce, price, startProduce));
+					}
 				}
 				rs.close();
 				
@@ -250,9 +257,13 @@ public class CastleManorManager
 					int price = rs.getInt("price");
 					int period = rs.getInt("period");
 					if (period == PERIOD_CURRENT)
+					{
 						procure.add(new CropProcure(cropId, canBuy, rewardType, startBuy, price));
+					}
 					else
+					{
 						procureNext.add(new CropProcure(cropId, canBuy, rewardType, startBuy, price));
+					}
 				}
 				rs.close();
 				
@@ -260,7 +271,9 @@ public class CastleManorManager
 				castle.setCropProcure(procureNext, PERIOD_NEXT);
 				
 				if (!procure.isEmpty() || !procureNext.isEmpty() || !production.isEmpty() || !productionNext.isEmpty())
+				{
 					_log.info(getClass().getSimpleName() + ": " + castle.getName() + ": Data loaded");
+				}
 			}
 			statementProduction.close();
 			statementProcure.close();
@@ -299,7 +312,8 @@ public class CastleManorManager
 					setUnderMaintenance(true);
 					_log.info("Manor System: Under maintenance mode started");
 					
-					_scheduledMaintenanceEnd = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable() {
+					_scheduledMaintenanceEnd = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
+					{
 						@Override
 						public void run()
 						{
@@ -344,8 +358,10 @@ public class CastleManorManager
 	public long getMillisToManorRefresh()
 	{
 		// use safe interval 120s to prevent double run
-		if (_manorRefresh.getTimeInMillis() - Calendar.getInstance().getTimeInMillis() < 120000)
+		if ((_manorRefresh.getTimeInMillis() - Calendar.getInstance().getTimeInMillis()) < 120000)
+		{
 			setNewManorRefresh();
+		}
 		
 		_log.info("Manor System: New Schedule for manor refresh @ " + _manorRefresh.getTime());
 		
@@ -364,8 +380,10 @@ public class CastleManorManager
 	public long getMillisToNextPeriodApprove()
 	{
 		// use safe interval 120s to prevent double run
-		if (_periodApprove.getTimeInMillis() - Calendar.getInstance().getTimeInMillis() < 120000)
+		if ((_periodApprove.getTimeInMillis() - Calendar.getInstance().getTimeInMillis()) < 120000)
+		{
 			setNewPeriodApprove();
+		}
 		
 		_log.info("Manor System: New Schedule for period approve @ " + _periodApprove.getTime());
 		
@@ -386,10 +404,14 @@ public class CastleManorManager
 		for (Castle c : CastleManager.getInstance().getCastles())
 		{
 			if (c.getOwnerId() <= 0)
+			{
 				continue;
+			}
 			L2Clan clan = ClanTable.getInstance().getClan(c.getOwnerId());
 			if (clan == null)
+			{
 				continue;
+			}
 			
 			ItemContainer cwh = clan.getWarehouse();
 			if (!(cwh instanceof ClanWarehouse))
@@ -401,16 +423,20 @@ public class CastleManorManager
 			for (CropProcure crop : c.getCropProcure(PERIOD_CURRENT))
 			{
 				if (crop.getStartAmount() == 0)
+				{
 					continue;
+				}
 				// adding bought crops to clan warehouse
-				if (crop.getStartAmount() - crop.getAmount() > 0)
+				if ((crop.getStartAmount() - crop.getAmount()) > 0)
 				{
 					long count = crop.getStartAmount() - crop.getAmount();
-					count = count * 90 / 100;
+					count = (count * 90) / 100;
 					if (count < 1)
 					{
 						if (Rnd.nextInt(99) < 90)
+						{
 							count = 1;
+						}
 					}
 					if (count > 0)
 					{
@@ -460,7 +486,9 @@ public class CastleManorManager
 			L2PcInstance clanLeader = null;
 			clanLeader = L2World.getInstance().getPlayer(clan.getLeader().getName());
 			if (clanLeader != null)
+			{
 				clanLeader.sendPacket(SystemMessageId.THE_MANOR_INFORMATION_HAS_BEEN_UPDATED);
+			}
 			
 			c.setNextPeriodApproved(false);
 		}
@@ -480,10 +508,7 @@ public class CastleManorManager
 			else if (c.getTreasury() < c.getManorCost(PERIOD_NEXT))
 			{
 				notFunc = true;
-				_log.info("Manor for castle " + c.getName()
-						+ " disabled, not enough adena in treasury: "
-						+ c.getTreasury() + ", " + c.getManorCost(PERIOD_NEXT)
-						+ " required.");
+				_log.info("Manor for castle " + c.getName() + " disabled, not enough adena in treasury: " + c.getTreasury() + ", " + c.getManorCost(PERIOD_NEXT) + " required.");
 				c.setSeedProduction(getNewSeedsList(c.getCastleId()), PERIOD_NEXT);
 				c.setCropProcure(getNewCropsList(c.getCastleId()), PERIOD_NEXT);
 			}
@@ -501,16 +526,15 @@ public class CastleManorManager
 					if (crop.getStartAmount() > 0)
 					{
 						if (cwh.getItemByItemId(ManorData.getInstance().getMatureCrop(crop.getId())) == null)
+						{
 							slots++;
+						}
 					}
 				}
 				if (!cwh.validateCapacity(slots))
 				{
 					notFunc = true;
-					_log.info("Manor for castle " + c.getName()
-							+ " disabled, not enough free slots in clan warehouse: "
-							+ (Config.WAREHOUSE_SLOTS_CLAN - cwh.getSize())
-							+ ", but " + slots + " required.");
+					_log.info("Manor for castle " + c.getName() + " disabled, not enough free slots in clan warehouse: " + (Config.WAREHOUSE_SLOTS_CLAN - cwh.getSize()) + ", but " + slots + " required.");
 					c.setSeedProduction(getNewSeedsList(c.getCastleId()), PERIOD_NEXT);
 					c.setCropProcure(getNewCropsList(c.getCastleId()), PERIOD_NEXT);
 				}
@@ -523,9 +547,13 @@ public class CastleManorManager
 				L2Clan clan = ClanTable.getInstance().getClan(c.getOwnerId());
 				L2PcInstance clanLeader = null;
 				if (clan != null)
+				{
 					clanLeader = L2World.getInstance().getPlayer(clan.getLeaderId());
+				}
 				if (clanLeader != null)
+				{
 					clanLeader.sendPacket(SystemMessageId.THE_AMOUNT_IS_NOT_SUFFICIENT_AND_SO_THE_MANOR_IS_NOT_IN_OPERATION);
+				}
 			}
 		}
 	}

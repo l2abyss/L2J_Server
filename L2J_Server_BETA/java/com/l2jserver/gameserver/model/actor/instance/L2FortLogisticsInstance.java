@@ -64,14 +64,16 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 	{
 		// BypassValidation Exploit plug.
 		if (player.getLastFolkNPC().getObjectId() != getObjectId())
+		{
 			return;
+		}
 		
 		StringTokenizer st = new StringTokenizer(command, " ");
 		String actualCommand = st.nextToken(); // Get actual command
 		
 		if (actualCommand.equalsIgnoreCase("rewards"))
 		{
-			if (player.isClanLeader() && getFort().getOwnerClan() != null && player.getClan() == getFort().getOwnerClan())
+			if (player.isClanLeader() && (getFort().getOwnerClan() != null) && (player.getClan() == getFort().getOwnerClan()))
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-rewards.htm");
@@ -91,7 +93,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 		}
 		else if (actualCommand.equalsIgnoreCase("blood"))
 		{
-			if (player.getClan() != null && getFort().getOwnerClan() != null && player.getClan() == getFort().getOwnerClan() && player.isClanLeader())
+			if ((player.getClan() != null) && (getFort().getOwnerClan() != null) && (player.getClan() == getFort().getOwnerClan()) && player.isClanLeader())
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				int blood = getFort().getBloodOathReward();
@@ -103,7 +105,9 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 					getFort().saveFortVariables();
 				}
 				else
+				{
 					html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-noblood.htm");
+				}
 				html.replace("%objectId%", String.valueOf(getObjectId()));
 				player.sendPacket(html);
 			}
@@ -118,7 +122,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 		}
 		else if (actualCommand.equalsIgnoreCase("supplylvl"))
 		{
-			if (player.getClan() != null && getFort().getOwnerClan() != null && player.getClan() == getFort().getOwnerClan() && getFort().getFortState() == 2)
+			if ((player.getClan() != null) && (getFort().getOwnerClan() != null) && (player.getClan() == getFort().getOwnerClan()) && (getFort().getFortState() == 2))
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				if (player.isClanLeader())
@@ -127,7 +131,9 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 					html.replace("%supplylvl%", String.valueOf(getFort().getSupplyLvL()));
 				}
 				else
+				{
 					html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-noprivs.htm");
+				}
 				html.replace("%objectId%", String.valueOf(getObjectId()));
 				player.sendPacket(html);
 			}
@@ -142,11 +148,13 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 		}
 		else if (actualCommand.equalsIgnoreCase("supply"))
 		{
-			if (player.getClan() != null && getFort().getOwnerClan() != null && player.getClan() == getFort().getOwnerClan() && player.isClanLeader())
+			if ((player.getClan() != null) && (getFort().getOwnerClan() != null) && (player.getClan() == getFort().getOwnerClan()) && player.isClanLeader())
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				if (getFort().getSiege().getIsInProgress())
+				{
 					html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-siege.htm");
+				}
 				else
 				{
 					int level = getFort().getSupplyLvL();
@@ -166,7 +174,9 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 						getFort().saveFortVariables();
 					}
 					else
+					{
 						html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-nosupply.htm");
+					}
 				}
 				html.replace("%objectId%", String.valueOf(getObjectId()));
 				player.sendPacket(html);
@@ -196,18 +206,26 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 		String filename;
 		
 		if (val == 0)
+		{
 			filename = "data/html/fortress/logistics.htm";
+		}
 		else
+		{
 			filename = "data/html/fortress/logistics-" + val + ".htm";
+		}
 		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcId%", String.valueOf(getNpcId()));
 		if (getFort().getOwnerClan() != null)
+		{
 			html.replace("%clanname%", getFort().getOwnerClan().getName());
+		}
 		else
+		{
 			html.replace("%clanname%", "NPC");
+		}
 		player.sendPacket(html);
 	}
 	
@@ -217,9 +235,13 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 		String pom = "";
 		
 		if (val == 0)
+		{
 			pom = "logistics";
+		}
 		else
+		{
 			pom = "logistics-" + val;
+		}
 		
 		return "data/html/fortress/" + pom + ".htm";
 	}

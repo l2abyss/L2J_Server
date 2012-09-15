@@ -47,7 +47,9 @@ public class PetNameTable
 			for (int it : PetDataTable.getPetItemsByNpc(petNpcId))
 			{
 				if (!cond.toString().isEmpty())
+				{
 					cond.append(", ");
+				}
 				cond.append(it);
 			}
 			ps.setString(2, cond.toString());
@@ -68,7 +70,9 @@ public class PetNameTable
 		boolean result = true;
 		
 		if (!isAlphaNumeric(name))
+		{
 			return result;
+		}
 		
 		Pattern pattern;
 		try

@@ -29,8 +29,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.DlgAnswerL
 import com.l2jserver.gameserver.util.GMAudit;
 
 /**
- * @author Dezmond_snz
- * Format: cddd
+ * @author Dezmond_snz Format: cddd
  */
 public final class DlgAnswer extends L2GameClientPacket
 {
@@ -53,48 +52,65 @@ public final class DlgAnswer extends L2GameClientPacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		if (Config.DEBUG)
-			_log.fine(getType()+": Answer accepted. Message ID "+_messageId+", answer "+_answer+", Requester ID "+_requesterId);
-		if (_messageId == SystemMessageId.RESSURECTION_REQUEST_BY_C1_FOR_S2_XP.getId()
-				|| _messageId == SystemMessageId.RESURRECT_USING_CHARM_OF_COURAGE.getId())
+		{
+			_log.fine(getType() + ": Answer accepted. Message ID " + _messageId + ", answer " + _answer + ", Requester ID " + _requesterId);
+		}
+		if ((_messageId == SystemMessageId.RESSURECTION_REQUEST_BY_C1_FOR_S2_XP.getId()) || (_messageId == SystemMessageId.RESURRECT_USING_CHARM_OF_COURAGE.getId()))
+		{
 			activeChar.reviveAnswer(_answer);
-		else if (_messageId==SystemMessageId.C1_WISHES_TO_SUMMON_YOU_FROM_S2_DO_YOU_ACCEPT.getId())
+		}
+		else if (_messageId == SystemMessageId.C1_WISHES_TO_SUMMON_YOU_FROM_S2_DO_YOU_ACCEPT.getId())
+		{
 			activeChar.teleportAnswer(_answer, _requesterId);
+		}
 		else if (_messageId == SystemMessageId.S1.getId())
 		{
 			String _command = activeChar.getAdminConfirmCmd();
 			if (_command == null)
 			{
 				if (Config.L2JMOD_ALLOW_WEDDING)
+				{
 					activeChar.engageAnswer(_answer);
+				}
 			}
 			else
 			{
 				activeChar.setAdminConfirmCmd(null);
 				if (_answer == 0)
+				{
 					return;
+				}
 				String command = _command.split(" ")[0];
 				IAdminCommandHandler ach = AdminCommandHandler.getInstance().getHandler(command);
 				if (AdminTable.getInstance().hasAccess(command, activeChar.getAccessLevel()))
 				{
 					if (Config.GMAUDIT)
-						GMAudit.auditGMAction(activeChar.getName()+" ["+activeChar.getObjectId()+"]", _command, (activeChar.getTarget() != null?activeChar.getTarget().getName():"no-target"));
+					{
+						GMAudit.auditGMAction(activeChar.getName() + " [" + activeChar.getObjectId() + "]", _command, (activeChar.getTarget() != null ? activeChar.getTarget().getName() : "no-target"));
+					}
 					ach.useAdminCommand(_command, activeChar);
 				}
 			}
 		}
 		else if (_messageId == SystemMessageId.WOULD_YOU_LIKE_TO_OPEN_THE_GATE.getId())
+		{
 			activeChar.gatesAnswer(_answer, 1);
+		}
 		else if (_messageId == SystemMessageId.WOULD_YOU_LIKE_TO_CLOSE_THE_GATE.getId())
+		{
 			activeChar.gatesAnswer(_answer, 0);
+		}
 		
 		fireDlgAnswerListener();
 	}
 	
 	/**
-	 *  Fires the event when packet arrived.
+	 * Fires the event when packet arrived.
 	 */
 	private void fireDlgAnswerListener()
 	{
@@ -106,7 +122,7 @@ public final class DlgAnswer extends L2GameClientPacket
 		
 		for (DlgAnswerListener listener : _listeners)
 		{
-			if (listener.getMessageId() == -1 || _messageId == listener.getMessageId())
+			if ((listener.getMessageId() == -1) || (_messageId == listener.getMessageId()))
 			{
 				listener.onDlgAnswer(event);
 			}
@@ -114,7 +130,6 @@ public final class DlgAnswer extends L2GameClientPacket
 	}
 	
 	/**
-	 * 
 	 * @param listener
 	 */
 	public static void addDlgAnswerListener(DlgAnswerListener listener)
@@ -126,7 +141,6 @@ public final class DlgAnswer extends L2GameClientPacket
 	}
 	
 	/**
-	 * 
 	 * @param listener
 	 */
 	public static void removeDlgAnswerListener(DlgAnswerListener listener)

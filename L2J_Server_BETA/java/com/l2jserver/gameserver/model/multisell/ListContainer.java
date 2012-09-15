@@ -82,7 +82,6 @@ public class ListContainer
 	 * Set this to create multisell with increased products, all product counts will be multiplied by the rate specified.<br>
 	 * <b>NOTE:</b> It affects only parser, it won't change values of already parsed multisell since MultiSells' parseEntry method handles this feature.
 	 * @param rate
-	 * @see com.l2jserver.gameserver.datatables.MultiSell#parseEntry
 	 */
 	public void setUseRate(double rate)
 	{

@@ -157,7 +157,9 @@ public class L2BossZone extends L2ZoneType
 			{
 				final L2PcInstance player = character.getActingPlayer();
 				if (player.canOverrideCond(PcCondOverride.ZONE_CONDITIONS))
+				{
 					return;
+				}
 				// if player has been (previously) cleared by npc/ai for entry and the zone is
 				// set to receive players (aka not waiting for boss to respawn)
 				if (getSettings().getPlayersAllowed().contains(player.getObjectId()))
@@ -187,7 +189,7 @@ public class L2BossZone extends L2ZoneType
 					getSettings().getPlayersAllowed().remove(getSettings().getPlayersAllowed().indexOf(player.getObjectId()));
 				}
 				// teleport out all players who attempt "illegal" (re-)entry
-				if (_oustLoc[0] != 0 && _oustLoc[1] != 0 && _oustLoc[2] != 0)
+				if ((_oustLoc[0] != 0) && (_oustLoc[1] != 0) && (_oustLoc[2] != 0))
 				{
 					player.teleToLocation(_oustLoc[0], _oustLoc[1], _oustLoc[2]);
 				}
@@ -202,11 +204,13 @@ public class L2BossZone extends L2ZoneType
 				if (player != null)
 				{
 					if (getSettings().getPlayersAllowed().contains(player.getObjectId()) || player.canOverrideCond(PcCondOverride.ZONE_CONDITIONS))
+					{
 						return;
+					}
 					
 					// remove summon and teleport out owner
 					// who attempt "illegal" (re-)entry
-					if (_oustLoc[0] != 0 && _oustLoc[1] != 0 && _oustLoc[2] != 0)
+					if ((_oustLoc[0] != 0) && (_oustLoc[1] != 0) && (_oustLoc[2] != 0))
 					{
 						player.teleToLocation(_oustLoc[0], _oustLoc[1], _oustLoc[2]);
 					}
@@ -229,7 +233,9 @@ public class L2BossZone extends L2ZoneType
 			{
 				final L2PcInstance player = character.getActingPlayer();
 				if (player.canOverrideCond(PcCondOverride.ZONE_CONDITIONS))
+				{
 					return;
+				}
 				
 				// if the player just got disconnected/logged out, store the dc
 				// time so that
@@ -251,7 +257,7 @@ public class L2BossZone extends L2ZoneType
 			}
 			if (character.isPlayable())
 			{
-				if (getCharactersInside() != null && !getCharactersInside().isEmpty())
+				if ((getCharactersInside() != null) && !getCharactersInside().isEmpty())
 				{
 					getSettings().getRaidList().clear();
 					int count = 0;
@@ -271,15 +277,19 @@ public class L2BossZone extends L2ZoneType
 						}
 					}
 					// if inside zone isnt any player, force all boss instance return to its spawn points
-					if (count == 0 && !getSettings().getRaidList().isEmpty())
+					if ((count == 0) && !getSettings().getRaidList().isEmpty())
 					{
 						for (int i = 0; i < getSettings().getRaidList().size(); i++)
 						{
 							L2Attackable raid = (L2Attackable) getSettings().getRaidList().get(i);
-							if (raid == null || raid.getSpawn() == null || raid.isDead())
+							if ((raid == null) || (raid.getSpawn() == null) || raid.isDead())
+							{
 								continue;
+							}
 							if (!raid.isInsideRadius(raid.getSpawn().getLocx(), raid.getSpawn().getLocy(), 150, false))
+							{
 								raid.returnHome();
+							}
 						}
 					}
 				}
@@ -294,7 +304,9 @@ public class L2BossZone extends L2ZoneType
 	public void setZoneEnabled(boolean flag)
 	{
 		if (_enabled != flag)
+		{
 			oustAllPlayers();
+		}
 		
 		_enabled = flag;
 	}
@@ -330,7 +342,7 @@ public class L2BossZone extends L2ZoneType
 		}
 		else
 		{
-			if (_oustLoc[0] != 0 && _oustLoc[1] != 0 && _oustLoc[2] != 0)
+			if ((_oustLoc[0] != 0) && (_oustLoc[1] != 0) && (_oustLoc[2] != 0))
 			{
 				player.teleToLocation(_oustLoc[0], _oustLoc[1], _oustLoc[2]);
 			}
@@ -351,11 +363,13 @@ public class L2BossZone extends L2ZoneType
 	public void movePlayersTo(int x, int y, int z)
 	{
 		if (_characterList.isEmpty())
+		{
 			return;
+		}
 		
 		for (L2Character character : getCharactersInside())
 		{
-			if (character != null && character.isPlayer())
+			if ((character != null) && character.isPlayer())
 			{
 				L2PcInstance player = character.getActingPlayer();
 				if (player.isOnline())
@@ -373,16 +387,18 @@ public class L2BossZone extends L2ZoneType
 	public void oustAllPlayers()
 	{
 		if (_characterList.isEmpty())
+		{
 			return;
+		}
 		
 		for (L2Character character : getCharactersInside())
 		{
-			if (character != null && character.isPlayer())
+			if ((character != null) && character.isPlayer())
 			{
 				L2PcInstance player = character.getActingPlayer();
 				if (player.isOnline())
 				{
-					if (_oustLoc[0] != 0 && _oustLoc[1] != 0 && _oustLoc[2] != 0)
+					if ((_oustLoc[0] != 0) && (_oustLoc[1] != 0) && (_oustLoc[2] != 0))
 					{
 						player.teleToLocation(_oustLoc[0], _oustLoc[1], _oustLoc[2]);
 					}
@@ -410,7 +426,7 @@ public class L2BossZone extends L2ZoneType
 			{
 				getSettings().getPlayersAllowed().add(player.getObjectId());
 			}
-			getSettings().getPlayerAllowedReEntryTimes().put(player.getObjectId(), System.currentTimeMillis() + durationInSec * 1000);
+			getSettings().getPlayerAllowedReEntryTimes().put(player.getObjectId(), System.currentTimeMillis() + (durationInSec * 1000));
 		}
 	}
 	
@@ -435,13 +451,15 @@ public class L2BossZone extends L2ZoneType
 	
 	public void updateKnownList(L2Npc npc)
 	{
-		if (_characterList == null || _characterList.isEmpty())
+		if ((_characterList == null) || _characterList.isEmpty())
+		{
 			return;
+		}
 		
 		Map<Integer, L2PcInstance> npcKnownPlayers = npc.getKnownList().getKnownPlayers();
 		for (L2Character character : getCharactersInside())
 		{
-			if (character != null && character.isPlayer())
+			if ((character != null) && character.isPlayer())
 			{
 				L2PcInstance player = character.getActingPlayer();
 				if (player.isOnline())

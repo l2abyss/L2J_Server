@@ -16,19 +16,22 @@ package com.l2jserver.gameserver.network.loginserverpackets;
 
 import com.l2jserver.util.network.BaseRecievePacket;
 
-
 public class LoginServerFail extends BaseRecievePacket
 {
 	
-	private static final String[] REASONS = {"None" ,
+	private static final String[] REASONS =
+	{
+		"None",
 		"Reason: ip banned",
 		"Reason: ip reserved",
 		"Reason: wrong hexid",
 		"Reason: id reserved",
 		"Reason: no free ID",
 		"Not authed",
-	"Reason: already logged in"};
-	private int _reason;
+		"Reason: already logged in"
+	};
+	private final int _reason;
+	
 	/**
 	 * @param decrypt
 	 */

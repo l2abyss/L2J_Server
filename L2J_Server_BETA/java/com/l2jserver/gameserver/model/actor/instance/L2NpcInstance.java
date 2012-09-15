@@ -46,7 +46,7 @@ public class L2NpcInstance extends L2Npc
 	@Override
 	public FolkStatus getStatus()
 	{
-		return (FolkStatus)super.getStatus();
+		return (FolkStatus) super.getStatus();
 	}
 	
 	@Override
@@ -58,12 +58,16 @@ public class L2NpcInstance extends L2Npc
 	@Override
 	public void addEffect(L2Effect newEffect)
 	{
-		if(newEffect != null)
+		if (newEffect != null)
 		{
-			if(newEffect.isBuffEffect() || newEffect.isDebuffEffect())
+			if (newEffect.isBuffEffect() || newEffect.isDebuffEffect())
+			{
 				super.addEffect(newEffect);
+			}
 			else
+			{
 				newEffect.stopEffectTask();
+			}
 		}
 	}
 	
@@ -82,11 +86,11 @@ public class L2NpcInstance extends L2Npc
 	{
 		if (Config.DEBUG)
 		{
-			_log.fine("SkillList activated on: "+npc.getObjectId());
+			_log.fine("SkillList activated on: " + npc.getObjectId());
 		}
 		
 		final int npcId = npc.getTemplate().getNpcId();
-		if (npcId == 32611) //Tolonis (Officer)
+		if (npcId == 32611) // Tolonis (Officer)
 		{
 			final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableCollectSkills(player);
 			final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Collect);
@@ -133,15 +137,7 @@ public class L2NpcInstance extends L2Npc
 		if (((L2NpcInstance) npc).getClassesToTeach().isEmpty())
 		{
 			NpcHtmlMessage html = new NpcHtmlMessage(npc.getObjectId());
-			final String sb = StringUtil.concat(
-					"<html><body>" +
-					"I cannot teach you. My class list is empty.<br> Ask admin to fix it. Need add my npcid and classes to skill_learn.sql.<br>NpcId:",
-					String.valueOf(npcId),
-					", Your classId:",
-					String.valueOf(player.getClassId().getId()),
-					"<br>" +
-					"</body></html>"
-			);
+			final String sb = StringUtil.concat("<html><body>I cannot teach you. My class list is empty.<br>Ask admin to fix it. Need add my npcid and classes to skill_learn.sql.<br>NpcId:", String.valueOf(npcId), ", Your classId:", String.valueOf(player.getClassId().getId()), "</body></html>");
 			html.setHtml(sb);
 			player.sendPacket(html);
 			return;

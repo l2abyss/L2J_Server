@@ -37,7 +37,7 @@ public class ExShowSentPostList extends L2GameServerPacket
 		writeC(0xFE);
 		writeH(0xAC);
 		writeD((int) (System.currentTimeMillis() / 1000));
-		if (_outbox != null && _outbox.size() > 0)
+		if ((_outbox != null) && (_outbox.size() > 0))
 		{
 			writeD(_outbox.size());
 			for (Message msg : _outbox)

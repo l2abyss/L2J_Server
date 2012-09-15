@@ -51,7 +51,25 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 		"ClassAbility80-"
 	};
 	
-	private static final int[] _itemsIds = { 10280, 10281, 10282, 10283, 10284, 10285, 10286, 10287, 10288, 10289, 10290, 10291, 10292, 10293, 10294, 10612 };
+	private static final int[] _itemsIds =
+	{
+		10280,
+		10281,
+		10282,
+		10283,
+		10284,
+		10285,
+		10286,
+		10287,
+		10288,
+		10289,
+		10290,
+		10291,
+		10292,
+		10293,
+		10294,
+		10612
+	};
 	
 	public L2TransformManagerInstance(int objectId, L2NpcTemplate template)
 	{
@@ -238,7 +256,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 					player.sendSkillList();
 				}
 				
-				//Let's consume all certification books, even those not present in database.
+				// Let's consume all certification books, even those not present in database.
 				L2ItemInstance itemInstance = null;
 				for (int itemId : _itemsIds)
 				{
@@ -256,7 +274,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 		super.onBypassFeedback(player, command);
 	}
 	
-	//Transformations:
+	// Transformations:
 	/**
 	 * @param player the player to verify.
 	 * @return {code true} if {code player} meets the required conditions to learn a transformation.
@@ -299,7 +317,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 			final int minlevel = SkillTreesData.getInstance().getMinLevelForNewSkill(player, SkillTreesData.getInstance().getTransformSkillTree());
 			if (minlevel > 0)
 			{
-				//No more skills to learn, come back when you level.
+				// No more skills to learn, come back when you level.
 				final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN_S1);
 				sm.addNumber(minlevel);
 				player.sendPacket(sm);
@@ -315,7 +333,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 		}
 	}
 	
-	//SubClass:
+	// SubClass:
 	/**
 	 * This displays Sub-Class Skill List to the player.
 	 * @param player the active character.

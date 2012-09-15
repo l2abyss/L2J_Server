@@ -31,9 +31,13 @@ public class L2DawnPriestInstance extends L2SignsPriestInstance
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
 		if (command.startsWith("Chat"))
+		{
 			showChatWindow(player);
+		}
 		else
+		{
 			super.onBypassFeedback(player, command);
+		}
 	}
 	
 	@Override
@@ -53,48 +57,78 @@ public class L2DawnPriestInstance extends L2SignsPriestInstance
 		{
 			case SevenSigns.CABAL_DAWN:
 				if (isCompResultsPeriod)
+				{
 					filename += "dawn_priest_5.htm";
+				}
 				else if (recruitPeriod == 0)
+				{
 					filename += "dawn_priest_6.htm";
+				}
 				else if (isSealValidationPeriod)
 				{
 					if (compWinner == SevenSigns.CABAL_DAWN)
 					{
 						if (compWinner != sealGnosisOwner)
+						{
 							filename += "dawn_priest_2c.htm";
+						}
 						else
+						{
 							filename += "dawn_priest_2a.htm";
+						}
 					}
 					else if (compWinner == SevenSigns.CABAL_NULL)
+					{
 						filename += "dawn_priest_2d.htm";
+					}
 					else
+					{
 						filename += "dawn_priest_2b.htm";
+					}
 				}
 				else
+				{
 					filename += "dawn_priest_1b.htm";
+				}
 				break;
 			case SevenSigns.CABAL_DUSK:
 				if (isSealValidationPeriod)
+				{
 					filename += "dawn_priest_3a.htm";
+				}
 				else
+				{
 					filename += "dawn_priest_3b.htm";
+				}
 				break;
 			default:
 				if (isCompResultsPeriod)
+				{
 					filename += "dawn_priest_5.htm";
+				}
 				else if (recruitPeriod == 0)
+				{
 					filename += "dawn_priest_6.htm";
+				}
 				else if (isSealValidationPeriod)
 				{
 					if (compWinner == SevenSigns.CABAL_DAWN)
+					{
 						filename += "dawn_priest_4.htm";
+					}
 					else if (compWinner == SevenSigns.CABAL_NULL)
+					{
 						filename += "dawn_priest_2d.htm";
+					}
 					else
+					{
 						filename += "dawn_priest_2b.htm";
+					}
 				}
 				else
+				{
 					filename += "dawn_priest_1a.htm";
+				}
 				break;
 		}
 		

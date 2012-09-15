@@ -36,7 +36,7 @@ public final class L2SiegableHallZone extends L2ClanHallZone
 	@Override
 	public void parseLoc(int x, int y, int z, String type)
 	{
-		if (type != null && type.equals("challenger"))
+		if ((type != null) && type.equals("challenger"))
 		{
 			if (_challengerLocations == null)
 			{
@@ -60,8 +60,8 @@ public final class L2SiegableHallZone extends L2ClanHallZone
 		final TeleportWhereType type = TeleportWhereType.ClanHall_banish;
 		for (L2PcInstance player : getPlayersInside())
 		{
-			if (player != null && player.isInHideoutSiege())
-			{	
+			if ((player != null) && player.isInHideoutSiege())
+			{
 				player.teleToLocation(type);
 			}
 		}

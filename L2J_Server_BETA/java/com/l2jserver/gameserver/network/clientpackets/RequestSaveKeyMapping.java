@@ -81,7 +81,9 @@ public class RequestSaveKeyMapping extends L2GameClientPacket
 	public void insertCategory(int cat, int cmd)
 	{
 		if (_catMap.containsKey(cat))
+		{
 			_catMap.get(cat).add(cmd);
+		}
 		else
 		{
 			List<Integer> tmp = new FastList<>();
@@ -94,7 +96,9 @@ public class RequestSaveKeyMapping extends L2GameClientPacket
 	{
 		ActionKey tmk = new ActionKey(cat, cmdId, key, tgKey1, tgKey2, show);
 		if (_keyMap.containsKey(cat))
+		{
 			_keyMap.get(cat).add(tmk);
+		}
 		else
 		{
 			List<ActionKey> tmp = new FastList<>();
@@ -109,11 +113,17 @@ public class RequestSaveKeyMapping extends L2GameClientPacket
 		L2PcInstance player = getClient().getActiveChar();
 		
 		if (player == null)
+		{
 			return;
+		}
 		if (getClient().getState() != GameClientState.IN_GAME)
+		{
 			return;
+		}
 		if (Config.STORE_UI_SETTINGS)
+		{
 			player.getUISettings().storeAll(_catMap, _keyMap);
+		}
 	}
 	
 	@Override

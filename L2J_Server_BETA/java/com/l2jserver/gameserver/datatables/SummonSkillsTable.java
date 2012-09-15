@@ -31,7 +31,7 @@ import com.l2jserver.gameserver.model.actor.L2Summon;
 public class SummonSkillsTable
 {
 	private static Logger _log = Logger.getLogger(SummonSkillsTable.class.getName());
-	private Map<Integer, Map<Integer, L2PetSkillLearn>> _skillTrees = new HashMap<>();
+	private final Map<Integer, Map<Integer, L2PetSkillLearn>> _skillTrees = new HashMap<>();
 	
 	protected SummonSkillsTable()
 	{
@@ -97,28 +97,38 @@ public class SummonSkillsTable
 		for (L2PetSkillLearn temp : skills)
 		{
 			if (temp.getId() != skillId)
+			{
 				continue;
+			}
 			if (temp.getLevel() == 0)
 			{
 				if (cha.getLevel() < 70)
 				{
 					lvl = (cha.getLevel() / 10);
 					if (lvl <= 0)
+					{
 						lvl = 1;
+					}
 				}
 				else
+				{
 					lvl = (7 + ((cha.getLevel() - 70) / 5));
+				}
 				
 				// formula usable for skill that have 10 or more skill levels
 				int maxLvl = SkillTable.getInstance().getMaxLevel(temp.getId());
 				if (lvl > maxLvl)
+				{
 					lvl = maxLvl;
+				}
 				break;
 			}
 			else if (temp.getMinLevel() <= cha.getLevel())
 			{
 				if (temp.getLevel() > lvl)
+				{
 					lvl = temp.getLevel();
+				}
 			}
 		}
 		return lvl;
@@ -136,7 +146,9 @@ public class SummonSkillsTable
 		for (L2PetSkillLearn temp : skills)
 		{
 			if (skillIds.contains(temp.getId()))
+			{
 				continue;
+			}
 			skillIds.add(temp.getId());
 		}
 		return skillIds;

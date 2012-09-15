@@ -43,7 +43,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 	protected static final int COND_ALL_FALSE = 0;
 	protected static final int COND_BUSY_BECAUSE_OF_SIEGE = 1;
 	protected static final int COND_OWNER = 2;
-
+	
 	/**
 	 * @param objectId
 	 * @param template
@@ -304,7 +304,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 					case 39: // White Talisman - Water
 						item = 10420;
 						break;
-					case 40: // White Talisman -  Earth
+					case 40: // White Talisman - Earth
 						item = 10519;
 						break;
 					case 41: // White Talisman - Light
@@ -419,49 +419,49 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 	{
 		if (clanLeader.isAlikeDead())
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}
 		
 		if (clanLeader.isInStoreMode())
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}
 		
 		if (clanLeader.isRooted() || clanLeader.isInCombat())
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}
 		
 		if (clanLeader.isInOlympiadMode())
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}
 		
 		if (clanLeader.isFestivalParticipant())
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}
 		
 		if (clanLeader.inObserverMode())
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}
 		
 		if (clanLeader.isInsideZone(ZoneId.NO_SUMMON_FRIEND))
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}
@@ -470,7 +470,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 		{
 			if (!Config.ALLOW_SUMMON_TO_INSTANCE || InstanceManager.getInstance().getInstance(player.getInstanceId()).isSummonAllowed())
 			{
-				//TODO: Need retail message if there's one.
+				// TODO: Need retail message if there's one.
 				player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 				return false;
 			}
@@ -483,7 +483,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 			{
 				if (targetCabal != SevenSigns.getInstance().getCabalHighestScore())
 				{
-					//TODO: Need retail message if there's one.
+					// TODO: Need retail message if there's one.
 					player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 					return false;
 				}
@@ -492,7 +492,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 			{
 				if (targetCabal == SevenSigns.CABAL_NULL)
 				{
-					//TODO: Need retail message if there's one.
+					// TODO: Need retail message if there's one.
 					player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 					return false;
 				}
@@ -507,7 +507,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 		
 		if (!TvTEvent.onEscapeUse(clanLeader.getObjectId()))
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}

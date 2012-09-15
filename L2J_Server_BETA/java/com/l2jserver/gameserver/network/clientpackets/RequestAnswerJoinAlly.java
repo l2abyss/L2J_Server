@@ -64,7 +64,7 @@ public final class RequestAnswerJoinAlly extends L2GameClientPacket
 			// we must double check this cause of hack
 			if (clan.checkAllyJoinCondition(requestor, activeChar))
 			{
-				//TODO: Need correct message id
+				// TODO: Need correct message id
 				requestor.sendPacket(SystemMessageId.YOU_HAVE_SUCCEEDED_INVITING_FRIEND);
 				activeChar.sendPacket(SystemMessageId.YOU_ACCEPTED_ALLIANCE);
 				

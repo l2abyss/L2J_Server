@@ -110,7 +110,9 @@ public class ExShowScreenMessage extends L2GameServerPacket
 	public void addStringParameter(String text)
 	{
 		if (_parameters == null)
+		{
 			_parameters = new ArrayList<>();
+		}
 		_parameters.add(text);
 	}
 	
@@ -139,7 +141,9 @@ public class ExShowScreenMessage extends L2GameServerPacket
 			if (_parameters != null)
 			{
 				for (String s : _parameters)
+				{
 					writeS(s);
+				}
 			}
 		}
 	}

@@ -19,7 +19,6 @@ import com.l2jserver.gameserver.network.serverpackets.Ex2ndPasswordCheck;
 
 /**
  * Format: (ch)
- * 
  * @author mrTJO
  */
 public class RequestEx2ndPasswordCheck extends L2GameClientPacket

@@ -30,7 +30,9 @@ public final class L2VillageMasterPriestInstance extends L2VillageMasterInstance
 	protected final boolean checkVillageMasterRace(PlayerClass pclass)
 	{
 		if (pclass == null)
+		{
 			return false;
+		}
 		
 		return pclass.isOfRace(Race.Human) || pclass.isOfRace(Race.Elf);
 	}
@@ -39,7 +41,9 @@ public final class L2VillageMasterPriestInstance extends L2VillageMasterInstance
 	protected final boolean checkVillageMasterTeachType(PlayerClass pclass)
 	{
 		if (pclass == null)
+		{
 			return false;
+		}
 		
 		return pclass.isOfType(ClassType.Priest);
 	}

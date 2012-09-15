@@ -18,7 +18,7 @@ import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.serverpackets.ExShowFortressInfo;
 
 /**
- * @author  KenM
+ * @author KenM
  */
 public class RequestAllFortressInfo extends L2GameClientPacket
 {
@@ -33,7 +33,7 @@ public class RequestAllFortressInfo extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2GameClient client = this.getClient();
+		L2GameClient client = getClient();
 		if (client != null)
 		{
 			client.sendPacket(ExShowFortressInfo.STATIC_PACKET);

@@ -22,7 +22,6 @@ import com.l2jserver.gameserver.util.Evolve;
 
 /**
  * This class ...
- *
  * @version $Revision$ $Date$
  */
 public class L2PetManagerInstance extends L2MerchantInstance
@@ -39,9 +38,13 @@ public class L2PetManagerInstance extends L2MerchantInstance
 		String pom = "";
 		
 		if (val == 0)
+		{
 			pom = "" + npcId;
+		}
 		else
+		{
 			pom = npcId + "-" + val;
+		}
 		
 		return "data/html/petmanager/" + pom + ".htm";
 	}
@@ -52,13 +55,17 @@ public class L2PetManagerInstance extends L2MerchantInstance
 		String filename = "data/html/petmanager/" + getNpcId() + ".htm";
 		
 		L2Summon summon = player.getPet();
-		if (getNpcId() == 36478 && summon != null)
+		if ((getNpcId() == 36478) && (summon != null))
+		{
 			filename = "data/html/petmanager/restore-unsummonpet.htm";
+		}
 		
 		NpcHtmlMessage html = new NpcHtmlMessage(1);
 		html.setFile(player.getHtmlPrefix(), filename);
 		if (Config.ALLOW_RENTPET && Config.LIST_PET_RENT_NPC.contains(getNpcId()))
+		{
 			html.replace("_Quest", "_RentPet\">Rent Pet</a><br><a action=\"bypass -h npc_%objectId%_Quest");
+		}
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcname%", getName());
 		player.sendPacket(html);
@@ -92,8 +99,8 @@ public class L2PetManagerInstance extends L2MerchantInstance
 			boolean ok = false;
 			switch (val)
 			{
-				//Info evolve(player, "curent pet summon item", "new pet summon item", "lvl required to evolve")
-				//To ignore evolve just put value 0 where do you like example: evolve(player, 0, 9882, 55);
+			// Info evolve(player, "curent pet summon item", "new pet summon item", "lvl required to evolve")
+			// To ignore evolve just put value 0 where do you like example: evolve(player, 0, 9882, 55);
 				case 1:
 					ok = Evolve.doEvolve(player, this, 2375, 9882, 55);
 					break;
@@ -125,7 +132,7 @@ public class L2PetManagerInstance extends L2MerchantInstance
 			boolean ok = false;
 			switch (val)
 			{
-				//Info evolve(player, "curent pet summon item", "new pet summon item", "lvl required to evolve")
+			// Info evolve(player, "curent pet summon item", "new pet summon item", "lvl required to evolve")
 				case 1:
 					ok = Evolve.doRestore(player, this, 10307, 9882, 55);
 					break;
@@ -151,7 +158,9 @@ public class L2PetManagerInstance extends L2MerchantInstance
 			return;
 		}
 		else
+		{
 			super.onBypassFeedback(player, command);
+		}
 	}
 	
 	public final void exchange(L2PcInstance player, int itemIdtake, int itemIdgive)

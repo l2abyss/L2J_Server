@@ -41,17 +41,23 @@ public class RequestExTryToPutEnchantTargetItem extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		
-		if (_objectId == 0 || activeChar == null)
+		if ((_objectId == 0) || (activeChar == null))
+		{
 			return;
+		}
 		
 		if (activeChar.isEnchanting())
+		{
 			return;
+		}
 		
 		L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
 		L2ItemInstance scroll = activeChar.getActiveEnchantItem();
 		
-		if (item == null || scroll == null)
+		if ((item == null) || (scroll == null))
+		{
 			return;
+		}
 		
 		// template for scroll
 		EnchantScroll scrollTemplate = EnchantItemData.getInstance().getEnchantScroll(scroll);

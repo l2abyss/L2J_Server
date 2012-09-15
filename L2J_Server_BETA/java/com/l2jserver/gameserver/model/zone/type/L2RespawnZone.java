@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.model.zone.L2ZoneType;
  */
 public class L2RespawnZone extends L2ZoneType
 {
-	private Map<Race, String> _raceRespawnPoint = new FastMap<>();
+	private final Map<Race, String> _raceRespawnPoint = new FastMap<>();
 	
 	public L2RespawnZone(int id)
 	{

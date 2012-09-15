@@ -1093,9 +1093,6 @@ public final class BlowfishEngine
 		0x3AC372E6
 	};
 	
-	// ====================================
-	// Useful constants
-	// ====================================
 	private static final int ROUNDS = 16;
 	private static final int BLOCK_SIZE = 8; // bytes = 64 bits
 	private static final int SBOX_SK = 256;
@@ -1133,9 +1130,6 @@ public final class BlowfishEngine
 		return BLOCK_SIZE;
 	}
 	
-	// ==================================
-	// Private Implementation
-	// ==================================
 	private int func(int x)
 	{
 		return (((S0[(x >>> 24)] + S1[(x >>> 16) & 0xff]) ^ S2[(x >>> 8) & 0xff]) + S3[x & 0xff]);
@@ -1180,7 +1174,7 @@ public final class BlowfishEngine
 	
 	private void setKey(byte[] key)
 	{
-		/*
+		/**
 		 * - comments are from _Applied Crypto_, Schneier, p338.<br>
 		 * Please be careful comparing the two, AC numbers the arrays from 1, the enclosed code from 0.<br>
 		 * (1) Initialize the S-boxes and the P-array, with a fixed string This string contains the hexadecimal digits of pi (3.141...)
@@ -1190,7 +1184,7 @@ public final class BlowfishEngine
 		System.arraycopy(KS2, 0, S2, 0, SBOX_SK);
 		System.arraycopy(KS3, 0, S3, 0, SBOX_SK);
 		System.arraycopy(KP, 0, P, 0, P_SZ);
-		/*
+		/**
 		 * (2) Now, XOR P[0] with the first 32 bits of the key, XOR P[1] with the second 32-bits of the key, and so on for all bits of the key (up to P[17]).<br>
 		 * Repeatedly cycle through the key bits until the entire P-array has been XOR-ed with the key bits
 		 */
@@ -1213,7 +1207,7 @@ public final class BlowfishEngine
 			// XOR the newly created 32 bit chunk onto the P-array
 			P[i] ^= data;
 		}
-		/*
+		/**
 		 * (3) Encrypt the all-zero string with the Blowfish algorithm, using the subkeys described in (1) and (2)<br>
 		 * (4) Replace P1 and P2 with the output of step (3)<br>
 		 * (5) Encrypt the output of step(3) using the Blowfish algorithm, with the modified subkeys.<br>

@@ -50,7 +50,7 @@ public class PledgeReceiveSubPledgeCreated extends L2GameServerPacket
 	private String getLeaderName()
 	{
 		int LeaderId = _subPledge.getLeaderId();
-		if (_subPledge.getId() == L2Clan.SUBUNIT_ACADEMY || LeaderId == 0)
+		if ((_subPledge.getId() == L2Clan.SUBUNIT_ACADEMY) || (LeaderId == 0))
 		{
 			return "";
 		}

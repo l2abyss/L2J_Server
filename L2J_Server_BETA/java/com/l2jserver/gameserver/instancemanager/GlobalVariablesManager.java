@@ -68,7 +68,7 @@ public class GlobalVariablesManager
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(SAVE_VAR))
 		{
-			for(String var : _variablesMap.keySet())
+			for (String var : _variablesMap.keySet())
 			{
 				statement.setString(1, var);
 				statement.setString(2, _variablesMap.get(var));

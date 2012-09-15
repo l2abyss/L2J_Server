@@ -15,11 +15,8 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 /**
- * Format: (c) ddd
- * d: dx
- * d: dy
- * d: dz
- * @author  -Wooden-
+ * Format: (c) ddd d: dx d: dy d: dz
+ * @author -Wooden-
  */
 public class MoveWithDelta extends L2GameClientPacket
 {

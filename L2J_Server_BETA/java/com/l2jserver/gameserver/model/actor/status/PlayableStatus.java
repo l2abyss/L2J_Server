@@ -26,6 +26,6 @@ public class PlayableStatus extends CharStatus
 	@Override
 	public L2Playable getActiveChar()
 	{
-		return (L2Playable)super.getActiveChar();
+		return (L2Playable) super.getActiveChar();
 	}
 }

@@ -187,10 +187,10 @@ public abstract class L2Object
 		{
 			_parent = parent;
 			
-			final int high = this.ordinal() - (Long.SIZE - 1);
+			final int high = ordinal() - (Long.SIZE - 1);
 			if (high < 0)
 			{
-				_typeL = 1L << this.ordinal();
+				_typeL = 1L << ordinal();
 				_typeH = 0;
 			}
 			else
@@ -199,8 +199,10 @@ public abstract class L2Object
 				_typeH = 1L << high;
 			}
 			
-			if (_typeL < 0 || _typeH < 0)
-				throw new Error("Too many instance types, failed to load " + this.name());
+			if ((_typeL < 0) || (_typeH < 0))
+			{
+				throw new Error("Too many instance types, failed to load " + name());
+			}
 			
 			if (parent != null)
 			{
@@ -221,7 +223,7 @@ public abstract class L2Object
 		
 		public final boolean isType(InstanceType it)
 		{
-			return (_maskL & it._typeL) > 0 || (_maskH & it._typeH) > 0;
+			return ((_maskL & it._typeL) > 0) || ((_maskH & it._typeH) > 0);
 		}
 		
 		public final boolean isTypes(InstanceType... it)
@@ -229,7 +231,9 @@ public abstract class L2Object
 			for (InstanceType i : it)
 			{
 				if (isType(i))
+				{
 					return true;
+				}
 			}
 			return false;
 		}
@@ -264,7 +268,9 @@ public abstract class L2Object
 	{
 		IActionHandler handler = ActionHandler.getInstance().getHandler(getInstanceType());
 		if (handler != null)
+		{
 			handler.action(player, this, interact);
+		}
 		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
@@ -273,7 +279,9 @@ public abstract class L2Object
 	{
 		IActionHandler handler = ActionShiftHandler.getInstance().getHandler(getInstanceType());
 		if (handler != null)
+		{
 			handler.action(player, this, true);
+		}
 		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
@@ -308,7 +316,7 @@ public abstract class L2Object
 	
 	public final int getX()
 	{
-		assert getPosition().getWorldRegion() != null || _isVisible;
+		assert (getPosition().getWorldRegion() != null) || _isVisible;
 		return getPosition().getX();
 	}
 	
@@ -327,18 +335,22 @@ public abstract class L2Object
 	public void setInstanceId(int instanceId)
 	{
 		if (_instanceId == instanceId)
+		{
 			return;
+		}
 		
 		Instance oldI = InstanceManager.getInstance().getInstance(_instanceId);
 		Instance newI = InstanceManager.getInstance().getInstance(instanceId);
 		
 		if (newI == null)
+		{
 			return;
+		}
 		
 		if (isPlayer())
 		{
 			L2PcInstance player = getActingPlayer();
-			if (_instanceId > 0 && oldI != null)
+			if ((_instanceId > 0) && (oldI != null))
 			{
 				oldI.removePlayer(getObjectId());
 				if (oldI.isShowTimer())
@@ -381,7 +393,7 @@ public abstract class L2Object
 		else if (isNpc())
 		{
 			L2Npc npc = (L2Npc) this;
-			if (_instanceId > 0 && oldI != null)
+			if ((_instanceId > 0) && (oldI != null))
 			{
 				oldI.removeNpc(npc);
 			}
@@ -394,7 +406,7 @@ public abstract class L2Object
 		_instanceId = instanceId;
 		
 		// If we change it for visible objects, me must clear & revalidates knownlists
-		if (_isVisible && _knownList != null)
+		if (_isVisible && (_knownList != null))
 		{
 			if (isPlayer())
 			{
@@ -412,13 +424,13 @@ public abstract class L2Object
 	
 	public final int getY()
 	{
-		assert getPosition().getWorldRegion() != null || _isVisible;
+		assert (getPosition().getWorldRegion() != null) || _isVisible;
 		return getPosition().getY();
 	}
 	
 	public final int getZ()
 	{
-		assert getPosition().getWorldRegion() != null || _isVisible;
+		assert (getPosition().getWorldRegion() != null) || _isVisible;
 		return getPosition().getZ();
 	}
 	
@@ -484,7 +496,7 @@ public abstract class L2Object
 	 */
 	public final void spawnMe()
 	{
-		assert getPosition().getWorldRegion() == null && getPosition().getWorldPosition().getX() != 0 && getPosition().getWorldPosition().getY() != 0 && getPosition().getWorldPosition().getZ() != 0;
+		assert (getPosition().getWorldRegion() == null) && (getPosition().getWorldPosition().getX() != 0) && (getPosition().getWorldPosition().getY() != 0) && (getPosition().getWorldPosition().getZ() != 0);
 		
 		synchronized (this)
 		{
@@ -517,13 +529,21 @@ public abstract class L2Object
 			_isVisible = true;
 			
 			if (x > L2World.MAP_MAX_X)
+			{
 				x = L2World.MAP_MAX_X - 5000;
+			}
 			if (x < L2World.MAP_MIN_X)
+			{
 				x = L2World.MAP_MIN_X + 5000;
+			}
 			if (y > L2World.MAP_MAX_Y)
+			{
 				y = L2World.MAP_MAX_Y - 5000;
+			}
 			if (y < L2World.MAP_MIN_Y)
+			{
 				y = L2World.MAP_MIN_Y + 5000;
+			}
 			
 			getPosition().setWorldPosition(x, y, z);
 			getPosition().setWorldRegion(L2World.getInstance().getRegion(getPosition().getWorldPosition()));
@@ -548,9 +568,13 @@ public abstract class L2Object
 	public void toggleVisible()
 	{
 		if (isVisible())
+		{
 			decayMe();
+		}
 		else
+		{
 			spawnMe();
+		}
 	}
 	
 	public boolean isAttackable()
@@ -581,7 +605,9 @@ public abstract class L2Object
 	{
 		_isVisible = value;
 		if (!_isVisible)
+		{
 			getPosition().setWorldRegion(null);
+		}
 	}
 	
 	public ObjectKnownList getKnownList()
@@ -620,7 +646,9 @@ public abstract class L2Object
 	public final ObjectPoly getPoly()
 	{
 		if (_poly == null)
+		{
 			_poly = new ObjectPoly(this);
+		}
 		return _poly;
 	}
 	
@@ -830,7 +858,7 @@ public abstract class L2Object
 	 * @param charged
 	 */
 	public void setChargedShot(ShotType type, boolean charged)
-	{	
+	{
 	}
 	
 	/**

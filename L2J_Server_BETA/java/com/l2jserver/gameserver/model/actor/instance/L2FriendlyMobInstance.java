@@ -20,11 +20,8 @@ import com.l2jserver.gameserver.model.actor.knownlist.FriendlyMobKnownList;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 
 /**
- * This class represents Friendly Mobs lying over the world.
- * These friendly mobs should only attack players with karma > 0
- * and it is always aggro, since it just attacks players with karma
- *
- * @version $Revision: 1.20.4.6 $ $Date: 2005/07/23 16:13:39 $
+ * This class represents Friendly Mobs lying over the world.<br>
+ * These friendly mobs should only attack players with karma > 0 and it is always aggro, since it just attacks players with karma.
  */
 public class L2FriendlyMobInstance extends L2Attackable
 {
@@ -37,7 +34,7 @@ public class L2FriendlyMobInstance extends L2Attackable
 	@Override
 	public final FriendlyMobKnownList getKnownList()
 	{
-		return (FriendlyMobKnownList)super.getKnownList();
+		return (FriendlyMobKnownList) super.getKnownList();
 	}
 	
 	@Override
@@ -50,8 +47,10 @@ public class L2FriendlyMobInstance extends L2Attackable
 	public boolean isAutoAttackable(L2Character attacker)
 	{
 		if (attacker instanceof L2PcInstance)
-			return ((L2PcInstance)attacker).getKarma() > 0;
-			return false;
+		{
+			return ((L2PcInstance) attacker).getKarma() > 0;
+		}
+		return false;
 	}
 	
 	@Override

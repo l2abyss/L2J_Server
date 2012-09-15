@@ -19,9 +19,7 @@ import com.l2jserver.gameserver.handler.IBypassHandler;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * format ch
- * c: (id) 0xD0
- * h: (subid) 0x13
+ * format ch c: (id) 0xD0 h: (subid) 0x13
  * @author -Wooden-
  */
 public final class RequestOlympiadMatchList extends L2GameClientPacket
@@ -39,12 +37,16 @@ public final class RequestOlympiadMatchList extends L2GameClientPacket
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null || !activeChar.inObserverMode())
+		if ((activeChar == null) || !activeChar.inObserverMode())
+		{
 			return;
-
+		}
+		
 		IBypassHandler handler = BypassHandler.getInstance().getHandler(COMMAND);
 		if (handler != null)
+		{
 			handler.useBypass(COMMAND, activeChar, null);
+		}
 	}
 	
 	@Override

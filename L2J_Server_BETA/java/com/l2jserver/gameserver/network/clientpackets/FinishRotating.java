@@ -19,7 +19,6 @@ import com.l2jserver.gameserver.network.serverpackets.StopRotation;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.1.4.3 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class FinishRotating extends L2GameClientPacket
@@ -42,7 +41,9 @@ public final class FinishRotating extends L2GameClientPacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		StopRotation sr;
 		if (activeChar.isInAirShip() && activeChar.getAirShip().isCaptain(activeChar))

@@ -44,7 +44,7 @@ public class BlowFishKey extends BaseSendablePacket
 			writeD(encrypted.length);
 			writeB(encrypted);
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Error While encrypting blowfish key for transmision (Crypt error): " + e.getMessage(), e);
 		}

@@ -36,13 +36,15 @@ public final class ItemList extends L2GameServerPacket
 		questItems = FastList.newInstance();
 		for (int i = 0; i < _items.length; i++)
 		{
-			if (_items[i] != null && _items[i].isQuestItem())
+			if ((_items[i] != null) && _items[i].isQuestItem())
 			{
 				questItems.add(_items[i]); // add to questinv
 				_items[i] = null; // remove from list
 			}
 			else
+			{
 				length++; // increase size
+			}
 		}
 	}
 	
@@ -56,8 +58,10 @@ public final class ItemList extends L2GameServerPacket
 		
 		for (L2ItemInstance temp : _items)
 		{
-			if (temp == null || temp.getItem() == null)
+			if ((temp == null) || (temp.getItem() == null))
+			{
 				continue;
+			}
 			
 			writeD(temp.getObjectId());
 			writeD(temp.getDisplayId());
@@ -71,9 +75,13 @@ public final class ItemList extends L2GameServerPacket
 			// race tickets
 			writeH(temp.getCustomType2()); // item type3
 			if (temp.isAugmented())
+			{
 				writeD(temp.getAugmentation().getAugmentationId());
+			}
 			else
+			{
 				writeD(0x00);
+			}
 			writeD(temp.getMana());
 			writeD(temp.isTimeLimitedItem() ? (int) (temp.getRemainingTime() / 1000) : -9999);
 			writeH(temp.getAttackElementType());

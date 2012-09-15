@@ -56,7 +56,9 @@ public class L2EffectPointInstance extends L2Npc
 	public void onActionShift(L2PcInstance player)
 	{
 		if (player == null)
+		{
 			return;
+		}
 		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}

@@ -14,9 +14,6 @@
  */
 package com.l2jserver.gameserver.model.entity;
 
-import gnu.trove.map.hash.TIntIntHashMap;
-import gnu.trove.procedure.TObjectProcedure;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -62,6 +59,9 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
+
+import gnu.trove.map.hash.TIntIntHashMap;
+import gnu.trove.procedure.TObjectProcedure;
 
 public class Fort
 {

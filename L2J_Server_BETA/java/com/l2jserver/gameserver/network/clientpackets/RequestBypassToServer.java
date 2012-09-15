@@ -55,7 +55,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 {
 	private static final String _C__23_REQUESTBYPASSTOSERVER = "[C] 23 RequestBypassToServer";
 	private static final List<RequestBypassToServerListener> _listeners = new FastList<RequestBypassToServerListener>().shared();
-
+	
 	// S
 	private String _command;
 	
@@ -70,10 +70,14 @@ public final class RequestBypassToServer extends L2GameClientPacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		if (!getClient().getFloodProtectors().getServerBypass().tryPerformAction(_command))
+		{
 			return;
+		}
 		
 		if (_command.isEmpty())
 		{
@@ -131,7 +135,9 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			else if (_command.startsWith("npc_"))
 			{
 				if (!activeChar.validateBypass(_command))
+				{
 					return;
+				}
 				
 				int endOfId = _command.indexOf('_', 5);
 				String id;
@@ -147,7 +153,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				{
 					L2Object object = L2World.getInstance().findObject(Integer.parseInt(id));
 					
-					if (object != null && object.isNpc() && endOfId > 0 && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
+					if ((object != null) && object.isNpc() && (endOfId > 0) && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
 					{
 						((L2Npc) object).onBypassFeedback(activeChar, _command.substring(endOfId + 1));
 					}
@@ -157,33 +163,43 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			}
 			else if (_command.startsWith("item_"))
 			{
-				if(!activeChar.validateBypass(_command))
+				if (!activeChar.validateBypass(_command))
+				{
 					return;
+				}
 				
 				int endOfId = _command.indexOf('_', 5);
 				String id;
 				if (endOfId > 0)
+				{
 					id = _command.substring(5, endOfId);
+				}
 				else
+				{
 					id = _command.substring(5);
+				}
 				try
 				{
 					L2ItemInstance item = activeChar.getInventory().getItemByObjectId(Integer.parseInt(id));
 					
-					if (item != null && endOfId > 0 )
-						item.onBypassFeedback(activeChar, _command.substring(endOfId+1));
+					if ((item != null) && (endOfId > 0))
+					{
+						item.onBypassFeedback(activeChar, _command.substring(endOfId + 1));
+					}
 					
 					activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				}
 				catch (NumberFormatException nfe)
 				{
-					_log.log(Level.WARNING, "NFE for command ["+_command+"]", nfe);
+					_log.log(Level.WARNING, "NFE for command [" + _command + "]", nfe);
 				}
 			}
 			else if (_command.startsWith("summon_"))
 			{
 				if (!activeChar.validateBypass(_command))
+				{
 					return;
+				}
 				
 				int endOfId = _command.indexOf('_', 8);
 				String id;
@@ -201,7 +217,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				{
 					L2Object object = L2World.getInstance().findObject(Integer.parseInt(id));
 					
-					if (object instanceof L2MerchantSummonInstance && endOfId > 0 && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
+					if ((object instanceof L2MerchantSummonInstance) && (endOfId > 0) && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
 					{
 						((L2MerchantSummonInstance) object).onBypassFeedback(activeChar, _command.substring(endOfId + 1));
 					}
@@ -222,7 +238,9 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				if (Config.ENABLE_COMMUNITY_BOARD)
 				{
 					if (!CommunityServerThread.getInstance().sendPacket(new RequestShowCommunityBoard(activeChar.getObjectId(), _command)))
+					{
 						activeChar.sendPacket(SystemMessageId.CB_OFFLINE);
+					}
 				}
 				else
 				{
@@ -260,7 +278,9 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			else if (_command.startsWith("Quest "))
 			{
 				if (!activeChar.validateBypass(_command))
+				{
 					return;
+				}
 				
 				String p = _command.substring(6).trim();
 				int idx = p.indexOf(' ');
@@ -330,7 +350,9 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				sb.append("Bypass command: " + _command + "<br1>");
 				sb.append("StackTrace:<br1>");
 				for (StackTraceElement ste : e.getStackTrace())
+				{
 					sb.append(ste.toString() + "<br1>");
+				}
 				sb.append("</body></html>");
 				// item html
 				NpcHtmlMessage msg = new NpcHtmlMessage(0, 12807);
@@ -350,7 +372,9 @@ public final class RequestBypassToServer extends L2GameClientPacket
 	{
 		L2Object obj = activeChar.getTarget();
 		if (obj == null)
+		{
 			return;
+		}
 		if (obj instanceof L2Npc)
 		{
 			L2Npc temp = (L2Npc) obj;
@@ -360,7 +384,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 	}
 	
 	/**
-	 *  Fires the event when packet arrived.
+	 * Fires the event when packet arrived.
 	 */
 	private void fireBypassListeners()
 	{
@@ -373,7 +397,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			listener.onRequestBypassToServer(event);
 		}
 	}
-
+	
 	/**
 	 * @param listener
 	 */
@@ -384,7 +408,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			_listeners.add(listener);
 		}
 	}
-
+	
 	/**
 	 * @param listener
 	 */

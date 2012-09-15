@@ -36,10 +36,8 @@ import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSweeper;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillTeleport;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillTrap;
 
-
 /**
- *
- * @author  nBd
+ * @author nBd
  */
 public enum L2SkillType
 {
@@ -197,7 +195,8 @@ public enum L2SkillType
 	NORNILS_POWER,
 	
 	// unimplemented
-	NOTDONE, BALLISTA;
+	NOTDONE,
+	BALLISTA;
 	
 	private final Class<? extends L2Skill> _class;
 	

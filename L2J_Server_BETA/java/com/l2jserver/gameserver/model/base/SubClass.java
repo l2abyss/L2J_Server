@@ -18,15 +18,13 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 
 /**
- * Character Sub-Class Definition
- * <BR>
+ * Character Sub-Class Definition <BR>
  * Used to store key information about a character's sub-class.
- *
  * @author Tempy
  */
 public final class SubClass
 {
-	private static final byte _maxLevel = Config.MAX_SUBCLASS_LEVEL < ExperienceTable.getInstance().getMaxLevel() ? Config.MAX_SUBCLASS_LEVEL : (byte)(ExperienceTable.getInstance().getMaxLevel() - 1);
+	private static final byte _maxLevel = Config.MAX_SUBCLASS_LEVEL < ExperienceTable.getInstance().getMaxLevel() ? Config.MAX_SUBCLASS_LEVEL : (byte) (ExperienceTable.getInstance().getMaxLevel() - 1);
 	
 	private PlayerClass _class;
 	private long _exp = ExperienceTable.getInstance().getExpForLevel(Config.BASE_SUBCLASS_LEVEL);
@@ -98,7 +96,9 @@ public final class SubClass
 	public void setExp(long expValue)
 	{
 		if (expValue > (ExperienceTable.getInstance().getExpForLevel(_maxLevel + 1) - 1))
+		{
 			expValue = ExperienceTable.getInstance().getExpForLevel(_maxLevel + 1) - 1;
+		}
 		
 		_exp = expValue;
 	}
@@ -116,9 +116,13 @@ public final class SubClass
 	public void setLevel(byte levelValue)
 	{
 		if (levelValue > _maxLevel)
+		{
 			levelValue = _maxLevel;
+		}
 		else if (levelValue < Config.BASE_SUBCLASS_LEVEL)
+		{
 			levelValue = Config.BASE_SUBCLASS_LEVEL;
+		}
 		
 		_level = levelValue;
 	}
@@ -126,7 +130,9 @@ public final class SubClass
 	public void incLevel()
 	{
 		if (getLevel() == _maxLevel)
+		{
 			return;
+		}
 		
 		_level++;
 		setExp(ExperienceTable.getInstance().getExpForLevel(getLevel()));
@@ -135,7 +141,9 @@ public final class SubClass
 	public void decLevel()
 	{
 		if (getLevel() == Config.BASE_SUBCLASS_LEVEL)
+		{
 			return;
+		}
 		
 		_level--;
 		setExp(ExperienceTable.getInstance().getExpForLevel(getLevel()));

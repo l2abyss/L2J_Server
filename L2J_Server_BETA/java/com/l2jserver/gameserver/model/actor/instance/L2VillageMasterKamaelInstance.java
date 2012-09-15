@@ -30,9 +30,10 @@ public final class L2VillageMasterKamaelInstance extends L2VillageMasterInstance
 	@Override
 	protected final String getSubClassMenu(Race pRace)
 	{
-		if (Config.ALT_GAME_SUBCLASS_EVERYWHERE
-				|| pRace == Race.Kamael)
+		if (Config.ALT_GAME_SUBCLASS_EVERYWHERE || (pRace == Race.Kamael))
+		{
 			return "data/html/villagemaster/SubClass.htm";
+		}
 		
 		return "data/html/villagemaster/SubClass_NoKamael.htm";
 	}
@@ -47,16 +48,22 @@ public final class L2VillageMasterKamaelInstance extends L2VillageMasterInstance
 	protected final boolean checkQuests(L2PcInstance player)
 	{
 		// Noble players can add subbclasses without quests
-	 	if (player.isNoble())
-	 		return true;
-	 	
+		if (player.isNoble())
+		{
+			return true;
+		}
+		
 		QuestState qs = player.getQuestState("234_FatesWhisper");
-		if (qs == null || !qs.isCompleted())
+		if ((qs == null) || !qs.isCompleted())
+		{
 			return false;
+		}
 		
 		qs = player.getQuestState("236_SeedsOfChaos");
-		if (qs == null || !qs.isCompleted())
+		if ((qs == null) || !qs.isCompleted())
+		{
 			return false;
+		}
 		
 		return true;
 	}
@@ -65,7 +72,9 @@ public final class L2VillageMasterKamaelInstance extends L2VillageMasterInstance
 	protected final boolean checkVillageMasterRace(PlayerClass pclass)
 	{
 		if (pclass == null)
+		{
 			return false;
+		}
 		
 		return pclass.isOfRace(Race.Kamael);
 	}

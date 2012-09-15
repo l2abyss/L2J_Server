@@ -24,15 +24,14 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
 
-
 public class MonsterRace
 {
 	protected static final Logger _log = Logger.getLogger(MonsterRace.class.getName());
 	
-	private L2Npc[] _monsters;
+	private final L2Npc[] _monsters;
 	private Constructor<?> _constructor;
 	private int[][] _speeds;
-	private int[] _first, _second;
+	private final int[] _first, _second;
 	
 	protected MonsterRace()
 	{
@@ -78,7 +77,7 @@ public class MonsterRace
 			{
 				_log.log(Level.WARNING, "", e);
 			}
-			//_log.info("Monster "+i+" is id: "+(id+random));
+			// _log.info("Monster "+i+" is id: "+(id+random));
 		}
 		newSpeeds();
 	}
@@ -95,9 +94,13 @@ public class MonsterRace
 			for (int j = 0; j < 20; j++)
 			{
 				if (j == 19)
+				{
 					_speeds[i][j] = 100;
+				}
 				else
+				{
 					_speeds[i][j] = Rnd.get(60) + 65;
+				}
 				total += _speeds[i][j];
 			}
 			if (total >= _first[1])

@@ -38,22 +38,26 @@ public final class RequestDeleteReceivedPost extends L2GameClientPacket
 	protected void readImpl()
 	{
 		int count = readD();
-		if (count <= 0
-				|| count > Config.MAX_ITEM_IN_PACKET
-				|| count * BATCH_LENGTH != _buf.remaining())
+		if ((count <= 0) || (count > Config.MAX_ITEM_IN_PACKET) || ((count * BATCH_LENGTH) != _buf.remaining()))
+		{
 			return;
+		}
 		
 		_msgIds = new int[count];
 		for (int i = 0; i < count; i++)
+		{
 			_msgIds[i] = readD();
+		}
 	}
 	
 	@Override
 	public void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null || _msgIds == null || !Config.ALLOW_MAIL)
+		if ((activeChar == null) || (_msgIds == null) || !Config.ALLOW_MAIL)
+		{
 			return;
+		}
 		
 		if (!activeChar.isInsideZone(ZoneId.PEACE))
 		{
@@ -65,16 +69,19 @@ public final class RequestDeleteReceivedPost extends L2GameClientPacket
 		{
 			Message msg = MailManager.getInstance().getMessage(msgId);
 			if (msg == null)
+			{
 				continue;
+			}
 			if (msg.getReceiverId() != activeChar.getObjectId())
 			{
-				Util.handleIllegalPlayerAction(activeChar,
-						"Player "+activeChar.getName()+" tried to delete not own post!", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to delete not own post!", Config.DEFAULT_PUNISH);
 				return;
 			}
 			
 			if (msg.hasAttachments() || msg.isDeletedByReceiver())
+			{
 				return;
+			}
 			
 			msg.setDeletedByReceiver();
 		}

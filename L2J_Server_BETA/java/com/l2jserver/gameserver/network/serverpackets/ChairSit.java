@@ -17,13 +17,13 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public class ChairSit extends L2GameServerPacket
-{	
+{
 	private final L2PcInstance _activeChar;
 	private final int _staticObjectId;
 	
 	/**
-	 * @param player 
-	 * @param staticObjectId 
+	 * @param player
+	 * @param staticObjectId
 	 */
 	public ChairSit(L2PcInstance player, int staticObjectId)
 	{

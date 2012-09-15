@@ -18,10 +18,7 @@ import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * Format: chdd
- * d: Arena
- * d: Team
- * 
+ * Format: chdd d: Arena d: Team
  * @author mrTJO
  */
 public final class RequestExCubeGameChangeTeam extends L2GameClientPacket
@@ -44,9 +41,11 @@ public final class RequestExCubeGameChangeTeam extends L2GameClientPacket
 	{
 		// do not remove players after start
 		if (HandysBlockCheckerManager.getInstance().arenaIsBeingUsed(_arena))
+		{
 			return;
+		}
 		L2PcInstance player = getClient().getActiveChar();
-
+		
 		switch (_team)
 		{
 			case 0:
@@ -55,17 +54,19 @@ public final class RequestExCubeGameChangeTeam extends L2GameClientPacket
 				HandysBlockCheckerManager.getInstance().changePlayerToTeam(player, _arena, _team);
 				break;
 			case -1:
-				// Remove Player (me)
+			// Remove Player (me)
 			{
 				int team = HandysBlockCheckerManager.getInstance().getHolder(_arena).getPlayerTeam(player);
 				// client sends two times this packet if click on exit
 				// client did not send this packet on restart
 				if (team > -1)
+				{
 					HandysBlockCheckerManager.getInstance().removePlayer(player, _arena, team);
+				}
 				break;
 			}
 			default:
-				_log.warning("Wrong Cube Game Team ID: "+_team);
+				_log.warning("Wrong Cube Game Team ID: " + _team);
 				break;
 		}
 	}

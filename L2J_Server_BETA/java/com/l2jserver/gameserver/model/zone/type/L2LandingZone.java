@@ -20,7 +20,7 @@ import com.l2jserver.gameserver.model.zone.ZoneId;
 
 /**
  * A landing zone
- * @author  Kerberos
+ * @author Kerberos
  */
 public class L2LandingZone extends L2ZoneType
 {

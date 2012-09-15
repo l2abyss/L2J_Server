@@ -510,7 +510,9 @@ public final class Util
 	public static void sendCBHtml(L2PcInstance activeChar, String html, String fillMultiEdit)
 	{
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		if (html != null)
 		{
@@ -520,20 +522,30 @@ public final class Util
 			{
 				int start = html.indexOf("\"bypass ", i);
 				int finish = html.indexOf("\"", start + 1);
-				if (start < 0 || finish < 0)
+				if ((start < 0) || (finish < 0))
+				{
 					break;
+				}
 				
 				if (html.substring(start + 8, start + 10).equals("-h"))
+				{
 					start += 11;
+				}
 				else
+				{
 					start += 8;
+				}
 				
 				i = finish;
 				int finish2 = html.indexOf("$", start);
-				if (finish2 < finish && finish2 > 0)
+				if ((finish2 < finish) && (finish2 > 0))
+				{
 					activeChar.addBypass2(html.substring(start, finish2).trim());
+				}
 				else
+				{
 					activeChar.addBypass(html.substring(start, finish).trim());
+				}
 			}
 		}
 		
@@ -552,11 +564,10 @@ public final class Util
 	}
 	
 	/**
-	*
-	* Fills the community board's multiedit window with text. Must send after sendCBHtml
-	* @param activeChar 
-	* @param text 
-	*/
+	 * Fills the community board's multiedit window with text. Must send after sendCBHtml
+	 * @param activeChar
+	 * @param text
+	 */
 	public static void fillMultiEditContent(L2PcInstance activeChar, String text)
 	{
 		text = text.replaceAll("<br>", Config.EOL);
@@ -595,20 +606,26 @@ public final class Util
 		final Collection<L2Object> objs = npc.getKnownList().getKnownObjects().values();
 		for (L2Object obj : objs)
 		{
-			if (obj != null && ((obj.isPlayable() && playable) || obj.isPet()))
+			if ((obj != null) && ((obj.isPlayable() && playable) || obj.isPet()))
 			{
 				if (obj.isPlayer() && !invisible)
 				{
 					if (obj.getActingPlayer().getAppearance().getInvisible())
+					{
 						continue;
+					}
 				}
 				
 				final L2Character cha = (L2Character) obj;
-				if (cha.getZ() < (npc.getZ() - 100) && cha.getZ() > (npc.getZ() + 100) || !(GeoData.getInstance().canSeeTarget(cha.getX(), cha.getY(), cha.getZ(), npc.getX(), npc.getY(), npc.getZ())))
+				if (((cha.getZ() < (npc.getZ() - 100)) && (cha.getZ() > (npc.getZ() + 100))) || !(GeoData.getInstance().canSeeTarget(cha.getX(), cha.getY(), cha.getZ(), npc.getX(), npc.getY(), npc.getZ())))
+				{
 					continue;
+				}
 				
 				if (Util.checkIfInRange(range, npc, obj, true) && !cha.isDead())
+				{
 					count++;
+				}
 			}
 		}
 		return count;

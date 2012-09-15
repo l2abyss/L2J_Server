@@ -23,7 +23,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.network.L2GameClient;
 
 /**
- * @author  KenM
+ * @author KenM
  */
 public abstract class L2GameServerPacket extends SendablePacket<L2GameClient>
 {
@@ -40,7 +40,7 @@ public abstract class L2GameServerPacket extends SendablePacket<L2GameClient>
 	}
 	
 	/**
-	 * Set "invisible" boolean flag in the packet.
+	 * Set "invisible" boolean flag in the packet.<br>
 	 * Packets from invisible characters will not be broadcasted to players.
 	 * @param b
 	 */
@@ -49,9 +49,6 @@ public abstract class L2GameServerPacket extends SendablePacket<L2GameClient>
 		_invisible = b;
 	}
 	
-	/**
-	 * @see org.mmocore.network.SendablePacket#write()
-	 */
 	@Override
 	protected void write()
 	{

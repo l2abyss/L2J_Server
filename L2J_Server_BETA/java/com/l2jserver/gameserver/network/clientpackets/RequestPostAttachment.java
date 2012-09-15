@@ -53,14 +53,20 @@ public final class RequestPostAttachment extends L2GameClientPacket
 	public void runImpl()
 	{
 		if (!Config.ALLOW_MAIL || !Config.ALLOW_ATTACHMENTS)
+		{
 			return;
+		}
 		
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("getattach"))
+		{
 			return;
+		}
 		
 		if (!activeChar.getAccessLevel().allowTransaction())
 		{
@@ -94,21 +100,26 @@ public final class RequestPostAttachment extends L2GameClientPacket
 		
 		final Message msg = MailManager.getInstance().getMessage(_msgId);
 		if (msg == null)
+		{
 			return;
+		}
 		
 		if (msg.getReceiverId() != activeChar.getObjectId())
 		{
-			Util.handleIllegalPlayerAction(activeChar,
-					"Player "+activeChar.getName()+" tried to get not own attachment!", Config.DEFAULT_PUNISH);
+			Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to get not own attachment!", Config.DEFAULT_PUNISH);
 			return;
 		}
 		
 		if (!msg.hasAttachments())
+		{
 			return;
+		}
 		
 		final ItemContainer attachments = msg.getAttachments();
 		if (attachments == null)
+		{
 			return;
+		}
 		
 		int weight = 0;
 		int slots = 0;
@@ -116,35 +127,38 @@ public final class RequestPostAttachment extends L2GameClientPacket
 		for (L2ItemInstance item : attachments.getItems())
 		{
 			if (item == null)
+			{
 				continue;
+			}
 			
 			// Calculate needed slots
 			if (item.getOwnerId() != msg.getSenderId())
 			{
-				Util.handleIllegalPlayerAction(activeChar,
-						"Player "+activeChar.getName()+" tried to get wrong item (ownerId != senderId) from attachment!", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to get wrong item (ownerId != senderId) from attachment!", Config.DEFAULT_PUNISH);
 				return;
 			}
 			
 			if (!item.getLocation().equals(ItemLocation.MAIL))
 			{
-				Util.handleIllegalPlayerAction(activeChar,
-						"Player "+activeChar.getName()+" tried to get wrong item (Location != MAIL) from attachment!", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to get wrong item (Location != MAIL) from attachment!", Config.DEFAULT_PUNISH);
 				return;
 			}
 			
 			if (item.getLocationSlot() != msg.getId())
 			{
-				Util.handleIllegalPlayerAction(activeChar,
-						"Player "+activeChar.getName()+" tried to get items from different attachment!", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to get items from different attachment!", Config.DEFAULT_PUNISH);
 				return;
 			}
 			
 			weight += item.getCount() * item.getItem().getWeight();
 			if (!item.isStackable())
+			{
 				slots += item.getCount();
+			}
 			else if (activeChar.getInventory().getItemByItemId(item.getItemId()) == null)
+			{
 				slots++;
+			}
 		}
 		
 		// Item Max Limit Check
@@ -162,7 +176,7 @@ public final class RequestPostAttachment extends L2GameClientPacket
 		}
 		
 		long adena = msg.getReqAdena();
-		if (adena > 0 && !activeChar.reduceAdena("PayMail", adena, null, true))
+		if ((adena > 0) && !activeChar.reduceAdena("PayMail", adena, null, true))
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_RECEIVE_NO_ADENA);
 			return;
@@ -173,26 +187,33 @@ public final class RequestPostAttachment extends L2GameClientPacket
 		for (L2ItemInstance item : attachments.getItems())
 		{
 			if (item == null)
+			{
 				continue;
+			}
 			
 			if (item.getOwnerId() != msg.getSenderId())
 			{
-				Util.handleIllegalPlayerAction(activeChar,
-						"Player "+activeChar.getName()+" tried to get items with owner != sender !", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to get items with owner != sender !", Config.DEFAULT_PUNISH);
 				return;
 			}
 			
 			long count = item.getCount();
 			final L2ItemInstance newItem = attachments.transferItem(attachments.getName(), item.getObjectId(), item.getCount(), activeChar.getInventory(), activeChar, null);
 			if (newItem == null)
+			{
 				return;
+			}
 			
 			if (playerIU != null)
 			{
 				if (newItem.getCount() > count)
+				{
 					playerIU.addModifiedItem(newItem);
+				}
 				else
+				{
 					playerIU.addNewItem(newItem);
+				}
 			}
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_ACQUIRED_S2_S1);
 			sm.addItemName(item.getItemId());
@@ -202,9 +223,13 @@ public final class RequestPostAttachment extends L2GameClientPacket
 		
 		// Send updated item list to the player
 		if (playerIU != null)
+		{
 			activeChar.sendPacket(playerIU);
+		}
 		else
+		{
 			activeChar.sendPacket(new ItemList(activeChar, false));
+		}
 		
 		msg.removeAttachments();
 		

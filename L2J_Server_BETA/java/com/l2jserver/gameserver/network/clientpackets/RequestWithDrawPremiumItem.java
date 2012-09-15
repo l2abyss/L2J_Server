@@ -46,9 +46,13 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		
 		if (activeChar == null)
+		{
 			return;
+		}
 		else if (_itemCount <= 0)
+		{
 			return;
+		}
 		else if (activeChar.getObjectId() != _charId)
 		{
 			Util.handleIllegalPlayerAction(activeChar, "[RequestWithDrawPremiumItem] Incorrect owner, Player: " + activeChar.getName(), Config.DEFAULT_PUNISH);
@@ -59,7 +63,7 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 			Util.handleIllegalPlayerAction(activeChar, "[RequestWithDrawPremiumItem] Player: " + activeChar.getName() + " try to get item with empty list!", Config.DEFAULT_PUNISH);
 			return;
 		}
-		else if (activeChar.getWeightPenalty() >= 3 || !activeChar.isInventoryUnder90(false))
+		else if ((activeChar.getWeightPenalty() >= 3) || !activeChar.isInventoryUnder90(false))
 		{
 			activeChar.sendPacket(SystemMessageId.YOU_CANNOT_RECEIVE_THE_VITAMIN_ITEM);
 			return;
@@ -72,9 +76,13 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 		
 		L2PremiumItem _item = activeChar.getPremiumItemList().get(_itemNum);
 		if (_item == null)
+		{
 			return;
+		}
 		else if (_item.getCount() < _itemCount)
+		{
 			return;
+		}
 		
 		long itemsLeft = (_item.getCount() - _itemCount);
 		
@@ -92,9 +100,13 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 		}
 		
 		if (activeChar.getPremiumItemList().isEmpty())
+		{
 			activeChar.sendPacket(SystemMessageId.THERE_ARE_NO_MORE_VITAMIN_ITEMS_TO_BE_FOUND);
+		}
 		else
+		{
 			activeChar.sendPacket(new ExGetPremiumItemList(activeChar));
+		}
 	}
 	
 	@Override

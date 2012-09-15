@@ -34,7 +34,7 @@ public class FortSiegeGuardManager
 {
 	private static final Logger _log = Logger.getLogger(FortSiegeGuardManager.class.getName());
 	
-	private Fort _fort;
+	private final Fort _fort;
 	protected FastMap<Integer, FastList<L2Spawn>> _siegeGuards = new FastMap<>();
 	protected FastList<L2Spawn> _siegeGuardsSpawns;
 	
@@ -44,7 +44,7 @@ public class FortSiegeGuardManager
 	}
 	
 	/**
-	 * Spawn guards.<BR><BR>
+	 * Spawn guards.
 	 */
 	public void spawnSiegeGuard()
 	{
@@ -57,9 +57,13 @@ public class FortSiegeGuardManager
 				{
 					spawnDat.doSpawn();
 					if (spawnDat.getLastSpawn() instanceof L2FortBallistaInstance)
+					{
 						spawnDat.stopRespawn();
+					}
 					else
+					{
 						spawnDat.startRespawn();
+					}
 				}
 			}
 		}
@@ -70,7 +74,7 @@ public class FortSiegeGuardManager
 	}
 	
 	/**
-	 * Unspawn guards.<BR><BR>
+	 * Unspawn guards.
 	 */
 	public void unspawnSiegeGuard()
 	{
@@ -84,7 +88,9 @@ public class FortSiegeGuardManager
 				{
 					spawnDat.stopRespawn();
 					if (spawnDat.getLastSpawn() != null)
+					{
 						spawnDat.getLastSpawn().doDie(spawnDat.getLastSpawn());
+					}
 				}
 			}
 		}
@@ -95,7 +101,7 @@ public class FortSiegeGuardManager
 	}
 	
 	/**
-	 * Load guards.<BR><BR>
+	 * Load guards.
 	 */
 	void loadSiegeGuard()
 	{

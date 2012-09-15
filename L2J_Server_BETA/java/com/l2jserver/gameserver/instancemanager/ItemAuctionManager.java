@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,6 +33,8 @@ import org.w3c.dom.Node;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.itemauction.ItemAuctionInstance;
+
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
  * @author Forsaiken
@@ -62,7 +62,9 @@ public final class ItemAuctionManager
 			ResultSet rset = statement.executeQuery("SELECT auctionId FROM item_auction ORDER BY auctionId DESC LIMIT 0, 1"))
 		{
 			if (rset.next())
+			{
 				_auctionIds.set(rset.getInt(1) + 1);
+			}
 		}
 		catch (final SQLException e)
 		{
@@ -95,7 +97,9 @@ public final class ItemAuctionManager
 							final int instanceId = Integer.parseInt(nab.getNamedItem("id").getNodeValue());
 							
 							if (_managerInstances.containsKey(instanceId))
+							{
 								throw new Exception("Dublicated instanceId " + instanceId);
+							}
 							
 							final ItemAuctionInstance instance = new ItemAuctionInstance(instanceId, _auctionIds, nb);
 							_managerInstances.put(instanceId, instance);

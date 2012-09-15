@@ -23,19 +23,21 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 
 public class L2SkillAgathion extends L2Skill
 {
-	private int _npcId;
+	private final int _npcId;
 	
 	public L2SkillAgathion(StatsSet set)
 	{
 		super(set);
-		_npcId      = set.getInteger("npcId", 0);
+		_npcId = set.getInteger("npcId", 0);
 	}
 	
 	@Override
 	public void useSkill(L2Character caster, L2Object[] targets)
 	{
 		if (caster.isAlikeDead() || !caster.isPlayer())
+		{
 			return;
+		}
 		
 		L2PcInstance activeChar = caster.getActingPlayer();
 		

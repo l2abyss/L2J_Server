@@ -37,18 +37,26 @@ public class L2FortSiegeNpcInstance extends L2NpcWalkerInstance
 		String filename;
 		
 		if (val == 0)
+		{
 			filename = "data/html/fortress/merchant.htm";
+		}
 		else
+		{
 			filename = "data/html/fortress/merchant-" + val + ".htm";
+		}
 		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcId%", String.valueOf(getNpcId()));
 		if (getFort().getOwnerClan() != null)
+		{
 			html.replace("%clanname%", getFort().getOwnerClan().getName());
+		}
 		else
+		{
 			html.replace("%clanname%", "NPC");
+		}
 		player.sendPacket(html);
 	}
 	

@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.3.4.2 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class RequestFriendInvite extends L2GameClientPacket
@@ -44,21 +43,23 @@ public final class RequestFriendInvite extends L2GameClientPacket
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		final L2PcInstance friend = L2World.getInstance().getPlayer(_name);
 		
 		SystemMessage sm;
 		// can't use friend invite for locating invisible characters
-		if (friend == null || !friend.isOnline() || friend.getAppearance().getInvisible())
+		if ((friend == null) || !friend.isOnline() || friend.getAppearance().getInvisible())
 		{
-			//Target is not found in the game.
+			// Target is not found in the game.
 			activeChar.sendPacket(SystemMessageId.THE_USER_YOU_REQUESTED_IS_NOT_IN_GAME);
 			return;
 		}
 		else if (friend == activeChar)
 		{
-			//You cannot add yourself to your own friend list.
+			// You cannot add yourself to your own friend list.
 			activeChar.sendPacket(SystemMessageId.YOU_CANNOT_ADD_YOURSELF_TO_OWN_FRIEND_LIST);
 			return;
 		}

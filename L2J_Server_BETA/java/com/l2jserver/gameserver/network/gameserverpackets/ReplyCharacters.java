@@ -19,8 +19,7 @@ import java.util.List;
 import com.l2jserver.util.network.BaseSendablePacket;
 
 /**
- * @author mrTJO
- * Thanks to mochitto
+ * @author mrTJO Thanks to mochitto
  */
 public class ReplyCharacters extends BaseSendablePacket
 {

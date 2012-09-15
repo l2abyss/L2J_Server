@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 /**
- * @author: VISTALL
+ * @author VISTALL
  */
 public class ExSubPledgeSkillAdd extends L2GameServerPacket
 {

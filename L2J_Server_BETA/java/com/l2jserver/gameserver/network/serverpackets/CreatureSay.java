@@ -76,7 +76,9 @@ public final class CreatureSay extends L2GameServerPacket
 	public void addStringParameter(String text)
 	{
 		if (_parameters == null)
+		{
 			_parameters = new ArrayList<>();
+		}
 		_parameters.add(text);
 	}
 	

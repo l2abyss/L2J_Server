@@ -49,20 +49,28 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		L2ItemInstance targetItem = activeChar.getInventory().getItemByObjectId(_objectId);
 		
 		if (targetItem == null)
+		{
 			return;
+		}
 		
-		if (targetItem.getElementals() == null || targetItem.getElemental(_element) == null)
+		if ((targetItem.getElementals() == null) || (targetItem.getElemental(_element) == null))
+		{
 			return;
+		}
 		
 		if (activeChar.reduceAdena("RemoveElement", getPrice(targetItem), activeChar, true))
 		{
 			if (targetItem.isEquipped())
+			{
 				targetItem.getElemental(_element).removeBonus(activeChar);
+			}
 			targetItem.clearElementAttr(_element);
 			activeChar.sendPacket(new UserInfo(activeChar));
 			
@@ -74,9 +82,13 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 			if (targetItem.getEnchantLevel() > 0)
 			{
 				if (targetItem.isArmor())
+				{
 					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_S2_S3_ATTRIBUTE_REMOVED_RESISTANCE_TO_S4_DECREASED);
+				}
 				else
+				{
 					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_S2_ELEMENTAL_POWER_REMOVED);
+				}
 				sm.addNumber(targetItem.getEnchantLevel());
 				sm.addItemName(targetItem);
 				if (targetItem.isArmor())
@@ -88,9 +100,13 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 			else
 			{
 				if (targetItem.isArmor())
+				{
 					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_S2_ATTRIBUTE_REMOVED_RESISTANCE_S3_DECREASED);
+				}
 				else
+				{
 					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_ELEMENTAL_POWER_REMOVED);
+				}
 				sm.addItemName(targetItem);
 				if (targetItem.isArmor())
 				{
@@ -109,25 +125,37 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 	
 	private long getPrice(L2ItemInstance item)
 	{
-		switch(item.getItem().getCrystalType())
+		switch (item.getItem().getCrystalType())
 		{
 			case L2Item.CRYSTAL_S:
 				if (item.getItem() instanceof L2Weapon)
+				{
 					_price = 50000;
+				}
 				else
+				{
 					_price = 40000;
+				}
 				break;
 			case L2Item.CRYSTAL_S80:
 				if (item.getItem() instanceof L2Weapon)
+				{
 					_price = 100000;
+				}
 				else
+				{
 					_price = 80000;
+				}
 				break;
 			case L2Item.CRYSTAL_S84:
 				if (item.getItem() instanceof L2Weapon)
+				{
 					_price = 200000;
+				}
 				else
+				{
 					_price = 160000;
+				}
 				break;
 		}
 		

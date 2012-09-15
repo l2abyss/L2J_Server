@@ -35,11 +35,15 @@ public final class RequestExFriendListExtended extends L2GameClientPacket
 	public void runImpl()
 	{
 		if (!Config.ALLOW_MAIL)
+		{
 			return;
+		}
 		
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		activeChar.sendPacket(new FriendListExtended(activeChar));
 	}

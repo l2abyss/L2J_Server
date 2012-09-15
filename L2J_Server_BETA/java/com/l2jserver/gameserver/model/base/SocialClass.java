@@ -20,18 +20,18 @@ package com.l2jserver.gameserver.model.base;
  */
 public enum SocialClass
 {
-	Vagabond,
-	Vassal,
-	Apprentice,
-	Heir,
-	Knight,
-	Elder,
-	Baron,
-	Viscount,
-	Count,
-	Marquis,
-	Duke,
-	GrandDuke,
-	DistinguishedKing,
-	Emperor
+	VAGABOND,
+	VASSAL,
+	APPRENTICE,
+	HEIR,
+	KNIGHT,
+	ELDER,
+	BARON,
+	VISCOUNT,
+	COUNT,
+	MARQUIS,
+	DUKE,
+	GRAND_DUKE,
+	DISTINGUISHED_KING,
+	EMPEROR
 }

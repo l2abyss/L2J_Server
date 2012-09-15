@@ -126,12 +126,10 @@ public class L2PetInstance extends L2Summon
 	
 	/**
 	 * Manage Feeding Task.<BR>
-	 * <BR>
-	 * <B><U> Actions</U> :</B><BR>
-	 * <li>Feed or kill the pet depending on hunger level</li> <li>If pet has food in inventory and feed level drops below 55% then consume food from inventory</li> <li>Send a broadcastStatusUpdate packet for this L2PetInstance</li><BR>
-	 * <BR>
+	 * Feed or kill the pet depending on hunger level.<br>
+	 * If pet has food in inventory and feed level drops below 55% then consume food from inventory.<br>
+	 * Send a broadcastStatusUpdate packet for this L2PetInstance
 	 */
-	
 	class FeedTask implements Runnable
 	{
 		@Override
@@ -210,29 +208,29 @@ public class L2PetInstance extends L2Summon
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOUR_PET_IS_VERY_HUNGRY);
 						sendPacket(sm);
 						// High Five: Your Pet won't be gone even when you don't feed it.
-						/*if (Rnd.get(100) < 30)
-						{
-							stopFeed();
-							sm = SystemMessage.getSystemMessage(SystemMessageId.STARVING_GRUMPY_AND_FED_UP_YOUR_PET_HAS_LEFT);
-							sendPacket(sm);
-							_log.info("Hungry pet [" + getTemplate().getName() + "][" + getLevel() + "] deleted for player: " + getOwner() + " Control Item Id :" + getControlObjectId());
-							deleteMe(getOwner());
-						}*/
+						// if (Rnd.get(100) < 30)
+						// {
+						// stopFeed();
+						// sm = SystemMessage.getSystemMessage(SystemMessageId.STARVING_GRUMPY_AND_FED_UP_YOUR_PET_HAS_LEFT);
+						// sendPacket(sm);
+						// _log.info("Hungry pet [" + getTemplate().getName() + "][" + getLevel() + "] deleted for player: " + getOwner() + " Control Item Id :" + getControlObjectId());
+						// deleteMe(getOwner());
+						// }
 					}
 					// High Five: Your Pet won't be gone even when you don't feed it.
-					/*else if (getCurrentFed() < (0.10 * getPetLevelData().getPetMaxFeed()))
-					{
-						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PET_CAN_RUN_AWAY_WHEN_HUNGER_BELOW_10_PERCENT);
-						sendPacket(sm);
-						if (Rnd.get(100) < 3)
-						{
-							stopFeed();
-							sm = SystemMessage.getSystemMessage(SystemMessageId.STARVING_GRUMPY_AND_FED_UP_YOUR_PET_HAS_LEFT);
-							sendPacket(sm);
-							_log.info("Hungry pet [" + getTemplate().getName() + "][" + getLevel() + "] deleted for player: " + getOwner() + " Control Item Id :" + getControlObjectId());
-							deleteMe(getOwner());
-						}
-					}*/
+					// /else if (getCurrentFed() < (0.10 * getPetLevelData().getPetMaxFeed()))
+					// {
+					// SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PET_CAN_RUN_AWAY_WHEN_HUNGER_BELOW_10_PERCENT);
+					// sendPacket(sm);
+					// if (Rnd.get(100) < 3)
+					// {
+					// stopFeed();
+					// sm = SystemMessage.getSystemMessage(SystemMessageId.STARVING_GRUMPY_AND_FED_UP_YOUR_PET_HAS_LEFT);
+					// sendPacket(sm);
+					// _log.info("Hungry pet [" + getTemplate().getName() + "][" + getLevel() + "] deleted for player: " + getOwner() + " Control Item Id :" + getControlObjectId());
+					// deleteMe(getOwner());
+					// }
+					// }
 				}
 			}
 			catch (Exception e)

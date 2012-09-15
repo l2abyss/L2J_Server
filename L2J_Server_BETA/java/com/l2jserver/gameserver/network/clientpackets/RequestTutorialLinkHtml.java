@@ -34,14 +34,18 @@ public class RequestTutorialLinkHtml extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance player = getClient().getActiveChar();
-		if(player == null)
+		if (player == null)
+		{
 			return;
+		}
 		
 		L2ClassMasterInstance.onTutorialLink(player, _bypass);
 		
 		QuestState qs = player.getQuestState("255_Tutorial");
-		if(qs != null)
+		if (qs != null)
+		{
 			qs.getQuest().notifyEvent(_bypass, null, player);
+		}
 	}
 	
 	@Override

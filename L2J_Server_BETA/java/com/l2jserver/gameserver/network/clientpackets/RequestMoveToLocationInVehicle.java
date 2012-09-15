@@ -38,12 +38,15 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 	private int _originY;
 	private int _originZ;
 	
-	public TaskPriority getPriority() { return TaskPriority.PR_HIGH; }
+	public TaskPriority getPriority()
+	{
+		return TaskPriority.PR_HIGH;
+	}
 	
 	@Override
 	protected void readImpl()
 	{
-		_boatId  = readD();   //objectId of boat
+		_boatId = readD(); // objectId of boat
 		_targetX = readD();
 		_targetY = readD();
 		_targetZ = readD();
@@ -57,26 +60,24 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
-		if(Config.PLAYER_MOVEMENT_BLOCK_TIME > 0
-			&& !activeChar.isGM()
-			&& activeChar.getNotMoveUntil() > System.currentTimeMillis())
+		if ((Config.PLAYER_MOVEMENT_BLOCK_TIME > 0) && !activeChar.isGM() && (activeChar.getNotMoveUntil() > System.currentTimeMillis()))
 		{
 			activeChar.sendPacket(SystemMessageId.CANNOT_MOVE_WHILE_SPEAKING_TO_AN_NPC);
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
-		if (_targetX == _originX && _targetY == _originY && _targetZ == _originZ)
+		if ((_targetX == _originX) && (_targetY == _originY) && (_targetZ == _originZ))
 		{
 			activeChar.sendPacket(new StopMoveInVehicle(activeChar, _boatId));
 			return;
 		}
-
-		if (activeChar.isAttackingNow()
-				&& activeChar.getActiveWeaponItem() != null
-				&& (activeChar.getActiveWeaponItem().getItemType() == L2WeaponType.BOW))
+		
+		if (activeChar.isAttackingNow() && (activeChar.getActiveWeaponItem() != null) && (activeChar.getActiveWeaponItem().getItemType() == L2WeaponType.BOW))
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -115,7 +116,7 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 		else
 		{
 			boat = BoatManager.getInstance().getBoat(_boatId);
-			if (boat == null || !boat.isInsideRadius(activeChar, 300, true, false))
+			if ((boat == null) || !boat.isInsideRadius(activeChar, 300, true, false))
 			{
 				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 				return;

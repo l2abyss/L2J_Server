@@ -30,9 +30,6 @@ public class EtcStatusUpdate extends L2GameServerPacket
 		_activeChar = activeChar;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket#writeImpl()
-	 */
 	@Override
 	protected void writeImpl()
 	{

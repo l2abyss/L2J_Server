@@ -18,10 +18,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMatchList;
 
 /**
- * Format: (ch)d
- * d: unknown (always 0?)
- * 
- * @author  mrTJO
+ * Format: (ch)d d: unknown (always 0?)
+ * @author mrTJO
  */
 public class RequestExOlympiadMatchListRefresh extends L2GameClientPacket
 {
@@ -38,7 +36,9 @@ public class RequestExOlympiadMatchListRefresh extends L2GameClientPacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		activeChar.sendPacket(new ExOlympiadMatchList());
 	}

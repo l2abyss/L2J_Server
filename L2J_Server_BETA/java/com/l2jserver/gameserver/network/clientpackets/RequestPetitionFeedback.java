@@ -31,15 +31,15 @@ public class RequestPetitionFeedback extends L2GameClientPacket
 	
 	private static final String INSERT_FEEDBACK = "INSERT INTO petition_feedback VALUES (?,?,?,?,?)";
 	
-	//cdds
-	//private int _unknown;
+	// cdds
+	// private int _unknown;
 	private int _rate; // 4=VeryGood, 3=Good, 2=Fair, 1=Poor, 0=VeryPoor
 	private String _message;
 	
 	@Override
 	protected void readImpl()
 	{
-		//_unknown = 
+		// _unknown =
 		readD(); // unknown
 		_rate = readD();
 		_message = readS();
@@ -50,11 +50,15 @@ public class RequestPetitionFeedback extends L2GameClientPacket
 	{
 		L2PcInstance player = getClient().getActiveChar();
 		
-		if (player == null || player.getLastPetitionGmName() == null)
+		if ((player == null) || (player.getLastPetitionGmName() == null))
+		{
 			return;
+		}
 		
-		if (_rate > 4 || _rate < 0) // Illegal vote
+		if ((_rate > 4) || (_rate < 0))
+		{
 			return;
+		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(INSERT_FEEDBACK))

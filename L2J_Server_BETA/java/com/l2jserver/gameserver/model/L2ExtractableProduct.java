@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.model;
 
 /**
- *
  * @author JIV
  */
 public class L2ExtractableProduct

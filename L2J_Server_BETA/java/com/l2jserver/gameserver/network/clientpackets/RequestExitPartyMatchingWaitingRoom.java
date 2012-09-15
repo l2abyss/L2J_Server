@@ -35,7 +35,9 @@ public final class RequestExitPartyMatchingWaitingRoom extends L2GameClientPacke
 		L2PcInstance _activeChar = getClient().getActiveChar();
 		
 		if (_activeChar == null)
+		{
 			return;
+		}
 		
 		PartyMatchWaitingList.getInstance().removePlayer(_activeChar);
 	}

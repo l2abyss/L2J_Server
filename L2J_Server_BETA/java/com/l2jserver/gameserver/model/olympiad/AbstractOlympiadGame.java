@@ -299,7 +299,7 @@ public abstract class AbstractOlympiadGame
 			// Discharge any active shots
 			L2ItemInstance item = player.getActiveWeaponInstance();
 			if (item != null)
-			{	
+			{
 				item.unChargeAllShots();
 			}
 			

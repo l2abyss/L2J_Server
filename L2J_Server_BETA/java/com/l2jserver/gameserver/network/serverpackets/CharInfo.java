@@ -52,16 +52,20 @@ public class CharInfo extends L2GameServerPacket
 		_activeChar = cha;
 		_objId = cha.getObjectId();
 		_inv = cha.getInventory();
-		if (_activeChar.getVehicle() != null && _activeChar.getInVehiclePosition() != null)
+		if ((_activeChar.getVehicle() != null) && (_activeChar.getInVehiclePosition() != null))
 		{
 			_x = _activeChar.getInVehiclePosition().getX();
 			_y = _activeChar.getInVehiclePosition().getY();
 			_z = _activeChar.getInVehiclePosition().getZ();
 			_vehicleId = _activeChar.getVehicle().getObjectId();
 			if (_activeChar.isInAirShip() && _activeChar.getAirShip().isCaptain(_activeChar))
+			{
 				_airShipHelm = _activeChar.getAirShip().getHelmItemId();
+			}
 			else
+			{
 				_airShipHelm = 0;
+			}
 		}
 		else
 		{
@@ -101,8 +105,10 @@ public class CharInfo extends L2GameServerPacket
 		if (_invisible)
 		{
 			L2PcInstance tmp = getClient().getActiveChar();
-			if (tmp != null && tmp.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
+			if ((tmp != null) && tmp.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
+			{
 				gmSeeInvis = true;
+			}
 		}
 		
 		if (_activeChar.getPoly().isMorphed())
@@ -321,7 +327,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_activeChar.getMountNpcId() + 1000000);
 			writeD(_activeChar.getClassId().getId());
 			writeD(0x00); // ?
-			writeC(_activeChar.isMounted() || _airShipHelm != 0 ? 0 : _activeChar.getEnchantEffect());
+			writeC(_activeChar.isMounted() || (_airShipHelm != 0) ? 0 : _activeChar.getEnchantEffect());
 			
 			writeC(_activeChar.getTeam()); // team circle around feet 1= Blue, 2 = red
 			

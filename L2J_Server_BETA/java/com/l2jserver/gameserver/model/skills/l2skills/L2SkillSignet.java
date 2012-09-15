@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.util.Point3D;
  */
 public final class L2SkillSignet extends L2Skill
 {
-	private int _effectNpcId;
+	private final int _effectNpcId;
 	public int effectId;
 	
 	public L2SkillSignet(StatsSet set)
@@ -44,19 +44,21 @@ public final class L2SkillSignet extends L2Skill
 	public void useSkill(L2Character caster, L2Object[] targets)
 	{
 		if (caster.isAlikeDead())
+		{
 			return;
+		}
 		
 		L2NpcTemplate template = NpcTable.getInstance().getTemplate(_effectNpcId);
-		L2EffectPointInstance effectPoint = new L2EffectPointInstance(IdFactory.getInstance().getNextId(),  template,  caster);
+		L2EffectPointInstance effectPoint = new L2EffectPointInstance(IdFactory.getInstance().getNextId(), template, caster);
 		effectPoint.setCurrentHp(effectPoint.getMaxHp());
 		effectPoint.setCurrentMp(effectPoint.getMaxMp());
-		//L2World.getInstance().storeObject(effectPoint);
+		// L2World.getInstance().storeObject(effectPoint);
 		
 		int x = caster.getX();
 		int y = caster.getY();
 		int z = caster.getZ();
 		
-		if (caster.isPlayer() && getTargetType() == L2TargetType.TARGET_GROUND)
+		if (caster.isPlayer() && (getTargetType() == L2TargetType.TARGET_GROUND))
 		{
 			Point3D wordPosition = caster.getActingPlayer().getCurrentSkillWorldPosition();
 			

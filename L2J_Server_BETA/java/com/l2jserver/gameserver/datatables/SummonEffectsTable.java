@@ -14,12 +14,12 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 import java.util.List;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
+
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
  * @author Nyaran
@@ -27,13 +27,11 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 public class SummonEffectsTable
 {
 	/** Servitors **/
-	/*
-	 * Map tree
-	 * key: charObjectId, value: classIndex Map
-	 * 		key: classIndex, value: servitors Map
-	 * 			key: servitorSkillId, value: Effects list
-	 */
-	private TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>> _servitorEffects = new TIntObjectHashMap<>();
+	// Map tree
+	// -> key: charObjectId, value: classIndex Map
+	// --> key: classIndex, value: servitors Map
+	// ---> key: servitorSkillId, value: Effects list
+	private final TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>> _servitorEffects = new TIntObjectHashMap<>();
 	
 	public TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>> getServitorEffectsOwner()
 	{
@@ -51,7 +49,7 @@ public class SummonEffectsTable
 	}
 	
 	/** Pets **/
-	private TIntObjectHashMap<List<SummonEffect>> _petEffects = new TIntObjectHashMap<>(); // key: petItemObjectId, value: Effects list
+	private final TIntObjectHashMap<List<SummonEffect>> _petEffects = new TIntObjectHashMap<>(); // key: petItemObjectId, value: Effects list
 	
 	public TIntObjectHashMap<List<SummonEffect>> getPetEffects()
 	{

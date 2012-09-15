@@ -20,7 +20,6 @@ import java.util.logging.Level;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 
-
 /**
  * Lets drink to code!
  * @author zabbix
@@ -40,17 +39,19 @@ public final class RequestLinkHtml extends L2GameClientPacket
 	public void runImpl()
 	{
 		L2PcInstance actor = getClient().getActiveChar();
-		if(actor == null)
-			return;
-		
-		if(_link.contains("..") || !_link.contains(".htm"))
+		if (actor == null)
 		{
-			_log.warning("[RequestLinkHtml] hack? link contains prohibited characters: '"+_link+"', skipped");
+			return;
+		}
+		
+		if (_link.contains("..") || !_link.contains(".htm"))
+		{
+			_log.warning("[RequestLinkHtml] hack? link contains prohibited characters: '" + _link + "', skipped");
 			return;
 		}
 		try
 		{
-			String filename = "data/html/"+_link;
+			String filename = "data/html/" + _link;
 			NpcHtmlMessage msg = new NpcHtmlMessage(0);
 			msg.disableValidation();
 			msg.setFile(actor.getHtmlPrefix(), filename);

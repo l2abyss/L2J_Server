@@ -14,14 +14,13 @@
  */
 package com.l2jserver.gameserver.model;
 
-import gnu.trove.map.hash.TIntIntHashMap;
-
 import com.l2jserver.gameserver.datatables.EnchantGroupsData;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 
+import gnu.trove.map.hash.TIntIntHashMap;
+
 /**
  * This class ...
- *
  * @version $Revision: 1.2.4.2 $ $Date: 2005/03/27 15:29:33 $
  */
 public final class L2EnchantSkillLearn
@@ -40,6 +39,7 @@ public final class L2EnchantSkillLearn
 	{
 		_enchantRoutes.put(route, group);
 	}
+	
 	/**
 	 * @return Returns the id.
 	 */
@@ -83,15 +83,17 @@ public final class L2EnchantSkillLearn
 	
 	public int getMinSkillLevel(int level)
 	{
-		if (level % 100 == 1)
+		if ((level % 100) == 1)
+		{
 			return _baseLvl;
+		}
 		return level - 1;
 	}
 	
 	public boolean isMaxEnchant(int level)
 	{
 		int enchantType = L2EnchantSkillLearn.getEnchantRoute(level);
-		if (enchantType < 1 || !_enchantRoutes.contains(enchantType))
+		if ((enchantType < 1) || !_enchantRoutes.contains(enchantType))
 		{
 			return false;
 		}
@@ -107,7 +109,7 @@ public final class L2EnchantSkillLearn
 	public EnchantSkillHolder getEnchantSkillHolder(int level)
 	{
 		int enchantType = L2EnchantSkillLearn.getEnchantRoute(level);
-		if (enchantType < 1 || !_enchantRoutes.contains(enchantType))
+		if ((enchantType < 1) || !_enchantRoutes.contains(enchantType))
 		{
 			return null;
 		}

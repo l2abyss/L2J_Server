@@ -47,7 +47,9 @@ public class MoveToLocationAirShip extends L2GameClientPacket
 		_command = readD();
 		_param1 = readD();
 		if (_buf.remaining() > 0)
+		{
 			_param2 = readD();
+		}
 	}
 	
 	@Override
@@ -55,14 +57,20 @@ public class MoveToLocationAirShip extends L2GameClientPacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		if (!activeChar.isInAirShip())
+		{
 			return;
+		}
 		
 		final L2AirShipInstance ship = activeChar.getAirShip();
 		if (!ship.isCaptain(activeChar))
+		{
 			return;
+		}
 		
 		int z = ship.getZ();
 		
@@ -70,18 +78,26 @@ public class MoveToLocationAirShip extends L2GameClientPacket
 		{
 			case 0:
 				if (!ship.canBeControlled())
+				{
 					return;
+				}
 				if (_param1 < L2World.GRACIA_MAX_X)
+				{
 					ship.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(_param1, _param2, z, 0));
+				}
 				break;
 			case 1:
 				if (!ship.canBeControlled())
+				{
 					return;
+				}
 				ship.getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 				break;
 			case 2:
 				if (!ship.canBeControlled())
+				{
 					return;
+				}
 				if (z < L2World.GRACIA_MAX_Z)
 				{
 					z = Math.min(z + STEP, L2World.GRACIA_MAX_Z);
@@ -90,7 +106,9 @@ public class MoveToLocationAirShip extends L2GameClientPacket
 				break;
 			case 3:
 				if (!ship.canBeControlled())
+				{
 					return;
+				}
 				if (z > L2World.GRACIA_MIN_Z)
 				{
 					z = Math.max(z - STEP, L2World.GRACIA_MIN_Z);
@@ -99,11 +117,15 @@ public class MoveToLocationAirShip extends L2GameClientPacket
 				break;
 			case 4:
 				if (!ship.isInDock() || ship.isMoving())
+				{
 					return;
+				}
 				
 				final VehiclePathPoint[] dst = AirShipManager.getInstance().getTeleportDestination(ship.getDockId(), _param1);
 				if (dst == null)
+				{
 					return;
+				}
 				
 				// Consume fuel, if needed
 				final int fuelConsumption = AirShipManager.getInstance().getFuelConsumption(ship.getDockId(), _param1);

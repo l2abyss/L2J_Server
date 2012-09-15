@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.model.items.type;
 
 /**
  * @author nBd
- *
  */
 public enum L2ActionType
 {

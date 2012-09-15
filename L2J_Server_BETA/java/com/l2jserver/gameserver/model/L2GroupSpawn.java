@@ -24,15 +24,13 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
 
-
 /**
- * @author littlecrow
- * A special spawn implementation to spawn controllable mob
+ * @author littlecrow A special spawn implementation to spawn controllable mob
  */
 public class L2GroupSpawn extends L2Spawn
 {
-	private Constructor<?> _constructor;
-	private L2NpcTemplate _template;
+	private final Constructor<?> _constructor;
+	private final L2NpcTemplate _template;
 	
 	public L2GroupSpawn(L2NpcTemplate mobTemplate) throws SecurityException, ClassNotFoundException, NoSuchMethodException
 	{
@@ -50,22 +48,32 @@ public class L2GroupSpawn extends L2Spawn
 		try
 		{
 			if (_template.isType("L2Pet") || _template.isType("L2Minion"))
+			{
 				return null;
+			}
 			
-			Object[] parameters = {IdFactory.getInstance().getNextId(), _template};
-			Object  tmp = _constructor.newInstance(parameters);
+			Object[] parameters =
+			{
+				IdFactory.getInstance().getNextId(),
+				_template
+			};
+			Object tmp = _constructor.newInstance(parameters);
 			
 			if (!(tmp instanceof L2Npc))
+			{
 				return null;
+			}
 			
-			mob = (L2Npc)tmp;
+			mob = (L2Npc) tmp;
 			
 			int newlocx, newlocy, newlocz;
 			
-			if  (getLocx() == 0 && getLocy() == 0)
+			if ((getLocx() == 0) && (getLocy() == 0))
 			{
 				if (getLocation() == 0)
+				{
 					return null;
+				}
 				
 				int p[] = TerritoryTable.getInstance().getRandomPoint(getLocation());
 				newlocx = p[0];
@@ -82,9 +90,13 @@ public class L2GroupSpawn extends L2Spawn
 			mob.setCurrentHpMp(mob.getMaxHp(), mob.getMaxMp());
 			
 			if (getHeading() == -1)
+			{
 				mob.setHeading(Rnd.nextInt(61794));
+			}
 			else
+			{
 				mob.setHeading(getHeading());
+			}
 			
 			mob.setSpawn(this);
 			mob.spawnMe(newlocx, newlocy, newlocz);

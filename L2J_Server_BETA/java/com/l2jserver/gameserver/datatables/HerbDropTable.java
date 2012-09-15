@@ -30,14 +30,13 @@ import com.l2jserver.gameserver.model.L2DropData;
 
 /**
  * This class ...
- *
  * @version $Revision$ $Date$
  */
 public class HerbDropTable
 {
 	private static Logger _log = Logger.getLogger(HerbDropTable.class.getName());
 	
-	private Map<Integer, List<L2DropCategory>> _herbGroups = new HashMap<>();
+	private final Map<Integer, List<L2DropCategory>> _herbGroups = new HashMap<>();
 	
 	protected HerbDropTable()
 	{
@@ -47,9 +46,15 @@ public class HerbDropTable
 	private void restoreData()
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT "
-				+ L2DatabaseFactory.getInstance().safetyString(new String[] { "groupId", "itemId", "min", "max", "category", "chance" })
-				+ " FROM herb_droplist_groups ORDER BY groupId, chance DESC");
+			PreparedStatement statement = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[]
+			{
+				"groupId",
+				"itemId",
+				"min",
+				"max",
+				"category",
+				"chance"
+			}) + " FROM herb_droplist_groups ORDER BY groupId, chance DESC");
 			ResultSet dropData = statement.executeQuery())
 		{
 			L2DropData dropDat = null;
@@ -58,7 +63,9 @@ public class HerbDropTable
 				int groupId = dropData.getInt("groupId");
 				List<L2DropCategory> category;
 				if (_herbGroups.containsKey(groupId))
+				{
 					category = _herbGroups.get(groupId);
+				}
 				else
 				{
 					category = new ArrayList<>();
@@ -76,12 +83,13 @@ public class HerbDropTable
 				
 				if (ItemTable.getInstance().getTemplate(dropDat.getItemId()) == null)
 				{
-					_log.warning(getClass().getSimpleName() + ": Data for undefined item template! GroupId: " + groupId+" itemId: "+dropDat.getItemId());
+					_log.warning(getClass().getSimpleName() + ": Data for undefined item template! GroupId: " + groupId + " itemId: " + dropDat.getItemId());
 					continue;
 				}
 				
 				boolean catExists = false;
 				for (L2DropCategory cat : category)
+				{
 					// if the category exists, add the drop to this category.
 					if (cat.getCategoryType() == categoryType)
 					{
@@ -89,6 +97,7 @@ public class HerbDropTable
 						catExists = true;
 						break;
 					}
+				}
 				// if the category doesn't exit, create it and add the drop
 				if (!catExists)
 				{

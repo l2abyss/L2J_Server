@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public final class L2EnchantSkillGroup
 {
 	private final int _id;
-	private List<EnchantSkillHolder> _enchantDetails = new ArrayList<>();
+	private final List<EnchantSkillHolder> _enchantDetails = new ArrayList<>();
 	
 	public L2EnchantSkillGroup(int id)
 	{
@@ -94,7 +94,9 @@ public final class L2EnchantSkillGroup
 		public byte getRate(L2PcInstance ply)
 		{
 			if (ply.getLevel() < 76)
+			{
 				return 0;
+			}
 			return _rate[ply.getLevel() - 76];
 		}
 	}

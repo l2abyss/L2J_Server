@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 import org.netcon.BaseReadPacket;
 
 /**
- * @authors  Forsaiken, Gigiikun
+ * @authors Forsaiken, Gigiikun
  */
 public final class ConnectionError extends BaseReadPacket
 {
@@ -33,6 +33,6 @@ public final class ConnectionError extends BaseReadPacket
 	@Override
 	public final void run()
 	{
-		_log.info("ConnectionErrorPacket received: "+super.readC());
+		_log.info("ConnectionErrorPacket received: " + super.readC());
 	}
 }

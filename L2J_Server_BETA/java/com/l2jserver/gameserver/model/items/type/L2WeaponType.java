@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.model.items.type;
 
 /**
- * @author mkizub
- * <BR>Description of Weapon Type
+ * @author mkizub <BR>
+ *         Description of Weapon Type
  */
 public enum L2WeaponType implements L2ItemType
 {

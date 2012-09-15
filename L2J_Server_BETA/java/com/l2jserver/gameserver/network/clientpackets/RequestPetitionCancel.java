@@ -23,23 +23,24 @@ import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * <p>Format: (c) d
+ * <p>
+ * Format: (c) d
  * <ul>
  * <li>d: Unknown</li>
- * </ul></p>
- *
+ * </ul>
+ * </p>
  * @author -Wooden-, TempyIncursion
  */
 public final class RequestPetitionCancel extends L2GameClientPacket
 {
 	private static final String _C__8A_REQUEST_PETITIONCANCEL = "[C] 8A RequestPetitionCancel";
 	
-	//private int _unknown;
+	// private int _unknown;
 	
 	@Override
 	protected void readImpl()
 	{
-		//_unknown = readD(); This is pretty much a trigger packet.
+		// _unknown = readD(); This is pretty much a trigger packet.
 	}
 	
 	@Override
@@ -47,14 +48,20 @@ public final class RequestPetitionCancel extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		if (PetitionManager.getInstance().isPlayerInConsultation(activeChar))
 		{
 			if (activeChar.isGM())
+			{
 				PetitionManager.getInstance().endActivePetition(activeChar);
+			}
 			else
+			{
 				activeChar.sendPacket(SystemMessageId.PETITION_UNDER_PROCESS);
+			}
 		}
 		else
 		{

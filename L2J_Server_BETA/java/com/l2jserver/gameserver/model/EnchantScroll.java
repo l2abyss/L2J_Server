@@ -64,8 +64,10 @@ public class EnchantScroll extends EnchantItem
 	public final boolean isValid(L2ItemInstance enchantItem, EnchantItem supportItem)
 	{
 		// blessed scrolls can't use support items
-		if (supportItem != null && (!supportItem.isValid(enchantItem) || isBlessed()))
+		if ((supportItem != null) && (!supportItem.isValid(enchantItem) || isBlessed()))
+		{
 			return false;
+		}
 		
 		return super.isValid(enchantItem);
 	}
@@ -78,16 +80,22 @@ public class EnchantScroll extends EnchantItem
 	public final double getChance(L2ItemInstance enchantItem, EnchantItem supportItem)
 	{
 		if (!isValid(enchantItem, supportItem))
+		{
 			return -1;
+		}
 		
 		boolean fullBody = enchantItem.getItem().getBodyPart() == L2Item.SLOT_FULL_ARMOR;
-		if (enchantItem.getEnchantLevel() < Config.ENCHANT_SAFE_MAX || (fullBody && enchantItem.getEnchantLevel() < Config.ENCHANT_SAFE_MAX_FULL))
+		if ((enchantItem.getEnchantLevel() < Config.ENCHANT_SAFE_MAX) || (fullBody && (enchantItem.getEnchantLevel() < Config.ENCHANT_SAFE_MAX_FULL)))
+		{
 			return 100;
+		}
 		
 		double chance = _chanceAdd;
 		
-		if (supportItem != null && !_isBlessed)
+		if ((supportItem != null) && !_isBlessed)
+		{
 			chance *= supportItem.getChanceAdd();
+		}
 		
 		return chance;
 	}

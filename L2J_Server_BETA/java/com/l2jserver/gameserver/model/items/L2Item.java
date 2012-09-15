@@ -328,23 +328,23 @@ public abstract class L2Item
 			_skillHolder = new SkillHolder[skillsSplit.length];
 			int used = 0;
 			
-			for (int i = 0; i < skillsSplit.length; ++i)
+			for (String element : skillsSplit)
 			{
 				try
 				{
-					String[] skillSplit = skillsSplit[i].split("-");
+					String[] skillSplit = element.split("-");
 					int id = Integer.parseInt(skillSplit[0]);
 					int level = Integer.parseInt(skillSplit[1]);
 					
 					if (id == 0)
 					{
-						_log.info(StringUtil.concat("Ignoring item_skill(", skillsSplit[i], ") for item ", toString(), ". Skill id is 0!"));
+						_log.info(StringUtil.concat("Ignoring item_skill(", element, ") for item ", toString(), ". Skill id is 0!"));
 						continue;
 					}
 					
 					if (level == 0)
 					{
-						_log.info(StringUtil.concat("Ignoring item_skill(", skillsSplit[i], ") for item ", toString(), ". Skill level is 0!"));
+						_log.info(StringUtil.concat("Ignoring item_skill(", element, ") for item ", toString(), ". Skill level is 0!"));
 						continue;
 					}
 					
@@ -353,7 +353,7 @@ public abstract class L2Item
 				}
 				catch (Exception e)
 				{
-					_log.warning(StringUtil.concat("Failed to parse item_skill(", skillsSplit[i], ") for item ", toString(), "! Format: SkillId0-SkillLevel0[;SkillIdN-SkillLevelN]"));
+					_log.warning(StringUtil.concat("Failed to parse item_skill(", element, ") for item ", toString(), "! Format: SkillId0-SkillLevel0[;SkillIdN-SkillLevelN]"));
 				}
 			}
 			

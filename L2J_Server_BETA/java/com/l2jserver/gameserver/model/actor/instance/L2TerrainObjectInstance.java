@@ -36,8 +36,12 @@ public final class L2TerrainObjectInstance extends L2Npc
 	public void onActionShift(L2PcInstance player)
 	{
 		if (player.isGM())
+		{
 			super.onActionShift(player);
+		}
 		else
+		{
 			player.sendPacket(ActionFailed.STATIC_PACKET);
+		}
 	}
 }

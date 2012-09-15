@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * @author JIV
- *
  */
 public interface L2SquadTrainer
 {

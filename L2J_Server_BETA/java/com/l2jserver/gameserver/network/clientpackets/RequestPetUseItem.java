@@ -34,9 +34,9 @@ public final class RequestPetUseItem extends L2GameClientPacket
 	protected void readImpl()
 	{
 		_objectId = readD();
-		//TODO: implement me properly
-		//readQ();
-		//readD();
+		// TODO: implement me properly
+		// readQ();
+		// readD();
 	}
 	
 	@Override
@@ -86,7 +86,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			}
 		}
 		
-		//check if the item matches the pet
+		// check if the item matches the pet
 		if (item.isEquipable())
 		{
 			// all pet items have condition

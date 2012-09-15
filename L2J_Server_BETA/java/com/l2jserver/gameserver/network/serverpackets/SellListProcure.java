@@ -42,7 +42,7 @@ public class SellListProcure extends L2GameServerPacket
 		for (CropProcure c : _procureList)
 		{
 			L2ItemInstance item = _activeChar.getInventory().getItemByItemId(c.getId());
-			if (item != null && c.getAmount() > 0)
+			if ((item != null) && (c.getAmount() > 0))
 			{
 				_sellList.put(item, c.getAmount());
 			}
@@ -67,5 +67,5 @@ public class SellListProcure extends L2GameServerPacket
 			writeH(0); // unknown
 			writeQ(0); // price, u shouldnt get any adena for crops, only raw materials
 		}
-	}	
+	}
 }

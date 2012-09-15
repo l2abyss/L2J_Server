@@ -19,14 +19,13 @@ import javolution.util.FastList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.RadarControl;
 
-
 /**
  * @author dalrond
  */
 public final class L2Radar
 {
-	private L2PcInstance        _player;
-	private FastList<RadarMarker> _markers;
+	private final L2PcInstance _player;
+	private final FastList<RadarMarker> _markers;
 	
 	public L2Radar(L2PcInstance player)
 	{
@@ -56,7 +55,9 @@ public final class L2Radar
 	public void removeAllMarkers()
 	{
 		for (RadarMarker tempMarker : _markers)
+		{
 			_player.sendPacket(new RadarControl(2, 2, tempMarker._x, tempMarker._y, tempMarker._z));
+		}
 		
 		_markers.clear();
 	}
@@ -65,7 +66,9 @@ public final class L2Radar
 	{
 		_player.sendPacket(new RadarControl(2, 2, _player.getX(), _player.getY(), _player.getZ()));
 		for (RadarMarker tempMarker : _markers)
+		{
 			_player.sendPacket(new RadarControl(0, 1, tempMarker._x, tempMarker._y, tempMarker._z));
+		}
 	}
 	
 	public static class RadarMarker
@@ -89,42 +92,50 @@ public final class L2Radar
 			_z = z;
 		}
 		
-		/**
-		 * @see java.lang.Object#hashCode()
-		 */
 		@Override
 		public int hashCode()
 		{
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + _type;
-			result = prime * result + _x;
-			result = prime * result + _y;
-			result = prime * result + _z;
+			result = (prime * result) + _type;
+			result = (prime * result) + _x;
+			result = (prime * result) + _y;
+			result = (prime * result) + _z;
 			return result;
 		}
 		
-		/**
-		 * @see java.lang.Object#equals(java.lang.Object)
-		 */
 		@Override
 		public boolean equals(Object obj)
 		{
 			if (this == obj)
+			{
 				return true;
+			}
 			if (obj == null)
+			{
 				return false;
+			}
 			if (!(obj instanceof RadarMarker))
+			{
 				return false;
+			}
 			final RadarMarker other = (RadarMarker) obj;
 			if (_type != other._type)
+			{
 				return false;
+			}
 			if (_x != other._x)
+			{
 				return false;
+			}
 			if (_y != other._y)
+			{
 				return false;
+			}
 			if (_z != other._z)
+			{
 				return false;
+			}
 			return true;
 		}
 	}

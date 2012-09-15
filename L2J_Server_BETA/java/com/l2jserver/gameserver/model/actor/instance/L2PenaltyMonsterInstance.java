@@ -36,7 +36,9 @@ public class L2PenaltyMonsterInstance extends L2MonsterInstance
 	public L2Character getMostHated()
 	{
 		if (_ptk != null)
-			return _ptk; //always attack only one person
+		{
+			return _ptk; // always attack only one person
+		}
 		return super.getMostHated();
 	}
 	
@@ -57,7 +59,9 @@ public class L2PenaltyMonsterInstance extends L2MonsterInstance
 	public boolean doDie(L2Character killer)
 	{
 		if (!super.doDie(killer))
+		{
 			return false;
+		}
 		
 		if (Rnd.get(100) <= 75)
 		{

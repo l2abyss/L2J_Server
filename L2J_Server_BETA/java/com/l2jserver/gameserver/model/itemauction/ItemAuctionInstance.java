@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.model.itemauction;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -47,6 +45,8 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Rnd;
+
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 public final class ItemAuctionInstance
 {

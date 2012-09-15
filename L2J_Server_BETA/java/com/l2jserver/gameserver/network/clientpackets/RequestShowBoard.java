@@ -21,16 +21,8 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.RequestShowCommunityBoard;
 
-
 /**
- * packet type id 0x57
- *
- * sample
- *
- * 57
- * 01 00 00 00		// unknown (always 1?)
- *
- * format:		cd
+ * packet type id 0x57 sample 57 01 00 00 00 // unknown (always 1?) format: cd
  */
 public final class RequestShowBoard extends L2GameClientPacket
 {
@@ -53,15 +45,23 @@ public final class RequestShowBoard extends L2GameClientPacket
 			L2PcInstance activeChar = getClient().getActiveChar();
 			
 			if (activeChar == null)
+			{
 				return;
+			}
 			
 			if (CommunityServerThread.getInstance().isAuthed())
+			{
 				CommunityServerThread.getInstance().sendPacket(new RequestShowCommunityBoard(activeChar.getObjectId(), "_bbshome"), true);
+			}
 			else
+			{
 				activeChar.sendPacket(SystemMessageId.CB_OFFLINE);
+			}
 		}
 		else
+		{
 			CommunityBoard.getInstance().handleCommands(getClient(), Config.BBS_DEFAULT);
+		}
 	}
 	
 	@Override

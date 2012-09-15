@@ -23,22 +23,19 @@ import javolution.util.FastMap;
 
 /**
  * @author Layane
- * @param <K> 
- * @param <V> 
+ * @param <K>
+ * @param <V>
  */
-@SuppressWarnings({ "rawtypes" })
+@SuppressWarnings("rawtypes")
 public class FastMRUCache<K, V> extends FastCollection implements Reusable
 {
-	/**
-	 * Comment for <code>serialVersionUID</code>
-	 */
 	private static final long serialVersionUID = 1L;
 	private static final int DEFAULT_CAPACITY = 50;
-	private static final int DEFAULT_FORGET_TIME = 300000; //5 Minutes
+	private static final int DEFAULT_FORGET_TIME = 300000; // 5 Minutes
 	
-	private FastMap<K, CacheNode> _cache = new FastMap<K, CacheNode>().setKeyComparator(FastComparator.DIRECT);
+	private final FastMap<K, CacheNode> _cache = new FastMap<K, CacheNode>().setKeyComparator(FastComparator.DIRECT);
 	private FastMap<K, V> _map;
-	private FastList<K> _mruList = new FastList<>();
+	private final FastList<K> _mruList = new FastList<>();
 	private int _cacheSize;
 	private int _forgetTime;
 	
@@ -63,7 +60,8 @@ public class FastMRUCache<K, V> extends FastCollection implements Reusable
 	/**
 	 * Holds the set factory.
 	 */
-	private static final ObjectFactory FACTORY = new ObjectFactory() {
+	private static final ObjectFactory FACTORY = new ObjectFactory()
+	{
 		
 		@Override
 		public Object create()

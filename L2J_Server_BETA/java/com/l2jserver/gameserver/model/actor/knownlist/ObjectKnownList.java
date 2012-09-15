@@ -79,7 +79,7 @@ public class ObjectKnownList
 		return (getActiveObject() == object) || getKnownObjects().containsKey(object.getObjectId());
 	}
 	
-	/** 
+	/**
 	 * Remove all L2Object from _knownObjects
 	 */
 	public void removeAllKnownObjects()
@@ -107,8 +107,8 @@ public class ObjectKnownList
 		return getKnownObjects().remove(object.getObjectId()) != null;
 	}
 	
-	/** 
-	 * Used only in Config.MOVE_BASED_KNOWNLIST and does not support guards seeing moving monsters 
+	/**
+	 * Used only in Config.MOVE_BASED_KNOWNLIST and does not support guards seeing moving monsters
 	 */
 	public final void findObjects()
 	{

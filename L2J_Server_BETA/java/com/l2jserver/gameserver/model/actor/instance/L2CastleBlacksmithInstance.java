@@ -50,9 +50,13 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 		
 		int condition = validateCondition(player);
 		if (condition <= COND_ALL_FALSE)
+		{
 			return;
+		}
 		else if (condition == COND_BUSY_BECAUSE_OF_SIEGE)
+		{
 			return;
+		}
 		else if (condition == COND_OWNER)
 		{
 			if (command.startsWith("Chat"))
@@ -62,8 +66,12 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 				{
 					val = Integer.parseInt(command.substring(5));
 				}
-				catch (IndexOutOfBoundsException ioobe){}
-				catch (NumberFormatException nfe){}
+				catch (IndexOutOfBoundsException ioobe)
+				{
+				}
+				catch (NumberFormatException nfe)
+				{
+				}
 				showChatWindow(player, val);
 				return;
 			}
@@ -90,13 +98,19 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 		if (condition > COND_ALL_FALSE)
 		{
 			if (condition == COND_BUSY_BECAUSE_OF_SIEGE)
+			{
 				filename = "data/html/castleblacksmith/castleblacksmith-busy.htm"; // Busy because of siege
-			else if (condition == COND_OWNER)                                      // Clan owns castle
+			}
+			else if (condition == COND_OWNER) // Clan owns castle
 			{
 				if (val == 0)
+				{
 					filename = "data/html/castleblacksmith/castleblacksmith.htm";
+				}
 				else
+				{
 					filename = "data/html/castleblacksmith/castleblacksmith-" + val + ".htm";
+				}
 			}
 		}
 		
@@ -111,17 +125,23 @@ public class L2CastleBlacksmithInstance extends L2NpcInstance
 	protected int validateCondition(L2PcInstance player)
 	{
 		if (player.canOverrideCond(PcCondOverride.CASTLE_CONDITIONS))
+		{
 			return COND_OWNER;
+		}
 		
-		if (getCastle() != null && getCastle().getCastleId() > 0)
+		if ((getCastle() != null) && (getCastle().getCastleId() > 0))
 		{
 			if (player.getClan() != null)
 			{
 				if (getCastle().getZone().isActive())
-					return COND_BUSY_BECAUSE_OF_SIEGE;                  // Busy because of siege
-				else if (getCastle().getOwnerId() == player.getClanId() // Clan owns castle
-						&& (player.getClanPrivileges() & L2Clan.CP_CS_MANOR_ADMIN) == L2Clan.CP_CS_MANOR_ADMIN)                       // Leader of clan
-					return COND_OWNER;                                  // Owner
+				{
+					return COND_BUSY_BECAUSE_OF_SIEGE; // Busy because of siege
+				}
+				else if ((getCastle().getOwnerId() == player.getClanId() // Clan owns castle
+				) && ((player.getClanPrivileges() & L2Clan.CP_CS_MANOR_ADMIN) == L2Clan.CP_CS_MANOR_ADMIN))
+				{
+					return COND_OWNER; // Owner
+				}
 			}
 		}
 		

@@ -327,7 +327,7 @@ public final class TaskManager
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement ps1 = con.prepareStatement(SQL_STATEMENTS[2]))
-			{
+		{
 			ps1.setString(1, task);
 			try (ResultSet rs = ps1.executeQuery())
 			{

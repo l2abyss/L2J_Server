@@ -37,7 +37,9 @@ public final class MultiSellList extends L2GameServerPacket
 			_size = PAGE_SIZE;
 		}
 		else
+		{
 			_finished = true;
+		}
 	}
 	
 	@Override
@@ -45,7 +47,7 @@ public final class MultiSellList extends L2GameServerPacket
 	{
 		writeC(0xd0);
 		writeD(_list.getListId()); // list id
-		writeD(1 + _index / PAGE_SIZE); // page started from 1
+		writeD(1 + (_index / PAGE_SIZE)); // page started from 1
 		writeD(_finished ? 1 : 0); // finished
 		writeD(PAGE_SIZE); // size of pages
 		writeD(_size); // list length

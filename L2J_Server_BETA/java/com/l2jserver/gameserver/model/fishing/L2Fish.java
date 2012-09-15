@@ -148,7 +148,7 @@ public class L2Fish implements Cloneable
 	
 	/**
 	 * @return the fish Length rate.
-	 */	
+	 */
 	public double getFishLengthRate()
 	{
 		return _fishLengthRate;

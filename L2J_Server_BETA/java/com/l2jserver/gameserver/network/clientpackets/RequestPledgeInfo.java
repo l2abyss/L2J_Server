@@ -22,16 +22,14 @@ import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.PledgeInfo;
 
-
 /**
  * This class ...
- *
  * @version $Revision: 1.5.4.3 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class RequestPledgeInfo extends L2GameClientPacket
 {
 	private static final String _C__65_REQUESTPLEDGEINFO = "[C] 65 RequestPledgeInfo";
-		
+	
 	private int _clanId;
 	
 	@Override
@@ -44,18 +42,24 @@ public final class RequestPledgeInfo extends L2GameClientPacket
 	protected void runImpl()
 	{
 		if (Config.DEBUG)
+		{
 			_log.log(Level.FINE, "Info for clan " + _clanId + " requested");
+		}
 		
 		L2PcInstance activeChar = getClient().getActiveChar();
 		
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		L2Clan clan = ClanTable.getInstance().getClan(_clanId);
 		if (clan == null)
 		{
 			if (Config.DEBUG)
-				_log.warning("Clan data for clanId " + _clanId + " is missing for player "+activeChar.getName());
+			{
+				_log.warning("Clan data for clanId " + _clanId + " is missing for player " + activeChar.getName());
+			}
 			return; // we have no clan data ?!? should not happen
 		}
 		

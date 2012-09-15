@@ -58,8 +58,10 @@ public class L2ResidenceHallTeleportZone extends L2ResidenceTeleportZone
 	
 	public synchronized void checkTeleporTask()
 	{
-		if (_teleTask == null || _teleTask.isDone())
+		if ((_teleTask == null) || _teleTask.isDone())
+		{
 			_teleTask = ThreadPoolManager.getInstance().scheduleGeneral(new TeleportTask(), 30000);
+		}
 	}
 	
 	protected class TeleportTask implements Runnable

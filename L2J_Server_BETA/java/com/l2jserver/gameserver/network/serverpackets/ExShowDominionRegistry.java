@@ -44,7 +44,9 @@ public class ExShowDominionRegistry extends L2GameServerPacket
 		{
 			_clanReq = TerritoryWarManager.getInstance().getRegisteredClans(castleId).size();
 			if (player.getClan() != null)
+			{
 				_isClanRegistered = (TerritoryWarManager.getInstance().getRegisteredClans(castleId).contains(player.getClan()) ? 0x01 : 0x00);
+			}
 		}
 		if (TerritoryWarManager.getInstance().getRegisteredMercenaries(castleId) != null)
 		{

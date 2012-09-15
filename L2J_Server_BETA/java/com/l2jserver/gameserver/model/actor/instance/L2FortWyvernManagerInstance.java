@@ -18,7 +18,7 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 
 public class L2FortWyvernManagerInstance extends L2WyvernManagerInstance
 {
-	public L2FortWyvernManagerInstance (int objectId, L2NpcTemplate template)
+	public L2FortWyvernManagerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
 	}
@@ -26,17 +26,16 @@ public class L2FortWyvernManagerInstance extends L2WyvernManagerInstance
 	@Override
 	public final boolean isOwnerClan(L2PcInstance player)
 	{
-		if (player.getClan() != null && getFort() != null && getFort().getOwnerClan() != null)
+		if ((player.getClan() != null) && (getFort() != null) && (getFort().getOwnerClan() != null))
 		{
-			if (player.getClanId() == getFort().getOwnerClan().getClanId() && player.isClanLeader())
+			if ((player.getClanId() == getFort().getOwnerClan().getClanId()) && player.isClanLeader())
+			{
 				return true;
+			}
 		}
 		return false;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.model.actor.instance.L2WyvernManagerInstance#isInSiege()
-	 */
 	@Override
 	public boolean isInSiege()
 	{

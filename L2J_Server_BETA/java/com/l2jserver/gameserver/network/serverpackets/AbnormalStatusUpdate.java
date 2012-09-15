@@ -48,8 +48,10 @@ public class AbnormalStatusUpdate extends L2GameServerPacket
 	 */
 	public void addEffect(int skillId, int level, int duration)
 	{
-		if (skillId == 2031 || skillId == 2032 || skillId == 2037 || skillId == 26025 || skillId == 26026)
+		if ((skillId == 2031) || (skillId == 2032) || (skillId == 2037) || (skillId == 26025) || (skillId == 26026))
+		{
 			return;
+		}
 		_effects.add(new Effect(skillId, level, duration));
 	}
 	
@@ -66,9 +68,13 @@ public class AbnormalStatusUpdate extends L2GameServerPacket
 			writeH(temp._level);
 			
 			if (temp._duration == -1)
+			{
 				writeD(-1);
+			}
 			else
+			{
 				writeD(temp._duration / 1000);
+			}
 		}
 	}
 }

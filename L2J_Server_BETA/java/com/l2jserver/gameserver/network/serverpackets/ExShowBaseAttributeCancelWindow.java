@@ -53,21 +53,33 @@ public class ExShowBaseAttributeCancelWindow extends L2GameServerPacket
 		{
 			case L2Item.CRYSTAL_S:
 				if (item.getItem() instanceof L2Weapon)
+				{
 					_price = 50000;
+				}
 				else
+				{
 					_price = 40000;
+				}
 				break;
 			case L2Item.CRYSTAL_S80:
 				if (item.getItem() instanceof L2Weapon)
+				{
 					_price = 100000;
+				}
 				else
+				{
 					_price = 80000;
+				}
 				break;
 			case L2Item.CRYSTAL_S84:
 				if (item.getItem() instanceof L2Weapon)
+				{
 					_price = 200000;
+				}
 				else
+				{
 					_price = 160000;
+				}
 				break;
 		}
 		

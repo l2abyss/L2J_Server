@@ -41,7 +41,9 @@ public class ExShowFortressSiegeInfo extends L2GameServerPacket
 		_size = fort.getFortSize();
 		FastList<SiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(_fortId);
 		if (commanders != null)
+		{
 			_csize = commanders.size();
+		}
 		_csize2 = _fort.getSiege().getCommanders().size();
 	}
 	

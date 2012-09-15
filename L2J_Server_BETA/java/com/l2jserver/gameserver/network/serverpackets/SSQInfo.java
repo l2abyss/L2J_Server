@@ -29,10 +29,16 @@ public class SSQInfo extends L2GameServerPacket
 		int compWinner = SevenSigns.getInstance().getCabalHighestScore();
 		
 		if (SevenSigns.getInstance().isSealValidationPeriod())
+		{
 			if (compWinner == SevenSigns.CABAL_DAWN)
+			{
 				_state = 2;
+			}
 			else if (compWinner == SevenSigns.CABAL_DUSK)
+			{
 				_state = 1;
+			}
+		}
 	}
 	
 	public SSQInfo(int state)

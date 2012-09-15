@@ -39,15 +39,12 @@ public final class RequestPartyMatchDetail extends L2GameClientPacket
 	@SuppressWarnings("unused")
 	private int _unk3;
 	
-	
 	@Override
 	protected void readImpl()
 	{
 		_roomid = readD();
-		/*
-		 * IF player click on Room all unk are 0
-		 * IF player click AutoJoin values are -1 1 1
-		 */
+		// If player click on Room all unk are 0
+		// If player click AutoJoin values are -1 1 1
 		_unk1 = readD();
 		_unk2 = readD();
 		_unk3 = readD();
@@ -58,11 +55,15 @@ public final class RequestPartyMatchDetail extends L2GameClientPacket
 	{
 		L2PcInstance _activeChar = getClient().getActiveChar();
 		if (_activeChar == null)
+		{
 			return;
+		}
 		
 		PartyMatchRoom _room = PartyMatchRoomList.getInstance().getRoom(_roomid);
 		if (_room == null)
+		{
 			return;
+		}
 		
 		if ((_activeChar.getLevel() >= _room.getMinLvl()) && (_activeChar.getLevel() <= _room.getMaxLvl()))
 		{
@@ -74,10 +75,12 @@ public final class RequestPartyMatchDetail extends L2GameClientPacket
 			_activeChar.sendPacket(new PartyMatchDetail(_activeChar, _room));
 			_activeChar.sendPacket(new ExPartyRoomMember(_activeChar, _room, 0));
 			
-			for(L2PcInstance _member : _room.getPartyMembers())
+			for (L2PcInstance _member : _room.getPartyMembers())
 			{
-				if(_member == null)
+				if (_member == null)
+				{
 					continue;
+				}
 				
 				_member.sendPacket(new ExManagePartyRoomMember(_activeChar, _room, 0));
 				

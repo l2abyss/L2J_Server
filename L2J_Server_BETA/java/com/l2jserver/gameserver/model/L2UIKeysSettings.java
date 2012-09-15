@@ -31,8 +31,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.ActionKey;
 
 /**
- *
- * @author  mrTJO
+ * @author mrTJO
  */
 public class L2UIKeysSettings
 {
@@ -95,7 +94,9 @@ public class L2UIKeysSettings
 		int playerId = _player.getObjectId();
 		
 		if (_saved)
+		{
 			return;
+		}
 		
 		query = "REPLACE INTO character_ui_categories (`charId`, `catId`, `order`, `cmdId`) VALUES ";
 		for (int category : _storedCategories.keySet())
@@ -144,7 +145,9 @@ public class L2UIKeysSettings
 	{
 		
 		if (_storedCategories != null)
+		{
 			return;
+		}
 		
 		_storedCategories = new FastMap<>();
 		
@@ -169,13 +172,17 @@ public class L2UIKeysSettings
 		}
 		
 		if (_storedCategories.size() < 1)
+		{
 			_storedCategories = UITable.getInstance().getCategories();
+		}
 	}
 	
 	public void getKeysFromDB()
 	{
 		if (_storedKeys != null)
+		{
 			return;
+		}
 		
 		_storedKeys = new FastMap<>();
 		
@@ -204,13 +211,17 @@ public class L2UIKeysSettings
 		}
 		
 		if (_storedKeys.size() < 1)
+		{
 			_storedKeys = UITable.getInstance().getKeys();
+		}
 	}
 	
 	public void insertCategory(int cat, int cmd)
 	{
 		if (_storedCategories.containsKey(cat))
+		{
 			_storedCategories.get(cat).add(cmd);
+		}
 		else
 		{
 			List<Integer> tmp = new FastList<>();
@@ -223,7 +234,9 @@ public class L2UIKeysSettings
 	{
 		ActionKey tmk = new ActionKey(cat, cmdId, key, tgKey1, tgKey2, show);
 		if (_storedKeys.containsKey(cat))
+		{
 			_storedKeys.get(cat).add(tmk);
+		}
 		else
 		{
 			List<ActionKey> tmp = new FastList<>();

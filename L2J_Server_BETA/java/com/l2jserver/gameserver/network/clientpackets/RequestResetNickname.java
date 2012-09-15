@@ -17,7 +17,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * @author  KenM
+ * @author KenM
  */
 public class RequestResetNickname extends L2GameClientPacket
 {
@@ -34,7 +34,9 @@ public class RequestResetNickname extends L2GameClientPacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		activeChar.getAppearance().setTitleColor(0xFFFF77);
 		activeChar.setTitle("");

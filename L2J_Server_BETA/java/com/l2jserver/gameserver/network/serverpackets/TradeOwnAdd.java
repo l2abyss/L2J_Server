@@ -50,7 +50,9 @@ public final class TradeOwnAdd extends L2GameServerPacket
 		writeH(_item.getAttackElementType());
 		writeH(_item.getAttackElementPower());
 		for (byte i = 0; i < 6; i++)
+		{
 			writeH(_item.getElementDefAttr(i));
+		}
 		
 		writeH(0x00); // Enchant effect 1
 		writeH(0x00); // Enchant effect 2

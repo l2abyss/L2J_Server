@@ -65,7 +65,9 @@ public class PcFreight extends ItemContainer
 		for (L2ItemInstance item : _items)
 		{
 			if (item.getLocation() == getBaseLocation())
+			{
 				size++;
+			}
 		}
 		return size;
 	}
@@ -81,7 +83,9 @@ public class PcFreight extends ItemContainer
 		for (L2ItemInstance item : _items)
 		{
 			if (item.isFreightable())
+			{
 				list.add(item);
+			}
 		}
 		
 		return list.toArray(new L2ItemInstance[list.size()]);
@@ -96,12 +100,16 @@ public class PcFreight extends ItemContainer
 	public L2ItemInstance getItemByItemId(int itemId)
 	{
 		for (L2ItemInstance item : _items)
+		{
 			if ((item.getItemId() == itemId) && (item.getLocation() == ItemLocation.INVENTORY))
+			{
 				return item;
+			}
+		}
 		
 		return null;
 	}
-
+	
 	@Override
 	public int getOwnerId()
 	{
@@ -111,7 +119,7 @@ public class PcFreight extends ItemContainer
 	@Override
 	public boolean validateCapacity(long slots)
 	{
-		int curSlots = _owner == null ? Config.ALT_FREIGHT_SLOTS : Config.ALT_FREIGHT_SLOTS + (int)_owner.getStat().calcStat(Stats.FREIGHT_LIM, 0, null, null);
-		return (getSize() + slots <= curSlots);
+		int curSlots = _owner == null ? Config.ALT_FREIGHT_SLOTS : Config.ALT_FREIGHT_SLOTS + (int) _owner.getStat().calcStat(Stats.FREIGHT_LIM, 0, null, null);
+		return ((getSize() + slots) <= curSlots);
 	}
 }

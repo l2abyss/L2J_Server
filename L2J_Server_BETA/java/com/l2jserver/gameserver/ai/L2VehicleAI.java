@@ -26,7 +26,7 @@ public abstract class L2VehicleAI extends L2CharacterAI
 {
 	/**
 	 * Simple AI for vehicles
-	 * @param accessor 
+	 * @param accessor
 	 */
 	public L2VehicleAI(L2Vehicle.AIAccessor accessor)
 	{

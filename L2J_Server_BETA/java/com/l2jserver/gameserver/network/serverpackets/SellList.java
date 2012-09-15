@@ -55,7 +55,7 @@ public class SellList extends L2GameServerPacket
 		{
 			for (L2ItemInstance item : _activeChar.getInventory().getItems())
 			{
-				if (!item.isEquipped() && item.isSellable() && (_activeChar.getPet() == null || item.getObjectId() != _activeChar.getPet().getControlObjectId())) // Pet is summoned and not the item that summoned the pet
+				if (!item.isEquipped() && item.isSellable() && ((_activeChar.getPet() == null) || (item.getObjectId() != _activeChar.getPet().getControlObjectId()))) // Pet is summoned and not the item that summoned the pet
 				{
 					_selllist.add(item);
 				}
@@ -89,7 +89,9 @@ public class SellList extends L2GameServerPacket
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());
 			for (byte i = 0; i < 6; i++)
+			{
 				writeH(item.getElementDefAttr(i));
+			}
 			
 			writeH(0x00); // Enchant effect 1
 			writeH(0x00); // Enchant effect 2

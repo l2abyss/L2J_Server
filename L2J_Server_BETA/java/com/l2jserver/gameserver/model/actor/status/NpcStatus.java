@@ -36,13 +36,17 @@ public class NpcStatus extends CharStatus
 	public void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT, boolean isHpConsumption)
 	{
 		if (getActiveChar().isDead())
+		{
 			return;
+		}
 		
 		if (attacker != null)
 		{
 			final L2PcInstance attackerPlayer = attacker.getActingPlayer();
-			if (attackerPlayer != null && attackerPlayer.isInDuel())
+			if ((attackerPlayer != null) && attackerPlayer.isInDuel())
+			{
 				attackerPlayer.setDuelState(Duel.DUELSTATE_INTERRUPTED);
+			}
 			
 			// Add attackers to npc's attacker list
 			getActiveChar().addAttackerToAttackByList(attacker);
@@ -54,6 +58,6 @@ public class NpcStatus extends CharStatus
 	@Override
 	public L2Npc getActiveChar()
 	{
-		return (L2Npc)super.getActiveChar();
+		return (L2Npc) super.getActiveChar();
 	}
 }

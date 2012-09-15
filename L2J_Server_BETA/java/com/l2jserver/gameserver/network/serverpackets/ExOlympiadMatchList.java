@@ -41,7 +41,7 @@ public class ExOlympiadMatchList extends L2GameServerPacket
 			{
 				if (!task.isGameStarted() || task.isBattleFinished())
 				{
-					continue; //initial or finished state not shown
+					continue; // initial or finished state not shown
 				}
 				_games.add(task);
 			}
@@ -66,13 +66,21 @@ public class ExOlympiadMatchList extends L2GameServerPacket
 				writeD(game.getStadiumId()); // Stadium Id (Arena 1 = 0)
 				
 				if (game instanceof OlympiadGameNonClassed)
+				{
 					writeD(1);
+				}
 				else if (game instanceof OlympiadGameClassed)
+				{
 					writeD(2);
+				}
 				else if (game instanceof OlympiadGameTeams)
+				{
 					writeD(-1);
+				}
 				else
+				{
 					writeD(0);
+				}
 				
 				writeD(curGame.isRunning() ? 0x02 : 0x01); // (1 = Standby, 2 = Playing)
 				writeS(game.getPlayerNames()[0]); // Player 1 Name

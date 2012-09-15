@@ -19,9 +19,9 @@ package com.l2jserver.gameserver.model;
  */
 public class L2PremiumItem
 {
-	private int _itemId;
+	private final int _itemId;
 	private long _count;
-	private String _sender;
+	private final String _sender;
 	
 	public L2PremiumItem(int itemid, long count, String sender)
 	{

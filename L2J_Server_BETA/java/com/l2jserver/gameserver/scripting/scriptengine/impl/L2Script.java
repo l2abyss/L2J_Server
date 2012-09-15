@@ -1162,7 +1162,7 @@ public abstract class L2Script extends Quest
 		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
-			if (listener instanceof DlgAnswerListener && Util.contains(messageIds, ((DlgAnswerListener) listener).getMessageId()))
+			if ((listener instanceof DlgAnswerListener) && Util.contains(messageIds, ((DlgAnswerListener) listener).getMessageId()))
 			{
 				removeList.add(listener);
 			}
@@ -1209,7 +1209,7 @@ public abstract class L2Script extends Quest
 	public void addPlayerNotify()
 	{
 		PlayerListener bypass = new PlayerListener()
-		{	
+		{
 			@Override
 			public void onCharCreate(PlayerEvent event)
 			{

@@ -34,8 +34,8 @@ public class SiegeGuardManager
 {
 	private static Logger _log = Logger.getLogger(SiegeGuardManager.class.getName());
 	
-	private Castle _castle;
-	private List<L2Spawn> _siegeGuardSpawn = new FastList<>();
+	private final Castle _castle;
+	private final List<L2Spawn> _siegeGuardSpawn = new FastList<>();
 	
 	public SiegeGuardManager(Castle castle)
 	{
@@ -44,23 +44,25 @@ public class SiegeGuardManager
 	
 	/**
 	 * Add guard.
-	 * @param activeChar 
-	 * @param npcId 
+	 * @param activeChar
+	 * @param npcId
 	 */
 	public void addSiegeGuard(L2PcInstance activeChar, int npcId)
 	{
 		if (activeChar == null)
+		{
 			return;
+		}
 		addSiegeGuard(activeChar.getX(), activeChar.getY(), activeChar.getZ(), activeChar.getHeading(), npcId);
 	}
 	
 	/**
 	 * Add guard.
-	 * @param x 
-	 * @param y 
-	 * @param z 
-	 * @param heading 
-	 * @param npcId 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param heading
+	 * @param npcId
 	 */
 	public void addSiegeGuard(int x, int y, int z, int heading, int npcId)
 	{
@@ -69,23 +71,25 @@ public class SiegeGuardManager
 	
 	/**
 	 * Hire merc.
-	 * @param activeChar 
-	 * @param npcId 
+	 * @param activeChar
+	 * @param npcId
 	 */
 	public void hireMerc(L2PcInstance activeChar, int npcId)
 	{
 		if (activeChar == null)
+		{
 			return;
+		}
 		hireMerc(activeChar.getX(), activeChar.getY(), activeChar.getZ(), activeChar.getHeading(), npcId);
 	}
 	
 	/**
 	 * Hire merc.
-	 * @param x 
-	 * @param y 
-	 * @param z 
-	 * @param heading 
-	 * @param npcId 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param heading
+	 * @param npcId
 	 */
 	public void hireMerc(int x, int y, int z, int heading, int npcId)
 	{
@@ -93,12 +97,11 @@ public class SiegeGuardManager
 	}
 	
 	/**
-	 * Remove a single mercenary, identified by the npcId and location.
-	 * Presumably, this is used when a castle lord picks up a previously dropped ticket
-	 * @param npcId 
-	 * @param x 
-	 * @param y 
-	 * @param z 
+	 * Remove a single mercenary, identified by the npcId and location. Presumably, this is used when a castle lord picks up a previously dropped ticket
+	 * @param npcId
+	 * @param x
+	 * @param y
+	 * @param z
 	 */
 	public void removeMerc(int npcId, int x, int y, int z)
 	{
@@ -119,7 +122,7 @@ public class SiegeGuardManager
 	}
 	
 	/**
-	 * Remove mercs.<BR><BR>
+	 * Remove mercs.
 	 */
 	public void removeMercs()
 	{
@@ -137,7 +140,7 @@ public class SiegeGuardManager
 	}
 	
 	/**
-	 * Spawn guards.<BR><BR>
+	 * Spawn guards.
 	 */
 	public void spawnSiegeGuard()
 	{
@@ -155,7 +158,9 @@ public class SiegeGuardManager
 					{
 						spawn.stopRespawn();
 						if (++hiredCount > hiredMax)
+						{
 							return;
+						}
 					}
 				}
 			}
@@ -167,14 +172,16 @@ public class SiegeGuardManager
 	}
 	
 	/**
-	 * Unspawn guards.<BR><BR>
+	 * Unspawn guards.
 	 */
 	public void unspawnSiegeGuard()
 	{
 		for (L2Spawn spawn : getSiegeGuardSpawn())
 		{
 			if (spawn == null)
+			{
 				continue;
+			}
 			
 			spawn.stopRespawn();
 			spawn.getLastSpawn().doDie(spawn.getLastSpawn());
@@ -184,7 +191,7 @@ public class SiegeGuardManager
 	}
 	
 	/**
-	 * Load guards.<BR><BR>
+	 * Load guards.
 	 */
 	private void loadSiegeGuard()
 	{
@@ -192,10 +199,14 @@ public class SiegeGuardManager
 		{
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM castle_siege_guards Where castleId = ? And isHired = ?");
 			statement.setInt(1, getCastle().getCastleId());
-			if (getCastle().getOwnerId() > 0) // If castle is owned by a clan, then don't spawn default guards
+			if (getCastle().getOwnerId() > 0)
+			{
 				statement.setInt(2, 1);
+			}
 			else
+			{
 				statement.setInt(2, 0);
+			}
 			ResultSet rs = statement.executeQuery();
 			
 			L2Spawn spawn1;
@@ -232,13 +243,13 @@ public class SiegeGuardManager
 	}
 	
 	/**
-	 * Save guards.<BR><BR>
-	 * @param x 
-	 * @param y 
-	 * @param z 
-	 * @param heading 
-	 * @param npcId 
-	 * @param isHire 
+	 * Save guards.
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param heading
+	 * @param npcId
+	 * @param isHire
 	 */
 	private void saveSiegeGuard(int x, int y, int z, int heading, int npcId, int isHire)
 	{

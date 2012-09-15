@@ -16,10 +16,9 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
-
 /**
- *  @author ShanSoft
- *  @structure: chdd
+ * @author ShanSoft
+ * @structure: chdd
  */
 public final class RequestDeleteBookMarkSlot extends L2GameClientPacket
 {
@@ -38,11 +37,12 @@ public final class RequestDeleteBookMarkSlot extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		activeChar.teleportBookmarkDelete(id);
 	}
-	
 	
 	@Override
 	public String getType()

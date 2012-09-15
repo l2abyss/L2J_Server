@@ -14,9 +14,9 @@
  */
 package com.l2jserver.util;
 
-import com.l2jserver.Config;
-
 import javolution.text.TextBuilder;
+
+import com.l2jserver.Config;
 
 /**
  * String utilities optimized for the best performance.<br>
@@ -192,7 +192,6 @@ public final class StringUtil
 	 * Concatenates strings.
 	 * @param strings strings to be concatenated
 	 * @return concatenated string
-	 * @see StringUtil
 	 */
 	public static String concat(final String... strings)
 	{
@@ -213,7 +212,6 @@ public final class StringUtil
 	 * @param sizeHint hint for string builder size allocation
 	 * @param strings strings to be appended
 	 * @return created string builder
-	 * @see StringUtil
 	 */
 	public static StringBuilder startAppend(final int sizeHint, final String... strings)
 	{
@@ -232,7 +230,6 @@ public final class StringUtil
 	 * Appends strings to existing string builder.
 	 * @param sbString string builder
 	 * @param strings strings to be appended
-	 * @see StringUtil
 	 */
 	public static void append(final StringBuilder sbString, final String... strings)
 	{

@@ -131,7 +131,9 @@ public abstract class L2ZoneType
 				
 				int i = 0;
 				for (; i < _race.length; i++)
+				{
 					temp[i] = _race[i];
+				}
 				
 				temp[i] = Integer.parseInt(value);
 				
@@ -153,7 +155,9 @@ public abstract class L2ZoneType
 				
 				int i = 0;
 				for (; i < _class.length; i++)
+				{
 					temp[i] = _class[i];
+				}
 				
 				temp[i] = Integer.parseInt(value);
 				
@@ -193,12 +197,16 @@ public abstract class L2ZoneType
 	private boolean isAffected(L2Character character)
 	{
 		// Check lvl
-		if (character.getLevel() < _minLvl || character.getLevel() > _maxLvl)
+		if ((character.getLevel() < _minLvl) || (character.getLevel() > _maxLvl))
+		{
 			return false;
+		}
 		
 		// check obj class
 		if (!character.isInstanceType(_target))
+		{
 			return false;
+		}
 		
 		if (character instanceof L2PcInstance)
 		{
@@ -208,10 +216,14 @@ public abstract class L2ZoneType
 				if (((L2PcInstance) character).isMageClass())
 				{
 					if (_classType == 1)
+					{
 						return false;
+					}
 				}
 				else if (_classType == 2)
+				{
 					return false;
+				}
 			}
 			
 			// Check race
@@ -219,9 +231,9 @@ public abstract class L2ZoneType
 			{
 				boolean ok = false;
 				
-				for (int i = 0; i < _race.length; i++)
+				for (int element : _race)
 				{
-					if (((L2PcInstance) character).getRace().ordinal() == _race[i])
+					if (((L2PcInstance) character).getRace().ordinal() == element)
 					{
 						ok = true;
 						break;
@@ -229,7 +241,9 @@ public abstract class L2ZoneType
 				}
 				
 				if (!ok)
+				{
 					return false;
+				}
 			}
 			
 			// Check class
@@ -237,9 +251,9 @@ public abstract class L2ZoneType
 			{
 				boolean ok = false;
 				
-				for (int i = 0; i < _class.length; i++)
+				for (int _clas : _class)
 				{
-					if (((L2PcInstance) character).getClassId().ordinal() == _class[i])
+					if (((L2PcInstance) character).getClassId().ordinal() == _clas)
 					{
 						ok = true;
 						break;
@@ -247,7 +261,9 @@ public abstract class L2ZoneType
 				}
 				
 				if (!ok)
+				{
 					return false;
+				}
 			}
 		}
 		return true;
@@ -260,7 +276,9 @@ public abstract class L2ZoneType
 	public void setZone(L2ZoneForm zone)
 	{
 		if (_zone != null)
+		{
 			throw new IllegalStateException("Zone already set");
+		}
 		_zone = zone;
 	}
 	
@@ -353,8 +371,10 @@ public abstract class L2ZoneType
 	{
 		// It will check if coords are within the zone if the given instanceId or
 		// the zone's _instanceId are in the multiverse or they match
-		if (_instanceId == -1 || instanceId == -1 || _instanceId == instanceId)
+		if ((_instanceId == -1) || (instanceId == -1) || (_instanceId == instanceId))
+		{
 			return _zone.isInsideZone(x, y, z);
+		}
 		
 		return false;
 	}
@@ -385,7 +405,9 @@ public abstract class L2ZoneType
 		if (_checkAffected)
 		{
 			if (!isAffected(character))
+			{
 				return;
+			}
 		}
 		
 		// If the object is inside the zone...
@@ -493,7 +515,7 @@ public abstract class L2ZoneType
 		List<L2PcInstance> players = new ArrayList<>();
 		for (L2Character ch : _characterList.values())
 		{
-			if (ch != null && ch.isPlayer())
+			if ((ch != null) && ch.isPlayer())
 			{
 				players.add(ch.getActingPlayer());
 			}
@@ -505,19 +527,27 @@ public abstract class L2ZoneType
 	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)
 	{
 		if (_questEvents == null)
+		{
 			_questEvents = new HashMap<>();
+		}
 		List<Quest> questByEvents = _questEvents.get(EventType);
 		if (questByEvents == null)
+		{
 			questByEvents = new ArrayList<>();
+		}
 		if (!questByEvents.contains(q))
+		{
 			questByEvents.add(q);
+		}
 		_questEvents.put(EventType, questByEvents);
 	}
 	
 	public List<Quest> getQuestByEvent(Quest.QuestEventType EventType)
 	{
 		if (_questEvents == null)
+		{
 			return null;
+		}
 		return _questEvents.get(EventType);
 	}
 	
@@ -528,11 +558,13 @@ public abstract class L2ZoneType
 	public void broadcastPacket(L2GameServerPacket packet)
 	{
 		if (_characterList.isEmpty())
+		{
 			return;
+		}
 		
 		for (L2Character character : _characterList.values())
 		{
-			if (character != null && character.isPlayer())
+			if ((character != null) && character.isPlayer())
 			{
 				character.sendPacket(packet);
 			}

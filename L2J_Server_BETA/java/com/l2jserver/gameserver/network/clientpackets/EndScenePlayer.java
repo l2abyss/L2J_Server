@@ -36,12 +36,16 @@ public final class EndScenePlayer extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		if (_movieId == 0)
+		{
 			return;
+		}
 		if (activeChar.getMovieId() != _movieId)
 		{
-			_log.warning("Player "+getClient()+" sent EndScenePlayer with wrong movie id: "+_movieId);
+			_log.warning("Player " + getClient() + " sent EndScenePlayer with wrong movie id: " + _movieId);
 			return;
 		}
 		activeChar.setMovieId(0);

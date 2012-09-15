@@ -66,8 +66,10 @@ public class PetInventory extends Inventory
 	{
 		int slots = 0;
 		
-		if (!(item.isStackable() && getItemByItemId(item.getItemId()) != null) && item.getItemType() != L2EtcItemType.HERB)
+		if (!(item.isStackable() && (getItemByItemId(item.getItemId()) != null)) && (item.getItemType() != L2EtcItemType.HERB))
+		{
 			slots++;
+		}
 		
 		return validateCapacity(slots);
 	}
@@ -75,14 +77,17 @@ public class PetInventory extends Inventory
 	@Override
 	public boolean validateCapacity(long slots)
 	{
-		return (_items.size() + slots <= _owner.getInventoryLimit());
+		return ((_items.size() + slots) <= _owner.getInventoryLimit());
 	}
 	
 	public boolean validateWeight(L2ItemInstance item, long count)
 	{
 		int weight = 0;
 		L2Item template = ItemTable.getInstance().getTemplate(item.getItemId());
-		if (template == null) return false;
+		if (template == null)
+		{
+			return false;
+		}
 		weight += count * template.getWeight();
 		return validateWeight(weight);
 	}
@@ -90,7 +95,7 @@ public class PetInventory extends Inventory
 	@Override
 	public boolean validateWeight(long weight)
 	{
-		return (_totalWeight + weight <= _owner.getMaxLoad());
+		return ((_totalWeight + weight) <= _owner.getMaxLoad());
 	}
 	
 	@Override
@@ -111,6 +116,7 @@ public class PetInventory extends Inventory
 		super.restore();
 		// check for equiped items from other pets
 		for (L2ItemInstance item : _items)
+		{
 			if (item.isEquipped())
 			{
 				if (!item.getItem().checkCondition(getOwner(), getOwner(), false))
@@ -118,6 +124,7 @@ public class PetInventory extends Inventory
 					unEquipItemInSlot(item.getLocationSlot());
 				}
 			}
+		}
 	}
 	
 	public void transferItemsToOwner()

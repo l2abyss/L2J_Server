@@ -81,7 +81,9 @@ public final class SiegeAttackerList extends L2GameServerPacket
 				{
 					clan = ClanTable.getInstance().getClan(siegeclan.getClanId());
 					if (clan == null)
+					{
 						continue;
+					}
 					
 					writeD(clan.getClanId());
 					writeS(clan.getName());
@@ -116,7 +118,9 @@ public final class SiegeAttackerList extends L2GameServerPacket
 				{
 					final L2Clan clan = ClanTable.getInstance().getClan(sClan.getClanId());
 					if (clan == null)
+					{
 						continue;
+					}
 					
 					writeD(clan.getClanId());
 					writeS(clan.getName());

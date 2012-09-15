@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 
 public class ItemsAutoDestroy
-{	
+{
 	protected List<L2ItemInstance> _items = null;
 	protected static long _sleep;
 	
@@ -33,8 +33,10 @@ public class ItemsAutoDestroy
 	{
 		_items = new FastList<>();
 		_sleep = Config.AUTODESTROY_ITEM_AFTER * 1000;
-		if (_sleep == 0) // it should not happend as it is not called when AUTODESTROY_ITEM_AFTER = 0 but we never know..
+		if (_sleep == 0)
+		{
 			_sleep = 3600000;
+		}
 		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new CheckItemsForDestroy(), 5000, 5000);
 	}
 	
@@ -52,13 +54,17 @@ public class ItemsAutoDestroy
 	public synchronized void removeItems()
 	{
 		if (_items.isEmpty())
+		{
 			return;
+		}
 		
 		long curtime = System.currentTimeMillis();
 		for (L2ItemInstance item : _items)
 		{
-			if (item == null || item.getDropTime() == 0 || item.getLocation() != L2ItemInstance.ItemLocation.VOID)
+			if ((item == null) || (item.getDropTime() == 0) || (item.getLocation() != L2ItemInstance.ItemLocation.VOID))
+			{
 				_items.remove(item);
+			}
 			else
 			{
 				if (item.getItem().getAutoDestroyTime() > 0)
@@ -69,7 +75,9 @@ public class ItemsAutoDestroy
 						L2World.getInstance().removeObject(item);
 						_items.remove(item);
 						if (Config.SAVE_DROPPED_ITEM)
+						{
 							ItemsOnGroundManager.getInstance().removeObject(item);
+						}
 					}
 				}
 				else if (item.getItemType() == L2EtcItemType.HERB)
@@ -80,7 +88,9 @@ public class ItemsAutoDestroy
 						L2World.getInstance().removeObject(item);
 						_items.remove(item);
 						if (Config.SAVE_DROPPED_ITEM)
+						{
 							ItemsOnGroundManager.getInstance().removeObject(item);
+						}
 					}
 				}
 				else if ((curtime - item.getDropTime()) > _sleep)
@@ -89,10 +99,12 @@ public class ItemsAutoDestroy
 					L2World.getInstance().removeObject(item);
 					_items.remove(item);
 					if (Config.SAVE_DROPPED_ITEM)
+					{
 						ItemsOnGroundManager.getInstance().removeObject(item);
+					}
 				}
 			}
-		}		
+		}
 	}
 	
 	protected class CheckItemsForDestroy extends Thread

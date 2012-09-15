@@ -43,18 +43,12 @@ public class SelectorHelper implements IMMOExecutor<L2LoginClient>, IClientFacto
 		_ipv4filter = new IPv4Filter();
 	}
 	
-	/**
-	 * @see org.mmocore.network.IMMOExecutor#execute(org.mmocore.network.ReceivablePacket)
-	 */
 	@Override
 	public void execute(ReceivablePacket<L2LoginClient> packet)
 	{
 		_generalPacketsThreadPool.execute(packet);
 	}
 	
-	/**
-	 * @see org.mmocore.network.IClientFactory#create(org.mmocore.network.MMOConnection)
-	 */
 	@Override
 	public L2LoginClient create(MMOConnection<L2LoginClient> con)
 	{
@@ -63,9 +57,6 @@ public class SelectorHelper implements IMMOExecutor<L2LoginClient>, IClientFacto
 		return client;
 	}
 	
-	/**
-	 * @see org.mmocore.network.IAcceptFilter#accept(java.nio.channels.SocketChannel)
-	 */
 	@Override
 	public boolean accept(SocketChannel sc)
 	{

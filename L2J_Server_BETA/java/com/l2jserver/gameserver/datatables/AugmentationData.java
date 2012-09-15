@@ -108,7 +108,7 @@ public class AugmentationData
 	private final Map<Integer, SkillHolder> _allSkills = new HashMap<>();
 	
 	protected AugmentationData()
-	{		
+	{
 		for (int i = 0; i < 10; i++)
 		{
 			if (i < STAT_NUMBEROF_BLOCKS)
@@ -184,7 +184,7 @@ public class AugmentationData
 			_log.info(getClass().getSimpleName() + ": Loaded: " + _blueSkills.get(i).size() + " blue, " + _purpleSkills.get(i).size() + " purple and " + _redSkills.get(i).size() + " red skills for lifeStoneLevel " + i);
 		}
 	}
-		
+	
 	public static class AugmentationStat
 	{
 		private final Stats _stat;
@@ -911,7 +911,7 @@ public class AugmentationData
 	}
 	
 	/**
-	 * @param augmentationId 
+	 * @param augmentationId
 	 * @return skill by augmentation Id or null if not valid or not found.
 	 */
 	public L2Skill getAugSkillById(int augmentationId)

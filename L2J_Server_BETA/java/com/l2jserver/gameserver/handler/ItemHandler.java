@@ -88,7 +88,6 @@ public class ItemHandler implements IHandler<IItemHandler, L2EtcItem>
 		return SingletonHolder._instance;
 	}
 	
-	
 	private static class SingletonHolder
 	{
 		protected static final ItemHandler _instance = new ItemHandler();

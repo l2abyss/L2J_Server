@@ -88,29 +88,39 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_collisionRadius = cha.getCollisionRadius();// On every subclass
 			_isAttackable = cha.isAutoAttackable(attacker);
 			if (cha.getTemplate().isServerSideName())
+			{
 				_name = cha.getName();// On every subclass
-				
+			}
+			
 			if (Config.L2JMOD_CHAMPION_ENABLE && cha.isChampion())
+			{
 				_title = (Config.L2JMOD_CHAMP_TITLE); // On every subclass
+			}
 			else if (cha.getTemplate().isServerSideTitle())
+			{
 				_title = cha.getTemplate().getTitle(); // On every subclass
+			}
 			else
+			{
 				_title = cha.getTitle(); // On every subclass
-				
-			if (Config.SHOW_NPC_LVL && _npc instanceof L2MonsterInstance)
+			}
+			
+			if (Config.SHOW_NPC_LVL && (_npc instanceof L2MonsterInstance))
 			{
 				String t = "Lv " + cha.getLevel() + (cha.getAggroRange() > 0 ? "*" : "");
 				if (_title != null)
+				{
 					t += " " + _title;
+				}
 				
 				_title = t;
 			}
 			
 			// npc crest of owning clan/ally of castle
-			if (cha instanceof L2NpcInstance && cha.isInsideZone(ZoneId.TOWN) && (Config.SHOW_CREST_WITHOUT_QUEST || cha.getCastle().getShowNpcCrest()) && cha.getCastle().getOwnerId() != 0)
+			if ((cha instanceof L2NpcInstance) && cha.isInsideZone(ZoneId.TOWN) && (Config.SHOW_CREST_WITHOUT_QUEST || cha.getCastle().getShowNpcCrest()) && (cha.getCastle().getOwnerId() != 0))
 			{
 				int townId = TownManager.getTown(_x, _y, _z).getTownId();
-				if (townId != 33 && townId != 22)
+				if ((townId != 33) && (townId != 22))
 				{
 					L2Clan clan = ClanTable.getInstance().getClan(cha.getCastle().getOwnerId());
 					_clanCrest = clan.getCrestId();
@@ -203,7 +213,9 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_collisionHeight = _trap.getTemplate().getfCollisionHeight();
 			_collisionRadius = _trap.getTemplate().getfCollisionRadius();
 			if (cha.getTemplate().isServerSideName())
+			{
 				_name = cha.getName();
+			}
 			_title = cha.getOwner() != null ? cha.getOwner().getName() : "";
 			_runSpd = _trap.getRunSpeed();
 			_walkSpd = _trap.getWalkSpeed();
@@ -288,27 +300,41 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_summon = cha;
 			_val = val;
 			if (_summon.isShowSummonAnimation())
+			{
 				_val = 2; // override for spawn
-				
+			}
+			
 			int npcId = cha.getTemplate().getNpcId();
 			
-			if (npcId == 16041 || npcId == 16042)
+			if ((npcId == 16041) || (npcId == 16042))
 			{
 				if (cha.getLevel() > 84)
+				{
 					_form = 3;
+				}
 				else if (cha.getLevel() > 79)
+				{
 					_form = 2;
+				}
 				else if (cha.getLevel() > 74)
+				{
 					_form = 1;
+				}
 			}
-			else if (npcId == 16025 || npcId == 16037)
+			else if ((npcId == 16025) || (npcId == 16037))
 			{
 				if (cha.getLevel() > 69)
+				{
 					_form = 3;
+				}
 				else if (cha.getLevel() > 64)
+				{
 					_form = 2;
+				}
 				else if (cha.getLevel() > 59)
+				{
 					_form = 1;
+				}
 			}
 			
 			// fields not set on AbstractNpcInfo
@@ -332,8 +358,10 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			if (_invisible)
 			{
 				L2PcInstance tmp = getClient().getActiveChar();
-				if (tmp != null && tmp.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
+				if ((tmp != null) && tmp.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
+				{
 					gmSeeInvis = true;
+				}
 			}
 			
 			writeC(0x0c);

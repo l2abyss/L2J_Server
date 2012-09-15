@@ -69,12 +69,24 @@ public class L2Party extends AbstractPlayerGroup
 	private static final Logger _log = Logger.getLogger(L2Party.class.getName());
 	private static final double[] BONUS_EXP_SP =
 	{
-		1, 1.10, 1.20, 1.30, 1.40, 1.50, 2.0, 2.10, 2.20
+		1,
+		1.10,
+		1.20,
+		1.30,
+		1.40,
+		1.50,
+		2.0,
+		2.10,
+		2.20
 	};
 	// TODO: JIV - unhardcode to some SysString enum (sysstring-e.dat)
 	private static final int[] LOOT_SYSSTRINGS =
 	{
-		487, 488, 798, 799, 800
+		487,
+		488,
+		798,
+		799,
+		800
 	};
 	private static final int PARTY_POSITION_BROADCAST = 12000;
 	
@@ -321,7 +333,7 @@ public class L2Party extends AbstractPlayerGroup
 	{
 		for (L2PcInstance member : getMembers())
 		{
-			if ((member != null) && member.getObjectId() != player.getObjectId())
+			if ((member != null) && (member.getObjectId() != player.getObjectId()))
 			{
 				member.sendPacket(msg);
 			}
@@ -606,7 +618,7 @@ public class L2Party extends AbstractPlayerGroup
 					msg.addString(getLeader().getName());
 					broadcastPacket(msg);
 					broadcastToPartyMembersNewLeader();
-					if (isInCommandChannel() && temp.getObjectId() == _commandChannel.getLeader().getObjectId())
+					if (isInCommandChannel() && (temp.getObjectId() == _commandChannel.getLeader().getObjectId()))
 					{
 						_commandChannel.setChannelLeader(getLeader());
 						msg = SystemMessage.getSystemMessage(SystemMessageId.COMMAND_CHANNEL_LEADER_NOW_C1);

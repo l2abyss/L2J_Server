@@ -64,7 +64,15 @@ public class TerritoryTable
 	public void load()
 	{
 		_territory.clear();
-		Integer[][] point = SqlUtils.get2DIntArray(new String[] { "loc_id", "loc_x", "loc_y", "loc_zmin", "loc_zmax", "proc" }, "locations", "loc_id > 0");
+		Integer[][] point = SqlUtils.get2DIntArray(new String[]
+		{
+			"loc_id",
+			"loc_x",
+			"loc_y",
+			"loc_zmin",
+			"loc_zmax",
+			"proc"
+		}, "locations", "loc_id > 0");
 		for (Integer[] row : point)
 		{
 			Integer terr = row[0];

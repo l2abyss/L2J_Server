@@ -18,14 +18,13 @@ import com.l2jserver.gameserver.datatables.RecipeData;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.1.2.2.2.1 $ $Date: 2005/03/27 15:29:32 $
  */
 public class L2ManufactureItem
 {
-	private int _recipeId;
-	private long _cost;
-	private boolean _isDwarven;
+	private final int _recipeId;
+	private final long _cost;
+	private final boolean _isDwarven;
 	
 	public L2ManufactureItem(int recipeId, long cost)
 	{

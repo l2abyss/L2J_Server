@@ -16,16 +16,14 @@ package com.l2jserver.gameserver.network.loginserverpackets;
 
 import com.l2jserver.util.network.BaseRecievePacket;
 
-
 /**
  * @author -Wooden-
- *
  */
 public class AuthResponse extends BaseRecievePacket
 {
 	
-	private int _serverId;
-	private String _serverName;
+	private final int _serverId;
+	private final String _serverName;
 	
 	/**
 	 * @param decrypt

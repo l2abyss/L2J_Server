@@ -20,7 +20,6 @@ import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 
-
 public class L2CastleDoormenInstance extends L2DoormenInstance
 {
 	public L2CastleDoormenInstance(int objectID, L2NpcTemplate template)
@@ -37,10 +36,14 @@ public class L2CastleDoormenInstance extends L2DoormenInstance
 		
 		while (st.hasMoreTokens())
 		{
-			if(getConquerableHall() != null)
+			if (getConquerableHall() != null)
+			{
 				getConquerableHall().openCloseDoor(Integer.parseInt(st.nextToken()), true);
+			}
 			else
+			{
 				getCastle().openDoor(player, Integer.parseInt(st.nextToken()));
+			}
 		}
 	}
 	
@@ -52,10 +55,14 @@ public class L2CastleDoormenInstance extends L2DoormenInstance
 		
 		while (st.hasMoreTokens())
 		{
-			if(getConquerableHall() != null)
+			if (getConquerableHall() != null)
+			{
 				getConquerableHall().openCloseDoor(Integer.parseInt(st.nextToken()), false);
+			}
 			else
+			{
 				getCastle().closeDoor(player, Integer.parseInt(st.nextToken()));
+			}
 		}
 	}
 	
@@ -64,19 +71,21 @@ public class L2CastleDoormenInstance extends L2DoormenInstance
 	{
 		if (player.getClan() != null)
 		{
-			if(getConquerableHall() != null)
+			if (getConquerableHall() != null)
 			{
 				// player should have privileges to open doors
-				if (player.getClanId() == getConquerableHall().getOwnerId()
-						&& (player.getClanPrivileges() & L2Clan.CP_CS_OPEN_DOOR) == L2Clan.CP_CS_OPEN_DOOR)
+				if ((player.getClanId() == getConquerableHall().getOwnerId()) && ((player.getClanPrivileges() & L2Clan.CP_CS_OPEN_DOOR) == L2Clan.CP_CS_OPEN_DOOR))
+				{
 					return true;
+				}
 			}
-			else if(getCastle() != null)
+			else if (getCastle() != null)
 			{
 				// player should have privileges to open doors
-				if (player.getClanId() == getCastle().getOwnerId()
-						&& (player.getClanPrivileges() & L2Clan.CP_CS_OPEN_DOOR) == L2Clan.CP_CS_OPEN_DOOR)
+				if ((player.getClanId() == getCastle().getOwnerId()) && ((player.getClanPrivileges() & L2Clan.CP_CS_OPEN_DOOR) == L2Clan.CP_CS_OPEN_DOOR))
+				{
 					return true;
+				}
 			}
 		}
 		return false;
@@ -86,8 +95,10 @@ public class L2CastleDoormenInstance extends L2DoormenInstance
 	protected final boolean isUnderSiege()
 	{
 		SiegableHall hall = getConquerableHall();
-		if(hall != null)
+		if (hall != null)
+		{
 			return hall.isInSiege();
+		}
 		return getCastle().getZone().isActive();
 	}
 }

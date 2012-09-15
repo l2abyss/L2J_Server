@@ -37,7 +37,9 @@ public class L2BoatAI extends L2VehicleAI
 		if (!_actor.isMovementDisabled())
 		{
 			if (!_clientMoving)
+			{
 				_actor.broadcastPacket(new VehicleStarted(getActor(), 1));
+			}
 			
 			_clientMoving = true;
 			_accessor.moveTo(x, y, z);
@@ -49,9 +51,11 @@ public class L2BoatAI extends L2VehicleAI
 	protected void clientStopMoving(L2CharPosition pos)
 	{
 		if (_actor.isMoving())
+		{
 			_accessor.stopMove(pos);
+		}
 		
-		if (_clientMoving || pos != null)
+		if (_clientMoving || (pos != null))
 		{
 			_clientMoving = false;
 			_actor.broadcastPacket(new VehicleStarted(getActor(), 0));
@@ -63,12 +67,14 @@ public class L2BoatAI extends L2VehicleAI
 	public void describeStateToPlayer(L2PcInstance player)
 	{
 		if (_clientMoving)
+		{
 			player.sendPacket(new VehicleDeparture(getActor()));
+		}
 	}
 	
 	@Override
 	public L2BoatInstance getActor()
 	{
-		return (L2BoatInstance)_actor;
+		return (L2BoatInstance) _actor;
 	}
 }

@@ -46,27 +46,18 @@ public class NodeLoc extends AbstractNodeLoc
 		return (short) (_geoHeightAndNSWE & 0x0f);
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.pathfinding.AbstractNodeLoc#getX()
-	 */
 	@Override
 	public int getX()
 	{
 		return (_x << 4) + L2World.MAP_MIN_X;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.pathfinding.AbstractNodeLoc#getY()
-	 */
 	@Override
 	public int getY()
 	{
 		return (_y << 4) + L2World.MAP_MIN_Y;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.pathfinding.AbstractNodeLoc#getZ()
-	 */
 	@Override
 	public short getZ()
 	{
@@ -80,27 +71,18 @@ public class NodeLoc extends AbstractNodeLoc
 		//
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.pathfinding.AbstractNodeLoc#getNodeX()
-	 */
 	@Override
 	public int getNodeX()
 	{
 		return _x;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.pathfinding.AbstractNodeLoc#getNodeY()
-	 */
 	@Override
 	public int getNodeY()
 	{
 		return _y;
 	}
 	
-	/**
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode()
 	{
@@ -112,9 +94,6 @@ public class NodeLoc extends AbstractNodeLoc
 		return result;
 	}
 	
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj)
 	{

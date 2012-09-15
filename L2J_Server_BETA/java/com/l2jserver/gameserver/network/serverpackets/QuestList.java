@@ -31,7 +31,7 @@ public class QuestList extends L2GameServerPacket
 	@Override
 	public void runImpl()
 	{
-		if (getClient() != null && getClient().getActiveChar() != null)
+		if ((getClient() != null) && (getClient().getActiveChar() != null))
 		{
 			_activeChar = getClient().getActiveChar();
 			_quests = _activeChar.getAllActiveQuests();
@@ -90,9 +90,13 @@ public class QuestList extends L2GameServerPacket
 				
 				int states = qs.getInt("__compltdStateFlags");
 				if (states != 0)
+				{
 					writeD(states);
+				}
 				else
+				{
 					writeD(qs.getInt("cond"));
+				}
 			}
 		}
 		else

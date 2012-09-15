@@ -83,18 +83,12 @@ public class CellPathFinding extends PathFinding
 		}
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.pathfinding.PathFinding#pathNodesExist(short)
-	 */
 	@Override
 	public boolean pathNodesExist(short regionoffset)
 	{
 		return false;
 	}
 	
-	/**
-	 * @see com.l2jserver.gameserver.pathfinding.PathFinding#findPath(int, int, int, int, int, int, int, boolean)
-	 */
 	@Override
 	public List<AbstractNodeLoc> findPath(int x, int y, int z, int tx, int ty, int tz, int instanceId, boolean playable)
 	{

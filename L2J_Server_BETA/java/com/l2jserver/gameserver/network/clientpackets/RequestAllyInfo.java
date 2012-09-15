@@ -39,7 +39,9 @@ public final class RequestAllyInfo extends L2GameClientPacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		SystemMessage sm;
 		final int allianceId = activeChar.getAllyId();

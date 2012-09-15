@@ -33,14 +33,14 @@ import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.entity.Castle;
 
 /**
- * @authors  Forsaiken, Gigiikun
+ * @authors Forsaiken, Gigiikun
  */
 public final class InitWorldInfo extends BaseWritePacket
 {
-	public static final byte TYPE_INFO			= 0;
-	public static final byte TYPE_PLAYER		= 1;
-	public static final byte TYPE_CLAN			= 2;
-	public static final byte TYPE_CASTLE		= 3;
+	public static final byte TYPE_INFO = 0;
+	public static final byte TYPE_PLAYER = 1;
+	public static final byte TYPE_CLAN = 2;
+	public static final byte TYPE_CASTLE = 3;
 	private static Logger _log = Logger.getLogger(InitWorldInfo.class.getName());
 	
 	public InitWorldInfo(StatsSet[] players, L2Clan[] clans, final byte type, int info)
@@ -65,7 +65,9 @@ public final class InitWorldInfo extends BaseWritePacket
 						continue;
 					}
 					if (i++ == info)
+					{
 						break;
+					}
 					super.writeD(c.getClanId());
 					super.writeS(c.getName());
 					super.writeD(c.getLevel());
@@ -73,7 +75,7 @@ public final class InitWorldInfo extends BaseWritePacket
 					{
 						writeD(0);
 						writeS("");
-						_log.info("Clan Id: " + c.getClanId() + " has null clan leader!"); 
+						_log.info("Clan Id: " + c.getClanId() + " has null clan leader!");
 					}
 					else
 					{
@@ -81,7 +83,7 @@ public final class InitWorldInfo extends BaseWritePacket
 						super.writeS(c.getLeader().getName());
 					}
 					super.writeD(c.getMembersCount());
-					super.writeC((c.isNoticeEnabled() ? 1:0));
+					super.writeC((c.isNoticeEnabled() ? 1 : 0));
 					// Alliance info:
 					super.writeS(c.getAllyName());
 					final List<L2Clan> clanAllies = ClanTable.getInstance().getClanAllies(c.getAllyId());
@@ -98,7 +100,9 @@ public final class InitWorldInfo extends BaseWritePacket
 				for (StatsSet p : players)
 				{
 					if (i++ == info)
+					{
 						break;
+					}
 					super.writeD(p.getInteger("charId"));
 					super.writeS(p.getString("char_name"));
 					super.writeS(p.getString("account_name"));
@@ -125,7 +129,9 @@ public final class InitWorldInfo extends BaseWritePacket
 					}
 					super.writeD(list.size());
 					for (int j : list)
+					{
 						super.writeD(j);
+					}
 					FastList.recycle(list);
 				}
 				break;
@@ -139,7 +145,7 @@ public final class InitWorldInfo extends BaseWritePacket
 					writeS(castle.getName());
 					writeD(castle.getOwnerId());
 					writeD(castle.getTaxPercent());
-					writeD((int)(castle.getSiege().getSiegeDate().getTimeInMillis()/1000));
+					writeD((int) (castle.getSiege().getSiegeDate().getTimeInMillis() / 1000));
 				}
 				break;
 		}

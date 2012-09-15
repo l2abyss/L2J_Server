@@ -49,13 +49,13 @@ public final class CannotMoveAnymoreInVehicle extends L2GameClientPacket
 		{
 			return;
 		}
-		if(player.isInBoat())
+		if (player.isInBoat())
 		{
-			if(player.getBoat().getObjectId() == _boatId)
+			if (player.getBoat().getObjectId() == _boatId)
 			{
-				player.setInVehiclePosition(new Point3D(_x,_y,_z));
+				player.setInVehiclePosition(new Point3D(_x, _y, _z));
 				player.getPosition().setHeading(_heading);
-				StopMoveInVehicle msg = new StopMoveInVehicle(player,_boatId);
+				StopMoveInVehicle msg = new StopMoveInVehicle(player, _boatId);
 				player.broadcastPacket(msg);
 			}
 		}

@@ -21,10 +21,8 @@ import java.util.logging.Logger;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.util.Rnd;
 
-
 /**
- *
- * @author  kombat
+ * @author kombat
  */
 public final class ChanceCondition
 {
@@ -126,7 +124,9 @@ public final class ChanceCondition
 			boolean pvpOnly = set.getBool("pvpChanceOnly", false);
 			
 			if (trigger != null)
+			{
 				return new ChanceCondition(trigger, chance, mindmg, parseElements(elements), parseActivationSkills(activationSkills), pvpOnly);
+			}
 		}
 		catch (Exception e)
 		{
@@ -140,12 +140,16 @@ public final class ChanceCondition
 		try
 		{
 			if (chanceType == null)
+			{
 				return null;
+			}
 			
 			TriggerType trigger = Enum.valueOf(TriggerType.class, chanceType);
 			
 			if (trigger != null)
+			{
 				return new ChanceCondition(trigger, chance, mindmg, parseElements(elements), parseActivationSkills(activationSkills), pvpOnly);
+			}
 		}
 		catch (Exception e)
 		{
@@ -158,12 +162,16 @@ public final class ChanceCondition
 	public static final byte[] parseElements(String list)
 	{
 		if (list == null)
+		{
 			return null;
+		}
 		
 		String[] valuesSplit = list.split(",");
 		byte[] elements = new byte[valuesSplit.length];
 		for (int i = 0; i < valuesSplit.length; i++)
+		{
 			elements[i] = Byte.parseByte(valuesSplit[i]);
+		}
 		
 		Arrays.sort(elements);
 		return elements;
@@ -172,12 +180,16 @@ public final class ChanceCondition
 	public static final int[] parseActivationSkills(String list)
 	{
 		if (list == null)
+		{
 			return null;
+		}
 		
 		String[] valuesSplit = list.split(",");
 		int[] skillIds = new int[valuesSplit.length];
 		for (int i = 0; i < valuesSplit.length; i++)
+		{
 			skillIds[i] = Integer.parseInt(valuesSplit[i]);
+		}
 		
 		return skillIds;
 	}
@@ -185,25 +197,33 @@ public final class ChanceCondition
 	public boolean trigger(int event, int damage, byte element, boolean playable, L2Skill skill)
 	{
 		if (_pvpOnly && !playable)
+		{
 			return false;
+		}
 		
-		if (_elements != null && Arrays.binarySearch(_elements, element) < 0)
+		if ((_elements != null) && (Arrays.binarySearch(_elements, element) < 0))
+		{
 			return false;
+		}
 		
-		if (_activationSkills != null && skill != null && Arrays.binarySearch(_activationSkills, skill.getId()) < 0)
+		if ((_activationSkills != null) && (skill != null) && (Arrays.binarySearch(_activationSkills, skill.getId()) < 0))
+		{
 			return false;
+		}
 		
 		// if the skill has "activationMinDamage" setted to higher than -1(default)
 		// and if "activationMinDamage" is still higher than the recieved damage, the skill wont trigger
-		if (_mindmg > -1 && _mindmg > damage)
+		if ((_mindmg > -1) && (_mindmg > damage))
+		{
 			return false;
+		}
 		
-		return _triggerType.check(event) && (_chance < 0 || Rnd.get(100) < _chance);
+		return _triggerType.check(event) && ((_chance < 0) || (Rnd.get(100) < _chance));
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "Trigger["+_chance+";"+_triggerType.toString()+"]";
+		return "Trigger[" + _chance + ";" + _triggerType.toString() + "]";
 	}
 }

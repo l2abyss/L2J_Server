@@ -45,7 +45,7 @@ public class L2PeaceZone extends L2ZoneType
 			
 			// PVP possible during siege, now for siege participants only
 			// Could also check if this town is in siege, or if any siege is going on
-			if (player.getSiegeState() != 0 && (Config.PEACE_ZONE_MODE == 1))
+			if ((player.getSiegeState() != 0) && (Config.PEACE_ZONE_MODE == 1))
 			{
 				return;
 			}

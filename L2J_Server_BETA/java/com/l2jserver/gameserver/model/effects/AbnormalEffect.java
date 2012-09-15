@@ -17,7 +17,7 @@ package com.l2jserver.gameserver.model.effects;
 import java.util.NoSuchElementException;
 
 /**
- * @author  DrHouse
+ * @author DrHouse
  */
 public enum AbnormalEffect
 {
@@ -55,7 +55,7 @@ public enum AbnormalEffect
 	DEATH_MARK("deathmark", 0x40000000),
 	SKULL_FEAR("skull_fear", 0x80000000),
 	ARCANE_SHIELD("arcane_shield", 0x008000),
-	//CONFUSED("confused", 0x0020),
+	// CONFUSED("confused", 0x0020),
 	
 	// special effects
 	S_INVINCIBLE("invincible", 0x000001),
@@ -113,7 +113,9 @@ public enum AbnormalEffect
 		for (AbnormalEffect eff : AbnormalEffect.values())
 		{
 			if (eff.getName().equals(name))
+			{
 				return eff;
+			}
 		}
 		throw new NoSuchElementException(AbnormalEffect.class.getSimpleName() + ": Abnormal effect not found for name: " + name + "!");
 	}

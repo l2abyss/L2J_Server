@@ -15,7 +15,7 @@
 package com.l2jserver.gameserver.model;
 
 /**
- * This class describes a RecipeList statUse and altStatChange component.<BR><BR>
+ * This class describes a RecipeList statUse and altStatChange component.
  */
 public class L2RecipeStatInstance
 {
@@ -27,20 +27,20 @@ public class L2RecipeStatInstance
 		SP,
 		GIM // grab item modifier:
 		// GIM: the default function uses only the skilllevel to determine
-		//      how many item is grabbed in each step
-		//      with this stat changer you can multiple this
+		// how many item is grabbed in each step
+		// with this stat changer you can multiple this
 	}
 	
 	/** The Identifier of the statType */
-	private StatType _type;
+	private final StatType _type;
 	
 	/** The value of the statType */
-	private int _value;
+	private final int _value;
 	
 	/**
-	 * Constructor of L2RecipeStatInstance.<BR><BR>
-	 * @param type 
-	 * @param value 
+	 * Constructor of L2RecipeStatInstance.
+	 * @param type
+	 * @param value
 	 */
 	public L2RecipeStatInstance(String type, int value)
 	{

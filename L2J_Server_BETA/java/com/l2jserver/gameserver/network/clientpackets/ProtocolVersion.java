@@ -24,7 +24,6 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.5.2.8.2.8 $ $Date: 2005/04/02 10:43:04 $
  */
 public final class ProtocolVersion extends L2GameClientPacket
@@ -37,7 +36,7 @@ public final class ProtocolVersion extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		_version  = readD();
+		_version = readD();
 	}
 	
 	@Override
@@ -47,25 +46,33 @@ public final class ProtocolVersion extends L2GameClientPacket
 		if (_version == -2)
 		{
 			if (Config.DEBUG)
+			{
 				_log.info("Ping received");
+			}
 			// this is just a ping attempt from the new C2 client
-			getClient().close((L2GameServerPacket)null);
+			getClient().close((L2GameServerPacket) null);
 		}
 		else if (!Config.PROTOCOL_LIST.contains(_version))
 		{
 			LogRecord record = new LogRecord(Level.WARNING, "Wrong protocol");
-			record.setParameters(new Object[]{_version, getClient()});
+			record.setParameters(new Object[]
+			{
+				_version,
+				getClient()
+			});
 			_logAccounting.log(record);
-			KeyPacket pk = new KeyPacket(getClient().enableCrypt(),0);
+			KeyPacket pk = new KeyPacket(getClient().enableCrypt(), 0);
 			getClient().setProtocolOk(false);
 			getClient().close(pk);
 		}
 		else
 		{
 			if (Config.DEBUG)
-				_log.fine("Client Protocol Revision is ok: "+_version);
+			{
+				_log.fine("Client Protocol Revision is ok: " + _version);
+			}
 			
-			KeyPacket pk = new KeyPacket(getClient().enableCrypt(),1);
+			KeyPacket pk = new KeyPacket(getClient().enableCrypt(), 1);
 			getClient().sendPacket(pk);
 			getClient().setProtocolOk(true);
 		}

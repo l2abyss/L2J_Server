@@ -69,7 +69,7 @@ public class L2WeddingManagerInstance extends L2Npc
 		
 		final L2PcInstance ptarget = L2World.getInstance().getPlayer(player.getPartnerId());
 		// Is partner online?
-		if (ptarget == null || !ptarget.isOnline())
+		if ((ptarget == null) || !ptarget.isOnline())
 		{
 			filename = "data/html/mods/Wedding_notfound.htm";
 			sendHtmlMessage(player, filename, replace);
@@ -101,7 +101,7 @@ public class L2WeddingManagerInstance extends L2Npc
 			}
 			
 			// Check and reduce wedding price
-			if (player.getAdena() < Config.L2JMOD_WEDDING_PRICE || ptarget.getAdena() < Config.L2JMOD_WEDDING_PRICE)
+			if ((player.getAdena() < Config.L2JMOD_WEDDING_PRICE) || (ptarget.getAdena() < Config.L2JMOD_WEDDING_PRICE))
 			{
 				filename = "data/html/mods/Wedding_adena.htm";
 				replace = String.valueOf(Config.L2JMOD_WEDDING_PRICE);
@@ -216,9 +216,7 @@ public class L2WeddingManagerInstance extends L2Npc
 	}
 	
 	/**
-	 * Are both partners wearing formal wear? If Formal Wear check is disabled,
-	 * returns True in any case.<BR>
-	 * 
+	 * Are both partners wearing formal wear? If Formal Wear check is disabled, returns True in any case.<BR>
 	 * @param p1 L2PcInstance
 	 * @param p2 L2PcInstance
 	 * @return boolean
@@ -230,8 +228,10 @@ public class L2WeddingManagerInstance extends L2Npc
 			L2ItemInstance fw1 = p1.getChestArmorInstance();
 			L2ItemInstance fw2 = p2.getChestArmorInstance();
 			
-			if (fw1 == null || fw2 == null || fw1.getItemId() != 6408 || fw2.getItemId() != 6408)
+			if ((fw1 == null) || (fw2 == null) || (fw1.getItemId() != 6408) || (fw2.getItemId() != 6408))
+			{
 				return false;
+			}
 		}
 		return true;
 	}

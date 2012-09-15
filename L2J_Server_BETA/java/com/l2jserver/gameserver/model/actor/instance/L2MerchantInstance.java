@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.network.serverpackets.ExBuySellListPacket;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.10.4.9 $ $Date: 2005/04/11 10:06:08 $
  */
 public class L2MerchantInstance extends L2NpcInstance
@@ -34,7 +33,7 @@ public class L2MerchantInstance extends L2NpcInstance
 	private MerchantPriceConfig _mpc;
 	
 	/**
-	 * @param objectId 
+	 * @param objectId
 	 * @param template
 	 */
 	public L2MerchantInstance(int objectId, L2NpcTemplate template)
@@ -55,8 +54,14 @@ public class L2MerchantInstance extends L2NpcInstance
 	{
 		String pom = "";
 		
-		if (val == 0) pom = "" + npcId;
-		else pom = npcId + "-" + val;
+		if (val == 0)
+		{
+			pom = "" + npcId;
+		}
+		else
+		{
+			pom = npcId + "-" + val;
+		}
 		
 		return "data/html/merchant/" + pom + ".htm";
 	}
@@ -78,18 +83,20 @@ public class L2MerchantInstance extends L2NpcInstance
 		player.tempInventoryDisable();
 		
 		if (Config.DEBUG)
+		{
 			_log.fine("Showing buylist");
+		}
 		
 		L2TradeList list = TradeController.getInstance().getBuyList(val);
 		
-		if (list != null && list.getNpcId().equals(String.valueOf(getNpcId())))
+		if ((list != null) && list.getNpcId().equals(String.valueOf(getNpcId())))
 		{
 			player.sendPacket(new BuyList(list, player.getAdena(), taxRate));
 			player.sendPacket(new ExBuySellListPacket(player, list, taxRate, false));
 		}
 		else
 		{
-			_log.warning("possible client hacker: "+player.getName()+" attempting to buy from GM shop! < Ban him!");
+			_log.warning("possible client hacker: " + player.getName() + " attempting to buy from GM shop! < Ban him!");
 			_log.warning("buylist id:" + val);
 		}
 		

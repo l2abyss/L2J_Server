@@ -37,13 +37,17 @@ public class ExBuySellListPacket extends L2GameServerPacket
 	{
 		for (L2TradeItem item : list.getItems())
 		{
-			if (item.hasLimitedStock() && item.getCurrentCount() <= 0)
+			if (item.hasLimitedStock() && (item.getCurrentCount() <= 0))
+			{
 				continue;
+			}
 			_buyList.add(item);
 		}
 		_sellList = player.getInventory().getAvailableItems(false, false, false);
 		if (player.hasRefund())
+		{
 			_refundList = player.getRefund().getItems();
+		}
 		_done = done;
 	}
 	
@@ -54,7 +58,7 @@ public class ExBuySellListPacket extends L2GameServerPacket
 		writeH(0xB7);
 		writeD(0x01);
 		
-		if (_sellList != null && _sellList.length > 0)
+		if ((_sellList != null) && (_sellList.length > 0))
 		{
 			writeH(_sellList.length);
 			for (L2ItemInstance item : _sellList)
@@ -88,9 +92,11 @@ public class ExBuySellListPacket extends L2GameServerPacket
 			}
 		}
 		else
+		{
 			writeH(0x00);
+		}
 		
-		if (_refundList != null && _refundList.length > 0)
+		if ((_refundList != null) && (_refundList.length > 0))
 		{
 			writeH(_refundList.length);
 			int idx = 0;
@@ -121,7 +127,7 @@ public class ExBuySellListPacket extends L2GameServerPacket
 				writeH(0x00);
 				writeH(0x00);
 				writeD(idx++);
-				writeQ(item.getItem().getReferencePrice() / 2 * item.getCount());
+				writeQ((item.getItem().getReferencePrice() / 2) * item.getCount());
 			}
 		}
 		else

@@ -17,7 +17,7 @@ package com.l2jserver.gameserver.network.communityserver.writepackets;
 import org.netcon.BaseWritePacket;
 
 /**
- * @authors  Forsaiken, Gigiikun
+ * @authors Forsaiken, Gigiikun
  */
 public final class RequestShowCommunityBoard extends BaseWritePacket
 {

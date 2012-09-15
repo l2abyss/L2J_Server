@@ -132,11 +132,6 @@ import com.l2jserver.status.Status;
 import com.l2jserver.util.DeadLockDetector;
 import com.l2jserver.util.IPv4Filter;
 
-/**
- * This class ...
- * 
- * @version $Revision: 1.29.2.15.2.19 $ $Date: 2005/04/05 19:41:23 $
- */
 public class GameServer
 {
 	private static final Logger _log = Logger.getLogger(GameServer.class.getName());
@@ -246,7 +241,7 @@ public class GameServer
 		PetDataTable.getInstance();
 		CharSummonTable.getInstance().init();
 		
-		printSection("Clans"); 
+		printSection("Clans");
 		ClanTable.getInstance();
 		CHSiegeManager.getInstance();
 		ClanHallManager.getInstance();
@@ -255,7 +250,9 @@ public class GameServer
 		printSection("Geodata");
 		GeoData.getInstance();
 		if (Config.GEODATA == 2)
+		{
 			PathFinding.getInstance();
+		}
 		
 		printSection("NPCs");
 		HerbDropTable.getInstance();
@@ -314,8 +311,10 @@ public class GameServer
 		{
 			_log.info(getClass().getSimpleName() + ": Loading Server Scripts");
 			File scripts = new File(Config.DATAPACK_ROOT, "data/scripts.cfg");
-			if(!Config.ALT_DEV_NO_HANDLERS || !Config.ALT_DEV_NO_QUESTS)
+			if (!Config.ALT_DEV_NO_HANDLERS || !Config.ALT_DEV_NO_QUESTS)
+			{
 				L2ScriptEngineManager.getInstance().executeScriptList(scripts);
+			}
 		}
 		catch (IOException ioe)
 		{
@@ -326,10 +325,14 @@ public class GameServer
 		TransformationManager.getInstance().report();
 		
 		if (Config.SAVE_DROPPED_ITEM)
+		{
 			ItemsOnGroundManager.getInstance();
+		}
 		
-		if (Config.AUTODESTROY_ITEM_AFTER > 0 || Config.HERB_AUTO_DESTROY_TIME > 0)
+		if ((Config.AUTODESTROY_ITEM_AFTER > 0) || (Config.HERB_AUTO_DESTROY_TIME > 0))
+		{
 			ItemsAutoDestroy.getInstance();
+		}
 		
 		MonsterRace.getInstance();
 		
@@ -345,20 +348,26 @@ public class GameServer
 		_log.info("AutoSpawnHandler: Loaded " + AutoSpawnHandler.getInstance().size() + " handlers in total.");
 		
 		if (Config.L2JMOD_ALLOW_WEDDING)
+		{
 			CoupleManager.getInstance();
+		}
 		
 		TaskManager.getInstance();
-
+		
 		AntiFeedManager.getInstance().registerEvent(AntiFeedManager.GAME_ID);
 		MerchantPriceConfigTable.getInstance().updateReferences();
 		CastleManager.getInstance().activateInstances();
 		FortManager.getInstance().activateInstances();
 		
 		if (Config.ALLOW_MAIL)
+		{
 			MailManager.getInstance();
+		}
 		
 		if (Config.ACCEPT_GEOEDITOR_CONN)
+		{
 			GeoEditorListener.getInstance();
+		}
 		
 		Runtime.getRuntime().addShutdownHook(Shutdown.getInstance());
 		
@@ -368,7 +377,9 @@ public class GameServer
 		KnownListUpdateTaskManager.getInstance();
 		
 		if ((Config.OFFLINE_TRADE_ENABLE || Config.OFFLINE_CRAFT_ENABLE) && Config.RESTORE_OFFLINERS)
+		{
 			OfflineTradersTable.getInstance().restoreOfflineTraders();
+		}
 		
 		if (Config.DEADLOCK_DETECTOR)
 		{
@@ -377,12 +388,14 @@ public class GameServer
 			_deadDetectThread.start();
 		}
 		else
+		{
 			_deadDetectThread = null;
+		}
 		System.gc();
 		// maxMemory is the upper limit the jvm can use, totalMemory the size of
 		// the current allocation pool, freeMemory the unused memory in the
 		// allocation pool
-		long freeMem = (Runtime.getRuntime().maxMemory() - Runtime.getRuntime().totalMemory() + Runtime.getRuntime().freeMemory()) / 1048576;
+		long freeMem = ((Runtime.getRuntime().maxMemory() - Runtime.getRuntime().totalMemory()) + Runtime.getRuntime().freeMemory()) / 1048576;
 		long totalMem = Runtime.getRuntime().maxMemory() / 1048576;
 		_log.info(getClass().getSimpleName() + ": Started, free memory " + freeMem + " Mb of " + totalMem + " Mb");
 		Toolkit.getDefaultToolkit().beep();
@@ -471,7 +484,9 @@ public class GameServer
 	{
 		s = "=[ " + s + " ]";
 		while (s.length() < 78)
+		{
 			s = "-" + s;
+		}
 		_log.info(s);
 	}
 }

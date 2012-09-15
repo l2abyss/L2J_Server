@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.3.4.4 $ $Date: 2005/04/06 16:13:48 $
  */
 public final class RequestChangePetName extends L2GameClientPacket
@@ -63,7 +62,7 @@ public final class RequestChangePetName extends L2GameClientPacket
 		}
 		else if ((_name.length() < 3) || (_name.length() > 16))
 		{
-			//activeChar.sendPacket(SystemMessageId.NAMING_PETNAME_UP_TO_8CHARS);
+			// activeChar.sendPacket(SystemMessageId.NAMING_PETNAME_UP_TO_8CHARS);
 			activeChar.sendMessage("Your pet's name can be up to 16 characters in length.");
 			return;
 		}

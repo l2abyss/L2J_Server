@@ -21,17 +21,17 @@ import org.netcon.BaseReadPacket;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 
 /**
- * @authors  Forsaiken, Gigiikun
+ * @authors Forsaiken, Gigiikun
  */
 public final class AuthResponse extends BaseReadPacket
 {
 	private static final Logger _log = Logger.getLogger(AuthResponse.class.getName());
 	
-	public static final byte AUTHED						= 0;
-	public static final byte REASON_WRONG_HEX_ID		= 1;
-	public static final byte REASON_HEX_ID_IN_USE		= 2;
-	public static final byte REASON_WRONG_SQL_DP_ID		= 3;
-	public static final byte REASON_SQL_DP_ID_IN_USE	= 4;
+	public static final byte AUTHED = 0;
+	public static final byte REASON_WRONG_HEX_ID = 1;
+	public static final byte REASON_HEX_ID_IN_USE = 2;
+	public static final byte REASON_WRONG_SQL_DP_ID = 3;
+	public static final byte REASON_SQL_DP_ID_IN_USE = 4;
 	
 	private final CommunityServerThread _cst;
 	
@@ -53,6 +53,6 @@ public final class AuthResponse extends BaseReadPacket
 				break;
 		}
 		
-		_log.info("COMMUNITY_SERVER_THREAD: Auth "+status);
+		_log.info("COMMUNITY_SERVER_THREAD: Auth " + status);
 	}
 }

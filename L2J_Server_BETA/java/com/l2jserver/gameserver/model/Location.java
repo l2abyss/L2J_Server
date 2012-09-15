@@ -48,7 +48,6 @@ public final class Location
 		_instanceId = obj.getInstanceId();
 	}
 	
-	
 	public Location(int x, int y, int z, int heading)
 	{
 		_x = x;
@@ -94,6 +93,6 @@ public final class Location
 	@Override
 	public String toString()
 	{
-		return "[" + getClass().getSimpleName() + "] X: " + _x + " Y: " + _y + " Z: " + _z + " Heading: " + _heading +  " InstanceId: " + _instanceId;
+		return "[" + getClass().getSimpleName() + "] X: " + _x + " Y: " + _y + " Z: " + _z + " Heading: " + _heading + " InstanceId: " + _instanceId;
 	}
 }

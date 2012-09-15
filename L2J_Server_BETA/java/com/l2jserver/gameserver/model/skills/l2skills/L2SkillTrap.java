@@ -35,7 +35,6 @@ public class L2SkillTrap extends L2SkillSummon
 	protected L2Spawn _trapSpawn;
 	
 	/**
-	 * 
 	 * @param set
 	 */
 	public L2SkillTrap(StatsSet set)
@@ -51,38 +50,48 @@ public class L2SkillTrap extends L2SkillSummon
 		return _triggerSkillId;
 	}
 	
-	/**
-	 * 
-	 * @see com.l2jserver.gameserver.model.skills.L2Skill#useSkill(com.l2jserver.gameserver.model.actor.L2Character, com.l2jserver.gameserver.model.L2Object[])
-	 */
 	@Override
 	public void useSkill(L2Character caster, L2Object[] targets)
 	{
 		if (caster.isAlikeDead() || !caster.isPlayer())
+		{
 			return;
+		}
 		
 		if (_trapNpcId == 0)
+		{
 			return;
+		}
 		
 		L2PcInstance activeChar = caster.getActingPlayer();
 		
 		if (activeChar.inObserverMode())
+		{
 			return;
+		}
 		
 		if (activeChar.isMounted())
+		{
 			return;
+		}
 		
-		if (_triggerSkillId == 0 || _triggerSkillLvl == 0)
+		if ((_triggerSkillId == 0) || (_triggerSkillLvl == 0))
+		{
 			return;
+		}
 		
 		L2Trap trap = activeChar.getTrap();
 		if (trap != null)
+		{
 			trap.unSummon();
+		}
 		
 		L2Skill skill = SkillTable.getInstance().getInfo(_triggerSkillId, _triggerSkillLvl);
 		
 		if (skill == null)
+		{
 			return;
+		}
 		
 		L2NpcTemplate TrapTemplate = NpcTable.getInstance().getTemplate(_trapNpcId);
 		trap = new L2TrapInstance(IdFactory.getInstance().getNextId(), TrapTemplate, activeChar, getTotalLifeTime(), skill);
@@ -91,7 +100,7 @@ public class L2SkillTrap extends L2SkillSummon
 		trap.setIsInvul(true);
 		trap.setHeading(activeChar.getHeading());
 		activeChar.setTrap(trap);
-		//L2World.getInstance().storeObject(trap);
+		// L2World.getInstance().storeObject(trap);
 		trap.spawnMe(activeChar.getX(), activeChar.getY(), activeChar.getZ());
 	}
 }

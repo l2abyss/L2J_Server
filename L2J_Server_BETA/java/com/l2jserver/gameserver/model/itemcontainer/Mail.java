@@ -68,7 +68,9 @@ public class Mail extends ItemContainer
 		for (L2ItemInstance item : _items)
 		{
 			if (item == null)
+			{
 				continue;
+			}
 			
 			item.setLocation(getBaseLocation(), messageId);
 		}
@@ -81,11 +83,17 @@ public class Mail extends ItemContainer
 		for (L2ItemInstance item : _items)
 		{
 			if (item == null)
+			{
 				continue;
+			}
 			if (wh == null)
+			{
 				item.setLocation(ItemLocation.WAREHOUSE);
+			}
 			else
+			{
 				transferItem("Expire", item.getObjectId(), item.getCount(), wh, null, null);
+			}
 		}
 	}
 	
@@ -127,15 +135,21 @@ public class Mail extends ItemContainer
 				{
 					item = L2ItemInstance.restoreFromDb(getOwnerId(), inv);
 					if (item == null)
+					{
 						continue;
+					}
 					
 					L2World.getInstance().storeObject(item);
 					
 					// If stackable item is found just add to current quantity
-					if (item.isStackable() && getItemByItemId(item.getItemId()) != null)
+					if (item.isStackable() && (getItemByItemId(item.getItemId()) != null))
+					{
 						addItem("Restore", item, null, null);
+					}
 					else
+					{
 						addItem(item);
+					}
 				}
 			}
 		}

@@ -78,7 +78,6 @@ public final class L2Weapon extends L2Item
 	/**
 	 * Constructor for Weapon.
 	 * @param set the StatsSet designating the set of couples (key,value) characterizing the weapon.
-	 * @see L2Item constructor
 	 */
 	public L2Weapon(StatsSet set)
 	{

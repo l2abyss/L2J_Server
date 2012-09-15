@@ -27,10 +27,8 @@ import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.skills.funcs.Lambda;
 import com.l2jserver.gameserver.model.stats.Env;
 
-
 /**
  * @author mkizub
- * 
  */
 public class EffectTemplate
 {
@@ -59,10 +57,7 @@ public class EffectTemplate
 	public final int triggeredLevel;
 	public final ChanceCondition chanceCondition;
 	
-	public EffectTemplate(Condition pAttachCond, Condition pApplayCond, String func, Lambda pLambda,
-			int pCounter, int pAbnormalTime, AbnormalEffect pAbnormalEffect, AbnormalEffect[] pSpecialEffect,
-			AbnormalEffect pEventEffect, String pAbnormalType, byte pAbnormalLvl, boolean showicon,
-			double ePower, L2SkillType eType, int trigId, int trigLvl, ChanceCondition chanceCond)
+	public EffectTemplate(Condition pAttachCond, Condition pApplayCond, String func, Lambda pLambda, int pCounter, int pAbnormalTime, AbnormalEffect pAbnormalEffect, AbnormalEffect[] pSpecialEffect, AbnormalEffect pEventEffect, String pAbnormalType, byte pAbnormalLvl, boolean showicon, double ePower, L2SkillType eType, int trigId, int trigLvl, ChanceCondition chanceCond)
 	{
 		attachCond = pAttachCond;
 		applayCond = pApplayCond;
@@ -84,12 +79,12 @@ public class EffectTemplate
 		chanceCondition = chanceCond;
 		
 		_func = EffectHandler.getInstance().getHandler(func);
-		if(func == null)
+		if (func == null)
 		{
-			_log.warning("EffectTemplate: Requested Unexistent effect: "+func);
+			_log.warning("EffectTemplate: Requested Unexistent effect: " + func);
 			throw new RuntimeException();
 		}
-
+		
 		try
 		{
 			_constructor = _func.getConstructor(Env.class, EffectTemplate.class);
@@ -102,8 +97,10 @@ public class EffectTemplate
 	
 	public L2Effect getEffect(Env env)
 	{
-		if (attachCond != null && !attachCond.test(env))
+		if ((attachCond != null) && !attachCond.test(env))
+		{
 			return null;
+		}
 		try
 		{
 			L2Effect effect = (L2Effect) _constructor.newInstance(env, this);
@@ -136,8 +133,10 @@ public class EffectTemplate
 	public L2Effect getStolenEffect(Env env, L2Effect stolen)
 	{
 		Class<?> func = EffectHandler.getInstance().getHandler(funcName);
-		if(func == null)
+		if (func == null)
+		{
 			throw new RuntimeException();
+		}
 		
 		Constructor<?> stolenCons;
 		try
@@ -176,7 +175,10 @@ public class EffectTemplate
 	{
 		if (funcTemplates == null)
 		{
-			funcTemplates = new FuncTemplate[] { f };
+			funcTemplates = new FuncTemplate[]
+			{
+				f
+			};
 		}
 		else
 		{

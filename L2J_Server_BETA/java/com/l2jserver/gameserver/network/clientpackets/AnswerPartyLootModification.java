@@ -37,10 +37,14 @@ public class AnswerPartyLootModification extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		L2Party party = activeChar.getParty();
 		if (party != null)
+		{
 			party.answerLootChangeRequest(activeChar, _answer == 1);
+		}
 	}
 	
 	@Override

@@ -40,9 +40,13 @@ public class L2CastleZone extends L2ZoneRespawn
 	public void setParameter(String name, String value)
 	{
 		if (name.equals("castleId"))
+		{
 			_castleId = Integer.parseInt(value);
+		}
 		else
+		{
 			super.setParameter(name, value);
+		}
 	}
 	
 	@Override
@@ -82,8 +86,10 @@ public class L2CastleZone extends L2ZoneRespawn
 		TeleportWhereType type = TeleportWhereType.Town;
 		for (L2PcInstance temp : getPlayersInside())
 		{
-			if (temp.getClanId() == owningClanId && owningClanId != 0)
+			if ((temp.getClanId() == owningClanId) && (owningClanId != 0))
+			{
 				continue;
+			}
 			
 			temp.teleToLocation(type);
 		}

@@ -39,9 +39,7 @@ public class HellboundManager
 {
 	private static final Logger _log = Logger.getLogger(HellboundManager.class.getName());
 	
-	private static final String LOAD_SPAWNS = "SELECT npc_templateid, locx, locy, locz, heading, " +
-		"respawn_delay, respawn_random, min_hellbound_level, " +
-		"max_hellbound_level FROM hellbound_spawnlist ORDER BY npc_templateid";
+	private static final String LOAD_SPAWNS = "SELECT npc_templateid, locx, locy, locz, heading, " + "respawn_delay, respawn_random, min_hellbound_level, " + "max_hellbound_level FROM hellbound_spawnlist ORDER BY npc_templateid";
 	
 	private int _level = 0;
 	private int _trust = 0;
@@ -52,7 +50,7 @@ public class HellboundManager
 	private final List<HellboundSpawn> _population = new ArrayList<>();
 	
 	protected HellboundManager()
-	{	
+	{
 		loadData();
 		loadSpawns();
 	}

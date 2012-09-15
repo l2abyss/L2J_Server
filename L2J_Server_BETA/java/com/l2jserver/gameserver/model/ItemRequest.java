@@ -39,10 +39,26 @@ public class ItemRequest
 		_price = price;
 	}
 	
-	public int getObjectId(){return _objectId;}
-	public int getItemId(){return _itemId;}
-	public void setCount(long count){_count = count;}
-	public long getCount(){return _count;}
+	public int getObjectId()
+	{
+		return _objectId;
+	}
+	
+	public int getItemId()
+	{
+		return _itemId;
+	}
+	
+	public void setCount(long count)
+	{
+		_count = count;
+	}
+	
+	public long getCount()
+	{
+		return _count;
+	}
+	
 	public long getPrice()
 	{
 		return _price;

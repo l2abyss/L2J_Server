@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 
 /**
  * NPC that gives information about territory wars
- * @author  GodKratos
+ * @author GodKratos
  */
 public class L2MercenaryManagerInstance extends L2Npc
 {
@@ -40,12 +40,18 @@ public class L2MercenaryManagerInstance extends L2Npc
 	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
-		if (player.getLevel() < 40 || player.getClassId().level() < 2)
+		if ((player.getLevel() < 40) || (player.getClassId().level() < 2))
+		{
 			super.showChatWindow(player, 2);
+		}
 		else if (TerritoryWarManager.getInstance().isTWInProgress())
+		{
 			super.showChatWindow(player, 10);
+		}
 		else
+		{
 			super.showChatWindow(player, 0);
+		}
 	}
 	
 	@Override
@@ -53,20 +59,28 @@ public class L2MercenaryManagerInstance extends L2Npc
 	{
 		String temp = "";
 		if (val == 0)
+		{
 			temp = "data/html/mercmanager/" + npcId + ".htm";
+		}
 		else
+		{
 			temp = "data/html/mercmanager/" + npcId + "-" + val + ".htm";
+		}
 		
 		if (!Config.LAZY_CACHE)
 		{
 			// If not running lazy cache the file must be in the cache or it doesnt exist
 			if (HtmCache.getInstance().contains(temp))
+			{
 				return temp;
+			}
 		}
 		else
 		{
 			if (HtmCache.getInstance().isLoadable(temp))
+			{
 				return temp;
+			}
 		}
 		
 		// If the file is not found, the standard message "I have nothing to say to you" is returned

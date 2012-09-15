@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.util.Util;
 
-
 /**
  * @author kombat, Forsaiken
  */
@@ -60,14 +59,20 @@ public final class FusionSkill
 		
 		L2Effect effect = _target.getFirstEffect(_fusionId);
 		if (effect != null)
+		{
 			effect.increaseEffect();
+		}
 		else
 		{
 			L2Skill force = SkillTable.getInstance().getInfo(_fusionId, _fusionLevel);
 			if (force != null)
+			{
 				force.getEffects(_caster, _target, null);
+			}
 			else
-				_log.warning("Triggered skill ["+_fusionId+";"+_fusionLevel+"] not found!");
+			{
+				_log.warning("Triggered skill [" + _fusionId + ";" + _fusionLevel + "] not found!");
+			}
 		}
 		_geoCheckTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new GeoCheckTask(), 1000, 1000);
 	}
@@ -77,7 +82,9 @@ public final class FusionSkill
 		_caster.setFusionSkill(null);
 		L2Effect effect = _target.getFirstEffect(_fusionId);
 		if (effect != null)
+		{
 			effect.decreaseForce();
+		}
 		
 		_geoCheckTask.cancel(true);
 	}
@@ -90,10 +97,14 @@ public final class FusionSkill
 			try
 			{
 				if (!Util.checkIfInRange(_skillCastRange, _caster, _target, true))
+				{
 					_caster.abortCast();
+				}
 				
 				if (!GeoData.getInstance().canSeeTarget(_caster, _target))
+				{
 					_caster.abortCast();
+				}
 			}
 			catch (Exception e)
 			{

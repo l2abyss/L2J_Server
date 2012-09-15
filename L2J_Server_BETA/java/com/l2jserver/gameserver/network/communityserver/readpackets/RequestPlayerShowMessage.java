@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.network.serverpackets.ExMailArrived;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * @authors  Forsaiken, Gigiikun
+ * @authors Forsaiken, Gigiikun
  */
 public final class RequestPlayerShowMessage extends BaseReadPacket
 {
@@ -44,9 +44,11 @@ public final class RequestPlayerShowMessage extends BaseReadPacket
 		
 		L2PcInstance player = L2World.getInstance().getPlayer(playerObjId);
 		if (player == null)
+		{
 			return;
+		}
 		
-		switch(type)
+		switch (type)
 		{
 			case -1: // mail arrived
 				player.sendPacket(ExMailArrived.STATIC_PACKET);

@@ -28,7 +28,7 @@ public final class L2FlyMonsterInstance extends L2MonsterInstance
 	@Override
 	public void onSpawn()
 	{
-		this.setIsFlying(true);
+		setIsFlying(true);
 		super.onSpawn();
 	}
 }

@@ -19,7 +19,7 @@ import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.network.serverpackets.ExShowFortressMapInfo;
 
 /**
- * @author  KenM
+ * @author KenM
  */
 public class RequestFortressMapInfo extends L2GameClientPacket
 {

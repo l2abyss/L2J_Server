@@ -24,7 +24,7 @@ import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 
 public class L2WyvernManagerInstance extends L2Npc
 {
-	public L2WyvernManagerInstance (int objectId, L2NpcTemplate template)
+	public L2WyvernManagerInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2WyvernManagerInstance);
@@ -33,11 +33,13 @@ public class L2WyvernManagerInstance extends L2Npc
 	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
-		player.sendPacket( ActionFailed.STATIC_PACKET );
+		player.sendPacket(ActionFailed.STATIC_PACKET);
 		String filename = "data/html/wyvernmanager/wyvernmanager-no.htm";
 		
 		if (isOwnerClan(player))
-			filename = "data/html/wyvernmanager/wyvernmanager.htm";      // Owner message window
+		{
+			filename = "data/html/wyvernmanager/wyvernmanager.htm"; // Owner message window
+		}
 		
 		NpcHtmlMessage html = new NpcHtmlMessage(1);
 		html.setFile(player.getHtmlPrefix(), filename);
@@ -49,11 +51,13 @@ public class L2WyvernManagerInstance extends L2Npc
 	public boolean isOwnerClan(L2PcInstance player)
 	{
 		L2Clan clan = player.getClan();
-		if(clan != null)
+		if (clan != null)
 		{
 			ClanHall hall = getConquerableHall();
-			if(hall != null)
+			if (hall != null)
+			{
 				return hall.getOwnerId() == clan.getClanId();
+			}
 		}
 		return false;
 	}
@@ -61,8 +65,10 @@ public class L2WyvernManagerInstance extends L2Npc
 	public boolean isInSiege()
 	{
 		SiegableHall hall = getConquerableHall();
-		if(hall != null)
+		if (hall != null)
+		{
 			return hall.isInSiege();
+		}
 		return getCastle().getSiege().getIsInProgress();
 	}
 }

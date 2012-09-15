@@ -15,9 +15,7 @@
 package com.l2jserver.gameserver.model.itemauction;
 
 /**
- * 
  * @author DS
- *
  */
 public enum ItemAuctionExtendState
 {

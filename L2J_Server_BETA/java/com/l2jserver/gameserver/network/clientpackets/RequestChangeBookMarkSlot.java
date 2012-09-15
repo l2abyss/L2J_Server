@@ -15,8 +15,7 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 /**
- *  @author ShanSoft
- *  Packets Structure: chddd
+ * @author ShanSoft Packets Structure: chddd
  */
 public final class RequestChangeBookMarkSlot extends L2GameClientPacket
 {
@@ -25,7 +24,7 @@ public final class RequestChangeBookMarkSlot extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-		//There is nothing to read.
+		// There is nothing to read.
 	}
 	
 	@Override
@@ -33,7 +32,6 @@ public final class RequestChangeBookMarkSlot extends L2GameClientPacket
 	{
 		
 	}
-	
 	
 	@Override
 	public String getType()

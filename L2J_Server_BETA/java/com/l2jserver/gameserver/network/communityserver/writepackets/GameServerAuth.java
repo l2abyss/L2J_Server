@@ -19,7 +19,7 @@ import org.netcon.BaseWritePacket;
 import com.l2jserver.Config;
 
 /**
- * @authors  Forsaiken, Gigiikun
+ * @authors Forsaiken, Gigiikun
  */
 public final class GameServerAuth extends BaseWritePacket
 {

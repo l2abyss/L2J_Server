@@ -24,9 +24,8 @@ import com.l2jserver.gameserver.network.serverpackets.StopMoveInVehicle;
 import com.l2jserver.gameserver.util.Point3D;
 
 /**
- * format: ddddddd
- * X:%d Y:%d Z:%d OriginX:%d OriginY:%d OriginZ:%d
- * @author  GodKratos
+ * format: ddddddd X:%d Y:%d Z:%d OriginX:%d OriginY:%d OriginZ:%d
+ * @author GodKratos
  */
 public class MoveToLocationInAirShip extends L2GameClientPacket
 {
@@ -40,7 +39,10 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 	private int _originY;
 	private int _originZ;
 	
-	public TaskPriority getPriority() { return TaskPriority.PR_HIGH; }
+	public TaskPriority getPriority()
+	{
+		return TaskPriority.PR_HIGH;
+	}
 	
 	@Override
 	protected void readImpl()
@@ -54,23 +56,22 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 		_originZ = readD();
 	}
 	
-	
 	@Override
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
-		if (_targetX == _originX && _targetY == _originY && _targetZ == _originZ)
+		if ((_targetX == _originX) && (_targetY == _originY) && (_targetZ == _originZ))
 		{
 			activeChar.sendPacket(new StopMoveInVehicle(activeChar, _shipId));
 			return;
 		}
-
-		if (activeChar.isAttackingNow()
-				&& activeChar.getActiveWeaponItem() != null
-				&& (activeChar.getActiveWeaponItem().getItemType() == L2WeaponType.BOW))
+		
+		if (activeChar.isAttackingNow() && (activeChar.getActiveWeaponItem() != null) && (activeChar.getActiveWeaponItem().getItemType() == L2WeaponType.BOW))
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;

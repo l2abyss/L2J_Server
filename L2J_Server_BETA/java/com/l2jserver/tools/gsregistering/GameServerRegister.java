@@ -320,9 +320,6 @@ public class GameServerRegister extends BaseGameServerRegister
 		}
 	}
 	
-	/**
-	 * @see com.l2jserver.tools.gsregistering.BaseGameServerRegister#showError(java.lang.String, java.lang.Throwable)
-	 */
 	@Override
 	public void showError(String msg, Throwable t)
 	{

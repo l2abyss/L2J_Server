@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.map.hash.TIntIntHashMap;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,6 +35,8 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.network.serverpackets.PetItemList;
+
+import gnu.trove.map.hash.TIntIntHashMap;
 
 /**
  * @author Nyaran
@@ -109,8 +109,10 @@ public class CharSummonTable
 	
 	public void saveSummon(L2ServitorInstance summon)
 	{
-		if (summon == null || summon.getTimeRemaining() <= 0)
+		if ((summon == null) || (summon.getTimeRemaining() <= 0))
+		{
 			return;
+		}
 		_servitors.put(summon.getOwner().getObjectId(), summon.getReferenceSkill());
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
@@ -127,7 +129,7 @@ public class CharSummonTable
 		{
 			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Failed to store summon [SummonId: " + summon.getNpcId() + "] from Char [CharId: " + summon.getOwner().getObjectId() + "] data", e);
 		}
-			
+		
 	}
 	
 	public void restoreServitor(L2PcInstance activeChar)
@@ -140,7 +142,7 @@ public class CharSummonTable
 			ps.setInt(2, skillId);
 			try (ResultSet rs = ps.executeQuery())
 			{
-			
+				
 				L2NpcTemplate summonTemplate;
 				L2ServitorInstance summon;
 				L2SkillSummon skill;
@@ -188,8 +190,8 @@ public class CharSummonTable
 					
 					if (summon.getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
 					{
-						summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(ExperienceTable.getInstance().getMaxPetLevel()-1));
-						_log.warning(getClass().getSimpleName() + ": Summon (" + summon.getName() + ") NpcID: " + summon.getNpcId() + " has a level above "+ExperienceTable.getInstance().getMaxPetLevel()+". Please rectify.");
+						summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(ExperienceTable.getInstance().getMaxPetLevel() - 1));
+						_log.warning(getClass().getSimpleName() + ": Summon (" + summon.getName() + ") NpcID: " + summon.getNpcId() + " has a level above " + ExperienceTable.getInstance().getMaxPetLevel() + ". Please rectify.");
 					}
 					else
 					{
@@ -200,11 +202,13 @@ public class CharSummonTable
 					summon.setHeading(activeChar.getHeading());
 					summon.setRunning();
 					if (!(summon instanceof L2MerchantSummonInstance))
+					{
 						activeChar.setPet(summon);
+					}
 					
 					summon.setTimeRemaining(time);
 					
-					//L2World.getInstance().storeObject(summon);
+					// L2World.getInstance().storeObject(summon);
 					summon.spawnMe(activeChar.getX() + 20, activeChar.getY() + 20, activeChar.getZ());
 				}
 			}
@@ -237,11 +241,15 @@ public class CharSummonTable
 		L2NpcTemplate npcTemplate = NpcTable.getInstance().getTemplate(sitem.getNpcId());
 		
 		if (npcTemplate == null)
+		{
 			return;
+		}
 		
 		final L2PetInstance petSummon = L2PetInstance.spawnPet(npcTemplate, activeChar, item);
 		if (petSummon == null)
+		{
 			return;
+		}
 		
 		petSummon.setShowSummonAnimation(true);
 		petSummon.setTitle(activeChar.getName());
@@ -257,7 +265,9 @@ public class CharSummonTable
 		petSummon.setRunning();
 		
 		if (!petSummon.isRespawned())
+		{
 			petSummon.store();
+		}
 		
 		activeChar.setPet(petSummon);
 		
@@ -266,9 +276,13 @@ public class CharSummonTable
 		item.setEnchantLevel(petSummon.getLevel());
 		
 		if (petSummon.getCurrentFed() <= 0)
+		{
 			petSummon.unSummon(activeChar);
+		}
 		else
+		{
 			petSummon.startFeed();
+		}
 		
 		petSummon.setFollowStatus(true);
 		

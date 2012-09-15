@@ -33,7 +33,7 @@ public final class AuctionDateGenerator
 	
 	private final Calendar _calendar;
 	
-	private int _interval;
+	private final int _interval;
 	private int _day_of_week;
 	private int _hour_of_day;
 	private int _minute_of_hour;
@@ -42,7 +42,7 @@ public final class AuctionDateGenerator
 	{
 		_calendar = Calendar.getInstance();
 		_interval = config.getInteger(FIELD_INTERVAL, -1);
-		//NC week start in Monday.
+		// NC week start in Monday.
 		final int fixedDayWeek = config.getInteger(FIELD_DAY_OF_WEEK, -1) + 1;
 		_day_of_week = (fixedDayWeek > 7) ? 1 : fixedDayWeek;
 		_hour_of_day = config.getInteger(FIELD_HOUR_OF_DAY, -1);
@@ -76,39 +76,49 @@ public final class AuctionDateGenerator
 		{
 			time += ((date - time) / add) * add;
 			if (time < date)
+			{
 				time += add;
+			}
 		}
 		return time;
 	}
 	
 	private final void checkDayOfWeek(final int defaultValue)
 	{
-		if (_day_of_week < 1 || _day_of_week > 7)
+		if ((_day_of_week < 1) || (_day_of_week > 7))
 		{
-			if (defaultValue == -1 && _interval < 1)
+			if ((defaultValue == -1) && (_interval < 1))
+			{
 				throw new IllegalArgumentException("Illegal params for '" + FIELD_DAY_OF_WEEK + "': " + (_day_of_week == -1 ? "not found" : _day_of_week));
+			}
 			_day_of_week = defaultValue;
 		}
 		else if (_interval > 1)
-			throw new IllegalArgumentException("Illegal params for '" + FIELD_INTERVAL +"' and '" + FIELD_DAY_OF_WEEK + "': you can use only one, not both");
+		{
+			throw new IllegalArgumentException("Illegal params for '" + FIELD_INTERVAL + "' and '" + FIELD_DAY_OF_WEEK + "': you can use only one, not both");
+		}
 	}
 	
 	private final void checkHourOfDay(final int defaultValue)
 	{
-		if (_hour_of_day < 0 || _hour_of_day > 23)
+		if ((_hour_of_day < 0) || (_hour_of_day > 23))
 		{
 			if (defaultValue == -1)
+			{
 				throw new IllegalArgumentException("Illegal params for '" + FIELD_HOUR_OF_DAY + "': " + (_hour_of_day == -1 ? "not found" : _hour_of_day));
+			}
 			_hour_of_day = defaultValue;
 		}
 	}
 	
 	private final void checkMinuteOfHour(final int defaultValue)
 	{
-		if (_minute_of_hour < 0 || _minute_of_hour > 59)
+		if ((_minute_of_hour < 0) || (_minute_of_hour > 59))
 		{
 			if (defaultValue == -1)
+			{
 				throw new IllegalArgumentException("Illegal params for '" + FIELD_MINUTE_OF_HOUR + "': " + (_minute_of_hour == -1 ? "not found" : _minute_of_hour));
+			}
 			_minute_of_hour = defaultValue;
 		}
 	}

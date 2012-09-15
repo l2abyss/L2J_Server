@@ -17,9 +17,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.Config;
 
 /**
- * Format: (ch)S
- * S: numerical password
- * 
+ * Format: (ch)S S: numerical password
  * @author mrTJO
  */
 public class RequestEx2ndPasswordVerify extends L2GameClientPacket
@@ -38,7 +36,9 @@ public class RequestEx2ndPasswordVerify extends L2GameClientPacket
 	protected void runImpl()
 	{
 		if (!Config.SECOND_AUTH_ENABLED)
+		{
 			return;
+		}
 		
 		getClient().getSecondaryAuth().checkPassword(_password, false);
 	}

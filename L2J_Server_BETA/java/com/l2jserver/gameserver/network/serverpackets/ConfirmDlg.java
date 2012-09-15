@@ -85,11 +85,17 @@ public class ConfirmDlg extends L2GameServerPacket
 	public ConfirmDlg addCharName(L2Character cha)
 	{
 		if (cha instanceof L2Npc)
+		{
 			return addNpcName((L2Npc) cha);
+		}
 		if (cha instanceof L2PcInstance)
+		{
 			return addPcName((L2PcInstance) cha);
+		}
 		if (cha instanceof L2Summon)
+		{
 			return addNpcName((L2Summon) cha);
+		}
 		return addString(cha.getName());
 	}
 	
@@ -111,7 +117,9 @@ public class ConfirmDlg extends L2GameServerPacket
 	public ConfirmDlg addNpcName(L2NpcTemplate tpl)
 	{
 		if (tpl.isCustom())
+		{
 			return addString(tpl.getName());
+		}
 		return addNpcName(tpl.getNpcId());
 	}
 	
@@ -157,8 +165,10 @@ public class ConfirmDlg extends L2GameServerPacket
 	
 	public ConfirmDlg addSkillName(L2Skill skill)
 	{
-		if (skill.getId() != skill.getDisplayId()) // custom skill - need nameId or smth like this.
+		if (skill.getId() != skill.getDisplayId())
+		{
 			return addString(skill.getName());
+		}
 		return addSkillName(skill.getId(), skill.getLevel());
 	}
 	

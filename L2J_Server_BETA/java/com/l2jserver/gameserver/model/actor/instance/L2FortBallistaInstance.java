@@ -24,8 +24,6 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 
-
-
 public class L2FortBallistaInstance extends L2Npc
 {
 	public L2FortBallistaInstance(int objectId, L2NpcTemplate template)
@@ -44,14 +42,16 @@ public class L2FortBallistaInstance extends L2Npc
 	public boolean doDie(L2Character killer)
 	{
 		if (!super.doDie(killer))
+		{
 			return false;
+		}
 		
 		if (getFort().getSiege().getIsInProgress())
 		{
 			if (killer instanceof L2PcInstance)
 			{
-				L2PcInstance player = ((L2PcInstance)killer);
-				if (player.getClan() != null && player.getClan().getLevel() >= 5)
+				L2PcInstance player = ((L2PcInstance) killer);
+				if ((player.getClan() != null) && (player.getClan().getLevel() >= 5))
 				{
 					player.getClan().addReputationScore(Config.BALLISTA_POINTS, true);
 					player.sendPacket(SystemMessageId.BALLISTA_DESTROYED_CLAN_REPU_INCREASED);
@@ -65,7 +65,10 @@ public class L2FortBallistaInstance extends L2Npc
 	@Override
 	public void onAction(L2PcInstance player, boolean interact)
 	{
-		if (!canTarget(player)) return;
+		if (!canTarget(player))
+		{
+			return;
+		}
 		
 		// Check if the L2PcInstance already target the L2NpcInstance
 		if (this != player.getTarget())
