@@ -98,6 +98,7 @@ public class L2DoorInstance extends L2Character
 		super(objectId, template);
 		setInstanceType(InstanceType.L2DoorInstance);
 		setIsInvul(false);
+		setLethalable(false);
 		_isTargetable = data.getBool("targetable", true);
 		if (getGroupName() != null)
 		{

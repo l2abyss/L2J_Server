@@ -221,7 +221,9 @@ public abstract class L2Character extends L2Object
 	
 	protected long _exceptions = 0L;
 	
-	public final String COND_EXCEPTIONS = "COND_EX_" + getObjectId();
+	private boolean _lethalable;
+	
+	protected final String COND_EXCEPTIONS = "COND_EX_" + getObjectId();
 	
 	/**
 	 * @return True if debugging is enabled for this L2Character
@@ -7867,6 +7869,16 @@ public abstract class L2Character extends L2Object
 	public boolean canOverrideCond(PcCondOverride excs)
 	{
 		return (_exceptions & excs.getMask()) == excs.getMask();
+	}
+	
+	public void setLethalable(boolean val)
+	{
+		_lethalable = val;
+	}
+	
+	public boolean isLethalable()
+	{
+		return _lethalable;
 	}
 	
 	// LISTENERS

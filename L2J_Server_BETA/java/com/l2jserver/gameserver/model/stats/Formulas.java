@@ -1296,7 +1296,7 @@ public final class Formulas
 	
 	public static final boolean calcLethalHit(L2Character activeChar, L2Character target, L2Skill skill)
 	{
-		if (!target.isRaid() && !target.isInvul() && !(target.isDoor()) && !((target.isNpc()) && (((L2Npc) target).getNpcId() == 35062)))
+		if (target.isLethalable() && !target.isInvul())
 		{
 			// 2nd lethal effect activate (cp,hp to 1 or if target is npc then hp to 1)
 			if ((skill.getLethalChance2() > 0) && (Rnd.get(1000) < calcLethal(activeChar, target, skill.getLethalChance2(), skill.getMagicLevel())))
