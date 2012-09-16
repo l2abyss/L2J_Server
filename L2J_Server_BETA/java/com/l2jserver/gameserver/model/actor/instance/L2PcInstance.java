@@ -2591,7 +2591,7 @@ public final class L2PcInstance extends L2Playable
 			_expertiseArmorPenalty = armorPenalty;
 			if (_expertiseArmorPenalty > 0)
 			{
-				super.addSkill(SkillTable.getInstance().getInfo(FrequentSkill.ARMOR_GRADE_PENALTY.getId(), _expertiseWeaponPenalty));
+				super.addSkill(SkillTable.getInstance().getInfo(FrequentSkill.ARMOR_GRADE_PENALTY.getId(), _expertiseArmorPenalty));
 			}
 			else
 			{
