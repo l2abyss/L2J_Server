@@ -32,7 +32,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public class L2SkillChangeWeapon extends L2Skill
 {
-	
 	/**
 	 * @param set
 	 */
@@ -71,7 +70,7 @@ public class L2SkillChangeWeapon extends L2Skill
 		L2ItemInstance wpn = player.getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
 		if (wpn == null)
 		{
-			wpn = player.getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
+			wpn = player.getInventory().getPaperdollItem(Inventory.PAPERDOLL_LHAND);
 		}
 		
 		if (wpn != null)
@@ -143,14 +142,12 @@ public class L2SkillChangeWeapon extends L2Skill
 				}
 				
 				L2ItemInstance destroyItem = player.getInventory().destroyItem("ChangeWeapon", wpn, player, null);
-				
 				if (destroyItem == null)
 				{
 					return;
 				}
 				
 				L2ItemInstance newItem = player.getInventory().addItem("ChangeWeapon", newItemId, 1, player, destroyItem);
-				
 				if (newItem == null)
 				{
 					return;
@@ -185,7 +182,6 @@ public class L2SkillChangeWeapon extends L2Skill
 				
 				player.broadcastUserInfo();
 			}
-			
 		}
 	}
 }
