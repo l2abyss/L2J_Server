@@ -89,14 +89,13 @@ public class Lottery
 	public void increasePrize(long count)
 	{
 		_prize += count;
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(UPDATE_PRICE))
 		{
-			PreparedStatement statement = con.prepareStatement(UPDATE_PRICE);
 			statement.setLong(1, getPrize());
 			statement.setLong(2, getPrize());
 			statement.setInt(3, getId());
 			statement.execute();
-			statement.close();
 		}
 		catch (SQLException e)
 		{

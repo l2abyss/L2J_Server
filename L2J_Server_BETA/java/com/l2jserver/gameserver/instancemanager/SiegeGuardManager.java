@@ -105,15 +105,14 @@ public class SiegeGuardManager
 	 */
 	public void removeMerc(int npcId, int x, int y, int z)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("Delete From castle_siege_guards Where npcId = ? And x = ? AND y = ? AND z = ? AND isHired = 1"))
 		{
-			PreparedStatement statement = con.prepareStatement("Delete From castle_siege_guards Where npcId = ? And x = ? AND y = ? AND z = ? AND isHired = 1");
-			statement.setInt(1, npcId);
-			statement.setInt(2, x);
-			statement.setInt(3, y);
-			statement.setInt(4, z);
-			statement.execute();
-			statement.close();
+			ps.setInt(1, npcId);
+			ps.setInt(2, x);
+			ps.setInt(3, y);
+			ps.setInt(4, z);
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -126,12 +125,11 @@ public class SiegeGuardManager
 	 */
 	public void removeMercs()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("Delete From castle_siege_guards Where castleId = ? And isHired = 1"))
 		{
-			PreparedStatement statement = con.prepareStatement("Delete From castle_siege_guards Where castleId = ? And isHired = 1");
-			statement.setInt(1, getCastle().getCastleId());
-			statement.execute();
-			statement.close();
+			ps.setInt(1, getCastle().getCastleId());
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -195,46 +193,44 @@ public class SiegeGuardManager
 	 */
 	private void loadSiegeGuard()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM castle_siege_guards Where castleId = ? And isHired = ?"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM castle_siege_guards Where castleId = ? And isHired = ?");
-			statement.setInt(1, getCastle().getCastleId());
+			ps.setInt(1, getCastle().getCastleId());
 			if (getCastle().getOwnerId() > 0)
 			{
-				statement.setInt(2, 1);
+				ps.setInt(2, 1);
 			}
 			else
 			{
-				statement.setInt(2, 0);
+				ps.setInt(2, 0);
 			}
-			ResultSet rs = statement.executeQuery();
-			
-			L2Spawn spawn1;
-			L2NpcTemplate template1;
-			
-			while (rs.next())
+			try (ResultSet rs = ps.executeQuery())
 			{
-				template1 = NpcTable.getInstance().getTemplate(rs.getInt("npcId"));
-				if (template1 != null)
+				L2Spawn spawn1;
+				L2NpcTemplate template1;
+				while (rs.next())
 				{
-					spawn1 = new L2Spawn(template1);
-					spawn1.setAmount(1);
-					spawn1.setLocx(rs.getInt("x"));
-					spawn1.setLocy(rs.getInt("y"));
-					spawn1.setLocz(rs.getInt("z"));
-					spawn1.setHeading(rs.getInt("heading"));
-					spawn1.setRespawnDelay(rs.getInt("respawnDelay"));
-					spawn1.setLocation(0);
-					
-					_siegeGuardSpawn.add(spawn1);
-				}
-				else
-				{
-					_log.warning(getClass().getSimpleName() + ": Missing npc data in npc table for id: " + rs.getInt("npcId"));
+					template1 = NpcTable.getInstance().getTemplate(rs.getInt("npcId"));
+					if (template1 != null)
+					{
+						spawn1 = new L2Spawn(template1);
+						spawn1.setAmount(1);
+						spawn1.setLocx(rs.getInt("x"));
+						spawn1.setLocy(rs.getInt("y"));
+						spawn1.setLocz(rs.getInt("z"));
+						spawn1.setHeading(rs.getInt("heading"));
+						spawn1.setRespawnDelay(rs.getInt("respawnDelay"));
+						spawn1.setLocation(0);
+						
+						_siegeGuardSpawn.add(spawn1);
+					}
+					else
+					{
+						_log.warning(getClass().getSimpleName() + ": Missing npc data in npc table for id: " + rs.getInt("npcId"));
+					}
 				}
 			}
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -253,9 +249,9 @@ public class SiegeGuardManager
 	 */
 	private void saveSiegeGuard(int x, int y, int z, int heading, int npcId, int isHire)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("Insert Into castle_siege_guards (castleId, npcId, x, y, z, heading, respawnDelay, isHired) Values (?, ?, ?, ?, ?, ?, ?, ?)"))
 		{
-			PreparedStatement statement = con.prepareStatement("Insert Into castle_siege_guards (castleId, npcId, x, y, z, heading, respawnDelay, isHired) Values (?, ?, ?, ?, ?, ?, ?, ?)");
 			statement.setInt(1, getCastle().getCastleId());
 			statement.setInt(2, npcId);
 			statement.setInt(3, x);
@@ -265,7 +261,6 @@ public class SiegeGuardManager
 			statement.setInt(7, (isHire == 1 ? 0 : 600));
 			statement.setInt(8, isHire);
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{

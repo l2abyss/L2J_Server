@@ -327,75 +327,79 @@ public abstract class IdFactory
 	 */
 	protected final int[] extractUsedObjectIDTable() throws Exception
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement())
 		{
-			Statement statement = null;
-			ResultSet rset = null;
-			
-			statement = con.createStatement();
 			final TIntArrayList temp = new TIntArrayList();
-			
-			rset = statement.executeQuery("SELECT COUNT(*) FROM characters");
-			rset.next();
-			temp.ensureCapacity(rset.getInt(1));
-			rset.close();
-			
-			rset = statement.executeQuery("SELECT charId FROM characters");
-			while (rset.next())
+			try (ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM characters"))
 			{
-				temp.add(rset.getInt(1));
+				rs.next();
+				temp.ensureCapacity(rs.getInt(1));
 			}
-			rset.close();
 			
-			rset = statement.executeQuery("SELECT COUNT(*) FROM items");
-			rset.next();
-			temp.ensureCapacity(temp.size() + rset.getInt(1));
-			rset.close();
-			
-			rset = statement.executeQuery("SELECT object_id FROM items");
-			while (rset.next())
+			try (ResultSet rs = s.executeQuery("SELECT charId FROM characters"))
 			{
-				temp.add(rset.getInt(1));
+				while (rs.next())
+				{
+					temp.add(rs.getInt(1));
+				}
 			}
-			rset.close();
 			
-			rset = statement.executeQuery("SELECT COUNT(*) FROM clan_data");
-			rset.next();
-			temp.ensureCapacity(temp.size() + rset.getInt(1));
-			rset.close();
-			
-			rset = statement.executeQuery("SELECT clan_id FROM clan_data");
-			while (rset.next())
+			try (ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM items"))
 			{
-				temp.add(rset.getInt(1));
+				rs.next();
+				temp.ensureCapacity(temp.size() + rs.getInt(1));
 			}
-			rset.close();
 			
-			rset = statement.executeQuery("SELECT COUNT(*) FROM itemsonground");
-			rset.next();
-			temp.ensureCapacity(temp.size() + rset.getInt(1));
-			rset.close();
-			
-			rset = statement.executeQuery("SELECT object_id FROM itemsonground");
-			while (rset.next())
+			try (ResultSet rs = s.executeQuery("SELECT object_id FROM items"))
 			{
-				temp.add(rset.getInt(1));
+				while (rs.next())
+				{
+					temp.add(rs.getInt(1));
+				}
 			}
-			rset.close();
 			
-			rset = statement.executeQuery("SELECT COUNT(*) FROM messages");
-			rset.next();
-			temp.ensureCapacity(temp.size() + rset.getInt(1));
-			rset.close();
-			
-			rset = statement.executeQuery("SELECT messageId FROM messages");
-			while (rset.next())
+			try (ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM clan_data"))
 			{
-				temp.add(rset.getInt(1));
+				rs.next();
+				temp.ensureCapacity(temp.size() + rs.getInt(1));
 			}
-			rset.close();
-			statement.close();
 			
+			try (ResultSet rs = s.executeQuery("SELECT clan_id FROM clan_data"))
+			{
+				while (rs.next())
+				{
+					temp.add(rs.getInt(1));
+				}
+			}
+			
+			try (ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM itemsonground"))
+			{
+				rs.next();
+				temp.ensureCapacity(temp.size() + rs.getInt(1));
+			}
+			
+			try (ResultSet rs = s.executeQuery("SELECT object_id FROM itemsonground"))
+			{
+				while (rs.next())
+				{
+					temp.add(rs.getInt(1));
+				}
+			}
+			
+			try (ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM messages"))
+			{
+				rs.next();
+				temp.ensureCapacity(temp.size() + rs.getInt(1));
+			}
+			
+			try (ResultSet rs = s.executeQuery("SELECT messageId FROM messages"))
+			{
+				while (rs.next())
+				{
+					temp.add(rs.getInt(1));
+				}
+			}
 			temp.sort();
 			return temp.toArray();
 		}

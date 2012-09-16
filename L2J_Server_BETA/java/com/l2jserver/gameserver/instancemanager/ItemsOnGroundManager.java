@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,8 +34,7 @@ import com.l2jserver.util.L2FastList;
 
 /**
  * This class manage all items on ground.
- * @author DiezelMax, original idea.
- * @author Enforcer, actual build.
+ * @author Enforcer
  */
 public class ItemsOnGroundManager implements Runnable
 {
@@ -67,23 +67,23 @@ public class ItemsOnGroundManager implements Runnable
 		// if DestroyPlayerDroppedItem was previously false, items currently protected will be added to ItemsAutoDestroy
 		if (Config.DESTROY_DROPPED_PLAYER_ITEM)
 		{
-			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+			String str = null;
+			if (!Config.DESTROY_EQUIPABLE_PLAYER_ITEM)
 			{
-				String str = null;
-				if (!Config.DESTROY_EQUIPABLE_PLAYER_ITEM)
-				{
-					// Recycle misc. items only
-					str = "update itemsonground set drop_time=? where drop_time=-1 and equipable=0";
-				}
-				else if (Config.DESTROY_EQUIPABLE_PLAYER_ITEM)
-				{
-					// Recycle all items including equip-able
-					str = "update itemsonground set drop_time=? where drop_time=-1";
-				}
-				PreparedStatement statement = con.prepareStatement(str);
-				statement.setLong(1, System.currentTimeMillis());
-				statement.execute();
-				statement.close();
+				// Recycle misc. items only
+				str = "UPDATE itemsonground SET drop_time = ? WHERE drop_time = -1 AND equipable = 0";
+			}
+			else if (Config.DESTROY_EQUIPABLE_PLAYER_ITEM)
+			{
+				// Recycle all items including equip-able
+				str = "UPDATE itemsonground SET drop_time = ? WHERE drop_time = -1";
+			}
+			
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement ps = con.prepareStatement(str))
+			{
+				ps.setLong(1, System.currentTimeMillis());
+				ps.execute();
 			}
 			catch (Exception e)
 			{
@@ -92,52 +92,50 @@ public class ItemsOnGroundManager implements Runnable
 		}
 		
 		// Add items to world
-		L2ItemInstance item;
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT object_id,item_id,count,enchant_level,x,y,z,drop_time,equipable FROM itemsonground"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT object_id,item_id,count,enchant_level,x,y,z,drop_time,equipable FROM itemsonground");
-			ResultSet rset;
 			int count = 0;
-			rset = statement.executeQuery();
-			while (rset.next())
+			try (ResultSet rs = ps.executeQuery())
 			{
-				item = new L2ItemInstance(rset.getInt(1), rset.getInt(2));
-				L2World.getInstance().storeObject(item);
-				// this check and..
-				if (item.isStackable() && (rset.getInt(3) > 1))
+				L2ItemInstance item;
+				while (rs.next())
 				{
-					item.setCount(rset.getInt(3));
-				}
-				// this, are really necessary?
-				if (rset.getInt(4) > 0)
-				{
-					item.setEnchantLevel(rset.getInt(4));
-				}
-				item.getPosition().setWorldPosition(rset.getInt(5), rset.getInt(6), rset.getInt(7));
-				item.getPosition().setWorldRegion(L2World.getInstance().getRegion(item.getPosition().getWorldPosition()));
-				item.getPosition().getWorldRegion().addVisibleObject(item);
-				final long dropTime = rset.getLong(8);
-				item.setDropTime(dropTime);
-				item.setProtected(dropTime == -1);
-				item.setIsVisible(true);
-				L2World.getInstance().addVisibleObject(item, item.getPosition().getWorldRegion());
-				_items.add(item);
-				count++;
-				// add to ItemsAutoDestroy only items not protected
-				if (!Config.LIST_PROTECTED_ITEMS.contains(item.getItemId()))
-				{
-					if (dropTime > -1)
+					item = new L2ItemInstance(rs.getInt(1), rs.getInt(2));
+					L2World.getInstance().storeObject(item);
+					// this check and..
+					if (item.isStackable() && (rs.getInt(3) > 1))
 					{
-						if (((Config.AUTODESTROY_ITEM_AFTER > 0) && (item.getItemType() != L2EtcItemType.HERB)) || ((Config.HERB_AUTO_DESTROY_TIME > 0) && (item.getItemType() == L2EtcItemType.HERB)))
+						item.setCount(rs.getInt(3));
+					}
+					// this, are really necessary?
+					if (rs.getInt(4) > 0)
+					{
+						item.setEnchantLevel(rs.getInt(4));
+					}
+					item.getPosition().setWorldPosition(rs.getInt(5), rs.getInt(6), rs.getInt(7));
+					item.getPosition().setWorldRegion(L2World.getInstance().getRegion(item.getPosition().getWorldPosition()));
+					item.getPosition().getWorldRegion().addVisibleObject(item);
+					final long dropTime = rs.getLong(8);
+					item.setDropTime(dropTime);
+					item.setProtected(dropTime == -1);
+					item.setIsVisible(true);
+					L2World.getInstance().addVisibleObject(item, item.getPosition().getWorldRegion());
+					_items.add(item);
+					count++;
+					// add to ItemsAutoDestroy only items not protected
+					if (!Config.LIST_PROTECTED_ITEMS.contains(item.getItemId()))
+					{
+						if (dropTime > -1)
 						{
-							ItemsAutoDestroy.getInstance().addItem(item);
+							if (((Config.AUTODESTROY_ITEM_AFTER > 0) && (item.getItemType() != L2EtcItemType.HERB)) || ((Config.HERB_AUTO_DESTROY_TIME > 0) && (item.getItemType() == L2EtcItemType.HERB)))
+							{
+								ItemsAutoDestroy.getInstance().addItem(item);
+							}
 						}
 					}
 				}
 			}
-			rset.close();
-			statement.close();
-			
 			_log.info(getClass().getSimpleName() + ": Loaded " + count + " items.");
 		}
 		catch (Exception e)
@@ -180,11 +178,10 @@ public class ItemsOnGroundManager implements Runnable
 	
 	public void emptyTable()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement())
 		{
-			PreparedStatement statement = con.prepareStatement("DELETE FROM itemsonground");
-			statement.execute();
-			statement.close();
+			s.executeQuery("DELETE FROM itemsonground");
 		}
 		catch (Exception e1)
 		{
@@ -207,10 +204,9 @@ public class ItemsOnGroundManager implements Runnable
 			return;
 		}
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("INSERT INTO itemsonground(object_id,item_id,count,enchant_level,x,y,z,drop_time,equipable) VALUES(?,?,?,?,?,?,?,?,?)"))
 		{
-			PreparedStatement statement = con.prepareStatement("INSERT INTO itemsonground(object_id,item_id,count,enchant_level,x,y,z,drop_time,equipable) VALUES(?,?,?,?,?,?,?,?,?)");
-			
 			for (L2ItemInstance item : _items)
 			{
 				if (item == null)
@@ -242,7 +238,6 @@ public class ItemsOnGroundManager implements Runnable
 					_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while inserting into table ItemsOnGround: " + e.getMessage(), e);
 				}
 			}
-			statement.close();
 		}
 		catch (SQLException e)
 		{

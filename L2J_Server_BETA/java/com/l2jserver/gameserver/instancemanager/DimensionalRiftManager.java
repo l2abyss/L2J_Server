@@ -18,8 +18,8 @@ import java.awt.Polygon;
 import java.awt.Shape;
 import java.io.File;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,7 +49,7 @@ import com.l2jserver.util.Rnd;
 import gnu.trove.map.hash.TByteObjectHashMap;
 
 /**
- * Thanks to L2Fortress and balancer.ru - kombat
+ * @author kombat
  */
 public class DimensionalRiftManager
 {
@@ -77,11 +77,10 @@ public class DimensionalRiftManager
 	
 	private void loadRooms()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT * FROM dimensional_rift"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM dimensional_rift");
-			ResultSet rs = statement.executeQuery();
-			
 			while (rs.next())
 			{
 				// 0 waiting room, 1 recruit, 2 soldier, 3 officer, 4 captain , 5 commander, 6 hero
@@ -107,9 +106,6 @@ public class DimensionalRiftManager
 				
 				_rooms.get(type).put(room_id, new DimensionalRiftRoom(type, room_id, xMin, xMax, yMin, yMax, z1, z2, xT, yT, zT, isBossRoom));
 			}
-			
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{

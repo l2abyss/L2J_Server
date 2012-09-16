@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.Map;
 import java.util.logging.Level;
@@ -72,28 +73,28 @@ public class GrandBossManager
 		_bosses = new FastMap<>();
 		_storedInfo = new TIntObjectHashMap<>();
 		_bossStatus = new TIntIntHashMap();
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT * from grandboss_data ORDER BY boss_id"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * from grandboss_data ORDER BY boss_id");
-			ResultSet rset = statement.executeQuery();
-			while (rset.next())
+			while (rs.next())
 			{
 				// Read all info from DB, and store it for AI to read and decide what to do
 				// faster than accessing DB in real time
 				StatsSet info = new StatsSet();
-				int bossId = rset.getInt("boss_id");
-				info.set("loc_x", rset.getInt("loc_x"));
-				info.set("loc_y", rset.getInt("loc_y"));
-				info.set("loc_z", rset.getInt("loc_z"));
-				info.set("heading", rset.getInt("heading"));
-				info.set("respawn_time", rset.getLong("respawn_time"));
-				double HP = rset.getDouble("currentHP"); // jython doesn't recognize doubles
+				int bossId = rs.getInt("boss_id");
+				info.set("loc_x", rs.getInt("loc_x"));
+				info.set("loc_y", rs.getInt("loc_y"));
+				info.set("loc_z", rs.getInt("loc_z"));
+				info.set("heading", rs.getInt("heading"));
+				info.set("respawn_time", rs.getLong("respawn_time"));
+				double HP = rs.getDouble("currentHP"); // jython doesn't recognize doubles
 				int true_HP = (int) HP; // so use java's ability to type cast
 				info.set("currentHP", true_HP); // to convert double to int
-				double MP = rset.getDouble("currentMP");
+				double MP = rs.getDouble("currentMP");
 				int true_MP = (int) MP;
 				info.set("currentMP", true_MP);
-				int status = rset.getInt("status");
+				int status = rs.getInt("status");
 				_bossStatus.put(bossId, status);
 				_storedInfo.put(bossId, info);
 				_log.info(getClass().getSimpleName() + ": " + NpcTable.getInstance().getTemplate(bossId).getName() + "(" + bossId + ") status is " + status + ".");
@@ -101,13 +102,8 @@ public class GrandBossManager
 				{
 					_log.info(getClass().getSimpleName() + ": Next spawn date of " + NpcTable.getInstance().getTemplate(bossId).getName() + " is " + new Date(info.getLong("respawn_time")) + ".");
 				}
-				
-				info = null;
 			}
 			_log.info(getClass().getSimpleName() + ": Loaded " + _storedInfo.size() + " Instances");
-			
-			rset.close();
-			statement.close();
 		}
 		catch (SQLException e)
 		{
@@ -141,21 +137,16 @@ public class GrandBossManager
 			zones.put(zone.getId(), new L2FastList<Integer>());
 		}
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT * from grandboss_list ORDER BY player_id"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * from grandboss_list ORDER BY player_id");
-			ResultSet rset = statement.executeQuery();
-			
-			while (rset.next())
+			while (rs.next())
 			{
-				int id = rset.getInt("player_id");
-				int zone_id = rset.getInt("zone");
+				int id = rs.getInt("player_id");
+				int zone_id = rs.getInt("zone");
 				zones.get(zone_id).add(id);
 			}
-			
-			rset.close();
-			statement.close();
-			
 			_log.info(getClass().getSimpleName() + ": Initialized " + _zones.size() + " Grand Boss Zones");
 		}
 		catch (SQLException e)
@@ -373,22 +364,22 @@ public class GrandBossManager
 			
 			if (statusOnly || (boss == null) || (info == null))
 			{
-				try (PreparedStatement statement = con.prepareStatement(UPDATE_GRAND_BOSS_DATA2))
+				try (PreparedStatement ps = con.prepareStatement(UPDATE_GRAND_BOSS_DATA2))
 				{
-					statement.setInt(1, _bossStatus.get(bossId));
-					statement.setInt(2, bossId);
-					statement.executeUpdate();
+					ps.setInt(1, _bossStatus.get(bossId));
+					ps.setInt(2, bossId);
+					ps.executeUpdate();
 				}
 			}
 			else
 			{
-				try (PreparedStatement statement = con.prepareStatement(UPDATE_GRAND_BOSS_DATA))
+				try (PreparedStatement ps = con.prepareStatement(UPDATE_GRAND_BOSS_DATA))
 				{
-					statement.setInt(1, boss.getX());
-					statement.setInt(2, boss.getY());
-					statement.setInt(3, boss.getZ());
-					statement.setInt(4, boss.getHeading());
-					statement.setLong(5, info.getLong("respawn_time"));
+					ps.setInt(1, boss.getX());
+					ps.setInt(2, boss.getY());
+					ps.setInt(3, boss.getZ());
+					ps.setInt(4, boss.getHeading());
+					ps.setLong(5, info.getLong("respawn_time"));
 					double hp = boss.getCurrentHp();
 					double mp = boss.getCurrentMp();
 					if (boss.isDead())
@@ -396,11 +387,11 @@ public class GrandBossManager
 						hp = boss.getMaxHp();
 						mp = boss.getMaxMp();
 					}
-					statement.setDouble(6, hp);
-					statement.setDouble(7, mp);
-					statement.setInt(8, _bossStatus.get(bossId));
-					statement.setInt(9, bossId);
-					statement.executeUpdate();
+					ps.setDouble(6, hp);
+					ps.setDouble(7, mp);
+					ps.setInt(8, _bossStatus.get(bossId));
+					ps.setInt(9, bossId);
+					ps.executeUpdate();
 				}
 			}
 		}

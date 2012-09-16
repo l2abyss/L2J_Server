@@ -130,21 +130,19 @@ public class SiegeManager
 		}
 		
 		boolean register = false;
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT clan_id FROM siege_clans where clan_id=? and castle_id=?"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT clan_id FROM siege_clans where clan_id=? and castle_id=?");
 			statement.setInt(1, clan.getClanId());
 			statement.setInt(2, castleid);
-			ResultSet rs = statement.executeQuery();
-			
-			while (rs.next())
+			try (ResultSet rs = statement.executeQuery())
 			{
-				register = true;
-				break;
+				while (rs.next())
+				{
+					register = true;
+					break;
+				}
 			}
-			
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{

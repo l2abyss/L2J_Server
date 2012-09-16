@@ -887,9 +887,9 @@ public class Olympiad
 		
 		_heroesToBe = new L2FastList<>();
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(OLYMPIAD_GET_HEROS))
 		{
-			PreparedStatement statement = con.prepareStatement(OLYMPIAD_GET_HEROS);
 			ResultSet rset;
 			StatsSet hero;
 			L2FastList<StatsSet> soulHounds = new L2FastList<>();
@@ -926,7 +926,6 @@ public class Olympiad
 				}
 				rset.close();
 			}
-			statement.close();
 			
 			switch (soulHounds.size())
 			{

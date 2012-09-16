@@ -43,26 +43,25 @@ public class Couple
 	{
 		_Id = coupleId;
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM mods_wedding WHERE id = ?"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM mods_wedding WHERE id = ?");
-			statement.setInt(1, _Id);
-			ResultSet rs = statement.executeQuery();
-			
-			while (rs.next())
+			ps.setInt(1, _Id);
+			try (ResultSet rs = ps.executeQuery())
 			{
-				_player1Id = rs.getInt("player1Id");
-				_player2Id = rs.getInt("player2Id");
-				_maried = rs.getBoolean("married");
-				
-				_affiancedDate = Calendar.getInstance();
-				_affiancedDate.setTimeInMillis(rs.getLong("affianceDate"));
-				
-				_weddingDate = Calendar.getInstance();
-				_weddingDate.setTimeInMillis(rs.getLong("weddingDate"));
+				while (rs.next())
+				{
+					_player1Id = rs.getInt("player1Id");
+					_player2Id = rs.getInt("player2Id");
+					_maried = rs.getBoolean("married");
+					
+					_affiancedDate = Calendar.getInstance();
+					_affiancedDate.setTimeInMillis(rs.getLong("affianceDate"));
+					
+					_weddingDate = Calendar.getInstance();
+					_weddingDate.setTimeInMillis(rs.getLong("weddingDate"));
+				}
 			}
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -84,18 +83,17 @@ public class Couple
 		_weddingDate = Calendar.getInstance();
 		_weddingDate.setTimeInMillis(Calendar.getInstance().getTimeInMillis());
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("INSERT INTO mods_wedding (id, player1Id, player2Id, married, affianceDate, weddingDate) VALUES (?, ?, ?, ?, ?, ?)"))
 		{
 			_Id = IdFactory.getInstance().getNextId();
-			PreparedStatement statement = con.prepareStatement("INSERT INTO mods_wedding (id, player1Id, player2Id, married, affianceDate, weddingDate) VALUES (?, ?, ?, ?, ?, ?)");
-			statement.setInt(1, _Id);
-			statement.setInt(2, _player1Id);
-			statement.setInt(3, _player2Id);
-			statement.setBoolean(4, false);
-			statement.setLong(5, _affiancedDate.getTimeInMillis());
-			statement.setLong(6, _weddingDate.getTimeInMillis());
-			statement.execute();
-			statement.close();
+			ps.setInt(1, _Id);
+			ps.setInt(2, _player1Id);
+			ps.setInt(3, _player2Id);
+			ps.setBoolean(4, false);
+			ps.setLong(5, _affiancedDate.getTimeInMillis());
+			ps.setLong(6, _weddingDate.getTimeInMillis());
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -105,15 +103,14 @@ public class Couple
 	
 	public void marry()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("UPDATE mods_wedding set married = ?, weddingDate = ? where id = ?"))
 		{
-			PreparedStatement statement = con.prepareStatement("UPDATE mods_wedding set married = ?, weddingDate = ? where id = ?");
-			statement.setBoolean(1, true);
+			ps.setBoolean(1, true);
 			_weddingDate = Calendar.getInstance();
-			statement.setLong(2, _weddingDate.getTimeInMillis());
-			statement.setInt(3, _Id);
-			statement.execute();
-			statement.close();
+			ps.setLong(2, _weddingDate.getTimeInMillis());
+			ps.setInt(3, _Id);
+			ps.execute();
 			_maried = true;
 		}
 		catch (Exception e)
@@ -124,12 +121,11 @@ public class Couple
 	
 	public void divorce()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM mods_wedding WHERE id=?"))
 		{
-			PreparedStatement statement = con.prepareStatement("DELETE FROM mods_wedding WHERE id=?");
-			statement.setInt(1, _Id);
-			statement.execute();
-			statement.close();
+			ps.setInt(1, _Id);
+			ps.execute();
 		}
 		catch (Exception e)
 		{

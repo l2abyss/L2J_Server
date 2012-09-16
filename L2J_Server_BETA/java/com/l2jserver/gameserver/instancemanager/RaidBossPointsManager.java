@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -58,15 +59,15 @@ public class RaidBossPointsManager
 	private final void init()
 	{
 		_list = new FastMap<>();
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT `charId`,`boss_id`,`points` FROM `character_raid_points`"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT `charId`,`boss_id`,`points` FROM `character_raid_points`");
-			ResultSet rset = statement.executeQuery();
-			while (rset.next())
+			while (rs.next())
 			{
-				int charId = rset.getInt("charId");
-				int bossId = rset.getInt("boss_id");
-				int points = rset.getInt("points");
+				int charId = rs.getInt("charId");
+				int bossId = rs.getInt("boss_id");
+				int points = rs.getInt("points");
 				Map<Integer, Integer> values = _list.get(charId);
 				if (values == null)
 				{
@@ -75,8 +76,6 @@ public class RaidBossPointsManager
 				values.put(bossId, points);
 				_list.put(charId, values);
 			}
-			rset.close();
-			statement.close();
 			_log.info(getClass().getSimpleName() + ": Loaded " + _list.size() + " Characters Raid Points.");
 		}
 		catch (SQLException e)
@@ -87,14 +86,13 @@ public class RaidBossPointsManager
 	
 	public final void updatePointsInDB(L2PcInstance player, int raidId, int points)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("REPLACE INTO character_raid_points (`charId`,`boss_id`,`points`) VALUES (?,?,?)"))
 		{
-			PreparedStatement statement = con.prepareStatement("REPLACE INTO character_raid_points (`charId`,`boss_id`,`points`) VALUES (?,?,?)");
-			statement.setInt(1, player.getObjectId());
-			statement.setInt(2, raidId);
-			statement.setInt(3, points);
-			statement.executeUpdate();
-			statement.close();
+			ps.setInt(1, player.getObjectId());
+			ps.setInt(2, raidId);
+			ps.setInt(3, points);
+			ps.executeUpdate();
 		}
 		catch (Exception e)
 		{
@@ -147,11 +145,10 @@ public class RaidBossPointsManager
 	
 	public final void cleanUp()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("DELETE from character_raid_points WHERE charId > 0"))
 		{
-			final PreparedStatement statement = con.prepareStatement("DELETE from character_raid_points WHERE charId > 0");
 			statement.executeUpdate();
-			statement.close();
 			_list.clear();
 		}
 		catch (Exception e)

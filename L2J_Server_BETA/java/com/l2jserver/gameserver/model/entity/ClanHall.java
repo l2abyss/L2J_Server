@@ -185,17 +185,16 @@ public abstract class ClanHall
 		
 		public void dbSave()
 		{
-			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement ps = con.prepareStatement("REPLACE INTO clanhall_functions (hall_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)"))
 			{
-				PreparedStatement statement = con.prepareStatement("REPLACE INTO clanhall_functions (hall_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)");
-				statement.setInt(1, getId());
-				statement.setInt(2, getType());
-				statement.setInt(3, getLvl());
-				statement.setInt(4, getLease());
-				statement.setLong(5, getRate());
-				statement.setLong(6, getEndTime());
-				statement.execute();
-				statement.close();
+				ps.setInt(1, getId());
+				ps.setInt(2, getType());
+				ps.setInt(3, getLvl());
+				ps.setInt(4, getLease());
+				ps.setLong(5, getRate());
+				ps.setLong(6, getEndTime());
+				ps.execute();
 			}
 			catch (Exception e)
 			{
@@ -448,17 +447,17 @@ public abstract class ClanHall
 	/** Load All Functions */
 	protected void loadFunctions()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM clanhall_functions WHERE hall_id = ?"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM clanhall_functions WHERE hall_id = ?");
-			statement.setInt(1, getId());
-			ResultSet rs = statement.executeQuery();
-			while (rs.next())
+			ps.setInt(1, getId());
+			try (ResultSet rs = ps.executeQuery())
 			{
-				_functions.put(rs.getInt("type"), new ClanHallFunction(rs.getInt("type"), rs.getInt("lvl"), rs.getInt("lease"), 0, rs.getLong("rate"), rs.getLong("endTime"), true));
+				while (rs.next())
+				{
+					_functions.put(rs.getInt("type"), new ClanHallFunction(rs.getInt("type"), rs.getInt("lvl"), rs.getInt("lease"), 0, rs.getLong("rate"), rs.getLong("endTime"), true));
+				}
 			}
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -473,13 +472,12 @@ public abstract class ClanHall
 	public void removeFunction(int functionType)
 	{
 		_functions.remove(functionType);
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM clanhall_functions WHERE hall_id=? AND type=?"))
 		{
-			PreparedStatement statement = con.prepareStatement("DELETE FROM clanhall_functions WHERE hall_id=? AND type=?");
-			statement.setInt(1, getId());
-			statement.setInt(2, functionType);
-			statement.execute();
-			statement.close();
+			ps.setInt(1, getId());
+			ps.setInt(2, functionType);
+			ps.execute();
 		}
 		catch (Exception e)
 		{

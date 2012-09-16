@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -797,11 +798,11 @@ public class TerritoryWarManager implements Siegable
 	{
 		final String query = delete ? DELETE : INSERT;
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(query))
+			PreparedStatement ps = con.prepareStatement(query))
 		{
-			statement.setInt(1, castleId);
-			statement.setInt(2, objId);
-			statement.execute();
+			ps.setInt(1, castleId);
+			ps.setInt(2, objId);
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -811,18 +812,18 @@ public class TerritoryWarManager implements Siegable
 	
 	private void updateTerritoryData(Territory ter)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		StringBuilder wardList = new StringBuilder();
+		for (int i : ter.getOwnedWardIds())
 		{
-			PreparedStatement statement = con.prepareStatement("UPDATE territories SET ownedWardIds=? WHERE territoryId=?");
-			StringBuilder wardList = new StringBuilder();
-			for (int i : ter.getOwnedWardIds())
-			{
-				wardList.append(i + ";");
-			}
-			statement.setString(1, wardList.toString());
-			statement.setInt(2, ter.getTerritoryId());
-			statement.execute();
-			statement.close();
+			wardList.append(i + ";");
+		}
+		
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("UPDATE territories SET ownedWardIds=? WHERE territoryId=?"))
+		{
+			ps.setString(1, wardList.toString());
+			ps.setInt(2, ter.getTerritoryId());
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -855,11 +856,10 @@ public class TerritoryWarManager implements Siegable
 		MINTWBADGEFORSTRIDERS = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForStriders", "50"));
 		MINTWBADGEFORBIGSTRIDER = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForBigStrider", "80"));
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT * FROM territory_spawnlist"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM territory_spawnlist");
-			ResultSet rs = statement.executeQuery();
-			
 			while (rs.next())
 			{
 				int castleId = rs.getInt("castleId");
@@ -884,20 +884,16 @@ public class TerritoryWarManager implements Siegable
 						_log.warning(getClass().getSimpleName() + ": Unknown npc type for " + rs.getInt("id"));
 				}
 			}
-			
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, getClass().getSimpleName() + ": SpawnList error: " + e.getMessage(), e);
 		}
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT * FROM territories"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM territories");
-			ResultSet rs = statement.executeQuery();
-			
 			while (rs.next())
 			{
 				int castleId = rs.getInt("castleId");
@@ -926,19 +922,16 @@ public class TerritoryWarManager implements Siegable
 					}
 				}
 			}
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, getClass().getSimpleName() + ": territory list error(): " + e.getMessage(), e);
 		}
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT * FROM territory_registrations"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM territory_registrations");
-			ResultSet rs = statement.executeQuery();
-			
 			while (rs.next())
 			{
 				int castleId = rs.getInt("castleId");
@@ -960,8 +953,6 @@ public class TerritoryWarManager implements Siegable
 					_registeredMercenaries.get(castleId).add(registeredId);
 				}
 			}
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{

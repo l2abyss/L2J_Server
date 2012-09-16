@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.model.entity;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -232,15 +233,15 @@ public class Castle
 		public void dbSave()
 		{
 			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("REPLACE INTO castle_functions (castle_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)"))
+				PreparedStatement ps = con.prepareStatement("REPLACE INTO castle_functions (castle_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)"))
 			{
-				statement.setInt(1, getCastleId());
-				statement.setInt(2, getType());
-				statement.setInt(3, getLvl());
-				statement.setInt(4, getLease());
-				statement.setLong(5, getRate());
-				statement.setLong(6, getEndTime());
-				statement.execute();
+				ps.setInt(1, getCastleId());
+				ps.setInt(2, getType());
+				ps.setInt(3, getLvl());
+				ps.setInt(4, getLease());
+				ps.setLong(5, getRate());
+				ps.setLong(6, getEndTime());
+				ps.execute();
 			}
 			catch (Exception e)
 			{
@@ -389,11 +390,11 @@ public class Castle
 		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE castle SET treasury = ? WHERE id = ?"))
+			PreparedStatement ps = con.prepareStatement("UPDATE castle SET treasury = ? WHERE id = ?"))
 		{
-			statement.setLong(1, getTreasury());
-			statement.setInt(2, getCastleId());
-			statement.execute();
+			ps.setLong(1, getTreasury());
+			ps.setInt(2, getCastleId());
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -657,11 +658,11 @@ public class Castle
 		_taxRate = _taxPercent / 100.0;
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE castle SET taxPercent = ? WHERE id = ?"))
+			PreparedStatement ps = con.prepareStatement("UPDATE castle SET taxPercent = ? WHERE id = ?"))
 		{
-			statement.setInt(1, taxPercent);
-			statement.setInt(2, getCastleId());
-			statement.execute();
+			ps.setInt(1, taxPercent);
+			ps.setInt(2, getCastleId());
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -777,10 +778,10 @@ public class Castle
 	private void loadFunctions()
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM castle_functions WHERE castle_id = ?"))
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM castle_functions WHERE castle_id = ?"))
 		{
-			statement.setInt(1, getCastleId());
-			try (ResultSet rs = statement.executeQuery())
+			ps.setInt(1, getCastleId());
+			try (ResultSet rs = ps.executeQuery())
 			{
 				while (rs.next())
 				{
@@ -802,11 +803,11 @@ public class Castle
 	{
 		_function.remove(functionType);
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM castle_functions WHERE castle_id=? AND type=?"))
+			PreparedStatement ps = con.prepareStatement("DELETE FROM castle_functions WHERE castle_id=? AND type=?"))
 		{
-			statement.setInt(1, getCastleId());
-			statement.setInt(2, functionType);
-			statement.execute();
+			ps.setInt(1, getCastleId());
+			ps.setInt(2, functionType);
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -876,23 +877,21 @@ public class Castle
 	// This method loads castle door upgrade data from database
 	private void loadDoorUpgrade()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		StringBuilder doorIds = new StringBuilder(100);
+		for (L2DoorInstance door : getDoors())
 		{
-			StringBuilder doorIds = new StringBuilder(100);
-			for (L2DoorInstance door : getDoors())
-			{
-				doorIds.append(door.getDoorId()).append(',');
-			}
-			doorIds.deleteCharAt(doorIds.length() - 1);
-			PreparedStatement statement = con.prepareStatement("Select * from castle_doorupgrade where doorId in (" + doorIds.toString() + ")");
-			ResultSet rs = statement.executeQuery();
-			
+			doorIds.append(door.getDoorId()).append(',');
+		}
+		doorIds.deleteCharAt(doorIds.length() - 1);
+		
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT * FROM castle_doorupgrade WHERE doorId IN (" + doorIds.toString() + ")"))
+		{
 			while (rs.next())
 			{
 				upgradeDoor(rs.getInt("id"), rs.getInt("hp"), rs.getInt("pDef"), rs.getInt("mDef"));
 			}
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -902,17 +901,17 @@ public class Castle
 	
 	private void removeDoorUpgrade()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		StringBuilder doorIds = new StringBuilder(100);
+		for (L2DoorInstance door : getDoors())
 		{
-			StringBuilder doorIds = new StringBuilder(100);
-			for (L2DoorInstance door : getDoors())
-			{
-				doorIds.append(door.getDoorId()).append(',');
-			}
-			doorIds.deleteCharAt(doorIds.length() - 1);
-			PreparedStatement statement = con.prepareStatement("delete from castle_doorupgrade where doorId in (" + doorIds.toString() + ")");
-			statement.execute();
-			statement.close();
+			doorIds.append(door.getDoorId()).append(',');
+		}
+		doorIds.deleteCharAt(doorIds.length() - 1);
+		
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement())
+		{
+			s.executeQuery("DELETE FROM castle_doorupgrade WHERE doorId IN (" + doorIds.toString() + ")");
 		}
 		catch (Exception e)
 		{
@@ -922,15 +921,14 @@ public class Castle
 	
 	private void saveDoorUpgrade(int doorId, int hp, int pDef, int mDef)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("INSERT INTO castle_doorupgrade (doorId, hp, pDef, mDef) values (?,?,?,?)"))
 		{
-			PreparedStatement statement = con.prepareStatement("INSERT INTO castle_doorupgrade (doorId, hp, pDef, mDef) values (?,?,?,?)");
-			statement.setInt(1, doorId);
-			statement.setInt(2, hp);
-			statement.setInt(3, pDef);
-			statement.setInt(4, mDef);
-			statement.execute();
-			statement.close();
+			ps.setInt(1, doorId);
+			ps.setInt(2, hp);
+			ps.setInt(3, pDef);
+			ps.setInt(4, mDef);
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -1393,15 +1391,14 @@ public class Castle
 	
 	public void updateCrop(int cropId, long amount, int period)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(CASTLE_UPDATE_CROP))
 		{
-			PreparedStatement statement = con.prepareStatement(CASTLE_UPDATE_CROP);
-			statement.setLong(1, amount);
-			statement.setInt(2, cropId);
-			statement.setInt(3, getCastleId());
-			statement.setInt(4, period);
-			statement.execute();
-			statement.close();
+			ps.setLong(1, amount);
+			ps.setInt(2, cropId);
+			ps.setInt(3, getCastleId());
+			ps.setInt(4, period);
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -1411,15 +1408,14 @@ public class Castle
 	
 	public void updateSeed(int seedId, long amount, int period)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(CASTLE_UPDATE_SEED))
 		{
-			PreparedStatement statement = con.prepareStatement(CASTLE_UPDATE_SEED);
-			statement.setLong(1, amount);
-			statement.setInt(2, seedId);
-			statement.setInt(3, getCastleId());
-			statement.setInt(4, period);
-			statement.execute();
-			statement.close();
+			ps.setLong(1, amount);
+			ps.setInt(2, seedId);
+			ps.setInt(3, getCastleId());
+			ps.setInt(4, period);
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -1468,13 +1464,12 @@ public class Castle
 	
 	public void updateShowNpcCrest()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("UPDATE castle SET showNpcCrest = ? WHERE id = ?"))
 		{
-			PreparedStatement statement = con.prepareStatement("UPDATE castle SET showNpcCrest = ? WHERE id = ?");
-			statement.setString(1, String.valueOf(getShowNpcCrest()));
-			statement.setInt(2, getCastleId());
-			statement.execute();
-			statement.close();
+			ps.setString(1, String.valueOf(getShowNpcCrest()));
+			ps.setInt(2, getCastleId());
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -1578,13 +1573,12 @@ public class Castle
 	{
 		_bloodAlliance = count;
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("UPDATE castle SET bloodAlliance = ? WHERE id = ?"))
 		{
-			PreparedStatement statement = con.prepareStatement("UPDATE castle SET bloodAlliance = ? WHERE id = ?");
 			statement.setInt(1, _bloodAlliance);
 			statement.setInt(2, getCastleId());
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{

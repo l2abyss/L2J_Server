@@ -225,17 +225,16 @@ public class Fort
 		
 		public void dbSave()
 		{
-			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement ps = con.prepareStatement("REPLACE INTO fort_functions (fort_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)"))
 			{
-				PreparedStatement statement = con.prepareStatement("REPLACE INTO fort_functions (fort_id, type, lvl, lease, rate, endTime) VALUES (?,?,?,?,?,?)");
-				statement.setInt(1, getFortId());
-				statement.setInt(2, getType());
-				statement.setInt(3, getLvl());
-				statement.setInt(4, getLease());
-				statement.setLong(5, getRate());
-				statement.setLong(6, getEndTime());
-				statement.execute();
-				statement.close();
+				ps.setInt(1, getFortId());
+				ps.setInt(2, getType());
+				ps.setInt(3, getLvl());
+				ps.setInt(4, getLease());
+				ps.setLong(5, getRate());
+				ps.setLong(6, getEndTime());
+				ps.execute();
 			}
 			catch (Exception e)
 			{
@@ -567,14 +566,13 @@ public class Fort
 	
 	public void saveFortVariables()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("UPDATE fort SET blood=?, supplyLvL=? WHERE id = ?"))
 		{
-			PreparedStatement statement = con.prepareStatement("UPDATE fort SET blood=?, supplyLvL=? WHERE id = ?");
-			statement.setInt(1, _blood);
-			statement.setInt(2, _supplyLvL);
-			statement.setInt(3, getFortId());
-			statement.execute();
-			statement.close();
+			ps.setInt(1, _blood);
+			ps.setInt(2, _supplyLvL);
+			ps.setInt(3, getFortId());
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -636,32 +634,29 @@ public class Fort
 	// This method loads fort
 	private void load()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM fort WHERE id = ?"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort WHERE id = ?");
-			statement.setInt(1, getFortId());
-			ResultSet rs = statement.executeQuery();
+			ps.setInt(1, getFortId());
 			int ownerId = 0;
-			
-			while (rs.next())
+			try (ResultSet rs = ps.executeQuery())
 			{
-				_name = rs.getString("name");
-				
-				_siegeDate = Calendar.getInstance();
-				_lastOwnedTime = Calendar.getInstance();
-				_siegeDate.setTimeInMillis(rs.getLong("siegeDate"));
-				_lastOwnedTime.setTimeInMillis(rs.getLong("lastOwnedTime"));
-				ownerId = rs.getInt("owner");
-				_fortType = rs.getInt("fortType");
-				_state = rs.getInt("state");
-				_castleId = rs.getInt("castleId");
-				_blood = rs.getInt("blood");
-				_supplyLvL = rs.getInt("supplyLvL");
+				while (rs.next())
+				{
+					_name = rs.getString("name");
+					
+					_siegeDate = Calendar.getInstance();
+					_lastOwnedTime = Calendar.getInstance();
+					_siegeDate.setTimeInMillis(rs.getLong("siegeDate"));
+					_lastOwnedTime.setTimeInMillis(rs.getLong("lastOwnedTime"));
+					ownerId = rs.getInt("owner");
+					_fortType = rs.getInt("fortType");
+					_state = rs.getInt("state");
+					_castleId = rs.getInt("castleId");
+					_blood = rs.getInt("blood");
+					_supplyLvL = rs.getInt("supplyLvL");
+				}
 			}
-			
-			rs.close();
-			statement.close();
-			
 			if (ownerId > 0)
 			{
 				L2Clan clan = ClanTable.getInstance().getClan(ownerId); // Try to find clan instance
@@ -702,19 +697,17 @@ public class Fort
 	/** Load All Functions */
 	private void loadFunctions()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM fort_functions WHERE fort_id = ?"))
 		{
-			PreparedStatement statement;
-			ResultSet rs;
-			statement = con.prepareStatement("SELECT * FROM fort_functions WHERE fort_id = ?");
-			statement.setInt(1, getFortId());
-			rs = statement.executeQuery();
-			while (rs.next())
+			ps.setInt(1, getFortId());
+			try (ResultSet rs = ps.executeQuery())
 			{
-				_function.put(rs.getInt("type"), new FortFunction(rs.getInt("type"), rs.getInt("lvl"), rs.getInt("lease"), 0, rs.getLong("rate"), rs.getLong("endTime"), true));
+				while (rs.next())
+				{
+					_function.put(rs.getInt("type"), new FortFunction(rs.getInt("type"), rs.getInt("lvl"), rs.getInt("lease"), 0, rs.getLong("rate"), rs.getLong("endTime"), true));
+				}
 			}
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -729,13 +722,12 @@ public class Fort
 	public void removeFunction(int functionType)
 	{
 		_function.remove(functionType);
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM fort_functions WHERE fort_id=? AND type=?"))
 		{
-			PreparedStatement statement = con.prepareStatement("DELETE FROM fort_functions WHERE fort_id=? AND type=?");
-			statement.setInt(1, getFortId());
-			statement.setInt(2, functionType);
-			statement.execute();
-			statement.close();
+			ps.setInt(1, getFortId());
+			ps.setInt(2, functionType);
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -832,18 +824,17 @@ public class Fort
 	// This method loads fort door upgrade data from database
 	private void loadDoorUpgrade()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM fort_doorupgrade WHERE fortId = ?"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort_doorupgrade WHERE fortId = ?");
-			statement.setInt(1, getFortId());
-			ResultSet rs = statement.executeQuery();
-			
-			while (rs.next())
+			ps.setInt(1, getFortId());
+			try (ResultSet rs = ps.executeQuery())
 			{
-				upgradeDoor(rs.getInt("id"), rs.getInt("hp"), rs.getInt("pDef"), rs.getInt("mDef"));
+				while (rs.next())
+				{
+					upgradeDoor(rs.getInt("id"), rs.getInt("hp"), rs.getInt("pDef"), rs.getInt("mDef"));
+				}
 			}
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -853,12 +844,11 @@ public class Fort
 	
 	private void removeDoorUpgrade()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM fort_doorupgrade WHERE WHERE fortId = ?"))
 		{
-			PreparedStatement statement = con.prepareStatement("DELETE FROM fort_doorupgrade WHERE WHERE fortId = ?");
-			statement.setInt(1, getFortId());
-			statement.execute();
-			statement.close();
+			ps.setInt(1, getFortId());
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -868,15 +858,14 @@ public class Fort
 	
 	private void saveDoorUpgrade(int doorId, int hp, int pDef, int mDef)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("INSERT INTO fort_doorupgrade (doorId, hp, pDef, mDef) VALUES (?,?,?,?)"))
 		{
-			PreparedStatement statement = con.prepareStatement("INSERT INTO fort_doorupgrade (doorId, hp, pDef, mDef) VALUES (?,?,?,?)");
-			statement.setInt(1, doorId);
-			statement.setInt(2, hp);
-			statement.setInt(3, pDef);
-			statement.setInt(4, mDef);
-			statement.execute();
-			statement.close();
+			ps.setInt(1, doorId);
+			ps.setInt(2, hp);
+			ps.setInt(3, pDef);
+			ps.setInt(4, mDef);
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -898,17 +887,16 @@ public class Fort
 			_lastOwnedTime.setTimeInMillis(0);
 		}
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("UPDATE fort SET owner=?,lastOwnedTime=?,state=?,castleId=?,blood=? WHERE id = ?"))
 		{
-			PreparedStatement statement = con.prepareStatement("UPDATE fort SET owner=?,lastOwnedTime=?,state=?,castleId=?,blood=? WHERE id = ?");
-			statement.setInt(1, clanId);
-			statement.setLong(2, _lastOwnedTime.getTimeInMillis());
-			statement.setInt(3, 0);
-			statement.setInt(4, 0);
-			statement.setInt(5, getBloodOathReward());
-			statement.setInt(6, getFortId());
-			statement.execute();
-			statement.close();
+			ps.setInt(1, clanId);
+			ps.setLong(2, _lastOwnedTime.getTimeInMillis());
+			ps.setInt(3, 0);
+			ps.setInt(4, 0);
+			ps.setInt(5, getBloodOathReward());
+			ps.setInt(6, getFortId());
+			ps.execute();
 			
 			// Announce to clan members
 			if (clan != null)
@@ -1116,14 +1104,13 @@ public class Fort
 	{
 		_state = state;
 		_castleId = castleId;
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("UPDATE fort SET state=?,castleId=? WHERE id = ?"))
 		{
-			PreparedStatement statement = con.prepareStatement("UPDATE fort SET state=?,castleId=? WHERE id = ?");
-			statement.setInt(1, getFortState());
-			statement.setInt(2, getCastleId());
-			statement.setInt(3, getFortId());
-			statement.execute();
-			statement.close();
+			ps.setInt(1, getFortState());
+			ps.setInt(2, getCastleId());
+			ps.setInt(3, getFortId());
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -1231,44 +1218,40 @@ public class Fort
 	
 	private void initNpcs()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? "))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? ");
-			statement.setInt(1, getFortId());
-			statement.setInt(2, 0);
-			ResultSet rset = statement.executeQuery();
-			
-			L2Spawn spawnDat;
-			L2NpcTemplate template;
-			
-			while (rset.next())
+			ps.setInt(1, getFortId());
+			ps.setInt(2, 0);
+			try (ResultSet rs = ps.executeQuery())
 			{
-				template = NpcTable.getInstance().getTemplate(rset.getInt("npcId"));
-				if (template != null)
+				L2Spawn spawnDat;
+				L2NpcTemplate template;
+				while (rs.next())
 				{
-					spawnDat = new L2Spawn(template);
-					spawnDat.setAmount(1);
-					spawnDat.setLocx(rset.getInt("x"));
-					spawnDat.setLocy(rset.getInt("y"));
-					spawnDat.setLocz(rset.getInt("z"));
-					spawnDat.setHeading(rset.getInt("heading"));
-					spawnDat.setRespawnDelay(60);
-					SpawnTable.getInstance().addNewSpawn(spawnDat, false);
-					spawnDat.doSpawn();
-					spawnDat.startRespawn();
-				}
-				else
-				{
-					_log.warning("Fort " + getFortId() + " initNpcs: Data missing in NPC table for ID: " + rset.getInt("npcId") + ".");
+					template = NpcTable.getInstance().getTemplate(rs.getInt("npcId"));
+					if (template != null)
+					{
+						spawnDat = new L2Spawn(template);
+						spawnDat.setAmount(1);
+						spawnDat.setLocx(rs.getInt("x"));
+						spawnDat.setLocy(rs.getInt("y"));
+						spawnDat.setLocz(rs.getInt("z"));
+						spawnDat.setHeading(rs.getInt("heading"));
+						spawnDat.setRespawnDelay(60);
+						SpawnTable.getInstance().addNewSpawn(spawnDat, false);
+						spawnDat.doSpawn();
+						spawnDat.startRespawn();
+					}
+					else
+					{
+						_log.warning("Fort " + getFortId() + " initNpcs: Data missing in NPC table for ID: " + rs.getInt("npcId") + ".");
+					}
 				}
 			}
-			
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
-			// problem with initializing spawn, go to next one
 			_log.log(Level.WARNING, "Fort " + getFortId() + " initNpcs: Spawn could not be initialized: " + e.getMessage(), e);
 		}
 	}
@@ -1276,40 +1259,38 @@ public class Fort
 	private void initSiegeNpcs()
 	{
 		_siegeNpcs.clear();
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT id, npcId, x, y, z, heading FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? ORDER BY id"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT id, npcId, x, y, z, heading FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? ORDER BY id");
-			statement.setInt(1, getFortId());
-			statement.setInt(2, 2);
-			ResultSet rset = statement.executeQuery();
-			
-			L2Spawn spawnDat;
-			L2NpcTemplate template;
-			while (rset.next())
+			ps.setInt(1, getFortId());
+			ps.setInt(2, 2);
+			try (ResultSet rs = ps.executeQuery())
 			{
-				template = NpcTable.getInstance().getTemplate(rset.getInt("npcId"));
-				if (template != null)
+				L2Spawn spawnDat;
+				L2NpcTemplate template;
+				while (rs.next())
 				{
-					spawnDat = new L2Spawn(template);
-					spawnDat.setAmount(1);
-					spawnDat.setLocx(rset.getInt("x"));
-					spawnDat.setLocy(rset.getInt("y"));
-					spawnDat.setLocz(rset.getInt("z"));
-					spawnDat.setHeading(rset.getInt("heading"));
-					spawnDat.setRespawnDelay(60);
-					_siegeNpcs.add(spawnDat);
-				}
-				else
-				{
-					_log.warning("Fort " + getFortId() + " initSiegeNpcs: Data missing in NPC table for ID: " + rset.getInt("npcId") + ".");
+					template = NpcTable.getInstance().getTemplate(rs.getInt("npcId"));
+					if (template != null)
+					{
+						spawnDat = new L2Spawn(template);
+						spawnDat.setAmount(1);
+						spawnDat.setLocx(rs.getInt("x"));
+						spawnDat.setLocy(rs.getInt("y"));
+						spawnDat.setLocz(rs.getInt("z"));
+						spawnDat.setHeading(rs.getInt("heading"));
+						spawnDat.setRespawnDelay(60);
+						_siegeNpcs.add(spawnDat);
+					}
+					else
+					{
+						_log.warning("Fort " + getFortId() + " initSiegeNpcs: Data missing in NPC table for ID: " + rs.getInt("npcId") + ".");
+					}
 				}
 			}
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
-			// problem with initializing spawn, go to next one
 			_log.log(Level.WARNING, "Fort " + getFortId() + " initSiegeNpcs: Spawn could not be initialized: " + e.getMessage(), e);
 		}
 	}
@@ -1317,36 +1298,35 @@ public class Fort
 	private void initNpcCommanders()
 	{
 		_npcCommanders.clear();
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT id, npcId, x, y, z, heading FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? ORDER BY id"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT id, npcId, x, y, z, heading FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? ORDER BY id");
-			statement.setInt(1, getFortId());
-			statement.setInt(2, 1);
-			ResultSet rset = statement.executeQuery();
-			
-			L2Spawn spawnDat;
-			L2NpcTemplate template;
-			while (rset.next())
+			ps.setInt(1, getFortId());
+			ps.setInt(2, 1);
+			try (ResultSet rs = ps.executeQuery())
 			{
-				template = NpcTable.getInstance().getTemplate(rset.getInt("npcId"));
-				if (template != null)
+				L2Spawn spawnDat;
+				L2NpcTemplate template;
+				while (rs.next())
 				{
-					spawnDat = new L2Spawn(template);
-					spawnDat.setAmount(1);
-					spawnDat.setLocx(rset.getInt("x"));
-					spawnDat.setLocy(rset.getInt("y"));
-					spawnDat.setLocz(rset.getInt("z"));
-					spawnDat.setHeading(rset.getInt("heading"));
-					spawnDat.setRespawnDelay(60);
-					_npcCommanders.add(spawnDat);
-				}
-				else
-				{
-					_log.warning("Fort " + getFortId() + " initNpcCommanders: Data missing in NPC table for ID: " + rset.getInt("npcId") + ".");
+					template = NpcTable.getInstance().getTemplate(rs.getInt("npcId"));
+					if (template != null)
+					{
+						spawnDat = new L2Spawn(template);
+						spawnDat.setAmount(1);
+						spawnDat.setLocx(rs.getInt("x"));
+						spawnDat.setLocy(rs.getInt("y"));
+						spawnDat.setLocz(rs.getInt("z"));
+						spawnDat.setHeading(rs.getInt("heading"));
+						spawnDat.setRespawnDelay(60);
+						_npcCommanders.add(spawnDat);
+					}
+					else
+					{
+						_log.warning("Fort " + getFortId() + " initNpcCommanders: Data missing in NPC table for ID: " + rs.getInt("npcId") + ".");
+					}
 				}
 			}
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -1359,39 +1339,38 @@ public class Fort
 	{
 		_specialEnvoys.clear();
 		_envoyCastles.clear();
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT id, npcId, x, y, z, heading, castleId FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? ORDER BY id"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT id, npcId, x, y, z, heading, castleId FROM fort_spawnlist WHERE fortId = ? AND spawnType = ? ORDER BY id");
-			statement.setInt(1, getFortId());
-			statement.setInt(2, 3);
-			ResultSet rset = statement.executeQuery();
-			
-			L2Spawn spawnDat;
-			L2NpcTemplate template;
-			while (rset.next())
+			ps.setInt(1, getFortId());
+			ps.setInt(2, 3);
+			try (ResultSet rs = ps.executeQuery())
 			{
-				int castleId = rset.getInt("castleId");
-				int npcId = rset.getInt("npcId");
-				template = NpcTable.getInstance().getTemplate(npcId);
-				if (template != null)
+				L2Spawn spawnDat;
+				L2NpcTemplate template;
+				while (rs.next())
 				{
-					spawnDat = new L2Spawn(template);
-					spawnDat.setAmount(1);
-					spawnDat.setLocx(rset.getInt("x"));
-					spawnDat.setLocy(rset.getInt("y"));
-					spawnDat.setLocz(rset.getInt("z"));
-					spawnDat.setHeading(rset.getInt("heading"));
-					spawnDat.setRespawnDelay(60);
-					_specialEnvoys.add(spawnDat);
-					_envoyCastles.put(npcId, castleId);
-				}
-				else
-				{
-					_log.warning("Fort " + getFortId() + " initSpecialEnvoys: Data missing in NPC table for ID: " + rset.getInt("npcId") + ".");
+					int castleId = rs.getInt("castleId");
+					int npcId = rs.getInt("npcId");
+					template = NpcTable.getInstance().getTemplate(npcId);
+					if (template != null)
+					{
+						spawnDat = new L2Spawn(template);
+						spawnDat.setAmount(1);
+						spawnDat.setLocx(rs.getInt("x"));
+						spawnDat.setLocy(rs.getInt("y"));
+						spawnDat.setLocz(rs.getInt("z"));
+						spawnDat.setHeading(rs.getInt("heading"));
+						spawnDat.setRespawnDelay(60);
+						_specialEnvoys.add(spawnDat);
+						_envoyCastles.put(npcId, castleId);
+					}
+					else
+					{
+						_log.warning("Fort " + getFortId() + " initSpecialEnvoys: Data missing in NPC table for ID: " + rs.getInt("npcId") + ".");
+					}
 				}
 			}
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{

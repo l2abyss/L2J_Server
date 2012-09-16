@@ -110,15 +110,14 @@ public class InstanceManager extends DocumentParser
 			restoreInstanceTimes(playerObjId);
 		}
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(ADD_INSTANCE_TIME))
 		{
-			PreparedStatement statement = con.prepareStatement(ADD_INSTANCE_TIME);
-			statement.setInt(1, playerObjId);
-			statement.setInt(2, id);
-			statement.setLong(3, time);
-			statement.setLong(4, time);
-			statement.execute();
-			statement.close();
+			ps.setInt(1, playerObjId);
+			ps.setInt(2, id);
+			ps.setLong(3, time);
+			ps.setLong(4, time);
+			ps.execute();
 			_playerInstanceTimes.get(playerObjId).put(id, time);
 		}
 		catch (Exception e)
@@ -133,13 +132,12 @@ public class InstanceManager extends DocumentParser
 	 */
 	public void deleteInstanceTime(int playerObjId, int id)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(DELETE_INSTANCE_TIME))
 		{
-			PreparedStatement statement = con.prepareStatement(DELETE_INSTANCE_TIME);
-			statement.setInt(1, playerObjId);
-			statement.setInt(2, id);
-			statement.execute();
-			statement.close();
+			ps.setInt(1, playerObjId);
+			ps.setInt(2, id);
+			ps.execute();
 			_playerInstanceTimes.get(playerObjId).remove(id);
 		}
 		catch (Exception e)
@@ -158,28 +156,26 @@ public class InstanceManager extends DocumentParser
 			return; // already restored
 		}
 		_playerInstanceTimes.put(playerObjId, new FastMap<Integer, Long>());
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(RESTORE_INSTANCE_TIMES))
 		{
-			PreparedStatement statement = con.prepareStatement(RESTORE_INSTANCE_TIMES);
-			statement.setInt(1, playerObjId);
-			ResultSet rset = statement.executeQuery();
-			
-			while (rset.next())
+			ps.setInt(1, playerObjId);
+			try (ResultSet rs = ps.executeQuery())
 			{
-				int id = rset.getInt("instanceId");
-				long time = rset.getLong("time");
-				if (time < System.currentTimeMillis())
+				while (rs.next())
 				{
-					deleteInstanceTime(playerObjId, id);
-				}
-				else
-				{
-					_playerInstanceTimes.get(playerObjId).put(id, time);
+					int id = rs.getInt("instanceId");
+					long time = rs.getLong("time");
+					if (time < System.currentTimeMillis())
+					{
+						deleteInstanceTime(playerObjId, id);
+					}
+					else
+					{
+						_playerInstanceTimes.get(playerObjId).put(id, time);
+					}
 				}
 			}
-			
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{

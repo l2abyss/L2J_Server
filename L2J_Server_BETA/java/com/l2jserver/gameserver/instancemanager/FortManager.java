@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.instancemanager;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,11 +32,6 @@ import com.l2jserver.gameserver.model.entity.Fort;
 public class FortManager implements InstanceListManager
 {
 	protected static final Logger _log = Logger.getLogger(FortManager.class.getName());
-	
-	public static final FortManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
 	
 	private List<Fort> _forts;
 	
@@ -168,18 +163,14 @@ public class FortManager implements InstanceListManager
 	@Override
 	public void loadInstances()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT id FROM fort ORDER BY id"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT id FROM fort ORDER BY id");
-			ResultSet rs = statement.executeQuery();
-			
 			while (rs.next())
 			{
 				getForts().add(new Fort(rs.getInt("id")));
 			}
-			
-			rs.close();
-			statement.close();
 			
 			_log.info(getClass().getSimpleName() + ": Loaded: " + getForts().size() + " fortress");
 			for (Fort fort : getForts())
@@ -205,6 +196,11 @@ public class FortManager implements InstanceListManager
 		{
 			fort.activateInstance();
 		}
+	}
+	
+	public static final FortManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

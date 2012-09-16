@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.instancemanager;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
@@ -254,35 +254,34 @@ public class HellboundManager
 	
 	private final void loadSpawns()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery(LOAD_SPAWNS))
 		{
-			final PreparedStatement statement = con.prepareStatement(LOAD_SPAWNS);
-			final ResultSet rset = statement.executeQuery();
-			
 			HellboundSpawn spawnDat;
 			L2NpcTemplate template;
-			while (rset.next())
+			while (rs.next())
 			{
-				template = NpcTable.getInstance().getTemplate(rset.getInt("npc_templateid"));
+				template = NpcTable.getInstance().getTemplate(rs.getInt("npc_templateid"));
 				if (template != null)
 				{
 					spawnDat = new HellboundSpawn(template);
 					spawnDat.setAmount(1);
-					spawnDat.setLocx(rset.getInt("locx"));
-					spawnDat.setLocy(rset.getInt("locy"));
-					spawnDat.setLocz(rset.getInt("locz"));
-					spawnDat.setHeading(rset.getInt("heading"));
-					spawnDat.setRespawnDelay(rset.getInt("respawn_delay"));
+					spawnDat.setLocx(rs.getInt("locx"));
+					spawnDat.setLocy(rs.getInt("locy"));
+					spawnDat.setLocz(rs.getInt("locz"));
+					spawnDat.setHeading(rs.getInt("heading"));
+					spawnDat.setRespawnDelay(rs.getInt("respawn_delay"));
 					spawnDat.setRespawnMinDelay(0);
 					spawnDat.setRespawnMaxDelay(0);
-					int respawnRandom = (rset.getInt("respawn_random"));
+					int respawnRandom = (rs.getInt("respawn_random"));
 					if (respawnRandom > 0) // Random respawn time, if needed
 					{
-						spawnDat.setRespawnMinDelay(Math.max(rset.getInt("respawn_delay") - respawnRandom, 1));
-						spawnDat.setRespawnMaxDelay(rset.getInt("respawn_delay") + respawnRandom);
+						spawnDat.setRespawnMinDelay(Math.max(rs.getInt("respawn_delay") - respawnRandom, 1));
+						spawnDat.setRespawnMaxDelay(rs.getInt("respawn_delay") + respawnRandom);
 					}
-					spawnDat.setMinLvl(rset.getInt("min_hellbound_level"));
-					spawnDat.setMaxLvl(rset.getInt("max_hellbound_level"));
+					spawnDat.setMinLvl(rs.getInt("min_hellbound_level"));
+					spawnDat.setMaxLvl(rs.getInt("max_hellbound_level"));
 					
 					// _population.put(spawnDat, null);
 					_population.add(spawnDat);
@@ -290,11 +289,11 @@ public class HellboundManager
 				}
 				else
 				{
-					_log.warning(getClass().getSimpleName() + ": Data missing in NPC table for ID: " + rset.getInt("npc_templateid") + ".");
+					_log.warning(getClass().getSimpleName() + ": Data missing in NPC table for ID: " + rs.getInt("npc_templateid") + ".");
 				}
 			}
-			rset.close();
-			statement.close();
+			rs.close();
+			s.close();
 		}
 		catch (Exception e)
 		{

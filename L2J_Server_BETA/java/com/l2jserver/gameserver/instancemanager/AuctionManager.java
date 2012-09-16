@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.instancemanager;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -83,11 +83,6 @@ public class AuctionManager
 	};
 	// @formatter:on
 	
-	public static final AuctionManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	protected AuctionManager()
 	{
 		load();
@@ -101,17 +96,15 @@ public class AuctionManager
 	
 	private final void load()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT id FROM auction ORDER BY id"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT id FROM auction ORDER BY id");
-			ResultSet rs = statement.executeQuery();
 			while (rs.next())
 			{
 				_auctions.add(new Auction(rs.getInt("id")));
 			}
-			rs.close();
-			statement.close();
-			_log.info(getClass().getSimpleName() + ": Loaded: " + getAuctions().size() + " auction(s)");
+			_log.info(getClass().getSimpleName() + ": Loaded: " + _auctions.size() + " auction(s)");
 		}
 		catch (Exception e)
 		{
@@ -124,7 +117,7 @@ public class AuctionManager
 		int index = getAuctionIndex(auctionId);
 		if (index >= 0)
 		{
-			return getAuctions().get(index);
+			return _auctions.get(index);
 		}
 		return null;
 	}
@@ -132,9 +125,9 @@ public class AuctionManager
 	public final int getAuctionIndex(int auctionId)
 	{
 		Auction auction;
-		for (int i = 0; i < getAuctions().size(); i++)
+		for (int i = 0; i < _auctions.size(); i++)
 		{
-			auction = getAuctions().get(i);
+			auction = _auctions.get(i);
 			if ((auction != null) && (auction.getId() == auctionId))
 			{
 				return i;
@@ -168,11 +161,10 @@ public class AuctionManager
 			return;
 		}
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement())
 		{
-			PreparedStatement statement = con.prepareStatement("INSERT INTO `auction` VALUES " + ITEM_INIT_DATA[i]);
-			statement.execute();
-			statement.close();
+			s.executeUpdate("INSERT INTO `auction` VALUES " + ITEM_INIT_DATA[i]);
 			_auctions.add(new Auction(id));
 			_log.info(getClass().getSimpleName() + ": Created auction for ClanHall: " + id);
 		}
@@ -180,6 +172,11 @@ public class AuctionManager
 		{
 			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Exception: Auction.initNPC(): " + e.getMessage(), e);
 		}
+	}
+	
+	public static final AuctionManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

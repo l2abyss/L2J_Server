@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.instancemanager;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,11 +63,11 @@ public final class ClanHallManager
 	/** Load All Clan Hall */
 	private final void load()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT * FROM clanhall ORDER BY id"))
 		{
 			int id, ownerId, lease;
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM clanhall ORDER BY id");
-			ResultSet rs = statement.executeQuery();
 			while (rs.next())
 			{
 				StatsSet set = new StatsSet();
@@ -102,9 +102,6 @@ public final class ClanHallManager
 					AuctionManager.getInstance().initNPC(id);
 				}
 			}
-			
-			rs.close();
-			statement.close();
 			_log.info(getClass().getSimpleName() + ": Loaded: " + getClanHalls().size() + " clan halls");
 			_log.info(getClass().getSimpleName() + ": Loaded: " + getFreeClanHalls().size() + " free clan halls");
 			_loaded = true;

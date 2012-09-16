@@ -129,21 +129,19 @@ public class FortSiegeManager
 		}
 		
 		boolean register = false;
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT clan_id FROM fortsiege_clans where clan_id=? and fort_id=?"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT clan_id FROM fortsiege_clans where clan_id=? and fort_id=?");
-			statement.setInt(1, clan.getClanId());
-			statement.setInt(2, fortid);
-			ResultSet rs = statement.executeQuery();
-			
-			while (rs.next())
+			ps.setInt(1, clan.getClanId());
+			ps.setInt(2, fortid);
+			try (ResultSet rs = ps.executeQuery())
 			{
-				register = true;
-				break;
+				while (rs.next())
+				{
+					register = true;
+					break;
+				}
 			}
-			
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{

@@ -1045,18 +1045,18 @@ public class FortSiege implements Siegable
 	/** Load siege clans. */
 	private void loadSiegeClan()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		getAttackerClans().clear();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT clan_id FROM fortsiege_clans WHERE fort_id=?"))
 		{
-			getAttackerClans().clear();
-			PreparedStatement statement = con.prepareStatement("SELECT clan_id FROM fortsiege_clans WHERE fort_id=?");
-			statement.setInt(1, getFort().getFortId());
-			ResultSet rs = statement.executeQuery();
-			while (rs.next())
+			ps.setInt(1, getFort().getFortId());
+			try (ResultSet rs = ps.executeQuery())
 			{
-				addAttacker(rs.getInt("clan_id"));
+				while (rs.next())
+				{
+					addAttacker(rs.getInt("clan_id"));
+				}
 			}
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{

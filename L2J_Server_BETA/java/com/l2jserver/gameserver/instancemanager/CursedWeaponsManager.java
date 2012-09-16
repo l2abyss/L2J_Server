@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -169,31 +170,22 @@ public class CursedWeaponsManager
 	
 	private final void restore()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT itemId, charId, playerKarma, playerPkKills, nbKills, endTime FROM cursed_weapons"))
 		{
 			// Retrieve the L2PcInstance from the characters table of the database
-			PreparedStatement statement = con.prepareStatement("SELECT itemId, charId, playerKarma, playerPkKills, nbKills, endTime FROM cursed_weapons");
-			ResultSet rset = statement.executeQuery();
-			while (rset.next())
+			CursedWeapon cw;
+			while (rs.next())
 			{
-				int itemId = rset.getInt("itemId");
-				int playerId = rset.getInt("charId");
-				int playerKarma = rset.getInt("playerKarma");
-				int playerPkKills = rset.getInt("playerPkKills");
-				int nbKills = rset.getInt("nbKills");
-				long endTime = rset.getLong("endTime");
-				
-				CursedWeapon cw = _cursedWeapons.get(itemId);
-				cw.setPlayerId(playerId);
-				cw.setPlayerKarma(playerKarma);
-				cw.setPlayerPkKills(playerPkKills);
-				cw.setNbKills(nbKills);
-				cw.setEndTime(endTime);
+				cw = _cursedWeapons.get(rs.getInt("itemId"));
+				cw.setPlayerId(rs.getInt("charId"));
+				cw.setPlayerKarma(rs.getInt("playerKarma"));
+				cw.setPlayerPkKills(rs.getInt("playerPkKills"));
+				cw.setNbKills(rs.getInt("nbKills"));
+				cw.setEndTime(rs.getLong("endTime"));
 				cw.reActivate();
 			}
-			
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -213,7 +205,7 @@ public class CursedWeaponsManager
 			// or a lost-child entry in the cursed weapons table, without a corresponding one in items...
 			
 			// Retrieve the L2PcInstance from the characters table of the database
-			try (PreparedStatement statement = con.prepareStatement("SELECT owner_id FROM items WHERE item_id=?"))
+			try (PreparedStatement ps = con.prepareStatement("SELECT owner_id FROM items WHERE item_id=?"))
 			{
 				for (CursedWeapon cw : _cursedWeapons.values())
 				{
@@ -224,8 +216,8 @@ public class CursedWeaponsManager
 					
 					// Do an item check to be sure that the cursed weapon isn't hold by someone
 					int itemId = cw.getItemId();
-					statement.setInt(1, itemId);
-					try (ResultSet rset = statement.executeQuery())
+					ps.setInt(1, itemId);
+					try (ResultSet rset = ps.executeQuery())
 					{
 						if (rset.next())
 						{
@@ -259,7 +251,7 @@ public class CursedWeaponsManager
 							removeFromDb(itemId);
 						}
 					}
-					statement.clearParameters();
+					ps.clearParameters();
 				}
 			}
 		}
@@ -379,13 +371,11 @@ public class CursedWeaponsManager
 	
 	public static void removeFromDb(int itemId)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM cursed_weapons WHERE itemId = ?"))
 		{
-			// Delete datas
-			PreparedStatement statement = con.prepareStatement("DELETE FROM cursed_weapons WHERE itemId = ?");
-			statement.setInt(1, itemId);
-			statement.executeUpdate();
-			statement.close();
+			ps.setInt(1, itemId);
+			ps.executeUpdate();
 		}
 		catch (SQLException e)
 		{

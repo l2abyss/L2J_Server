@@ -41,7 +41,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.util.Rnd;
 
 /**
- * Class For Castle Manor Manager Load manor data from DB Update/Reload/Delete Handles all schedule for manor
+ * Class for Castle Manor Manager load manor data from DB update/reload/delete, handles all schedule for manor.
  * @author l3x
  */
 public class CastleManorManager
@@ -69,11 +69,6 @@ public class CastleManorManager
 	protected ScheduledFuture<?> _scheduledManorRefresh;
 	protected ScheduledFuture<?> _scheduledMaintenanceEnd;
 	protected ScheduledFuture<?> _scheduledNextPeriodapprove;
-	
-	public static final CastleManorManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
 	
 	public static class CropProcure
 	{
@@ -207,10 +202,10 @@ public class CastleManorManager
 	
 	private void load()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
-		{
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statementProduction = con.prepareStatement(CASTLE_MANOR_LOAD_PRODUCTION);
-			PreparedStatement statementProcure = con.prepareStatement(CASTLE_MANOR_LOAD_PROCURE);
+			PreparedStatement statementProcure = con.prepareStatement(CASTLE_MANOR_LOAD_PROCURE))
+		{
 			for (Castle castle : CastleManager.getInstance().getCastles())
 			{
 				FastList<SeedProduction> production = new FastList<>();
@@ -220,25 +215,26 @@ public class CastleManorManager
 				
 				// restore seed production info
 				statementProduction.setInt(1, castle.getCastleId());
-				ResultSet rs = statementProduction.executeQuery();
-				statementProduction.clearParameters();
-				while (rs.next())
+				try (ResultSet rs = statementProduction.executeQuery())
 				{
-					int seedId = rs.getInt("seed_id");
-					int canProduce = rs.getInt("can_produce");
-					int startProduce = rs.getInt("start_produce");
-					int price = rs.getInt("seed_price");
-					int period = rs.getInt("period");
-					if (period == PERIOD_CURRENT)
+					statementProduction.clearParameters();
+					while (rs.next())
 					{
-						production.add(new SeedProduction(seedId, canProduce, price, startProduce));
-					}
-					else
-					{
-						productionNext.add(new SeedProduction(seedId, canProduce, price, startProduce));
+						int seedId = rs.getInt("seed_id");
+						int canProduce = rs.getInt("can_produce");
+						int startProduce = rs.getInt("start_produce");
+						int price = rs.getInt("seed_price");
+						int period = rs.getInt("period");
+						if (period == PERIOD_CURRENT)
+						{
+							production.add(new SeedProduction(seedId, canProduce, price, startProduce));
+						}
+						else
+						{
+							productionNext.add(new SeedProduction(seedId, canProduce, price, startProduce));
+						}
 					}
 				}
-				rs.close();
 				
 				castle.setSeedProduction(production, PERIOD_CURRENT);
 				castle.setSeedProduction(productionNext, PERIOD_NEXT);
@@ -246,26 +242,27 @@ public class CastleManorManager
 				// restore procure info
 				
 				statementProcure.setInt(1, castle.getCastleId());
-				rs = statementProcure.executeQuery();
-				statementProcure.clearParameters();
-				while (rs.next())
+				try (ResultSet rs = statementProcure.executeQuery())
 				{
-					int cropId = rs.getInt("crop_id");
-					int canBuy = rs.getInt("can_buy");
-					int startBuy = rs.getInt("start_buy");
-					int rewardType = rs.getInt("reward_type");
-					int price = rs.getInt("price");
-					int period = rs.getInt("period");
-					if (period == PERIOD_CURRENT)
+					statementProcure.clearParameters();
+					while (rs.next())
 					{
-						procure.add(new CropProcure(cropId, canBuy, rewardType, startBuy, price));
-					}
-					else
-					{
-						procureNext.add(new CropProcure(cropId, canBuy, rewardType, startBuy, price));
+						int cropId = rs.getInt("crop_id");
+						int canBuy = rs.getInt("can_buy");
+						int startBuy = rs.getInt("start_buy");
+						int rewardType = rs.getInt("reward_type");
+						int price = rs.getInt("price");
+						int period = rs.getInt("period");
+						if (period == PERIOD_CURRENT)
+						{
+							procure.add(new CropProcure(cropId, canBuy, rewardType, startBuy, price));
+						}
+						else
+						{
+							procureNext.add(new CropProcure(cropId, canBuy, rewardType, startBuy, price));
+						}
 					}
 				}
-				rs.close();
 				
 				castle.setCropProcure(procure, PERIOD_CURRENT);
 				castle.setCropProcure(procureNext, PERIOD_NEXT);
@@ -275,8 +272,6 @@ public class CastleManorManager
 					_log.info(getClass().getSimpleName() + ": " + castle.getName() + ": Data loaded");
 				}
 			}
-			statementProduction.close();
-			statementProcure.close();
 		}
 		catch (Exception e)
 		{
@@ -618,6 +613,11 @@ public class CastleManorManager
 			c.saveSeedData();
 			c.saveCropData();
 		}
+	}
+	
+	public static final CastleManorManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

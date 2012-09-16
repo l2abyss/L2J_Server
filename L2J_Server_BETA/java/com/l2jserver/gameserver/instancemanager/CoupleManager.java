@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.instancemanager;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,17 +34,12 @@ public class CoupleManager
 {
 	private static final Logger _log = Logger.getLogger(CoupleManager.class.getName());
 	
+	private FastList<Couple> _couples;
+	
 	protected CoupleManager()
 	{
 		load();
 	}
-	
-	public static final CoupleManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
-	private FastList<Couple> _couples;
 	
 	public void reload()
 	{
@@ -54,19 +49,14 @@ public class CoupleManager
 	
 	private final void load()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement ps = con.createStatement();
+			ResultSet rs = ps.executeQuery("SELECT id FROM mods_wedding ORDER BY id"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT id FROM mods_wedding ORDER BY id");
-			ResultSet rs = statement.executeQuery();
-			
 			while (rs.next())
 			{
 				getCouples().add(new Couple(rs.getInt("id")));
 			}
-			
-			rs.close();
-			statement.close();
-			
 			_log.info(getClass().getSimpleName() + ": Loaded: " + getCouples().size() + " couples(s)");
 		}
 		catch (Exception e)
@@ -152,6 +142,11 @@ public class CoupleManager
 			_couples = new FastList<>();
 		}
 		return _couples;
+	}
+	
+	public static final CoupleManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

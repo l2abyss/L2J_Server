@@ -273,43 +273,50 @@ public class ClanTable
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			PreparedStatement statement = con.prepareStatement("DELETE FROM clan_data WHERE clan_id=?");
-			statement.setInt(1, clanId);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM clan_data WHERE clan_id=?"))
+			{
+				ps.setInt(1, clanId);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM clan_privs WHERE clan_id=?");
-			statement.setInt(1, clanId);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM clan_privs WHERE clan_id=?"))
+			{
+				ps.setInt(1, clanId);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM clan_skills WHERE clan_id=?");
-			statement.setInt(1, clanId);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM clan_skills WHERE clan_id=?"))
+			{
+				ps.setInt(1, clanId);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM clan_subpledges WHERE clan_id=?");
-			statement.setInt(1, clanId);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM clan_subpledges WHERE clan_id=?"))
+			{
+				ps.setInt(1, clanId);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM clan_wars WHERE clan1=? OR clan2=?");
-			statement.setInt(1, clanId);
-			statement.setInt(2, clanId);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM clan_wars WHERE clan1=? OR clan2=?"))
+			{
+				ps.setInt(1, clanId);
+				ps.setInt(2, clanId);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM clan_notices WHERE clan_id=?");
-			statement.setInt(1, clanId);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM clan_notices WHERE clan_id=?"))
+			{
+				ps.setInt(1, clanId);
+				ps.execute();
+			}
 			
 			if (castleId != 0)
 			{
-				statement = con.prepareStatement("UPDATE castle SET taxPercent = 0 WHERE id = ?");
-				statement.setInt(1, castleId);
-				statement.execute();
-				statement.close();
+				try (PreparedStatement ps = con.prepareStatement("UPDATE castle SET taxPercent = 0 WHERE id = ?"))
+				{
+					ps.setInt(1, castleId);
+					ps.execute();
+				}
 			}
 			
 			if (fortId != 0)

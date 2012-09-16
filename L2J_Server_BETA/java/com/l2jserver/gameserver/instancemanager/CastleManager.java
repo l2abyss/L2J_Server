@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.instancemanager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,12 +36,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 public class CastleManager implements InstanceListManager
 {
-	protected static final Logger _log = Logger.getLogger(CastleManager.class.getName());
-	
-	public static final CastleManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	private static final Logger _log = Logger.getLogger(CastleManager.class.getName());
 	
 	private List<Castle> _castles;
 	
@@ -266,13 +262,12 @@ public class CastleManager implements InstanceListManager
 				}
 			}
 			// else offline-player circlet removal
-			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement ps = con.prepareStatement("DELETE FROM items WHERE owner_id = ? and item_id = ?"))
 			{
-				PreparedStatement statement = con.prepareStatement("DELETE FROM items WHERE owner_id = ? and item_id = ?");
-				statement.setInt(1, member.getObjectId());
-				statement.setInt(2, circletId);
-				statement.execute();
-				statement.close();
+				ps.setInt(1, member.getObjectId());
+				ps.setInt(2, circletId);
+				ps.execute();
 			}
 			catch (Exception e)
 			{
@@ -284,18 +279,14 @@ public class CastleManager implements InstanceListManager
 	@Override
 	public void loadInstances()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT id FROM castle ORDER BY id"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT id FROM castle ORDER BY id");
-			ResultSet rs = statement.executeQuery();
-			
 			while (rs.next())
 			{
 				getCastles().add(new Castle(rs.getInt("id")));
 			}
-			rs.close();
-			statement.close();
-			
 			_log.info(getClass().getSimpleName() + ": Loaded: " + getCastles().size() + " castles");
 		}
 		catch (Exception e)
@@ -316,6 +307,11 @@ public class CastleManager implements InstanceListManager
 		{
 			castle.activateInstance();
 		}
+	}
+	
+	public static final CastleManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

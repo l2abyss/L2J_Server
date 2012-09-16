@@ -8627,31 +8627,31 @@ public final class L2PcInstance extends L2Playable
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			PreparedStatement statement;
-			
 			if ((oldSkill != null) && (newSkill != null))
 			{
-				statement = con.prepareStatement(UPDATE_CHARACTER_SKILL_LEVEL);
-				statement.setInt(1, newSkill.getLevel());
-				statement.setInt(2, oldSkill.getId());
-				statement.setInt(3, getObjectId());
-				statement.setInt(4, classIndex);
-				statement.execute();
-				statement.close();
+				try (PreparedStatement ps = con.prepareStatement(UPDATE_CHARACTER_SKILL_LEVEL))
+				{
+					ps.setInt(1, newSkill.getLevel());
+					ps.setInt(2, oldSkill.getId());
+					ps.setInt(3, getObjectId());
+					ps.setInt(4, classIndex);
+					ps.execute();
+				}
 			}
 			else if (newSkill != null)
 			{
-				statement = con.prepareStatement(ADD_NEW_SKILL);
-				statement.setInt(1, getObjectId());
-				statement.setInt(2, newSkill.getId());
-				statement.setInt(3, newSkill.getLevel());
-				statement.setInt(4, classIndex);
-				statement.execute();
-				statement.close();
+				try (PreparedStatement ps = con.prepareStatement(ADD_NEW_SKILL))
+				{
+					ps.setInt(1, getObjectId());
+					ps.setInt(2, newSkill.getId());
+					ps.setInt(3, newSkill.getLevel());
+					ps.setInt(4, classIndex);
+					ps.execute();
+				}
 			}
 			else
 			{
-				_log.warning("could not store new skill. its NULL");
+				_log.warning("Could not store new skill, it's null!");
 			}
 		}
 		catch (Exception e)

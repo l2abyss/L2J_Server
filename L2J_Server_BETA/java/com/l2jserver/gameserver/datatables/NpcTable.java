@@ -331,10 +331,11 @@ public class NpcTable
 			sbQuery.append(" WHERE ");
 			sbQuery.append(key);
 			sbQuery.append(" = ?");
-			final PreparedStatement statement = con.prepareStatement(sbQuery.toString());
-			statement.setInt(1, npcId);
-			updated = statement.executeUpdate();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement(sbQuery.toString()))
+			{
+				ps.setInt(1, npcId);
+				updated = ps.executeUpdate();
+			}
 		}
 		return updated;
 	}

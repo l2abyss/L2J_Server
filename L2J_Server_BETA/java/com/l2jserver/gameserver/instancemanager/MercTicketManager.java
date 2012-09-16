@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.instancemanager;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -146,11 +146,10 @@ public class MercTicketManager
 	 */
 	private final void load()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT * FROM castle_siege_guards Where isHired = 1"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM castle_siege_guards Where isHired = 1");
-			ResultSet rs = statement.executeQuery();
-			
 			int npcId;
 			int itemId;
 			int x, y, z;
@@ -200,7 +199,7 @@ public class MercTicketManager
 				}
 			}
 			rs.close();
-			statement.close();
+			s.close();
 			
 			_log.info(getClass().getSimpleName() + ": Loaded: " + _droppedTickets.size() + " Mercenary Tickets");
 		}

@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.datatables;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,13 +32,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 
 /**
- * This class ...
  * @author Nightmare
- * @version $Revision: 1.5.2.6.2.7 $ $Date: 2005/03/27 15:29:18 $
  */
 public class SpawnTable
 {
-	private static Logger _log = Logger.getLogger(SpawnTable.class.getName());
+	private static final Logger _log = Logger.getLogger(SpawnTable.class.getName());
 	
 	private final FastSet<L2Spawn> _spawntable = new FastSet<>();
 	private int _npcSpawnCount;
@@ -59,17 +58,15 @@ public class SpawnTable
 	
 	private void fillSpawnTable()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT count, npc_templateid, locx, locy, locz, heading, respawn_delay, loc_id, periodOfDay FROM spawnlist"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT count, npc_templateid, locx, locy, locz, heading, respawn_delay, loc_id, periodOfDay FROM spawnlist");
-			ResultSet rset = statement.executeQuery();
-			
 			L2Spawn spawnDat;
 			L2NpcTemplate template1;
-			
-			while (rset.next())
+			while (rs.next())
 			{
-				template1 = NpcTable.getInstance().getTemplate(rset.getInt("npc_templateid"));
+				template1 = NpcTable.getInstance().getTemplate(rs.getInt("npc_templateid"));
 				if (template1 != null)
 				{
 					if (template1.isType("L2SiegeGuard"))
@@ -87,16 +84,16 @@ public class SpawnTable
 					else
 					{
 						spawnDat = new L2Spawn(template1);
-						spawnDat.setAmount(rset.getInt("count"));
-						spawnDat.setLocx(rset.getInt("locx"));
-						spawnDat.setLocy(rset.getInt("locy"));
-						spawnDat.setLocz(rset.getInt("locz"));
-						spawnDat.setHeading(rset.getInt("heading"));
-						spawnDat.setRespawnDelay(rset.getInt("respawn_delay"));
-						int loc_id = rset.getInt("loc_id");
+						spawnDat.setAmount(rs.getInt("count"));
+						spawnDat.setLocx(rs.getInt("locx"));
+						spawnDat.setLocy(rs.getInt("locy"));
+						spawnDat.setLocz(rs.getInt("locz"));
+						spawnDat.setHeading(rs.getInt("heading"));
+						spawnDat.setRespawnDelay(rs.getInt("respawn_delay"));
+						int loc_id = rs.getInt("loc_id");
 						spawnDat.setLocation(loc_id);
 						
-						switch (rset.getInt("periodOfDay"))
+						switch (rs.getInt("periodOfDay"))
 						{
 							case 0: // default
 								_npcSpawnCount += spawnDat.init();
@@ -116,11 +113,9 @@ public class SpawnTable
 				}
 				else
 				{
-					_log.warning(getClass().getSimpleName() + ": Data missing in NPC table for ID: " + rset.getInt("npc_templateid") + ".");
+					_log.warning(getClass().getSimpleName() + ": Data missing in NPC table for ID: " + rs.getInt("npc_templateid") + ".");
 				}
 			}
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -132,17 +127,15 @@ public class SpawnTable
 		
 		if (Config.CUSTOM_SPAWNLIST_TABLE)
 		{
-			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				Statement ps = con.createStatement();
+				ResultSet rs = ps.executeQuery("SELECT count, npc_templateid, locx, locy, locz, heading, respawn_delay, loc_id, periodOfDay FROM custom_spawnlist"))
 			{
-				PreparedStatement statement = con.prepareStatement("SELECT count, npc_templateid, locx, locy, locz, heading, respawn_delay, loc_id, periodOfDay FROM custom_spawnlist");
-				ResultSet rset = statement.executeQuery();
-				
 				L2Spawn spawnDat;
 				L2NpcTemplate template1;
-				
-				while (rset.next())
+				while (rs.next())
 				{
-					template1 = NpcTable.getInstance().getTemplate(rset.getInt("npc_templateid"));
+					template1 = NpcTable.getInstance().getTemplate(rs.getInt("npc_templateid"));
 					if (template1 != null)
 					{
 						if (template1.isType("L2SiegeGuard"))
@@ -160,17 +153,17 @@ public class SpawnTable
 						else
 						{
 							spawnDat = new L2Spawn(template1);
-							spawnDat.setAmount(rset.getInt("count"));
-							spawnDat.setLocx(rset.getInt("locx"));
-							spawnDat.setLocy(rset.getInt("locy"));
-							spawnDat.setLocz(rset.getInt("locz"));
-							spawnDat.setHeading(rset.getInt("heading"));
-							spawnDat.setRespawnDelay(rset.getInt("respawn_delay"));
+							spawnDat.setAmount(rs.getInt("count"));
+							spawnDat.setLocx(rs.getInt("locx"));
+							spawnDat.setLocy(rs.getInt("locy"));
+							spawnDat.setLocz(rs.getInt("locz"));
+							spawnDat.setHeading(rs.getInt("heading"));
+							spawnDat.setRespawnDelay(rs.getInt("respawn_delay"));
 							spawnDat.setCustom(true);
-							int loc_id = rset.getInt("loc_id");
+							int loc_id = rs.getInt("loc_id");
 							spawnDat.setLocation(loc_id);
 							
-							switch (rset.getInt("periodOfDay"))
+							switch (rs.getInt("periodOfDay"))
 							{
 								case 0: // default
 									_customSpawnCount += spawnDat.init();
@@ -190,11 +183,9 @@ public class SpawnTable
 					}
 					else
 					{
-						_log.warning(getClass().getSimpleName() + ": Data missing in NPC table for ID: " + rset.getInt("npc_templateid") + ".");
+						_log.warning(getClass().getSimpleName() + ": Data missing in NPC table for ID: " + rs.getInt("npc_templateid") + ".");
 					}
 				}
-				rset.close();
-				statement.close();
 			}
 			catch (Exception e)
 			{
@@ -229,17 +220,17 @@ public class SpawnTable
 			}
 			
 			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("INSERT INTO " + spawnTable + "(count,npc_templateid,locx,locy,locz,heading,respawn_delay,loc_id) values(?,?,?,?,?,?,?,?)"))
+				PreparedStatement insert = con.prepareStatement("INSERT INTO " + spawnTable + "(count,npc_templateid,locx,locy,locz,heading,respawn_delay,loc_id) values(?,?,?,?,?,?,?,?)"))
 			{
-				statement.setInt(1, spawn.getAmount());
-				statement.setInt(2, spawn.getNpcid());
-				statement.setInt(3, spawn.getLocx());
-				statement.setInt(4, spawn.getLocy());
-				statement.setInt(5, spawn.getLocz());
-				statement.setInt(6, spawn.getHeading());
-				statement.setInt(7, spawn.getRespawnDelay() / 1000);
-				statement.setInt(8, spawn.getLocation());
-				statement.execute();
+				insert.setInt(1, spawn.getAmount());
+				insert.setInt(2, spawn.getNpcid());
+				insert.setInt(3, spawn.getLocx());
+				insert.setInt(4, spawn.getLocy());
+				insert.setInt(5, spawn.getLocz());
+				insert.setInt(6, spawn.getHeading());
+				insert.setInt(7, spawn.getRespawnDelay() / 1000);
+				insert.setInt(8, spawn.getLocation());
+				insert.execute();
 			}
 			catch (Exception e)
 			{
@@ -259,14 +250,14 @@ public class SpawnTable
 		if (updateDb)
 		{
 			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement statement = con.prepareStatement("DELETE FROM " + (spawn.isCustom() ? "custom_spawnlist" : "spawnlist") + " WHERE locx=? AND locy=? AND locz=? AND npc_templateid=? AND heading=?"))
+				PreparedStatement delete = con.prepareStatement("DELETE FROM " + (spawn.isCustom() ? "custom_spawnlist" : "spawnlist") + " WHERE locx=? AND locy=? AND locz=? AND npc_templateid=? AND heading=?"))
 			{
-				statement.setInt(1, spawn.getLocx());
-				statement.setInt(2, spawn.getLocy());
-				statement.setInt(3, spawn.getLocz());
-				statement.setInt(4, spawn.getNpcid());
-				statement.setInt(5, spawn.getHeading());
-				statement.execute();
+				delete.setInt(1, spawn.getLocx());
+				delete.setInt(2, spawn.getLocy());
+				delete.setInt(3, spawn.getLocz());
+				delete.setInt(4, spawn.getNpcid());
+				delete.setInt(5, spawn.getHeading());
+				delete.execute();
 			}
 			catch (Exception e)
 			{

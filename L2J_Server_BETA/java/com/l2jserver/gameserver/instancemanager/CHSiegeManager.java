@@ -15,8 +15,8 @@
 package com.l2jserver.gameserver.instancemanager;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -51,11 +51,10 @@ public final class CHSiegeManager
 	
 	private final void loadClanHalls()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery(SQL_LOAD_HALLS))
 		{
-			PreparedStatement statement = con.prepareStatement(SQL_LOAD_HALLS);
-			ResultSet rs = statement.executeQuery();
-			
 			_siegableHalls.clear();
 			
 			while (rs.next())
@@ -77,8 +76,6 @@ public final class CHSiegeManager
 				ClanHallManager.addClanHall(hall);
 			}
 			_log.info(getClass().getSimpleName() + ": Loaded " + _siegableHalls.size() + " conquerable clan halls.");
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{

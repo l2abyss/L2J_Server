@@ -17,6 +17,7 @@ package com.l2jserver.gameserver.datatables;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,40 +44,33 @@ public class SummonSkillsTable
 		_skillTrees.clear();
 		int npcId = 0;
 		int count = 0;
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT id FROM npc WHERE type IN ('L2Pet','L2BabyPet','L2SiegeSummon') ORDER BY id"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT id FROM npc WHERE type IN ('L2Pet','L2BabyPet','L2SiegeSummon') ORDER BY id");
-			ResultSet petlist = statement.executeQuery();
 			Map<Integer, L2PetSkillLearn> map;
-			L2PetSkillLearn skillLearn;
-			
-			PreparedStatement statement2 = con.prepareStatement("SELECT minLvl, skillId, skillLvl FROM pets_skills where templateId=? ORDER BY skillId, skillLvl");
-			while (petlist.next())
+			try (PreparedStatement ps2 = con.prepareStatement("SELECT minLvl, skillId, skillLvl FROM pets_skills where templateId=? ORDER BY skillId, skillLvl"))
 			{
-				map = new HashMap<>();
-				npcId = petlist.getInt("id");
-				statement2.setInt(1, npcId);
-				ResultSet skilltree = statement2.executeQuery();
-				statement2.clearParameters();
-				
-				while (skilltree.next())
+				while (rs.next())
 				{
-					int id = skilltree.getInt("skillId");
-					int lvl = skilltree.getInt("skillLvl");
-					int minLvl = skilltree.getInt("minLvl");
-					
-					skillLearn = new L2PetSkillLearn(id, lvl, minLvl);
-					map.put(SkillTable.getSkillHashCode(id, lvl + 1), skillLearn);
+					map = new HashMap<>();
+					npcId = rs.getInt("id");
+					ps2.setInt(1, npcId);
+					try (ResultSet skilltree = ps2.executeQuery())
+					{
+						while (skilltree.next())
+						{
+							int id = skilltree.getInt("skillId");
+							int lvl = skilltree.getInt("skillLvl");
+							map.put(SkillTable.getSkillHashCode(id, lvl + 1), new L2PetSkillLearn(id, lvl, skilltree.getInt("minLvl")));
+						}
+						_skillTrees.put(npcId, map);
+					}
+					ps2.clearParameters();
+					count += map.size();
+					_log.fine(getClass().getSimpleName() + ": skill tree for pet " + npcId + " has " + map.size() + " skills");
 				}
-				_skillTrees.put(npcId, map);
-				skilltree.close();
-				
-				count += map.size();
-				_log.fine(getClass().getSimpleName() + ": skill tree for pet " + npcId + " has " + map.size() + " skills");
 			}
-			statement2.close();
-			petlist.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
