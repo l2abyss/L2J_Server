@@ -44,7 +44,6 @@ import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2PetData;
 import com.l2jserver.gameserver.model.L2PetLevelData;
 import com.l2jserver.gameserver.model.L2World;
-import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.stat.PetStat;
@@ -1475,22 +1474,5 @@ public class L2PetInstance extends L2Summon
 	public boolean isPet()
 	{
 		return true;
-	}
-	
-	@Override
-	public boolean isChargedShot(ShotType type)
-	{
-		L2ItemInstance weapon = getActiveWeaponInstance();
-		return (weapon != null) && weapon.isChargedShot(type);
-	}
-	
-	@Override
-	public void setChargedShot(ShotType type, boolean charged)
-	{
-		L2ItemInstance weapon = getActiveWeaponInstance();
-		if (weapon != null)
-		{
-			weapon.setChargedShot(type, charged);
-		}
 	}
 }
