@@ -181,7 +181,7 @@ public class ItemsOnGroundManager implements Runnable
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			Statement s = con.createStatement())
 		{
-			s.executeQuery("DELETE FROM itemsonground");
+			s.executeUpdate("DELETE FROM itemsonground");
 		}
 		catch (Exception e1)
 		{
