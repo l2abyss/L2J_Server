@@ -52,7 +52,7 @@ public class L2SkillChargeDmg extends L2Skill
 		if (caster.isPlayer())
 		{
 			// thanks Diego Vargas of L2Guru: 70*((0.8+0.201*No.Charges) * (PATK+POWER)) / PDEF
-			modifier = 0.8 + (0.201 * (getNumCharges() + caster.getActingPlayer().getCharges()));
+			modifier = 0.8 + (0.201 * (getChargeConsume() + caster.getActingPlayer().getCharges()));
 		}
 		boolean ss = isPhysical() && caster.isChargedShot(ShotType.SOULSHOTS);
 		

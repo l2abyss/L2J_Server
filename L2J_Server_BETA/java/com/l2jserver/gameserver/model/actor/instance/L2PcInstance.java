@@ -4714,7 +4714,7 @@ public final class L2PcInstance extends L2Playable
 		
 		final int charges = getCharges();
 		// Check if the spell using charges or not in AirShip
-		if (((skill.getMaxCharges() == 0) && (charges < skill.getNumCharges())) || (isInAirShip() && (skill.getSkillType() != L2SkillType.REFUEL)))
+		if (((charges < skill.getChargeConsume())) || (isInAirShip() && (skill.getSkillType() != L2SkillType.REFUEL)))
 		{
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addSkillName(skill);

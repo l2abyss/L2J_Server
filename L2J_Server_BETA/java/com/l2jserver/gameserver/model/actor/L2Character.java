@@ -6646,27 +6646,10 @@ public abstract class L2Character extends L2Object
 			
 			if (isPlayer())
 			{
-				int charges = getActingPlayer().getCharges();
-				// check for charges
-				if ((skill.getMaxCharges() == 0) && (charges < skill.getNumCharges()))
+				// Consume Charges
+				if (skill.getChargeConsume() > 0)
 				{
-					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-					sm.addSkillName(skill);
-					sendPacket(sm);
-					abortCast();
-					return;
-				}
-				// generate charges if any
-				if (skill.getNumCharges() > 0)
-				{
-					if (skill.getMaxCharges() > 0)
-					{
-						getActingPlayer().increaseCharges(skill.getNumCharges(), skill.getMaxCharges());
-					}
-					else
-					{
-						getActingPlayer().decreaseCharges(skill.getNumCharges());
-					}
+					getActingPlayer().decreaseCharges(skill.getChargeConsume());
 				}
 				
 				// Consume Souls if necessary
