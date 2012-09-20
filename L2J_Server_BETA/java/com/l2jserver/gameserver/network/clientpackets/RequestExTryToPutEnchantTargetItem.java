@@ -14,6 +14,8 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import java.util.logging.Level;
+
 import com.l2jserver.gameserver.datatables.EnchantItemData;
 import com.l2jserver.gameserver.model.EnchantScroll;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -59,20 +61,21 @@ public class RequestExTryToPutEnchantTargetItem extends L2GameClientPacket
 			return;
 		}
 		
-		// template for scroll
 		EnchantScroll scrollTemplate = EnchantItemData.getInstance().getEnchantScroll(scroll);
-		
-		if (!scrollTemplate.isValid(item))
+		if ((scrollTemplate == null) || !scrollTemplate.isValid(item))
 		{
 			activeChar.sendPacket(SystemMessageId.DOES_NOT_FIT_SCROLL_CONDITIONS);
 			activeChar.setActiveEnchantItem(null);
 			activeChar.sendPacket(new ExPutEnchantTargetItemResult(0));
+			if (scrollTemplate == null)
+			{
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": Undefined scroll have been used id: " + scroll.getItemId());
+			}
 			return;
 		}
 		activeChar.setIsEnchanting(true);
 		activeChar.setActiveEnchantTimestamp(System.currentTimeMillis());
 		activeChar.sendPacket(new ExPutEnchantTargetItemResult(_objectId));
-		
 	}
 	
 	@Override

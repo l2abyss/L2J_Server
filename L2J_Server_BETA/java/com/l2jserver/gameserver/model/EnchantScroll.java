@@ -15,8 +15,10 @@
 package com.l2jserver.gameserver.model;
 
 import java.util.List;
+import java.util.Map;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
@@ -27,17 +29,20 @@ public class EnchantScroll extends EnchantItem
 {
 	private final boolean _isBlessed;
 	private final boolean _isSafe;
+	private final Map<Integer, Double> _enchantSteps;
 	
 	/**
 	 * @param set
 	 * @param items
+	 * @param enchantSteps
 	 */
-	public EnchantScroll(StatsSet set, List<Integer> items)
+	public EnchantScroll(StatsSet set, List<Integer> items, Map<Integer, Double> enchantSteps)
 	{
 		super(set, items);
 		
 		_isBlessed = set.getBool("isBlessed", false);
 		_isSafe = set.getBool("isSafe", false);
+		_enchantSteps = enchantSteps;
 	}
 	
 	/**
@@ -90,7 +95,19 @@ public class EnchantScroll extends EnchantItem
 			return 100;
 		}
 		
+		L2PcInstance activeChar = L2World.getInstance().getPlayer(enchantItem.getOwnerId());
+		int level = enchantItem.getEnchantLevel() + 1;
 		double chance = _chanceAdd;
+		
+		if (_enchantSteps.containsKey(level))
+		{
+			chance = _enchantSteps.get(level);
+		}
+		
+		if (activeChar.isDebug())
+		{
+			activeChar.sendDebugMessage("Enchant Level: " + level + " Chance: " + chance + " " + (supportItem != null ? "Support item: " + supportItem.getChanceAdd() : ""));
+		}
 		
 		if ((supportItem != null) && !_isBlessed)
 		{

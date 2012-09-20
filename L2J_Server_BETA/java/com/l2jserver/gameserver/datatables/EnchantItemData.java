@@ -60,6 +60,7 @@ public class EnchantItemData extends DocumentParser
 	{
 		StatsSet set;
 		Node att;
+		Map<Integer, Double> enchantSteps;
 		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
 			if ("list".equalsIgnoreCase(n.getNodeName()))
@@ -70,6 +71,7 @@ public class EnchantItemData extends DocumentParser
 					{
 						NamedNodeMap attrs = d.getAttributes();
 						set = new StatsSet();
+						enchantSteps = new HashMap<>();
 						for (int i = 0; i < attrs.getLength(); i++)
 						{
 							att = attrs.item(i);
@@ -83,8 +85,12 @@ public class EnchantItemData extends DocumentParser
 							{
 								items.add(parseInteger(cd.getAttributes(), "id"));
 							}
+							else if ("step".equalsIgnoreCase(cd.getNodeName()))
+							{
+								enchantSteps.put(parseInt(cd.getAttributes(), "level"), parseDouble(cd.getAttributes(), "successRate"));
+							}
 						}
-						EnchantScroll item = new EnchantScroll(set, items);
+						EnchantScroll item = new EnchantScroll(set, items, enchantSteps);
 						_scrolls.put(item.getScrollId(), item);
 					}
 					else if ("support".equalsIgnoreCase(d.getNodeName()))
