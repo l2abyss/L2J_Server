@@ -72,7 +72,7 @@ public class EnchantOptionsData extends DocumentParser
 								for (byte i = 0; i < 3; i++)
 								{
 									att = cd.getAttributes().getNamedItem("option" + (i + 1));
-									if (Util.isDigit(att.getNodeValue()))
+									if ((att != null) && Util.isDigit(att.getNodeValue()))
 									{
 										op.setOption(i, parseInt(att));
 									}
