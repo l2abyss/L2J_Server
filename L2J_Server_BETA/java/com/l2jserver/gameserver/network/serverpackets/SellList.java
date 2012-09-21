@@ -92,10 +92,11 @@ public class SellList extends L2GameServerPacket
 			{
 				writeH(item.getElementDefAttr(i));
 			}
-			
-			writeH(0x00); // Enchant effect 1
-			writeH(0x00); // Enchant effect 2
-			writeH(0x00); // Enchant effect 3
+			// Enchant Effects
+			for (int op : item.getEnchantOptions())
+			{
+				writeH(op);
+			}
 		}
 	}
 }

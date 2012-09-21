@@ -55,6 +55,8 @@ public class L2WarehouseItem
 		0
 	};
 	
+	private int[] _enchantOptions = L2ItemInstance.DEFAULT_ENCHANT_OPTIONS;
+	
 	private final int _time;
 	
 	public L2WarehouseItem(L2ItemInstance item)
@@ -86,6 +88,7 @@ public class L2WarehouseItem
 		{
 			_elemDefAttr[i] = item.getElementDefAttr(i);
 		}
+		_enchantOptions = item.getEnchantOptions();
 	}
 	
 	/**
@@ -268,6 +271,11 @@ public class L2WarehouseItem
 	public int getElementDefAttr(byte i)
 	{
 		return _elemDefAttr[i];
+	}
+	
+	public int[] getEnchantOptions()
+	{
+		return _enchantOptions;
 	}
 	
 	public int getTime()

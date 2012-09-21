@@ -34,12 +34,14 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.cache.HtmCache;
+import com.l2jserver.gameserver.datatables.EnchantOptionsData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.instancemanager.MercTicketManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.DropProtection;
 import com.l2jserver.gameserver.model.Elementals;
+import com.l2jserver.gameserver.model.EnchantOptions;
 import com.l2jserver.gameserver.model.L2Augmentation;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
@@ -160,6 +162,11 @@ public final class L2ItemInstance extends L2Object
 	public static final int ADDED = 1;
 	public static final int REMOVED = 3;
 	public static final int MODIFIED = 2;
+	
+	//@formatter:off
+	public static final int[] DEFAULT_ENCHANT_OPTIONS = new int[] { 0, 0, 0 };
+	//@formatter:on
+	
 	private int _lastChange = 2; // 1 ??, 2 modified, 3 removed
 	private boolean _existsInDb; // if a record exists in DB.
 	private boolean _storedInDb; // if DB data is up-to-date.
@@ -2343,5 +2350,15 @@ public final class L2ItemInstance extends L2Object
 	public void unChargeAllShots()
 	{
 		_shotsMask = 0;
+	}
+	
+	public int[] getEnchantOptions()
+	{
+		EnchantOptions op = EnchantOptionsData.getInstance().getOptions(this);
+		if (op != null)
+		{
+			return op.getOptions();
+		}
+		return DEFAULT_ENCHANT_OPTIONS;
 	}
 }

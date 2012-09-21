@@ -141,6 +141,18 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 	
 	/**
 	 * @param npcObjId
+	 * @param itemId
+	 * @param text
+	 */
+	public NpcHtmlMessage(int npcObjId, int itemId, String text)
+	{
+		_npcObjId = npcObjId;
+		_itemId = itemId;
+		_html = text;
+	}
+	
+	/**
+	 * @param npcObjId
 	 * @param text
 	 */
 	public NpcHtmlMessage(int npcObjId, String text)

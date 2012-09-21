@@ -60,8 +60,9 @@ public final class ExRpItemLink extends L2GameServerPacket
 			writeH(_item.getElementDefAttr(i));
 		}
 		// Enchant Effects
-		writeH(0x00);
-		writeH(0x00);
-		writeH(0x00);
+		for (int op : _item.getEnchantOptions())
+		{
+			writeH(op);
+		}
 	}
 }

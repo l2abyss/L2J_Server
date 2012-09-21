@@ -87,9 +87,10 @@ public class ExReplyReceivedPost extends L2GameServerPacket
 					writeH(item.getElementDefAttr(i));
 				}
 				// Enchant Effects
-				writeH(0);
-				writeH(0);
-				writeH(0);
+				for (int op : item.getEnchantOptions())
+				{
+					writeH(op);
+				}
 				writeD(item.getObjectId());
 			}
 		}

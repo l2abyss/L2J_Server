@@ -64,9 +64,10 @@ public class PetItemList extends L2GameServerPacket
 				writeH(temp.getElementDefAttr(i));
 			}
 			// Enchant Effects
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
+			for (int op : temp.getEnchantOptions())
+			{
+				writeH(op);
+			}
 		}
 	}
 }

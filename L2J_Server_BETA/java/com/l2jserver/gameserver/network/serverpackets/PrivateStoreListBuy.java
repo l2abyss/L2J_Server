@@ -68,9 +68,10 @@ public class PrivateStoreListBuy extends L2GameServerPacket
 				writeH(item.getElementDefAttr(i));
 			}
 			// Enchant Effects
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
+			for (int op : item.getEnchantOptions())
+			{
+				writeH(op);
+			}
 			writeD(item.getObjectId());
 			writeQ(item.getPrice());
 			writeQ(item.getItem().getReferencePrice() * 2);

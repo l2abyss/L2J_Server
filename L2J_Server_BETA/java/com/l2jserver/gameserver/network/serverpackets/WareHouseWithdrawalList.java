@@ -56,8 +56,13 @@ public final class WareHouseWithdrawalList extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x42);
-		/*
-		 * 0x01-Private Warehouse 0x02-Clan Warehouse 0x03-Castle Warehouse 0x04-Warehouse
+		/**
+		 * <ul>
+		 * <li>0x01-Private Warehouse</li>
+		 * <li>0x02-Clan Warehouse</li>
+		 * <li>0x03-Castle Warehouse</li>
+		 * <li>0x04-Warehouse</li>
+		 * </ul>
 		 */
 		writeH(_whType);
 		writeQ(_playerAdena);
@@ -92,9 +97,10 @@ public final class WareHouseWithdrawalList extends L2GameServerPacket
 				writeH(item.getElementDefAttr(i));
 			}
 			// Enchant Effects
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
+			for (int op : item.getEnchantOptions())
+			{
+				writeH(op);
+			}
 			writeD(item.getObjectId());
 		}
 	}

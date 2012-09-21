@@ -39,6 +39,7 @@ public class TradeItem
 		0,
 		0
 	};
+	private int[] _enchantOptions = L2ItemInstance.DEFAULT_ENCHANT_OPTIONS;
 	
 	public TradeItem(L2ItemInstance item, long count, long price)
 	{
@@ -56,6 +57,7 @@ public class TradeItem
 		{
 			_elemDefAttr[i] = item.getElementDefAttr(i);
 		}
+		_enchantOptions = item.getEnchantOptions();
 	}
 	
 	public TradeItem(L2Item item, long count, long price)
@@ -170,5 +172,10 @@ public class TradeItem
 	public int getElementDefAttr(byte i)
 	{
 		return _elemDefAttr[i];
+	}
+	
+	public int[] getEnchantOptions()
+	{
+		return _enchantOptions;
 	}
 }

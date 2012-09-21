@@ -68,6 +68,8 @@ public class ItemInfo
 		0
 	};
 	
+	private int[] _option = L2ItemInstance.DEFAULT_ENCHANT_OPTIONS;
+	
 	/**
 	 * Get all information from L2ItemInstance to generate ItemInfo.
 	 * @param item
@@ -139,6 +141,7 @@ public class ItemInfo
 		{
 			_elemDefAttr[i] = item.getElementDefAttr(i);
 		}
+		_option = item.getEnchantOptions();
 	}
 	
 	public ItemInfo(L2ItemInstance item, int change)
@@ -192,6 +195,8 @@ public class ItemInfo
 		{
 			_elemDefAttr[i] = item.getElementDefAttr(i);
 		}
+		
+		_option = item.getEnchantOptions();
 	}
 	
 	public int getObjectId()
@@ -272,5 +277,10 @@ public class ItemInfo
 	public int getElementDefAttr(byte i)
 	{
 		return _elemDefAttr[i];
+	}
+	
+	public int[] getEnchantOptions()
+	{
+		return _option;
 	}
 }
