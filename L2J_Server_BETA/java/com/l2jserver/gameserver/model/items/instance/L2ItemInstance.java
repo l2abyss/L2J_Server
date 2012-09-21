@@ -1335,7 +1335,7 @@ public final class L2ItemInstance extends L2Object
 			_consumingMana = false;
 		}
 		
-		final L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
+		final L2PcInstance player = getActingPlayer();
 		if (player != null)
 		{
 			SystemMessage sm;
@@ -1860,7 +1860,7 @@ public final class L2ItemInstance extends L2Object
 	
 	public void endOfLife()
 	{
-		L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
+		L2PcInstance player = getActingPlayer();
 		if (player != null)
 		{
 			if (isEquipped())
@@ -2041,7 +2041,7 @@ public final class L2ItemInstance extends L2Object
 	
 	public int getOlyEnchantLevel()
 	{
-		L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
+		L2PcInstance player = getActingPlayer();
 		int enchant = getEnchantLevel();
 		
 		if (player == null)
@@ -2074,7 +2074,7 @@ public final class L2ItemInstance extends L2Object
 			return;
 		}
 		
-		final L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
+		final L2PcInstance player = getActingPlayer();
 		
 		if (player != null)
 		{
@@ -2095,7 +2095,7 @@ public final class L2ItemInstance extends L2Object
 			return;
 		}
 		
-		final L2PcInstance player = L2World.getInstance().getPlayer(getOwnerId());
+		final L2PcInstance player = getActingPlayer();
 		
 		if (player != null)
 		{
@@ -2115,125 +2115,10 @@ public final class L2ItemInstance extends L2Object
 		return true;
 	}
 	
-	// LISTENERS
-	/**
-	 * Fires all the DropListener.onPickup() methods, if any
-	 * @param actor
-	 * @return false if the item cannot be picked up by the given player
-	 */
-	private boolean firePickupListeners(L2PcInstance actor)
+	@Override
+	public L2PcInstance getActingPlayer()
 	{
-		if (!dropListeners.isEmpty() && (actor != null))
-		{
-			ItemPickupEvent event = new ItemPickupEvent();
-			event.setItem(this);
-			event.setPicker(actor);
-			event.setLocation(new Location(getPosition().getX(), getPosition().getY(), getPosition().getZ()));
-			for (DropListener listener : dropListeners)
-			{
-				if (!listener.onPickup(event))
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Fires all the AugmentListener.onAugment() methods, if any
-	 * @param isAugment
-	 * @param augmentation
-	 * @return false if the operation is not allowed
-	 */
-	private boolean fireAugmentListeners(boolean isAugment, L2Augmentation augmentation)
-	{
-		if (!augmentListeners.isEmpty() && (augmentation != null))
-		{
-			AugmentEvent event = new AugmentEvent();
-			event.setAugmentation(augmentation);
-			event.setIsAugment(isAugment);
-			event.setItem(this);
-			for (AugmentListener listener : augmentListeners)
-			{
-				if (isAugment)
-				{
-					if (!listener.onAugment(event))
-					{
-						return false;
-					}
-				}
-				else
-				{
-					if (!listener.onRemoveAugment(event))
-					{
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-	
-	private boolean fireDropListeners(L2Character dropper, Location loc)
-	{
-		if (!dropListeners.isEmpty() && (dropper != null))
-		{
-			ItemDropEvent event = new ItemDropEvent();
-			event.setDropper(dropper);
-			event.setItem(this);
-			event.setLocation(loc);
-			for (DropListener listener : dropListeners)
-			{
-				if (!listener.onDrop(event))
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Adds an augmentation listener
-	 * @param listener
-	 */
-	public static void addAugmentListener(AugmentListener listener)
-	{
-		if (!augmentListeners.contains(listener))
-		{
-			augmentListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes an augmentation listener
-	 * @param listener
-	 */
-	public static void removeAugmentListener(AugmentListener listener)
-	{
-		augmentListeners.remove(listener);
-	}
-	
-	/**
-	 * Adds a drop / pickup listener
-	 * @param listener
-	 */
-	public static void addDropListener(DropListener listener)
-	{
-		if (!dropListeners.contains(listener))
-		{
-			dropListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a drop / pickup listener
-	 * @param listener
-	 */
-	public static void removeDropListener(DropListener listener)
-	{
-		dropListeners.remove(listener);
+		return L2World.getInstance().getPlayer(getOwnerId());
 	}
 	
 	public int getEquipReuseDelay()
@@ -2360,5 +2245,126 @@ public final class L2ItemInstance extends L2Object
 			return op.getOptions();
 		}
 		return DEFAULT_ENCHANT_OPTIONS;
+	}
+	
+	// LISTENERS
+	/**
+	 * Fires all the DropListener.onPickup() methods, if any
+	 * @param actor
+	 * @return false if the item cannot be picked up by the given player
+	 */
+	private boolean firePickupListeners(L2PcInstance actor)
+	{
+		if (!dropListeners.isEmpty() && (actor != null))
+		{
+			ItemPickupEvent event = new ItemPickupEvent();
+			event.setItem(this);
+			event.setPicker(actor);
+			event.setLocation(new Location(getPosition().getX(), getPosition().getY(), getPosition().getZ()));
+			for (DropListener listener : dropListeners)
+			{
+				if (!listener.onPickup(event))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fires all the AugmentListener.onAugment() methods, if any
+	 * @param isAugment
+	 * @param augmentation
+	 * @return false if the operation is not allowed
+	 */
+	private boolean fireAugmentListeners(boolean isAugment, L2Augmentation augmentation)
+	{
+		if (!augmentListeners.isEmpty() && (augmentation != null))
+		{
+			AugmentEvent event = new AugmentEvent();
+			event.setAugmentation(augmentation);
+			event.setIsAugment(isAugment);
+			event.setItem(this);
+			for (AugmentListener listener : augmentListeners)
+			{
+				if (isAugment)
+				{
+					if (!listener.onAugment(event))
+					{
+						return false;
+					}
+				}
+				else
+				{
+					if (!listener.onRemoveAugment(event))
+					{
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	private boolean fireDropListeners(L2Character dropper, Location loc)
+	{
+		if (!dropListeners.isEmpty() && (dropper != null))
+		{
+			ItemDropEvent event = new ItemDropEvent();
+			event.setDropper(dropper);
+			event.setItem(this);
+			event.setLocation(loc);
+			for (DropListener listener : dropListeners)
+			{
+				if (!listener.onDrop(event))
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Adds an augmentation listener
+	 * @param listener
+	 */
+	public static void addAugmentListener(AugmentListener listener)
+	{
+		if (!augmentListeners.contains(listener))
+		{
+			augmentListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes an augmentation listener
+	 * @param listener
+	 */
+	public static void removeAugmentListener(AugmentListener listener)
+	{
+		augmentListeners.remove(listener);
+	}
+	
+	/**
+	 * Adds a drop / pickup listener
+	 * @param listener
+	 */
+	public static void addDropListener(DropListener listener)
+	{
+		if (!dropListeners.contains(listener))
+		{
+			dropListeners.add(listener);
+		}
+	}
+	
+	/**
+	 * Removes a drop / pickup listener
+	 * @param listener
+	 */
+	public static void removeDropListener(DropListener listener)
+	{
+		dropListeners.remove(listener);
 	}
 }
