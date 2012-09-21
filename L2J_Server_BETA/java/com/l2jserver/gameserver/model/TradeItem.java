@@ -39,7 +39,7 @@ public class TradeItem
 		0,
 		0
 	};
-	private int[] _enchantOptions = L2ItemInstance.DEFAULT_ENCHANT_OPTIONS;
+	private final int[] _enchantOptions;
 	
 	public TradeItem(L2ItemInstance item, long count, long price)
 	{
@@ -73,6 +73,7 @@ public class TradeItem
 		_price = price;
 		_elemAtkType = Elementals.NONE;
 		_elemAtkPower = 0;
+		_enchantOptions = L2ItemInstance.DEFAULT_ENCHANT_OPTIONS;
 	}
 	
 	public TradeItem(TradeItem item, long count, long price)
@@ -92,6 +93,7 @@ public class TradeItem
 		{
 			_elemDefAttr[i] = item.getElementDefAttr(i);
 		}
+		_enchantOptions = item.getEnchantOptions();
 	}
 	
 	public void setObjectId(int objectId)

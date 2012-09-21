@@ -68,7 +68,7 @@ public class ItemInfo
 		0
 	};
 	
-	private int[] _option = L2ItemInstance.DEFAULT_ENCHANT_OPTIONS;
+	private int[] _option;
 	
 	/**
 	 * Get all information from L2ItemInstance to generate ItemInfo.

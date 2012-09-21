@@ -55,7 +55,7 @@ public class L2WarehouseItem
 		0
 	};
 	
-	private int[] _enchantOptions = L2ItemInstance.DEFAULT_ENCHANT_OPTIONS;
+	private final int[] _enchantOptions;
 	
 	private final int _time;
 	

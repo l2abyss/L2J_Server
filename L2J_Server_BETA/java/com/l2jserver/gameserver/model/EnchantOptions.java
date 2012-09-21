@@ -14,8 +14,6 @@
  */
 package com.l2jserver.gameserver.model;
 
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-
 /**
  * @author UnAfraid
  */
@@ -27,7 +25,7 @@ public class EnchantOptions
 	public EnchantOptions(int level)
 	{
 		_level = level;
-		_options = L2ItemInstance.DEFAULT_ENCHANT_OPTIONS;
+		_options = new int[3];
 	}
 	
 	public int getLevel()
