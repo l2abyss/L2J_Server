@@ -9582,18 +9582,6 @@ public final class L2PcInstance extends L2Playable
 			return false;
 		}
 		
-		// ************************************* Check Consumables *******************************************
-		
-		// Check if spell consumes a Soul
-		if (skill.getSoulConsumeCount() > 0)
-		{
-			if (getSouls() < skill.getSoulConsumeCount())
-			{
-				sendPacket(SystemMessageId.THERE_IS_NOT_ENOUGH_SOUL);
-				sendPacket(ActionFailed.STATIC_PACKET);
-				return false;
-			}
-		}
 		// ************************************* Check casting conditions *******************************************
 		
 		// Check if all casting conditions are completed
@@ -13906,12 +13894,6 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean decreaseSouls(int count, L2Skill skill)
 	{
-		if ((getSouls() <= 0) && (skill.getSoulConsumeCount() > 0))
-		{
-			sendPacket(SystemMessageId.THERE_IS_NOT_ENOUGH_SOUL);
-			return false;
-		}
-		
 		_souls -= count;
 		
 		if (getSouls() < 0)
