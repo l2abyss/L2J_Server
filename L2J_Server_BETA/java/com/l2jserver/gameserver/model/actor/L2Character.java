@@ -1954,11 +1954,11 @@ public abstract class L2Character extends L2Object
 			}
 			
 			// Consume Souls if necessary
-			if ((skill.getSoulConsumeCount() > 0) || (skill.getMaxSoulConsumeCount() > 0))
+			if (skill.getMaxSoulConsumeCount() > 0)
 			{
 				if (isPlayer())
 				{
-					if (!getActingPlayer().decreaseSouls(skill.getSoulConsumeCount(), skill))
+					if (!getActingPlayer().decreaseSouls(skill.getMaxSoulConsumeCount(), skill))
 					{
 						if (simultaneously)
 						{
@@ -6653,9 +6653,9 @@ public abstract class L2Character extends L2Object
 				}
 				
 				// Consume Souls if necessary
-				if ((skill.getSoulConsumeCount() > 0) || (skill.getMaxSoulConsumeCount() > 0))
+				if (skill.getMaxSoulConsumeCount() > 0)
 				{
-					if (!getActingPlayer().decreaseSouls(skill.getSoulConsumeCount() > 0 ? skill.getSoulConsumeCount() : skill.getMaxSoulConsumeCount(), skill))
+					if (!getActingPlayer().decreaseSouls(skill.getMaxSoulConsumeCount(), skill))
 					{
 						abortCast();
 						return;
