@@ -144,7 +144,7 @@ public final class RequestSendPost extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.getPrivateStoreType() > 0)
+		if (activeChar.getPrivateStoreType() > L2PcInstance.STORE_PRIVATE_NONE)
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_FORWARD_PRIVATE_STORE);
 			return;

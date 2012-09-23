@@ -46,7 +46,7 @@ public final class RequestRecipeItemMakeSelf extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.getPrivateStoreType() != 0)
+		if (activeChar.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
 		{
 			activeChar.sendMessage("You cannot create items while trading.");
 			return;

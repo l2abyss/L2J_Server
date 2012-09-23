@@ -115,7 +115,7 @@ public final class UseItem extends L2GameClientPacket
 			activeChar.cancelActiveTrade();
 		}
 		
-		if (activeChar.getPrivateStoreType() != 0)
+		if (activeChar.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
 		{
 			activeChar.sendPacket(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE);
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
@@ -221,7 +221,8 @@ public final class UseItem extends L2GameClientPacket
 			{
 				return; // no message
 			}
-			else if (activeChar.isCombatFlagEquipped())
+			
+			if (activeChar.isCombatFlagEquipped())
 			{
 				return;
 			}

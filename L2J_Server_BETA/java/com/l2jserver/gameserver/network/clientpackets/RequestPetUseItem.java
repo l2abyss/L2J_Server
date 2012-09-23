@@ -14,7 +14,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -73,48 +72,41 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			return;
 		}
 		
-		if (Config.DEBUG)
+		// If the item has reuse time and it has not passed.
+		// Message from reuse delay must come from item.
+		final int reuseDelay = item.getReuseDelay();
+		if (reuseDelay > 0)
 		{
-			_log.finest(activeChar.getObjectId() + ": pet use item " + _objectId);
-		}
-		
-		if (!item.isEquipped())
-		{
-			if (!item.getItem().checkCondition(pet, pet, true))
+			final long reuse = pet.getItemRemainingReuseTime(item.getObjectId());
+			if (reuse > 0)
 			{
 				return;
 			}
 		}
 		
-		// check if the item matches the pet
-		if (item.isEquipable())
+		if (activeChar.isDebug())
 		{
-			// all pet items have condition
-			if (!item.getItem().isConditionAttached())
-			{
-				activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
-				return;
-			}
-			useItem(pet, item, activeChar);
+			activeChar.sendDebugMessage("Pet tries to use item: " + item);
+		}
+		
+		if (!item.isEquipped() && !item.getItem().checkCondition(pet, pet, true))
+		{
 			return;
 		}
 		
-		final IItemHandler handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
-		if (handler != null)
-		{
-			useItem(pet, item, activeChar);
-		}
-		else
-		{
-			activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
-		}
-		return;
+		useItem(pet, item, activeChar);
 	}
 	
 	private void useItem(L2PetInstance pet, L2ItemInstance item, L2PcInstance activeChar)
 	{
 		if (item.isEquipable())
 		{
+			if (!item.getItem().isConditionAttached())
+			{
+				activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
+				return;
+			}
+			
 			if (item.isEquipped())
 			{
 				pet.getInventory().unEquipItemInSlot(item.getLocationSlot());
@@ -132,11 +124,19 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			final IItemHandler handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
 			if (handler != null)
 			{
-				handler.useItem(pet, item, false);
-				pet.updateAndBroadcastStatus(1);
+				if (handler.useItem(pet, item, false))
+				{
+					final int reuseDelay = item.getReuseDelay();
+					if (reuseDelay > 0)
+					{
+						activeChar.addTimeStampItem(item, reuseDelay);
+					}
+					pet.updateAndBroadcastStatus(1);
+				}
 			}
 			else
 			{
+				activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
 				_log.warning("No item handler registered for itemId: " + item.getItemId());
 			}
 		}

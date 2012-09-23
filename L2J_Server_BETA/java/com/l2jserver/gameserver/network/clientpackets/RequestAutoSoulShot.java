@@ -49,7 +49,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 			return;
 		}
 		
-		if ((activeChar.getPrivateStoreType() == 0) && (activeChar.getActiveRequester() == null) && !activeChar.isDead())
+		if ((activeChar.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_NONE) && (activeChar.getActiveRequester() == null) && !activeChar.isDead())
 		{
 			if (Config.DEBUG)
 			{

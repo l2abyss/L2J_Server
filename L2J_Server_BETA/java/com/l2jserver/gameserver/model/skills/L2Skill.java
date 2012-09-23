@@ -1332,9 +1332,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		}
 		if ((getCondition() & L2Skill.COND_SHIELD) != 0)
 		{
-			/*
-			 * L2Armor armorPiece; L2ItemInstance dummy; dummy = activeChar.getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND); armorPiece = (L2Armor) dummy.getItem();
-			 */
+			// L2ItemInstance dummy = activeChar.getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
+			// L2Armor armorPiece = (L2Armor) dummy.getItem();
 			// TODO add checks for shield here.
 		}
 		

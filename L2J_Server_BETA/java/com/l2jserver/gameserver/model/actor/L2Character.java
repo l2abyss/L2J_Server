@@ -2247,13 +2247,40 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * Index according to skill id the current timestamp of use.
+	 * @param item
+	 * @param reuse
+	 */
+	public void addTimeStampItem(L2ItemInstance item, long reuse)
+	{
+		// Dummy
+	}
+	
+	/**
+	 * @param itemObjId the item object Id
+	 * @return the reuse time stamp
+	 */
+	public long getItemRemainingReuseTime(int itemObjId)
+	{
+		return -1;
+	}
+	
+	/**
+	 * Index according to skill id the current time stamp of use.
 	 * @param skill id
 	 * @param reuse delay
 	 */
 	public void addTimeStamp(L2Skill skill, long reuse)
 	{
-		/***/
+		// Dummy
+	}
+	
+	/**
+	 * @param skillReuseHashId
+	 * @return -1
+	 */
+	public long getSkillRemainingReuseTime(int skillReuseHashId)
+	{
+		return -1;
 	}
 	
 	public void startFusionSkill(L2Character target, L2Skill skill)

@@ -193,7 +193,7 @@ public abstract class L2Playable extends L2Character
 		{
 			return false; // Target is self
 		}
-		if (!(target instanceof L2Playable))
+		if (!target.isPlayable())
 		{
 			return false; // Target is not a L2PlayableInstance
 		}

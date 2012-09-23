@@ -777,7 +777,7 @@ public class L2Npc extends L2Character
 		{
 			return false;
 		}
-		if (player.getPrivateStoreType() != 0)
+		if (player.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
 		{
 			return false;
 		}

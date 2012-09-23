@@ -18,11 +18,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javolution.util.FastList;
+import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
@@ -44,6 +46,7 @@ import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2PetData;
 import com.l2jserver.gameserver.model.L2PetLevelData;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.TimeStamp;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.stat.PetStat;
@@ -71,10 +74,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.util.Rnd;
 
-/**
- * This class ...
- * @version $Revision: 1.15.2.10.2.16 $ $Date: 2005/04/06 16:13:40 $
- */
 public class L2PetInstance extends L2Summon
 {
 	protected static final Logger _logPet = Logger.getLogger(L2PetInstance.class.getName());
@@ -82,6 +81,9 @@ public class L2PetInstance extends L2Summon
 	private static final String ADD_SKILL_SAVE = "INSERT INTO character_pet_skills_save (petObjItemId,skill_id,skill_level,effect_count,effect_cur_time,buff_index) VALUES (?,?,?,?,?,?)";
 	private static final String RESTORE_SKILL_SAVE = "SELECT petObjItemId,skill_id,skill_level,effect_count,effect_cur_time,buff_index FROM character_pet_skills_save WHERE petObjItemId=? ORDER BY buff_index ASC";
 	private static final String DELETE_SKILL_SAVE = "DELETE FROM character_pet_skills_save WHERE petObjItemId=?";
+	
+	private final Map<Integer, TimeStamp> _reuseTimeStampsSkills = new FastMap<>();
+	private final Map<Integer, TimeStamp> _reuseTimeStampsItems = new FastMap<>();
 	
 	private int _curFed;
 	private final PetInventory _inventory;
@@ -1128,7 +1130,6 @@ public class L2PetInstance extends L2Summon
 		{
 			if (!SummonEffectsTable.getInstance().getPetEffects().contains(getControlObjectId()))
 			{
-				
 				ps1.setInt(1, getControlObjectId());
 				try (ResultSet rset = ps1.executeQuery())
 				{
@@ -1468,6 +1469,43 @@ public class L2PetInstance extends L2Summon
 	public boolean canEatFoodId(int itemId)
 	{
 		return _data.getFood().contains(itemId);
+	}
+	
+	public Map<Integer, TimeStamp> getSkillReuseTimeStamps()
+	{
+		return _reuseTimeStampsSkills;
+	}
+	
+	@Override
+	public void addTimeStamp(L2Skill skill, long reuse)
+	{
+		_reuseTimeStampsSkills.put(skill.getReuseHashCode(), new TimeStamp(skill, reuse));
+	}
+	
+	@Override
+	public long getSkillRemainingReuseTime(int skillReuseHashId)
+	{
+		if (_reuseTimeStampsSkills.isEmpty() || !_reuseTimeStampsSkills.containsKey(skillReuseHashId))
+		{
+			return -1;
+		}
+		return _reuseTimeStampsSkills.get(skillReuseHashId).getRemaining();
+	}
+	
+	@Override
+	public void addTimeStampItem(L2ItemInstance item, long reuse)
+	{
+		_reuseTimeStampsItems.put(item.getObjectId(), new TimeStamp(item, reuse));
+	}
+	
+	@Override
+	public long getItemRemainingReuseTime(int itemObjId)
+	{
+		if (_reuseTimeStampsItems.isEmpty() || !_reuseTimeStampsItems.containsKey(itemObjId))
+		{
+			return -1;
+		}
+		return _reuseTimeStampsItems.get(itemObjId).getRemaining();
 	}
 	
 	@Override
