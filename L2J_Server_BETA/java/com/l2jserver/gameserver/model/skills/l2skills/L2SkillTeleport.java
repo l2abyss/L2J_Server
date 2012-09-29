@@ -100,20 +100,6 @@ public class L2SkillTeleport extends L2Skill
 				{
 					L2PcInstance targetChar = target.getActingPlayer();
 					
-					// Check to see if the current player target is in a festival.
-					if (targetChar.isFestivalParticipant())
-					{
-						targetChar.sendMessage("You may not use an escape skill in a festival.");
-						continue;
-					}
-					
-					// Check to see if player is in jail
-					if (targetChar.isInJail())
-					{
-						targetChar.sendMessage("You can not escape from jail.");
-						continue;
-					}
-					
 					// Check to see if player is in a duel
 					if (targetChar.isInDuel())
 					{

@@ -15086,18 +15086,6 @@ public final class L2PcInstance extends L2Playable
 			sendPacket(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_TO_REACH_THIS_AREA);
 			return false;
 		}
-		else if (isInBoat() || isInAirShip() || isInJail() || isInsideZone(ZoneId.NO_SUMMON_FRIEND))
-		{
-			if (type == 0)
-			{
-				sendPacket(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_IN_THIS_AREA);
-			}
-			else if (type == 1)
-			{
-				sendPacket(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_TO_REACH_THIS_AREA);
-			}
-			return false;
-		}
 		else if (isInWater())
 		{
 			sendPacket(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_UNDERWATER);
@@ -15108,7 +15096,7 @@ public final class L2PcInstance extends L2Playable
 			sendPacket(SystemMessageId.YOU_CANNOT_USE_MY_TELEPORTS_TO_REACH_THIS_AREA);
 			return false;
 		}
-		else if (isInsideZone(ZoneId.NO_BOOKMARK))
+		else if (isInsideZone(ZoneId.NO_BOOKMARK) || isInBoat() || isInAirShip())
 		{
 			if (type == 0)
 			{
