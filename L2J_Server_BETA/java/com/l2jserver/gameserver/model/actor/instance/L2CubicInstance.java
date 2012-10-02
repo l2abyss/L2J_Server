@@ -80,9 +80,10 @@ public final class L2CubicInstance
 	
 	protected int _id;
 	protected int _matk;
-	protected int _activationtime;
-	protected int _activationchance;
-	protected int _maxcount;
+	protected int _cubicDuration;
+	protected int _cubicDelay;
+	protected int _cubicSkillChance;
+	protected int _cubicMaxCount;
 	protected int _currentcount;
 	protected boolean _active;
 	private final boolean _givenByOther;
@@ -92,14 +93,15 @@ public final class L2CubicInstance
 	private Future<?> _disappearTask;
 	private Future<?> _actionTask;
 	
-	public L2CubicInstance(L2PcInstance owner, int id, int level, int mAtk, int activationtime, int activationchance, int maxcount, int totallifetime, boolean givenByOther)
+	public L2CubicInstance(L2PcInstance owner, int id, int level, int mAtk, int cubicDelay, int cubicSkillChance, int cubicMaxCount, int cubicDuration, boolean givenByOther)
 	{
 		_owner = owner;
 		_id = id;
 		_matk = mAtk;
-		_activationtime = activationtime * 1000;
-		_activationchance = activationchance;
-		_maxcount = maxcount;
+		_cubicDuration = cubicDuration * 1000;
+		_cubicDelay = cubicDelay * 1000;
+		_cubicSkillChance = cubicSkillChance;
+		_cubicMaxCount = cubicMaxCount;
 		_currentcount = 0;
 		_active = false;
 		_givenByOther = givenByOther;
@@ -218,7 +220,7 @@ public final class L2CubicInstance
 				// cubic skills list
 				break;
 		}
-		_disappearTask = ThreadPoolManager.getInstance().scheduleGeneral(new Disappear(), totallifetime); // disappear
+		_disappearTask = ThreadPoolManager.getInstance().scheduleGeneral(new Disappear(), _cubicDuration); // disappear
 	}
 	
 	public synchronized void doAction()
@@ -244,10 +246,10 @@ public final class L2CubicInstance
 			case SMART_CUBIC_SPECTRALMASTER:
 			case SMART_CUBIC_EVATEMPLAR:
 			case SMART_CUBIC_SHILLIENTEMPLAR:
-				_actionTask = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new Action(_activationchance), 0, _activationtime);
+				_actionTask = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new Action(_cubicSkillChance), 0, _cubicDelay);
 				break;
 			case LIFE_CUBIC:
-				_actionTask = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new Heal(), 0, _activationtime);
+				_actionTask = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new Heal(), 0, _cubicDelay);
 				break;
 		}
 	}
@@ -545,8 +547,8 @@ public final class L2CubicInstance
 						return;
 					}
 				}
-				// The cubic has already reached its limit and it will stay idle until its lifetime ends.
-				if ((_maxcount > -1) && (_currentcount >= _maxcount))
+				// The cubic has already reached its limit and it will stay idle until its duration ends.
+				if ((_cubicMaxCount > -1) && (_currentcount >= _cubicMaxCount))
 				{
 					stopAction();
 					return;

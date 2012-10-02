@@ -10301,15 +10301,15 @@ public final class L2PcInstance extends L2Playable
 	 * @param id
 	 * @param level
 	 * @param matk
-	 * @param activationtime
-	 * @param activationchance
-	 * @param maxcount
-	 * @param totalLifetime
+	 * @param cubicDelay
+	 * @param cubicSkillChance
+	 * @param cubicMaxCount
+	 * @param cubicDuration
 	 * @param givenByOther
 	 */
-	public void addCubic(int id, int level, double matk, int activationtime, int activationchance, int maxcount, int totalLifetime, boolean givenByOther)
+	public void addCubic(int id, int level, double matk, int cubicDelay, int cubicSkillChance, int cubicMaxCount, int cubicDuration, boolean givenByOther)
 	{
-		_cubics.put(id, new L2CubicInstance(this, id, level, (int) matk, activationtime, activationchance, maxcount, totalLifetime, givenByOther));
+		_cubics.put(id, new L2CubicInstance(this, id, level, (int) matk, cubicDelay, cubicSkillChance, cubicMaxCount, cubicDuration, givenByOther));
 	}
 	
 	/**

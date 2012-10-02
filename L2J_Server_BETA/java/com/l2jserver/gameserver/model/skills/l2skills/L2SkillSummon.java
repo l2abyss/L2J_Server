@@ -40,12 +40,14 @@ public class L2SkillSummon extends L2Skill
 	private final boolean _isCubic;
 	
 	// cubic AI
+	// Duration for a cubic
+	private final int _cubicDuration;
 	// Activation time for a cubic
-	private final int _activationtime;
-	// Activation chance for a cubic.
-	private final int _activationchance;
+	private final int _cubicDelay;
 	// Maximum casts made by the cubic until it goes idle.
-	private final int _maxcount;
+	private final int _cubicMaxCount;
+	// Activation chance for a cubic.
+	private final int _cubicSkillChance;
 	
 	// What is the total lifetime of summons (in millisecs)
 	private final int _summonTotalLifeTime;
@@ -74,9 +76,10 @@ public class L2SkillSummon extends L2Skill
 		_expPenalty = set.getFloat("expPenalty", 0.f);
 		_isCubic = set.getBool("isCubic", false);
 		
-		_activationtime = set.getInteger("activationtime", 8);
-		_activationchance = set.getInteger("activationchance", 30);
-		_maxcount = set.getInteger("maxcount", -1);
+		_cubicDuration = set.getInteger("cubicDuration", 0);
+		_cubicDelay = set.getInteger("cubicDelay", 0);
+		_cubicMaxCount = set.getInteger("cubicMaxCount", -1);
+		_cubicSkillChance = set.getInteger("cubicSkillChance", 0);
 		
 		_summonTotalLifeTime = set.getInteger("summonTotalLifeTime", 1200000); // 20 minutes default
 		_summonTimeLostIdle = set.getInteger("summonTimeLostIdle", 0);
@@ -198,11 +201,11 @@ public class L2SkillSummon extends L2Skill
 					}
 					if (player == activeChar)
 					{
-						player.addCubic(_npcId, _cubicSkillLevel, getPower(), _activationtime, _activationchance, _maxcount, _summonTotalLifeTime, false);
+						player.addCubic(_npcId, _cubicSkillLevel, getPower(), _cubicDelay, _cubicSkillChance, _cubicMaxCount, _cubicDuration, false);
 					}
 					else
 					{
-						player.addCubic(_npcId, _cubicSkillLevel, getPower(), _activationtime, _activationchance, _maxcount, _summonTotalLifeTime, true);
+						player.addCubic(_npcId, _cubicSkillLevel, getPower(), _cubicDelay, _cubicSkillChance, _cubicMaxCount, _cubicDuration, true);
 					}
 					player.broadcastUserInfo();
 				}
@@ -231,7 +234,7 @@ public class L2SkillSummon extends L2Skill
 					activeChar.sendPacket(SystemMessageId.CUBIC_SUMMONING_FAILED);
 					return;
 				}
-				activeChar.addCubic(_npcId, _cubicSkillLevel, getPower(), _activationtime, _activationchance, _maxcount, _summonTotalLifeTime, false);
+				activeChar.addCubic(_npcId, _cubicSkillLevel, getPower(), _cubicDelay, _cubicSkillChance, _cubicMaxCount, _cubicDuration, false);
 				activeChar.broadcastUserInfo();
 			}
 			return;
