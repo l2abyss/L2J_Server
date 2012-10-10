@@ -359,6 +359,15 @@ public final class RequestEnchantItem extends L2GameClientPacket
 								iu.addItem(crystals);
 							}
 							
+							if (scroll.getCount() == 0)
+							{
+								iu.addRemovedItem(scroll);
+							}
+							else
+							{
+								iu.addModifiedItem(scroll);
+							}
+							
 							activeChar.sendPacket(iu);
 						}
 						else

@@ -48,6 +48,7 @@ public class TaskZoneSettings extends AbstractZoneSettings
 		if (_task != null)
 		{
 			_task.cancel(true);
+			_task = null;
 		}
 	}
 }
