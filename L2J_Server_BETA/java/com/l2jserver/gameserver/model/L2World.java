@@ -112,10 +112,10 @@ public final class L2World
 	{
 		if (_allObjects.containsKey(object.getObjectId()))
 		{
-			_log.warning("[L2World] Current object: " + object + " already exist in OID map!");
-			_log.log(Level.WARNING, "New object: " + StringUtil.getTraceString(Thread.currentThread().getStackTrace()));
-			_log.warning("[L2World] Previous object: " + _allObjects.get(object.getObjectId()) + " already exist in OID map!");
-			_log.log(Level.WARNING, "Previous: " + _allObjectsDebug.get(object.getObjectId()));
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Current object: " + object + " already exist in OID map!");
+			_log.log(Level.WARNING, StringUtil.getTraceString(Thread.currentThread().getStackTrace()));
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Previous object: " + _allObjects.get(object.getObjectId()) + " already exist in OID map!");
+			_log.log(Level.WARNING, _allObjectsDebug.get(object.getObjectId()));
 			_log.log(Level.WARNING, "---------------------- End ---------------------");
 			return;
 		}
@@ -130,7 +130,7 @@ public final class L2World
 	 */
 	public void removeObject(L2Object object)
 	{
-		_allObjects.remove(object.getObjectId()); // suggestion by whatev
+		_allObjects.remove(object.getObjectId());
 		_allObjectsDebug.remove(object.getObjectId());
 	}
 	
@@ -140,7 +140,7 @@ public final class L2World
 		{
 			if (o != null)
 			{
-				_allObjects.remove(o.getObjectId()); // suggestion by whatev
+				_allObjects.remove(o.getObjectId());
 				_allObjectsDebug.remove(o.getObjectId());
 			}
 		}
@@ -150,13 +150,13 @@ public final class L2World
 	{
 		for (L2Object o : objects)
 		{
-			_allObjects.remove(o.getObjectId()); // suggestion by whatev
+			_allObjects.remove(o.getObjectId());
 			_allObjectsDebug.remove(o.getObjectId());
 		}
 	}
 	
 	/**
-	 * <B><U> Example of use </U> :</B> <li>Client packets : Action, AttackRequest, RequestJoinParty, RequestJoinPledge...</li><BR>
+	 * <B><U> Example of use </U> :</B> <li>Client packets : Action, AttackRequest, RequestJoinParty, RequestJoinPledge...</li>
 	 * @param oID Identifier of the L2Object
 	 * @return the L2Object object that belongs to an ID or null if no object found.
 	 */
@@ -176,8 +176,7 @@ public final class L2World
 	}
 	
 	/**
-	 * Get the count of all visible objects in world.<br>
-	 * <br>
+	 * Get the count of all visible objects in world.
 	 * @return count off all L2World objects
 	 */
 	public final int getAllVisibleObjectsCount()
@@ -289,9 +288,9 @@ public final class L2World
 	{
 		// If selected L2Object is a L2PcIntance, add it in L2ObjectHashSet(L2PcInstance) _allPlayers of L2World
 		// XXX TODO: this code should be obsoleted by protection in putObject func...
-		if (object instanceof L2PcInstance)
+		if (object.isPlayer())
 		{
-			L2PcInstance player = (L2PcInstance) object;
+			L2PcInstance player = object.getActingPlayer();
 			
 			if (!player.isTeleporting())
 			{
@@ -403,11 +402,12 @@ public final class L2World
 			object.getKnownList().removeAllKnownObjects();
 			
 			// If selected L2Object is a L2PcIntance, remove it from L2ObjectHashSet(L2PcInstance) _allPlayers of L2World
-			if (object instanceof L2PcInstance)
+			if (object.isPlayer())
 			{
-				if (!((L2PcInstance) object).isTeleporting())
+				final L2PcInstance player = object.getActingPlayer();
+				if (!player.isTeleporting())
 				{
-					removeFromAllPlayers((L2PcInstance) object);
+					removeFromAllPlayers(player);
 				}
 				
 				// If selected L2Object is a GM L2PcInstance, remove it from Set(L2PcInstance) _gmList of GmListTable

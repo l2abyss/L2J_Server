@@ -53,7 +53,7 @@ public enum Stats
 	MAGIC_REUSE_RATE("mReuse"), // Magic Skill Reuse Rate
 	SHIELD_DEFENCE("sDef"),
 	CRITICAL_DAMAGE("cAtk"),
-	CRITICAL_DAMAGE_ADD("cAtkAdd"), // this is another type for special critical damage mods - vicious stance, crit power and crit damage SA
+	CRITICAL_DAMAGE_ADD("cAtkAdd"), // this is another type for special critical damage mods - vicious stance, critical power and critical damage SA
 	// it was totally bad since now...
 	MAGIC_CRIT_DMG("mCritPower"),
 	
@@ -112,10 +112,10 @@ public enum Stats
 	FALL("fall"),
 	AGGRESSION("aggression"), // locks a mob on tank caster
 	BLEED("bleed"), // by daggers, like poison
-	POISON("poison"), // by magic, hp dmg over time
+	POISON("poison"), // by magic, damage over time
 	STUN("stun"), // disable move/ATTACK for a period of time
 	ROOT("root"), // disable movement, but not ATTACK
-	MOVEMENT("movement"), // slowdown movement, debuff
+	MOVEMENT("movement"), // slow-down movement, de-buff
 	CONFUSION("confusion"), // mob changes target, opposite to aggression/hate
 	SLEEP("sleep"), // sleep (don't move/ATTACK) until attacked
 	
@@ -136,8 +136,8 @@ public enum Stats
 	DERANGEMENT_VULN("derangementVuln"),
 	DEBUFF_VULN("debuffVuln"),
 	BUFF_VULN("buffVuln"),
-	CRIT_VULN("critVuln"), // Resistence to Crit DMG in percent.
-	CRIT_ADD_VULN("critAddVuln"), // Resistence to Crit DMG in value (ex: +100 will be 100 more crit dmg, NOT 100% more).
+	CRIT_VULN("critVuln"), // Resistance to critical damage in percent.
+	CRIT_ADD_VULN("critAddVuln"), // Resistance to critical damage in value (Example: +100 will be 100 more critical damage, NOT 100% more).
 	MAGIC_DAMAGE_VULN("magicDamVul"),
 	VALAKAS_VULN("valakasVuln"),
 	

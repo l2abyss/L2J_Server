@@ -15,7 +15,6 @@
 package com.l2jserver.gameserver.model.skills.funcs;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -88,17 +87,7 @@ public final class FuncTemplate
 			}
 			return f;
 		}
-		catch (IllegalAccessException e)
-		{
-			_log.log(Level.WARNING, "", e);
-			return null;
-		}
-		catch (InstantiationException e)
-		{
-			_log.log(Level.WARNING, "", e);
-			return null;
-		}
-		catch (InvocationTargetException e)
+		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "", e);
 			return null;
