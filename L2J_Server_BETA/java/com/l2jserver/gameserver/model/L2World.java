@@ -112,9 +112,9 @@ public final class L2World
 	{
 		if (_allObjects.containsKey(object.getObjectId()))
 		{
-			_log.log(Level.WARNING, "--------[L2World] object: " + object + " already exist in OID map!--------");
+			_log.warning("[L2World] Current object: " + object + " already exist in OID map!");
 			_log.log(Level.WARNING, "New object: " + StringUtil.getTraceString(Thread.currentThread().getStackTrace()));
-			_log.log(Level.WARNING, "----------------- Previous Put -----------------");
+			_log.warning("[L2World] Previous object: " + _allObjects.get(object.getObjectId()) + " already exist in OID map!");
 			_log.log(Level.WARNING, "Previous: " + _allObjectsDebug.get(object.getObjectId()));
 			_log.log(Level.WARNING, "---------------------- End ---------------------");
 			return;
