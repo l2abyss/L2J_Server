@@ -221,7 +221,7 @@ public abstract class L2Character extends L2Object
 	
 	protected long _exceptions = 0L;
 	
-	private boolean _lethalable;
+	private boolean _lethalable = true;
 	
 	protected final String COND_EXCEPTIONS = "COND_EX_" + getObjectId();
 	
