@@ -156,6 +156,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _magicLevel;
 	private final int _levelDepend;
 	private final boolean _ignoreResists;
+	private final int _minChance;
+	private final int _maxChance;
 	private final int _blowChance;
 	
 	private final boolean _isNeutral;
@@ -411,6 +413,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_magicLevel = set.getInteger("magicLvl", 0);
 		_levelDepend = set.getInteger("lvlDepend", 0);
 		_ignoreResists = set.getBool("ignoreResists", false);
+		_minChance = set.getInteger("minChance", Config.MIN_DEBUFF_CHANCE);
+		_maxChance = set.getInteger("maxChance", Config.MAX_DEBUFF_CHANCE);
 		_stat = set.getEnum("stat", Stats.class, null);
 		_ignoreShield = set.getBool("ignoreShld", false);
 		_skillType = set.getEnum("skillType", L2SkillType.class, L2SkillType.DUMMY);
@@ -679,6 +683,24 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final boolean ignoreResists()
 	{
 		return _ignoreResists;
+	}
+	
+	/**
+	 * Return custom minimum skill/effect chance.
+	 * @return
+	 */
+	public final int getMinChance()
+	{
+		return _minChance;
+	}
+	
+	/**
+	 * Return custom maximum skill/effect chance.
+	 * @return
+	 */
+	public final int getMaxChance()
+	{
+		return _maxChance;
 	}
 	
 	/**

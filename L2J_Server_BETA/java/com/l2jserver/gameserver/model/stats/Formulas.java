@@ -2050,13 +2050,13 @@ public final class Formulas
 		int deltamod = calcLvlDependModifier(attacker, target, skill);
 		rate += deltamod;
 		
-		if (rate > Config.MAX_DEBUFF_CHANCE)
+		if (rate > skill.getMaxChance())
 		{
-			rate = Config.MAX_DEBUFF_CHANCE;
+			rate = skill.getMaxChance();
 		}
-		else if (rate < Config.MIN_DEBUFF_CHANCE)
+		else if (rate < skill.getMinChance())
 		{
-			rate = Config.MIN_DEBUFF_CHANCE;
+			rate = skill.getMinChance();
 		}
 		
 		if (attacker.isDebug() || Config.DEVELOPER)
@@ -2172,13 +2172,13 @@ public final class Formulas
 		int deltamod = calcLvlDependModifier(attacker, target, skill);
 		rate += deltamod;
 		
-		if (rate > Config.MAX_DEBUFF_CHANCE)
+		if (rate > skill.getMaxChance())
 		{
-			rate = Config.MAX_DEBUFF_CHANCE;
+			rate = skill.getMaxChance();
 		}
-		else if (rate < Config.MIN_DEBUFF_CHANCE)
+		else if (rate < skill.getMinChance())
 		{
-			rate = Config.MIN_DEBUFF_CHANCE;
+			rate = skill.getMinChance();
 		}
 		
 		if (attacker.isDebug() || Config.DEVELOPER)
@@ -2269,13 +2269,13 @@ public final class Formulas
 		int deltamod = calcLvlDependModifier(attacker.getOwner(), target, skill);
 		rate += deltamod;
 		
-		if (rate > Config.MAX_DEBUFF_CHANCE)
+		if (rate > skill.getMaxChance())
 		{
-			rate = Config.MAX_DEBUFF_CHANCE;
+			rate = skill.getMaxChance();
 		}
-		else if (rate < Config.MIN_DEBUFF_CHANCE)
+		else if (rate < skill.getMinChance())
 		{
-			rate = Config.MIN_DEBUFF_CHANCE;
+			rate = skill.getMinChance();
 		}
 		
 		if (attacker.getOwner().isDebug() || Config.DEVELOPER)
@@ -2324,13 +2324,13 @@ public final class Formulas
 		final double failureModifier = attacker.calcStat(Stats.MAGIC_FAILURE_RATE, 1, target, skill);
 		int rate = 100 - Math.round((float) (lvlModifier * targetModifier * resModifier * failureModifier));
 		
-		if (rate > Config.MAX_DEBUFF_CHANCE)
+		if (rate > skill.getMaxChance())
 		{
-			rate = Config.MAX_DEBUFF_CHANCE;
+			rate = skill.getMaxChance();
 		}
-		else if (rate < Config.MIN_DEBUFF_CHANCE)
+		else if (rate < skill.getMinChance())
 		{
-			rate = Config.MIN_DEBUFF_CHANCE;
+			rate = skill.getMinChance();
 		}
 		
 		if (attacker.isDebug() || Config.DEVELOPER)
