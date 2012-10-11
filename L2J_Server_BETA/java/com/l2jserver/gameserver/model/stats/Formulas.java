@@ -1956,24 +1956,31 @@ public final class Formulas
 			return true;
 		}
 		
-		final L2SkillType type = effect.effectType;
-		final int value = (int) effect.effectPower;
-		
 		if ((target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0) && skill.isDebuff() && !skill.ignoreResists())
 		{
 			return false;
 		}
 		
-		if (type == null)
+		final L2SkillType effectType = effect.effectType;
+		final int effectPower = (int) effect.effectPower;
+		
+		if (effectType == null)
 		{
 			if (attacker.isDebug())
 			{
 				attacker.sendDebugMessage(skill.getName() + " effect ignoring resists");
 			}
-			
-			return Rnd.get(100) < value;
+			if (effectPower > skill.getMaxChance())
+			{
+				return Rnd.get(100) < skill.getMaxChance();
+			}
+			else if (effectPower < skill.getMinChance())
+			{
+				return Rnd.get(100) < skill.getMinChance();
+			}
+			return Rnd.get(100) < effectPower;
 		}
-		else if (type.equals(L2SkillType.CANCEL))
+		else if (effectType.equals(L2SkillType.CANCEL))
 		{
 			return true;
 		}
@@ -1991,7 +1998,7 @@ public final class Formulas
 		double statModifier = calcSkillStatModifier(skill, target);
 		
 		// Calculate BaseRate.
-		int rate = (int) (value * statModifier);
+		int rate = (int) (effectPower * statModifier);
 		
 		// Add Matk/Mdef Bonus
 		double mAtkModifier = 0;
@@ -2062,7 +2069,7 @@ public final class Formulas
 		if (attacker.isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, skill.getName(), " eff.type:", type.toString(), " power:", String.valueOf(value), " stat:", String.format("%1.2f", statModifier), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", profModifier), "/", String.format("%1.2f", vulnModifier), ") elem:", String.valueOf(elementModifier), " mAtk:", String.format("%1.2f", mAtkModifier), " ss:", String.valueOf(ssModifier), " lvl:", String.valueOf(deltamod), " total:", String.valueOf(rate));
+			StringUtil.append(stat, skill.getName(), " eff.type:", effectType.toString(), " power:", String.valueOf(effectPower), " stat:", String.format("%1.2f", statModifier), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", profModifier), "/", String.format("%1.2f", vulnModifier), ") elem:", String.valueOf(elementModifier), " mAtk:", String.format("%1.2f", mAtkModifier), " ss:", String.valueOf(ssModifier), " lvl:", String.valueOf(deltamod), " total:", String.valueOf(rate));
 			final String result = stat.toString();
 			if (attacker.isDebug())
 			{

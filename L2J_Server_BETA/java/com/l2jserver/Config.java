@@ -159,8 +159,8 @@ public final class Config
 	public static int MAX_PATK_SPEED;
 	public static int MAX_MATK_SPEED;
 	public static int MAX_EVASION;
-	public static int MIN_DEBUFF_CHANCE;
-	public static int MAX_DEBUFF_CHANCE;
+	public static int MIN_ABNORMAL_STATE_SUCCESS_RATE;
+	public static int MAX_ABNORMAL_STATE_SUCCESS_RATE;
 	public static byte MAX_SUBCLASS;
 	public static byte BASE_SUBCLASS_LEVEL;
 	public static byte MAX_SUBCLASS_LEVEL;
@@ -1554,8 +1554,8 @@ public final class Config
 			MAX_PATK_SPEED = Integer.parseInt(Character.getProperty("MaxPAtkSpeed", "1500"));
 			MAX_MATK_SPEED = Integer.parseInt(Character.getProperty("MaxMAtkSpeed", "1999"));
 			MAX_EVASION = Integer.parseInt(Character.getProperty("MaxEvasion", "250"));
-			MIN_DEBUFF_CHANCE = Integer.parseInt(Character.getProperty("MinDebuffChance", "10"));
-			MAX_DEBUFF_CHANCE = Integer.parseInt(Character.getProperty("MaxDebuffChance", "90"));
+			MIN_ABNORMAL_STATE_SUCCESS_RATE = Integer.parseInt(Character.getProperty("MinAbnormalStateSuccessRate", "10"));
+			MAX_ABNORMAL_STATE_SUCCESS_RATE = Integer.parseInt(Character.getProperty("MaxAbnormalStateSuccessRate", "90"));
 			MAX_SUBCLASS = Byte.parseByte(Character.getProperty("MaxSubclass", "3"));
 			BASE_SUBCLASS_LEVEL = Byte.parseByte(Character.getProperty("BaseSubclassLevel", "40"));
 			MAX_SUBCLASS_LEVEL = Byte.parseByte(Character.getProperty("MaxSubclassLevel", "80"));
