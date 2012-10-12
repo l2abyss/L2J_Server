@@ -34,10 +34,15 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2DoorTemplate;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 
+/**
+ * @author JIV, GodKratos, UnAfraid
+ */
 public class DoorTable extends DocumentParser
 {
-	private final Map<Integer, L2DoorInstance> _doors = new HashMap<>();
 	private static final Map<String, Set<Integer>> _groups = new HashMap<>();
+	
+	private final Map<Integer, L2DoorInstance> _doors = new HashMap<>();
+	private final Map<Integer, StatsSet> _templates = new HashMap<>();
 	private final Map<Integer, List<L2DoorInstance>> _regions = new HashMap<>();
 	
 	protected DoorTable()
@@ -77,6 +82,7 @@ public class DoorTable extends DocumentParser
 							set.set(att.getNodeName(), att.getNodeValue());
 						}
 						makeDoor(set);
+						_templates.put(set.getInteger("id"), set);
 					}
 				}
 			}
@@ -113,15 +119,15 @@ public class DoorTable extends DocumentParser
 	{
 		insertCollisionData(set);
 		L2DoorTemplate template = new L2DoorTemplate(set);
-		L2DoorInstance door = new L2DoorInstance(IdFactory.getInstance().getNextId(), template, set);
+		L2DoorInstance door = new L2DoorInstance(IdFactory.getInstance().getNextId(), template);
 		door.setCurrentHp(door.getMaxHp());
-		door.spawnMe(template.posX, template.posY, template.posZ);
+		door.spawnMe(template.getX(), template.getY(), template.getZ());
 		putDoor(door, MapRegionManager.getInstance().getMapRegionLocId(door));
 	}
 	
-	public L2DoorTemplate getDoorTemplate(int doorId)
+	public StatsSet getDoorTemplate(int doorId)
 	{
-		return _doors.get(doorId).getTemplate();
+		return _templates.get(doorId);
 	}
 	
 	public L2DoorInstance getDoor(int doorId)

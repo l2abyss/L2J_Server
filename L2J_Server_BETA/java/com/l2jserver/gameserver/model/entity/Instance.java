@@ -212,10 +212,10 @@ public class Instance
 	
 	/**
 	 * Adds a door into the instance
-	 * @param doorId - from doorData.xml
+	 * @param doorId - from doors.xml
 	 * @param set - StatsSet for initializing door
 	 */
-	private void addDoor(int doorId, StatsSet set)
+	public void addDoor(int doorId, StatsSet set)
 	{
 		if (_doors.containsKey(doorId))
 		{
@@ -223,11 +223,11 @@ public class Instance
 			return;
 		}
 		
-		L2DoorTemplate temp = DoorTable.getInstance().getDoorTemplate(doorId);
-		L2DoorInstance newdoor = new L2DoorInstance(IdFactory.getInstance().getNextId(), temp, set);
+		L2DoorTemplate temp = new L2DoorTemplate(set);
+		L2DoorInstance newdoor = new L2DoorInstance(IdFactory.getInstance().getNextId(), temp);
 		newdoor.setInstanceId(getId());
 		newdoor.setCurrentHp(newdoor.getMaxHp());
-		newdoor.spawnMe(temp.posX, temp.posY, temp.posZ);
+		newdoor.spawnMe(temp.getX(), temp.getY(), temp.getZ());
 		_doors.put(doorId, newdoor);
 	}
 	
@@ -448,6 +448,7 @@ public class Instance
 					{
 						doorId = Integer.parseInt(d.getAttributes().getNamedItem("doorId").getNodeValue());
 						StatsSet set = new StatsSet();
+						set.add(DoorTable.getInstance().getDoorTemplate(doorId));
 						for (Node bean = d.getFirstChild(); bean != null; bean = bean.getNextSibling())
 						{
 							if ("set".equalsIgnoreCase(bean.getNodeName()))
