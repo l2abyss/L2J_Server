@@ -409,7 +409,23 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			activeChar.sendPacket(su);
 			
 			InventoryUpdate iu = new InventoryUpdate();
-			iu.addModifiedItem(item);
+			if (scroll.getCount() == 0)
+			{
+				iu.addRemovedItem(scroll);
+			}
+			else
+			{
+				iu.addModifiedItem(scroll);
+			}
+			
+			if (item.getCount() == 0)
+			{
+				iu.addRemovedItem(item);
+			}
+			else
+			{
+				iu.addModifiedItem(item);
+			}
 			activeChar.sendPacket(iu);
 			activeChar.broadcastUserInfo();
 			activeChar.setActiveEnchantItem(null);
