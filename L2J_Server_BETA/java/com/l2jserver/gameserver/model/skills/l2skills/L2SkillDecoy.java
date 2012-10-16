@@ -62,13 +62,13 @@ public class L2SkillDecoy extends L2Skill
 		}
 		
 		L2NpcTemplate DecoyTemplate = NpcTable.getInstance().getTemplate(_npcId);
-		final L2DecoyInstance Decoy = new L2DecoyInstance(IdFactory.getInstance().getNextId(), DecoyTemplate, activeChar, this);
-		Decoy.setCurrentHp(Decoy.getMaxHp());
-		Decoy.setCurrentMp(Decoy.getMaxMp());
-		Decoy.setHeading(activeChar.getHeading());
-		activeChar.setDecoy(Decoy);
-		// L2World.getInstance().storeObject(Decoy);
-		Decoy.spawnMe(activeChar.getX(), activeChar.getY(), activeChar.getZ());
+		final L2DecoyInstance decoy = new L2DecoyInstance(IdFactory.getInstance().getNextId(), DecoyTemplate, activeChar, this);
+		decoy.setCurrentHp(decoy.getMaxHp());
+		decoy.setCurrentMp(decoy.getMaxMp());
+		decoy.setHeading(activeChar.getHeading());
+		activeChar.setDecoy(decoy);
+		decoy.setInstanceId(activeChar.getInstanceId());
+		decoy.spawnMe(activeChar.getX(), activeChar.getY(), activeChar.getZ());
 	}
 	
 	public final int getTotalLifeTime()
