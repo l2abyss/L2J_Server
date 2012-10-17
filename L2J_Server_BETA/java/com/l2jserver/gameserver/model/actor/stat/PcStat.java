@@ -759,7 +759,7 @@ public class PcStat extends PlayableStat
 		// TODO: Nevit's hunting bonus
 		
 		// Bonus exp from skills
-		bonusExp = calcStat(Stats.BONUS_EXP, 1.0, null, null);
+		bonusExp = 1 + (calcStat(Stats.BONUS_EXP, 0, null, null) / 100);
 		
 		if (vitality > 1.0)
 		{
@@ -773,7 +773,7 @@ public class PcStat extends PlayableStat
 		{
 			bonus += (hunting - 1);
 		}
-		if (bonusExp > 1.0)
+		if (bonusExp > 1)
 		{
 			bonus += (bonusExp - 1);
 		}
@@ -803,7 +803,7 @@ public class PcStat extends PlayableStat
 		// TODO: Nevit's hunting bonus
 		
 		// Bonus sp from skills
-		bonusSp = calcStat(Stats.BONUS_SP, 1.0, null, null);
+		bonusSp = 1 + (calcStat(Stats.BONUS_SP, 0, null, null) / 100);
 		
 		if (vitality > 1.0)
 		{
