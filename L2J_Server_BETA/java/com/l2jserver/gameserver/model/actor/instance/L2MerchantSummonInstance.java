@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.BuyList;
-import com.l2jserver.gameserver.network.serverpackets.ExBuySellListPacket;
+import com.l2jserver.gameserver.network.serverpackets.ExBuySellList;
 import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SellList;
@@ -222,7 +222,7 @@ public class L2MerchantSummonInstance extends L2ServitorInstance
 		if ((list != null) && list.getNpcId().equals(String.valueOf(getNpcId())))
 		{
 			player.sendPacket(new BuyList(list, player.getAdena(), taxRate));
-			player.sendPacket(new ExBuySellListPacket(player, list, taxRate, false));
+			player.sendPacket(new ExBuySellList(player, taxRate, false));
 		}
 		else
 		{

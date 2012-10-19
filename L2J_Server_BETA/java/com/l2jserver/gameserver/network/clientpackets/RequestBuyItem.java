@@ -34,7 +34,7 @@ import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.ExBuySellListPacket;
+import com.l2jserver.gameserver.network.serverpackets.ExBuySellList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
@@ -315,7 +315,7 @@ public final class RequestBuyItem extends L2GameClientPacket
 		StatusUpdate su = new StatusUpdate(player);
 		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
 		player.sendPacket(su);
-		player.sendPacket(new ExBuySellListPacket(player, list, castleTaxRate + baseTaxRate, true));
+		player.sendPacket(new ExBuySellList(player, castleTaxRate + baseTaxRate, true));
 	}
 	
 	@Override

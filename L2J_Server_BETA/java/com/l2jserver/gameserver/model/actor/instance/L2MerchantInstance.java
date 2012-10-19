@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.model.L2TradeList;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.BuyList;
-import com.l2jserver.gameserver.network.serverpackets.ExBuySellListPacket;
+import com.l2jserver.gameserver.network.serverpackets.ExBuySellList;
 
 /**
  * This class ...
@@ -92,7 +92,7 @@ public class L2MerchantInstance extends L2NpcInstance
 		if ((list != null) && list.getNpcId().equals(String.valueOf(getNpcId())))
 		{
 			player.sendPacket(new BuyList(list, player.getAdena(), taxRate));
-			player.sendPacket(new ExBuySellListPacket(player, list, taxRate, false));
+			player.sendPacket(new ExBuySellList(player, taxRate, false));
 		}
 		else
 		{

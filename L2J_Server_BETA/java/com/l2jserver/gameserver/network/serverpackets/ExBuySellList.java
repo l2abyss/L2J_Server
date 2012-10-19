@@ -14,35 +14,20 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.List;
-
-import javolution.util.FastList;
-
-import com.l2jserver.gameserver.model.L2TradeList;
-import com.l2jserver.gameserver.model.L2TradeList.L2TradeItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * @author ShanSoft
  */
-public class ExBuySellListPacket extends L2GameServerPacket
+public class ExBuySellList extends L2GameServerPacket
 {
-	private final List<L2TradeItem> _buyList = new FastList<>();
 	private L2ItemInstance[] _sellList = null;
 	private L2ItemInstance[] _refundList = null;
 	private final boolean _done;
 	
-	public ExBuySellListPacket(L2PcInstance player, L2TradeList list, double taxRate, boolean done)
+	public ExBuySellList(L2PcInstance player, double taxRate, boolean done)
 	{
-		for (L2TradeItem item : list.getItems())
-		{
-			if (item.hasLimitedStock() && (item.getCurrentCount() <= 0))
-			{
-				continue;
-			}
-			_buyList.add(item);
-		}
 		_sellList = player.getInventory().getAvailableItems(false, false, false);
 		if (player.hasRefund())
 		{
@@ -137,7 +122,5 @@ public class ExBuySellListPacket extends L2GameServerPacket
 		}
 		
 		writeC(_done ? 0x01 : 0x00);
-		
-		_buyList.clear();
 	}
 }
