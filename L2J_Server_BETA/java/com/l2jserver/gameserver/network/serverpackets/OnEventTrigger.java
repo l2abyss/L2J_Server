@@ -25,7 +25,7 @@ public class OnEventTrigger extends L2GameServerPacket
 	private final int _emitterId;
 	private final boolean _opened;
 	
-	private static final int[] _reverse_doors =
+	private static final int[] REVERSE_DOORS =
 	{
 		16200023,
 		16200024,
@@ -36,7 +36,7 @@ public class OnEventTrigger extends L2GameServerPacket
 	{
 		_emitterId = door.getEmitter();
 		// XXX: Check this out!
-		if (Util.contains(_reverse_doors, door.getDoorId()))
+		if (Util.contains(REVERSE_DOORS, door.getDoorId()))
 		{
 			_opened = !opened;
 		}

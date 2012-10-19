@@ -817,7 +817,7 @@ public class PcStat extends PlayableStat
 		{
 			bonus += (hunting - 1);
 		}
-		if (bonusSp > 1.0)
+		if (bonusSp > 1)
 		{
 			bonus += (bonusSp - 1);
 		}

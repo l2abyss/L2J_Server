@@ -338,6 +338,7 @@ public class L2DoorInstance extends L2Character
 		return dmg;
 	}
 	
+	// TODO: Replace index with the castle id itself.
 	public final Castle getCastle()
 	{
 		if (_castleIndex < 0)
@@ -351,6 +352,7 @@ public class L2DoorInstance extends L2Character
 		return CastleManager.getInstance().getCastles().get(_castleIndex);
 	}
 	
+	// TODO: Replace index with the fort id itself.
 	public final Fort getFort()
 	{
 		if (_fortIndex < 0)
@@ -413,11 +415,12 @@ public class L2DoorInstance extends L2Character
 		
 		if (getClanHall() != null)
 		{
-			if (!getClanHall().isSiegableHall())
+			SiegableHall hall = (SiegableHall) getClanHall();
+			if (!hall.isSiegableHall())
 			{
 				return false;
 			}
-			return ((SiegableHall) getClanHall()).isInSiege() && ((SiegableHall) getClanHall()).getSiege().doorIsAutoAttackable() && ((SiegableHall) getClanHall()).getSiege().checkIsAttacker(actingPlayer.getClan());
+			return hall.isInSiege() && hall.getSiege().doorIsAutoAttackable() && hall.getSiege().checkIsAttacker(actingPlayer.getClan());
 		}
 		// Attackable only during siege by everyone (not owner)
 		boolean isCastle = ((getCastle() != null) && (getCastle().getCastleId() > 0) && getCastle().getZone().isActive());
@@ -426,11 +429,7 @@ public class L2DoorInstance extends L2Character
 		
 		if (TerritoryWarManager.getInstance().isTWInProgress())
 		{
-			if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, activeSiegeId))
-			{
-				return false;
-			}
-			return true;
+			return !TerritoryWarManager.getInstance().isAllyField(actingPlayer, activeSiegeId);
 		}
 		else if (isFort)
 		{
@@ -498,6 +497,7 @@ public class L2DoorInstance extends L2Character
 		}
 		
 		StaticObject su = new StaticObject(this, false);
+		StaticObject targetableSu = new StaticObject(this, true);
 		DoorStatusUpdate dsu = new DoorStatusUpdate(this);
 		OnEventTrigger oe = null;
 		if (getEmitter() > 0)
@@ -512,17 +512,15 @@ public class L2DoorInstance extends L2Character
 				continue;
 			}
 			
-			if (player.isGM())
+			if (player.isGM() || (((getCastle() != null) && (getCastle().getCastleId() > 0)) || ((getFort() != null) && (getFort().getFortId() > 0))))
 			{
-				su = new StaticObject(this, true);
+				player.sendPacket(targetableSu);
+			}
+			else
+			{
+				player.sendPacket(su);
 			}
 			
-			if (((getCastle() != null) && (getCastle().getCastleId() > 0)) || ((getFort() != null) && (getFort().getFortId() > 0)))
-			{
-				su = new StaticObject(this, true);
-			}
-			
-			player.sendPacket(su);
 			player.sendPacket(dsu);
 			if (oe != null)
 			{
@@ -687,7 +685,7 @@ public class L2DoorInstance extends L2Character
 	@Override
 	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
 	{
-		if (isWall() && !(attacker instanceof L2SiegeSummonInstance))
+		if (isWall() && !(attacker instanceof L2SiegeSummonInstance) && (getInstanceId() == 0))
 		{
 			return;
 		}
@@ -811,7 +809,6 @@ public class L2DoorInstance extends L2Character
 				openMe();
 			}
 			
-			// _log.info("Door "+L2DoorInstance.this+ " switched state "+open);
 			int delay = open ? getTemplate().getCloseTime() : getTemplate().getOpenTime();
 			if (getTemplate().getRandomTime() > 0)
 			{
