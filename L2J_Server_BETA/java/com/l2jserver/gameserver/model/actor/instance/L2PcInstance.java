@@ -4974,8 +4974,11 @@ public final class L2PcInstance extends L2Playable
 	
 	public void queryGameGuard()
 	{
-		getClient().setGameGuardOk(false);
-		sendPacket(GameGuardQuery.STATIC_PACKET);
+		if (getClient() != null)
+		{
+			getClient().setGameGuardOk(false);
+			sendPacket(GameGuardQuery.STATIC_PACKET);
+		}
 		if (Config.GAMEGUARD_ENFORCE)
 		{
 			ThreadPoolManager.getInstance().scheduleGeneral(new GameGuardCheck(), 30 * 1000);

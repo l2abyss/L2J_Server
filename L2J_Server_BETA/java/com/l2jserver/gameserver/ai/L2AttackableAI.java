@@ -1268,7 +1268,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			{
 				targetReconsider();
 			}
-			else
+			else if (getAttackTarget() != null)
 			{
 				if (getAttackTarget().isMoving())
 				{
@@ -1279,7 +1279,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					range = 5;
 				}
 				moveToPawn(getAttackTarget(), range);
-				
 			}
 			return;
 		}
