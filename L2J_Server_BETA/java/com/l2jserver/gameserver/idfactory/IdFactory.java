@@ -105,6 +105,17 @@ public abstract class IdFactory
 		"SELECT object_id   FROM itemsonground        WHERE object_id >= ?   AND object_id < ?"
 	};
 	
+	//@formatter:off
+	private static final String[][] ID_EXTRACTS =
+	{
+		{"characters","charId"},
+		{"items","object_id"},
+		{"clan_data","clan_id"},
+		{"itemsonground","object_id"},
+		{"messages","messageId"}
+	};
+	//@formatter:on
+	
 	private static final String[] TIMESTAMPS_CLEAN =
 	{
 		"DELETE FROM character_instance_time WHERE time <= ?",
@@ -331,13 +342,25 @@ public abstract class IdFactory
 			Statement s = con.createStatement())
 		{
 			final TIntArrayList temp = new TIntArrayList();
-			try (ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM characters"))
+			
+			String ensureCapacityQuery = "SELECT ";
+			String extractUsedObjectIdsQuery = "";
+			
+			for (String[] tblClmn : ID_EXTRACTS)
+			{
+				ensureCapacityQuery += "(SELECT COUNT(*) FROM " + tblClmn[0] + ") + ";
+				extractUsedObjectIdsQuery += "SELECT " + tblClmn[1] + " FROM " + tblClmn[0] + " UNION ";
+			}
+			ensureCapacityQuery = ensureCapacityQuery.substring(0, ensureCapacityQuery.length() - 3); // Remove the last " + "
+			extractUsedObjectIdsQuery = extractUsedObjectIdsQuery.substring(0, extractUsedObjectIdsQuery.length() - 7); // Remove the last " UNION "
+			
+			try (ResultSet rs = s.executeQuery(ensureCapacityQuery))
 			{
 				rs.next();
 				temp.ensureCapacity(rs.getInt(1));
 			}
 			
-			try (ResultSet rs = s.executeQuery("SELECT charId FROM characters"))
+			try (ResultSet rs = s.executeQuery(extractUsedObjectIdsQuery))
 			{
 				while (rs.next())
 				{
@@ -345,61 +368,6 @@ public abstract class IdFactory
 				}
 			}
 			
-			try (ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM items"))
-			{
-				rs.next();
-				temp.ensureCapacity(temp.size() + rs.getInt(1));
-			}
-			
-			try (ResultSet rs = s.executeQuery("SELECT object_id FROM items"))
-			{
-				while (rs.next())
-				{
-					temp.add(rs.getInt(1));
-				}
-			}
-			
-			try (ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM clan_data"))
-			{
-				rs.next();
-				temp.ensureCapacity(temp.size() + rs.getInt(1));
-			}
-			
-			try (ResultSet rs = s.executeQuery("SELECT clan_id FROM clan_data"))
-			{
-				while (rs.next())
-				{
-					temp.add(rs.getInt(1));
-				}
-			}
-			
-			try (ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM itemsonground"))
-			{
-				rs.next();
-				temp.ensureCapacity(temp.size() + rs.getInt(1));
-			}
-			
-			try (ResultSet rs = s.executeQuery("SELECT object_id FROM itemsonground"))
-			{
-				while (rs.next())
-				{
-					temp.add(rs.getInt(1));
-				}
-			}
-			
-			try (ResultSet rs = s.executeQuery("SELECT COUNT(*) FROM messages"))
-			{
-				rs.next();
-				temp.ensureCapacity(temp.size() + rs.getInt(1));
-			}
-			
-			try (ResultSet rs = s.executeQuery("SELECT messageId FROM messages"))
-			{
-				while (rs.next())
-				{
-					temp.add(rs.getInt(1));
-				}
-			}
 			temp.sort();
 			return temp.toArray();
 		}
