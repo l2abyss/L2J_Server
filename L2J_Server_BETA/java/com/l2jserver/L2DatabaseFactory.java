@@ -15,6 +15,7 @@
 package com.l2jserver;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -401,5 +402,24 @@ public class L2DatabaseFactory
 	public final ProviderType getProviderType()
 	{
 		return _providerType;
+	}
+	
+	/**
+	 * Designed to execute simple db operations like INSERT, UPDATE, DELETE.
+	 * @param query
+	 * @param params
+	 * @throws SQLException
+	 */
+	public void executeQuery(String query, Object... params) throws SQLException
+	{
+		try (Connection con = getConnection();
+			PreparedStatement st = con.prepareStatement(query))
+		{
+			for (int i = 0; i < params.length; i++)
+			{
+				st.setObject(i + 1, params[i]);
+			}
+			st.execute();
+		}
 	}
 }
