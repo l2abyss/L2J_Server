@@ -907,6 +907,11 @@ public final class Config
 	public static double ALT_SIEGE_DUSK_GATES_MDEF_MULT;
 	public static boolean ALT_STRICT_SEVENSIGNS;
 	public static boolean ALT_SEVENSIGNS_LAZY_UPDATE;
+	public static int SSQ_DAWN_TICKET_QUANTITY;
+	public static int SSQ_DAWN_TICKET_PRICE;
+	public static int SSQ_DAWN_TICKET_BUNDLE;
+	public static int SSQ_MANORS_AGREEMENT_ID;
+	public static int SSQ_JOIN_DAWN_ADENA_FEE;
 	
 	// --------------------------------------------------
 	// Server Settings
@@ -1378,6 +1383,12 @@ public final class Config
 			ALT_SIEGE_DUSK_GATES_MDEF_MULT = Double.parseDouble(Feature.getProperty("AltDuskGatesMdefMult", "0.8"));
 			ALT_STRICT_SEVENSIGNS = Boolean.parseBoolean(Feature.getProperty("StrictSevenSigns", "True"));
 			ALT_SEVENSIGNS_LAZY_UPDATE = Boolean.parseBoolean(Feature.getProperty("AltSevenSignsLazyUpdate", "True"));
+			
+			SSQ_DAWN_TICKET_QUANTITY = Integer.parseInt(Feature.getProperty("SevenSignsDawnTicketQuantity", "300"));
+			SSQ_DAWN_TICKET_PRICE = Integer.parseInt(Feature.getProperty("SevenSignsDawnTicketPrice", "1000"));
+			SSQ_DAWN_TICKET_BUNDLE = Integer.parseInt(Feature.getProperty("SevenSignsDawnTicketBundle", "10"));
+			SSQ_MANORS_AGREEMENT_ID = Integer.parseInt(Feature.getProperty("SevenSignsManorsAgreementId", "6388"));
+			SSQ_JOIN_DAWN_ADENA_FEE = Integer.parseInt(Feature.getProperty("SevenSignsJoinDawnFee", "50000"));
 			
 			TAKE_FORT_POINTS = Integer.parseInt(Feature.getProperty("TakeFortPoints", "200"));
 			LOOSE_FORT_POINTS = Integer.parseInt(Feature.getProperty("LooseFortPoints", "0"));

@@ -282,6 +282,7 @@ public class Siege implements Siegable
 				else
 				{
 					getCastle().setBloodAlliance(0);
+					getCastle().setTicketBuyCount(0);
 					for (L2ClanMember member : clan.getMembers())
 					{
 						if (member != null)

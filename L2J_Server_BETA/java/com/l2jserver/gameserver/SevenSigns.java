@@ -22,6 +22,7 @@ import java.sql.Statement;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -84,9 +85,7 @@ public class SevenSigns
 	public static final int PERIOD_MAJOR_LENGTH = 604800000 - PERIOD_MINOR_LENGTH;
 	
 	public static final int RECORD_SEVEN_SIGNS_ID = 5707;
-	public static final int CERTIFICATE_OF_APPROVAL_ID = 6388;
 	public static final int RECORD_SEVEN_SIGNS_COST = 500;
-	public static final int ADENA_JOIN_DAWN_COST = 50000;
 	
 	// NPC Related Constants \\
 	public static final int ORATOR_NPC_ID = 31094;
@@ -515,21 +514,16 @@ public class SevenSigns
 	private final int getDaysToPeriodChange()
 	{
 		int numDays = _nextPeriodChange.get(Calendar.DAY_OF_WEEK) - PERIOD_START_DAY;
-		
 		if (numDays < 0)
 		{
 			return 0 - numDays;
 		}
-		
 		return 7 - numDays;
 	}
 	
 	public final long getMilliToPeriodChange()
 	{
-		long currTimeMillis = System.currentTimeMillis();
-		long changeTimeMillis = _nextPeriodChange.getTimeInMillis();
-		
-		return (changeTimeMillis - currTimeMillis);
+		return (_nextPeriodChange.getTimeInMillis() - System.currentTimeMillis());
 	}
 	
 	protected void setCalendarForNextPeriodChange()
@@ -590,8 +584,15 @@ public class SevenSigns
 				periodName = "Seal Validation";
 				break;
 		}
-		
 		return periodName;
+	}
+	
+	/**
+	 * @return {@code true} if it's competition period, {@code false} otherwise
+	 */
+	public final boolean isCompetitionPeriod()
+	{
+		return (_activePeriod == PERIOD_COMPETITION);
 	}
 	
 	public final boolean isSealValidationPeriod()
@@ -1213,8 +1214,7 @@ public class SevenSigns
 	 */
 	public void sendMessageToAll(SystemMessageId sysMsgId)
 	{
-		SystemMessage sm = SystemMessage.getSystemMessage(sysMsgId);
-		Broadcast.toAllOnlinePlayers(sm);
+		Broadcast.toAllOnlinePlayers(SystemMessage.getSystemMessage(sysMsgId));
 	}
 	
 	/**
@@ -1224,24 +1224,22 @@ public class SevenSigns
 	 */
 	protected void initializeSeals()
 	{
-		for (Integer currSeal : _signsSealOwners.keySet())
+		for (Entry<Integer, Integer> e : _signsSealOwners.entrySet())
 		{
-			int sealOwner = _signsSealOwners.get(currSeal);
-			
-			if (sealOwner != CABAL_NULL)
+			if (e.getValue() != CABAL_NULL)
 			{
 				if (isSealValidationPeriod())
 				{
-					_log.info("SevenSigns: The " + getCabalName(sealOwner) + " have won the " + getSealName(currSeal, false) + ".");
+					_log.info("SevenSigns: The " + getCabalName(e.getValue()) + " have won the " + getSealName(e.getKey(), false) + ".");
 				}
 				else
 				{
-					_log.info("SevenSigns: The " + getSealName(currSeal, false) + " is currently owned by " + getCabalName(sealOwner) + ".");
+					_log.info("SevenSigns: The " + getSealName(e.getKey(), false) + " is currently owned by " + getCabalName(e.getValue()) + ".");
 				}
 			}
 			else
 			{
-				_log.info("SevenSigns: The " + getSealName(currSeal, false) + " remains unclaimed.");
+				_log.info("SevenSigns: The " + getSealName(e.getKey(), false) + " remains unclaimed.");
 			}
 		}
 	}
@@ -1532,6 +1530,12 @@ public class SevenSigns
 					}
 					
 					_previousWinner = compWinner;
+					// Reset Castle ticket buy count
+					List<Castle> castles = CastleManager.getInstance().getCastles();
+					for (Castle castle : castles)
+					{
+						castle.setTicketBuyCount(0);
+					}
 					break;
 				case PERIOD_COMP_RESULTS: // Seal Validation
 					

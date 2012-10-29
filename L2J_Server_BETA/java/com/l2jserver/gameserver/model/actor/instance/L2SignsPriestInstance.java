@@ -24,7 +24,6 @@ import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -186,21 +185,13 @@ public class L2SignsPriestInstance extends L2Npc
 					}
 					break;
 				case 34: // Pay the participation fee request
-					L2ItemInstance adena = player.getInventory().getItemByItemId(PcInventory.ADENA_ID); // adena
-					L2ItemInstance certif = player.getInventory().getItemByItemId(6388); // Lord of the Manor's Certificate of Approval
-					boolean fee = true;
-					
-					if ((player.getClassId().level() < 2) || ((adena != null) && (adena.getCount() >= SevenSigns.ADENA_JOIN_DAWN_COST)) || ((certif != null) && (certif.getCount() >= 1)))
+					if ((player.getClassId().level() > 1) && ((player.getAdena() >= Config.SSQ_JOIN_DAWN_ADENA_FEE) || (player.getInventory().getInventoryItemCount(Config.SSQ_MANORS_AGREEMENT_ID, -1) > 0)))
 					{
-						fee = false;
-					}
-					if (fee)
-					{
-						showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn_no.htm");
+						showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn.htm");
 					}
 					else
 					{
-						showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn.htm");
+						showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn_no.htm");
 					}
 					break;
 				case 3: // Join Cabal Intro 1
@@ -220,9 +211,7 @@ public class L2SignsPriestInstance extends L2Npc
 								return;
 							}
 						}
-						/*
-						 * If the player is trying to join the Lords of Dawn, check if they are carrying a Lord's certificate. If not then try to take the required amount of adena instead.
-						 */
+						// If the player is trying to join the Lords of Dawn, check if they are carrying a Lord's certificate. If not then try to take the required amount of adena instead.
 						if (Config.ALT_GAME_CASTLE_DAWN && (cabal == SevenSigns.CABAL_DAWN))
 						{
 							boolean allowJoinDawn = false;
@@ -231,11 +220,11 @@ public class L2SignsPriestInstance extends L2Npc
 							{
 								allowJoinDawn = true;
 							}
-							else if (player.destroyItemByItemId("SevenSigns", SevenSigns.CERTIFICATE_OF_APPROVAL_ID, 1, this, true))
+							else if (player.destroyItemByItemId("SevenSigns", Config.SSQ_MANORS_AGREEMENT_ID, 1, this, true))
 							{
 								allowJoinDawn = true;
 							}
-							else if (player.reduceAdena("SevenSigns", SevenSigns.ADENA_JOIN_DAWN_COST, this, true))
+							else if (player.reduceAdena("SevenSigns", Config.SSQ_JOIN_DAWN_ADENA_FEE, this, true))
 							{
 								allowJoinDawn = true;
 							}

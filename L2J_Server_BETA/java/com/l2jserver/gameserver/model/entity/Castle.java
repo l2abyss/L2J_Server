@@ -65,12 +65,6 @@ public class Castle
 {
 	protected static final Logger _log = Logger.getLogger(Castle.class.getName());
 	
-	private List<CropProcure> _procure = new ArrayList<>();
-	private List<SeedProduction> _production = new ArrayList<>();
-	private List<CropProcure> _procureNext = new ArrayList<>();
-	private List<SeedProduction> _productionNext = new ArrayList<>();
-	private boolean _isNextPeriodApproved = false;
-	
 	private static final String CASTLE_MANOR_DELETE_PRODUCTION = "DELETE FROM castle_manor_production WHERE castle_id=?;";
 	private static final String CASTLE_MANOR_DELETE_PRODUCTION_PERIOD = "DELETE FROM castle_manor_production WHERE castle_id=? AND period=?;";
 	private static final String CASTLE_MANOR_DELETE_PROCURE = "DELETE FROM castle_manor_procure WHERE castle_id=?;";
@@ -99,6 +93,13 @@ public class Castle
 	private final Map<Integer, CastleFunction> _function;
 	private final List<L2Skill> _residentialSkills = new ArrayList<>();
 	private int _bloodAlliance = 0;
+	private int _ticketBuyCount = 0;
+	
+	private List<CropProcure> _procure = new ArrayList<>();
+	private List<SeedProduction> _production = new ArrayList<>();
+	private List<CropProcure> _procureNext = new ArrayList<>();
+	private List<SeedProduction> _productionNext = new ArrayList<>();
+	private boolean _isNextPeriodApproved = false;
 	
 	/** Castle Functions */
 	public static final int FUNC_TELEPORT = 1;
@@ -749,6 +750,8 @@ public class Castle
 					_showNpcCrest = rs.getBoolean("showNpcCrest");
 					
 					_bloodAlliance = rs.getInt("bloodAlliance");
+					
+					_ticketBuyCount = rs.getInt("ticketBuyCount");
 				}
 			}
 			_taxRate = _taxPercent / 100.0;
@@ -1577,7 +1580,37 @@ public class Castle
 			PreparedStatement statement = con.prepareStatement("UPDATE castle SET bloodAlliance = ? WHERE id = ?"))
 		{
 			statement.setInt(1, _bloodAlliance);
-			statement.setInt(2, getCastleId());
+			statement.setInt(2, _castleId);
+			statement.execute();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, e.getMessage(), e);
+		}
+	}
+	
+	/**
+	 * @return the tickets exchanged for this castle
+	 */
+	public int getTicketBuyCount()
+	{
+		return _ticketBuyCount;
+	}
+	
+	/**
+	 * Set the exchanged tickets count.<br>
+	 * Performs database update.
+	 * @param count the ticket count to set
+	 */
+	public void setTicketBuyCount(int count)
+	{
+		_ticketBuyCount = count;
+		
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("UPDATE castle SET ticketBuyCount = ? WHERE id = ?"))
+		{
+			statement.setInt(1, _ticketBuyCount);
+			statement.setInt(2, _castleId);
 			statement.execute();
 		}
 		catch (Exception e)

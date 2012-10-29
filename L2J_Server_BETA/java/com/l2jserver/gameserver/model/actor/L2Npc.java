@@ -829,6 +829,22 @@ public class L2Npc extends L2Character
 		return CastleManager.getInstance().getCastles().get(_castleIndex);
 	}
 	
+	/**
+	 * Verify if the given player is this NPC's lord.
+	 * @param player the player to check
+	 * @return {@code true} if the player is clan leader and owner of a castle of fort that this NPC belongs to, {@code false} otherwise
+	 */
+	public boolean isMyLord(L2PcInstance player)
+	{
+		if (player.isClanLeader())
+		{
+			final int castleId = getCastle() != null ? getCastle().getCastleId() : -1;
+			final int fortId = getFort() != null ? getFort().getFortId() : -1;
+			return (player.getClan().getCastleId() == castleId) || (player.getClan().getFortId() == fortId);
+		}
+		return false;
+	}
+	
 	public final SiegableHall getConquerableHall()
 	{
 		return CHSiegeManager.getInstance().getNearbyClanHall(getX(), getY(), 10000);
