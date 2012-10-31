@@ -62,7 +62,8 @@ public class FortUpdater implements Runnable
 						return;
 					}
 					
-					_fort.setBloodOathReward(_fort.getBloodOathReward() + Config.FS_BLOOD_OATH_COUNT);
+					_fort.getOwnerClan().increaseBloodOathCount();
+					
 					if (_fort.getFortState() == 2)
 					{
 						if (_clan.getWarehouse().getAdena() >= Config.FS_FEE_FOR_CASTLE)

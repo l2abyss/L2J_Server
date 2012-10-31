@@ -272,16 +272,10 @@ public class Siege implements Siegable
 				if (clan.getClanId() == _firstOwnerClanId)
 				{
 					// Owner is unchanged
-					final int num = SiegeManager.getInstance().getBloodAllianceReward();
-					int count = getCastle().getBloodAlliance();
-					if (num > 0)
-					{
-						getCastle().setBloodAlliance(count + num);
-					}
+					clan.increaseBloodAllianceCount();
 				}
 				else
 				{
-					getCastle().setBloodAlliance(0);
 					getCastle().setTicketBuyCount(0);
 					for (L2ClanMember member : clan.getMembers())
 					{
@@ -478,13 +472,15 @@ public class Siege implements Siegable
 			if (getAttackerClans().isEmpty())
 			{
 				SystemMessage sm;
-				if (getCastle().getOwnerId() <= 0)
+				if (_firstOwnerClanId <= 0)
 				{
 					sm = SystemMessage.getSystemMessage(SystemMessageId.SIEGE_OF_S1_HAS_BEEN_CANCELED_DUE_TO_LACK_OF_INTEREST);
 				}
 				else
 				{
 					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_SIEGE_WAS_CANCELED_BECAUSE_NO_CLANS_PARTICIPATED);
+					final L2Clan ownerClan = ClanTable.getInstance().getClan(_firstOwnerClanId);
+					ownerClan.increaseBloodAllianceCount();
 				}
 				sm.addCastleId(getCastle().getCastleId());
 				Announcements.getInstance().announceToAll(sm);

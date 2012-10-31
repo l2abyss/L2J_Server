@@ -73,13 +73,13 @@ import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanCreati
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanMembershipListener;
 import com.l2jserver.gameserver.util.Util;
 
-/**
- * This class ...
- * @version $Revision: 1.7.2.4.2.7 $ $Date: 2005/04/06 16:13:41 $
- */
 public class L2Clan
 {
 	private static final Logger _log = Logger.getLogger(L2Clan.class.getName());
+	
+	// SQL queries
+	private static final String INSERT_CLAN_DATA = "INSERT INTO clan_data (clan_id,clan_name,clan_level,hasCastle,blood_alliance_count,blood_oath_count,ally_id,ally_name,leader_id,crest_id,crest_large_id,ally_crest_id) values (?,?,?,?,?,?,?,?,?,?,?)";
+	private static final String SELECT_CLAN_DATA = "SELECT clan_name,clan_level,hasCastle,blood_alliance_count,blood_oath_count,ally_id,ally_name,leader_id,crest_id,crest_large_id,ally_crest_id,reputation_score,auction_bid_at,ally_penalty_expiry_time,ally_penalty_type,char_penalty_expiry_time,dissolving_expiry_time FROM clan_data where clan_id=?";
 	
 	private static List<ClanCreationListener> clanCreationListeners = new FastList<ClanCreationListener>().shared();
 	private static List<ClanMembershipListener> clanMembershipListeners = new FastList<ClanMembershipListener>().shared();
@@ -104,6 +104,9 @@ public class L2Clan
 	private int _allyPenaltyType;
 	private long _charPenaltyExpiryTime;
 	private long _dissolvingExpiryTime;
+	private int _bloodAllianceCount;
+	private int _bloodOathCount;
+	
 	// Ally Penalty Types
 	/** Clan leaved ally */
 	public static final int PENALTY_TYPE_CLAN_LEAVED = 1;
@@ -831,6 +834,94 @@ public class L2Clan
 	}
 	
 	/**
+	 * @return the Blood Alliance count for this clan
+	 */
+	public int getBloodAllianceCount()
+	{
+		return _bloodAllianceCount;
+	}
+	
+	/**
+	 * Increase Blood Alliance count by config predefined count and updates the database.
+	 */
+	public void increaseBloodAllianceCount()
+	{
+		_bloodAllianceCount += SiegeManager.getInstance().getBloodAllianceReward();
+		updateBloodAllianceCountInDB();
+	}
+	
+	/**
+	 * Reset the Blood Alliance count to zero and updates the database.
+	 */
+	public void resetBloodAllianceCount()
+	{
+		_bloodAllianceCount = 0;
+		updateBloodAllianceCountInDB();
+	}
+	
+	/**
+	 * Store current Bloood Alliances count in database.
+	 */
+	public void updateBloodAllianceCountInDB()
+	{
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("UPDATE clan_data SET blood_alliance_count=? WHERE clan_id=?"))
+		{
+			statement.setInt(1, getBloodAllianceCount());
+			statement.setInt(2, getClanId());
+			statement.execute();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Exception on updateBloodAllianceCountInDB(): " + e.getMessage(), e);
+		}
+	}
+	
+	/**
+	 * @return the Blood Oath count for this clan
+	 */
+	public int getBloodOathCount()
+	{
+		return _bloodOathCount;
+	}
+	
+	/**
+	 * Increase Blood Oath count by config predefined count and updates the database.
+	 */
+	public void increaseBloodOathCount()
+	{
+		_bloodOathCount += Config.FS_BLOOD_OATH_COUNT;
+		updateBloodOathCountInDB();
+	}
+	
+	/**
+	 * Reset the Blood Oath count to zero and updates the database.
+	 */
+	public void resetBloodOathCount()
+	{
+		_bloodOathCount = 0;
+		updateBloodOathCountInDB();
+	}
+	
+	/**
+	 * Store current Bloood Alliances count in database.
+	 */
+	public void updateBloodOathCountInDB()
+	{
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("UPDATE clan_data SET blood_oath_count=? WHERE clan_id=?"))
+		{
+			ps.setInt(1, getBloodOathCount());
+			ps.setInt(2, getClanId());
+			ps.execute();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Exception on updateBloodAllianceCountInDB(): " + e.getMessage(), e);
+		}
+	}
+	
+	/**
 	 * Store in database current clan's reputation.
 	 */
 	public void updateClanScoreInDB()
@@ -906,21 +997,22 @@ public class L2Clan
 	 */
 	public void store()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(INSERT_CLAN_DATA))
 		{
-			final PreparedStatement statement = con.prepareStatement("INSERT INTO clan_data (clan_id,clan_name,clan_level,hasCastle,ally_id,ally_name,leader_id,crest_id,crest_large_id,ally_crest_id) values (?,?,?,?,?,?,?,?,?,?)");
-			statement.setInt(1, getClanId());
-			statement.setString(2, getName());
-			statement.setInt(3, getLevel());
-			statement.setInt(4, getCastleId());
-			statement.setInt(5, getAllyId());
-			statement.setString(6, getAllyName());
-			statement.setInt(7, getLeaderId());
-			statement.setInt(8, getCrestId());
-			statement.setInt(9, getCrestLargeId());
-			statement.setInt(10, getAllyCrestId());
-			statement.execute();
-			statement.close();
+			ps.setInt(1, getClanId());
+			ps.setString(2, getName());
+			ps.setInt(3, getLevel());
+			ps.setInt(4, getCastleId());
+			ps.setInt(5, getBloodAllianceCount());
+			ps.setInt(6, getBloodOathCount());
+			ps.setInt(7, getAllyId());
+			ps.setString(8, getAllyName());
+			ps.setInt(9, getLeaderId());
+			ps.setInt(10, getCrestId());
+			ps.setInt(11, getCrestLargeId());
+			ps.setInt(12, getAllyCrestId());
+			ps.execute();
 			if (Config.DEBUG)
 			{
 				_log.fine("New clan saved in db: " + getClanId());
@@ -987,9 +1079,8 @@ public class L2Clan
 	
 	private void restore()
 	{
-		// restorewars();
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT clan_name,clan_level,hasCastle,ally_id,ally_name,leader_id,crest_id,crest_large_id,ally_crest_id,reputation_score,auction_bid_at,ally_penalty_expiry_time,ally_penalty_type,char_penalty_expiry_time,dissolving_expiry_time FROM clan_data where clan_id=?"))
+			PreparedStatement statement = con.prepareStatement(SELECT_CLAN_DATA))
 		{
 			statement.setInt(1, getClanId());
 			try (ResultSet clanData = statement.executeQuery())
@@ -999,6 +1090,8 @@ public class L2Clan
 					setName(clanData.getString("clan_name"));
 					setLevel(clanData.getInt("clan_level"));
 					setCastleId(clanData.getInt("hasCastle"));
+					_bloodAllianceCount = clanData.getInt("blood_alliance_count");
+					_bloodOathCount = clanData.getInt("blood_Oath_count");
 					setAllyId(clanData.getInt("ally_id"));
 					setAllyName(clanData.getString("ally_name"));
 					setAllyPenaltyExpiryTime(clanData.getLong("ally_penalty_expiry_time"), clanData.getInt("ally_penalty_type"));

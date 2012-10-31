@@ -80,7 +80,6 @@ public class Fort
 	private int _fortType = 0;
 	private int _state = 0;
 	private int _castleId = 0;
-	private int _blood = 0;
 	private int _supplyLvL = 0;
 	private final FastMap<Integer, FortFunction> _function;
 	private final FastList<L2Skill> _residentialSkills = new FastList<>();
@@ -489,7 +488,6 @@ public class Fort
 			FortManager.getInstance().getFortByOwner(clan).removeOwner(true);
 		}
 		
-		setBloodOathReward(0);
 		setSupplyLvL(0);
 		setOwnerClan(clan);
 		updateOwnerInDB(); // Update in database
@@ -521,7 +519,6 @@ public class Fort
 			clan.setFortId(0);
 			clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
 			setOwnerClan(null);
-			setBloodOathReward(0);
 			setSupplyLvL(0);
 			saveFortVariables();
 			removeAllFunctions();
@@ -530,16 +527,6 @@ public class Fort
 				updateOwnerInDB();
 			}
 		}
-	}
-	
-	public void setBloodOathReward(int val)
-	{
-		_blood = val;
-	}
-	
-	public int getBloodOathReward()
-	{
-		return _blood;
 	}
 	
 	public void raiseSupplyLvL()
@@ -567,11 +554,10 @@ public class Fort
 	public void saveFortVariables()
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement ps = con.prepareStatement("UPDATE fort SET blood=?, supplyLvL=? WHERE id = ?"))
+			PreparedStatement ps = con.prepareStatement("UPDATE fort SET supplyLvL=? WHERE id = ?"))
 		{
-			ps.setInt(1, _blood);
-			ps.setInt(2, _supplyLvL);
-			ps.setInt(3, getFortId());
+			ps.setInt(1, _supplyLvL);
+			ps.setInt(2, getFortId());
 			ps.execute();
 		}
 		catch (Exception e)
@@ -581,8 +567,7 @@ public class Fort
 	}
 	
 	/**
-	 * Show or hide flag inside flagpole<BR>
-	 * <BR>
+	 * Show or hide flag inside flag pole.
 	 * @param val
 	 */
 	public void setVisibleFlag(boolean val)
@@ -653,7 +638,6 @@ public class Fort
 					_fortType = rs.getInt("fortType");
 					_state = rs.getInt("state");
 					_castleId = rs.getInt("castleId");
-					_blood = rs.getInt("blood");
 					_supplyLvL = rs.getInt("supplyLvL");
 				}
 			}
@@ -888,14 +872,13 @@ public class Fort
 		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement ps = con.prepareStatement("UPDATE fort SET owner=?,lastOwnedTime=?,state=?,castleId=?,blood=? WHERE id = ?"))
+			PreparedStatement ps = con.prepareStatement("UPDATE fort SET owner=?,lastOwnedTime=?,state=?,castleId=? WHERE id = ?"))
 		{
 			ps.setInt(1, clanId);
 			ps.setLong(2, _lastOwnedTime.getTimeInMillis());
 			ps.setInt(3, 0);
 			ps.setInt(4, 0);
-			ps.setInt(5, getBloodOathReward());
-			ps.setInt(6, getFortId());
+			ps.setInt(5, getFortId());
 			ps.execute();
 			
 			// Announce to clan members
