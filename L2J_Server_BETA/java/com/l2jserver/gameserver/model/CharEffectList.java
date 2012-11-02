@@ -886,13 +886,6 @@ public class CharEffectList
 				}
 			}
 			
-			// if max buffs, no herb effects are used, even if they would replace one old
-			if (newEffect.isHerbEffect() && (getBuffCount() >= _owner.getMaxBuffCount()))
-			{
-				newEffect.stopEffectTask();
-				return;
-			}
-			
 			// Remove first buff when buff list is full
 			if (!doesStack(newSkill) && !newSkill.is7Signs())
 			{
@@ -1091,7 +1084,7 @@ public class CharEffectList
 				// skill.exit() could be used, if the users don't wish to see "effect
 				// removed" always when a timer goes off, even if the buff isn't active
 				// any more (has been replaced). but then check e.g. npc hold and raid petrification.
-				if (Config.EFFECT_CANCELING && !newEffect.isHerbEffect() && (stackQueue.size() > 1))
+				if (Config.EFFECT_CANCELING && (stackQueue.size() > 1))
 				{
 					if (newSkill.isDebuff())
 					{

@@ -8416,7 +8416,7 @@ public final class L2PcInstance extends L2Playable
 					
 					storedSkills.add(skill.getReuseHashCode());
 					
-					if (!effect.isHerbEffect() && effect.getInUse() && !skill.isToggle())
+					if (effect.getInUse() && !skill.isToggle())
 					{
 						
 						statement.setInt(1, getObjectId());

@@ -65,11 +65,6 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	// the skill that was used.
 	private final L2Skill _skill;
 	
-	private final boolean _isHerbEffect;
-	
-	// or the items that was used.
-	// private final L2Item _item;
-	
 	// the value of an update
 	private final Lambda _lambda;
 	
@@ -188,8 +183,6 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		_effectPower = template.effectPower;
 		_effectSkillType = template.effectType;
 		
-		_isHerbEffect = _skill.getName().contains("Herb");
-		
 		/*
 		 * Commented out by DrHouse: scheduleEffect can call onStart before effect is completly initialized on constructor (child classes constructor)
 		 */
@@ -224,8 +217,6 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		_periodStartTicks = effect.getPeriodStartTicks();
 		_periodFirstTime = effect.getTime();
 		_icon = _template.icon;
-		
-		_isHerbEffect = _skill.getName().contains("Herb");
 		
 		/*
 		 * Commented out by DrHouse: scheduleEffect can call onStart before effect is completly initialized on constructor (child classes constructor)
@@ -345,11 +336,6 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	public void setPassiveEffect()
 	{
 		_isPassiveEffect = true;
-	}
-	
-	public boolean isHerbEffect()
-	{
-		return _isHerbEffect;
 	}
 	
 	public final double calc()
