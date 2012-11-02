@@ -4334,6 +4334,10 @@ public abstract class L2Character extends L2Object
 					broadcastPacket(su);
 				}
 			}
+			if ((getPet() != null) && isAffected(CharEffectList.EFFECT_FLAG_SERVITOR_SHARE))
+			{
+				getPet().broadcastStatusUpdate();
+			}
 		}
 		else if (isNpc())
 		{

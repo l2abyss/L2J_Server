@@ -237,6 +237,10 @@ public abstract class DocumentBase
 			{
 				attachFunc(n, template, "Set", condition);
 			}
+			else if ("share".equalsIgnoreCase(n.getNodeName()))
+			{
+				attachFunc(n, template, "Share", condition);
+			}
 			else if ("enchant".equalsIgnoreCase(n.getNodeName()))
 			{
 				attachFunc(n, template, "Enchant", condition);
