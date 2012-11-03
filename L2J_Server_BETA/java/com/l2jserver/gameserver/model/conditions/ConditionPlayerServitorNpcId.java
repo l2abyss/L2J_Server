@@ -14,7 +14,7 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.l2jserver.gameserver.model.stats.Env;
 
@@ -23,13 +23,13 @@ import com.l2jserver.gameserver.model.stats.Env;
  */
 public class ConditionPlayerServitorNpcId extends Condition
 {
-	private final ArrayList<Integer> _npcIds;
+	private final List<Integer> _npcIds;
 	
 	/**
 	 * Instantiates a new condition player servitor npc id.
 	 * @param npcIds the npc ids
 	 */
-	public ConditionPlayerServitorNpcId(ArrayList<Integer> npcIds)
+	public ConditionPlayerServitorNpcId(List<Integer> npcIds)
 	{
 		if ((npcIds.size() == 1) && (npcIds.get(0) == 0))
 		{
@@ -44,7 +44,7 @@ public class ConditionPlayerServitorNpcId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if ((env.getPlayer() == null) || env.getPlayer().hasSummon())
+		if ((env.getPlayer() == null) || !env.getPlayer().hasSummon())
 		{
 			return false;
 		}
