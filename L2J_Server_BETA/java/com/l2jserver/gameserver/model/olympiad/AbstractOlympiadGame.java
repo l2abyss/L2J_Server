@@ -259,9 +259,9 @@ public abstract class AbstractOlympiadGame
 			player.setCurrentMp(player.getMaxMp());
 			
 			// Remove Summon's Buffs
-			final L2Summon summon = player.getPet();
-			if (summon != null)
+			if (player.hasSummon())
 			{
+				final L2Summon summon = player.getSummon();
 				summon.stopAllEffectsExceptThoseThatLastThroughDeath();
 				summon.abortAttack();
 				summon.abortCast();
@@ -344,7 +344,7 @@ public abstract class AbstractOlympiadGame
 			{
 				player.setAgathionId(0);
 			}
-			final L2Summon summon = player.getPet();
+			final L2Summon summon = player.getSummon();
 			if ((summon != null) && !summon.isDead())
 			{
 				summon.setTarget(null);

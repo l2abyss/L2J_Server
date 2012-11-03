@@ -742,9 +742,9 @@ public class L2Attackable extends L2Npc
 					}
 					
 					// If this attacker is a L2PcInstance with a summoned L2ServitorInstance, get Exp Penalty applied for the current summoned L2SummonInstance
-					if ((attacker instanceof L2PcInstance) && (((L2PcInstance) attacker).getPet() instanceof L2ServitorInstance))
+					if ((attacker instanceof L2PcInstance) && (((L2PcInstance) attacker).getSummon() instanceof L2ServitorInstance))
 					{
-						penalty = ((L2ServitorInstance) ((L2PcInstance) attacker).getPet()).getExpPenalty();
+						penalty = ((L2ServitorInstance) ((L2PcInstance) attacker).getSummon()).getExpPenalty();
 					}
 					
 					// We must avoid "over damage", if any
@@ -890,12 +890,11 @@ public class L2Attackable extends L2Npc
 									}
 								}
 							}
-							L2Playable summon = pl.getPet();
 							
-							if ((summon != null) && summon.isPet())
+							if (pl.hasSummon() && pl.getSummon().isPet())
 							{
+								final L2Summon summon = pl.getSummon();
 								reward2 = rewards.get(summon);
-								
 								if (reward2 != null) // Pets are only added if they have done damage
 								{
 									if (Util.checkIfInRange(Config.ALT_PARTY_RANGE, this, summon, true))

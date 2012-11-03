@@ -18,7 +18,6 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.PetItemList;
@@ -69,7 +68,7 @@ public class L2SkillCreateItem extends L2Skill
 			else if (activeChar.isPet())
 			{
 				activeChar.getInventory().addItem("Skill", _createItemId[rndid], count, player, activeChar);
-				player.sendPacket(new PetItemList((L2PetInstance) activeChar));
+				player.sendPacket(new PetItemList(activeChar.getInventory().getItems()));
 			}
 		}
 	}

@@ -78,7 +78,7 @@ public class L2SkillMount extends L2Skill
 			return;
 		}
 		
-		if ((activePlayer.getPet() != null) || activePlayer.isMounted())
+		if (activePlayer.hasSummon() || activePlayer.isMounted())
 		{
 			activePlayer.sendPacket(SystemMessageId.YOU_ALREADY_HAVE_A_PET);
 			return;

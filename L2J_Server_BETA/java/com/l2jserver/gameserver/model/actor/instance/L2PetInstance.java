@@ -138,7 +138,7 @@ public class L2PetInstance extends L2Summon
 		{
 			try
 			{
-				if ((getOwner() == null) || (getOwner().getPet() == null) || (getOwner().getPet().getObjectId() != getObjectId()))
+				if ((getOwner() == null) || !getOwner().hasSummon() || (getOwner().getSummon().getObjectId() != getObjectId()))
 				{
 					stopFeed();
 					return;
@@ -659,8 +659,7 @@ public class L2PetInstance extends L2Summon
 			}
 			getInventory().addItem("Pickup", target, getOwner(), this);
 			// FIXME Just send the updates if possible (old way wasn't working though)
-			PetItemList iu = new PetItemList(this);
-			sendPacket(iu);
+			sendPacket(new PetItemList(getInventory().getItems()));
 		}
 		
 		getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
@@ -1206,7 +1205,7 @@ public class L2PetInstance extends L2Summon
 		// stop feeding task if its active
 		
 		stopFeed();
-		if (!isDead() && (getOwner().getPet() == this))
+		if (!isDead() && (getOwner().getSummon() == this))
 		{
 			_feedTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new FeedTask(), 10000, 10000);
 		}

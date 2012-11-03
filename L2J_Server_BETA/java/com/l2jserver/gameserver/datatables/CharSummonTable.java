@@ -245,49 +245,49 @@ public class CharSummonTable
 			return;
 		}
 		
-		final L2PetInstance petSummon = L2PetInstance.spawnPet(npcTemplate, activeChar, item);
-		if (petSummon == null)
+		final L2PetInstance pet = L2PetInstance.spawnPet(npcTemplate, activeChar, item);
+		if (pet == null)
 		{
 			return;
 		}
 		
-		petSummon.setShowSummonAnimation(true);
-		petSummon.setTitle(activeChar.getName());
+		pet.setShowSummonAnimation(true);
+		pet.setTitle(activeChar.getName());
 		
-		if (!petSummon.isRespawned())
+		if (!pet.isRespawned())
 		{
-			petSummon.setCurrentHp(petSummon.getMaxHp());
-			petSummon.setCurrentMp(petSummon.getMaxMp());
-			petSummon.getStat().setExp(petSummon.getExpForThisLevel());
-			petSummon.setCurrentFed(petSummon.getMaxFed());
+			pet.setCurrentHp(pet.getMaxHp());
+			pet.setCurrentMp(pet.getMaxMp());
+			pet.getStat().setExp(pet.getExpForThisLevel());
+			pet.setCurrentFed(pet.getMaxFed());
 		}
 		
-		petSummon.setRunning();
+		pet.setRunning();
 		
-		if (!petSummon.isRespawned())
+		if (!pet.isRespawned())
 		{
-			petSummon.store();
+			pet.store();
 		}
 		
-		activeChar.setPet(petSummon);
+		activeChar.setPet(pet);
 		
-		petSummon.spawnMe(activeChar.getX() + 50, activeChar.getY() + 100, activeChar.getZ());
-		petSummon.startFeed();
-		item.setEnchantLevel(petSummon.getLevel());
+		pet.spawnMe(activeChar.getX() + 50, activeChar.getY() + 100, activeChar.getZ());
+		pet.startFeed();
+		item.setEnchantLevel(pet.getLevel());
 		
-		if (petSummon.getCurrentFed() <= 0)
+		if (pet.getCurrentFed() <= 0)
 		{
-			petSummon.unSummon(activeChar);
+			pet.unSummon(activeChar);
 		}
 		else
 		{
-			petSummon.startFeed();
+			pet.startFeed();
 		}
 		
-		petSummon.setFollowStatus(true);
+		pet.setFollowStatus(true);
 		
-		petSummon.getOwner().sendPacket(new PetItemList(petSummon));
-		petSummon.broadcastStatusUpdate();
+		pet.getOwner().sendPacket(new PetItemList(pet.getInventory().getItems()));
+		pet.broadcastStatusUpdate();
 	}
 	
 	private static class SingletonHolder

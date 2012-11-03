@@ -1124,7 +1124,7 @@ public abstract class L2Character extends L2Object
 		
 		if (player != null)
 		{
-			if (player.getPet() != target)
+			if (player.getSummon() != target)
 			{
 				player.updatePvPStatus(target);
 			}
@@ -1683,7 +1683,7 @@ public abstract class L2Character extends L2Object
 		switch (skill.getTargetType())
 		{
 			case TARGET_AREA_SUMMON: // We need it to correct facing
-				target = getPet();
+				target = getSummon();
 				break;
 			case TARGET_AURA:
 			case TARGET_AURA_CORPSE_MOB:
@@ -2738,9 +2738,9 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * @return the L2Summon of the L2Character.
+	 * @return the summon
 	 */
-	public L2Summon getPet()
+	public L2Summon getSummon()
 	{
 		return null;
 	}
@@ -4334,9 +4334,9 @@ public abstract class L2Character extends L2Object
 					broadcastPacket(su);
 				}
 			}
-			if ((getPet() != null) && isAffected(CharEffectList.EFFECT_FLAG_SERVITOR_SHARE))
+			if ((getSummon() != null) && isAffected(CharEffectList.EFFECT_FLAG_SERVITOR_SHARE))
 			{
-				getPet().broadcastStatusUpdate();
+				getSummon().broadcastStatusUpdate();
 			}
 		}
 		else if (isNpc())
@@ -6239,9 +6239,9 @@ public abstract class L2Character extends L2Object
 			{
 				removeChanceSkill(oldSkill.getId());
 			}
-			if ((oldSkill instanceof L2SkillSummon) && (oldSkill.getId() == 710) && isPlayer() && (getActingPlayer().getPet() != null) && (getActingPlayer().getPet().getNpcId() == 14870))
+			if ((oldSkill instanceof L2SkillSummon) && (oldSkill.getId() == 710) && isPlayer() && getActingPlayer().hasSummon() && (getActingPlayer().getSummon().getNpcId() == 14870))
 			{
-				getActingPlayer().getPet().unSummon(getActingPlayer());
+				getActingPlayer().getSummon().unSummon(getActingPlayer());
 			}
 		}
 		
@@ -7084,7 +7084,7 @@ public abstract class L2Character extends L2Object
 									}
 									// attack of the own pet does not flag player
 									// triggering trap not flag trap owner
-									if ((player.getPet() != target) && !isTrap())
+									if ((player.getSummon() != target) && !isTrap())
 									{
 										player.updatePvPStatus((L2Character) target);
 									}

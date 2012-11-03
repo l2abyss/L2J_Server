@@ -14,16 +14,15 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 public class PetItemList extends L2GameServerPacket
 {
-	private final L2PetInstance _activeChar;
+	private final L2ItemInstance[] _items;
 	
-	public PetItemList(L2PetInstance character)
+	public PetItemList(L2ItemInstance[] items)
 	{
-		_activeChar = character;
+		_items = items;
 	}
 	
 	@Override
@@ -31,11 +30,10 @@ public class PetItemList extends L2GameServerPacket
 	{
 		writeC(0xB3);
 		
-		L2ItemInstance[] items = _activeChar.getInventory().getItems();
-		int count = items.length;
+		int count = _items.length;
 		writeH(count);
 		
-		for (L2ItemInstance temp : items)
+		for (L2ItemInstance temp : _items)
 		{
 			writeD(temp.getObjectId());
 			writeD(temp.getDisplayId());

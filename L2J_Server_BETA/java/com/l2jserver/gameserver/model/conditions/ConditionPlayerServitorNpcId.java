@@ -44,10 +44,10 @@ public class ConditionPlayerServitorNpcId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if ((env.getPlayer() == null) || (env.getCharacter().getPet() == null))
+		if ((env.getPlayer() == null) || env.getPlayer().hasSummon())
 		{
 			return false;
 		}
-		return (_npcIds == null) || _npcIds.contains(env.getPlayer().getPet().getNpcId());
+		return (_npcIds == null) || _npcIds.contains(env.getPlayer().getSummon().getNpcId());
 	}
 }

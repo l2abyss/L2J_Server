@@ -63,7 +63,7 @@ public class TvTEventTeleporter implements Runnable
 			return;
 		}
 		
-		L2Summon summon = _playerInstance.getPet();
+		L2Summon summon = _playerInstance.getSummon();
 		
 		if (summon != null)
 		{

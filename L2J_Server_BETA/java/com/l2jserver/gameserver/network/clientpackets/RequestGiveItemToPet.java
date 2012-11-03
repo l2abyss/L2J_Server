@@ -42,7 +42,7 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 	protected void runImpl()
 	{
 		final L2PcInstance player = getClient().getActiveChar();
-		if ((player == null) || !(player.getPet() instanceof L2PetInstance))
+		if ((player == null) || !player.hasSummon() || !player.getSummon().isPet())
 		{
 			return;
 		}
@@ -86,7 +86,7 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 			return;
 		}
 		
-		final L2PetInstance pet = (L2PetInstance) player.getPet();
+		final L2PetInstance pet = (L2PetInstance) player.getSummon();
 		if (pet.isDead())
 		{
 			player.sendPacket(SystemMessageId.CANNOT_GIVE_ITEMS_TO_DEAD_PET);

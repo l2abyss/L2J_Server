@@ -384,9 +384,9 @@ public final class BlockCheckerEngine
 				}
 				player.stopAllEffects();
 				
-				if (player.getPet() != null)
+				if (player.hasSummon())
 				{
-					player.getPet().unSummon(player);
+					player.getSummon().unSummon(player);
 				}
 				
 				// Give the player start up effects

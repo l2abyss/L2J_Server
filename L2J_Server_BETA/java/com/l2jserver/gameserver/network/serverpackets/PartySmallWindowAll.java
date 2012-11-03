@@ -59,17 +59,17 @@ public final class PartySmallWindowAll extends L2GameServerPacket
 				writeD(member.getRace().ordinal());
 				writeD(0x00); // T2.3
 				writeD(0x00); // T2.3
-				if (member.getPet() != null)
+				if (member.hasSummon())
 				{
-					writeD(member.getPet().getObjectId());
-					writeD(member.getPet().getNpcId() + 1000000);
-					writeD(member.getPet().getSummonType());
-					writeS(member.getPet().getName());
-					writeD((int) member.getPet().getCurrentHp());
-					writeD(member.getPet().getMaxHp());
-					writeD((int) member.getPet().getCurrentMp());
-					writeD(member.getPet().getMaxMp());
-					writeD(member.getPet().getLevel());
+					writeD(member.getSummon().getObjectId());
+					writeD(member.getSummon().getNpcId() + 1000000);
+					writeD(member.getSummon().getSummonType());
+					writeS(member.getSummon().getName());
+					writeD((int) member.getSummon().getCurrentHp());
+					writeD(member.getSummon().getMaxHp());
+					writeD((int) member.getSummon().getCurrentMp());
+					writeD(member.getSummon().getMaxMp());
+					writeD(member.getSummon().getLevel());
 				}
 				else
 				{

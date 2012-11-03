@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.datatables.SummonItemsData;
 import com.l2jserver.gameserver.model.L2SummonItem;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -50,15 +49,12 @@ public final class Evolve
 			return false;
 		}
 		
-		L2Summon summon = player.getPet();
-		
-		if ((summon == null) || !(summon instanceof L2PetInstance))
+		if (!player.hasSummon() || !player.getSummon().isPet())
 		{
 			return false;
 		}
 		
-		L2PetInstance currentPet = (L2PetInstance) summon;
-		
+		final L2PetInstance currentPet = (L2PetInstance) player.getSummon();
 		if (currentPet.isAlikeDead())
 		{
 			Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to use death pet exploit!", Config.DEFAULT_PUNISH);

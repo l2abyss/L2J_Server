@@ -360,12 +360,11 @@ public class L2Party extends AbstractPlayerGroup
 		player.sendPacket(new PartySmallWindowAll(player, this));
 		
 		// sends pets/summons of party members
-		L2Summon summon;
 		for (L2PcInstance pMember : getMembers())
 		{
-			if ((pMember != null) && ((summon = pMember.getPet()) != null))
+			if ((pMember != null) && pMember.hasSummon())
 			{
-				player.sendPacket(new ExPartyPetWindowAdd(summon));
+				player.sendPacket(new ExPartyPetWindowAdd(pMember.getSummon()));
 			}
 		}
 		
@@ -383,9 +382,9 @@ public class L2Party extends AbstractPlayerGroup
 		// broadcastToPartyMembers(player, new PartyMemberPosition(this));
 		
 		// if member has pet/summon add it to other as well
-		if (player.getPet() != null)
+		if (player.hasSummon())
 		{
-			broadcastPacket(new ExPartyPetWindowAdd(player.getPet()));
+			broadcastPacket(new ExPartyPetWindowAdd(player.getSummon()));
 		}
 		
 		// add player to party, adjust party level
@@ -396,12 +395,13 @@ public class L2Party extends AbstractPlayerGroup
 		}
 		
 		// update partySpelled
+		L2Summon summon;
 		for (L2PcInstance member : getMembers())
 		{
 			if (member != null)
 			{
 				member.updateEffectIcons(true); // update party icons only
-				summon = member.getPet();
+				summon = member.getSummon();
 				member.broadcastUserInfo();
 				if (summon != null)
 				{
@@ -509,10 +509,9 @@ public class L2Party extends AbstractPlayerGroup
 			player.sendPacket(PartySmallWindowDeleteAll.STATIC_PACKET);
 			player.setParty(null);
 			broadcastPacket(new PartySmallWindowDelete(player));
-			final L2Summon summon = player.getPet();
-			if (summon != null)
+			if (player.hasSummon())
 			{
-				broadcastPacket(new ExPartyPetWindowDelete(summon));
+				broadcastPacket(new ExPartyPetWindowDelete(player.getSummon()));
 			}
 			
 			if (isInDimensionalRift())
@@ -793,7 +792,6 @@ public class L2Party extends AbstractPlayerGroup
 	 */
 	public void distributeXpAndSp(long xpReward, int spReward, List<L2Playable> rewardedMembers, int topLvl, int partyDmg, L2Attackable target)
 	{
-		L2ServitorInstance summon = null;
 		List<L2Playable> validMembers = getValidMembers(rewardedMembers, topLvl);
 		
 		float penalty;
@@ -824,11 +822,10 @@ public class L2Party extends AbstractPlayerGroup
 				
 				penalty = 0;
 				
-				// The L2ServitorInstance penalty
-				if (member.getPet() instanceof L2ServitorInstance)
+				// The servitor penalty
+				if ((member.getSummon() != null) && member.getSummon().isServitor())
 				{
-					summon = (L2ServitorInstance) member.getPet();
-					penalty = summon.getExpPenalty();
+					penalty = ((L2ServitorInstance) member.getSummon()).getExpPenalty();
 				}
 				// Pets that leech xp from the owner (like babypets) do not get rewarded directly
 				if (member instanceof L2PetInstance)

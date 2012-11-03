@@ -234,7 +234,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 				return;
 			}
 			// Subclasses may not be changed while a summon is active.
-			if (player.getPet() != null)
+			if (player.hasSummon())
 			{
 				html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/SubClass_NoSummon.htm");
 				player.sendPacket(html);

@@ -23,8 +23,10 @@ import org.mmocore.network.ReceivablePacket;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.L2GameClient;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
+import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * Packets received by the game server from clients
@@ -92,9 +94,22 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 	
 	protected abstract void runImpl();
 	
+	/**
+	 * Sends a game server packet to the client.
+	 * @param gsp the game server packet
+	 */
 	protected final void sendPacket(L2GameServerPacket gsp)
 	{
 		getClient().sendPacket(gsp);
+	}
+	
+	/**
+	 * Sends a system message to the client.
+	 * @param id the system message Id
+	 */
+	public void sendPacket(SystemMessageId id)
+	{
+		sendPacket(SystemMessage.getSystemMessage(id));
 	}
 	
 	/**

@@ -43,8 +43,8 @@ public final class RequestGetItemFromPet extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance player = getClient().getActiveChar();
-		if ((player == null) || !(player.getPet() instanceof L2PetInstance))
+		final L2PcInstance player = getClient().getActiveChar();
+		if ((player == null) || !player.hasSummon() || !player.getSummon().isPet())
 		{
 			return;
 		}
@@ -55,7 +55,7 @@ public final class RequestGetItemFromPet extends L2GameClientPacket
 			return;
 		}
 		
-		L2PetInstance pet = (L2PetInstance) player.getPet();
+		final L2PetInstance pet = (L2PetInstance) player.getSummon();
 		if (player.getActiveEnchantItem() != null)
 		{
 			return;

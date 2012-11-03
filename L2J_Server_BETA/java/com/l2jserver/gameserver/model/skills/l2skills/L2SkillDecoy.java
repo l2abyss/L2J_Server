@@ -50,13 +50,12 @@ public class L2SkillDecoy extends L2Skill
 		}
 		
 		final L2PcInstance activeChar = caster.getActingPlayer();
-		
 		if (activeChar.inObserverMode())
 		{
 			return;
 		}
 		
-		if ((activeChar.getPet() != null) || activeChar.isMounted())
+		if (activeChar.hasSummon() || activeChar.isMounted())
 		{
 			return;
 		}

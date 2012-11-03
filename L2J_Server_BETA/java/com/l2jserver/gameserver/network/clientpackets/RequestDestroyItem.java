@@ -142,9 +142,9 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		
 		if (itemToRemove.getItem().isPetItem())
 		{
-			if ((activeChar.getPet() != null) && (activeChar.getPet().getControlObjectId() == _objectId))
+			if (activeChar.hasSummon() && (activeChar.getSummon().getControlObjectId() == _objectId))
 			{
-				activeChar.getPet().unSummon(activeChar);
+				activeChar.getSummon().unSummon(activeChar);
 			}
 			
 			try (Connection con = L2DatabaseFactory.getInstance().getConnection();

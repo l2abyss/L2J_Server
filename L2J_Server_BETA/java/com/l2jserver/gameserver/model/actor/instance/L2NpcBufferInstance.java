@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.datatables.NpcBufferTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -90,17 +89,15 @@ public class L2NpcBufferInstance extends L2Npc
 		}
 		
 		L2Character target = player;
-		
 		if (command.startsWith("Pet"))
 		{
-			L2Summon pet = player.getPet();
-			if (pet == null)
+			if (player.hasSummon())
 			{
 				player.sendMessage("You do not have your pet summoned.");
 				showChatWindow(player, 0); // 0 = main window
 				return;
 			}
-			target = pet;
+			target = player.getSummon();
 		}
 		
 		int npcId = getNpcId();

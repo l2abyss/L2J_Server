@@ -1570,14 +1570,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	public static final boolean addSummon(L2Character caster, L2PcInstance owner, int radius, boolean isDead)
 	{
-		final L2Summon summon = owner.getPet();
-		
-		if (summon == null)
+		if (!owner.hasSummon())
 		{
 			return false;
 		}
-		
-		return addCharacter(caster, summon, radius, isDead);
+		return addCharacter(caster, owner.getSummon(), radius, isDead);
 	}
 	
 	public static final boolean addCharacter(L2Character caster, L2Character target, int radius, boolean isDead)

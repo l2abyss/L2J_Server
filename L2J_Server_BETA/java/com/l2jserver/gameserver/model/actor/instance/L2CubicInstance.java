@@ -415,7 +415,7 @@ public final class L2CubicInstance
 				return;
 			}
 			// test owners target if it is valid then use it
-			if ((ownerTarget instanceof L2Character) && (ownerTarget != _owner.getPet()) && (ownerTarget != _owner))
+			if ((ownerTarget instanceof L2Character) && (ownerTarget != _owner.getSummon()) && (ownerTarget != _owner))
 			{
 				// target mob which has aggro on you or your summon
 				if (ownerTarget instanceof L2Attackable)
@@ -425,9 +425,9 @@ public final class L2CubicInstance
 						_target = (L2Character) ownerTarget;
 						return;
 					}
-					if (_owner.getPet() != null)
+					if (_owner.hasSummon())
 					{
-						if ((((L2Attackable) ownerTarget).getAggroList().get(_owner.getPet()) != null) && !((L2Attackable) ownerTarget).isDead())
+						if ((((L2Attackable) ownerTarget).getAggroList().get(_owner.getSummon()) != null) && !((L2Attackable) ownerTarget).isDead())
 						{
 							_target = (L2Character) ownerTarget;
 							return;
@@ -533,9 +533,9 @@ public final class L2CubicInstance
 				}
 				if (!AttackStanceTaskManager.getInstance().hasAttackStanceTask(_owner))
 				{
-					if (_owner.getPet() != null)
+					if (_owner.hasSummon())
 					{
-						if (!AttackStanceTaskManager.getInstance().hasAttackStanceTask(_owner.getPet()))
+						if (!AttackStanceTaskManager.getInstance().hasAttackStanceTask(_owner.getSummon()))
 						{
 							stopAction();
 							return;
@@ -959,27 +959,27 @@ public final class L2CubicInstance
 						}
 					}
 				}
-				if (partyMember.getPet() != null)
+				if (partyMember.getSummon() != null)
 				{
-					if (partyMember.getPet().isDead())
+					if (partyMember.getSummon().isDead())
 					{
 						continue;
 					}
 					
-					// if party member's pet not dead, check if it is in castrange of heal cubic
-					if (!isInCubicRange(_owner, partyMember.getPet()))
+					// If party member's pet not dead, check if it is in cast range of heal cubic.
+					if (!isInCubicRange(_owner, partyMember.getSummon()))
 					{
 						continue;
 					}
 					
 					// member's pet is in cubic casting range, check if he need heal and if he have
 					// the lowest HP
-					if (partyMember.getPet().getCurrentHp() < partyMember.getPet().getMaxHp())
+					if (partyMember.getSummon().getCurrentHp() < partyMember.getSummon().getMaxHp())
 					{
-						if (percentleft > (partyMember.getPet().getCurrentHp() / partyMember.getPet().getMaxHp()))
+						if (percentleft > (partyMember.getSummon().getCurrentHp() / partyMember.getSummon().getMaxHp()))
 						{
-							percentleft = (partyMember.getPet().getCurrentHp() / partyMember.getPet().getMaxHp());
-							target = partyMember.getPet();
+							percentleft = (partyMember.getSummon().getCurrentHp() / partyMember.getSummon().getMaxHp());
+							target = partyMember.getSummon();
 						}
 					}
 				}
@@ -992,11 +992,11 @@ public final class L2CubicInstance
 				percentleft = (_owner.getCurrentHp() / _owner.getMaxHp());
 				target = _owner;
 			}
-			if (_owner.getPet() != null)
+			if (_owner.hasSummon())
 			{
-				if (!_owner.getPet().isDead() && (_owner.getPet().getCurrentHp() < _owner.getPet().getMaxHp()) && (percentleft > (_owner.getPet().getCurrentHp() / _owner.getPet().getMaxHp())) && isInCubicRange(_owner, _owner.getPet()))
+				if (!_owner.getSummon().isDead() && (_owner.getSummon().getCurrentHp() < _owner.getSummon().getMaxHp()) && (percentleft > (_owner.getSummon().getCurrentHp() / _owner.getSummon().getMaxHp())) && isInCubicRange(_owner, _owner.getSummon()))
 				{
-					target = _owner.getPet();
+					target = _owner.getSummon();
 				}
 			}
 		}

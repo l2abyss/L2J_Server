@@ -35,16 +35,12 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Rnd;
 
-/**
- * This class ...
- * @version $Revision: 1.15.2.10.2.16 $ $Date: 2005/04/06 16:13:40 $
- */
 public final class L2BabyPetInstance extends L2PetInstance
 {
 	private static final int BUFF_CONTROL = 5771;
 	private static final int AWAKENING = 5753;
 	
-	protected FastList<SkillHolder> _buffs = null;
+	protected List<SkillHolder> _buffs = null;
 	protected SkillHolder _majorHeal = null;
 	protected SkillHolder _minorHeal = null;
 	protected SkillHolder _recharge = null;
@@ -175,9 +171,18 @@ public final class L2BabyPetInstance extends L2PetInstance
 		}
 	}
 	
+	@Override
 	public void switchMode()
 	{
 		_bufferMode = !_bufferMode;
+	}
+	
+	/**
+	 * @return {@code true} if this baby pet is in support mode, {@code false} otherwise
+	 */
+	public boolean isInSupportMode()
+	{
+		return _bufferMode;
 	}
 	
 	private final void stopCastTask()

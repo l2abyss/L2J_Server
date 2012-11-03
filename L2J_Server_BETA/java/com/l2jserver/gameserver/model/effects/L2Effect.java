@@ -160,7 +160,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		
 		if (((_skill.getId() > 2277) && (_skill.getId() < 2286)) || ((_skill.getId() >= 2512) && (_skill.getId() <= 2514)))
 		{
-			if ((_effected instanceof L2ServitorInstance) || ((_effected instanceof L2PcInstance) && (((L2PcInstance) _effected).getPet() instanceof L2ServitorInstance)))
+			if ((_effected instanceof L2ServitorInstance) || ((_effected instanceof L2PcInstance) && (((L2PcInstance) _effected).getSummon() instanceof L2ServitorInstance)))
 			{
 				temp /= 2;
 			}

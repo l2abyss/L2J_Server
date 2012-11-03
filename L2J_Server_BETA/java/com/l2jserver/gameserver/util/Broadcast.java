@@ -89,9 +89,9 @@ public final class Broadcast
 					if ((oldrelation != null) && (oldrelation != relation))
 					{
 						player.sendPacket(new RelationChanged((L2PcInstance) character, relation, character.isAutoAttackable(player)));
-						if (((L2PcInstance) character).getPet() != null)
+						if (((L2PcInstance) character).hasSummon())
 						{
-							player.sendPacket(new RelationChanged(((L2PcInstance) character).getPet(), relation, character.isAutoAttackable(player)));
+							player.sendPacket(new RelationChanged(character.getSummon(), relation, character.isAutoAttackable(player)));
 						}
 					}
 				}

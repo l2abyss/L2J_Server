@@ -19,14 +19,9 @@ import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.MercTicketManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 
-/**
- * This class ...
- * @version $Revision: 1.2.4.4 $ $Date: 2005/03/29 23:15:33 $
- */
 public final class RequestPetGetItem extends L2GameClientPacket
 {
 	private static final String _C__98_REQUESTPETGETITEM = "[C] 98 RequestPetGetItem";
@@ -44,34 +39,32 @@ public final class RequestPetGetItem extends L2GameClientPacket
 	{
 		L2World world = L2World.getInstance();
 		L2ItemInstance item = (L2ItemInstance) world.findObject(_objectId);
-		if ((item == null) || (getClient().getActiveChar() == null))
+		if ((item == null) || (getActiveChar() == null) || !getActiveChar().hasSummon() || !getActiveChar().getSummon().isPet())
 		{
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
-		int castleId = MercTicketManager.getInstance().getTicketCastleId(item.getItemId());
+		final int castleId = MercTicketManager.getInstance().getTicketCastleId(item.getItemId());
 		if (castleId > 0)
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
-		if (getClient().getActiveChar().getPet() instanceof L2ServitorInstance)
-		{
-			sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
-		L2PetInstance pet = (L2PetInstance) getClient().getActiveChar().getPet();
-		if ((pet == null) || pet.isDead() || pet.isOutOfControl())
-		{
-			sendPacket(ActionFailed.STATIC_PACKET);
-			return;
-		}
 		if (FortSiegeManager.getInstance().isCombat(item.getItemId()))
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
+		
+		final L2PetInstance pet = (L2PetInstance) getClient().getActiveChar().getSummon();
+		if (pet.isDead() || pet.isOutOfControl())
+		{
+			sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+		
 		pet.getAI().setIntention(CtrlIntention.AI_INTENTION_PICK_UP, item);
 	}
 	

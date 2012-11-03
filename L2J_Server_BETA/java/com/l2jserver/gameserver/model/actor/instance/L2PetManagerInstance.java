@@ -15,15 +15,10 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.util.Evolve;
 
-/**
- * This class ...
- * @version $Revision$ $Date$
- */
 public class L2PetManagerInstance extends L2MerchantInstance
 {
 	public L2PetManagerInstance(int objectID, L2NpcTemplate template)
@@ -53,9 +48,7 @@ public class L2PetManagerInstance extends L2MerchantInstance
 	public void showChatWindow(L2PcInstance player)
 	{
 		String filename = "data/html/petmanager/" + getNpcId() + ".htm";
-		
-		L2Summon summon = player.getPet();
-		if ((getNpcId() == 36478) && (summon != null))
+		if ((getNpcId() == 36478) && player.hasSummon())
 		{
 			filename = "data/html/petmanager/restore-unsummonpet.htm";
 		}

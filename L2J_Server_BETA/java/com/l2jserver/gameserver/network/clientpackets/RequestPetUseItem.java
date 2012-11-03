@@ -42,13 +42,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		if ((activeChar == null) || (activeChar.getPet() == null) || !(activeChar.getPet() instanceof L2PetInstance))
-		{
-			return;
-		}
-		
-		final L2PetInstance pet = (L2PetInstance) activeChar.getPet();
-		if (pet == null)
+		if ((activeChar == null) || !activeChar.hasSummon() || !activeChar.getSummon().isPet())
 		{
 			return;
 		}
@@ -58,6 +52,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			return;
 		}
 		
+		final L2PetInstance pet = (L2PetInstance) activeChar.getSummon();
 		final L2ItemInstance item = pet.getInventory().getItemByObjectId(_objectId);
 		if (item == null)
 		{
@@ -116,7 +111,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 				pet.getInventory().equipItem(item);
 			}
 			
-			activeChar.sendPacket(new PetItemList(pet));
+			activeChar.sendPacket(new PetItemList(pet.getInventory().getItems()));
 			pet.updateAndBroadcastStatus(1);
 		}
 		else

@@ -89,7 +89,7 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.getPet() != null)
+		if (activeChar.hasSummon())
 		{
 			activeChar.sendPacket(SystemMessageId.RELEASE_PET_ON_BOAT);
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);

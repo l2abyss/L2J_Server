@@ -21,7 +21,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.actor.stat.PcStat;
 import com.l2jserver.gameserver.model.entity.Duel;
 import com.l2jserver.gameserver.model.quest.QuestState;
@@ -144,8 +143,8 @@ public class PcStatus extends PlayableStatus
 			}
 			
 			// Check and calculate transfered damage
-			final L2Summon summon = getActiveChar().getPet();
-			if ((summon != null) && (summon instanceof L2ServitorInstance) && Util.checkIfInRange(1000, getActiveChar(), summon, true))
+			final L2Summon summon = getActiveChar().getSummon();
+			if (getActiveChar().hasSummon() && summon.isServitor() && Util.checkIfInRange(1000, getActiveChar(), summon, true))
 			{
 				tDmg = ((int) value * (int) getActiveChar().getStat().calcStat(Stats.TRANSFER_DAMAGE_PERCENT, 0, null, null)) / 100;
 				
@@ -245,7 +244,7 @@ public class PcStatus extends PlayableStatus
 				if (tDmg > 0)
 				{
 					smsg = SystemMessage.getSystemMessage(SystemMessageId.C1_RECEIVED_DAMAGE_OF_S3_FROM_C2);
-					smsg.addString(getActiveChar().getPet().getName());
+					smsg.addString(getActiveChar().getSummon().getName());
 					smsg.addCharName(attacker);
 					smsg.addNumber(tDmg);
 					getActiveChar().sendPacket(smsg);
@@ -297,9 +296,9 @@ public class PcStatus extends PlayableStatus
 				stopHpMpRegeneration();
 				getActiveChar().setIsDead(true);
 				getActiveChar().setIsPendingRevive(true);
-				if (getActiveChar().getPet() != null)
+				if (getActiveChar().hasSummon())
 				{
-					getActiveChar().getPet().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
+					getActiveChar().getSummon().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
 				}
 				return;
 			}

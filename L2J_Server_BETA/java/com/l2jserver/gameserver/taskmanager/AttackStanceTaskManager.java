@@ -113,9 +113,9 @@ public class AttackStanceTaskManager
 						{
 							actor.broadcastPacket(new AutoAttackStop(actor.getObjectId()));
 							actor.getAI().setAutoAttacking(false);
-							if (actor.isPlayer() && actor.getActingPlayer().hasPet())
+							if (actor.isPlayer() && actor.getActingPlayer().hasSummon())
 							{
-								actor.getActingPlayer().getPet().broadcastPacket(new AutoAttackStop(actor.getActingPlayer().getPet().getObjectId()));
+								actor.getSummon().broadcastPacket(new AutoAttackStop(actor.getSummon().getObjectId()));
 							}
 						}
 						iter.remove();

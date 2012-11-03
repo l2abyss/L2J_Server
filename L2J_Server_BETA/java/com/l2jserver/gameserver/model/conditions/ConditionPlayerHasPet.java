@@ -46,7 +46,7 @@ public class ConditionPlayerHasPet extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if ((env.getPlayer() == null) || (!(env.getPlayer().getPet() instanceof L2PetInstance)))
+		if ((env.getPlayer() == null) || (!(env.getPlayer().getSummon() instanceof L2PetInstance)))
 		{
 			return false;
 		}
@@ -56,7 +56,7 @@ public class ConditionPlayerHasPet extends Condition
 			return true;
 		}
 		
-		final L2ItemInstance controlItem = ((L2PetInstance) env.getPlayer().getPet()).getControlItem();
-		return controlItem == null ? false : _controlItemIds.contains(controlItem.getItemId());
+		final L2ItemInstance controlItem = ((L2PetInstance) env.getPlayer().getSummon()).getControlItem();
+		return (controlItem != null) && _controlItemIds.contains(controlItem.getItemId());
 	}
 }

@@ -450,11 +450,6 @@ public class L2DoorInstance extends L2Character
 		return (isCastle || isFort);
 	}
 	
-	public boolean isAttackable(L2Character attacker)
-	{
-		return isAutoAttackable(attacker);
-	}
-	
 	@Override
 	public void updateAbnormalEffect()
 	{

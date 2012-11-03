@@ -385,9 +385,9 @@ public abstract class L2Object
 				}
 			}
 			
-			if (player.getPet() != null)
+			if (player.hasSummon())
 			{
-				player.getPet().setInstanceId(instanceId);
+				player.getSummon().setInstanceId(instanceId);
 			}
 		}
 		else if (isNpc())

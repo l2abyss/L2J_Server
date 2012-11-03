@@ -76,11 +76,11 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 					// Attempt to charge first shot on activation
 					if ((_itemId == 6645) || (_itemId == 6646) || (_itemId == 6647) || (_itemId == 20332) || (_itemId == 20333) || (_itemId == 20334))
 					{
-						if (activeChar.getPet() != null)
+						if (activeChar.hasSummon())
 						{
 							if (item.getEtcItem().getHandlerName().equals("BeastSoulShot"))
 							{
-								if (activeChar.getPet().getSoulShotsPerHit() > item.getCount())
+								if (activeChar.getSummon().getSoulShotsPerHit() > item.getCount())
 								{
 									activeChar.sendPacket(SystemMessageId.NOT_ENOUGH_SOULSHOTS_FOR_PET);
 									return;
@@ -88,7 +88,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 							}
 							else
 							{
-								if (activeChar.getPet().getSpiritShotsPerHit() > item.getCount())
+								if (activeChar.getSummon().getSpiritShotsPerHit() > item.getCount())
 								{
 									activeChar.sendPacket(SystemMessageId.NOT_ENOUGH_SOULSHOTS_FOR_PET);
 									return;
@@ -103,7 +103,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 							activeChar.sendPacket(sm);
 							
 							activeChar.rechargeShots(true, true);
-							activeChar.getPet().rechargeShots(true, true);
+							activeChar.getSummon().rechargeShots(true, true);
 							
 						}
 						else

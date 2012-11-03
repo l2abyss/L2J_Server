@@ -34,7 +34,7 @@ import com.l2jserver.gameserver.model.clientstrings.Builder;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * @author Noctarius & Nille02 & crion ^ Forsaiken
+ * @author Noctarius, Nille02, crion, Forsaiken
  */
 public final class SystemMessageId
 {
@@ -13480,6 +13480,18 @@ public final class SystemMessageId
 	public static final SystemMessageId RESURRECT_USING_CHARM_OF_COURAGE;
 	
 	/**
+	 * ID: 2311<br>
+	 * Message: You do not have a servitor.
+	 */
+	public static final SystemMessageId DONT_HAVE_SERVITOR;
+	
+	/**
+	 * ID: 2312<br>
+	 * Message: You do not have a pet.
+	 */
+	public static final SystemMessageId DONT_HAVE_PET;
+	
+	/**
 	 * ID: 2314<br>
 	 * Message: Your Vitality is at maximum.
 	 */
@@ -13868,6 +13880,12 @@ public final class SystemMessageId
 	 * Message: You have selected a 3 vs 3 class irrelevant team match. Do you wish to participate?
 	 */
 	public static final SystemMessageId OLYMPIAD_3VS3_CONFIRM;
+	
+	/**
+	 * ID: 2466<br>
+	 * Message: A pet on auxiliary mode cannot use skills.
+	 */
+	public static final SystemMessageId PET_AUXILIARY_MODE_CANNOT_USE_SKILLS;
 	
 	/**
 	 * ID: 2491<br>
@@ -14899,6 +14917,12 @@ public final class SystemMessageId
 	 * Message: MP became 0 and the Arcane Shield is disappearing.
 	 */
 	public static final SystemMessageId MP_BECAME_0_ARCANE_SHIELD_DISAPPEARING;
+	
+	/**
+	 * ID: 3260<br>
+	 * Message: You cannot use the skill because the servitor has not been summoned.
+	 */
+	public static final SystemMessageId CANNOT_USE_SKILL_WITHOUT_SERVITOR;
 	
 	/**
 	 * ID: 3261<br>
@@ -17171,6 +17195,8 @@ public final class SystemMessageId
 		S2_MINUTES_S3_SECONDS_REMAINING_FOR_REUSE_S1 = new SystemMessageId(2304);
 		S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1 = new SystemMessageId(2305);
 		RESURRECT_USING_CHARM_OF_COURAGE = new SystemMessageId(2306);
+		DONT_HAVE_SERVITOR = new SystemMessageId(2311);
+		DONT_HAVE_PET = new SystemMessageId(2312);
 		VITALITY_IS_AT_MAXIMUM = new SystemMessageId(2314);
 		VITALITY_HAS_INCREASED = new SystemMessageId(2315);
 		VITALITY_HAS_DECREASED = new SystemMessageId(2316);
@@ -17236,6 +17262,7 @@ public final class SystemMessageId
 		THE_AIRSHIP_FUEL_SOON_RUN_OUT = new SystemMessageId(2463);
 		THE_AIRSHIP_FUEL_RUN_OUT = new SystemMessageId(2464);
 		OLYMPIAD_3VS3_CONFIRM = new SystemMessageId(2465);
+		PET_AUXILIARY_MODE_CANNOT_USE_SKILLS = new SystemMessageId(2466);
 		THE_AIRSHIP_CANNOT_TELEPORT = new SystemMessageId(2491);
 		THE_AIRSHIP_SUMMONED = new SystemMessageId(2492);
 		THE_COLLECTION_HAS_SUCCEEDED = new SystemMessageId(2500);
@@ -17408,6 +17435,7 @@ public final class SystemMessageId
 		ARCANE_SHIELD_DECREASED_YOUR_MP_BY_S1_INSTEAD_OF_HP = new SystemMessageId(3255);
 		YOU_EARNED_S1_EXP_BONUS_S2_AND_S3_SP_BONUS_S4 = new SystemMessageId(3259);
 		MP_BECAME_0_ARCANE_SHIELD_DISAPPEARING = new SystemMessageId(3256);
+		CANNOT_USE_SKILL_WITHOUT_SERVITOR = new SystemMessageId(3260);
 		YOU_HAVE_S1_MATCHES_REMAINING_THAT_YOU_CAN_PARTECIPATE_IN_THIS_WEEK_S2_CLASSED_S3_NON_CLASSED_S4_TEAM = new SystemMessageId(3261);
 		SAFE_ENCHANT_FAILED = new SystemMessageId(6004);
 		YOU_CANNOT_BOOKMARK_THIS_LOCATION_BECAUSE_YOU_DO_NOT_HAVE_A_MY_TELEPORT_FLAG = new SystemMessageId(6501);

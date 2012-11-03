@@ -148,9 +148,9 @@ public class PcStat extends PlayableStat
 		float ratioTakenByPlayer = 0;
 		
 		// if this player has a pet and it is in his range he takes from the owner's Exp, give the pet Exp now
-		if (activeChar.hasPet() && activeChar.getPet().isPet() && Util.checkIfInShortRadius(Config.ALT_PARTY_RANGE, activeChar, activeChar.getPet(), false))
+		if (activeChar.hasSummon() && activeChar.getSummon().isPet() && Util.checkIfInShortRadius(Config.ALT_PARTY_RANGE, activeChar, activeChar.getSummon(), false))
 		{
-			L2PetInstance pet = (L2PetInstance) activeChar.getPet();
+			L2PetInstance pet = (L2PetInstance) activeChar.getSummon();
 			ratioTakenByPlayer = pet.getPetLevelData().getOwnerExpTaken() / 100f;
 			
 			// only give exp/sp to the pet by taking from the owner if the pet has a non-zero, positive ratio

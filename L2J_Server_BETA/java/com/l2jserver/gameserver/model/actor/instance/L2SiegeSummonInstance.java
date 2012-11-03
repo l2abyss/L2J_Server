@@ -16,7 +16,6 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.zone.ZoneId;
 
 public class L2SiegeSummonInstance extends L2ServitorInstance
 {
@@ -28,16 +27,5 @@ public class L2SiegeSummonInstance extends L2ServitorInstance
 	{
 		super(objectId, template, owner, skill);
 		setInstanceType(InstanceType.L2SiegeSummonInstance);
-	}
-	
-	@Override
-	public void onSpawn()
-	{
-		super.onSpawn();
-		if (!getOwner().isGM() && !isInsideZone(ZoneId.SIEGE))
-		{
-			unSummon(getOwner());
-			getOwner().sendMessage("Summon was unsummoned because it exited siege zone");
-		}
 	}
 }

@@ -598,9 +598,9 @@ public class Siege implements Siegable
 					}
 					
 					player.sendPacket(new RelationChanged(member, member.getRelation(player), member.isAutoAttackable(player)));
-					if (member.getPet() != null)
+					if (member.hasSummon())
 					{
-						player.sendPacket(new RelationChanged(member.getPet(), member.getRelation(player), member.isAutoAttackable(player)));
+						player.sendPacket(new RelationChanged(member.getSummon(), member.getRelation(player), member.isAutoAttackable(player)));
 					}
 				}
 			}
@@ -647,9 +647,9 @@ public class Siege implements Siegable
 						continue;
 					}
 					player.sendPacket(new RelationChanged(member, member.getRelation(player), member.isAutoAttackable(player)));
-					if (member.getPet() != null)
+					if (member.hasSummon())
 					{
-						player.sendPacket(new RelationChanged(member.getPet(), member.getRelation(player), member.isAutoAttackable(player)));
+						player.sendPacket(new RelationChanged(member.getSummon(), member.getRelation(player), member.isAutoAttackable(player)));
 					}
 				}
 			}
