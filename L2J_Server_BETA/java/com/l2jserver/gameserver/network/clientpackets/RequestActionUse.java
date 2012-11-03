@@ -57,6 +57,7 @@ public final class RequestActionUse extends L2GameClientPacket
 	private static final String _C__56_REQUESTACTIONUSE = "[C] 56 RequestActionUse";
 	
 	private static final int SIN_EATER_ID = 12564;
+	private static final int SWITCH_STANCE_ID = 6054;
 	private static final NpcStringId[] NPC_STRINGS =
 	{
 		NpcStringId.USING_A_SPECIAL_SKILL_HERE_COULD_TRIGGER_A_BLOODBATH,
@@ -849,6 +850,11 @@ public final class RequestActionUse extends L2GameClientPacket
 		{
 			summon.setTarget(target);
 			summon.useMagic(SkillTable.getInstance().getInfo(skillId, lvl), _ctrlPressed, _shiftPressed);
+		}
+		
+		if (skillId == SWITCH_STANCE_ID)
+		{
+			summon.switchMode();
 		}
 	}
 	
