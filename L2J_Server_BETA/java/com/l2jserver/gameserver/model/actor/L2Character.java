@@ -1216,24 +1216,9 @@ public abstract class L2Character extends L2Object
 			// Calculate physical damages
 			damage1 = (int) Formulas.calcPhysDam(this, target, null, shld1, crit1, false, attack.soulshot);
 			
-			double range = Math.sqrt(getDistanceSq(target));
-			if (range < 1600)
-			{
-				double dmgmod = 1 - ((1 - (range / 800)) * 0.35);
-				
-				if (dmgmod > 1)
-				{
-					dmgmod = 2 - dmgmod;
-				}
-				if (dmgmod > 0)
-				{
-					damage1 *= dmgmod;
-				}
-			}
-			else
-			{
-				damage1 *= 0.65;
-			}
+			// Bows Ranged Damage Formula (Damage gradually decreases when 60% or lower than full hit range, and increases when 60% or higher).
+			// full hit range is 500 which is the base bow range, and the 60% of this is 800.
+			damage1 *= (Math.sqrt(getDistanceSq(target)) / 4000) + 0.8;
 		}
 		
 		// Check if the L2Character is a L2PcInstance
