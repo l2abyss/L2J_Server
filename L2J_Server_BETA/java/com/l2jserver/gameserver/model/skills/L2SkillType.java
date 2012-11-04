@@ -17,7 +17,6 @@ package com.l2jserver.gameserver.model.skills;
 import java.lang.reflect.Constructor;
 
 import com.l2jserver.gameserver.model.StatsSet;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillAgathion;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillAppearance;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillChangeWeapon;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillChargeDmg;
@@ -123,7 +122,6 @@ public enum L2SkillType
 	DELUXE_KEY_UNLOCK,
 	SOW,
 	GET_PLAYER,
-	AGATHION(L2SkillAgathion.class),
 	MOUNT(L2SkillMount.class),
 	INSTANT_JUMP,
 	DETECTION,

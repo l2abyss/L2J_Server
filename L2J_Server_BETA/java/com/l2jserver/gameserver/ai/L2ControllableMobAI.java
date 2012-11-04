@@ -417,8 +417,8 @@ public class L2ControllableMobAI extends L2AttackableAI
 			return false;
 		}
 		
-		// Check if the target is a L2PlayableInstance
-		if (target instanceof L2Playable)
+		// Check if the target is a L2Playable
+		if (target.isPlayable())
 		{
 			// Check if the target isn't in silent move mode
 			if (((L2Playable) target).isSilentMoving())

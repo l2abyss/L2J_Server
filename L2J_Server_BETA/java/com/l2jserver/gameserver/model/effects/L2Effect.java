@@ -42,10 +42,6 @@ import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.PartySpelled;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-/**
- * This class ...
- * @version $Revision: 1.1.2.1.2.12 $ $Date: 2005/04/11 10:06:07 $
- */
 public abstract class L2Effect implements IChanceSkillTrigger
 {
 	protected static final Logger _log = Logger.getLogger(L2Effect.class.getName());
@@ -183,17 +179,15 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		_effectPower = template.effectPower;
 		_effectSkillType = template.effectType;
 		
-		/*
-		 * Commented out by DrHouse: scheduleEffect can call onStart before effect is completly initialized on constructor (child classes constructor)
-		 */
+		// Commented out by DrHouse:
+		// scheduleEffect can call onStart before effect is completely initialized on constructor (child classes constructor)
 		// scheduleEffect();
 	}
 	
 	/**
 	 * Special constructor to "steal" buffs. Must be implemented on every child class that can be stolen.<br>
-	 * <br>
-	 * <font color="FF0000"><b>WARNING: scheduleEffect nolonger inside constructor</b></font> <br>
-	 * So you must call it explicitly
+	 * <font color="FF0000"><b>WARNING: scheduleEffect no longer inside constructor</b></font><br>
+	 * So you must call it explicitly.
 	 * @param env
 	 * @param effect
 	 */
@@ -218,9 +212,8 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		_periodFirstTime = effect.getTime();
 		_icon = _template.icon;
 		
-		/*
-		 * Commented out by DrHouse: scheduleEffect can call onStart before effect is completly initialized on constructor (child classes constructor)
-		 */
+		// Commented out by DrHouse:
+		// scheduleEffect can call onStart before effect is completly initialized on constructor (child classes constructor)
 		// scheduleEffect();
 	}
 	
@@ -376,7 +369,12 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	}
 	
 	/**
-	 * Stop the L2Effect task and send Server->Client update packet. <B><U> Actions</U> :</B> <li>Cancel the effect in the the abnormal effect map of the L2Character</li> <li>Stop the task of the L2Effect, remove it and update client magic icon</li>
+	 * Stop the L2Effect task and send Server->Client update packet.<br>
+	 * <B><U>Actions</U>:</B>
+	 * <ul>
+	 * <li>Cancel the effect in the the abnormal effect map of the L2Character</li>
+	 * <li>Stop the task of the L2Effect, remove it and update client magic icon</li>
+	 * </ul>
 	 */
 	public final void exit()
 	{
@@ -425,8 +423,8 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	public abstract L2EffectType getEffectType();
 	
 	/**
-	 * Notify started
-	 * @return
+	 * Notify started.
+	 * @return {@code true} if all the start conditions are meet, {@code false} otherwise
 	 */
 	public boolean onStart()
 	{
@@ -498,14 +496,16 @@ public abstract class L2Effect implements IChanceSkillTrigger
 				{
 					_count--;
 					if (getInUse())
-					{ // effect has to be in use
-						if (onActionTime() && _startConditionsCorrect && (_count > 0))
+					{
+						// effect has to be in use
+						if (onActionTime() && _startConditionsCorrect && (_count >= 0))
 						{
 							return; // false causes effect to finish right away
 						}
 					}
 					else if (_count > 0)
-					{ // do not finish it yet, in case reactivated
+					{
+						// do not finish it yet, in case reactivated
 						return;
 					}
 				}

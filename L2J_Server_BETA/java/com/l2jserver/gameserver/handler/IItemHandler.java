@@ -28,7 +28,7 @@ public interface IItemHandler
 	
 	/**
 	 * Launch task associated to the item.
-	 * @param playable L2PlayableInstance designating the player
+	 * @param playable the non-NPC character using the item
 	 * @param item L2ItemInstance designating the item to use
 	 * @param forceUse ctrl hold on item use
 	 * @return {@code true} if the item all conditions are met and the item is used, {@code false} otherwise.

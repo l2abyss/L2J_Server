@@ -250,6 +250,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _maxTargets;
 	private final boolean _isStaticHeal;
 	
+	protected int _npcId = 0;
+	
 	protected L2Skill(StatsSet set)
 	{
 		_id = set.getInteger("skill_id");
@@ -526,6 +528,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		}
 		_maxTargets = set.getInteger("maxTargets", -1);
 		_isStaticHeal = set.getBool("isStaticHeal", false);
+		_npcId = set.getInteger("npcId", 0);
 	}
 	
 	public abstract void useSkill(L2Character caster, L2Object[] targets);
@@ -2160,5 +2163,13 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public boolean isStaticHeal()
 	{
 		return _isStaticHeal;
+	}
+	
+	/**
+	 * @return the _npcId
+	 */
+	public int getNpcId()
+	{
+		return _npcId;
 	}
 }

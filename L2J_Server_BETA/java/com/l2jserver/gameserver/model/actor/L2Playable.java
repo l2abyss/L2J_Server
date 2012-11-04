@@ -27,7 +27,8 @@ import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
- * This class represents all Playable characters in the world. L2PlayableInstance:
+ * This class represents all Playable characters in the world.<br>
+ * L2Playable:
  * <ul>
  * <li>L2PcInstance</li>
  * <li>L2Summon</li>
@@ -38,13 +39,13 @@ public abstract class L2Playable extends L2Character
 	private L2Character _lockedTarget = null;
 	
 	/**
-	 * Constructor of L2PlayableInstance (use L2Character constructor).<br>
+	 * Constructor of L2Playable.<br>
 	 * <B><U> Actions</U> :</B>
 	 * <ul>
-	 * <li>Call the L2Character constructor to create an empty _skills slot and link copy basic Calculator set to this L2PlayableInstance</li>
+	 * <li>Call the L2Character constructor to create an empty _skills slot and link copy basic Calculator set to this L2Playable</li>
 	 * </ul>
 	 * @param objectId Identifier of the object to initialized
-	 * @param template The L2CharTemplate to apply to the L2PlayableInstance
+	 * @param template The L2CharTemplate to apply to the L2Playable
 	 */
 	public L2Playable(int objectId, L2CharTemplate template)
 	{
@@ -134,7 +135,7 @@ public abstract class L2Playable extends L2Character
 				stopNoblesseBlessing(null);
 			}
 		}
-		// Same thing if the Character isn't a Noblesse Blessed L2PlayableInstance
+		// Same thing if the Character isn't a Noblesse Blessed L2Playable
 		else if (isNoblesseBlessed())
 		{
 			stopNoblesseBlessing(null);
@@ -195,42 +196,26 @@ public abstract class L2Playable extends L2Character
 		}
 		if (!target.isPlayable())
 		{
-			return false; // Target is not a L2PlayableInstance
+			return false; // Target is not a L2Playable
 		}
 		
-		L2PcInstance player = null;
-		if (this instanceof L2PcInstance)
-		{
-			player = (L2PcInstance) this;
-		}
-		else if (isSummon())
-		{
-			player = ((L2Summon) this).getOwner();
-		}
-		
+		final L2PcInstance player = getActingPlayer();
 		if (player == null)
 		{
 			return false; // Active player is null
 		}
+		
 		if (player.getKarma() != 0)
 		{
 			return false; // Active player has karma
 		}
 		
-		L2PcInstance targetPlayer = null;
-		if (target instanceof L2PcInstance)
-		{
-			targetPlayer = (L2PcInstance) target;
-		}
-		else if (target instanceof L2Summon)
-		{
-			targetPlayer = ((L2Summon) target).getOwner();
-		}
-		
+		final L2PcInstance targetPlayer = target.getActingPlayer();
 		if (targetPlayer == null)
 		{
 			return false; // Target player is null
 		}
+		
 		if (targetPlayer == this)
 		{
 			return false; // Target player is self

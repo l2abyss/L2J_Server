@@ -178,8 +178,8 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			return false;
 		}
 		
-		// Check if the target is a L2PlayableInstance
-		if (target instanceof L2Playable)
+		// Check if the target is a L2Playable
+		if (target.isPlayable())
 		{
 			// Check if the AI isn't a Raid Boss, can See Silent Moving players and the target isn't in silent move mode
 			if (!(me.isRaid()) && !(me.canSeeThroughSilentMove()) && ((L2Playable) target).isSilentMoving())

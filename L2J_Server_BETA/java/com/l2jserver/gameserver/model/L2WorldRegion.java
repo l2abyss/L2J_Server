@@ -38,19 +38,19 @@ import com.l2jserver.gameserver.model.zone.type.L2PeaceZone;
 
 public final class L2WorldRegion
 {
-	private static Logger _log = Logger.getLogger(L2WorldRegion.class.getName());
+	private static final Logger _log = Logger.getLogger(L2WorldRegion.class.getName());
 	
-	/** L2ObjectHashSet(L2PlayableInstance) containing L2PlayableInstance of all player & summon in game in this L2WorldRegion */
+	/** Map containing all playable characters in game in this world region. */
 	private final Map<Integer, L2Playable> _allPlayable;
 	
-	/** L2ObjectHashSet(L2Object) containing L2Object visible in this L2WorldRegion */
+	/** Map containing visible objects in this world region. */
 	private final Map<Integer, L2Object> _visibleObjects;
 	
 	private final List<L2WorldRegion> _surroundingRegions;
 	private final int _tileX, _tileY;
 	private boolean _active = false;
 	private ScheduledFuture<?> _neighborsTask = null;
-	private final FastList<L2ZoneType> _zones;
+	private final List<L2ZoneType> _zones;
 	
 	public L2WorldRegion(int pTileX, int pTileY)
 	{
@@ -73,7 +73,7 @@ public final class L2WorldRegion
 		_zones = new FastList<>();
 	}
 	
-	public FastList<L2ZoneType> getZones()
+	public List<L2ZoneType> getZones()
 	{
 		return _zones;
 	}

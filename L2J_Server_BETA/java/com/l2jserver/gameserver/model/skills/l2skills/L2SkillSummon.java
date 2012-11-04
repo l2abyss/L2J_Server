@@ -35,7 +35,6 @@ public class L2SkillSummon extends L2Skill
 {
 	public static final int SKILL_CUBIC_MASTERY = 143;
 	
-	private final int _npcId;
 	private final float _expPenalty;
 	private final boolean _isCubic;
 	
@@ -72,7 +71,6 @@ public class L2SkillSummon extends L2Skill
 	{
 		super(set);
 		
-		_npcId = set.getInteger("npcId", 0); // default for undescribed skills
 		_expPenalty = set.getFloat("expPenalty", 0.f);
 		_isCubic = set.getBool("isCubic", false);
 		
@@ -347,11 +345,6 @@ public class L2SkillSummon extends L2Skill
 	public final int getItemConsumeTime()
 	{
 		return _itemConsumeTime;
-	}
-	
-	public final int getNpcId()
-	{
-		return _npcId;
 	}
 	
 	public final float getExpPenalty()

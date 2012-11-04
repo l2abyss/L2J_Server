@@ -53,15 +53,13 @@ public class L2SkillChangeWeapon extends L2Skill
 			return;
 		}
 		
-		L2PcInstance player = caster.getActingPlayer();
-		
+		final L2PcInstance player = caster.getActingPlayer();
 		if (player.isEnchanting())
 		{
 			return;
 		}
 		
-		L2Weapon weaponItem = player.getActiveWeaponItem();
-		
+		final L2Weapon weaponItem = player.getActiveWeaponItem();
 		if (weaponItem == null)
 		{
 			return;

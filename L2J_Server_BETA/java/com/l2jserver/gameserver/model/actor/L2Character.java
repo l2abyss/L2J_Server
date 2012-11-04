@@ -90,7 +90,6 @@ import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillAgathion;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillMount;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
@@ -2340,7 +2339,7 @@ public abstract class L2Character extends L2Object
 				((L2Playable) this).stopNoblesseBlessing(null);
 			}
 		}
-		// Same thing if the Character isn't a Noblesse Blessed L2PlayableInstance
+		// Same thing if the Character isn't a Noblesse Blessed L2Playable
 		else if (isPlayable() && ((L2Playable) this).isNoblesseBlessed())
 		{
 			((L2Playable) this).stopNoblesseBlessing(null);
@@ -5000,7 +4999,7 @@ public abstract class L2Character extends L2Object
 			
 			// Movement checks:
 			// when geodata == 2, for all characters except mobs returning home (could be changed later to teleport if pathfinding fails)
-			// when geodata == 1, for l2playableinstance and l2riftinstance only
+			// when geodata == 1, for L2Playable and L2RiftInvaderInstance only
 			if (((Config.GEODATA == 2) && !(isL2Attackable() && ((L2Attackable) this).isReturningToSpawnPoint())) || (isPlayer() && !(isInVehicle && (distance > 1500))) || (isSummon() && !(getAI().getIntention() == AI_INTENTION_FOLLOW)) // assuming intention_follow only when following owner
 				|| isAfraid() || (this instanceof L2RiftInvaderInstance))
 			{
@@ -6222,12 +6221,6 @@ public abstract class L2Character extends L2Object
 					removeStatsOwner(oldSkill);
 					stopSkillEffects(oldSkill.getId());
 				}
-			}
-			
-			if ((oldSkill instanceof L2SkillAgathion) && isPlayer() && (getActingPlayer().getAgathionId() > 0))
-			{
-				getActingPlayer().setAgathionId(0);
-				getActingPlayer().broadcastUserInfo();
 			}
 			
 			if ((oldSkill instanceof L2SkillMount) && isPlayer() && getActingPlayer().isMounted())
