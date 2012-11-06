@@ -885,7 +885,7 @@ public final class RequestActionUse extends L2GameClientPacket
 	{
 		if ((summon != null) && ((checkPet && summon.isPet()) || summon.isServitor()))
 		{
-			if (summon.getOwner().isBetrayed())
+			if (summon.isBetrayed())
 			{
 				sendPacket(SystemMessageId.PET_REFUSING_ORDER);
 				return false;

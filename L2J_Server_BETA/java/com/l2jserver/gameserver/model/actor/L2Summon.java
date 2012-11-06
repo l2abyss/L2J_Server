@@ -1026,7 +1026,7 @@ public abstract class L2Summon extends L2Playable
 			return false;
 		}
 		
-		if (!isBetrayed())
+		if (isBetrayed())
 		{
 			sendPacket(SystemMessageId.PET_REFUSING_ORDER);
 			sendPacket(ActionFailed.STATIC_PACKET);
