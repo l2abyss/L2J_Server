@@ -250,7 +250,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _maxTargets;
 	private final boolean _isStaticHeal;
 	
-	protected int _npcId = 0;
+	private int _npcId = 0;
 	
 	protected L2Skill(StatsSet set)
 	{

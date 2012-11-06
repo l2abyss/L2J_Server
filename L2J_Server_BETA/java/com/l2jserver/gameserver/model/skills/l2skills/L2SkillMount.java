@@ -24,13 +24,11 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 
 public class L2SkillMount extends L2Skill
 {
-	private final int _npcId;
 	private final int _itemId;
 	
 	public L2SkillMount(StatsSet set)
 	{
 		super(set);
-		_npcId = set.getInteger("npcId", 0);
 		_itemId = set.getInteger("itemId", 0);
 	}
 	
@@ -55,7 +53,7 @@ public class L2SkillMount extends L2Skill
 		}
 		
 		// Dismount Action
-		if (_npcId == 0)
+		if (getNpcId() == 0)
 		{
 			activePlayer.dismount();
 			return;
@@ -95,6 +93,6 @@ public class L2SkillMount extends L2Skill
 			return;
 		}
 		
-		activePlayer.mount(_npcId, _itemId, false);
+		activePlayer.mount(getNpcId(), _itemId, false);
 	}
 }

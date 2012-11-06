@@ -32,9 +32,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public class L2SkillChangeWeapon extends L2Skill
 {
-	/**
-	 * @param set
-	 */
 	public L2SkillChangeWeapon(StatsSet set)
 	{
 		super(set);

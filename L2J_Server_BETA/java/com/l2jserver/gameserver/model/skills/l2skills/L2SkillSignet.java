@@ -30,14 +30,9 @@ import com.l2jserver.gameserver.util.Point3D;
  */
 public final class L2SkillSignet extends L2Skill
 {
-	private final int _effectNpcId;
-	public int effectId;
-	
 	public L2SkillSignet(StatsSet set)
 	{
 		super(set);
-		_effectNpcId = set.getInteger("effectNpcId", -1);
-		effectId = set.getInteger("effectId", -1);
 	}
 	
 	@Override
@@ -48,11 +43,10 @@ public final class L2SkillSignet extends L2Skill
 			return;
 		}
 		
-		L2NpcTemplate template = NpcTable.getInstance().getTemplate(_effectNpcId);
+		L2NpcTemplate template = NpcTable.getInstance().getTemplate(getNpcId());
 		L2EffectPointInstance effectPoint = new L2EffectPointInstance(IdFactory.getInstance().getNextId(), template, caster);
 		effectPoint.setCurrentHp(effectPoint.getMaxHp());
 		effectPoint.setCurrentMp(effectPoint.getMaxMp());
-		// L2World.getInstance().storeObject(effectPoint);
 		
 		int x = caster.getX();
 		int y = caster.getY();

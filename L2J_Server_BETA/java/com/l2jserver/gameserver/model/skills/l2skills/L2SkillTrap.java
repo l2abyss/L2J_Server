@@ -31,7 +31,6 @@ public class L2SkillTrap extends L2SkillSummon
 {
 	private int _triggerSkillId = 0;
 	private int _triggerSkillLvl = 0;
-	private int _trapNpcId = 0;
 	protected L2Spawn _trapSpawn;
 	
 	/**
@@ -42,7 +41,6 @@ public class L2SkillTrap extends L2SkillSummon
 		super(set);
 		_triggerSkillId = set.getInteger("triggerSkillId");
 		_triggerSkillLvl = set.getInteger("triggerSkillLvl");
-		_trapNpcId = set.getInteger("trapNpcId");
 	}
 	
 	public int getTriggerSkillId()
@@ -58,7 +56,7 @@ public class L2SkillTrap extends L2SkillSummon
 			return;
 		}
 		
-		if (_trapNpcId == 0)
+		if (getNpcId() == 0)
 		{
 			return;
 		}
@@ -93,14 +91,13 @@ public class L2SkillTrap extends L2SkillSummon
 			return;
 		}
 		
-		L2NpcTemplate TrapTemplate = NpcTable.getInstance().getTemplate(_trapNpcId);
+		L2NpcTemplate TrapTemplate = NpcTable.getInstance().getTemplate(getNpcId());
 		trap = new L2TrapInstance(IdFactory.getInstance().getNextId(), TrapTemplate, activeChar, getTotalLifeTime(), skill);
 		trap.setCurrentHp(trap.getMaxHp());
 		trap.setCurrentMp(trap.getMaxMp());
 		trap.setIsInvul(true);
 		trap.setHeading(activeChar.getHeading());
 		activeChar.setTrap(trap);
-		// L2World.getInstance().storeObject(trap);
 		trap.spawnMe(activeChar.getX(), activeChar.getY(), activeChar.getZ());
 	}
 }

@@ -26,13 +26,11 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 
 public class L2SkillDecoy extends L2Skill
 {
-	private final int _npcId;
 	private final int _summonTotalLifeTime;
 	
 	public L2SkillDecoy(StatsSet set)
 	{
 		super(set);
-		_npcId = set.getInteger("npcId", 0);
 		_summonTotalLifeTime = set.getInteger("summonTotalLifeTime", 20000);
 	}
 	
@@ -44,7 +42,7 @@ public class L2SkillDecoy extends L2Skill
 			return;
 		}
 		
-		if (_npcId == 0)
+		if (getNpcId() == 0)
 		{
 			return;
 		}
@@ -60,7 +58,7 @@ public class L2SkillDecoy extends L2Skill
 			return;
 		}
 		
-		L2NpcTemplate DecoyTemplate = NpcTable.getInstance().getTemplate(_npcId);
+		final L2NpcTemplate DecoyTemplate = NpcTable.getInstance().getTemplate(getNpcId());
 		final L2DecoyInstance decoy = new L2DecoyInstance(IdFactory.getInstance().getNextId(), DecoyTemplate, activeChar, this);
 		decoy.setCurrentHp(decoy.getMaxHp());
 		decoy.setCurrentMp(decoy.getMaxMp());
