@@ -1802,7 +1802,7 @@ public abstract class L2Character extends L2Object
 				skillTime = Formulas.calcAtkSpd(this, skill, skillTime);
 			}
 			// Calculate the Casting Time of Magic Skills (reduced in 40% if using SPS/BSPS)
-			if ((skill.isMagic() && isChargedShot(ShotType.SPIRITSHOTS)) || isChargedShot(ShotType.BLESSED_SPIRITSHOTS))
+			if (skill.isMagic() && (isChargedShot(ShotType.SPIRITSHOTS) || isChargedShot(ShotType.BLESSED_SPIRITSHOTS)))
 			{
 				skillTime = (int) (0.6 * skillTime);
 			}
