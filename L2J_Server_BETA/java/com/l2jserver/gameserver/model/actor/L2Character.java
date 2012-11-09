@@ -6196,19 +6196,23 @@ public abstract class L2Character extends L2Object
 					stopSkillEffects(oldSkill.getId());
 				}
 			}
-			
-			if ((oldSkill instanceof L2SkillMount) && isPlayer() && getActingPlayer().isMounted())
+			if (isPlayer())
 			{
-				getActingPlayer().dismount();
+				if ((oldSkill instanceof L2SkillMount) && getActingPlayer().isMounted())
+				{
+					getActingPlayer().dismount();
+				}
+				
+				// TODO: Unhardcode it!
+				if ((oldSkill instanceof L2SkillSummon) && (oldSkill.getId() == 710) && getActingPlayer().hasSummon() && (getActingPlayer().getSummon().getNpcId() == 14870))
+				{
+					getActingPlayer().getSummon().unSummon(getActingPlayer());
+				}
 			}
 			
 			if (oldSkill.isChance() && (_chanceSkills != null))
 			{
 				removeChanceSkill(oldSkill.getId());
-			}
-			if ((oldSkill instanceof L2SkillSummon) && (oldSkill.getId() == 710) && isPlayer() && getActingPlayer().hasSummon() && (getActingPlayer().getSummon().getNpcId() == 14870))
-			{
-				getActingPlayer().getSummon().unSummon(getActingPlayer());
 			}
 		}
 		

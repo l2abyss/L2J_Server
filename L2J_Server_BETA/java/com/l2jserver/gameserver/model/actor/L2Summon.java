@@ -69,16 +69,12 @@ public abstract class L2Summon extends L2Playable
 	private int _attackRange = 36; // Melee range
 	private boolean _follow = true;
 	private boolean _previousFollowStatus = true;
-	
-	// /!\ BLACK MAGIC /!\
-	// We don't have walk speed in pet data so for now use run speed / 3
-	public static final int WALK_SPEED_MULTIPLIER = 3;
-	
 	public boolean _restoreSummon = true;
-	
 	private int _shotsMask = 0;
 	
 	// TODO: Unhardcode
+	// We don't have walk speed in pet data so for now use run speed / 3
+	public static final int WALK_SPEED_MULTIPLIER = 3;
 	// @formatter:off
 	private static final int[] PASSIVE_SUMMONS =
 	{
@@ -682,6 +678,7 @@ public abstract class L2Summon extends L2Playable
 				return false;
 			}
 			
+			// Summons can cast skills on NPCs inside peace zones.
 			if (isInsidePeaceZone(this, target) && !getOwner().getAccessLevel().allowPeaceAttack())
 			{
 				// If summon or target is in a peace zone, send a system message:
@@ -720,13 +717,14 @@ public abstract class L2Summon extends L2Playable
 			}
 			else
 			{
+				// Summons can cast skills on NPCs inside peace zones.
 				if (!target.isAttackable() && !getOwner().getAccessLevel().allowPeaceAttack())
 				{
 					return false;
 				}
 				
 				// Check if a Forced attack is in progress on non-attackable target
-				if (!target.isAutoAttackable(this) && !forceUse && (skill.getTargetType() != L2TargetType.TARGET_AURA) && (skill.getTargetType() != L2TargetType.TARGET_FRONT_AURA) && (skill.getTargetType() != L2TargetType.TARGET_BEHIND_AURA) && (skill.getTargetType() != L2TargetType.TARGET_CLAN) && (skill.getTargetType() != L2TargetType.TARGET_ALLY) && (skill.getTargetType() != L2TargetType.TARGET_PARTY) && (skill.getTargetType() != L2TargetType.TARGET_SELF))
+				if (!target.isAutoAttackable(this) && !forceUse && !target.isNpc() && (skill.getTargetType() != L2TargetType.TARGET_AURA) && (skill.getTargetType() != L2TargetType.TARGET_FRONT_AURA) && (skill.getTargetType() != L2TargetType.TARGET_BEHIND_AURA) && (skill.getTargetType() != L2TargetType.TARGET_CLAN) && (skill.getTargetType() != L2TargetType.TARGET_ALLY) && (skill.getTargetType() != L2TargetType.TARGET_PARTY) && (skill.getTargetType() != L2TargetType.TARGET_SELF))
 				{
 					return false;
 				}
@@ -1082,7 +1080,8 @@ public abstract class L2Summon extends L2Playable
 			return false;
 		}
 		
-		if (!target.isAutoAttackable(getOwner()) || !ctrlPressed)
+		// Summons can attack NPCs even when the owner cannot.
+		if (!target.isAutoAttackable(getOwner()) && !ctrlPressed && !target.isNpc())
 		{
 			setFollowStatus(false);
 			getAI().setIntention(CtrlIntention.AI_INTENTION_FOLLOW, target);
@@ -1090,19 +1089,13 @@ public abstract class L2Summon extends L2Playable
 			return false;
 		}
 		
-		// TODO
+		// TODO: Unhardcode it.
 		// Siege golems AI doesn't support attacking other than doors at the moment.
-		if (!target.isDoor() && (npcId == L2SiegeSummonInstance.SWOOP_CANNON_ID))
+		if ((!target.isDoor() && (npcId == L2SiegeSummonInstance.SWOOP_CANNON_ID)) || (npcId == L2SiegeSummonInstance.SIEGE_GOLEM_ID))
 		{
 			return false;
 		}
-		
-		if (npcId == L2SiegeSummonInstance.SIEGE_GOLEM_ID)
-		{
-			return false;
-		}
-		
-		return false;
+		return true;
 	}
 	
 	@Override

@@ -418,16 +418,16 @@ public final class RequestActionUse extends L2GameClientPacket
 				}
 				break;
 			case 1003: // Wind Hatchling/Strider - Wild Stun
-				useSkill(4710, false);
+				useSkill(4710, true);
 				break;
 			case 1004: // Wind Hatchling/Strider - Wild Defense
-				useSkill(4711, activeChar, false);
+				useSkill(4711, activeChar, true);
 				break;
 			case 1005: // Star Hatchling/Strider - Bright Burst
-				useSkill(4712, false);
+				useSkill(4712, true);
 				break;
 			case 1006: // Star Hatchling/Strider - Bright Heal
-				useSkill(4713, activeChar, false);
+				useSkill(4713, activeChar, true);
 				break;
 			case 1007: // Cat Queen - Blessing of Queen
 				useSkill(4699, activeChar, false);
@@ -499,7 +499,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				}
 				break;
 			case 1041: // Great Wolf - Bite Attack
-				useSkill(5442, false);
+				useSkill(5442, true);
 				break;
 			case 1042: // Great Wolf - Maul
 				useSkill(5444, true);
@@ -589,7 +589,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				useSkill(5771, true);
 				break;
 			case 1071: // Tigress - Power Strike
-				useSkill(5761, false);
+				useSkill(5761, true);
 				break;
 			case 1072: // Toy Knight - Piercing attack
 				useSkill(6046, true);
@@ -765,6 +765,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				break;
 			default:
 				_log.warning(activeChar.getName() + ": unhandled action type " + _actionId);
+				break;
 		}
 	}
 	
@@ -787,7 +788,7 @@ public final class RequestActionUse extends L2GameClientPacket
 			sendPacket(cs);
 			activeChar.sitDown();
 			activeChar.broadcastPacket(cs);
-			return false;
+			return true;
 		}
 		
 		if (activeChar.isSitting())
@@ -817,7 +818,7 @@ public final class RequestActionUse extends L2GameClientPacket
 		}
 		
 		final L2Summon summon = activeChar.getSummon();
-		if (validateSummon(summon, pet))
+		if (!validateSummon(summon, pet))
 		{
 			return;
 		}

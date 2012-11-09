@@ -14,20 +14,18 @@
  */
 package com.l2jserver.gameserver.model.itemcontainer;
 
-import java.util.List;
-
-import javolution.util.FastList;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.stats.Stats;
 
+/**
+ * @author UnAfraid
+ */
 public class PcFreight extends ItemContainer
 {
 	private final L2PcInstance _owner;
-	private int _ownerId = 0;
+	private final int _ownerId;
 	
 	public PcFreight(int object_id)
 	{
@@ -43,6 +41,12 @@ public class PcFreight extends ItemContainer
 	}
 	
 	@Override
+	public int getOwnerId()
+	{
+		return _ownerId;
+	}
+	
+	@Override
 	public L2PcInstance getOwner()
 	{
 		return _owner;
@@ -54,66 +58,10 @@ public class PcFreight extends ItemContainer
 		return ItemLocation.FREIGHT;
 	}
 	
-	/**
-	 * Returns the quantity of items in the inventory
-	 * @return int
-	 */
 	@Override
-	public int getSize()
+	public String getName()
 	{
-		int size = 0;
-		for (L2ItemInstance item : _items)
-		{
-			if (item.getLocation() == getBaseLocation())
-			{
-				size++;
-			}
-		}
-		return size;
-	}
-	
-	/**
-	 * Returns the list of items in inventory
-	 * @return L2ItemInstance : items in inventory
-	 */
-	@Override
-	public L2ItemInstance[] getItems()
-	{
-		List<L2ItemInstance> list = new FastList<>();
-		for (L2ItemInstance item : _items)
-		{
-			if (item.isFreightable())
-			{
-				list.add(item);
-			}
-		}
-		
-		return list.toArray(new L2ItemInstance[list.size()]);
-	}
-	
-	/**
-	 * Returns the item from inventory by using its <B>itemId</B>
-	 * @param itemId : int designating the ID of the item
-	 * @return L2ItemInstance designating the item or null if not found in inventory
-	 */
-	@Override
-	public L2ItemInstance getItemByItemId(int itemId)
-	{
-		for (L2ItemInstance item : _items)
-		{
-			if ((item.getItemId() == itemId) && (item.getLocation() == ItemLocation.INVENTORY))
-			{
-				return item;
-			}
-		}
-		
-		return null;
-	}
-	
-	@Override
-	public int getOwnerId()
-	{
-		return _ownerId;
+		return "Freight";
 	}
 	
 	@Override
@@ -121,5 +69,10 @@ public class PcFreight extends ItemContainer
 	{
 		int curSlots = _owner == null ? Config.ALT_FREIGHT_SLOTS : Config.ALT_FREIGHT_SLOTS + (int) _owner.getStat().calcStat(Stats.FREIGHT_LIM, 0, null, null);
 		return ((getSize() + slots) <= curSlots);
+	}
+	
+	@Override
+	public void refreshWeight()
+	{
 	}
 }
