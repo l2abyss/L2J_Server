@@ -48,14 +48,13 @@ public class GMAudit
 	{
 		final SimpleDateFormat _formatter = new SimpleDateFormat("dd/MM/yyyy H:mm:ss");
 		final String date = _formatter.format(new Date());
-		String path = com.l2jserver.util.Util.replaceIllegalCharacters("log/GMAudit/" + gmName + ".txt");
-		if (!com.l2jserver.util.Util.isValidFileName(path))
+		String name = com.l2jserver.util.Util.replaceIllegalCharacters(gmName);
+		if (!com.l2jserver.util.Util.isValidFileName(name))
 		{
-			path = "log/GMAudit/INVALID_GM_NAME_" + date + ".txt";
+			name = "INVALID_GM_NAME_" + date;
 		}
 		
-		final File file = new File(path);
-		
+		final File file = new File("log/GMAudit/" + name + ".txt");
 		try (FileWriter save = new FileWriter(file, true))
 		{
 			save.write(date + ">" + gmName + ">" + action + ">" + target + ">" + params + Config.EOL);
