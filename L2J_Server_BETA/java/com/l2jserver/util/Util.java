@@ -14,6 +14,8 @@
  */
 package com.l2jserver.util;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.InetAddress;
@@ -22,12 +24,30 @@ import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
 /**
- * This class ...
- * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
+ * Useful utilities common to L2J Server.
  */
 public class Util
 {
 	private static final Logger _log = Logger.getLogger(Util.class.getName());
+	
+	private static final char[] ILLEGAL_CHARACTERS =
+	{
+		'/',
+		'\n',
+		'\r',
+		'\t',
+		'\0',
+		'\f',
+		'`',
+		'?',
+		'*',
+		'\\',
+		'<',
+		'>',
+		'|',
+		'\"',
+		':'
+	};
 	
 	/**
 	 * Checks if a host name is internal
@@ -108,5 +128,39 @@ public class Util
 		StringWriter sw = new StringWriter();
 		t.printStackTrace(new PrintWriter(sw));
 		return sw.toString();
+	}
+	
+	/**
+	 * Replaces most invalid characters for the given string with an underscore.
+	 * @param str the string that may contain invalid characters
+	 * @return the string with invalid character replaced by underscores
+	 */
+	public static String replaceIllegalCharacters(String str)
+	{
+		String valid = str;
+		for (char c : ILLEGAL_CHARACTERS)
+		{
+			valid = valid.replace(c, '_');
+		}
+		return valid;
+	}
+	
+	/**
+	 * Verify if a file name is valid.
+	 * @param name the name of the file
+	 * @return {@code true} if the file name is valid, {@code false} otherwise
+	 */
+	public static boolean isValidFileName(String name)
+	{
+		final File f = new File(name);
+		try
+		{
+			f.getCanonicalPath();
+			return true;
+		}
+		catch (IOException e)
+		{
+			return false;
+		}
 	}
 }

@@ -25,28 +25,40 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.util.lib.Log;
 
+/**
+ * Audits Game Master's actions.
+ */
 public class GMAudit
 {
+	private static final Logger _log = Logger.getLogger(Log.class.getName());
+	
 	static
 	{
 		new File("log/GMAudit").mkdirs();
 	}
 	
-	private static final Logger _log = Logger.getLogger(Log.class.getName());
-	
 	/**
-	 * @param gmName
-	 * @param action
-	 * @param target
-	 * @param params
+	 * Logs a Game Master's action into a file.
+	 * @param gmName the Game Master's name
+	 * @param action the performed action
+	 * @param target the target's name
+	 * @param params the parameters
 	 */
 	public static void auditGMAction(String gmName, String action, String target, String params)
 	{
-		final File file = new File("log/GMAudit/" + gmName + ".txt");
 		final SimpleDateFormat _formatter = new SimpleDateFormat("dd/MM/yyyy H:mm:ss");
+		final String date = _formatter.format(new Date());
+		String path = com.l2jserver.util.Util.replaceIllegalCharacters("log/GMAudit/" + gmName + ".txt");
+		if (!com.l2jserver.util.Util.isValidFileName(path))
+		{
+			path = "log/GMAudit/INVALID_GM_NAME_" + date + ".txt";
+		}
+		
+		final File file = new File(path);
+		
 		try (FileWriter save = new FileWriter(file, true))
 		{
-			save.write(_formatter.format(new Date()) + ">" + gmName + ">" + action + ">" + target + ">" + params + Config.EOL);
+			save.write(date + ">" + gmName + ">" + action + ">" + target + ">" + params + Config.EOL);
 		}
 		catch (IOException e)
 		{
@@ -56,9 +68,9 @@ public class GMAudit
 	
 	/**
 	 * Wrapper method.
-	 * @param gmName
-	 * @param action
-	 * @param target
+	 * @param gmName the Game Master's name
+	 * @param action the performed action
+	 * @param target the target's name
 	 */
 	public static void auditGMAction(String gmName, String action, String target)
 	{
