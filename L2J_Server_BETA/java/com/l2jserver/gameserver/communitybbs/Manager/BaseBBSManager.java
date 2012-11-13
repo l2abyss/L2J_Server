@@ -33,26 +33,25 @@ public abstract class BaseBBSManager
 		{
 			return;
 		}
-		if (html.length() < 4090)
+		if (html.length() < 4096)
 		{
 			acha.sendPacket(new ShowBoard(html, "101"));
 			acha.sendPacket(new ShowBoard(null, "102"));
 			acha.sendPacket(new ShowBoard(null, "103"));
 			
 		}
-		else if (html.length() < 8180)
+		else if (html.length() < 8192)
 		{
-			acha.sendPacket(new ShowBoard(html.substring(0, 4090), "101"));
-			acha.sendPacket(new ShowBoard(html.substring(4090, html.length()), "102"));
+			acha.sendPacket(new ShowBoard(html.substring(0, 4096), "101"));
+			acha.sendPacket(new ShowBoard(html.substring(4096), "102"));
 			acha.sendPacket(new ShowBoard(null, "103"));
 			
 		}
-		else if (html.length() < 12270)
+		else if (html.length() < 16384)
 		{
-			acha.sendPacket(new ShowBoard(html.substring(0, 4090), "101"));
-			acha.sendPacket(new ShowBoard(html.substring(4090, 8180), "102"));
-			acha.sendPacket(new ShowBoard(html.substring(8180, html.length()), "103"));
-			
+			acha.sendPacket(new ShowBoard(html.substring(0, 4096), "101"));
+			acha.sendPacket(new ShowBoard(html.substring(4096, 8192), "102"));
+			acha.sendPacket(new ShowBoard(html.substring(8192), "103"));
 		}
 	}
 	
@@ -62,7 +61,7 @@ public abstract class BaseBBSManager
 	 */
 	protected void send1001(String html, L2PcInstance acha)
 	{
-		if (html.length() < 8180)
+		if (html.length() < 8192)
 		{
 			acha.sendPacket(new ShowBoard(html, "1001"));
 		}
