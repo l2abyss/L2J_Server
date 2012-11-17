@@ -137,6 +137,7 @@ public class L2Npc extends L2Character
 	private int _soulshotamount = 0;
 	private int _spiritshotamount = 0;
 	private int _displayEffect = 0;
+	private int _scriptVal = 0;
 	
 	/**
 	 * The character that summons this NPC.
@@ -1856,5 +1857,20 @@ public class L2Npc extends L2Character
 				setChargedShot(ShotType.SPIRITSHOTS, true);
 			}
 		}
+	}
+	
+	public int getScriptValue()
+	{
+		return _scriptVal;
+	}
+	
+	public void setScriptValue(int val)
+	{
+		_scriptVal = val;
+	}
+	
+	public boolean isScriptValue(int val)
+	{
+		return _scriptVal == val;
 	}
 }
