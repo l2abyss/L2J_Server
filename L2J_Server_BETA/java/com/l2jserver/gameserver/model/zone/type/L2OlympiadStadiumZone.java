@@ -24,6 +24,7 @@ import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2OlympiadManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -57,13 +58,10 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 	
 	private final class Settings extends AbstractZoneSettings
 	{
-		private final List<L2Spawn> _buffers;
-		
 		private OlympiadGameTask _task = null;
 		
 		public Settings()
 		{
-			_buffers = new ArrayList<>(2);
 		}
 		
 		public OlympiadGameTask getOlympiadTask()
@@ -76,16 +74,10 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 			_task = task;
 		}
 		
-		public List<L2Spawn> getBuffers()
-		{
-			return _buffers;
-		}
-		
 		@Override
 		public void clear()
 		{
 			_task = null;
-			_buffers.clear();
 		}
 	}
 	
@@ -121,28 +113,29 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 			}
 		}
 	}
-	
+
 	public final void spawnBuffers()
 	{
-		for (L2Spawn spawn : getSettings().getBuffers())
+		for (L2Npc buffer : InstanceManager.getInstance().getInstance(getInstanceId()).getNpcs())
 		{
-			spawn.startRespawn();
-			spawn.respawnNpc(spawn.getLastSpawn());
-			spawn.stopRespawn();
-		}
-	}
-	
-	public final void deleteBuffers()
-	{
-		for (L2Spawn spawn : getSettings().getBuffers())
-		{
-			if (spawn.getLastSpawn().isVisible())
+			if (buffer instanceof L2OlympiadManagerInstance && !buffer.isVisible())
 			{
-				spawn.getLastSpawn().deleteMe();
+				buffer.spawnMe();
 			}
 		}
 	}
-	
+
+	public final void deleteBuffers()
+	{
+		for (L2Npc buffer : InstanceManager.getInstance().getInstance(getInstanceId()).getNpcs())
+		{
+			if (buffer instanceof L2OlympiadManagerInstance && buffer.isVisible())
+			{
+				buffer.decayMe();
+			}
+		}
+	}
+
 	public final void broadcastStatusUpdate(L2PcInstance player)
 	{
 		final ExOlympiadUserInfo packet = new ExOlympiadUserInfo(player);
@@ -184,7 +177,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 				}
 			}
 		}
-		
+
 		if (character.isPlayable())
 		{
 			final L2PcInstance player = character.getActingPlayer();
@@ -195,20 +188,18 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 				{
 					ThreadPoolManager.getInstance().executeTask(new KickPlayer(player));
 				}
-			}
-		}
-		else if (character instanceof L2OlympiadManagerInstance)
-		{
-			final L2Spawn spawn = ((L2OlympiadManagerInstance) character).getSpawn();
-			if ((spawn != null) && !getSettings().getBuffers().contains(spawn))
-			{
-				getSettings().getBuffers().add(spawn);
-				spawn.stopRespawn();
-				character.deleteMe();
+				else
+				{
+					// check for pet
+					if (player.hasSummon() && player.getSummon().isPet())
+					{
+						player.getSummon().unSummon(player);
+					}
+				}
 			}
 		}
 	}
-	
+
 	@Override
 	protected final void onExit(L2Character character)
 	{
