@@ -357,7 +357,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		}
 		if (_state == EffectState.ACTING)
 		{
-			if (isSeflEffectType())
+			if (isSelfEffectType())
 			{
 				_effector.addEffect(this);
 			}
@@ -406,7 +406,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 			
 			_currentFuture = null;
 			
-			if (isSeflEffectType() && (getEffector() != null))
+			if (isSelfEffectType() && (getEffector() != null))
 			{
 				getEffector().removeEffect(this);
 			}
@@ -707,7 +707,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		return "L2Effect [_skill=" + _skill + ", _state=" + _state + ", _period=" + _abnormalTime + "]";
 	}
 	
-	public boolean isSeflEffectType()
+	public boolean isSelfEffectType()
 	{
 		return false;
 	}
