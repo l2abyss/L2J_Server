@@ -17,15 +17,11 @@ package com.l2jserver;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -48,7 +44,6 @@ public class L2DatabaseFactory
 	
 	private static L2DatabaseFactory _instance;
 	private static volatile ScheduledExecutorService _executor;
-	private static Map<Connection, ScheduledFuture<?>> _connectionClosers = new FastMap<Connection, ScheduledFuture<?>>().shared();
 	private ProviderType _providerType;
 	private ComboPooledDataSource _source;
 	
@@ -271,7 +266,7 @@ public class L2DatabaseFactory
 				con = _source.getConnection();
 				if (Server.serverMode == Server.MODE_GAMESERVER)
 				{
-					_connectionClosers.put(con, ThreadPoolManager.getInstance().scheduleGeneral(new ConnectionCloser(con, new RuntimeException()), Config.CONNECTION_CLOSE_TIME));
+					ThreadPoolManager.getInstance().scheduleGeneral(new ConnectionCloser(con, new RuntimeException()), Config.CONNECTION_CLOSE_TIME);
 				}
 				else
 				{
@@ -343,12 +338,6 @@ public class L2DatabaseFactory
 		try
 		{
 			con.close();
-			ScheduledFuture<?> conCloser = _connectionClosers.remove(con);
-			if (conCloser != null)
-			{
-				conCloser.cancel(true);
-				conCloser = null;
-			}
 		}
 		catch (SQLException e)
 		{
