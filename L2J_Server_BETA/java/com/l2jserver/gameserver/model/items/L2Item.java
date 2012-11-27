@@ -41,6 +41,7 @@ import com.l2jserver.gameserver.model.items.type.L2ActionType;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.model.items.type.L2ItemType;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.stats.Env;
@@ -219,7 +220,7 @@ public abstract class L2Item
 	private final boolean _ex_immediate_effect;
 	private final int _defaultEnchantLevel;
 	private final L2ActionType _defaultAction;
-	
+
 	protected int _type1; // needed for item list (inventory)
 	protected int _type2; // different lists for armor, weapon, etc
 	protected Elementals[] _elementals = null;
@@ -227,10 +228,11 @@ public abstract class L2Item
 	protected EffectTemplate[] _effectTemplates;
 	protected List<Condition> _preConditions;
 	private SkillHolder[] _skillHolder;
-	
+	private SkillHolder _unequipSkill = null;
+
 	protected static final Func[] _emptyFunctionSet = new Func[0];
 	protected static final L2Effect[] _emptyEffectSet = new L2Effect[0];
-	
+
 	private final List<Quest> _questEvents = new FastList<>();
 	private final int _useSkillDisTime;
 	private final int _reuseDelay;
@@ -365,7 +367,32 @@ public abstract class L2Item
 				_skillHolder = skillHolder;
 			}
 		}
-		
+
+		skills = set.getString("unequip_skill", null);
+		if (skills != null)
+		{
+			String[] info = skills.split("-");
+			if ((info != null) && (info.length == 2))
+			{
+				int id = 0;
+				int level = 0;
+				try
+				{
+					id = Integer.parseInt(info[0]);
+					level = Integer.parseInt(info[1]);
+				}
+				catch (Exception nfe)
+				{
+					// Incorrect syntax, dont add new skill
+					_log.info(StringUtil.concat("> Couldnt parse ", skills, " in weapon unequip skills! item ", this.toString()));
+				}
+				if ((id > 0) && (level > 0))
+				{
+					_unequipSkill = new SkillHolder(id, level);
+				}
+			}
+		}
+
 		_common = ((_itemId >= 11605) && (_itemId <= 12361));
 		_heroItem = ((_itemId >= 6611) && (_itemId <= 6621)) || ((_itemId >= 9388) && (_itemId <= 9390)) || (_itemId == 6842);
 		_pvpItem = ((_itemId >= 10667) && (_itemId <= 10835)) || ((_itemId >= 12852) && (_itemId <= 12977)) || ((_itemId >= 14363) && (_itemId <= 14525)) || (_itemId == 14528) || (_itemId == 14529) || (_itemId == 14558) || ((_itemId >= 15913) && (_itemId <= 16024)) || ((_itemId >= 16134) && (_itemId <= 16147)) || (_itemId == 16149) || (_itemId == 16151) || (_itemId == 16153) || (_itemId == 16155) || (_itemId == 16157) || (_itemId == 16159) || ((_itemId >= 16168) && (_itemId <= 16176)) || ((_itemId >= 16179) && (_itemId <= 16220));
@@ -949,6 +976,14 @@ public abstract class L2Item
 		return _skillHolder;
 	}
 	
+	/**
+	 * @return skill that activates, when player unequip this weapon or armor
+	 */
+	public final L2Skill getUnequipSkill()
+	{
+		return _unequipSkill == null ? null : _unequipSkill.getSkill();
+	}
+
 	public boolean checkCondition(L2Character activeChar, L2Object target, boolean sendMessage)
 	{
 		if (activeChar.canOverrideCond(PcCondOverride.ITEM_CONDITIONS) && !Config.GM_ITEM_RESTRICTION)

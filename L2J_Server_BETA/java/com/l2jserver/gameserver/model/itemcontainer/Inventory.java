@@ -28,6 +28,8 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ArmorSetsData;
 import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.handler.ISkillHandler;
+import com.l2jserver.gameserver.handler.SkillHandler;
 import com.l2jserver.gameserver.model.L2ArmorSet;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.PcCondOverride;
@@ -395,7 +397,24 @@ public abstract class Inventory extends ItemContainer
 					}
 				}
 			}
-			
+
+			// Apply skill, if weapon have "skills on unequip"
+			L2Skill unequipSkill = it.getUnequipSkill();
+			if (unequipSkill != null)
+			{
+				ISkillHandler handler = SkillHandler.getInstance().getHandler(unequipSkill.getSkillType());
+				L2PcInstance[] targets = { player };
+
+				if (handler != null)
+				{
+					handler.useSkill(player, unequipSkill, targets);
+				}
+				else
+				{
+					unequipSkill.useSkill(player, targets);
+				}
+			}
+
 			if (update)
 			{
 				player.sendSkillList();

@@ -7918,15 +7918,17 @@ public final class L2PcInstance extends L2Playable
 			// Note that Clan, Noblesse and Hero skills are given separately and not here.
 			// Retrieve from the database all skills of this L2PcInstance and add them to _skills
 			player.restoreCharData();
-			// Reward auto-get skills and all available skills if auto-learn skills is true.
-			player.rewardSkills();
-			
+
 			// buff and status icons
 			if (Config.STORE_SKILL_COOLTIME)
 			{
 				player.restoreEffects();
 			}
 			
+			// Reward auto-get skills and all available skills if auto-learn skills is true.
+			//Moved beyond restoreEffects() for proper handling of weapon's "unequip_skill" on player login
+			player.rewardSkills();
+
 			player.restoreItemReuse();
 			
 			// Restore current Cp, HP and MP values
