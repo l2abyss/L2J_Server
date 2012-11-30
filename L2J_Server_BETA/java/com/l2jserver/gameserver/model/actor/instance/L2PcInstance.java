@@ -7698,196 +7698,195 @@ public final class L2PcInstance extends L2Playable
 	private static L2PcInstance restore(int objectId)
 	{
 		L2PcInstance player = null;
+		double currentCp = 0;
+		double currentHp = 0;
+		double currentMp = 0;
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(RESTORE_CHARACTER);
-			ResultSet rset = statement.executeQuery())
+			PreparedStatement statement = con.prepareStatement(RESTORE_CHARACTER))
 		{
 			// Retrieve the L2PcInstance from the characters table of the database
 			statement.setInt(1, objectId);
-			
-			double currentCp = 0;
-			double currentHp = 0;
-			double currentMp = 0;
-			
-			while (rset.next())
+			try (ResultSet rset = statement.executeQuery())
 			{
-				final int activeClassId = rset.getInt("classid");
-				final boolean female = rset.getInt("sex") != Sex.MALE;
-				final L2PcTemplate template = CharTemplateTable.getInstance().getTemplate(activeClassId);
-				PcAppearance app = new PcAppearance(rset.getByte("face"), rset.getByte("hairColor"), rset.getByte("hairStyle"), female);
-				
-				player = new L2PcInstance(objectId, template, rset.getString("account_name"), app);
-				player.setName(rset.getString("char_name"));
-				player._lastAccess = rset.getLong("lastAccess");
-				
-				player.getStat().setExp(rset.getLong("exp"));
-				player.setExpBeforeDeath(rset.getLong("expBeforeDeath"));
-				player.getStat().setLevel(rset.getByte("level"));
-				player.getStat().setSp(rset.getInt("sp"));
-				
-				player.setWantsPeace(rset.getInt("wantspeace"));
-				
-				player.setHeading(rset.getInt("heading"));
-				
-				player.setKarma(rset.getInt("karma"));
-				player.setFame(rset.getInt("fame"));
-				player.setPvpKills(rset.getInt("pvpkills"));
-				player.setPkKills(rset.getInt("pkkills"));
-				player.setOnlineTime(rset.getLong("onlinetime"));
-				player.setNewbie(rset.getInt("newbie"));
-				player.setNoble(rset.getInt("nobless") == 1);
-				
-				player.setClanJoinExpiryTime(rset.getLong("clan_join_expiry_time"));
-				if (player.getClanJoinExpiryTime() < System.currentTimeMillis())
+				if (rset.next())
 				{
-					player.setClanJoinExpiryTime(0);
-				}
-				player.setClanCreateExpiryTime(rset.getLong("clan_create_expiry_time"));
-				if (player.getClanCreateExpiryTime() < System.currentTimeMillis())
-				{
-					player.setClanCreateExpiryTime(0);
-				}
-				
-				int clanId = rset.getInt("clanid");
-				player.setPowerGrade(rset.getInt("power_grade"));
-				player.setPledgeType(rset.getInt("subpledge"));
-				// player.setApprentice(rset.getInt("apprentice"));
-				
-				if (clanId > 0)
-				{
-					player.setClan(ClanTable.getInstance().getClan(clanId));
-				}
-				
-				if (player.getClan() != null)
-				{
-					if (player.getClan().getLeaderId() != player.getObjectId())
+					final int activeClassId = rset.getInt("classid");
+					final boolean female = rset.getInt("sex") != Sex.MALE;
+					final L2PcTemplate template = CharTemplateTable.getInstance().getTemplate(activeClassId);
+					PcAppearance app = new PcAppearance(rset.getByte("face"), rset.getByte("hairColor"), rset.getByte("hairStyle"), female);
+					
+					player = new L2PcInstance(objectId, template, rset.getString("account_name"), app);
+					player.setName(rset.getString("char_name"));
+					player._lastAccess = rset.getLong("lastAccess");
+					
+					player.getStat().setExp(rset.getLong("exp"));
+					player.setExpBeforeDeath(rset.getLong("expBeforeDeath"));
+					player.getStat().setLevel(rset.getByte("level"));
+					player.getStat().setSp(rset.getInt("sp"));
+					
+					player.setWantsPeace(rset.getInt("wantspeace"));
+					
+					player.setHeading(rset.getInt("heading"));
+					
+					player.setKarma(rset.getInt("karma"));
+					player.setFame(rset.getInt("fame"));
+					player.setPvpKills(rset.getInt("pvpkills"));
+					player.setPkKills(rset.getInt("pkkills"));
+					player.setOnlineTime(rset.getLong("onlinetime"));
+					player.setNewbie(rset.getInt("newbie"));
+					player.setNoble(rset.getInt("nobless") == 1);
+					
+					player.setClanJoinExpiryTime(rset.getLong("clan_join_expiry_time"));
+					if (player.getClanJoinExpiryTime() < System.currentTimeMillis())
 					{
-						if (player.getPowerGrade() == 0)
+						player.setClanJoinExpiryTime(0);
+					}
+					player.setClanCreateExpiryTime(rset.getLong("clan_create_expiry_time"));
+					if (player.getClanCreateExpiryTime() < System.currentTimeMillis())
+					{
+						player.setClanCreateExpiryTime(0);
+					}
+					
+					int clanId = rset.getInt("clanid");
+					player.setPowerGrade(rset.getInt("power_grade"));
+					player.setPledgeType(rset.getInt("subpledge"));
+					// player.setApprentice(rset.getInt("apprentice"));
+					
+					if (clanId > 0)
+					{
+						player.setClan(ClanTable.getInstance().getClan(clanId));
+					}
+					
+					if (player.getClan() != null)
+					{
+						if (player.getClan().getLeaderId() != player.getObjectId())
 						{
-							player.setPowerGrade(5);
+							if (player.getPowerGrade() == 0)
+							{
+								player.setPowerGrade(5);
+							}
+							player.setClanPrivileges(player.getClan().getRankPrivs(player.getPowerGrade()));
 						}
-						player.setClanPrivileges(player.getClan().getRankPrivs(player.getPowerGrade()));
+						else
+						{
+							player.setClanPrivileges(L2Clan.CP_ALL);
+							player.setPowerGrade(1);
+						}
+						player.setPledgeClass(L2ClanMember.calculatePledgeClass(player));
 					}
 					else
 					{
-						player.setClanPrivileges(L2Clan.CP_ALL);
-						player.setPowerGrade(1);
-					}
-					player.setPledgeClass(L2ClanMember.calculatePledgeClass(player));
-				}
-				else
-				{
-					if (player.isNoble())
-					{
-						player.setPledgeClass(5);
-					}
-					
-					if (player.isHero())
-					{
-						player.setPledgeClass(8);
-					}
-					
-					player.setClanPrivileges(L2Clan.CP_NOTHING);
-				}
-				
-				player.setDeleteTimer(rset.getLong("deletetime"));
-				
-				player.setTitle(rset.getString("title"));
-				player.getAppearance().setTitleColor(rset.getInt("title_color"));
-				player.setAccessLevel(rset.getInt("accesslevel"));
-				player.setFistsWeaponItem(player.findFistsWeaponItem(activeClassId));
-				player.setUptime(System.currentTimeMillis());
-				
-				currentHp = rset.getDouble("curHp");
-				currentCp = rset.getDouble("curCp");
-				currentMp = rset.getDouble("curMp");
-				
-				player._classIndex = 0;
-				try
-				{
-					player.setBaseClass(rset.getInt("base_class"));
-				}
-				catch (Exception e)
-				{
-					// TODO: Should this be logged?
-					player.setBaseClass(activeClassId);
-				}
-				
-				// Restore Subclass Data (cannot be done earlier in function)
-				if (restoreSubClassData(player))
-				{
-					if (activeClassId != player.getBaseClass())
-					{
-						for (SubClass subClass : player.getSubClasses().values())
+						if (player.isNoble())
 						{
-							if (subClass.getClassId() == activeClassId)
+							player.setPledgeClass(5);
+						}
+						
+						if (player.isHero())
+						{
+							player.setPledgeClass(8);
+						}
+						
+						player.setClanPrivileges(L2Clan.CP_NOTHING);
+					}
+					
+					player.setDeleteTimer(rset.getLong("deletetime"));
+					
+					player.setTitle(rset.getString("title"));
+					player.getAppearance().setTitleColor(rset.getInt("title_color"));
+					player.setAccessLevel(rset.getInt("accesslevel"));
+					player.setFistsWeaponItem(player.findFistsWeaponItem(activeClassId));
+					player.setUptime(System.currentTimeMillis());
+					
+					currentHp = rset.getDouble("curHp");
+					currentCp = rset.getDouble("curCp");
+					currentMp = rset.getDouble("curMp");
+					
+					player._classIndex = 0;
+					try
+					{
+						player.setBaseClass(rset.getInt("base_class"));
+					}
+					catch (Exception e)
+					{
+						// TODO: Should this be logged?
+						player.setBaseClass(activeClassId);
+					}
+					
+					// Restore Subclass Data (cannot be done earlier in function)
+					if (restoreSubClassData(player))
+					{
+						if (activeClassId != player.getBaseClass())
+						{
+							for (SubClass subClass : player.getSubClasses().values())
 							{
-								player._classIndex = subClass.getClassIndex();
+								if (subClass.getClassId() == activeClassId)
+								{
+									player._classIndex = subClass.getClassIndex();
+								}
+							}
+						}
+					}
+					if ((player.getClassIndex() == 0) && (activeClassId != player.getBaseClass()))
+					{
+						// Subclass in use but doesn't exist in DB -
+						// a possible restart-while-modifysubclass cheat has been attempted.
+						// Switching to use base class
+						player.setClassId(player.getBaseClass());
+						_log.warning("Player " + player.getName() + " reverted to base class. Possibly has tried a relogin exploit while subclassing.");
+					}
+					else
+					{
+						player._activeClass = activeClassId;
+					}
+					
+					player.setApprentice(rset.getInt("apprentice"));
+					player.setSponsor(rset.getInt("sponsor"));
+					player.setLvlJoinedAcademy(rset.getInt("lvl_joined_academy"));
+					player.setIsIn7sDungeon(rset.getInt("isin7sdungeon") == 1);
+					player.setPunishLevel(rset.getInt("punish_level"));
+					if (player.getPunishLevel() != PunishLevel.NONE)
+					{
+						player.setPunishTimer(rset.getLong("punish_timer"));
+					}
+					else
+					{
+						player.setPunishTimer(0);
+					}
+					
+					CursedWeaponsManager.getInstance().checkPlayer(player);
+					
+					player.setAllianceWithVarkaKetra(rset.getInt("varka_ketra_ally"));
+					
+					player.setDeathPenaltyBuffLevel(rset.getInt("death_penalty_level"));
+					
+					player.setVitalityPoints(rset.getInt("vitality_points"), true);
+					
+					// Set the x,y,z position of the L2PcInstance and make it invisible
+					player.setXYZInvisible(rset.getInt("x"), rset.getInt("y"), rset.getInt("z"));
+					
+					// Set Teleport Bookmark Slot
+					player.setBookMarkSlot(rset.getInt("BookmarkSlot"));
+					
+					// character creation Time
+					player.getCreateDate().setTime(rset.getDate("createDate"));
+					
+					// Language
+					player.setLang(rset.getString("language"));
+					
+					// Retrieve the name and ID of the other characters assigned to this account.
+					try (PreparedStatement stmt = con.prepareStatement("SELECT charId, char_name FROM characters WHERE account_name=? AND charId<>?"))
+					{
+						stmt.setString(1, player._accountName);
+						stmt.setInt(2, objectId);
+						try (ResultSet chars = stmt.executeQuery())
+						{
+							while (chars.next())
+							{
+								player._chars.put(chars.getInt("charId"), chars.getString("char_name"));
 							}
 						}
 					}
 				}
-				if ((player.getClassIndex() == 0) && (activeClassId != player.getBaseClass()))
-				{
-					// Subclass in use but doesn't exist in DB -
-					// a possible restart-while-modifysubclass cheat has been attempted.
-					// Switching to use base class
-					player.setClassId(player.getBaseClass());
-					_log.warning("Player " + player.getName() + " reverted to base class. Possibly has tried a relogin exploit while subclassing.");
-				}
-				else
-				{
-					player._activeClass = activeClassId;
-				}
-				
-				player.setApprentice(rset.getInt("apprentice"));
-				player.setSponsor(rset.getInt("sponsor"));
-				player.setLvlJoinedAcademy(rset.getInt("lvl_joined_academy"));
-				player.setIsIn7sDungeon(rset.getInt("isin7sdungeon") == 1);
-				player.setPunishLevel(rset.getInt("punish_level"));
-				if (player.getPunishLevel() != PunishLevel.NONE)
-				{
-					player.setPunishTimer(rset.getLong("punish_timer"));
-				}
-				else
-				{
-					player.setPunishTimer(0);
-				}
-				
-				CursedWeaponsManager.getInstance().checkPlayer(player);
-				
-				player.setAllianceWithVarkaKetra(rset.getInt("varka_ketra_ally"));
-				
-				player.setDeathPenaltyBuffLevel(rset.getInt("death_penalty_level"));
-				
-				player.setVitalityPoints(rset.getInt("vitality_points"), true);
-				
-				// Set the x,y,z position of the L2PcInstance and make it invisible
-				player.setXYZInvisible(rset.getInt("x"), rset.getInt("y"), rset.getInt("z"));
-				
-				// Set Teleport Bookmark Slot
-				player.setBookMarkSlot(rset.getInt("BookmarkSlot"));
-				
-				// character creation Time
-				player.getCreateDate().setTime(rset.getDate("createDate"));
-				
-				// Language
-				player.setLang(rset.getString("language"));
-				
-				// Retrieve the name and ID of the other characters assigned to this account.
-				try (PreparedStatement stmt = con.prepareStatement("SELECT charId, char_name FROM characters WHERE account_name=? AND charId<>?"))
-				{
-					stmt.setString(1, player._accountName);
-					stmt.setInt(2, objectId);
-					try (ResultSet chars = stmt.executeQuery())
-					{
-						while (chars.next())
-						{
-							player._chars.put(chars.getInt("charId"), chars.getString("char_name"));
-						}
-					}
-				}
-				break;
 			}
 			
 			if (player == null)
