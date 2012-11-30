@@ -76,6 +76,18 @@ public class EventDroplist
 	}
 	
 	/**
+	 * @param itemId the item Id for the drop
+	 * @param minCount the minimum drop count
+	 * @param maxCount the maximum drop count
+	 * @param chance the drop chance
+	 * @param dateRange the event drop rate range
+	 */
+	public void addGlobalDrop(int itemId, int minCount, int maxCount, int chance, DateRange dateRange)
+	{
+		_allNpcDateDrops.add(new DateDrop(dateRange, new EventDrop(itemId, minCount, maxCount, chance)));
+	}
+	
+	/**
 	 * Adds an event drop for a given date range.
 	 * @param dateRange the date range.
 	 * @param eventDrop the event drop.

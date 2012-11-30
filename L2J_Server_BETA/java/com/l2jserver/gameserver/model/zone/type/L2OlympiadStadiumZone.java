@@ -109,29 +109,29 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 			}
 		}
 	}
-
+	
 	public final void spawnBuffers()
 	{
 		for (L2Npc buffer : InstanceManager.getInstance().getInstance(getInstanceId()).getNpcs())
 		{
-			if (buffer instanceof L2OlympiadManagerInstance && !buffer.isVisible())
+			if ((buffer instanceof L2OlympiadManagerInstance) && !buffer.isVisible())
 			{
 				buffer.spawnMe();
 			}
 		}
 	}
-
+	
 	public final void deleteBuffers()
 	{
 		for (L2Npc buffer : InstanceManager.getInstance().getInstance(getInstanceId()).getNpcs())
 		{
-			if (buffer instanceof L2OlympiadManagerInstance && buffer.isVisible())
+			if ((buffer instanceof L2OlympiadManagerInstance) && buffer.isVisible())
 			{
 				buffer.decayMe();
 			}
 		}
 	}
-
+	
 	public final void broadcastStatusUpdate(L2PcInstance player)
 	{
 		final ExOlympiadUserInfo packet = new ExOlympiadUserInfo(player);
@@ -173,7 +173,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 				}
 			}
 		}
-
+		
 		if (character.isPlayable())
 		{
 			final L2PcInstance player = character.getActingPlayer();
@@ -195,7 +195,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 			}
 		}
 	}
-
+	
 	@Override
 	protected final void onExit(L2Character character)
 	{

@@ -105,7 +105,7 @@ public class Announcements
 		}
 	}
 	
-	public void addEventAnnouncement(DateRange validDateRange, String[] msg)
+	public void addEventAnnouncement(DateRange validDateRange, String... msg)
 	{
 		List<Object> entry = new FastList<>();
 		entry.add(validDateRange);

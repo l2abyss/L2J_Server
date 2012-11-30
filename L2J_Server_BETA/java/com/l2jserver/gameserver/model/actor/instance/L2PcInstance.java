@@ -7698,12 +7698,12 @@ public final class L2PcInstance extends L2Playable
 	private static L2PcInstance restore(int objectId)
 	{
 		L2PcInstance player = null;
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(RESTORE_CHARACTER);
+			ResultSet rset = statement.executeQuery())
 		{
 			// Retrieve the L2PcInstance from the characters table of the database
-			final PreparedStatement statement = con.prepareStatement(RESTORE_CHARACTER);
 			statement.setInt(1, objectId);
-			final ResultSet rset = statement.executeQuery();
 			
 			double currentCp = 0;
 			double currentHp = 0;
@@ -7875,25 +7875,20 @@ public final class L2PcInstance extends L2Playable
 				player.setLang(rset.getString("language"));
 				
 				// Retrieve the name and ID of the other characters assigned to this account.
-				PreparedStatement stmt = con.prepareStatement("SELECT charId, char_name FROM characters WHERE account_name=? AND charId<>?");
-				stmt.setString(1, player._accountName);
-				stmt.setInt(2, objectId);
-				ResultSet chars = stmt.executeQuery();
-				
-				while (chars.next())
+				try (PreparedStatement stmt = con.prepareStatement("SELECT charId, char_name FROM characters WHERE account_name=? AND charId<>?"))
 				{
-					Integer charId = chars.getInt("charId");
-					String charName = chars.getString("char_name");
-					player._chars.put(charId, charName);
+					stmt.setString(1, player._accountName);
+					stmt.setInt(2, objectId);
+					try (ResultSet chars = stmt.executeQuery())
+					{
+						while (chars.next())
+						{
+							player._chars.put(chars.getInt("charId"), chars.getString("char_name"));
+						}
+					}
 				}
-				
-				chars.close();
-				stmt.close();
 				break;
 			}
-			
-			rset.close();
-			statement.close();
 			
 			if (player == null)
 			{
@@ -7918,17 +7913,16 @@ public final class L2PcInstance extends L2Playable
 			// Note that Clan, Noblesse and Hero skills are given separately and not here.
 			// Retrieve from the database all skills of this L2PcInstance and add them to _skills
 			player.restoreCharData();
-
-			// buff and status icons
+			
+			// Buff and status icons
 			if (Config.STORE_SKILL_COOLTIME)
 			{
 				player.restoreEffects();
 			}
 			
 			// Reward auto-get skills and all available skills if auto-learn skills is true.
-			//Moved beyond restoreEffects() for proper handling of weapon's "unequip_skill" on player login
 			player.rewardSkills();
-
+			
 			player.restoreItemReuse();
 			
 			// Restore current Cp, HP and MP values
