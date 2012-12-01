@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -46,8 +45,6 @@ import com.l2jserver.gameserver.script.DateRange;
  */
 public class LongTimeEvent extends Quest
 {
-	protected final static Logger _log = Logger.getLogger(LongTimeEvent.class.getName());
-	
 	private String _eventName;
 	
 	// Messages
@@ -75,9 +72,9 @@ public class LongTimeEvent extends Quest
 		}
 	}
 	
-	public LongTimeEvent(int questId, String name, String descr)
+	public LongTimeEvent(String name, String descr)
 	{
-		super(questId, name, descr);
+		super(-1, name, descr);
 		
 		loadConfig();
 		
@@ -194,7 +191,6 @@ public class LongTimeEvent extends Quest
 							}
 						}
 					}
-					
 					else if (n.getNodeName().equalsIgnoreCase("spawnlist"))
 					{
 						// Loading spawnlist
@@ -225,7 +221,6 @@ public class LongTimeEvent extends Quest
 							}
 						}
 					}
-					
 					else if (n.getNodeName().equalsIgnoreCase("messages"))
 					{
 						// Loading Messages
