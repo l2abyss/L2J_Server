@@ -45,6 +45,7 @@ import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
@@ -707,11 +708,20 @@ public class L2CharacterAI extends AbstractAI
 			((L2Attackable) _accessor.getActor()).setisReturningToSpawnPoint(false);
 		}
 		clientStoppedMoving();
-		
-		// Walking Manager support
+
 		if (_actor instanceof L2Npc)
 		{
-			WalkingManager.getInstance().onArrived((L2Npc) _actor);
+			L2Npc npc = (L2Npc) _actor;
+			WalkingManager.getInstance().onArrived(npc); // Walking Manager support
+
+			// Notify quest
+			if (npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_MOVE_FINISHED) != null)
+			{
+				for (Quest quest : npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_MOVE_FINISHED))
+				{
+					quest.notifyMoveFinished(npc);
+				}
+			}
 		}
 		
 		// If the Intention was AI_INTENTION_MOVE_TO, set the Intention to AI_INTENTION_ACTIVE

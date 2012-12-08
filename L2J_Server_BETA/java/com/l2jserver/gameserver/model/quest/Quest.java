@@ -333,7 +333,9 @@ public class Quest extends ManagedScript
 		ON_ENTER_ZONE(true), // on zone enter
 		ON_EXIT_ZONE(true), // on zone exit
 		ON_TRAP_ACTION(true), // on zone exit
-		ON_ITEM_USE(true);
+		ON_ITEM_USE(true),
+		ON_EVENT_RECEIVED(true), // onEventReceived action, triggered when NPC recieving an event, sent by other NPC
+		ON_MOVE_FINISHED(true); // onMoveFinished action, triggered when NPC stops after moving
 		
 		// control whether this event type is allowed for the same npc template in multiple quests
 		// or if the npc must be registered in at most one quest for the specified event
@@ -1054,7 +1056,25 @@ public class Quest extends ManagedScript
 		ThreadPoolManager.getInstance().executeAi(new TmpOnAggroEnter(npc, player, isPet));
 		return true;
 	}
-	
+
+	/**
+	 * @param eventName - name of event
+	 * @param sender - NPC, who sent event
+	 * @param receiver - NPC, who received event	 
+	 * @param reference - L2Object to pass, if needed	 
+	 */
+	public final void notifyEventReceived(String eventName, L2Npc sender, L2Npc receiver, L2Object reference)
+	{
+		try
+		{
+			onEventReceived(eventName, sender, receiver, reference);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Exception on onEventReceived() in notifyEventReceived(): " + e.getMessage(), e);
+		}
+	}
+
 	/**
 	 * @param character
 	 * @param zone
@@ -1140,7 +1160,22 @@ public class Quest extends ManagedScript
 			showError(loser, e);
 		}
 	}
-	
+
+	/**
+	 * @param npc
+	 */
+	public final void notifyMoveFinished(L2Npc npc)
+	{
+		try
+		{
+			onMoveFinished(npc);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Exception on onMoveFinished() in notifyMoveFinished(): " + e.getMessage(), e);
+		}
+	}
+
 	// These are methods that java calls to invoke scripts.
 	
 	/**
@@ -1446,7 +1481,18 @@ public class Quest extends ManagedScript
 	{
 		return null;
 	}
-	
+
+ 	/**
+	 * @param eventName - name of event
+	 * @param sender - NPC, who sent event
+	 * @param receiver - NPC, who received event	 
+	 * @param reference - L2Object to pass, if needed	 
+	 */
+	public String onEventReceived(String eventName, L2Npc sender, L2Npc receiver, L2Object reference)
+	{
+		return null;
+	}
+
 	/**
 	 * This function is called whenever a player wins an Olympiad Game.
 	 * @param winner this parameter contains a reference to the exact instance of the player who won the competition.
@@ -1466,7 +1512,16 @@ public class Quest extends ManagedScript
 	{
 		
 	}
-	
+
+	/**
+	 * This function is called whenever a NPC finishes moving
+	 * @param npc registered NPC
+	 */
+	public String onMoveFinished(L2Npc npc)
+	{
+		return null;
+	}
+
 	/**
 	 * Show an error message to the specified player.
 	 * @param player the player to whom to send the error (must be a GM)
@@ -2284,7 +2339,59 @@ public class Quest extends ManagedScript
 			return null;
 		}
 	}
-	
+
+	/**
+	 * Register onEventReceived trigger for NPC
+	 * @param npcId id of NPC to register
+	 * @return
+	 */
+	public L2NpcTemplate addEventReceivedId(int npcId)
+	{
+		return addEventId(npcId, QuestEventType.ON_EVENT_RECEIVED);
+	}
+
+	/**
+	 * Register onEventReceived trigger for NPC	
+	 * @param npcIds
+	 * @return
+	 */
+	public L2NpcTemplate[] addEventReceivedId(int... npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+		{
+			value[i++] = addEventId(npcId, QuestEventType.ON_EVENT_RECEIVED);
+		}
+		return value;
+	}
+
+	/**
+	 * Register onMoveFinished trigger for NPC
+	 * @param npcId id of NPC to register
+	 * @return
+	 */
+	public L2NpcTemplate addMoveFinishedId(int npcId)
+	{
+		return addEventId(npcId, QuestEventType.ON_MOVE_FINISHED);
+	}
+
+	/**
+	 * Register onMoveFinished trigger for NPC	
+	 * @param npcIds
+	 * @return
+	 */
+	public L2NpcTemplate[] addMoveFinishedId(int... npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+		{
+			value[i++] = addEventId(npcId, QuestEventType.ON_MOVE_FINISHED);
+		}
+		return value;
+	}
+
 	/**
 	 * Use this method to get a random party member from a player's party.<br>
 	 * Useful when distributing rewards after killing an NPC.

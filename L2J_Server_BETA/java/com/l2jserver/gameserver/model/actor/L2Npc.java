@@ -1858,19 +1858,39 @@ public class L2Npc extends L2Character
 			}
 		}
 	}
-	
+
 	public int getScriptValue()
 	{
 		return _scriptVal;
 	}
-	
+
 	public void setScriptValue(int val)
 	{
 		_scriptVal = val;
 	}
-	
+
 	public boolean isScriptValue(int val)
 	{
 		return _scriptVal == val;
+	}
+
+	/**
+	 * Send an "event" to all NPC's within given radius
+	 * @param eventName - name of event
+	 * @param radius - radius to send event
+	 * @param reference - L2Object to pass, if needed	 
+	 */
+	public void broadcastEvent(String eventName, int radius, L2Object reference)
+	{
+		for (L2Object obj : L2World.getInstance().getVisibleObjects(this, radius))
+		{
+			if (obj.isNpc() && (((L2Npc)obj).getTemplate().getEventQuests(QuestEventType.ON_EVENT_RECEIVED) != null))
+			{
+				for (Quest quest : ((L2Npc)obj).getTemplate().getEventQuests(QuestEventType.ON_EVENT_RECEIVED))
+				{
+					quest.notifyEventReceived(eventName, this, (L2Npc) obj, reference);
+				}
+			}
+		}
 	}
 }
