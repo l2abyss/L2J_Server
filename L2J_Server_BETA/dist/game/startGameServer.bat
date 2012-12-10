@@ -14,14 +14,8 @@ REM -XX:+AggressiveOpts
 REM Use this parameters carefully, some of them could cause abnormal behavior, deadlocks, etc.
 REM More info here: http://www.oracle.com/technetwork/java/javase/tech/vmoptions-jsp-140102.html
 
-if ERRORLEVEL 1 goto error
 if ERRORLEVEL 2 goto restart
-goto end
-
-:error
-echo.
-echo Game Server Terminated Abnormally!
-echo.
+if ERRORLEVEL 1 goto error
 goto end
 
 :restart
@@ -29,6 +23,11 @@ echo.
 echo Admin Restarted Game Server.
 echo.
 goto start
+
+:error
+echo.
+echo Game Server Terminated Abnormally!
+echo.
 
 :end
 echo.
