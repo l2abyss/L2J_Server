@@ -371,11 +371,6 @@ public final class L2PcInstance extends L2Playable
 	
 	public class AIAccessor extends L2Character.AIAccessor
 	{
-		protected AIAccessor()
-		{
-			
-		}
-		
 		public L2PcInstance getPlayer()
 		{
 			return L2PcInstance.this;
@@ -4710,14 +4705,12 @@ public final class L2PcInstance extends L2Playable
 		// Can't use Hero and resurrect skills during Olympiad
 		if (isInOlympiadMode() && (skill.isHeroSkill() || (skill.getSkillType() == L2SkillType.RESURRECT)))
 		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THIS_SKILL_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT);
-			sendPacket(sm);
+			sendPacket(SystemMessageId.THIS_SKILL_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT);
 			return false;
 		}
 		
-		final int charges = getCharges();
 		// Check if the spell using charges or not in AirShip
-		if (((charges < skill.getChargeConsume())) || (isInAirShip() && (skill.getSkillType() != L2SkillType.REFUEL)))
+		if (((getCharges() < skill.getChargeConsume())) || (isInAirShip() && (skill.getSkillType() != L2SkillType.REFUEL)))
 		{
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addSkillName(skill);

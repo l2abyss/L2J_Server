@@ -82,14 +82,10 @@ public class Quest extends ManagedScript
 {
 	protected static final Logger _log = Logger.getLogger(Quest.class.getName());
 	
-	/**
-	 * Map containing events from String value of the event.
-	 */
+	/** Map containing events from String value of the event. */
 	private static Map<String, Quest> _allEventsS = new HashMap<>();
 	
-	/**
-	 * Map containing lists of timers from the name of the timer.
-	 */
+	/** Map containing lists of timers from the name of the timer. */
 	private final Map<String, List<QuestTimer>> _allEventTimers = new L2FastMap<>(true);
 	private final Set<Integer> _questInvolvedNpcs = new HashSet<>();
 	

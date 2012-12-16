@@ -716,8 +716,15 @@ public abstract class L2Character extends L2Object
 		teleToLocation(x, y, z, getHeading(), randomOffset);
 	}
 	
+	/**
+	 * Teleports a character to the given location and set its instance Id.
+	 * @param loc the location to teleport the character
+	 * @param randomOffset the random offset for the teleport location
+	 */
 	public void teleToLocation(Location loc, int randomOffset)
 	{
+		setInstanceId(loc.getInstanceId());
+		
 		int x = loc.getX();
 		int y = loc.getY();
 		int z = loc.getZ();
@@ -745,14 +752,7 @@ public abstract class L2Character extends L2Object
 	
 	public void teleToLocation(Location loc, boolean allowRandomOffset)
 	{
-		if (allowRandomOffset)
-		{
-			teleToLocation(loc, Config.MAX_OFFSET_ON_TELEPORT);
-		}
-		else
-		{
-			teleToLocation(loc, 0);
-		}
+		teleToLocation(loc, (allowRandomOffset ? Config.MAX_OFFSET_ON_TELEPORT : 0));
 	}
 	
 	public void teleToLocation(int x, int y, int z, boolean allowRandomOffset)

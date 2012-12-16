@@ -20,7 +20,6 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import org.w3c.dom.NamedNodeMap;
@@ -30,20 +29,20 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Instance;
+import com.l2jserver.gameserver.model.instancezone.InstanceWorld;
 
 /**
  * @author evill33t, GodKratos
  */
 public class InstanceManager extends DocumentParser
 {
-	private static final FastMap<Integer, Instance> _instanceList = new FastMap<>();
-	private final FastMap<Integer, InstanceWorld> _instanceWorlds = new FastMap<>();
+	private static final Map<Integer, Instance> _instanceList = new FastMap<>();
+	private final Map<Integer, InstanceWorld> _instanceWorlds = new FastMap<>();
 	private int _dynamic = 300000;
-	
 	// InstanceId Names
 	private static final Map<Integer, String> _instanceIdNames = new HashMap<>();
 	private final Map<Integer, Map<Integer, Long>> _playerInstanceTimes = new FastMap<>();
-	
+	// SQL Queries
 	private static final String ADD_INSTANCE_TIME = "INSERT INTO character_instance_time (charId,instanceId,time) values (?,?,?) ON DUPLICATE KEY UPDATE time=?";
 	private static final String RESTORE_INSTANCE_TIMES = "SELECT instanceId,time FROM character_instance_time WHERE charId=?";
 	private static final String DELETE_INSTANCE_TIME = "DELETE FROM character_instance_time WHERE charId=? AND instanceId=?";
@@ -216,20 +215,12 @@ public class InstanceManager extends DocumentParser
 		}
 	}
 	
-	public static class InstanceWorld
-	{
-		public int instanceId;
-		public int templateId = -1;
-		public FastList<Integer> allowed = new FastList<>();
-		public volatile int status;
-	}
-	
 	/**
 	 * @param world
 	 */
 	public void addWorld(InstanceWorld world)
 	{
-		_instanceWorlds.put(world.instanceId, world);
+		_instanceWorlds.put(world.getInstanceId(), world);
 	}
 	
 	/**
@@ -242,19 +233,15 @@ public class InstanceManager extends DocumentParser
 	}
 	
 	/**
-	 * @param player
-	 * @return
+	 * Check if the player have a World Instance where it's allowed to enter.
+	 * @param player the player to check
+	 * @return the instance world
 	 */
 	public InstanceWorld getPlayerWorld(L2PcInstance player)
 	{
 		for (InstanceWorld temp : _instanceWorlds.values())
 		{
-			if (temp == null)
-			{
-				continue;
-			}
-			// check if the player have a World Instance where he/she is allowed to enter
-			if (temp.allowed.contains(player.getObjectId()))
+			if ((temp != null) && (temp.isAllowed(player.getObjectId())))
 			{
 				return temp;
 			}
@@ -298,7 +285,7 @@ public class InstanceManager extends DocumentParser
 	/**
 	 * @return
 	 */
-	public FastMap<Integer, Instance> getInstances()
+	public Map<Integer, Instance> getInstances()
 	{
 		return _instanceList;
 	}

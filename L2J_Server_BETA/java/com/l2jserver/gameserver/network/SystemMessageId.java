@@ -9844,7 +9844,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1683<br>
-	 * Message: Only a party leader can choose the option to leave a channel.
+	 * Message: Only a party leader can leave a command channel.
 	 */
 	public static final SystemMessageId ONLY_PARTY_LEADER_CAN_LEAVE_CHANNEL;
 	

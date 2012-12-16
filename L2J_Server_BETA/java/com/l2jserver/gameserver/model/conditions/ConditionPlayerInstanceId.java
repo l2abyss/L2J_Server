@@ -17,7 +17,7 @@ package com.l2jserver.gameserver.model.conditions;
 import java.util.ArrayList;
 
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
-import com.l2jserver.gameserver.instancemanager.InstanceManager.InstanceWorld;
+import com.l2jserver.gameserver.model.instancezone.InstanceWorld;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -51,10 +51,10 @@ public class ConditionPlayerInstanceId extends Condition
 		}
 		
 		final InstanceWorld world = InstanceManager.getInstance().getPlayerWorld(env.getPlayer());
-		if ((world == null) || (world.instanceId != instanceId))
+		if ((world == null) || (world.getInstanceId() != instanceId))
 		{
 			return false; // player in the different instance
 		}
-		return _instanceIds.contains(world.templateId);
+		return _instanceIds.contains(world.getTemplateId());
 	}
 }

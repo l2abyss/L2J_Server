@@ -1059,7 +1059,7 @@ public class L2Attackable extends L2Npc
 			{
 				for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER))
 				{
-					quest.notifyAggroRangeEnter(this, targetPlayer, (attacker instanceof L2Summon));
+					quest.notifyAggroRangeEnter(this, targetPlayer, attacker.isSummon());
 				}
 			}
 		}

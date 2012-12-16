@@ -95,4 +95,12 @@ public final class Location
 	{
 		return "[" + getClass().getSimpleName() + "] X: " + _x + " Y: " + _y + " Z: " + _z + " Heading: " + _heading + " InstanceId: " + _instanceId;
 	}
+	
+	/**
+	 * @param instanceId the instance Id to set
+	 */
+	public void setInstanceId(int instanceId)
+	{
+		_instanceId = instanceId;
+	}
 }
