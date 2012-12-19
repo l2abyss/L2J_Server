@@ -54,7 +54,7 @@ public class L2SkillChargeDmg extends L2Skill
 			// Charges Formula (each charge increase +25%)
 			modifier = ((caster.getActingPlayer().getCharges() * 0.25) + 1);
 		}
-		boolean ss = isPhysical() && caster.isChargedShot(ShotType.SOULSHOTS);
+		boolean ss = useSoulShot() && caster.isChargedShot(ShotType.SOULSHOTS);
 		
 		for (L2Character target : (L2Character[]) targets)
 		{

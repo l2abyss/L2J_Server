@@ -16210,14 +16210,14 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	public boolean isChargedShot(ShotType type)
 	{
-		L2ItemInstance weapon = getActiveWeaponInstance();
+		final L2ItemInstance weapon = getActiveWeaponInstance();
 		return (weapon != null) && weapon.isChargedShot(type);
 	}
 	
 	@Override
 	public void setChargedShot(ShotType type, boolean charged)
 	{
-		L2ItemInstance weapon = getActiveWeaponInstance();
+		final L2ItemInstance weapon = getActiveWeaponInstance();
 		if (weapon != null)
 		{
 			weapon.setChargedShot(type, charged);

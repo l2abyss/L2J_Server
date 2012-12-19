@@ -67,9 +67,9 @@ public class L2SkillElemental extends L2Skill
 			}
 		}
 		
-		boolean ss = isPhysical() && activeChar.isChargedShot(ShotType.SOULSHOTS);
-		boolean sps = isMagic() && activeChar.isChargedShot(ShotType.SPIRITSHOTS);
-		boolean bss = isMagic() && activeChar.isChargedShot(ShotType.BLESSED_SPIRITSHOTS);
+		boolean ss = useSoulShot() && activeChar.isChargedShot(ShotType.SOULSHOTS);
+		boolean sps = useSpiritShot() && activeChar.isChargedShot(ShotType.SPIRITSHOTS);
+		boolean bss = useSpiritShot() && activeChar.isChargedShot(ShotType.BLESSED_SPIRITSHOTS);
 		
 		for (L2Character target : (L2Character[]) targets)
 		{
