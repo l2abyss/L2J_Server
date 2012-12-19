@@ -148,17 +148,6 @@ public class L2Npc extends L2Character
 	
 	private int _shotsMask = 0;
 	
-	// AI Recall
-	public int getSoulShot()
-	{
-		return _staticAIData.getSoulShot();
-	}
-	
-	public int getSpiritShot()
-	{
-		return _staticAIData.getSpiritShot();
-	}
-	
 	public int getSoulShotChance()
 	{
 		return _staticAIData.getSoulShotChance();
@@ -479,9 +468,14 @@ public class L2Npc extends L2Character
 		_currentLHandId = getTemplate().getLeftHand();
 		_currentRHandId = getTemplate().getRightHand();
 		_currentEnchant = Config.ENABLE_RANDOM_ENCHANT_EFFECT ? Rnd.get(4, 21) : getTemplate().getEnchantEffect();
+		
 		// initialize the "current" collisions
 		_currentCollisionHeight = getTemplate().getfCollisionHeight();
 		_currentCollisionRadius = getTemplate().getfCollisionRadius();
+		
+		// initialize the "current" shots
+		_soulshotamount = getTemplate().getAIDataStatic().getSoulShot();
+		_spiritshotamount = getTemplate().getAIDataStatic().getSpiritShot();
 		
 		if (template == null)
 		{
@@ -1858,35 +1852,35 @@ public class L2Npc extends L2Character
 			}
 		}
 	}
-
+	
 	public int getScriptValue()
 	{
 		return _scriptVal;
 	}
-
+	
 	public void setScriptValue(int val)
 	{
 		_scriptVal = val;
 	}
-
+	
 	public boolean isScriptValue(int val)
 	{
 		return _scriptVal == val;
 	}
-
+	
 	/**
 	 * Send an "event" to all NPC's within given radius
 	 * @param eventName - name of event
 	 * @param radius - radius to send event
-	 * @param reference - L2Object to pass, if needed	 
+	 * @param reference - L2Object to pass, if needed
 	 */
 	public void broadcastEvent(String eventName, int radius, L2Object reference)
 	{
 		for (L2Object obj : L2World.getInstance().getVisibleObjects(this, radius))
 		{
-			if (obj.isNpc() && (((L2Npc)obj).getTemplate().getEventQuests(QuestEventType.ON_EVENT_RECEIVED) != null))
+			if (obj.isNpc() && (((L2Npc) obj).getTemplate().getEventQuests(QuestEventType.ON_EVENT_RECEIVED) != null))
 			{
-				for (Quest quest : ((L2Npc)obj).getTemplate().getEventQuests(QuestEventType.ON_EVENT_RECEIVED))
+				for (Quest quest : ((L2Npc) obj).getTemplate().getEventQuests(QuestEventType.ON_EVENT_RECEIVED))
 				{
 					quest.notifyEventReceived(eventName, this, (L2Npc) obj, reference);
 				}
