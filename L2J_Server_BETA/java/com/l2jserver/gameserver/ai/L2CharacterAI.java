@@ -708,12 +708,12 @@ public class L2CharacterAI extends AbstractAI
 			((L2Attackable) _accessor.getActor()).setisReturningToSpawnPoint(false);
 		}
 		clientStoppedMoving();
-
+		
 		if (_actor instanceof L2Npc)
 		{
 			L2Npc npc = (L2Npc) _actor;
 			WalkingManager.getInstance().onArrived(npc); // Walking Manager support
-
+			
 			// Notify quest
 			if (npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_MOVE_FINISHED) != null)
 			{

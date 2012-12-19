@@ -14,6 +14,7 @@
  */
 package com.l2jserver.gameserver.model.skills.funcs;
 
+import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.stats.Env;
@@ -37,9 +38,10 @@ public class FuncShare extends Func
 	{
 		if ((cond == null) || cond.test(env))
 		{
-			if (env.getCharacter().isServitor())
+			final L2Character ch = env.getCharacter();
+			if ((ch != null) && ch.isServitor())
 			{
-				final L2Summon summon = (L2Summon) env.getCharacter();
+				final L2Summon summon = (L2Summon) ch;
 				final L2PcInstance player = summon.getOwner();
 				final double value = player.calcStat(stat, 0, null, null) * _lambda.calc(env);
 				env.addValue(value);
