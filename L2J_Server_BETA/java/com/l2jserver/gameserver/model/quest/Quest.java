@@ -130,6 +130,7 @@ public class Quest extends ManagedScript
 		ITEMSOUND_ARMOR_WOOD(new PlaySound("ItemSound.armor_wood_3")),
 		// Quest 21
 		ITEMSOUND_ARMOR_CLOTH(new PlaySound("ItemSound.item_drop_equip_armor_cloth")),
+		ITEMSOUND_ED_CHIMES(new PlaySound("AmdSound.ed_chimes_05")),
 		// Quest 23
 		ITEMSOUND_ARMOR_LEATHER(new PlaySound("ItemSound.itemdrop_armor_leather")),
 		ITEMSOUND_WEAPON_SPEAR(new PlaySound("ItemSound.itemdrop_weapon_spear")),
@@ -161,7 +162,9 @@ public class Quest extends ManagedScript
 		ETCSOUND_ELROKI_SOUND_FULL(new PlaySound("EtcSound.elcroki_song_full")),
 		ETCSOUND_ELROKI_SOUND_1ST(new PlaySound("EtcSound.elcroki_song_1st")),
 		ETCSOUND_ELROKI_SOUND_2ND(new PlaySound("EtcSound.elcroki_song_2nd")),
-		ETCSOUND_ELROKI_SOUND_3RD(new PlaySound("EtcSound.elcroki_song_3rd"));
+		ETCSOUND_ELROKI_SOUND_3RD(new PlaySound("EtcSound.elcroki_song_3rd")),
+		// PailakaInjuredDragon
+		BS08_A(new PlaySound("BS08_A"));
 		
 		private final PlaySound _playSound;
 		
