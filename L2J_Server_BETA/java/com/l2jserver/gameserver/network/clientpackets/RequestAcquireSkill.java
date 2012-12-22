@@ -409,6 +409,15 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 					{
 						if (player.getSkillLevel(skill.getSkillId()) != skill.getSkillLvl())
 						{
+							if (skill.getSkillId() == L2Skill.SKILL_ONYX_BEAST_TRANSFORMATION)
+							{
+								player.sendPacket(SystemMessageId.YOU_MUST_LEARN_ONYX_BEAST_SKILL);
+							}
+							else
+							{
+								// TODO: Find retail message.
+								player.sendMessage("You must learn the " + skill.getSkill().getName() + " skill before you can acquire further skills.");
+							}
 							return false;
 						}
 					}
