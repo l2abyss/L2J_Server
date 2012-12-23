@@ -334,7 +334,7 @@ public abstract class L2Object
 	 */
 	public void setInstanceId(int instanceId)
 	{
-		if (_instanceId == instanceId)
+		if ((instanceId < 0) || (_instanceId == instanceId))
 		{
 			return;
 		}
