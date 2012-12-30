@@ -27,7 +27,6 @@ import javolution.util.FastList;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
-import com.l2jserver.gameserver.model.AutoChatHandler;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -306,10 +305,9 @@ public class MercTicketManager
 	 * fails.
 	 * @param itemId
 	 * @param activeChar
-	 * @param messages
 	 * @return
 	 */
-	public int addTicket(int itemId, L2PcInstance activeChar, String[] messages)
+	public int addTicket(int itemId, L2PcInstance activeChar)
 	{
 		int x = activeChar.getX();
 		int y = activeChar.getY();
@@ -326,7 +324,7 @@ public class MercTicketManager
 		{
 			if (ITEM_IDS[i] == itemId) // Find the index of the item used
 			{
-				spawnMercenary(NPC_IDS[i], x, y, z, 3000, messages, 0);
+				spawnMercenary(NPC_IDS[i], x, y, z, 3000);
 				
 				// Hire merc for this castle. NpcId is at the same index as the item used.
 				castle.getSiege().getSiegeGuardManager().hireMerc(x, y, z, heading, NPC_IDS[i]);
@@ -346,7 +344,7 @@ public class MercTicketManager
 		return -1;
 	}
 	
-	private void spawnMercenary(int npcId, int x, int y, int z, int despawnDelay, String[] messages, int chatDelay)
+	private void spawnMercenary(int npcId, int x, int y, int z, int despawnDelay)
 	{
 		L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId);
 		if (template != null)
@@ -355,11 +353,6 @@ public class MercTicketManager
 			npc.setCurrentHpMp(npc.getMaxHp(), npc.getMaxMp());
 			npc.setDecayed(false);
 			npc.spawnMe(x, y, (z + 20));
-			
-			if ((messages != null) && (messages.length > 0))
-			{
-				AutoChatHandler.getInstance().registerChat(npc, messages, chatDelay);
-			}
 			
 			if (despawnDelay > 0)
 			{
