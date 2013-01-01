@@ -81,6 +81,8 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 			{
 				html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-noprivs.htm");
 			}
+			html.replace("%objectId%", String.valueOf(getObjectId()));
+			player.sendPacket(html);
 		}
 		else if (actualCommand.equalsIgnoreCase("blood"))
 		{
@@ -89,9 +91,9 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 				final int blood = player.getClan().getBloodOathCount();
 				if (blood > 0)
 				{
-					html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-blood.htm");
 					player.addItem("Quest", 9910, blood, this, true);
 					player.getClan().resetBloodOathCount();
+					html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-blood.htm");
 				}
 				else
 				{
@@ -102,10 +104,12 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 			{
 				html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-noprivs.htm");
 			}
+			html.replace("%objectId%", String.valueOf(getObjectId()));
+			player.sendPacket(html);
 		}
 		else if (actualCommand.equalsIgnoreCase("supplylvl"))
 		{
-			if ((player.getClan() != null) && (getFort().getOwnerClan() != null) && (player.getClan() == getFort().getOwnerClan()) && (getFort().getFortState() == 2))
+			if (getFort().getFortState() == 2)
 			{
 				if (player.isClanLeader())
 				{
@@ -119,8 +123,10 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 			}
 			else
 			{
-				html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-1.htm");
+				html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-1.htm"); // TODO: Missing HTML?
 			}
+			html.replace("%objectId%", String.valueOf(getObjectId()));
+			player.sendPacket(html);
 		}
 		else if (actualCommand.equalsIgnoreCase("supply"))
 		{
@@ -132,10 +138,9 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 				}
 				else
 				{
-					int level = getFort().getSupplyLvL();
+					final int level = getFort().getSupplyLvL();
 					if (level > 0)
 					{
-						html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-supply.htm");
 						// spawn box
 						L2NpcTemplate BoxTemplate = NpcTable.getInstance().getTemplate(SUPPLY_BOX_IDS[level - 1]);
 						L2MonsterInstance box = new L2MonsterInstance(IdFactory.getInstance().getNextId(), BoxTemplate);
@@ -146,6 +151,8 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 						
 						getFort().setSupplyLvL(0);
 						getFort().saveFortVariables();
+						
+						html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-supply.htm");
 					}
 					else
 					{

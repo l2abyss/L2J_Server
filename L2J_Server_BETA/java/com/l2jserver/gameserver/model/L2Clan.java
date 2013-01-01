@@ -1091,7 +1091,7 @@ public class L2Clan
 					setLevel(clanData.getInt("clan_level"));
 					setCastleId(clanData.getInt("hasCastle"));
 					_bloodAllianceCount = clanData.getInt("blood_alliance_count");
-					_bloodOathCount = clanData.getInt("blood_Oath_count");
+					_bloodOathCount = clanData.getInt("blood_oath_count");
 					setAllyId(clanData.getInt("ally_id"));
 					setAllyName(clanData.getString("ally_name"));
 					setAllyPenaltyExpiryTime(clanData.getLong("ally_penalty_expiry_time"), clanData.getInt("ally_penalty_type"));
