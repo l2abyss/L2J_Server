@@ -59,8 +59,10 @@ import com.l2jserver.gameserver.model.olympiad.CompetitionType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.network.serverpackets.ExShowScreenMessage;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.NpcQuestHtmlMessage;
@@ -101,6 +103,17 @@ public class Quest extends ManagedScript
 	private boolean _isCustom = false;
 	private boolean _isOlympiadUse = false;
 	
+	public int[] questItemIds = null;
+	
+	private static final String DEFAULT_NO_QUEST_MSG = "<html><body>You are either not on a quest that involves this NPC, or you don't meet this NPC's minimum quest requirements.</body></html>";
+	private static final String DEFAULT_ALREADY_COMPLETED_MSG = "<html><body>This quest has already been completed.</body></html>";
+	
+	private static final String QUEST_DELETE_FROM_CHAR_QUERY = "DELETE FROM character_quests WHERE charId=? AND name=?";
+	private static final String QUEST_DELETE_FROM_CHAR_QUERY_NON_REPEATABLE_QUERY = "DELETE FROM character_quests WHERE charId=? AND name=? AND var!=?";
+	
+	private static final int RESET_HOUR = 6;
+	private static final int RESET_MINUTES = 30;
+	
 	/**
 	 * This enum contains known sound effects used by quests.<br>
 	 * The idea is to have only a single object of each quest sound instead of constructing a new one every time a script calls the playSound method.<br>
@@ -124,7 +137,7 @@ public class Quest extends ManagedScript
 		ITEMSOUND_QUEST_JACKPOT(new PlaySound("ItemSound.quest_jackpot")),
 		// Quests 508, 509 and 510
 		ITEMSOUND_QUEST_FANFARE_1(new PlaySound("ItemSound.quest_fanfare_1")),
-		// played ONLY after class transfer via Test Server Helpers (Id 31756 and 31757)
+		// Played only after class transfer via Test Server Helpers (Id 31756 and 31757)
 		ITEMSOUND_QUEST_FANFARE_2(new PlaySound("ItemSound.quest_fanfare_2")),
 		// Quest 114
 		ITEMSOUND_ARMOR_WOOD(new PlaySound("ItemSound.armor_wood_3")),
@@ -217,21 +230,6 @@ public class Quest extends ManagedScript
 			return _playSound;
 		}
 	}
-	
-	/**
-	 * Scripts written in Jython will have trouble with protected, as Jython only knows private and public.<br>
-	 * Zoey76: TODO: Same as we register NPCs with addTalkId(..) we can register this items in Jython scripts using registerQuestItems(..).
-	 */
-	public int[] questItemIds = null;
-	
-	private static final String DEFAULT_NO_QUEST_MSG = "<html><body>You are either not on a quest that involves this NPC, or you don't meet this NPC's minimum quest requirements.</body></html>";
-	private static final String DEFAULT_ALREADY_COMPLETED_MSG = "<html><body>This quest has already been completed.</body></html>";
-	
-	private static final String QUEST_DELETE_FROM_CHAR_QUERY = "DELETE FROM character_quests WHERE charId=? AND name=?";
-	private static final String QUEST_DELETE_FROM_CHAR_QUERY_NON_REPEATABLE_QUERY = "DELETE FROM character_quests WHERE charId=? AND name=? AND var!=?";
-	
-	private static final int RESET_HOUR = 6;
-	private static final int RESET_MINUTES = 30;
 	
 	/**
 	 * @return the reset hour for a daily quest, could be overridden on a script.
@@ -2560,6 +2558,43 @@ public class Quest extends ManagedScript
 		
 		// if a match was found from the party, return one of them at random.
 		return candidates.get(Rnd.get(candidates.size()));
+	}
+	
+	/**
+	 * Show an on screen message to the player.
+	 * @param player the player to display the message
+	 * @param text the message
+	 * @param time the display time
+	 */
+	public static void showOnScreenMsg(L2PcInstance player, String text, int time)
+	{
+		player.sendPacket(new ExShowScreenMessage(text, time));
+	}
+	
+	/**
+	 * Show an on screen message to the player.
+	 * @param player the player to display the message
+	 * @param npcString the NPC String to display
+	 * @param position the position in the screen
+	 * @param time the display time
+	 * @param params parameters values to replace in the NPC String
+	 */
+	public static void showOnScreenMsg(L2PcInstance player, NpcStringId npcString, int position, int time, String... params)
+	{
+		player.sendPacket(new ExShowScreenMessage(npcString, position, time, params));
+	}
+	
+	/**
+	 * Show an on screen message to the player.
+	 * @param player the player to display the message
+	 * @param systemMsg the System Message to display
+	 * @param position the position in the screen
+	 * @param time the display time
+	 * @param params parameters values to replace in the System Message
+	 */
+	public static void showOnScreenMsg(L2PcInstance player, SystemMessageId systemMsg, int position, int time, String... params)
+	{
+		player.sendPacket(new ExShowScreenMessage(systemMsg, position, time, params));
 	}
 	
 	/**
