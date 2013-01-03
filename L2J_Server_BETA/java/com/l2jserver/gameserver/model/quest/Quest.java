@@ -143,11 +143,19 @@ public class Quest extends ManagedScript
 		ITEMSOUND_QUEST_FANFARE_1(new PlaySound("ItemSound.quest_fanfare_1")),
 		// Played only after class transfer via Test Server Helpers (Id 31756 and 31757)
 		ITEMSOUND_QUEST_FANFARE_2(new PlaySound("ItemSound.quest_fanfare_2")),
+		// Quests 336
+		ITEMSOUND_QUEST_FANFARE_MIDDLE(new PlaySound("ItemSound.quest_fanfare_middle")),
 		// Quest 114
 		ITEMSOUND_ARMOR_WOOD(new PlaySound("ItemSound.armor_wood_3")),
 		// Quest 21
 		ITEMSOUND_ARMOR_CLOTH(new PlaySound("ItemSound.item_drop_equip_armor_cloth")),
 		ITEMSOUND_ED_CHIMES(new PlaySound("AmdSound.ed_chimes_05")),
+		// Quest 22
+		ITEMSOUND_D_HORROR_03(new PlaySound("AmbSound.d_horror_03")),
+		ITEMSOUND_D_HORROR_15(new PlaySound("AmbSound.d_horror_15")),
+		ITEMSOUND_DD_HORROR_01(new PlaySound("AmbSound.dd_horror_01")),
+		// Quest 120
+		ITEMSOUND_ED_DRONE_02(new PlaySound("AmbSound.ed_drone_02")),
 		// Quest 23
 		ITEMSOUND_ARMOR_LEATHER(new PlaySound("ItemSound.itemdrop_armor_leather")),
 		ITEMSOUND_WEAPON_SPEAR(new PlaySound("ItemSound.itemdrop_weapon_spear")),
@@ -3245,7 +3253,7 @@ public class Quest extends ManagedScript
 		}
 		
 		// If item for reward is adena (Id=57), modify count with rate for quest reward if rates available
-		if ((itemId == PcInventory.ADENA_ID) && !(enchantlevel > 0))
+		if ((itemId == PcInventory.ADENA_ID) && (enchantlevel == 0))
 		{
 			count = (long) (count * Config.RATE_QUEST_REWARD_ADENA);
 		}
