@@ -20,10 +20,12 @@ package com.l2jserver.gameserver.util;
 
 import java.io.File;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javolution.text.TextBuilder;
 import javolution.util.FastList;
@@ -43,6 +45,8 @@ import com.l2jserver.util.file.filter.ExtFilter;
  */
 public final class Util
 {
+	private static NumberFormat ADENA_FORMATTER = NumberFormat.getIntegerInstance(Locale.ENGLISH);
+	
 	public static void handleIllegalPlayerAction(L2PcInstance actor, String message, int punishment)
 	{
 		ThreadPoolManager.getInstance().scheduleGeneral(new IllegalPlayerAction(actor, message, punishment), 5000);
@@ -395,25 +399,7 @@ public final class Util
 	 */
 	public static String formatAdena(long amount)
 	{
-		String s = "";
-		long rem = amount % 1000;
-		s = Long.toString(rem);
-		amount = (amount - rem) / 1000;
-		while (amount > 0)
-		{
-			if (rem < 99)
-			{
-				s = '0' + s;
-			}
-			if (rem < 9)
-			{
-				s = '0' + s;
-			}
-			rem = amount % 1000;
-			s = Long.toString(rem) + "," + s;
-			amount = (amount - rem) / 1000;
-		}
-		return s;
+		return ADENA_FORMATTER.format(amount);
 	}
 	
 	/**
