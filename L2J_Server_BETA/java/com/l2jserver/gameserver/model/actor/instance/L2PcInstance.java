@@ -4726,14 +4726,13 @@ public final class L2PcInstance extends L2Playable
 	
 	/**
 	 * Returns true if cp update should be done, false if not
-	 * @param barPixels
 	 * @return boolean
 	 */
-	private boolean needCpUpdate(int barPixels)
+	private boolean needCpUpdate()
 	{
 		double currentCp = getCurrentCp();
 		
-		if ((currentCp <= 1.0) || (getMaxCp() < barPixels))
+		if ((currentCp <= 1.0) || (getMaxCp() < MAX_HP_BAR_PX))
 		{
 			return true;
 		}
@@ -4762,14 +4761,13 @@ public final class L2PcInstance extends L2Playable
 	
 	/**
 	 * Returns true if mp update should be done, false if not
-	 * @param barPixels
 	 * @return boolean
 	 */
-	private boolean needMpUpdate(int barPixels)
+	private boolean needMpUpdate()
 	{
 		double currentMp = getCurrentMp();
 		
-		if ((currentMp <= 1.0) || (getMaxMp() < barPixels))
+		if ((currentMp <= 1.0) || (getMaxMp() < MAX_HP_BAR_PX))
 		{
 			return true;
 		}
@@ -4809,21 +4807,21 @@ public final class L2PcInstance extends L2Playable
 		
 		// Send the Server->Client packet StatusUpdate with current HP, MP and CP to this L2PcInstance
 		StatusUpdate su = new StatusUpdate(this);
+		su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
 		su.addAttribute(StatusUpdate.CUR_HP, (int) getCurrentHp());
+		su.addAttribute(StatusUpdate.MAX_MP, getMaxMp());
 		su.addAttribute(StatusUpdate.CUR_MP, (int) getCurrentMp());
-		su.addAttribute(StatusUpdate.CUR_CP, (int) getCurrentCp());
 		su.addAttribute(StatusUpdate.MAX_CP, getMaxCp());
+		su.addAttribute(StatusUpdate.CUR_CP, (int) getCurrentCp());
 		sendPacket(su);
 		
-		final boolean needCpUpdate = needCpUpdate(352);
-		final boolean needHpUpdate = needHpUpdate(352);
+		final boolean needCpUpdate = needCpUpdate();
+		final boolean needHpUpdate = needHpUpdate();
+		
 		// Check if a party is in progress and party window update is usefull
-		L2Party party = _party;
-		if ((party != null) && (needCpUpdate || needHpUpdate || needMpUpdate(352)))
+		if (isInParty() && (needCpUpdate || needHpUpdate || needMpUpdate()))
 		{
-			// Send the Server->Client packet PartySmallWindowUpdate with current HP, MP and Level to all other L2PcInstance of the Party
-			PartySmallWindowUpdate update = new PartySmallWindowUpdate(this);
-			party.broadcastToPartyMembers(this, update);
+			getParty().broadcastToPartyMembers(this, new PartySmallWindowUpdate(this));
 		}
 		
 		if (isInOlympiadMode() && isOlympiadStart() && (needCpUpdate || needHpUpdate))
@@ -4838,8 +4836,7 @@ public final class L2PcInstance extends L2Playable
 		// In duel MP updated only with CP or HP
 		if (isInDuel() && (needCpUpdate || needHpUpdate))
 		{
-			ExDuelUpdateUserInfo update = new ExDuelUpdateUserInfo(this);
-			DuelManager.getInstance().broadcastToOppositTeam(this, update);
+			DuelManager.getInstance().broadcastToOppositTeam(this, new ExDuelUpdateUserInfo(this));
 		}
 	}
 	

@@ -190,6 +190,9 @@ public abstract class L2Character extends L2Object
 	private CharStatus _status;
 	private L2CharTemplate _template; // The link on the L2CharTemplate object containing generic and static properties of this L2Character type (ex : Max HP, Speed...)
 	private String _title;
+	
+	public static final double MAX_HP_BAR_PX = 352.0;
+	
 	private double _hpUpdateIncCheck = .0;
 	private double _hpUpdateDecCheck = .0;
 	private double _hpUpdateInterval = .0;
@@ -470,8 +473,8 @@ public abstract class L2Character extends L2Object
 	
 	protected void initCharStatusUpdateValues()
 	{
-		_hpUpdateIncCheck = getMaxVisibleHp();
-		_hpUpdateInterval = _hpUpdateIncCheck / 352.0; // MAX_HP div MAX_HP_BAR_PX
+		_hpUpdateIncCheck = getMaxHp();
+		_hpUpdateInterval = _hpUpdateIncCheck / MAX_HP_BAR_PX;
 		_hpUpdateDecCheck = _hpUpdateIncCheck - _hpUpdateInterval;
 	}
 	
@@ -571,15 +574,14 @@ public abstract class L2Character extends L2Object
 	}
 	
 	/**
-	 * @param barPixels
 	 * @return true if hp update should be done, false if not
 	 */
-	protected boolean needHpUpdate(int barPixels)
+	protected boolean needHpUpdate()
 	{
 		double currentHp = getCurrentHp();
-		double maxHp = getMaxVisibleHp();
+		double maxHp = getMaxHp();
 		
-		if ((currentHp <= 1.0) || (maxHp < barPixels))
+		if ((currentHp <= 1.0) || (maxHp < MAX_HP_BAR_PX))
 		{
 			return true;
 		}
@@ -617,23 +619,18 @@ public abstract class L2Character extends L2Object
 	 */
 	public void broadcastStatusUpdate()
 	{
-		if (getStatus().getStatusListener().isEmpty())
-		{
-			return;
-		}
-		
-		if (!needHpUpdate(352))
+		if (getStatus().getStatusListener().isEmpty() || !needHpUpdate())
 		{
 			return;
 		}
 		
 		// Create the Server->Client packet StatusUpdate with current HP
 		StatusUpdate su = new StatusUpdate(this);
+		su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
 		su.addAttribute(StatusUpdate.CUR_HP, (int) getCurrentHp());
 		
 		// Go through the StatusListener
 		// Send the Server->Client packet StatusUpdate with current HP and MP
-		
 		for (L2Character temp : getStatus().getStatusListener())
 		{
 			if (temp != null)
@@ -4233,118 +4230,84 @@ public abstract class L2Character extends L2Object
 			return;
 		}
 		
-		boolean broadcastFull = false;
-		StatusUpdate su = null;
-		for (Stats stat : stats)
+		if (isSummon())
 		{
-			if (isSummon())
+			L2Summon summon = (L2Summon) this;
+			if (summon.getOwner() != null)
 			{
-				L2Summon summon = (L2Summon) this;
-				if (summon.getOwner() != null)
-				{
-					summon.updateAndBroadcastStatus(1);
-				}
-				break;
-				
-			}
-			else if (stat == Stats.POWER_ATTACK_SPEED)
-			{
-				if (su == null)
-				{
-					su = new StatusUpdate(this);
-				}
-				su.addAttribute(StatusUpdate.ATK_SPD, getPAtkSpd());
-			}
-			else if (stat == Stats.MAGIC_ATTACK_SPEED)
-			{
-				if (su == null)
-				{
-					su = new StatusUpdate(this);
-				}
-				su.addAttribute(StatusUpdate.CAST_SPD, getMAtkSpd());
-			}
-			else if ((stat == Stats.MAX_HP))
-			{
-				if (su == null)
-				{
-					su = new StatusUpdate(this);
-				}
-				su.addAttribute(StatusUpdate.MAX_HP, isL2Attackable() ? getMaxVisibleHp() : getMaxHp());
-			}
-			else if (stat == Stats.LIMIT_HP)
-			{
-				getStatus().setCurrentHp(getCurrentHp()); // start regeneration if needed
-			}
-			else if ((stat == Stats.MAX_MP))
-			{
-				if (su == null)
-				{
-					su = new StatusUpdate(this);
-				}
-				su.addAttribute(StatusUpdate.MAX_MP, getMaxMp());
-			}
-			else if ((stat == Stats.MAX_CP))
-			{
-				if (su == null)
-				{
-					su = new StatusUpdate(this);
-				}
-				su.addAttribute(StatusUpdate.MAX_CP, getMaxCp());
-			}
-			else if (stat == Stats.RUN_SPEED)
-			{
-				broadcastFull = true;
+				summon.updateAndBroadcastStatus(1);
 			}
 		}
-		
-		if (isPlayer())
+		else
 		{
-			if (broadcastFull)
+			boolean broadcastFull = false;
+			StatusUpdate su = new StatusUpdate(this);
+			
+			for (Stats stat : stats)
 			{
-				getActingPlayer().updateAndBroadcastStatus(2);
+				if (stat == Stats.POWER_ATTACK_SPEED)
+				{
+					su.addAttribute(StatusUpdate.ATK_SPD, getPAtkSpd());
+				}
+				else if (stat == Stats.MAGIC_ATTACK_SPEED)
+				{
+					su.addAttribute(StatusUpdate.CAST_SPD, getMAtkSpd());
+				}
+				else if (stat == Stats.RUN_SPEED)
+				{
+					broadcastFull = true;
+				}
 			}
-			else
+			
+			if (isPlayer())
 			{
-				getActingPlayer().updateAndBroadcastStatus(1);
-				if (su != null)
+				if (broadcastFull)
+				{
+					getActingPlayer().updateAndBroadcastStatus(2);
+				}
+				else
+				{
+					getActingPlayer().updateAndBroadcastStatus(1);
+					if (su.hasAttributes())
+					{
+						broadcastPacket(su);
+					}
+				}
+				if ((getSummon() != null) && isAffected(CharEffectList.EFFECT_FLAG_SERVITOR_SHARE))
+				{
+					getSummon().broadcastStatusUpdate();
+				}
+			}
+			else if (isNpc())
+			{
+				if (broadcastFull)
+				{
+					Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
+					for (L2PcInstance player : plrs)
+					{
+						if (player == null)
+						{
+							continue;
+						}
+						if (getRunSpeed() == 0)
+						{
+							player.sendPacket(new ServerObjectInfo((L2Npc) this, player));
+						}
+						else
+						{
+							player.sendPacket(new AbstractNpcInfo.NpcInfo((L2Npc) this, player));
+						}
+					}
+				}
+				else if (su.hasAttributes())
 				{
 					broadcastPacket(su);
 				}
 			}
-			if ((getSummon() != null) && isAffected(CharEffectList.EFFECT_FLAG_SERVITOR_SHARE))
-			{
-				getSummon().broadcastStatusUpdate();
-			}
-		}
-		else if (isNpc())
-		{
-			if (broadcastFull)
-			{
-				Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
-				for (L2PcInstance player : plrs)
-				{
-					if (player == null)
-					{
-						continue;
-					}
-					if (getRunSpeed() == 0)
-					{
-						player.sendPacket(new ServerObjectInfo((L2Npc) this, player));
-					}
-					else
-					{
-						player.sendPacket(new AbstractNpcInfo.NpcInfo((L2Npc) this, player));
-					}
-				}
-			}
-			else if (su != null)
+			else if (su.hasAttributes())
 			{
 				broadcastPacket(su);
 			}
-		}
-		else if (su != null)
-		{
-			broadcastPacket(su);
 		}
 	}
 	
@@ -7523,15 +7486,6 @@ public abstract class L2Character extends L2Object
 	public double getPDefMagicCreatures(L2Character target)
 	{
 		return getStat().getPDefMagicCreatures(target);
-	}
-	
-	/**
-	 * Calculated by applying non-visible HP limit getMaxHp() = getMaxVisibleHp() * limitHp
-	 * @return max visible HP for display purpose.
-	 */
-	public int getMaxVisibleHp()
-	{
-		return getStat().getMaxVisibleHp();
 	}
 	
 	public int getPAtkSpd()

@@ -40,6 +40,6 @@ public class ConditionPlayerHp extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return (env.getCharacter() != null) && (((env.getCharacter().getCurrentHp() * 100) / env.getCharacter().getMaxVisibleHp()) <= _hp);
+		return (env.getCharacter() != null) && (((env.getCharacter().getCurrentHp() * 100) / env.getCharacter().getMaxHp()) <= _hp);
 	}
 }

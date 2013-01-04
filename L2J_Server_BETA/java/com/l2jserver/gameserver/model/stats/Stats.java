@@ -42,7 +42,6 @@ public enum Stats
 	HEAL_EFFECTIVNESS("gainHp"),
 	HEAL_PROFICIENCY("giveHp"),
 	HEAL_STATIC_BONUS("bonusHp"),
-	LIMIT_HP("limitHp"), // non-displayed hp limit
 	
 	// ATTACK & DEFENCE
 	POWER_DEFENCE("pDef"),

@@ -39,6 +39,6 @@ public final class DoorStatusUpdate extends L2GameServerPacket
 		writeD(_door.isEnemy() ? 1 : 0);
 		writeD(_door.getDoorId());
 		writeD((int) _door.getCurrentHp());
-		writeD(_door.getMaxVisibleHp());
+		writeD(_door.getMaxHp());
 	}
 }

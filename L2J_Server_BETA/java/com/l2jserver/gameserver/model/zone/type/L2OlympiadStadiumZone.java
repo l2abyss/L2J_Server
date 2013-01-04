@@ -139,14 +139,11 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 	public final void broadcastStatusUpdate(L2PcInstance player)
 	{
 		final ExOlympiadUserInfo packet = new ExOlympiadUserInfo(player);
-		for (L2Character character : getCharactersInside())
+		for (L2PcInstance target : getPlayersInside())
 		{
-			if ((character != null) && character.isPlayer())
+			if ((target != null) && (target.inObserverMode() || (target.getOlympiadSide() != player.getOlympiadSide())))
 			{
-				if (character.getActingPlayer().inObserverMode() || (character.getActingPlayer().getOlympiadSide() != player.getOlympiadSide()))
-				{
-					character.sendPacket(packet);
-				}
+				target.sendPacket(packet);
 			}
 		}
 	}

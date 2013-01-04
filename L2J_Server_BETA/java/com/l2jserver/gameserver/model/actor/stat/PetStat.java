@@ -157,7 +157,7 @@ public class PetStat extends SummonStat
 	}
 	
 	@Override
-	public int getMaxVisibleHp()
+	public int getMaxHp()
 	{
 		return (int) calcStat(Stats.MAX_HP, getActiveChar().getPetLevelData().getPetMaxHP(), null, null);
 	}

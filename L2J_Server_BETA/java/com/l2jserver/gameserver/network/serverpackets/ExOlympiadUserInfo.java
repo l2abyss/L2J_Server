@@ -39,7 +39,7 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 		if (_player != null)
 		{
 			_curHp = (int) _player.getCurrentHp();
-			_maxHp = _player.getMaxVisibleHp();
+			_maxHp = _player.getMaxHp();
 			_curCp = (int) _player.getCurrentCp();
 			_maxCp = _player.getMaxCp();
 		}
@@ -59,7 +59,7 @@ public class ExOlympiadUserInfo extends L2GameServerPacket
 		if (_player != null)
 		{
 			_curHp = (int) _player.getCurrentHp();
-			_maxHp = _player.getMaxVisibleHp();
+			_maxHp = _player.getMaxHp();
 			_curCp = (int) _player.getCurrentCp();
 			_maxCp = _player.getMaxCp();
 		}

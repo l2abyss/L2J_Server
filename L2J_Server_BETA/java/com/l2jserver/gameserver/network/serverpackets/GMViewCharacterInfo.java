@@ -62,7 +62,7 @@ public class GMViewCharacterInfo extends L2GameServerPacket
 		writeD(_activeChar.getINT());
 		writeD(_activeChar.getWIT());
 		writeD(_activeChar.getMEN());
-		writeD(_activeChar.getMaxVisibleHp());
+		writeD(_activeChar.getMaxHp());
 		writeD((int) _activeChar.getCurrentHp());
 		writeD(_activeChar.getMaxMp());
 		writeD((int) _activeChar.getCurrentMp());
