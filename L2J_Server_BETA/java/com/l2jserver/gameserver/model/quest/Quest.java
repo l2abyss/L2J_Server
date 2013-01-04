@@ -189,7 +189,10 @@ public class Quest extends ManagedScript
 		ETCSOUND_ELROKI_SOUND_2ND(new PlaySound("EtcSound.elcroki_song_2nd")),
 		ETCSOUND_ELROKI_SOUND_3RD(new PlaySound("EtcSound.elcroki_song_3rd")),
 		// PailakaInjuredDragon
-		BS08_A(new PlaySound("BS08_A"));
+		BS08_A(new PlaySound("BS08_A")),
+		// Quest 115
+		AMBSOUND_T_WINGFLAP_04(new PlaySound("AmbSound.t_wingflap_04")),
+		AMBSOUND_THUNDER_02(new PlaySound("AmbSound.thunder_02"));
 		
 		private final PlaySound _playSound;
 		
