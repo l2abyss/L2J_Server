@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
+import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -167,7 +168,33 @@ public final class RequestDestroyItem extends L2GameClientPacket
 			itemToRemove.endOfLife();
 		}
 		
-		L2ItemInstance removedItem = activeChar.getInventory().destroyItem("Destroy", _objectId, count, activeChar, null);
+		if (itemToRemove.isEquipped())
+		{
+			if (itemToRemove.getEnchantLevel() > 0)
+			{
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
+				sm.addNumber(itemToRemove.getEnchantLevel());
+				sm.addItemName(itemToRemove);
+				activeChar.sendPacket(sm);
+			}
+			else
+			{
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISARMED);
+				sm.addItemName(itemToRemove);
+				activeChar.sendPacket(sm);
+			}
+			
+			L2ItemInstance[] unequiped = activeChar.getInventory().unEquipItemInSlotAndRecord(itemToRemove.getLocationSlot());
+			
+			InventoryUpdate iu = new InventoryUpdate();
+			for (L2ItemInstance itm : unequiped)
+			{
+				iu.addModifiedItem(itm);
+			}
+			activeChar.sendPacket(iu);
+		}
+		
+		L2ItemInstance removedItem = activeChar.getInventory().destroyItem("Destroy", itemToRemove, count, activeChar, null);
 		
 		if (removedItem == null)
 		{
@@ -185,7 +212,6 @@ public final class RequestDestroyItem extends L2GameClientPacket
 			{
 				iu.addModifiedItem(removedItem);
 			}
-			
 			activeChar.sendPacket(iu);
 		}
 		else
