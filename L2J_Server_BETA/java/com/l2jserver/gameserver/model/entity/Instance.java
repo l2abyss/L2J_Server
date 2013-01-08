@@ -244,11 +244,10 @@ public class Instance
 			return;
 		}
 		
-		L2DoorTemplate temp = new L2DoorTemplate(set);
-		L2DoorInstance newdoor = new L2DoorInstance(IdFactory.getInstance().getNextId(), temp);
+		final L2DoorInstance newdoor = new L2DoorInstance(IdFactory.getInstance().getNextId(), new L2DoorTemplate(set));
 		newdoor.setInstanceId(getId());
 		newdoor.setCurrentHp(newdoor.getMaxHp());
-		newdoor.spawnMe(temp.getX(), temp.getY(), temp.getZ());
+		newdoor.spawnMe(newdoor.getX(), newdoor.getY(), newdoor.getZ());
 		_doors.put(doorId, newdoor);
 	}
 	

@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
@@ -59,14 +58,8 @@ import com.l2jserver.gameserver.network.serverpackets.StaticObject;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Rnd;
 
-/**
- * This class ...
- * @version $Revision: 1.3.2.2.2.5 $ $Date: 2005/03/27 15:29:32 $
- */
 public class L2DoorInstance extends L2Character
 {
-	protected static final Logger log = Logger.getLogger(L2DoorInstance.class.getName());
-	
 	public static final byte OPEN_BY_CLICK = 1;
 	public static final byte OPEN_BY_TIME = 2;
 	public static final byte OPEN_BY_ITEM = 4;
@@ -124,10 +117,6 @@ public class L2DoorInstance extends L2Character
 	/** This class may be created only by L2Character and only for AI */
 	public class AIAccessor extends L2Character.AIAccessor
 	{
-		protected AIAccessor()
-		{
-		}
-		
 		@Override
 		public L2DoorInstance getActor()
 		{

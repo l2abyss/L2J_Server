@@ -44,6 +44,7 @@ import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
+import com.l2jserver.gameserver.model.IL2Procedure;
 import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
@@ -3542,5 +3543,60 @@ public class Quest extends ManagedScript
 	public int getGameTicks()
 	{
 		return GameTimeController.getGameTicks();
+	}
+	
+	/**
+	 * Executes a procedure for each player, depending on the parameters.
+	 * @param player the player were the procedure will be executed
+	 * @param npc the related Npc
+	 * @param isPet {@code true} if the event that call this method was originated by the player's pet
+	 * @param includeParty if {@code true} #actionForEachPlayer(L2PcInstance, L2Npc, boolean) will be called with the player's party members
+	 * @param includeCommandChannel if {@code true} {@link #actionForEachPlayer(L2PcInstance, L2Npc, boolean)} will be called with the player's command channel members
+	 * @see #actionForEachPlayer(L2PcInstance, L2Npc, boolean)
+	 */
+	public final void executeForEachPlayer(L2PcInstance player, final L2Npc npc, final boolean isPet, boolean includeParty, boolean includeCommandChannel)
+	{
+		if ((includeParty || includeCommandChannel) && player.isInParty())
+		{
+			if (includeCommandChannel && player.getParty().isInCommandChannel())
+			{
+				player.getParty().getCommandChannel().forEachMember(new IL2Procedure<L2PcInstance>()
+				{
+					@Override
+					public boolean execute(L2PcInstance member)
+					{
+						actionForEachPlayer(member, npc, isPet);
+						return true;
+					}
+				});
+			}
+			else if (includeParty)
+			{
+				player.getParty().forEachMember(new IL2Procedure<L2PcInstance>()
+				{
+					@Override
+					public boolean execute(L2PcInstance member)
+					{
+						actionForEachPlayer(member, npc, isPet);
+						return true;
+					}
+				});
+			}
+		}
+		else
+		{
+			actionForEachPlayer(player, npc, isPet);
+		}
+	}
+	
+	/**
+	 * Overridable method called from {@link #executeForEachPlayer(L2PcInstance, L2Npc, boolean, boolean, boolean)}
+	 * @param player the player where the action will be run
+	 * @param npc the Npc related to this action
+	 * @param isPet isPet {@code true} if the event that call this method was originated by the player's pet
+	 */
+	public void actionForEachPlayer(L2PcInstance player, L2Npc npc, boolean isPet)
+	{
+		// To be overridden in quest scripts.
 	}
 }
