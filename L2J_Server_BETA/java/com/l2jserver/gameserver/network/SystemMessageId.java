@@ -14539,6 +14539,24 @@ public final class SystemMessageId
 	public static final SystemMessageId YOU_CANT_CANCEL_RECEIVED_MAIL;
 	
 	/**
+	 * ID: 3033<br>
+	 * Message: By using the invisible skill, sneak into the Dawn's document storage!
+	 */
+	public static final SystemMessageId SNEAK_INTO_DAWNS_DOCUMENT_STORAGE;
+	
+	/**
+	 * ID: 3037<br>
+	 * Message: Male guards can detect the concealment but the female guards cannot.
+	 */
+	public static final SystemMessageId MALE_GUARDS_CAN_DETECT_FEMALES_DONT;
+	
+	/**
+	 * ID: 3038<br>
+	 * Message: Female guards notice the disguises from far away better than the male guards do, so beware.
+	 */
+	public static final SystemMessageId FEMALE_GUARDS_NOTICE_BETTER_THAN_MALE;
+	
+	/**
 	 * ID: 3059<br>
 	 * Message: $s1 did not receive it during the waiting time, so it was returned automatically.
 	 */
@@ -17375,6 +17393,9 @@ public final class SystemMessageId
 		YOU_CANNOT_USE_SKILL_ENCHANT_ATTACKING_TRANSFORMED_BOAT = new SystemMessageId(3028);
 		S1_RETURNED_MAIL = new SystemMessageId(3029);
 		YOU_CANT_CANCEL_RECEIVED_MAIL = new SystemMessageId(3030);
+		SNEAK_INTO_DAWNS_DOCUMENT_STORAGE = new SystemMessageId(3033);
+		MALE_GUARDS_CAN_DETECT_FEMALES_DONT = new SystemMessageId(3037);
+		FEMALE_GUARDS_NOTICE_BETTER_THAN_MALE = new SystemMessageId(3038);
 		S1_NOT_RECEIVE_DURING_WAITING_TIME_MAIL_RETURNED = new SystemMessageId(3059);
 		DO_YOU_WANT_TO_PAY_S1_ADENA = new SystemMessageId(3062);
 		DO_YOU_WANT_TO_FORWARD = new SystemMessageId(3063);
