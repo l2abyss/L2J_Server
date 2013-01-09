@@ -3095,10 +3095,10 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Give all available skills to the player.<br>
-	 * @param includedByFs
-	 * @param includeAutoGet
-	 * @return skillCounter, the amount of new skills added.
+	 * Give all available skills to the player.
+	 * @param includedByFs if {@code true} forgotten scroll skills present in the skill tree will be added
+	 * @param includeAutoGet if {@code true} auto-get skills present in the skill tree will be added
+	 * @return the amount of new skills earned
 	 */
 	public int giveAvailableSkills(boolean includedByFs, boolean includeAutoGet)
 	{
@@ -3141,12 +3141,15 @@ public final class L2PcInstance extends L2Playable
 			skills = SkillTreesData.getInstance().getAvailableSkills(this, getClassId(), includedByFs, includeAutoGet);
 		}
 		
-		sendMessage("You have learned " + skillCounter + " new skills.");
+		if (Config.AUTO_LEARN_SKILLS && (skillCounter > 0))
+		{
+			sendMessage("You have earned " + skillCounter + " new skills.");
+		}
 		return skillCounter;
 	}
 	
 	/**
-	 * Give all available AutoGet skills to the player.
+	 * Give all available auto-get skills to the player.
 	 */
 	public void giveAvailableAutoGetSkills()
 	{
@@ -3163,7 +3166,7 @@ public final class L2PcInstance extends L2Playable
 			}
 			else
 			{
-				_log.warning("Skipping null autoGet Skill for player: " + this);
+				_log.warning("Skipping null auto-get skill for player: " + toString());
 			}
 		}
 	}

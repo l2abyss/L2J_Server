@@ -6301,12 +6301,7 @@ public abstract class L2Character extends L2Object
 	public int getSkillLevel(int skillId)
 	{
 		final L2Skill skill = getKnownSkill(skillId);
-		if (skill == null)
-		{
-			return -1;
-		}
-		
-		return skill.getLevel();
+		return (skill == null) ? -1 : skill.getLevel();
 	}
 	
 	/**

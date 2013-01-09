@@ -158,7 +158,7 @@ public abstract class AbstractPlayerGroup
 	 * @param procedure to be executed on members, <br>
 	 *            if it returns {@code true}, loop will continue, <br>
 	 *            if it returns {@code false}, loop will break
-	 * @return {@code false} if it was interupted by a {@code false} return of the procedure
+	 * @return {@code false} if it was interrupted by a {@code false} return of the procedure
 	 */
 	public boolean forEachMember(IL2Procedure<L2PcInstance> procedure)
 	{
