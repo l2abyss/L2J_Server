@@ -39,9 +39,11 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.cache.HtmCache;
+import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
+import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.IL2Procedure;
@@ -53,10 +55,12 @@ import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Trap;
+import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TrapInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -2760,6 +2764,20 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * @param npcId
+	 * @param loc
+	 * @param randomOffset
+	 * @param despawnDelay
+	 * @param isSummonSpawn
+	 * @param instanceId
+	 * @return
+	 */
+	public L2Npc addSpawn(int npcId, Location loc, boolean randomOffset, long despawnDelay, boolean isSummonSpawn, int instanceId)
+	{
+		return addSpawn(npcId, loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), randomOffset, despawnDelay, isSummonSpawn, instanceId);
+	}
+	
+	/**
+	 * @param npcId
 	 * @param x
 	 * @param y
 	 * @param z
@@ -3598,5 +3616,89 @@ public class Quest extends ManagedScript
 	public void actionForEachPlayer(L2PcInstance player, L2Npc npc, boolean isPet)
 	{
 		// To be overridden in quest scripts.
+	}
+	
+	/**
+	 * Opens the door if presents on the instance and its not open.
+	 * @param doorId
+	 * @param instanceId
+	 */
+	public void openDoor(int doorId, int instanceId)
+	{
+		final L2DoorInstance door = getDoor(doorId, instanceId);
+		if (door == null)
+		{
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": called openDoor(" + doorId + ", " + instanceId + "); but door wasnt found!", new NullPointerException());
+		}
+		else if (!door.getOpen())
+		{
+			door.openMe();
+		}
+	}
+	
+	/**
+	 * Closes the door if presents on the instance and its open
+	 * @param doorId
+	 * @param instanceId
+	 */
+	public void closeDoor(int doorId, int instanceId)
+	{
+		final L2DoorInstance door = getDoor(doorId, instanceId);
+		if (door == null)
+		{
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": called closeDoor(" + doorId + ", " + instanceId + "); but door wasnt found!", new NullPointerException());
+		}
+		else if (door.getOpen())
+		{
+			door.closeMe();
+		}
+	}
+	
+	/**
+	 * Retriving Door from instances or from the real world.
+	 * @param doorId
+	 * @param instanceId
+	 * @return {@link L2DoorInstance}
+	 */
+	public L2DoorInstance getDoor(int doorId, int instanceId)
+	{
+		L2DoorInstance door = null;
+		if (instanceId <= 0)
+		{
+			door = DoorTable.getInstance().getDoor(doorId);
+		}
+		else
+		{
+			final Instance inst = InstanceManager.getInstance().getInstance(instanceId);
+			if (inst != null)
+			{
+				door = inst.getDoor(doorId);
+			}
+		}
+		return door;
+	}
+	
+	/**
+	 * Teleport player to/from instance
+	 * @param player
+	 * @param loc
+	 * @param instanceId
+	 */
+	public void teleportPlayer(L2PcInstance player, Location loc, int instanceId)
+	{
+		teleportPlayer(player, loc, instanceId, true);
+	}
+	
+	/**
+	 * Teleport player to/from instance
+	 * @param player
+	 * @param loc
+	 * @param instanceId
+	 * @param allowRandomOffset
+	 */
+	public void teleportPlayer(L2PcInstance player, Location loc, int instanceId, boolean allowRandomOffset)
+	{
+		player.setInstanceId(instanceId);
+		player.teleToLocation(loc, allowRandomOffset);
 	}
 }

@@ -378,8 +378,6 @@ public final class L2World
 			return;
 		}
 		
-		// removeObject(object);
-		
 		if (oldRegion != null)
 		{
 			// Remove the object from the L2ObjectHashSet(L2Object) _visibleObjects of L2WorldRegion
@@ -389,13 +387,12 @@ public final class L2World
 			// Go through all surrounding L2WorldRegion L2Characters
 			for (L2WorldRegion reg : oldRegion.getSurroundingRegions())
 			{
-				Collection<L2Object> vObj = reg.getVisibleObjects().values();
+				final Collection<L2Object> vObj = reg.getVisibleObjects().values();
 				for (L2Object obj : vObj)
 				{
 					if (obj != null)
 					{
 						obj.getKnownList().removeKnownObject(object);
-						object.getKnownList().removeKnownObject(obj);
 					}
 				}
 			}
@@ -413,12 +410,7 @@ public final class L2World
 				{
 					removeFromAllPlayers(player);
 				}
-				
-				// If selected L2Object is a GM L2PcInstance, remove it from Set(L2PcInstance) _gmList of GmListTable
-				// if (((L2PcInstance)object).isGM())
-				// GmListTable.getInstance().deleteGm((L2PcInstance)object);
 			}
-			
 		}
 	}
 	
