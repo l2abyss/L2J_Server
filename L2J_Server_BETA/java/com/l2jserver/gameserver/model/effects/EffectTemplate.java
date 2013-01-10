@@ -83,7 +83,7 @@ public class EffectTemplate
 		chanceCondition = chanceCond;
 		
 		_func = EffectHandler.getInstance().getHandler(func);
-		if (func == null)
+		if (_func == null)
 		{
 			_log.warning("EffectTemplate: Requested Unexistent effect: " + func);
 			throw new RuntimeException();
