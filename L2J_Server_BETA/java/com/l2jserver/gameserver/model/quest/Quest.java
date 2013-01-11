@@ -3698,7 +3698,7 @@ public class Quest extends ManagedScript
 	 */
 	public void teleportPlayer(L2PcInstance player, Location loc, int instanceId, boolean allowRandomOffset)
 	{
-		player.setInstanceId(instanceId);
+		loc.setInstanceId(instanceId);
 		player.teleToLocation(loc, allowRandomOffset);
 	}
 }
