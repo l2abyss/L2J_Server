@@ -64,7 +64,7 @@ public class SpawnTable
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			Statement s = con.createStatement();
-			ResultSet rs = s.executeQuery("SELECT count, npc_templateid, locx, locy, locz, heading, respawn_delay, loc_id, periodOfDay FROM spawnlist"))
+			ResultSet rs = s.executeQuery("SELECT count, npc_templateid, locx, locy, locz, heading, respawn_delay, respawn_random, loc_id, periodOfDay FROM spawnlist"))
 		{
 			L2Spawn spawnDat;
 			L2NpcTemplate template1;
@@ -93,7 +93,7 @@ public class SpawnTable
 						spawnDat.setLocy(rs.getInt("locy"));
 						spawnDat.setLocz(rs.getInt("locz"));
 						spawnDat.setHeading(rs.getInt("heading"));
-						spawnDat.setRespawnDelay(rs.getInt("respawn_delay"));
+						spawnDat.setRespawnDelay(rs.getInt("respawn_delay"), rs.getInt("respawn_random"));
 						int loc_id = rs.getInt("loc_id");
 						spawnDat.setLocation(loc_id);
 						
@@ -133,7 +133,7 @@ public class SpawnTable
 		{
 			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 				Statement ps = con.createStatement();
-				ResultSet rs = ps.executeQuery("SELECT count, npc_templateid, locx, locy, locz, heading, respawn_delay, loc_id, periodOfDay FROM custom_spawnlist"))
+				ResultSet rs = ps.executeQuery("SELECT count, npc_templateid, locx, locy, locz, heading, respawn_delay, respawn_random, loc_id, periodOfDay FROM custom_spawnlist"))
 			{
 				L2Spawn spawnDat;
 				L2NpcTemplate template1;
@@ -162,7 +162,7 @@ public class SpawnTable
 							spawnDat.setLocy(rs.getInt("locy"));
 							spawnDat.setLocz(rs.getInt("locz"));
 							spawnDat.setHeading(rs.getInt("heading"));
-							spawnDat.setRespawnDelay(rs.getInt("respawn_delay"));
+							spawnDat.setRespawnDelay(rs.getInt("respawn_delay"), rs.getInt("respawn_random"));
 							spawnDat.setCustom(true);
 							int loc_id = rs.getInt("loc_id");
 							spawnDat.setLocation(loc_id);
@@ -224,7 +224,7 @@ public class SpawnTable
 			}
 			
 			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement insert = con.prepareStatement("INSERT INTO " + spawnTable + "(count,npc_templateid,locx,locy,locz,heading,respawn_delay,loc_id) values(?,?,?,?,?,?,?,?)"))
+				PreparedStatement insert = con.prepareStatement("INSERT INTO " + spawnTable + "count,npc_templateid,locx,locy,locz,heading,respawn_delay,respawn_random,loc_id) values(?,?,?,?,?,?,?,?,?)"))
 			{
 				insert.setInt(1, spawn.getAmount());
 				insert.setInt(2, spawn.getNpcid());
@@ -232,8 +232,9 @@ public class SpawnTable
 				insert.setInt(4, spawn.getLocy());
 				insert.setInt(5, spawn.getLocz());
 				insert.setInt(6, spawn.getHeading());
-				insert.setInt(7, spawn.getRespawnDelay() / 1000);
-				insert.setInt(8, spawn.getLocation());
+				insert.setInt(7, (int) (spawn.getRespawnDelay() / 1000));
+				insert.setInt(8, (int) (spawn.getRespawnMaxDelay() - spawn.getRespawnMinDelay()));				
+				insert.setInt(9, spawn.getLocation());
 				insert.execute();
 			}
 			catch (Exception e)

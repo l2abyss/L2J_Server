@@ -77,14 +77,11 @@ public class L2Spawn
 	/** The heading of L2NpcInstance when they are spawned */
 	private int _heading;
 	
-	/** The delay between a L2NpcInstance remove and its re-spawn */
-	private int _respawnDelay;
+	/** Minimum respawn delay */
+	private long _respawnMinDelay;
 	
-	/** Minimum delay RaidBoss */
-	private int _respawnMinDelay;
-	
-	/** Maximum delay RaidBoss */
-	private int _respawnMaxDelay;
+	/** Maximum respawn delay */
+	private long _respawnMaxDelay;
 	
 	private int _instanceId = 0;
 	
@@ -211,7 +208,7 @@ public class L2Spawn
 	}
 	
 	/**
-	 * @return the Identifier of the L2NpcInstance manage by this L2Spwan contained in the L2NpcTemplate.
+	 * @return the Identifier of the L2NpcInstance manage by this L2Spawn contained in the L2NpcTemplate.
 	 */
 	public int getNpcid()
 	{
@@ -225,31 +222,23 @@ public class L2Spawn
 	{
 		return _heading;
 	}
-	
+
 	/**
-	 * @return the delay between a L2NpcInstance remove and its re-spawn.
+	 * @return min respawn delay.
 	 */
-	public int getRespawnDelay()
-	{
-		return _respawnDelay;
-	}
-	
-	/**
-	 * @return Min RaidBoss Spawn delay.
-	 */
-	public int getRespawnMinDelay()
+	public long getRespawnMinDelay()
 	{
 		return _respawnMinDelay;
 	}
-	
+
 	/**
-	 * @return Max RaidBoss Spawn delay.
+	 * @return max respawn delay.
 	 */
-	public int getRespawnMaxDelay()
+	public long getRespawnMaxDelay()
 	{
 		return _respawnMaxDelay;
 	}
-	
+
 	/**
 	 * Set the maximum number of L2NpcInstance that this L2Spawn can manage.
 	 * @param amount
@@ -272,7 +261,7 @@ public class L2Spawn
 	 * Set Minimum Respawn Delay.
 	 * @param date
 	 */
-	public void setRespawnMinDelay(int date)
+	public void setRespawnMinDelay(long date)
 	{
 		_respawnMinDelay = date;
 	}
@@ -281,7 +270,7 @@ public class L2Spawn
 	 * Set Maximum Respawn Delay.
 	 * @param date
 	 */
-	public void setRespawnMaxDelay(int date)
+	public void setRespawnMaxDelay(long date)
 	{
 		_respawnMaxDelay = date;
 	}
@@ -376,12 +365,12 @@ public class L2Spawn
 			
 			// Create a new SpawnTask to launch after the respawn Delay
 			// ClientScheduler.getInstance().scheduleLow(new SpawnTask(npcId), _respawnDelay);
-			ThreadPoolManager.getInstance().scheduleGeneral(new SpawnTask(oldNpc), _respawnDelay);
+			ThreadPoolManager.getInstance().scheduleGeneral(new SpawnTask(oldNpc), hasRespawnRandom() ? Rnd.get(_respawnMinDelay, _respawnMaxDelay) : _respawnMinDelay);
 		}
 	}
 	
 	/**
-	 * Create the initial spawning and set _doRespawn to True.
+	 * Create the initial spawning and set _doRespawn to False, if respawn time set to 0, or set it to True otherwise.
 	 * @return The number of L2NpcInstance that were spawned
 	 */
 	public int init()
@@ -390,7 +379,7 @@ public class L2Spawn
 		{
 			doSpawn();
 		}
-		_doRespawn = true;
+		_doRespawn = _respawnMinDelay != 0;
 		
 		return _currentCount;
 	}
@@ -624,23 +613,48 @@ public class L2Spawn
 	}
 	
 	/**
-	 * @param i delay in seconds
+	 * Set bounds for random calculation and delay for respawn 
+	 * @param delay delay in seconds
+	 * @param randomInterval random interval in seconds
 	 */
-	public void setRespawnDelay(int i)
+	public void setRespawnDelay(int delay, int randomInterval)
 	{
-		if (i < 0)
+		if (delay != 0)
 		{
-			_log.warning("respawn delay is negative for spawn:" + this);
+			if (delay < 0)
+			{
+				_log.warning("respawn delay is negative for spawn:" + this);
+			}
+
+			int minDelay = delay - randomInterval; 
+			int maxDelay = delay + randomInterval;
+
+			_respawnMinDelay = Math.max(10, minDelay) * 1000L;
+			_respawnMaxDelay = Math.max(10, maxDelay) * 1000L;
 		}
-		
-		if (i < 10)
+
+		else
 		{
-			i = 10;
+			_respawnMinDelay = 0;
+			_respawnMaxDelay = 0;
 		}
-		
-		_respawnDelay = i * 1000;
 	}
-	
+
+	public void setRespawnDelay(int delay)
+	{
+		setRespawnDelay(delay, 0);
+	}
+
+	public long getRespawnDelay()
+	{
+		return (_respawnMinDelay + _respawnMaxDelay) / 2;
+	}
+
+	public boolean hasRespawnRandom()
+	{
+		return _respawnMinDelay != _respawnMaxDelay;
+	}	
+
 	public L2Npc getLastSpawn()
 	{
 		return _lastSpawn;

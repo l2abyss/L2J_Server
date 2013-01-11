@@ -97,8 +97,8 @@ public class RaidBossSpawnManager
 					spawnDat.setLocz(rset.getInt("loc_z"));
 					spawnDat.setAmount(rset.getInt("amount"));
 					spawnDat.setHeading(rset.getInt("heading"));
-					spawnDat.setRespawnMinDelay(rset.getInt("respawn_min_delay"));
-					spawnDat.setRespawnMaxDelay(rset.getInt("respawn_max_delay"));
+					spawnDat.setRespawnMinDelay(rset.getInt("respawn_min_delay") * 1000L);
+					spawnDat.setRespawnMaxDelay(rset.getInt("respawn_max_delay") * 1000L);
 					respawnTime = rset.getLong("respawn_time");
 					
 					addNewSpawn(spawnDat, respawnTime, rset.getDouble("currentHP"), rset.getDouble("currentMP"), false);
@@ -189,9 +189,9 @@ public class RaidBossSpawnManager
 		{
 			boss.setRaidStatus(StatusEnum.DEAD);
 			
-			final int respawnMinDelay = boss.getSpawn().getRespawnMinDelay();
-			final int respawnMaxDelay = boss.getSpawn().getRespawnMaxDelay();
-			final long respawnDelay = Rnd.get((int) (respawnMinDelay * 1000 * Config.RAID_MIN_RESPAWN_MULTIPLIER), (int) (respawnMaxDelay * 1000 * Config.RAID_MAX_RESPAWN_MULTIPLIER));
+			final long respawnMinDelay = (long) (boss.getSpawn().getRespawnMinDelay() * Config.RAID_MIN_RESPAWN_MULTIPLIER);
+			final long respawnMaxDelay = (long) (boss.getSpawn().getRespawnMaxDelay() * Config.RAID_MAX_RESPAWN_MULTIPLIER);
+			final long respawnDelay = Rnd.get(respawnMinDelay, respawnMaxDelay);
 			final long respawnTime = Calendar.getInstance().getTimeInMillis() + respawnDelay;
 			
 			info.set("currentHP", boss.getMaxHp());
