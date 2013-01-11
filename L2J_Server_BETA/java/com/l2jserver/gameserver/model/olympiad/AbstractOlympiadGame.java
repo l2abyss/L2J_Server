@@ -204,7 +204,7 @@ public abstract class AbstractOlympiadGame
 			player.setIsOlympiadStart(false);
 			player.setOlympiadSide(par.getSide());
 			player.olyBuff = 5;
-			player.setInstanceId(OlympiadGameManager.getInstance().getOlympiadTask(id).getZone().getInstanceId());
+			loc.setInstanceId(OlympiadGameManager.getInstance().getOlympiadTask(id).getZone().getInstanceId());
 			player.teleToLocation(loc, false);
 			player.sendPacket(new ExOlympiadMode(2));
 		}
