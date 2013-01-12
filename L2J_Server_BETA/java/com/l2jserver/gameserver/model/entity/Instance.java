@@ -520,7 +520,7 @@ public class Instance
 						List<L2Spawn> manualSpawn = new ArrayList<>();
 						for (Node d = group.getFirstChild(); d != null; d = d.getNextSibling())
 						{
-							int npcId = 0, x = 0, y = 0, z = 0, respawn = 0, heading = 0, delay = -1;
+							int npcId = 0, x = 0, y = 0, z = 0, heading = 0, respawn = 0, respawnRandom = 0, delay = -1;
 							
 							if ("spawn".equalsIgnoreCase(d.getNodeName()))
 							{
@@ -535,7 +535,11 @@ public class Instance
 								{
 									delay = Integer.parseInt(d.getAttributes().getNamedItem("onKillDelay").getNodeValue());
 								}
-								
+								if (d.getAttributes().getNamedItem("respawnRandom") != null)
+								{
+									respawnRandom = Integer.parseInt(d.getAttributes().getNamedItem("respawnRandom").getNodeValue());
+								}
+
 								npcTemplate = NpcTable.getInstance().getTemplate(npcId);
 								if (npcTemplate != null)
 								{
@@ -545,15 +549,7 @@ public class Instance
 									spawnDat.setLocz(z);
 									spawnDat.setAmount(1);
 									spawnDat.setHeading(heading);
-									spawnDat.setRespawnDelay(respawn);
-									if (respawn == 0)
-									{
-										spawnDat.stopRespawn();
-									}
-									else
-									{
-										spawnDat.startRespawn();
-									}
+									spawnDat.setRespawnDelay(respawn, respawnRandom);
 									spawnDat.setInstanceId(getId());
 									if (spawnGroup.equals("general"))
 									{

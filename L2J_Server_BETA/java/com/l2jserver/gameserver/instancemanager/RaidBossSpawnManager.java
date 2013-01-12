@@ -97,10 +97,9 @@ public class RaidBossSpawnManager
 					spawnDat.setLocz(rset.getInt("loc_z"));
 					spawnDat.setAmount(rset.getInt("amount"));
 					spawnDat.setHeading(rset.getInt("heading"));
-					spawnDat.setRespawnMinDelay(rset.getInt("respawn_min_delay") * 1000L);
-					spawnDat.setRespawnMaxDelay(rset.getInt("respawn_max_delay") * 1000L);
+					spawnDat.setRespawnDelay(rset.getInt("respawn_delay"), rset.getInt("respawn_random"));
 					respawnTime = rset.getLong("respawn_time");
-					
+
 					addNewSpawn(spawnDat, respawnTime, rset.getDouble("currentHP"), rset.getDouble("currentMP"), false);
 				}
 				else
