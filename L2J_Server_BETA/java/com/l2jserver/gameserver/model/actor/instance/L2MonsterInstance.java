@@ -247,4 +247,13 @@ public class L2MonsterInstance extends L2Attackable
 	{
 		return ((getLeader() == null) ? super.isWalker() : getLeader().isWalker());
 	}
+	
+	/**
+	 * @return {@code true} if this L2MonsterInstance is not raid minion, master state otherwise.
+	 */
+	@Override
+	public boolean giveRaidCurse()
+	{
+		return isRaidMinion() ? getLeader().giveRaidCurse() : true;
+	}
 }
