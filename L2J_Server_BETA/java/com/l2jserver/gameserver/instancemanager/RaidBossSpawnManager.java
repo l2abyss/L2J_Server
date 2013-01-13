@@ -188,9 +188,9 @@ public class RaidBossSpawnManager
 		{
 			boss.setRaidStatus(StatusEnum.DEAD);
 			
-			final long respawnMinDelay = (long) (boss.getSpawn().getRespawnMinDelay() * Config.RAID_MIN_RESPAWN_MULTIPLIER);
-			final long respawnMaxDelay = (long) (boss.getSpawn().getRespawnMaxDelay() * Config.RAID_MAX_RESPAWN_MULTIPLIER);
-			final long respawnDelay = Rnd.get(respawnMinDelay, respawnMaxDelay);
+			final int respawnMinDelay = (int) (boss.getSpawn().getRespawnMinDelay() * Config.RAID_MIN_RESPAWN_MULTIPLIER);
+			final int respawnMaxDelay = (int) (boss.getSpawn().getRespawnMaxDelay() * Config.RAID_MAX_RESPAWN_MULTIPLIER);
+			final int respawnDelay = Rnd.get(respawnMinDelay, respawnMaxDelay);
 			final long respawnTime = Calendar.getInstance().getTimeInMillis() + respawnDelay;
 			
 			info.set("currentHP", boss.getMaxHp());

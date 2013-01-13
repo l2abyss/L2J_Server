@@ -352,7 +352,8 @@ public class Quest extends ManagedScript
 		ON_TRAP_ACTION(true), // on zone exit
 		ON_ITEM_USE(true),
 		ON_EVENT_RECEIVED(true), // onEventReceived action, triggered when NPC recieving an event, sent by other NPC
-		ON_MOVE_FINISHED(true); // onMoveFinished action, triggered when NPC stops after moving
+		ON_MOVE_FINISHED(true), // onMoveFinished action, triggered when NPC stops after moving
+		ON_NODE_ARRIVED(true); // onNodeArrived action, triggered when NPC, controlled by Walking Manager, arrives to next node
 		
 		// control whether this event type is allowed for the same npc template in multiple quests
 		// or if the npc must be registered in at most one quest for the specified event
@@ -1193,6 +1194,21 @@ public class Quest extends ManagedScript
 		}
 	}
 	
+	/**
+	 * @param npc
+	 */
+	public final void notifyNodeArrived(L2Npc npc)
+	{
+		try
+		{
+			onNodeArrived(npc);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Exception on onNodeArrived() in notifyNodeArrived(): " + e.getMessage(), e);
+		}
+	}
+
 	// These are methods that java calls to invoke scripts.
 	
 	/**
@@ -1540,7 +1556,17 @@ public class Quest extends ManagedScript
 	{
 		return null;
 	}
-	
+
+	/**
+	 * This function is called whenever a walker NPC (controlled by WalkingManager) arrive a walking node
+	 * @param npc registered NPC
+	 * @return
+	 */
+	public String onNodeArrived(L2Npc npc)
+	{
+		return null;
+	}
+
 	/**
 	 * Show an error message to the specified player.
 	 * @param player the player to whom to send the error (must be a GM)
@@ -2410,7 +2436,33 @@ public class Quest extends ManagedScript
 		}
 		return value;
 	}
-	
+
+	/**
+	 * Register addNodeArrived trigger for NPC
+	 * @param npcId id of NPC to register
+	 * @return
+	 */
+	public L2NpcTemplate addNodeArrivedId(int npcId)
+	{
+		return addEventId(npcId, QuestEventType.ON_NODE_ARRIVED);
+	}
+
+	/**
+	 * Register addNodeArrived trigger for NPC
+	 * @param npcIds id of NPC to register
+	 * @return
+	 */
+	public L2NpcTemplate[] addNodeArrivedId(int... npcIds)
+	{
+		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		int i = 0;
+		for (int npcId : npcIds)
+		{
+			value[i++] = addEventId(npcId, QuestEventType.ON_NODE_ARRIVED);
+		}
+		return value;
+	}
+
 	/**
 	 * Use this method to get a random party member from a player's party.<br>
 	 * Useful when distributing rewards after killing an NPC.

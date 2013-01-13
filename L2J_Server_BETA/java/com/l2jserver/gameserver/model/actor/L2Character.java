@@ -3910,6 +3910,12 @@ public abstract class L2Character extends L2Object
 		 */
 		public void detachAI()
 		{
+			// Skip character, if it is controlled by Walking Manager
+			if (L2Character.this.isWalker())
+			{
+				return;
+			}
+
 			_ai = null;
 		}
 	}

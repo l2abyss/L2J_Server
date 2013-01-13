@@ -34,24 +34,24 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class NpcKnownList extends CharKnownList
 {
 	private ScheduledFuture<?> _trackingTask = null;
-	
+
 	public NpcKnownList(L2Npc activeChar)
 	{
 		super(activeChar);
 	}
-	
+
 	@Override
 	public L2Npc getActiveChar()
 	{
 		return (L2Npc) super.getActiveChar();
 	}
-	
+
 	@Override
 	public int getDistanceToForgetObject(L2Object object)
 	{
 		return 2 * getDistanceToWatchObject(object);
 	}
-	
+
 	@Override
 	public int getDistanceToWatchObject(L2Object object)
 	{
@@ -59,21 +59,21 @@ public class NpcKnownList extends CharKnownList
 		{
 			return 0;
 		}
-		
+
 		if (object instanceof L2FestivalGuideInstance)
 		{
 			return 4000;
 		}
-		
+
 		if (object.isPlayable())
 		{
 			return 1500;
 		}
-		
+
 		return 500;
 	}
-	
-	// L2Master mod - support for Walking monsters aggro
+
+	// Support for Walking monsters aggro
 	public void startTrackingTask()
 	{
 		if ((_trackingTask == null) && (getActiveChar().getAggroRange() > 0))
@@ -81,8 +81,8 @@ public class NpcKnownList extends CharKnownList
 			_trackingTask = ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new TrackingTask(), 2000, 2000);
 		}
 	}
-	
-	// L2Master mod - support for Walking monsters aggro
+
+	// Support for Walking monsters aggro
 	public void stopTrackingTask()
 	{
 		if (_trackingTask != null)
@@ -91,15 +91,15 @@ public class NpcKnownList extends CharKnownList
 			_trackingTask = null;
 		}
 	}
-	
-	// L2Master mod - support for Walking monsters aggro
+
+	// Support for Walking monsters aggro
 	private class TrackingTask implements Runnable
 	{
 		public TrackingTask()
 		{
 			//
 		}
-		
+
 		@Override
 		public void run()
 		{
@@ -113,12 +113,21 @@ public class NpcKnownList extends CharKnownList
 					{
 						for (L2PcInstance pl : players)
 						{
-							if (pl.isInsideRadius(monster, monster.getAggroRange(), true, false) && !pl.isDead() && !pl.isInvul())
+							if (!pl.isDead() && !pl.isInvul() && pl.isInsideRadius(monster, monster.getAggroRange(), true, false))
 							{
-								WalkingManager.getInstance().stopMoving(getActiveChar(), false);
-								monster.addDamageHate(pl, 0, 100);
-								monster.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, pl, null);
-								break;
+								// Send aggroRangeEnter
+								if (monster.getHating(pl) == 0)
+								{
+									monster.addDamageHate(pl, 0, 0);
+								}
+
+								// Skip attack for other targets, if one is already choosen for attack
+								if ((monster.getAI().getIntention() != CtrlIntention.AI_INTENTION_ATTACK) && !monster.isCoreAIDisabled())
+								{
+									WalkingManager.getInstance().stopMoving(getActiveChar(), false, true);
+									monster.addDamageHate(pl, 0, 100);
+									monster.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, pl, null);
+								}
 							}
 						}
 					}

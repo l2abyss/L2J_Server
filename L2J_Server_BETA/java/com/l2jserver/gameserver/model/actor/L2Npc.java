@@ -1445,6 +1445,11 @@ public class L2Npc extends L2Character
 				quest.notifySpawn(this);
 			}
 		}
+
+		if (!isTeleporting())
+		{
+			WalkingManager.getInstance().onSpawn(this);
+		}
 	}
 	
 	/**
@@ -1795,13 +1800,16 @@ public class L2Npc extends L2Character
 			player.sendPacket(new AbstractNpcInfo.NpcInfo(this, player));
 		}
 	}
-	
+
+	/**
+	 * @return {@code true} if this L2Npc is registered in WalkingManager
+	 */
 	@Override
 	public boolean isWalker()
 	{
 		return WalkingManager.getInstance().isRegistered(this);
 	}
-	
+
 	@Override
 	public boolean isChargedShot(ShotType type)
 	{

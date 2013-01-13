@@ -78,10 +78,10 @@ public class L2Spawn
 	private int _heading;
 	
 	/** Minimum respawn delay */
-	private long _respawnMinDelay;
+	private int _respawnMinDelay;
 	
 	/** Maximum respawn delay */
-	private long _respawnMaxDelay;
+	private int _respawnMaxDelay;
 	
 	private int _instanceId = 0;
 	
@@ -226,7 +226,7 @@ public class L2Spawn
 	/**
 	 * @return min respawn delay.
 	 */
-	public long getRespawnMinDelay()
+	public int getRespawnMinDelay()
 	{
 		return _respawnMinDelay;
 	}
@@ -234,7 +234,7 @@ public class L2Spawn
 	/**
 	 * @return max respawn delay.
 	 */
-	public long getRespawnMaxDelay()
+	public int getRespawnMaxDelay()
 	{
 		return _respawnMaxDelay;
 	}
@@ -261,7 +261,7 @@ public class L2Spawn
 	 * Set Minimum Respawn Delay.
 	 * @param date
 	 */
-	public void setRespawnMinDelay(long date)
+	public void setRespawnMinDelay(int date)
 	{
 		_respawnMinDelay = date;
 	}
@@ -270,7 +270,7 @@ public class L2Spawn
 	 * Set Maximum Respawn Delay.
 	 * @param date
 	 */
-	public void setRespawnMaxDelay(long date)
+	public void setRespawnMaxDelay(int date)
 	{
 		_respawnMaxDelay = date;
 	}
@@ -629,8 +629,8 @@ public class L2Spawn
 			int minDelay = delay - randomInterval; 
 			int maxDelay = delay + randomInterval;
 
-			_respawnMinDelay = Math.max(10, minDelay) * 1000L;
-			_respawnMaxDelay = Math.max(10, maxDelay) * 1000L;
+			_respawnMinDelay = Math.max(10, minDelay) * 1000;
+			_respawnMaxDelay = Math.max(10, maxDelay) * 1000;
 		}
 
 		else
@@ -645,7 +645,7 @@ public class L2Spawn
 		setRespawnDelay(delay, 0);
 	}
 
-	public long getRespawnDelay()
+	public int getRespawnDelay()
 	{
 		return (_respawnMinDelay + _respawnMaxDelay) / 2;
 	}

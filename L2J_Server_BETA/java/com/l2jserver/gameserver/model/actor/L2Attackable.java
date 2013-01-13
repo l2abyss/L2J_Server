@@ -42,6 +42,7 @@ import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
+import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2CommandChannel;
 import com.l2jserver.gameserver.model.L2DropCategory;
@@ -1001,6 +1002,12 @@ public class L2Attackable extends L2Npc
 		{
 			try
 			{
+				// If monster is on walk - stop it
+				if (isWalker() && !isCoreAIDisabled() && WalkingManager.getInstance().isOnWalk(this))
+				{
+					WalkingManager.getInstance().stopMoving(this, false, true);
+				}
+
 				L2PcInstance player = attacker.getActingPlayer();
 				if (player != null)
 				{
