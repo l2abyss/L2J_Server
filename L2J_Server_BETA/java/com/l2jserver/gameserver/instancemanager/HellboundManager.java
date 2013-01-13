@@ -277,7 +277,7 @@ public class HellboundManager
 					spawnDat.setRespawnDelay(rs.getInt("respawn_delay"), rs.getInt("respawn_random"));
 					spawnDat.setMinLvl(rs.getInt("min_hellbound_level"));
 					spawnDat.setMaxLvl(rs.getInt("max_hellbound_level"));
-
+					
 					// _population.put(spawnDat, null);
 					_population.add(spawnDat);
 					SpawnTable.getInstance().addNewSpawn(spawnDat, false);

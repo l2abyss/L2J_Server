@@ -1007,7 +1007,7 @@ public class L2Attackable extends L2Npc
 				{
 					WalkingManager.getInstance().stopMoving(this, false, true);
 				}
-
+				
 				L2PcInstance player = attacker.getActingPlayer();
 				if (player != null)
 				{

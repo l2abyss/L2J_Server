@@ -1208,7 +1208,7 @@ public class Quest extends ManagedScript
 			_log.log(Level.WARNING, "Exception on onNodeArrived() in notifyNodeArrived(): " + e.getMessage(), e);
 		}
 	}
-
+	
 	// These are methods that java calls to invoke scripts.
 	
 	/**
@@ -1556,7 +1556,7 @@ public class Quest extends ManagedScript
 	{
 		return null;
 	}
-
+	
 	/**
 	 * This function is called whenever a walker NPC (controlled by WalkingManager) arrive a walking node
 	 * @param npc registered NPC
@@ -1566,7 +1566,7 @@ public class Quest extends ManagedScript
 	{
 		return null;
 	}
-
+	
 	/**
 	 * Show an error message to the specified player.
 	 * @param player the player to whom to send the error (must be a GM)
@@ -2436,7 +2436,7 @@ public class Quest extends ManagedScript
 		}
 		return value;
 	}
-
+	
 	/**
 	 * Register addNodeArrived trigger for NPC
 	 * @param npcId id of NPC to register
@@ -2446,7 +2446,7 @@ public class Quest extends ManagedScript
 	{
 		return addEventId(npcId, QuestEventType.ON_NODE_ARRIVED);
 	}
-
+	
 	/**
 	 * Register addNodeArrived trigger for NPC
 	 * @param npcIds id of NPC to register
@@ -2462,7 +2462,7 @@ public class Quest extends ManagedScript
 		}
 		return value;
 	}
-
+	
 	/**
 	 * Use this method to get a random party member from a player's party.<br>
 	 * Useful when distributing rewards after killing an NPC.
@@ -3157,6 +3157,25 @@ public class Quest extends ManagedScript
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Check for multiple items in player's inventory.
+	 * @param player the player whose inventory to check for quest items
+	 * @param itemIds a list of item Ids to check for
+	 * @return {@code true} if at least one items exist in player's inventory, {@code false} otherwise
+	 */
+	public boolean hasAtLeastOneQuestItem(L2PcInstance player, int... itemIds)
+	{
+		final PcInventory inv = player.getInventory();
+		for (int itemId : itemIds)
+		{
+			if (inv.getItemByItemId(itemId) != null)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**

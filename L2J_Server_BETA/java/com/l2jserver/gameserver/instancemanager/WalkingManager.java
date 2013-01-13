@@ -52,23 +52,23 @@ public class WalkingManager extends DocumentParser
 	private static final byte REPEAT_GO_FIRST = 1;
 	private static final byte REPEAT_TELE_FIRST = 2;
 	private static final byte REPEAT_RANDOM = 3;
-
+	
 	protected Map<Integer, L2WalkRoute> _routes = new HashMap<>(); // all available routes
 	private final Map<Integer, WalkInfo> _activeRoutes = new HashMap<>(); // each record represents NPC, moving by predefined route from _routes, and moving progress
 	private final Map<Integer, NpcRoutesHolder> _routesToAttach = new HashMap<>(); // each record represents NPC and all available routes for it
-
+	
 	/**
 	 * Holds depending between NPC's spawn point and route
 	 */
 	private class NpcRoutesHolder
 	{
 		private final Map<String, Integer> _correspondences;
-
+		
 		public NpcRoutesHolder()
 		{
 			_correspondences = new HashMap<>();
 		}
-
+		
 		/**
 		 * Add correspondence between specific route and specific spawn point
 		 * @param routeId id of route
@@ -78,7 +78,7 @@ public class WalkingManager extends DocumentParser
 		{
 			_correspondences.put(getUniqueKey(loc), routeId);
 		}
-
+		
 		/**
 		 * @param npc
 		 * @return route id for given NPC.
@@ -93,7 +93,7 @@ public class WalkingManager extends DocumentParser
 			
 			return -1;
 		}
-
+		
 		/**
 		 * @param loc
 		 * @return unique text string for given Location.
@@ -103,7 +103,7 @@ public class WalkingManager extends DocumentParser
 			return (loc.getX() + "-" + loc.getY() + "-" + loc.getZ());
 		}
 	}
-
+	
 	/**
 	 * Holds info about current walk progress
 	 */
@@ -117,12 +117,12 @@ public class WalkingManager extends DocumentParser
 		protected boolean _forward = true; // Determines first --> last or first <-- last direction
 		private final int _routeId;
 		protected long _lastActionTime; // Debug field
-
+		
 		public WalkInfo(int routeId)
 		{
 			_routeId = routeId;
 		}
-
+		
 		/**
 		 * @return id of route of this WalkInfo.
 		 */
@@ -130,7 +130,7 @@ public class WalkingManager extends DocumentParser
 		{
 			return _routes.get(_routeId);
 		}
-
+		
 		/**
 		 * @return current node of this WalkInfo.
 		 */
@@ -138,7 +138,7 @@ public class WalkingManager extends DocumentParser
 		{
 			return getRoute().getNodeList().get(_currentNode);
 		}
-
+		
 		/**
 		 * Calculate next node for this WalkInfo and send debug message from given npc
 		 * @param npc NPC to debug message to be sent from
@@ -149,16 +149,16 @@ public class WalkingManager extends DocumentParser
 			if (getRoute().getRepeatType() == REPEAT_RANDOM)
 			{
 				int newNode = _currentNode;
-
+				
 				while (newNode == _currentNode)
 				{
 					newNode = Rnd.get(getRoute().getNodesCount());
 				}
-
+				
 				_currentNode = newNode;
 				npc.sendDebugMessage("Route id: " + getRoute().getId() + ", next random node is " + _currentNode);
 			}
-
+			
 			else
 			{
 				if (_forward)
@@ -169,17 +169,17 @@ public class WalkingManager extends DocumentParser
 				{
 					_currentNode--;
 				}
-
+				
 				if (_currentNode == getRoute().getNodesCount()) // Last node arrived
 				{
 					npc.sendDebugMessage("Route id: " + getRoute().getId() + ", last node arrived");
-
+					
 					if (!getRoute().repeatWalk())
 					{
 						cancelMoving(npc);
 						return;
 					}
-
+					
 					switch (getRoute().getRepeatType())
 					{
 						case REPEAT_GO_BACK:
@@ -195,7 +195,7 @@ public class WalkingManager extends DocumentParser
 							break;
 					}
 				}
-
+				
 				else if (_currentNode == -1) // First node arrived, when direction is first <-- last
 				{
 					_currentNode = 1;
@@ -204,19 +204,19 @@ public class WalkingManager extends DocumentParser
 			}
 		}
 	}
-
+	
 	protected WalkingManager()
 	{
 		load();
 	}
-
+	
 	@Override
 	public final void load()
 	{
 		parseDatapackFile("data/Routes.xml");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _routes.size() + " walking routes.");
 	}
-
+	
 	@Override
 	protected void parseDocument()
 	{
@@ -249,7 +249,7 @@ public class WalkingManager extends DocumentParser
 				{
 					repeatType = -1;
 				}
-
+				
 				final List<L2NpcWalkerNode> list = new ArrayList<>();
 				for (Node r = d.getFirstChild(); r != null; r = r.getNextSibling())
 				{
@@ -260,7 +260,7 @@ public class WalkingManager extends DocumentParser
 						int y = parseInt(attrs, "Y");
 						int z = parseInt(attrs, "Z");
 						int delay = parseInt(attrs, "delay");
-
+						
 						String chatString = null;
 						NpcStringId npcString = null;
 						Node node = attrs.getNamedItem("string");
@@ -296,7 +296,7 @@ public class WalkingManager extends DocumentParser
 						}
 						list.add(new L2NpcWalkerNode(0, npcString, chatString, x, y, z, delay, parseBoolean(attrs, "run")));
 					}
-
+					
 					else if (r.getNodeName().equals("target"))
 					{
 						NamedNodeMap attrs = r.getAttributes();
@@ -304,11 +304,11 @@ public class WalkingManager extends DocumentParser
 						{
 							int npcId = Integer.parseInt(attrs.getNamedItem("id").getNodeValue());
 							int x = 0, y = 0, z = 0;
-
+							
 							x = Integer.parseInt(attrs.getNamedItem("spawnX").getNodeValue());
 							y = Integer.parseInt(attrs.getNamedItem("spawnY").getNodeValue());
 							z = Integer.parseInt(attrs.getNamedItem("spawnZ").getNodeValue());
-
+							
 							NpcRoutesHolder holder = _routesToAttach.containsKey(npcId) ? _routesToAttach.get(npcId) : new NpcRoutesHolder();
 							holder.addRoute(routeId, new Location(x, y, z));
 							_routesToAttach.put(npcId, holder);
@@ -324,7 +324,7 @@ public class WalkingManager extends DocumentParser
 			}
 		}
 	}
-
+	
 	/**
 	 * @param npc NPC to check
 	 * @return {@code true} if given NPC, or its leader is controlled by Walking Manager and moves currently.
@@ -344,22 +344,22 @@ public class WalkingManager extends DocumentParser
 				monster = ((L2MonsterInstance) npc).getLeader();
 			}
 		}
-
+		
 		if (((monster != null) && !isRegistered(monster)) || !isRegistered(npc))
 		{
 			return false;
 		}
-
+		
 		WalkInfo walk = monster != null ? _activeRoutes.get(monster.getObjectId()) : _activeRoutes.get(npc.getObjectId());
-
+		
 		if (walk._stoppedByAttack || walk._suspended)
 		{
 			return false;
 		}
-
+		
 		return true;
 	}
-
+	
 	/**
 	 * @param npc NPC to check
 	 * @return {@code true} if given NPC controlled by Walking Manager.
@@ -368,7 +368,7 @@ public class WalkingManager extends DocumentParser
 	{
 		return _activeRoutes.containsKey(npc.getObjectId());
 	}
-
+	
 	/**
 	 * Start to move given NPC by given route
 	 * @param npc NPC to move
@@ -384,14 +384,14 @@ public class WalkingManager extends DocumentParser
 				if ((npc.getAI().getIntention() == CtrlIntention.AI_INTENTION_ACTIVE) || (npc.getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE))
 				{
 					WalkInfo walk = new WalkInfo(routeId);
-
+					
 					if (npc.isDebug())
 					{
 						walk._lastActionTime = System.currentTimeMillis();
 					}
-
+					
 					L2NpcWalkerNode node = walk.getCurrentNode();
-
+					
 					// adjust next waypoint, if NPC spawns at first waypoint
 					if ((npc.getX() == node.getMoveX()) && (npc.getY() == node.getMoveY()))
 					{
@@ -399,13 +399,13 @@ public class WalkingManager extends DocumentParser
 						node = walk.getCurrentNode();
 						npc.sendDebugMessage("Route id " + routeId + ", spawn point is same with first waypoint, adjusted to next");
 					}
-
+					
 					if (!npc.isInsideRadius(node.getMoveX(), node.getMoveY(), node.getMoveZ(), 3000, true, false))
 					{
 						npc.sendDebugMessage("Route id " + routeId + ", NPC is too far from starting point, walking will no start");
 						return;
 					}
-
+					
 					npc.sendDebugMessage("Starting to move at route " + routeId);
 					npc.setIsRunning(node.getRunning());
 					npc.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(node.getMoveX(), node.getMoveY(), node.getMoveZ(), 0));
@@ -417,9 +417,9 @@ public class WalkingManager extends DocumentParser
 							startMoving(npc, routeId);
 						}
 					}, 60000, 60000); // start walk check task, for resuming walk after fight
-
+					
 					npc.getKnownList().startTrackingTask();
-
+					
 					_activeRoutes.put(npc.getObjectId(), walk); // register route
 				}
 				else
@@ -441,14 +441,14 @@ public class WalkingManager extends DocumentParser
 				if ((npc.getAI().getIntention() == CtrlIntention.AI_INTENTION_ACTIVE) || (npc.getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE))
 				{
 					WalkInfo walk = _activeRoutes.get(npc.getObjectId());
-
+					
 					// Prevent call simultaneously from scheduled task and onArrived() or temporarily stop walking for resuming in future
 					if (walk._blocked || walk._suspended)
 					{
 						npc.sendDebugMessage("Trying continue to move at route " + routeId + ", but cannot now (operation is blocked)");
 						return;
 					}
-
+					
 					walk._blocked = true;
 					L2NpcWalkerNode node = walk.getCurrentNode();
 					npc.sendDebugMessage("Route id: " + routeId + ", continue to node " + walk._currentNode);
@@ -464,7 +464,7 @@ public class WalkingManager extends DocumentParser
 			}
 		}
 	}
-
+	
 	/**
 	 * Cancel NPC moving permanently
 	 * @param npc NPC to cancel
@@ -478,7 +478,7 @@ public class WalkingManager extends DocumentParser
 			npc.getKnownList().stopTrackingTask();
 		}
 	}
-
+	
 	/**
 	 * Resumes previously stopped moving
 	 * @param npc NPC to resume
@@ -495,7 +495,7 @@ public class WalkingManager extends DocumentParser
 		walk._stoppedByAttack = false;
 		startMoving(npc, walk.getRoute().getId());
 	}
-
+	
 	/**
 	 * Pause NPC moving until it will be resumed
 	 * @param npc NPC to pause moving
@@ -505,7 +505,7 @@ public class WalkingManager extends DocumentParser
 	public void stopMoving(L2Npc npc, boolean suspend, boolean stoppedByAttack)
 	{
 		L2MonsterInstance monster = null;
-
+		
 		if (npc.isMonster())
 		{
 			if (((L2MonsterInstance) npc).getLeader() == null)
@@ -517,17 +517,17 @@ public class WalkingManager extends DocumentParser
 				monster = ((L2MonsterInstance) npc).getLeader();
 			}
 		}
-
+		
 		if (((monster != null) && !isRegistered(monster)) || !isRegistered(npc))
 		{
 			return;
 		}
-
+		
 		WalkInfo walk = monster != null ? _activeRoutes.get(monster.getObjectId()) : _activeRoutes.get(npc.getObjectId());
-
+		
 		walk._suspended = suspend;
 		walk._stoppedByAttack = stoppedByAttack;
-
+		
 		if (monster != null)
 		{
 			monster.stopMove(null);
@@ -539,7 +539,7 @@ public class WalkingManager extends DocumentParser
 			npc.getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 		}
 	}
-
+	
 	/**
 	 * Manage "node arriving"-related tasks: schedule move to next node; send ON_NODE_ARRIVED event to Quest script
 	 * @param npc NPC to manage
@@ -556,9 +556,9 @@ public class WalkingManager extends DocumentParser
 					quest.notifyNodeArrived(npc);
 				}
 			}
-
+			
 			WalkInfo walk = _activeRoutes.get(npc.getObjectId());
-
+			
 			// Opposite should not happen... but happens sometime
 			if ((walk._currentNode >= 0) && (walk._currentNode < walk.getRoute().getNodesCount()))
 			{
@@ -570,7 +570,7 @@ public class WalkingManager extends DocumentParser
 					walk.calculateNextNode(npc);
 					int delay = walk.getCurrentNode().getDelay();
 					walk._blocked = true; // prevents to be ran from walk check task, if there is delay in this node.
-
+					
 					if (npc.isDebug())
 					{
 						walk._lastActionTime = System.currentTimeMillis();
@@ -580,7 +580,7 @@ public class WalkingManager extends DocumentParser
 			}
 		}
 	}
-
+	
 	/**
 	 * Manage "on death"-related tasks: permanently cancel moving of died NPC
 	 * @param npc NPC to manage
@@ -589,7 +589,7 @@ public class WalkingManager extends DocumentParser
 	{
 		cancelMoving(npc);
 	}
-
+	
 	/**
 	 * Manage "on spawn"-related tasks: start NPC moving, if there is route attached to its spawn point
 	 * @param npc NPC to manage
@@ -599,25 +599,25 @@ public class WalkingManager extends DocumentParser
 		if (_routesToAttach.containsKey(npc.getNpcId()))
 		{
 			int routeId = _routesToAttach.get(npc.getNpcId()).getRouteId(npc);
-
+			
 			if (routeId > 0)
 			{
 				startMoving(npc, routeId);
 			}
 		}
 	}
-
+	
 	private class ArrivedTask implements Runnable
 	{
 		WalkInfo _walk;
 		L2Npc _npc;
-
+		
 		public ArrivedTask(L2Npc npc, WalkInfo walk)
 		{
 			_npc = npc;
 			_walk = walk;
 		}
-
+		
 		@Override
 		public void run()
 		{
@@ -625,12 +625,12 @@ public class WalkingManager extends DocumentParser
 			startMoving(_npc, _walk.getRoute().getId());
 		}
 	}
-
+	
 	public static final WalkingManager getInstance()
 	{
 		return SingletonHolder._instance;
 	}
-
+	
 	private static class SingletonHolder
 	{
 		protected static final WalkingManager _instance = new WalkingManager();

@@ -32,7 +32,7 @@ public class AttackableKnownList extends NpcKnownList
 	{
 		super(activeChar);
 	}
-
+	
 	@Override
 	protected boolean removeKnownObject(L2Object object, boolean forget)
 	{
@@ -40,7 +40,7 @@ public class AttackableKnownList extends NpcKnownList
 		{
 			return false;
 		}
-
+		
 		// Remove the L2Object from the _aggrolist of the L2Attackable
 		if (object instanceof L2Character)
 		{
@@ -48,7 +48,7 @@ public class AttackableKnownList extends NpcKnownList
 		}
 		// Set the L2Attackable Intention to AI_INTENTION_IDLE
 		final Collection<L2PcInstance> known = getKnownPlayers().values();
-
+		
 		// FIXME: This is a temporary solution && support for Walking Manager
 		if (getActiveChar().hasAI() && ((known == null) || known.isEmpty()) && !getActiveChar().isWalker())
 		{
@@ -57,19 +57,19 @@ public class AttackableKnownList extends NpcKnownList
 		
 		return true;
 	}
-
+	
 	@Override
 	public L2Attackable getActiveChar()
 	{
 		return (L2Attackable) super.getActiveChar();
 	}
-
+	
 	@Override
 	public int getDistanceToForgetObject(L2Object object)
 	{
 		return (int) (getDistanceToWatchObject(object) * 1.5);
 	}
-
+	
 	@Override
 	public int getDistanceToWatchObject(L2Object object)
 	{
@@ -77,14 +77,14 @@ public class AttackableKnownList extends NpcKnownList
 		{
 			return 0;
 		}
-
+		
 		if (object.isPlayable())
 		{
 			return object.getKnownList().getDistanceToWatchObject(getActiveObject());
 		}
-
+		
 		int max = Math.max(300, Math.max(getActiveChar().getAggroRange(), Math.max(getActiveChar().getFactionRange(), getActiveChar().getEnemyRange())));
-
+		
 		return max;
 	}
 }

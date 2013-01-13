@@ -238,7 +238,7 @@ public class L2MonsterInstance extends L2Attackable
 	{
 		return true;
 	}
-
+	
 	/**
 	 * @return true if this L2MonsterInstance (or its master) is registered in WalkingManager
 	 */

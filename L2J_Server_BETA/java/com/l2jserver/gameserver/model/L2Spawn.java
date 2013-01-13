@@ -222,7 +222,7 @@ public class L2Spawn
 	{
 		return _heading;
 	}
-
+	
 	/**
 	 * @return min respawn delay.
 	 */
@@ -230,7 +230,7 @@ public class L2Spawn
 	{
 		return _respawnMinDelay;
 	}
-
+	
 	/**
 	 * @return max respawn delay.
 	 */
@@ -238,7 +238,7 @@ public class L2Spawn
 	{
 		return _respawnMaxDelay;
 	}
-
+	
 	/**
 	 * Set the maximum number of L2NpcInstance that this L2Spawn can manage.
 	 * @param amount
@@ -613,7 +613,7 @@ public class L2Spawn
 	}
 	
 	/**
-	 * Set bounds for random calculation and delay for respawn 
+	 * Set bounds for random calculation and delay for respawn
 	 * @param delay delay in seconds
 	 * @param randomInterval random interval in seconds
 	 */
@@ -625,36 +625,36 @@ public class L2Spawn
 			{
 				_log.warning("respawn delay is negative for spawn:" + this);
 			}
-
-			int minDelay = delay - randomInterval; 
+			
+			int minDelay = delay - randomInterval;
 			int maxDelay = delay + randomInterval;
-
+			
 			_respawnMinDelay = Math.max(10, minDelay) * 1000;
 			_respawnMaxDelay = Math.max(10, maxDelay) * 1000;
 		}
-
+		
 		else
 		{
 			_respawnMinDelay = 0;
 			_respawnMaxDelay = 0;
 		}
 	}
-
+	
 	public void setRespawnDelay(int delay)
 	{
 		setRespawnDelay(delay, 0);
 	}
-
+	
 	public int getRespawnDelay()
 	{
 		return (_respawnMinDelay + _respawnMaxDelay) / 2;
 	}
-
+	
 	public boolean hasRespawnRandom()
 	{
 		return _respawnMinDelay != _respawnMaxDelay;
-	}	
-
+	}
+	
 	public L2Npc getLastSpawn()
 	{
 		return _lastSpawn;

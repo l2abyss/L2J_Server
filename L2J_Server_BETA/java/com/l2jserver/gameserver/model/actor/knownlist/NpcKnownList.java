@@ -34,24 +34,24 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class NpcKnownList extends CharKnownList
 {
 	private ScheduledFuture<?> _trackingTask = null;
-
+	
 	public NpcKnownList(L2Npc activeChar)
 	{
 		super(activeChar);
 	}
-
+	
 	@Override
 	public L2Npc getActiveChar()
 	{
 		return (L2Npc) super.getActiveChar();
 	}
-
+	
 	@Override
 	public int getDistanceToForgetObject(L2Object object)
 	{
 		return 2 * getDistanceToWatchObject(object);
 	}
-
+	
 	@Override
 	public int getDistanceToWatchObject(L2Object object)
 	{
@@ -59,20 +59,20 @@ public class NpcKnownList extends CharKnownList
 		{
 			return 0;
 		}
-
+		
 		if (object instanceof L2FestivalGuideInstance)
 		{
 			return 4000;
 		}
-
+		
 		if (object.isPlayable())
 		{
 			return 1500;
 		}
-
+		
 		return 500;
 	}
-
+	
 	// Support for Walking monsters aggro
 	public void startTrackingTask()
 	{
@@ -81,7 +81,7 @@ public class NpcKnownList extends CharKnownList
 			_trackingTask = ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new TrackingTask(), 2000, 2000);
 		}
 	}
-
+	
 	// Support for Walking monsters aggro
 	public void stopTrackingTask()
 	{
@@ -91,7 +91,7 @@ public class NpcKnownList extends CharKnownList
 			_trackingTask = null;
 		}
 	}
-
+	
 	// Support for Walking monsters aggro
 	private class TrackingTask implements Runnable
 	{
@@ -99,7 +99,7 @@ public class NpcKnownList extends CharKnownList
 		{
 			//
 		}
-
+		
 		@Override
 		public void run()
 		{
@@ -120,7 +120,7 @@ public class NpcKnownList extends CharKnownList
 								{
 									monster.addDamageHate(pl, 0, 0);
 								}
-
+								
 								// Skip attack for other targets, if one is already choosen for attack
 								if ((monster.getAI().getIntention() != CtrlIntention.AI_INTENTION_ATTACK) && !monster.isCoreAIDisabled())
 								{

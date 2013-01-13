@@ -232,8 +232,8 @@ public class SpawnTable
 				insert.setInt(4, spawn.getLocy());
 				insert.setInt(5, spawn.getLocz());
 				insert.setInt(6, spawn.getHeading());
-				insert.setInt(7, (int) (spawn.getRespawnDelay() / 1000));
-				insert.setInt(8, (int) (spawn.getRespawnMaxDelay() - spawn.getRespawnMinDelay()));				
+				insert.setInt(7, spawn.getRespawnDelay() / 1000);
+				insert.setInt(8, spawn.getRespawnMaxDelay() - spawn.getRespawnMinDelay());
 				insert.setInt(9, spawn.getLocation());
 				insert.execute();
 			}
