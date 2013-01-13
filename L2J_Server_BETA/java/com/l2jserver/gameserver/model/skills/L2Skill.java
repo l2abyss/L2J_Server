@@ -257,6 +257,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	private int _npcId = 0;
 	
+	// Appearance
+	private final int _faceId;
+	private final int _hairColorId;
+	private final int _hairStyleId;
+	
 	protected L2Skill(StatsSet set)
 	{
 		_id = set.getInteger("skill_id");
@@ -534,6 +539,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_maxTargets = set.getInteger("maxTargets", -1);
 		_isStaticHeal = set.getBool("isStaticHeal", false);
 		_npcId = set.getInteger("npcId", 0);
+		_faceId = set.getInteger("faceId", -1);
+		_hairColorId = set.getInteger("hairColorId", -1);
+		_hairStyleId = set.getInteger("hairStyleId", -1);
 	}
 	
 	public abstract void useSkill(L2Character caster, L2Object[] targets);
@@ -2176,5 +2184,29 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public int getNpcId()
 	{
 		return _npcId;
+	}
+
+	/**
+	 * @return the _faceId
+	 */
+	public int getFaceId()
+	{
+		return _faceId;
+	}
+
+	/**
+	 * @return the _hairColorId
+	 */
+	public int getHairColorId()
+	{
+		return _hairColorId;
+	}
+
+	/**
+	 * @return the _hairStyleId
+	 */
+	public int getHairStyleId()
+	{
+		return _hairStyleId;
 	}
 }

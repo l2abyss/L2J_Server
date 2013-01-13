@@ -21,7 +21,6 @@ package com.l2jserver.gameserver.model.skills;
 import java.lang.reflect.Constructor;
 
 import com.l2jserver.gameserver.model.StatsSet;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillAppearance;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillChangeWeapon;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillChargeDmg;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillCreateItem;
@@ -188,8 +187,6 @@ public enum L2SkillType
 	
 	// Skill is done within the core.
 	COREDONE,
-	
-	CHANGE_APPEARANCE(L2SkillAppearance.class),
 	
 	// Refuel airship
 	REFUEL,
