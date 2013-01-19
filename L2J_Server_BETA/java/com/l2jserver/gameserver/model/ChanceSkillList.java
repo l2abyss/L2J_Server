@@ -165,6 +165,11 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 					{
 						return;
 					}
+					// We change skill to new one, we should verify conditions and dependancy for new one
+					if (!skill.getWeaponDependancy(_owner, true) || !skill.checkCondition(_owner, target, false))
+					{
+						return;
+					}
 				}
 				
 				if (_owner.isSkillDisabled(skill))
