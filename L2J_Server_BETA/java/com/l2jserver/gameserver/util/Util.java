@@ -45,7 +45,7 @@ import com.l2jserver.util.file.filter.ExtFilter;
  */
 public final class Util
 {
-	private static NumberFormat ADENA_FORMATTER = NumberFormat.getIntegerInstance(Locale.ENGLISH);
+	private static final NumberFormat ADENA_FORMATTER = NumberFormat.getIntegerInstance(Locale.ENGLISH);
 	
 	public static void handleIllegalPlayerAction(L2PcInstance actor, String message, int punishment)
 	{
@@ -399,7 +399,10 @@ public final class Util
 	 */
 	public static String formatAdena(long amount)
 	{
-		return ADENA_FORMATTER.format(amount);
+		synchronized (ADENA_FORMATTER)
+		{
+			return ADENA_FORMATTER.format(amount);
+		}
 	}
 	
 	/**
