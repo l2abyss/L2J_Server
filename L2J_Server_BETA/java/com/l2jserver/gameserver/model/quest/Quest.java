@@ -61,6 +61,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TrapInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Instance;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -3333,6 +3334,16 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Give item/reward to the player
+	 * @param player
+	 * @param holder
+	 */
+	protected void giveItems(L2PcInstance player, ItemHolder holder)
+	{
+		giveItems(player, holder.getId(), holder.getCount());
+	}
+	
+	/**
 	 * @param player
 	 * @param itemId
 	 * @param count
@@ -3530,6 +3541,17 @@ public class Quest extends ManagedScript
 			player.broadcastUserInfo();
 		}
 		return player.destroyItemByItemId("Quest", itemId, amount, player, true);
+	}
+	
+	/**
+	 * Take an amount of a specified item from player's inventory.
+	 * @param player
+	 * @param holder
+	 * @return {@code true} if any items were taken, {@code false} otherwise
+	 */
+	protected boolean takeItems(L2PcInstance player, ItemHolder holder)
+	{
+		return takeItems(player, holder.getId(), holder.getCount());
 	}
 	
 	/**
