@@ -56,7 +56,6 @@ import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.FishData;
 import com.l2jserver.gameserver.datatables.FishingMonstersData;
 import com.l2jserver.gameserver.datatables.FishingRodsData;
-import com.l2jserver.gameserver.datatables.HelperBuffTable;
 import com.l2jserver.gameserver.datatables.HennaData;
 import com.l2jserver.gameserver.datatables.HerbDropTable;
 import com.l2jserver.gameserver.datatables.HitConditionBonus;
@@ -301,7 +300,6 @@ public class GameServer
 		PartyMatchWaitingList.getInstance();
 		PartyMatchRoomList.getInstance();
 		PetitionManager.getInstance();
-		HelperBuffTable.getInstance();
 		AugmentationData.getInstance();
 		CursedWeaponsManager.getInstance();
 		
