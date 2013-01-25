@@ -1721,7 +1721,7 @@ public class SevenSignsFestival implements SpawnListener
 	 */
 	public void sendMessageToAll(String senderName, NpcStringId npcString, L2Npc npc)
 	{
-		CreatureSay cs = new CreatureSay(npc.getObjectId(), Say2.SHOUT, senderName, npcString);
+		CreatureSay cs = new CreatureSay(npc.getObjectId(), Say2.NPC_SHOUT, senderName, npcString);
 		if (npcString.getParamCount() == 1)
 		{
 			cs.addStringParameter(String.valueOf(getMinsToNextFestival()));
@@ -2333,7 +2333,7 @@ public class SevenSignsFestival implements SpawnListener
 		{
 			if ((_participants != null) && !_participants.isEmpty())
 			{
-				_witchInst.broadcastPacket(new CreatureSay(_witchInst.getObjectId(), Say2.ALL, "Festival Witch", npcStringId));
+				_witchInst.broadcastPacket(new CreatureSay(_witchInst.getObjectId(), Say2.NPC_ALL, "Festival Witch", npcStringId));
 			}
 		}
 		
@@ -2341,7 +2341,7 @@ public class SevenSignsFestival implements SpawnListener
 		{
 			if ((_participants != null) && !_participants.isEmpty())
 			{
-				_witchInst.broadcastPacket(new CreatureSay(_witchInst.getObjectId(), Say2.ALL, "Festival Witch", npcString));
+				_witchInst.broadcastPacket(new CreatureSay(_witchInst.getObjectId(), Say2.NPC_ALL, "Festival Witch", npcString));
 			}
 		}
 		

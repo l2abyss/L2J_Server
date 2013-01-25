@@ -468,7 +468,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 			return;// wrong usage
 		}
 		
-		L2World.getInstance().forEachPlayer(new SayInShout(this, new CreatureSay(0, Say2.SHOUT, getName(), msg)));
+		L2World.getInstance().forEachPlayer(new SayInShout(this, new CreatureSay(0, Say2.NPC_SHOUT, getName(), msg)));
 	}
 	
 	private final class SayInShout implements TObjectProcedure<L2PcInstance>
