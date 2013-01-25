@@ -3102,7 +3102,6 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public int giveAvailableSkills(boolean includedByFs, boolean includeAutoGet)
 	{
-		long exec_time = System.currentTimeMillis();
 		int skillCounter = 0;
 		
 		// Get available skills
@@ -3130,7 +3129,7 @@ public final class L2PcInstance extends L2Playable
 		
 		if (Config.AUTO_LEARN_SKILLS && (skillCounter > 0))
 		{
-			sendMessage("You have learned " + skillCounter + " new skills, Execution time: " + ((System.currentTimeMillis() - exec_time)) + " milli-seconds");
+			sendMessage("You have learned " + skillCounter + " new skills");
 		}
 		return skillCounter;
 	}
