@@ -254,6 +254,6 @@ public class L2MonsterInstance extends L2Attackable
 	@Override
 	public boolean giveRaidCurse()
 	{
-		return isRaidMinion() ? getLeader().giveRaidCurse() : true;
+		return (isRaidMinion() && (getLeader() != null)) ? getLeader().giveRaidCurse() : super.giveRaidCurse();
 	}
 }
