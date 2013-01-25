@@ -85,6 +85,7 @@ import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
+import com.l2jserver.gameserver.model.interfaces.ISkillsHolder;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
@@ -157,7 +158,7 @@ import com.l2jserver.util.Rnd;
  * This link is stored in {@link #_template}
  * @version $Revision: 1.53.2.45.2.34 $ $Date: 2005/04/11 10:06:08 $
  */
-public abstract class L2Character extends L2Object
+public abstract class L2Character extends L2Object implements ISkillsHolder
 {
 	public static final Logger _log = Logger.getLogger(L2Character.class.getName());
 	
@@ -6034,6 +6035,7 @@ public abstract class L2Character extends L2Object
 	 * @param newSkill The L2Skill to add to the L2Character
 	 * @return The L2Skill replaced or null if just added a new L2Skill
 	 */
+	@Override
 	public L2Skill addSkill(L2Skill newSkill)
 	{
 		L2Skill oldSkill = null;
@@ -6281,6 +6283,7 @@ public abstract class L2Character extends L2Object
 	/**
 	 * @return the map containing this character skills.
 	 */
+	@Override
 	public Map<Integer, L2Skill> getSkills()
 	{
 		return _skills;
@@ -6304,6 +6307,7 @@ public abstract class L2Character extends L2Object
 	 * @param skillId The identifier of the L2Skill whose level must be returned
 	 * @return The level of the L2Skill identified by skillId
 	 */
+	@Override
 	public int getSkillLevel(int skillId)
 	{
 		final L2Skill skill = getKnownSkill(skillId);
@@ -6314,6 +6318,7 @@ public abstract class L2Character extends L2Object
 	 * @param skillId The identifier of the L2Skill to check the knowledge
 	 * @return the skill from the known skill.
 	 */
+	@Override
 	public final L2Skill getKnownSkill(int skillId)
 	{
 		return _skills.get(skillId);

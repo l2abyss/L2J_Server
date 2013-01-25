@@ -3102,48 +3102,35 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public int giveAvailableSkills(boolean includedByFs, boolean includeAutoGet)
 	{
-		int unLearnable = 0;
+		long exec_time = System.currentTimeMillis();
 		int skillCounter = 0;
 		
 		// Get available skills
-		List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSkills(this, getClassId(), includedByFs, includeAutoGet);
-		while (skills.size() > unLearnable)
+		Collection<L2Skill> skills = SkillTreesData.getInstance().getAllAvailableSkills(this, getClassId(), includedByFs, includeAutoGet);
+		for (L2Skill sk : skills)
 		{
-			for (L2SkillLearn s : skills)
+			if (getSkillLevel(sk.getId()) == -1)
 			{
-				L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
-				if ((sk == null) || ((sk.getId() == L2Skill.SKILL_DIVINE_INSPIRATION) && !Config.AUTO_LEARN_DIVINE_INSPIRATION && !canOverrideCond(PcCondOverride.SKILL_CONDITIONS)))
-				{
-					unLearnable++;
-					continue;
-				}
-				
-				if (getSkillLevel(sk.getId()) == -1)
-				{
-					skillCounter++;
-				}
-				
-				// fix when learning toggle skills
-				if (sk.isToggle())
-				{
-					L2Effect toggleEffect = getFirstEffect(sk.getId());
-					if (toggleEffect != null)
-					{
-						// stop old toggle skill effect, and give new toggle skill effect back
-						toggleEffect.exit();
-						sk.getEffects(this, this);
-					}
-				}
-				addSkill(sk, true);
+				skillCounter++;
 			}
 			
-			// Get new available skills, some skills depend of previous skills to be available.
-			skills = SkillTreesData.getInstance().getAvailableSkills(this, getClassId(), includedByFs, includeAutoGet);
+			// fix when learning toggle skills
+			if (sk.isToggle())
+			{
+				final L2Effect toggleEffect = getFirstEffect(sk.getId());
+				if (toggleEffect != null)
+				{
+					// stop old toggle skill effect, and give new toggle skill effect back
+					toggleEffect.exit();
+					sk.getEffects(this, this);
+				}
+			}
+			addSkill(sk, true);
 		}
 		
 		if (Config.AUTO_LEARN_SKILLS && (skillCounter > 0))
 		{
-			sendMessage("You have earned " + skillCounter + " new skills.");
+			sendMessage("You have learned " + skillCounter + " new skills, Execution time: " + ((System.currentTimeMillis() - exec_time)) + " milli-seconds");
 		}
 		return skillCounter;
 	}
