@@ -550,6 +550,14 @@ public class Instance
 									spawnDat.setAmount(1);
 									spawnDat.setHeading(heading);
 									spawnDat.setRespawnDelay(respawn, respawnRandom);
+									if (respawn == 0)
+									{
+										spawnDat.stopRespawn();
+									}
+									else
+									{
+										spawnDat.startRespawn();
+									}
 									spawnDat.setInstanceId(getId());
 									if (spawnGroup.equals("general"))
 									{
