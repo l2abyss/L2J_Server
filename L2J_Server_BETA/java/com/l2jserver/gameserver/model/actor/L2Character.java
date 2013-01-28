@@ -1811,10 +1811,15 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		}
 		
 		// Avoid broken Casting Animation.
-		// Client can't handle less than 550ms Casting Animation in skills with more than 550ms base.
-		if (((skill.getHitTime() + skill.getCoolTime()) > 550) && (skillTime < 550))
+		// Client can't handle less than 550ms Casting Animation in Magic Skills with more than 550ms base.
+		if (skill.isMagic() && ((skill.getHitTime() + skill.getCoolTime()) > 550) && (skillTime < 550))
 		{
 			skillTime = 550;
+		}
+		// Client can't handle less than 500ms Casting Animation in Physical Skills with 500ms base or more.
+		else if (!skill.isStatic() && ((skill.getHitTime() + skill.getCoolTime()) >= 500) && (skillTime < 500))
+		{
+			skillTime = 500;
 		}
 		
 		// queue herbs and potions
