@@ -34,6 +34,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.quest.Quest.QuestSound;
 import com.l2jserver.gameserver.network.serverpackets.ExShowQuestMark;
@@ -622,6 +623,15 @@ public final class QuestState
 	}
 	
 	/**
+	 * @param itemIds list of items that are required
+	 * @return true if all items exists in player's inventory, false - if not
+	 */
+	public boolean hasQuestItems(int... itemIds)
+	{
+		return getQuest().hasQuestItems(getPlayer(), itemIds);
+	}
+	
+	/**
 	 * Return the level of enchantment on the weapon of the player(Done specifically for weapon SA's)
 	 * @param itemId Id of the item to check enchantment
 	 * @return int
@@ -659,6 +669,11 @@ public final class QuestState
 	public void giveItems(int itemId, long count)
 	{
 		giveItems(itemId, count, 0);
+	}
+	
+	public void giveItems(ItemHolder holder)
+	{
+		giveItems(holder.getId(), holder.getCount(), 0);
 	}
 	
 	public void giveItems(int itemId, long count, int enchantlevel)

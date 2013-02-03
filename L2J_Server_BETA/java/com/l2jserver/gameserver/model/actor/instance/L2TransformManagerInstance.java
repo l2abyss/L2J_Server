@@ -94,7 +94,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 		{
 			if (canTransform(player))
 			{
-				L2TransformManagerInstance.showTransformSkillList(player);
+				showTransformSkillList(player);
 			}
 			else
 			{
@@ -289,7 +289,7 @@ public final class L2TransformManagerInstance extends L2MerchantInstance
 		{
 			return true;
 		}
-		final QuestState st = player.getQuestState("136_MoreThanMeetsTheEye");
+		final QuestState st = player.getQuestState("Q00136_MoreThanMeetsTheEye");
 		if ((st != null) && st.isCompleted())
 		{
 			return true;
