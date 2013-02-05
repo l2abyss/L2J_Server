@@ -39,8 +39,8 @@ import com.l2jserver.gameserver.model.items.PcItemTemplate;
  */
 public final class InitialEquipmentData extends DocumentParser
 {
-	private static final String filePathNormal = "data/stats/initialEquipment.xml";
-	private static final String filePathEvent = "data/stats/initialEquipmentEvent.xml";
+	private static final String NORMAL = "data/stats/initialEquipment.xml";
+	private static final String EVENT = "data/stats/initialEquipmentEvent.xml";
 	private final Map<ClassId, List<PcItemTemplate>> _initialEquipmentList = new HashMap<>();
 	
 	/**
@@ -55,7 +55,7 @@ public final class InitialEquipmentData extends DocumentParser
 	public void load()
 	{
 		_initialEquipmentList.clear();
-		parseDatapackFile(Config.INITIAL_EQUIPMENT_EVENT ? filePathEvent : filePathNormal);
+		parseDatapackFile(Config.INITIAL_EQUIPMENT_EVENT ? EVENT : NORMAL);
 		_log.info(getClass().getSimpleName() + ": Loaded " + _initialEquipmentList.size() + " Initial Equipment data.");
 	}
 	

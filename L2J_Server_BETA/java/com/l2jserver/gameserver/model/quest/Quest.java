@@ -92,7 +92,7 @@ import com.l2jserver.util.Util;
  */
 public class Quest extends ManagedScript
 {
-	protected static final Logger _log = Logger.getLogger(Quest.class.getName());
+	public static final Logger _log = Logger.getLogger(Quest.class.getName());
 	
 	/** Map containing events from String value of the event. */
 	private static Map<String, Quest> _allEventsS = new HashMap<>();
@@ -2485,16 +2485,14 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Auxiliary function for party quests.<br>
-	 * Note: This function is only here because of how commonly it may be used by quest developers.<br>
-	 * For any variations on this function, the quest script can always handle things on its own.
+	 * Get a random party member with required cond value.
 	 * @param player the instance of a player whose party is to be searched
-	 * @param value the value of the "cond" variable that must be matched
-	 * @return L2PcInstance: L2PcInstance for a random party member that matches the specified condition, or {@code null} if no match was found
+	 * @param cond the value of the "cond" variable that must be matched
+	 * @return a random party member that matches the specified condition, or {@code null} if no match was found
 	 */
-	public L2PcInstance getRandomPartyMember(L2PcInstance player, String value)
+	public L2PcInstance getRandomPartyMember(L2PcInstance player, int cond)
 	{
-		return getRandomPartyMember(player, "cond", value);
+		return getRandomPartyMember(player, "cond", String.valueOf(cond));
 	}
 	
 	/**

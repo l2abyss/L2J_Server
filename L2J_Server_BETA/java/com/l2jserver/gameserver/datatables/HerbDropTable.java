@@ -38,7 +38,7 @@ import com.l2jserver.gameserver.model.L2DropData;
  */
 public class HerbDropTable
 {
-	private static Logger _log = Logger.getLogger(HerbDropTable.class.getName());
+	private static final Logger _log = Logger.getLogger(HerbDropTable.class.getName());
 	
 	private final Map<Integer, List<L2DropCategory>> _herbGroups = new HashMap<>();
 	
