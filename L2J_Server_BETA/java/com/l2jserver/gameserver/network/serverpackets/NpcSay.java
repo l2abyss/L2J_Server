@@ -21,6 +21,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.network.NpcStringId;
 
 /**
@@ -58,8 +59,16 @@ public final class NpcSay extends L2GameServerPacket
 		_npcString = npcString.getId();
 	}
 	
+	public NpcSay(L2Npc npc, int messageType, NpcStringId npcString)
+	{
+		_objectId = npc.getObjectId();
+		_textType = messageType;
+		_npcId = 1000000 + npc.getNpcId();
+		_npcString = npcString.getId();
+	}
+	
 	/**
-	 * @param text - parameter for argument S1,S2 etc of an npcstring
+	 * @param text the text to add as a parameter for this packet's message (replaces S1, S2 etc.)
 	 * @return this NpcSay packet object
 	 */
 	public NpcSay addStringParameter(String text)
@@ -69,6 +78,30 @@ public final class NpcSay extends L2GameServerPacket
 			_parameters = new ArrayList<>();
 		}
 		_parameters.add(text);
+		return this;
+	}
+	
+	/**
+	 * @param params a list of strings to add as parameters for this packet's message (replaces S1, S2 etc.)
+	 * @return this NpcSay packet object
+	 */
+	public NpcSay addStringParameters(String... params)
+	{
+		if ((params != null) && (params.length > 0))
+		{
+			if (_parameters == null)
+			{
+				_parameters = new ArrayList<>();
+			}
+			
+			for (String item : params)
+			{
+				if ((item != null) && (item.length() > 0))
+				{
+					_parameters.add(item);
+				}
+			}
+		}
 		return this;
 	}
 	
