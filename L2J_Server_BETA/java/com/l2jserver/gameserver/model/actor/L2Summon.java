@@ -1127,6 +1127,12 @@ public abstract class L2Summon extends L2Playable
 	}
 	
 	@Override
+	public L2Summon getSummon()
+	{
+		return this;
+	}
+	
+	@Override
 	public boolean isChargedShot(ShotType type)
 	{
 		return (_shotsMask & type.getMask()) == type.getMask();
