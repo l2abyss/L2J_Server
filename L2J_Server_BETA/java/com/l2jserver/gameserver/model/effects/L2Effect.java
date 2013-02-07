@@ -702,7 +702,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	 */
 	public int getEffectFlags()
 	{
-		return 0;
+		return EffectFlag.NONE.getMask();
 	}
 	
 	@Override

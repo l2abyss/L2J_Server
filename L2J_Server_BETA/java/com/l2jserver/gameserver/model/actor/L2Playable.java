@@ -19,13 +19,13 @@
 package com.l2jserver.gameserver.model.actor;
 
 import com.l2jserver.gameserver.ai.CtrlEvent;
-import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.PlayableKnownList;
 import com.l2jserver.gameserver.model.actor.stat.PlayableStat;
 import com.l2jserver.gameserver.model.actor.status.PlayableStatus;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.EffectFlag;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -263,7 +263,7 @@ public abstract class L2Playable extends L2Character
 	// after resurrect
 	public final boolean isNoblesseBlessed()
 	{
-		return _effects.isAffected(CharEffectList.EFFECT_FLAG_NOBLESS_BLESSING);
+		return _effects.isAffected(EffectFlag.NOBLESS_BLESSING);
 	}
 	
 	public final void stopNoblesseBlessing(L2Effect effect)
@@ -282,7 +282,7 @@ public abstract class L2Playable extends L2Character
 	// Support for Soul of the Phoenix and Salvation skills
 	public final boolean isPhoenixBlessed()
 	{
-		return _effects.isAffected(CharEffectList.EFFECT_FLAG_PHOENIX_BLESSING);
+		return _effects.isAffected(EffectFlag.PHOENIX_BLESSING);
 	}
 	
 	public final void stopPhoenixBlessing(L2Effect effect)
@@ -304,13 +304,13 @@ public abstract class L2Playable extends L2Character
 	 */
 	public boolean isSilentMoving()
 	{
-		return _effects.isAffected(CharEffectList.EFFECT_FLAG_SILENT_MOVE);
+		return _effects.isAffected(EffectFlag.SILENT_MOVE);
 	}
 	
 	// for Newbie Protection Blessing skill, keeps you safe from an attack by a chaotic character >= 10 levels apart from you
 	public final boolean getProtectionBlessing()
 	{
-		return _effects.isAffected(CharEffectList.EFFECT_FLAG_PROTECTION_BLESSING);
+		return _effects.isAffected(EffectFlag.PROTECTION_BLESSING);
 	}
 	
 	/**
@@ -333,7 +333,7 @@ public abstract class L2Playable extends L2Character
 	// Charm of Luck - During a Raid/Boss war, decreased chance for death penalty
 	public final boolean getCharmOfLuck()
 	{
-		return _effects.isAffected(CharEffectList.EFFECT_FLAG_CHARM_OF_LUCK);
+		return _effects.isAffected(EffectFlag.CHARM_OF_LUCK);
 	}
 	
 	public final void stopCharmOfLuck(L2Effect effect)

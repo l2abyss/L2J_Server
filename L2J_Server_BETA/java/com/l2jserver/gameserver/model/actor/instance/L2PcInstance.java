@@ -102,7 +102,6 @@ import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.BlockList;
-import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
@@ -160,6 +159,7 @@ import com.l2jserver.gameserver.model.base.SubClass;
 import com.l2jserver.gameserver.model.effects.AbnormalEffect;
 import com.l2jserver.gameserver.model.effects.EffectTemplate;
 import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.EffectFlag;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Duel;
@@ -3468,7 +3468,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		else if (_waitTypeSitting && !isInStoreMode() && !isAlikeDead())
 		{
-			if (_effects.isAffected(CharEffectList.EFFECT_FLAG_RELAXING))
+			if (_effects.isAffected(EffectFlag.RELAXING))
 			{
 				stopEffects(L2EffectType.RELAXING);
 			}
@@ -5985,7 +5985,7 @@ public final class L2PcInstance extends L2Playable
 		
 		AntiFeedManager.getInstance().setLastDeathTime(getObjectId());
 		
-		if (isPhoenixBlessed() || (isAffected(CharEffectList.EFFECT_FLAG_CHARM_OF_COURAGE) && isInSiege()))
+		if (isPhoenixBlessed() || (isAffected(EffectFlag.CHARM_OF_COURAGE) && isInSiege()))
 		{
 			reviveRequest(this, null, false);
 		}
@@ -11783,7 +11783,7 @@ public final class L2PcInstance extends L2Playable
 			{
 				_revivePower = 100;
 			}
-			else if (isAffected(CharEffectList.EFFECT_FLAG_CHARM_OF_COURAGE))
+			else if (isAffected(EffectFlag.CHARM_OF_COURAGE))
 			{
 				_revivePower = 0;
 			}
@@ -11796,7 +11796,7 @@ public final class L2PcInstance extends L2Playable
 			
 			_revivePet = Pet;
 			
-			if (isAffected(CharEffectList.EFFECT_FLAG_CHARM_OF_COURAGE))
+			if (isAffected(EffectFlag.CHARM_OF_COURAGE))
 			{
 				ConfirmDlg dlg = new ConfirmDlg(SystemMessageId.RESURRECT_USING_CHARM_OF_COURAGE.getId());
 				dlg.addTime(60000);

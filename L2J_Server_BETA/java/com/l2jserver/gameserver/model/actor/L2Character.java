@@ -82,6 +82,7 @@ import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.effects.AbnormalEffect;
 import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.EffectFlag;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
@@ -2374,7 +2375,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			{
 				getActingPlayer().reviveRequest(getActingPlayer(), null, false);
 			}
-			else if (isAffected(CharEffectList.EFFECT_FLAG_CHARM_OF_COURAGE) && getActingPlayer().isInSiege())
+			else if (isAffected(EffectFlag.CHARM_OF_COURAGE) && getActingPlayer().isInSiege())
 			{
 				getActingPlayer().reviveRequest(getActingPlayer(), null, false);
 			}
@@ -2588,7 +2589,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	
 	public final boolean isAfraid()
 	{
-		return isAffected(CharEffectList.EFFECT_FLAG_FEAR);
+		return isAffected(EffectFlag.FEAR);
 	}
 	
 	/**
@@ -2614,7 +2615,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	
 	public final boolean isConfused()
 	{
-		return isAffected(CharEffectList.EFFECT_FLAG_CONFUSED);
+		return isAffected(EffectFlag.CONFUSED);
 	}
 	
 	/**
@@ -2650,17 +2651,17 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	
 	public final boolean isMuted()
 	{
-		return isAffected(CharEffectList.EFFECT_FLAG_MUTED);
+		return isAffected(EffectFlag.MUTED);
 	}
 	
 	public final boolean isPhysicalMuted()
 	{
-		return isAffected(CharEffectList.EFFECT_FLAG_PSYCHICAL_MUTED);
+		return isAffected(EffectFlag.PSYCHICAL_MUTED);
 	}
 	
 	public final boolean isPhysicalAttackMuted()
 	{
-		return isAffected(CharEffectList.EFFECT_FLAG_PSYCHICAL_ATTACK_MUTED);
+		return isAffected(EffectFlag.PSYCHICAL_ATTACK_MUTED);
 	}
 	
 	/**
@@ -2696,7 +2697,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	
 	public final boolean isParalyzed()
 	{
-		return _isParalyzed || isAffected(CharEffectList.EFFECT_FLAG_PARALYZED);
+		return _isParalyzed || isAffected(EffectFlag.PARALYZED);
 	}
 	
 	public final void setIsParalyzed(boolean value)
@@ -2716,7 +2717,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	
 	public final boolean isDisarmed()
 	{
-		return isAffected(CharEffectList.EFFECT_FLAG_DISARMED);
+		return isAffected(EffectFlag.DISARMED);
 	}
 	
 	/**
@@ -2729,7 +2730,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	
 	public final boolean isRooted()
 	{
-		return isAffected(CharEffectList.EFFECT_FLAG_ROOTED);
+		return isAffected(EffectFlag.ROOTED);
 	}
 	
 	/**
@@ -2787,17 +2788,17 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	
 	public final boolean isSleeping()
 	{
-		return isAffected(CharEffectList.EFFECT_FLAG_SLEEP);
+		return isAffected(EffectFlag.SLEEP);
 	}
 	
 	public final boolean isStunned()
 	{
-		return isAffected(CharEffectList.EFFECT_FLAG_STUNNED);
+		return isAffected(EffectFlag.STUNNED);
 	}
 	
 	public final boolean isBetrayed()
 	{
-		return isAffected(CharEffectList.EFFECT_FLAG_BETRAYED);
+		return isAffected(EffectFlag.BETRAYED);
 	}
 	
 	public final boolean isTeleporting()
@@ -2817,7 +2818,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	
 	public boolean isInvul()
 	{
-		return _isInvul || _isTeleporting || isAffected(CharEffectList.EFFECT_FLAG_INVUL);
+		return _isInvul || _isTeleporting || isAffected(EffectFlag.INVUL);
 	}
 	
 	public void setIsMortal(boolean b)
@@ -2837,7 +2838,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	
 	public boolean isResurrectionBlocked()
 	{
-		return isAffected(CharEffectList.EFFECT_FLAG_BLOCK_RESURRECTION);
+		return isAffected(EffectFlag.BLOCK_RESURRECTION);
 	}
 	
 	public final boolean isFlying()
@@ -4285,7 +4286,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 						broadcastPacket(su);
 					}
 				}
-				if ((getSummon() != null) && isAffected(CharEffectList.EFFECT_FLAG_SERVITOR_SHARE))
+				if ((getSummon() != null) && isAffected(EffectFlag.SERVITOR_SHARE))
 				{
 					getSummon().broadcastStatusUpdate();
 				}
@@ -7777,11 +7778,11 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	
 	/**
 	 * Check if target is affected with special buff
-	 * @see CharEffectList#isAffected(int)
+	 * @see CharEffectList#isAffected(EffectFlag)
 	 * @param flag int
 	 * @return boolean
 	 */
-	public boolean isAffected(int flag)
+	public boolean isAffected(EffectFlag flag)
 	{
 		return _effects.isAffected(flag);
 	}

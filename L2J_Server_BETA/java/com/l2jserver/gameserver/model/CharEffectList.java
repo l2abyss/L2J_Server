@@ -35,6 +35,7 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.EffectFlag;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
@@ -50,29 +51,6 @@ public class CharEffectList
 {
 	protected static final Logger _log = Logger.getLogger(CharEffectList.class.getName());
 	private static final L2Effect[] EMPTY_EFFECTS = new L2Effect[0];
-	
-	public static final int EFFECT_FLAG_CHARM_OF_COURAGE = 0x1;
-	public static final int EFFECT_FLAG_CHARM_OF_LUCK = 0x2;
-	public static final int EFFECT_FLAG_PHOENIX_BLESSING = 0x4;
-	public static final int EFFECT_FLAG_NOBLESS_BLESSING = 0x8;
-	public static final int EFFECT_FLAG_SILENT_MOVE = 0x10;
-	public static final int EFFECT_FLAG_PROTECTION_BLESSING = 0x20;
-	public static final int EFFECT_FLAG_RELAXING = 0x40;
-	public static final int EFFECT_FLAG_FEAR = 0x80;
-	public static final int EFFECT_FLAG_CONFUSED = 0x100;
-	public static final int EFFECT_FLAG_MUTED = 0x200;
-	public static final int EFFECT_FLAG_PSYCHICAL_MUTED = 0x400;
-	// public static final int EFFECT_FLAG_PARALYZE = 2048; //too much abuse in code
-	public static final int EFFECT_FLAG_PSYCHICAL_ATTACK_MUTED = 0x800;
-	public static final int EFFECT_FLAG_DISARMED = 0x1000;
-	public static final int EFFECT_FLAG_ROOTED = 0x2000;
-	public static final int EFFECT_FLAG_SLEEP = 0x4000;
-	public static final int EFFECT_FLAG_STUNNED = 0x8000;
-	public static final int EFFECT_FLAG_BETRAYED = 0x10000;
-	public static final int EFFECT_FLAG_INVUL = 0x40000;
-	public static final int EFFECT_FLAG_PARALYZED = 0x80000;
-	public static final int EFFECT_FLAG_BLOCK_RESURRECTION = 0x100000;
-	public static final int EFFECT_FLAG_SERVITOR_SHARE = 0x200000;
 	
 	private FastList<L2Effect> _buffs;
 	private FastList<L2Effect> _debuffs;
@@ -1461,12 +1439,12 @@ public class CharEffectList
 	
 	/**
 	 * Check if target is affected with special buff
-	 * @param bitFlag flag of special buff
+	 * @param flag of special buff
 	 * @return boolean true if affected
 	 */
-	public boolean isAffected(int bitFlag)
+	public boolean isAffected(EffectFlag flag)
 	{
-		return (_effectFlags & bitFlag) != 0;
+		return (_effectFlags & flag.getMask()) != 0;
 	}
 	
 	/**
