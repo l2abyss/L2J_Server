@@ -58,8 +58,6 @@ public enum AbnormalEffect
 	REAL_TARGET("realtarget", 0x20000000),
 	DEATH_MARK("deathmark", 0x40000000),
 	SKULL_FEAR("skull_fear", 0x80000000),
-	ARCANE_SHIELD("arcane_shield", 0x008000),
-	// CONFUSED("confused", 0x0020),
 	
 	// special effects
 	S_INVINCIBLE("invincible", 0x000001),
@@ -76,6 +74,7 @@ public enum AbnormalEffect
 	S_VESPER_S("vesper_s", 0x000800),
 	S_VESPER_C("vesper_c", 0x001000),
 	S_VESPER_D("vesper_d", 0x002000),
+	ARCANE_SHIELD("arcane_shield", 0x008000),
 	
 	// event effects
 	E_AFRO_1("afrobaguette1", 0x000001),
