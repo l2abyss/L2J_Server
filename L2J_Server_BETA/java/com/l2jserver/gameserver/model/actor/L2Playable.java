@@ -19,14 +19,16 @@
 package com.l2jserver.gameserver.model.actor;
 
 import com.l2jserver.gameserver.ai.CtrlEvent;
+import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.PlayableKnownList;
 import com.l2jserver.gameserver.model.actor.stat.PlayableStat;
 import com.l2jserver.gameserver.model.actor.status.PlayableStatus;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.EffectFlag;
+import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
+import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
@@ -169,6 +171,15 @@ public abstract class L2Playable extends L2Character
 			for (QuestState qs : actingPlayer.getNotifyQuestOfDeath())
 			{
 				qs.getQuest().notifyDeath((killer == null ? this : killer), this, qs);
+			}
+		}
+		// Notify instance
+		if (getInstanceId() > 0)
+		{
+			final Instance instance = InstanceManager.getInstance().getInstance(getInstanceId());
+			if (instance != null)
+			{
+				instance.notifyDeath(killer, this);
 			}
 		}
 		

@@ -454,7 +454,7 @@ public class L2Npc extends L2Character
 	
 	/**
 	 * Switches random Animation state into val.
-	 * @param val needed state of random animation	 
+	 * @param val needed state of random animation
 	 */
 	public void setRandomAnimationEnabled(boolean val)
 	{

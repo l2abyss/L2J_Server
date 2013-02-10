@@ -157,9 +157,9 @@ import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.base.Sex;
 import com.l2jserver.gameserver.model.base.SubClass;
 import com.l2jserver.gameserver.model.effects.AbnormalEffect;
+import com.l2jserver.gameserver.model.effects.EffectFlag;
 import com.l2jserver.gameserver.model.effects.EffectTemplate;
 import com.l2jserver.gameserver.model.effects.L2Effect;
-import com.l2jserver.gameserver.model.effects.EffectFlag;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Duel;
@@ -11726,6 +11726,14 @@ public final class L2PcInstance extends L2Playable
 			if (!DimensionalRiftManager.getInstance().checkIfInPeaceZone(getX(), getY(), getZ()))
 			{
 				getParty().getDimensionalRift().memberRessurected(this);
+			}
+		}
+		if (getInstanceId() > 0)
+		{
+			final Instance instance = InstanceManager.getInstance().getInstance(getInstanceId());
+			if (instance != null)
+			{
+				instance.cancelEjectDeadPlayer(this);
 			}
 		}
 	}
