@@ -563,7 +563,7 @@ public class WalkingManager extends DocumentParser
 			if ((walk._currentNode >= 0) && (walk._currentNode < walk.getRoute().getNodesCount()))
 			{
 				L2NpcWalkerNode node = walk.getRoute().getNodeList().get(walk._currentNode);
-				if ((node.getMoveX() == npc.getX()) && (node.getMoveY() == npc.getY()))
+				if (npc.isInsideRadius(node.getMoveX(), node.getMoveY(), node.getMoveZ(), 10, false, false))
 				{
 					npc.sendDebugMessage("Route id: " + walk.getRoute().getId() + ", arrived to node " + walk._currentNode);
 					npc.sendDebugMessage("Done in " + ((System.currentTimeMillis() - walk._lastActionTime) / 1000) + " s.");
