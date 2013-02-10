@@ -97,6 +97,8 @@ public class L2Spawn
 	private L2Npc _lastSpawn;
 	private static List<SpawnListener> _spawnListeners = new FastList<>();
 	
+	private boolean _isNoRndWalk = false; // Is no random walk
+	
 	/** The task launching the function doSpawn() */
 	class SpawnTask implements Runnable
 	{
@@ -536,6 +538,8 @@ public class L2Spawn
 		mob.setCurrentHpMp(mob.getMaxHp(), mob.getMaxMp());
 		// Set default value
 		mob.setScriptValue(0);
+		// Set is not random walk default value
+		mob.setIsNoRndWalk(isNoRndWalk());
 		
 		// Set the heading of the L2NpcInstance (random heading if not defined)
 		if (getHeading() == -1)
@@ -691,5 +695,15 @@ public class L2Spawn
 	public String toString()
 	{
 		return "L2Spawn [_template=" + getNpcid() + ", _locX=" + _locX + ", _locY=" + _locY + ", _locZ=" + _locZ + ", _heading=" + _heading + "]";
+	}
+	
+	public final boolean isNoRndWalk()
+	{
+		return _isNoRndWalk;
+	}
+	
+	public final void setIsNoRndWalk(boolean value)
+	{
+		_isNoRndWalk = value;
 	}
 }

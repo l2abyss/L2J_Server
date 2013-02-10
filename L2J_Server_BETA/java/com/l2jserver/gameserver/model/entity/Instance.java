@@ -78,6 +78,8 @@ public final class Instance
 	private final int _id;
 	private String _name;
 	private int _ejectTime = Config.EJECT_DEAD_PLAYER_TIME;
+	/** Allow random walk for NPCs, global parameter. */
+	private boolean _allowRandomWalk = true;
 	private final L2FastList<Integer> _players = new L2FastList<>(true);
 	private final List<L2Npc> _npcs = new L2FastList<>(true);
 	private final Map<Integer, L2DoorInstance> _doors = new L2FastMap<>(true);
@@ -444,7 +446,11 @@ public final class Instance
 		{
 			_ejectTime = 1000 * Integer.parseInt(a.getNodeValue());
 		}
-		
+		a = n.getAttributes().getNamedItem("allowRandomWalk");
+		if (a != null)
+		{
+			_allowRandomWalk = Boolean.parseBoolean(a.getNodeValue());
+		}
 		Node first = n.getFirstChild();
 		for (n = first; n != null; n = n.getNextSibling())
 		{
@@ -546,7 +552,7 @@ public final class Instance
 						for (Node d = group.getFirstChild(); d != null; d = d.getNextSibling())
 						{
 							int npcId = 0, x = 0, y = 0, z = 0, heading = 0, respawn = 0, respawnRandom = 0, delay = -1;
-							
+							Boolean allowRandomWalk = null;
 							if ("spawn".equalsIgnoreCase(d.getNodeName()))
 							{
 								
@@ -564,7 +570,10 @@ public final class Instance
 								{
 									respawnRandom = Integer.parseInt(d.getAttributes().getNamedItem("respawnRandom").getNodeValue());
 								}
-								
+								if (d.getAttributes().getNamedItem("allowRandomWalk") != null)
+								{
+									allowRandomWalk = Boolean.valueOf(d.getAttributes().getNamedItem("allowRandomWalk").getNodeValue());
+								}
 								npcTemplate = NpcTable.getInstance().getTemplate(npcId);
 								if (npcTemplate != null)
 								{
@@ -584,6 +593,14 @@ public final class Instance
 										spawnDat.startRespawn();
 									}
 									spawnDat.setInstanceId(getId());
+									if (allowRandomWalk == null)
+									{
+										spawnDat.setIsNoRndWalk(!_allowRandomWalk);
+									}
+									else
+									{
+										spawnDat.setIsNoRndWalk(!allowRandomWalk);
+									}
 									if (spawnGroup.equals("general"))
 									{
 										L2Npc spawned = spawnDat.doSpawn();
