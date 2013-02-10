@@ -864,7 +864,7 @@ public class L2Party extends AbstractPlayerGroup
 									((L2PcInstance) member).absorbSoul(skill, target);
 								}
 							}
-							((L2PcInstance) member).addExpAndSp(addexp, addsp, useVitalityRate);
+							calcualteExpSpPartyCutoff(member.getActingPlayer(), addexp, addsp, useVitalityRate);
 							if (addexp > 0)
 							{
 								((L2PcInstance) member).updateVitalityPoints(vitalityPoints, true, false);
@@ -881,6 +881,27 @@ public class L2Party extends AbstractPlayerGroup
 					member.addExpAndSp(0, 0);
 				}
 			}
+		}
+	}
+	
+	private final void calcualteExpSpPartyCutoff(L2PcInstance player, long addexp, int sp, boolean vit)
+	{
+		if (Config.PARTY_XP_CUTOFF_METHOD.equalsIgnoreCase("highfive"))
+		{
+			int i = 0;
+			for (int[] gap : Config.PARTY_XP_CUTOFF_GAPS)
+			{
+				if ((player.getLevel() >= gap[0]) && (player.getLevel() <= gap[0]))
+				{
+					player.addExpAndSp((addexp * Config.PARTY_XP_CUTOFF_GAP_PERCENTS[i]) / 100, sp, vit);
+					break;
+				}
+				i++;
+			}
+		}
+		else
+		{
+			player.addExpAndSp(addexp, sp, vit);
 		}
 	}
 	
@@ -962,6 +983,19 @@ public class L2Party extends AbstractPlayerGroup
 			{
 				int sqLevel = member.getLevel() * member.getLevel();
 				if (sqLevel >= (sqLevelSum / (members.size() * members.size())))
+				{
+					validMembers.add(member);
+				}
+			}
+		}
+		// High Five cutogg method
+		else if (Config.PARTY_XP_CUTOFF_METHOD.equalsIgnoreCase("highfive"))
+		{
+			int levelDiff;
+			for (L2Playable member : members)
+			{
+				levelDiff = topLvl - member.getLevel();
+				if (levelDiff < Config.PARTY_XP_CUTOFF_GAPS[Config.PARTY_XP_CUTOFF_GAPS.length][0])
 				{
 					validMembers.add(member);
 				}

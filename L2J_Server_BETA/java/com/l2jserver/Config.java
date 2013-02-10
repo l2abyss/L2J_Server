@@ -247,6 +247,8 @@ public final class Config
 	public static String PARTY_XP_CUTOFF_METHOD;
 	public static double PARTY_XP_CUTOFF_PERCENT;
 	public static int PARTY_XP_CUTOFF_LEVEL;
+	public static int[][] PARTY_XP_CUTOFF_GAPS;
+	public static int[] PARTY_XP_CUTOFF_GAP_PERCENTS;
 	public static boolean DISABLE_TUTORIAL;
 	public static boolean EXPERTISE_PENALTY;
 	public static boolean STORE_RECIPE_SHOPLIST;
@@ -1712,9 +1714,25 @@ public final class Config
 			DELETE_DAYS = Integer.parseInt(Character.getProperty("DeleteCharAfterDays", "7"));
 			ALT_GAME_EXPONENT_XP = Float.parseFloat(Character.getProperty("AltGameExponentXp", "0."));
 			ALT_GAME_EXPONENT_SP = Float.parseFloat(Character.getProperty("AltGameExponentSp", "0."));
-			PARTY_XP_CUTOFF_METHOD = Character.getProperty("PartyXpCutoffMethod", "level");
+			PARTY_XP_CUTOFF_METHOD = Character.getProperty("PartyXpCutoffMethod", "highfive");
 			PARTY_XP_CUTOFF_PERCENT = Double.parseDouble(Character.getProperty("PartyXpCutoffPercent", "3."));
 			PARTY_XP_CUTOFF_LEVEL = Integer.parseInt(Character.getProperty("PartyXpCutoffLevel", "20"));
+			final String[] gaps = Character.getProperty("PartyXpCutoffGaps", "0,9;10,14;15,99").split(";");
+			PARTY_XP_CUTOFF_GAPS = new int[gaps.length][2];
+			for (int i = 0; i < gaps.length; i++)
+			{
+				PARTY_XP_CUTOFF_GAPS[i] = new int[]
+				{
+					Integer.parseInt(gaps[i].split(",")[0]),
+					Integer.parseInt(gaps[i].split(",")[0])
+				};
+			}
+			final String[] percents = Character.getProperty("PartyXpCutoffGapPercent", "100;30;0").split(",");
+			PARTY_XP_CUTOFF_GAP_PERCENTS = new int[percents.length];
+			for (int i = 0; i < percents.length; i++)
+			{
+				PARTY_XP_CUTOFF_GAP_PERCENTS[i] = Integer.parseInt(percents[i]);
+			}
 			DISABLE_TUTORIAL = Boolean.parseBoolean(Character.getProperty("DisableTutorial", "False"));
 			EXPERTISE_PENALTY = Boolean.parseBoolean(Character.getProperty("ExpertisePenalty", "True"));
 			STORE_RECIPE_SHOPLIST = Boolean.parseBoolean(Character.getProperty("StoreRecipeShopList", "False"));
