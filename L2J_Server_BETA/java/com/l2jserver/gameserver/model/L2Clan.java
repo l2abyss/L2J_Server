@@ -85,32 +85,6 @@ public class L2Clan
 	private static final String INSERT_CLAN_DATA = "INSERT INTO clan_data (clan_id,clan_name,clan_level,hasCastle,blood_alliance_count,blood_oath_count,ally_id,ally_name,leader_id,crest_id,crest_large_id,ally_crest_id) values (?,?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String SELECT_CLAN_DATA = "SELECT clan_name,clan_level,hasCastle,blood_alliance_count,blood_oath_count,ally_id,ally_name,leader_id,crest_id,crest_large_id,ally_crest_id,reputation_score,auction_bid_at,ally_penalty_expiry_time,ally_penalty_type,char_penalty_expiry_time,dissolving_expiry_time FROM clan_data where clan_id=?";
 	
-	private static List<ClanCreationListener> clanCreationListeners = new FastList<ClanCreationListener>().shared();
-	private static List<ClanMembershipListener> clanMembershipListeners = new FastList<ClanMembershipListener>().shared();
-	
-	private String _name;
-	private int _clanId;
-	private L2ClanMember _leader;
-	private final Map<Integer, L2ClanMember> _members = new FastMap<>();
-	
-	private String _allyName;
-	private int _allyId;
-	private int _level;
-	private int _castleId;
-	private int _fortId;
-	private int _hideoutId;
-	private int _hiredGuards;
-	private int _crestId;
-	private int _crestLargeId;
-	private int _allyCrestId;
-	private int _auctionBiddedAt = 0;
-	private long _allyPenaltyExpiryTime;
-	private int _allyPenaltyType;
-	private long _charPenaltyExpiryTime;
-	private long _dissolvingExpiryTime;
-	private int _bloodAllianceCount;
-	private int _bloodOathCount;
-	
 	// Ally Penalty Types
 	/** Clan leaved ally */
 	public static final int PENALTY_TYPE_CLAN_LEAVED = 1;
@@ -120,13 +94,6 @@ public class L2Clan
 	public static final int PENALTY_TYPE_DISMISS_CLAN = 3;
 	/** Leader clan dissolve ally */
 	public static final int PENALTY_TYPE_DISSOLVE_ALLY = 4;
-	
-	private final ItemContainer _warehouse = new ClanWarehouse(this);
-	private final List<Integer> _atWarWith = new FastList<>();
-	private final List<Integer> _atWarAttackers = new FastList<>();
-	
-	private Forum _forum;
-	
 	// Clan Privileges
 	/** No privilege to manage any clan activity */
 	public static final int CP_NOTHING = 0;
@@ -161,7 +128,6 @@ public class L2Clan
 	public static final int CP_CS_SET_FUNCTIONS = 8388608;
 	/** Privilege to manage all clan activity */
 	public static final int CP_ALL = 16777214;
-	
 	// Sub-unit types
 	/** Clan subunit type of Academy */
 	public static final int SUBUNIT_ACADEMY = -1;
@@ -177,6 +143,38 @@ public class L2Clan
 	public static final int SUBUNIT_KNIGHT3 = 2001;
 	/** Clan subunit type of Order of Knights B-2 */
 	public static final int SUBUNIT_KNIGHT4 = 2002;
+	
+	private static List<ClanCreationListener> clanCreationListeners = new FastList<ClanCreationListener>().shared();
+	private static List<ClanMembershipListener> clanMembershipListeners = new FastList<ClanMembershipListener>().shared();
+	
+	private String _name;
+	private int _clanId;
+	private L2ClanMember _leader;
+	private final Map<Integer, L2ClanMember> _members = new FastMap<>();
+	
+	private String _allyName;
+	private int _allyId;
+	private int _level;
+	private int _castleId;
+	private int _fortId;
+	private int _hideoutId;
+	private int _hiredGuards;
+	private int _crestId;
+	private int _crestLargeId;
+	private int _allyCrestId;
+	private int _auctionBiddedAt = 0;
+	private long _allyPenaltyExpiryTime;
+	private int _allyPenaltyType;
+	private long _charPenaltyExpiryTime;
+	private long _dissolvingExpiryTime;
+	private int _bloodAllianceCount;
+	private int _bloodOathCount;
+	
+	private final ItemContainer _warehouse = new ClanWarehouse(this);
+	private final List<Integer> _atWarWith = new FastList<>();
+	private final List<Integer> _atWarAttackers = new FastList<>();
+	
+	private Forum _forum;
 	
 	/** FastMap(Integer, L2Skill) containing all skills of the L2Clan */
 	private final Map<Integer, L2Skill> _skills = new FastMap<>();
@@ -1466,7 +1464,7 @@ public class L2Clan
 	
 	public void addSkillEffects(L2PcInstance player)
 	{
-		if ((player == null) || (_reputationScore < 0))
+		if (player == null)
 		{
 			return;
 		}
@@ -1497,6 +1495,11 @@ public class L2Clan
 			{
 				player.addSkill(skill, false); // Skill is not saved to player DB
 			}
+		}
+		
+		if (_reputationScore < 0)
+		{
+			skillsStatus(player, true);
 		}
 	}
 	
@@ -1529,6 +1532,59 @@ public class L2Clan
 			for (L2Skill skill : subunit.getSkills())
 			{
 				player.removeSkill(skill, false); // Skill is not saved to player DB
+			}
+		}
+	}
+	
+	public void skillsStatus(L2PcInstance player, boolean disable)
+	{
+		if (player == null)
+		{
+			return;
+		}
+		
+		for (L2Skill skill : _skills.values())
+		{
+			if (disable)
+			{
+				player.disableSkill(skill, -1);
+			}
+			else
+			{
+				player.enableSkill(skill);
+			}
+		}
+		
+		if (player.getPledgeType() == 0)
+		{
+			for (L2Skill skill : _subPledgeSkills.values())
+			{
+				if (disable)
+				{
+					player.disableSkill(skill, -1);
+				}
+				else
+				{
+					player.enableSkill(skill);
+				}
+			}
+		}
+		else
+		{
+			final SubPledge subunit = getSubPledge(player.getPledgeType());
+			if (subunit != null)
+			{
+				for (L2Skill skill : subunit.getSkills())
+				{
+					if (disable)
+					{
+						player.disableSkill(skill, -1);
+					}
+					else
+					{
+						player.enableSkill(skill);
+					}
+				}
 			}
 		}
 	}
@@ -2153,7 +2209,7 @@ public class L2Clan
 			{
 				if (member.isOnline() && (member.getPlayerInstance() != null))
 				{
-					removeSkillEffects(member.getPlayerInstance());
+					skillsStatus(member.getPlayerInstance(), true);
 				}
 			}
 		}
@@ -2164,7 +2220,7 @@ public class L2Clan
 			{
 				if (member.isOnline() && (member.getPlayerInstance() != null))
 				{
-					addSkillEffects(member.getPlayerInstance());
+					skillsStatus(member.getPlayerInstance(), false);
 				}
 			}
 		}
