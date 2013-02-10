@@ -1727,7 +1727,7 @@ public final class Config
 					Integer.parseInt(gaps[i].split(",")[0])
 				};
 			}
-			final String[] percents = Character.getProperty("PartyXpCutoffGapPercent", "100;30;0").split(",");
+			final String[] percents = Character.getProperty("PartyXpCutoffGapPercent", "100;30;0").split(";");
 			PARTY_XP_CUTOFF_GAP_PERCENTS = new int[percents.length];
 			for (int i = 0; i < percents.length; i++)
 			{
