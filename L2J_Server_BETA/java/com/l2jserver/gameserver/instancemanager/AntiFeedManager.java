@@ -23,9 +23,9 @@ import java.util.Map;
 import javolution.util.FastMap;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.IL2Procedure;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.util.L2FastMap;
 import com.l2jserver.util.L2HashMap;

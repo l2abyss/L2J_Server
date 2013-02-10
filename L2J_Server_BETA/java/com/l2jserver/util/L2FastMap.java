@@ -22,8 +22,8 @@ import java.util.Map;
 
 import javolution.util.FastMap;
 
-import com.l2jserver.gameserver.model.IL2EntryProcedure;
-import com.l2jserver.gameserver.model.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IL2EntryProcedure;
+import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 
 /**
  * A custom version of FastMap with extension for iterating without using temporary collection<br>

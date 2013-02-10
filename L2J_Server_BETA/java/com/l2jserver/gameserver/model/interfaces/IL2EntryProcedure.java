@@ -16,19 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model;
+package com.l2jserver.gameserver.model.interfaces;
 
 /**
- * Interface for procedures with one Object parameter.
- * @author Battlecruiser
- * @param <T> the type of object on which the procedure will be executed
+ * @author UnAfraid
+ * @param <K>
+ * @param <V>
  */
-public interface IL2Procedure<T>
+public interface IL2EntryProcedure<K, V>
 {
 	/**
 	 * Executes this procedure. A false return value indicates that the application executing this procedure should not invoke this procedure again.
-	 * @param arg the object on which the procedure will be executed
+	 * @param key
+	 * @param value
 	 * @return {@code true} if additional invocations of the procedure are allowed.
 	 */
-	public boolean execute(T arg);
+	public boolean execute(K key, V value);
 }

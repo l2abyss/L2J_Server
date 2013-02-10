@@ -16,36 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model;
+package com.l2jserver.gameserver.model.interfaces;
 
 /**
- * This interface provides method to handle triggered skills from other objects.<br>
- * For example, other skill, an effect, etc...
- * @author DrHouse
+ * Interface for procedures with one Object parameter.
+ * @author Battlecruiser
+ * @param <T> the type of object on which the procedure will be executed
  */
-public interface IChanceSkillTrigger
+public interface IL2Procedure<T>
 {
 	/**
-	 * Just a flag
-	 * @return
+	 * Executes this procedure. A false return value indicates that the application executing this procedure should not invoke this procedure again.
+	 * @param arg the object on which the procedure will be executed
+	 * @return {@code true} if additional invocations of the procedure are allowed.
 	 */
-	public boolean triggersChanceSkill();
-	
-	/**
-	 * Triggered Id
-	 * @return
-	 */
-	public int getTriggeredChanceId();
-	
-	/**
-	 * Triggered level
-	 * @return
-	 */
-	public int getTriggeredChanceLevel();
-	
-	/**
-	 * Chance condition object
-	 * @return
-	 */
-	public ChanceCondition getTriggeredChanceCondition();
+	public boolean execute(T arg);
 }

@@ -21,8 +21,8 @@ package com.l2jserver.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.l2jserver.gameserver.model.IL2EntryProcedure;
-import com.l2jserver.gameserver.model.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IL2EntryProcedure;
+import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 
 /**
  * A custom version of HashMap: Extension for iterating without using temporary collection<br>

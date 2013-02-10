@@ -21,7 +21,7 @@ package com.l2jserver.util;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.l2jserver.gameserver.model.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 
 /**
  * A custom version of ArrayList: Extension for iterating without using temporary collection<br>
