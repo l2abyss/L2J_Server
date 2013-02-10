@@ -58,6 +58,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2DoorTemplate;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.instancezone.InstanceWorld;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
@@ -735,24 +736,24 @@ public final class Instance
 		}
 	}
 	
+	public void addEjectDeadTask(L2PcInstance player)
+	{
+		if ((player != null))
+		{
+			_ejectDeadTasks.put(player.getObjectId(), ThreadPoolManager.getInstance().scheduleGeneral(new EjectPlayer(player), _ejectTime));
+		}
+	}
+	
 	/**
 	 * @param killer the character that killed the {@code victim}
 	 * @param victim the character that was killed by the {@code killer}
 	 */
 	public final void notifyDeath(L2Character killer, L2Character victim)
 	{
-		onDeath(killer, victim);
-	}
-	
-	/**
-	 * @param killer
-	 * @param victim
-	 */
-	protected void onDeath(L2Character killer, L2Character victim)
-	{
-		if ((victim != null) && victim.isPlayer())
+		final InstanceWorld instance = InstanceManager.getInstance().getPlayerWorld(victim.getActingPlayer());
+		if (instance != null)
 		{
-			_ejectDeadTasks.put(victim.getObjectId(), ThreadPoolManager.getInstance().scheduleGeneral(new EjectPlayer(victim.getActingPlayer()), _ejectTime));
+			instance.onDeath(killer, victim);
 		}
 	}
 	

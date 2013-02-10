@@ -14803,6 +14803,12 @@ public final class SystemMessageId
 	public static final SystemMessageId THE_S2_ATTRIBUTE_WAS_SUCCESSFULLY_BESTOWED_ON_S1_RES_TO_S3_INCREASED;
 	
 	/**
+	 * ID: 3147<br>
+	 * Message: If you are not resurrected within $s1 minutes, you will be expelled from the instant zone.
+	 */
+	public static final SystemMessageId YOU_WILL_BE_EXPELLED_IN_S1;
+	
+	/**
 	 * ID: 3150<br>
 	 * Message: You have requested a couple action with $c1.
 	 */
@@ -17437,6 +17443,7 @@ public final class SystemMessageId
 		PARTY_LOOT_CHANGED_S1 = new SystemMessageId(3138);
 		C1_IS_CURRENTLY_DEAD_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION = new SystemMessageId(3139);
 		THE_S2_ATTRIBUTE_WAS_SUCCESSFULLY_BESTOWED_ON_S1_RES_TO_S3_INCREASED = new SystemMessageId(3144);
+		YOU_WILL_BE_EXPELLED_IN_S1 = new SystemMessageId(3147);
 		YOU_HAVE_REQUESTED_COUPLE_ACTION_C1 = new SystemMessageId(3150);
 		S1_S2_ATTRIBUTE_REMOVED_RESISTANCE_S3_DECREASED = new SystemMessageId(3152);
 		YOU_DO_NOT_HAVE_ENOUGH_FUNDS_TO_CANCEL_ATTRIBUTE = new SystemMessageId(3156);
