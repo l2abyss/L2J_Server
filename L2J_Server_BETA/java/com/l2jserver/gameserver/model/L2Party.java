@@ -988,14 +988,14 @@ public class L2Party extends AbstractPlayerGroup
 				}
 			}
 		}
-		// High Five cutogg method
+		// High Five cutoff method
 		else if (Config.PARTY_XP_CUTOFF_METHOD.equalsIgnoreCase("highfive"))
 		{
 			int levelDiff;
 			for (L2Playable member : members)
 			{
 				levelDiff = topLvl - member.getLevel();
-				if (levelDiff < Config.PARTY_XP_CUTOFF_GAPS[Config.PARTY_XP_CUTOFF_GAPS.length][0])
+				if (levelDiff < Config.PARTY_XP_CUTOFF_GAPS[Config.PARTY_XP_CUTOFF_GAPS.length - 1][0])
 				{
 					validMembers.add(member);
 				}
