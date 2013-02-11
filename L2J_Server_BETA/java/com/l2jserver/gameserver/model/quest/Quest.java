@@ -578,16 +578,16 @@ public class Quest extends ManagedScript
 	 * @param npc the NPC that was attacked
 	 * @param attacker the attacking player
 	 * @param damage the damage dealt to the NPC by the player
-	 * @param isPet if {@code true}, the attack was actually made by the player's pet
+	 * @param isSummon if {@code true}, the attack was actually made by the player's summon
 	 * @param skill the skill used to attack the NPC (can be null)
 	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet, L2Skill skill)
+	public final boolean notifyAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isSummon, L2Skill skill)
 	{
 		String res = null;
 		try
 		{
-			res = onAttack(npc, attacker, damage, isPet, skill);
+			res = onAttack(npc, attacker, damage, isSummon, skill);
 		}
 		catch (Exception e)
 		{
@@ -744,15 +744,15 @@ public class Quest extends ManagedScript
 	/**
 	 * @param npc
 	 * @param killer
-	 * @param isPet
+	 * @param isSummon
 	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyKill(L2Npc npc, L2PcInstance killer, boolean isPet)
+	public final boolean notifyKill(L2Npc npc, L2PcInstance killer, boolean isSummon)
 	{
 		String res = null;
 		try
 		{
-			res = onKill(npc, killer, isPet);
+			res = onKill(npc, killer, isSummon);
 		}
 		catch (Exception e)
 		{
@@ -971,15 +971,15 @@ public class Quest extends ManagedScript
 		private final L2PcInstance _caster;
 		private final L2Skill _skill;
 		private final L2Object[] _targets;
-		private final boolean _isPet;
+		private final boolean _isSummon;
 		
-		public TmpOnSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
+		public TmpOnSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isSummon)
 		{
 			_npc = npc;
 			_caster = caster;
 			_skill = skill;
 			_targets = targets;
-			_isPet = isPet;
+			_isSummon = isSummon;
 		}
 		
 		@Override
@@ -988,14 +988,13 @@ public class Quest extends ManagedScript
 			String res = null;
 			try
 			{
-				res = onSkillSee(_npc, _caster, _skill, _targets, _isPet);
+				res = onSkillSee(_npc, _caster, _skill, _targets, _isSummon);
 			}
 			catch (Exception e)
 			{
 				showError(_caster, e);
 			}
 			showResult(_caster, res);
-			
 		}
 	}
 	
@@ -1004,12 +1003,12 @@ public class Quest extends ManagedScript
 	 * @param caster
 	 * @param skill
 	 * @param targets
-	 * @param isPet
+	 * @param isSummon
 	 * @return {@code true}
 	 */
-	public final boolean notifySkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
+	public final boolean notifySkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isSummon)
 	{
-		ThreadPoolManager.getInstance().executeAi(new TmpOnSkillSee(npc, caster, skill, targets, isPet));
+		ThreadPoolManager.getInstance().executeAi(new TmpOnSkillSee(npc, caster, skill, targets, isSummon));
 		return true;
 	}
 	
@@ -1017,15 +1016,15 @@ public class Quest extends ManagedScript
 	 * @param npc
 	 * @param caller
 	 * @param attacker
-	 * @param isPet
+	 * @param isSummon
 	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isPet)
+	public final boolean notifyFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isSummon)
 	{
 		String res = null;
 		try
 		{
-			res = onFactionCall(npc, caller, attacker, isPet);
+			res = onFactionCall(npc, caller, attacker, isSummon);
 		}
 		catch (Exception e)
 		{
@@ -1038,13 +1037,13 @@ public class Quest extends ManagedScript
 	{
 		private final L2Npc _npc;
 		private final L2PcInstance _pc;
-		private final boolean _isPet;
+		private final boolean _isSummon;
 		
-		public TmpOnAggroEnter(L2Npc npc, L2PcInstance pc, boolean isPet)
+		public TmpOnAggroEnter(L2Npc npc, L2PcInstance pc, boolean isSummon)
 		{
 			_npc = npc;
 			_pc = pc;
-			_isPet = isPet;
+			_isSummon = isSummon;
 		}
 		
 		@Override
@@ -1053,7 +1052,7 @@ public class Quest extends ManagedScript
 			String res = null;
 			try
 			{
-				res = onAggroRangeEnter(_npc, _pc, _isPet);
+				res = onAggroRangeEnter(_npc, _pc, _isSummon);
 			}
 			catch (Exception e)
 			{
@@ -1067,12 +1066,12 @@ public class Quest extends ManagedScript
 	/**
 	 * @param npc
 	 * @param player
-	 * @param isPet
+	 * @param isSummon
 	 * @return {@code true}
 	 */
-	public final boolean notifyAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isPet)
+	public final boolean notifyAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isSummon)
 	{
-		ThreadPoolManager.getInstance().executeAi(new TmpOnAggroEnter(npc, player, isPet));
+		ThreadPoolManager.getInstance().executeAi(new TmpOnAggroEnter(npc, player, isSummon));
 		return true;
 	}
 	
@@ -1218,10 +1217,10 @@ public class Quest extends ManagedScript
 	 * @param npc this parameter contains a reference to the exact instance of the NPC that got attacked the NPC.
 	 * @param attacker this parameter contains a reference to the exact instance of the player who attacked.
 	 * @param damage this parameter represents the total damage that this attack has inflicted to the NPC.
-	 * @param isPet this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the damage was actually dealt by the player's pet.
+	 * @param isSummon this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the damage was actually dealt by the player's pet.
 	 * @return
 	 */
-	public String onAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet)
+	public String onAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isSummon)
 	{
 		return null;
 	}
@@ -1232,13 +1231,13 @@ public class Quest extends ManagedScript
 	 * @param npc this parameter contains a reference to the exact instance of the NPC that got attacked.
 	 * @param attacker this parameter contains a reference to the exact instance of the player who attacked the NPC.
 	 * @param damage this parameter represents the total damage that this attack has inflicted to the NPC.
-	 * @param isPet this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the damage was actually dealt by the player's pet.
+	 * @param isSummon this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the damage was actually dealt by the player's summon
 	 * @param skill parameter is the skill that player used to attack NPC.
 	 * @return
 	 */
-	public String onAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet, L2Skill skill)
+	public String onAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isSummon, L2Skill skill)
 	{
-		return onAttack(npc, attacker, damage, isPet);
+		return onAttack(npc, attacker, damage, isSummon);
 	}
 	
 	/**
@@ -1312,10 +1311,10 @@ public class Quest extends ManagedScript
 	 * This function is called whenever a player kills a NPC that is registered for the quest.
 	 * @param npc this parameter contains a reference to the exact instance of the NPC that got killed.
 	 * @param killer this parameter contains a reference to the exact instance of the player who killed the NPC.
-	 * @param isPet this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the killer was the player's pet.
+	 * @param isSummon this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the killer was the player's pet.
 	 * @return the text returned by the event (may be {@code null}, a filename or just text)
 	 */
-	public String onKill(L2Npc npc, L2PcInstance killer, boolean isPet)
+	public String onKill(L2Npc npc, L2PcInstance killer, boolean isSummon)
 	{
 		return null;
 	}
@@ -1415,10 +1414,10 @@ public class Quest extends ManagedScript
 	 * @param caster the player who cast the skill
 	 * @param skill the actual skill that was used
 	 * @param targets an array of all objects (can be any type of object, including mobs and players) that were affected by the skill
-	 * @param isPet if {@code true}, the skill was actually cast by the player's pet, not the player himself
+	 * @param isSummon if {@code true}, the skill was actually cast by the player's summon, not the player himself
 	 * @return
 	 */
-	public String onSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
+	public String onSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isSummon)
 	{
 		return null;
 	}
@@ -1464,10 +1463,10 @@ public class Quest extends ManagedScript
 	 * @param npc this parameter contains a reference to the exact instance of the NPC who is being asked for help.
 	 * @param caller this parameter contains a reference to the exact instance of the NPC who is asking for help.<br>
 	 * @param attacker this parameter contains a reference to the exact instance of the player who attacked.
-	 * @param isPet this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the attacker was the player's pet.
+	 * @param isSummon this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the attacker was the player's summon.
 	 * @return
 	 */
-	public String onFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isPet)
+	public String onFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isSummon)
 	{
 		return null;
 	}
@@ -1476,10 +1475,10 @@ public class Quest extends ManagedScript
 	 * This function is called whenever a player enters an NPC aggression range.
 	 * @param npc this parameter contains a reference to the exact instance of the NPC whose aggression range is being transgressed.
 	 * @param player this parameter contains a reference to the exact instance of the player who is entering the NPC's aggression range.
-	 * @param isPet this parameter if it's {@code false} it denotes that the character that entered the aggression range was indeed the player, else it specifies that the character was the player's pet.
+	 * @param isSummon this parameter if it's {@code false} it denotes that the character that entered the aggression range was indeed the player, else it specifies that the character was the player's summon.
 	 * @return
 	 */
-	public String onAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isPet)
+	public String onAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isSummon)
 	{
 		return null;
 	}
@@ -3658,12 +3657,12 @@ public class Quest extends ManagedScript
 	 * Executes a procedure for each player, depending on the parameters.
 	 * @param player the player were the procedure will be executed
 	 * @param npc the related Npc
-	 * @param isPet {@code true} if the event that call this method was originated by the player's pet
+	 * @param isSummon {@code true} if the event that call this method was originated by the player's summon
 	 * @param includeParty if {@code true} #actionForEachPlayer(L2PcInstance, L2Npc, boolean) will be called with the player's party members
 	 * @param includeCommandChannel if {@code true} {@link #actionForEachPlayer(L2PcInstance, L2Npc, boolean)} will be called with the player's command channel members
 	 * @see #actionForEachPlayer(L2PcInstance, L2Npc, boolean)
 	 */
-	public final void executeForEachPlayer(L2PcInstance player, final L2Npc npc, final boolean isPet, boolean includeParty, boolean includeCommandChannel)
+	public final void executeForEachPlayer(L2PcInstance player, final L2Npc npc, final boolean isSummon, boolean includeParty, boolean includeCommandChannel)
 	{
 		if ((includeParty || includeCommandChannel) && player.isInParty())
 		{
@@ -3674,7 +3673,7 @@ public class Quest extends ManagedScript
 					@Override
 					public boolean execute(L2PcInstance member)
 					{
-						actionForEachPlayer(member, npc, isPet);
+						actionForEachPlayer(member, npc, isSummon);
 						return true;
 					}
 				});
@@ -3686,7 +3685,7 @@ public class Quest extends ManagedScript
 					@Override
 					public boolean execute(L2PcInstance member)
 					{
-						actionForEachPlayer(member, npc, isPet);
+						actionForEachPlayer(member, npc, isSummon);
 						return true;
 					}
 				});
@@ -3694,7 +3693,7 @@ public class Quest extends ManagedScript
 		}
 		else
 		{
-			actionForEachPlayer(player, npc, isPet);
+			actionForEachPlayer(player, npc, isSummon);
 		}
 	}
 	
@@ -3702,9 +3701,9 @@ public class Quest extends ManagedScript
 	 * Overridable method called from {@link #executeForEachPlayer(L2PcInstance, L2Npc, boolean, boolean, boolean)}
 	 * @param player the player where the action will be run
 	 * @param npc the Npc related to this action
-	 * @param isPet isPet {@code true} if the event that call this method was originated by the player's pet
+	 * @param isSummon {@code true} if the event that call this method was originated by the player's summon
 	 */
-	public void actionForEachPlayer(L2PcInstance player, L2Npc npc, boolean isPet)
+	public void actionForEachPlayer(L2PcInstance player, L2Npc npc, boolean isSummon)
 	{
 		// To be overridden in quest scripts.
 	}

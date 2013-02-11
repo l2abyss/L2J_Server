@@ -581,7 +581,7 @@ public class L2Attackable extends L2Npc
 				{
 					for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL))
 					{
-						ThreadPoolManager.getInstance().scheduleEffect(new OnKillNotifyTask(this, quest, player, killer instanceof L2Summon), _onKillDelay);
+						ThreadPoolManager.getInstance().scheduleEffect(new OnKillNotifyTask(this, quest, player, (killer != null) && killer.isSummon()), _onKillDelay);
 					}
 				}
 			}
@@ -598,20 +598,20 @@ public class L2Attackable extends L2Npc
 		private final L2Attackable _attackable;
 		private final Quest _quest;
 		private final L2PcInstance _killer;
-		private final boolean _isPet;
+		private final boolean _isSummon;
 		
-		public OnKillNotifyTask(L2Attackable attackable, Quest quest, L2PcInstance killer, boolean isPet)
+		public OnKillNotifyTask(L2Attackable attackable, Quest quest, L2PcInstance killer, boolean isSummon)
 		{
 			_attackable = attackable;
 			_quest = quest;
 			_killer = killer;
-			_isPet = isPet;
+			_isSummon = isSummon;
 		}
 		
 		@Override
 		public void run()
 		{
-			_quest.notifyKill(_attackable, _killer, _isPet);
+			_quest.notifyKill(_attackable, _killer, _isSummon);
 		}
 	}
 	
@@ -1015,7 +1015,7 @@ public class L2Attackable extends L2Npc
 					{
 						for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK))
 						{
-							quest.notifyAttack(this, player, damage, attacker instanceof L2Summon, skill);
+							quest.notifyAttack(this, player, damage, attacker.isSummon(), skill);
 						}
 					}
 				}
