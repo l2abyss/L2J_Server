@@ -359,7 +359,7 @@ public class Quest extends ManagedScript
 		ON_EVENT_RECEIVED(true), // onEventReceived action, triggered when NPC receiving an event, sent by other NPC
 		ON_MOVE_FINISHED(true), // onMoveFinished action, triggered when NPC stops after moving
 		ON_NODE_ARRIVED(true), // onNodeArrived action, triggered when NPC, controlled by Walking Manager, arrives to next node
-		ON_CREATURE_SEE(true); // onSeeCreature action, triggered when NPC's known list include the character
+		ON_SEE_CREATURE(true); // onSeeCreature action, triggered when NPC's known list include the character
 		
 		// control whether this event type is allowed for the same npc template in multiple quests
 		// or if the npc must be registered in at most one quest for the specified event
@@ -2190,6 +2190,20 @@ public class Quest extends ManagedScript
 	public L2NpcTemplate addAggroRangeEnterId(int npcId)
 	{
 		return addEventId(npcId, QuestEventType.ON_AGGRO_RANGE_ENTER);
+	}
+	
+	/**
+	 * @param npcIds NPCs to register to on see creature event
+	 * @return the templates of the registered NPCs
+	 */
+	public L2NpcTemplate[] addSeeCreatureId(int... npcIds)
+	{
+		final L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
+		for (int i = 0; i < npcIds.length; i++)
+		{
+			value[i] = addEventId(npcIds[i], QuestEventType.ON_SEE_CREATURE);
+		}
+		return value;
 	}
 	
 	/**
