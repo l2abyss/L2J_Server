@@ -72,18 +72,18 @@ public final class L2ScriptEngineManager
 	 * Informs(logs) the scripts being loaded.<BR>
 	 * Apply only when executing script from files.<BR>
 	 */
-	private final boolean VERBOSE_LOADING = false;
+	private static final boolean VERBOSE_LOADING = false;
 	
 	/**
 	 * If the script engine supports compilation the script is compiled before execution.<BR>
 	 */
-	private final boolean ATTEMPT_COMPILATION = true;
+	private static final boolean ATTEMPT_COMPILATION = true;
 	
 	/**
 	 * Clean an previous error log(if such exists) for the script being loaded before trying to load.<BR>
 	 * Apply only when executing script from files.<BR>
 	 */
-	private final boolean PURGE_ERROR_LOG = true;
+	private static final boolean PURGE_ERROR_LOG = true;
 	
 	protected L2ScriptEngineManager()
 	{
@@ -139,8 +139,6 @@ public final class L2ScriptEngineManager
 	
 	private void preConfigure()
 	{
-		// java class path
-		
 		// Jython sys.path
 		String dataPackDirForwardSlashes = SCRIPT_FOLDER.getPath().replaceAll("\\\\", "/");
 		String configScript = "import sys;sys.path.insert(0,'" + dataPackDirForwardSlashes + "');";
@@ -297,7 +295,6 @@ public final class L2ScriptEngineManager
 					catch (ScriptException e)
 					{
 						reportScriptFileError(file, e);
-						// _log.log(Level.WARNING, "", e);
 					}
 				}
 			}
@@ -357,6 +354,7 @@ public final class L2ScriptEngineManager
 			}
 		}
 		
+		final String relativeName = file.getAbsolutePath().substring(SCRIPT_FOLDER.getAbsolutePath().length() + 1).replace('\\', '/');
 		try (FileInputStream fis = new FileInputStream(file);
 			InputStreamReader isr = new InputStreamReader(fis);
 			BufferedReader reader = new BufferedReader(isr))
@@ -365,7 +363,7 @@ public final class L2ScriptEngineManager
 			{
 				ScriptContext context = new SimpleScriptContext();
 				context.setAttribute("mainClass", getClassForFile(file).replace('/', '.').replace('\\', '.'), ScriptContext.ENGINE_SCOPE);
-				context.setAttribute(ScriptEngine.FILENAME, file.getName(), ScriptContext.ENGINE_SCOPE);
+				context.setAttribute(ScriptEngine.FILENAME, relativeName, ScriptContext.ENGINE_SCOPE);
 				context.setAttribute("classpath", SCRIPT_FOLDER.getAbsolutePath(), ScriptContext.ENGINE_SCOPE);
 				context.setAttribute("sourcepath", SCRIPT_FOLDER.getAbsolutePath(), ScriptContext.ENGINE_SCOPE);
 				context.setAttribute(JythonScriptEngine.JYTHON_ENGINE_INSTANCE, engine, ScriptContext.ENGINE_SCOPE);
@@ -391,7 +389,7 @@ public final class L2ScriptEngineManager
 			{
 				ScriptContext context = new SimpleScriptContext();
 				context.setAttribute("mainClass", getClassForFile(file).replace('/', '.').replace('\\', '.'), ScriptContext.ENGINE_SCOPE);
-				context.setAttribute(ScriptEngine.FILENAME, file.getName(), ScriptContext.ENGINE_SCOPE);
+				context.setAttribute(ScriptEngine.FILENAME, relativeName, ScriptContext.ENGINE_SCOPE);
 				context.setAttribute("classpath", SCRIPT_FOLDER.getAbsolutePath(), ScriptContext.ENGINE_SCOPE);
 				context.setAttribute("sourcepath", SCRIPT_FOLDER.getAbsolutePath(), ScriptContext.ENGINE_SCOPE);
 				setCurrentLoadingScript(file);
