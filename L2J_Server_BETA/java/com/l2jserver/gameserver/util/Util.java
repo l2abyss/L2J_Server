@@ -262,15 +262,13 @@ public final class Util
 		
 		double dx = obj1.getX() - obj2.getX();
 		double dy = obj1.getY() - obj2.getY();
+		double d = (dx * dx) + (dy * dy);
 		
 		if (includeZAxis)
 		{
 			double dz = obj1.getZ() - obj2.getZ();
-			double d = (dx * dx) + (dy * dy) + (dz * dz);
-			
-			return d <= ((range * range) + (2 * range * rad) + (rad * rad));
+			d += (dz * dz);
 		}
-		double d = (dx * dx) + (dy * dy);
 		return d <= ((range * range) + (2 * range * rad) + (rad * rad));
 	}
 	
@@ -586,12 +584,12 @@ public final class Util
 	}
 	
 	/**
-	 * Return the number of players in a defined radius.<br>
-	 * @param range : the radius.
-	 * @param npc : the object to make the test on.
-	 * @param playable : true counts summons and pets.
-	 * @param invisible : true counts invisible characters.
-	 * @return the number of targets found.
+	 * Return the number of playable characters in a defined radius around the specified object.
+	 * @param range : the radius in which to look for players
+	 * @param npc : the object whose knownlist to check
+	 * @param playable : if {@code true}, count summons and pets aswell
+	 * @param invisible : if {@code true}, count invisible characters aswell
+	 * @return the number of targets found
 	 */
 	public static int getPlayersCountInRadius(int range, L2Object npc, boolean playable, boolean invisible)
 	{
@@ -601,12 +599,9 @@ public final class Util
 		{
 			if ((obj != null) && ((obj.isPlayable() && playable) || obj.isPet()))
 			{
-				if (obj.isPlayer() && !invisible)
+				if (obj.isPlayer() && !invisible && obj.getActingPlayer().getAppearance().getInvisible())
 				{
-					if (obj.getActingPlayer().getAppearance().getInvisible())
-					{
-						continue;
-					}
+					continue;
 				}
 				
 				final L2Character cha = (L2Character) obj;

@@ -115,28 +115,12 @@ public final class L2Radar
 			{
 				return true;
 			}
-			if (obj == null)
-			{
-				return false;
-			}
 			if (!(obj instanceof RadarMarker))
 			{
 				return false;
 			}
 			final RadarMarker other = (RadarMarker) obj;
-			if (_type != other._type)
-			{
-				return false;
-			}
-			if (_x != other._x)
-			{
-				return false;
-			}
-			if (_y != other._y)
-			{
-				return false;
-			}
-			if (_z != other._z)
+			if ((_type != other._type) || (_x != other._x) || (_y != other._y) || (_z != other._z))
 			{
 				return false;
 			}
