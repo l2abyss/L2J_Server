@@ -66,6 +66,10 @@ import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.olympiad.CompetitionType;
+import com.l2jserver.gameserver.model.quest.AITasks.AggroRangeEnter;
+import com.l2jserver.gameserver.model.quest.AITasks.Attack;
+import com.l2jserver.gameserver.model.quest.AITasks.SeeCreature;
+import com.l2jserver.gameserver.model.quest.AITasks.SkillSee;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
@@ -352,15 +356,16 @@ public class Quest extends ManagedScript
 		ON_EXIT_ZONE(true), // on zone exit
 		ON_TRAP_ACTION(true), // on zone exit
 		ON_ITEM_USE(true),
-		ON_EVENT_RECEIVED(true), // onEventReceived action, triggered when NPC recieving an event, sent by other NPC
+		ON_EVENT_RECEIVED(true), // onEventReceived action, triggered when NPC receiving an event, sent by other NPC
 		ON_MOVE_FINISHED(true), // onMoveFinished action, triggered when NPC stops after moving
-		ON_NODE_ARRIVED(true); // onNodeArrived action, triggered when NPC, controlled by Walking Manager, arrives to next node
+		ON_NODE_ARRIVED(true), // onNodeArrived action, triggered when NPC, controlled by Walking Manager, arrives to next node
+		ON_CREATURE_SEE(true); // onSeeCreature action, triggered when NPC's known list include the character
 		
 		// control whether this event type is allowed for the same npc template in multiple quests
 		// or if the npc must be registered in at most one quest for the specified event
 		private boolean _allowMultipleRegistration;
 		
-		QuestEventType(boolean allowMultipleRegistration)
+		private QuestEventType(boolean allowMultipleRegistration)
 		{
 			_allowMultipleRegistration = allowMultipleRegistration;
 		}
@@ -580,29 +585,18 @@ public class Quest extends ManagedScript
 	 * @param damage the damage dealt to the NPC by the player
 	 * @param isSummon if {@code true}, the attack was actually made by the player's summon
 	 * @param skill the skill used to attack the NPC (can be null)
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isSummon, L2Skill skill)
+	public final void notifyAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isSummon, L2Skill skill)
 	{
-		String res = null;
-		try
-		{
-			res = onAttack(npc, attacker, damage, isSummon, skill);
-		}
-		catch (Exception e)
-		{
-			return showError(attacker, e);
-		}
-		return showResult(attacker, res);
+		ThreadPoolManager.getInstance().executeAi(new Attack(this, npc, attacker, damage, isSummon, skill));
 	}
 	
 	/**
 	 * @param killer the character that killed the {@code victim}
 	 * @param victim the character that was killed by the {@code killer}
 	 * @param qs the quest state object of the player to be notified of this event
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyDeath(L2Character killer, L2Character victim, QuestState qs)
+	public final void notifyDeath(L2Character killer, L2Character victim, QuestState qs)
 	{
 		String res = null;
 		try
@@ -611,17 +605,16 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(qs.getPlayer(), e);
+			showError(qs.getPlayer(), e);
 		}
-		return showResult(qs.getPlayer(), res);
+		showResult(qs.getPlayer(), res);
 	}
 	
 	/**
 	 * @param item
 	 * @param player
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyItemUse(L2Item item, L2PcInstance player)
+	public final void notifyItemUse(L2Item item, L2PcInstance player)
 	{
 		String res = null;
 		try
@@ -630,18 +623,17 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(player, e);
+			showError(player, e);
 		}
-		return showResult(player, res);
+		showResult(player, res);
 	}
 	
 	/**
 	 * @param instance
 	 * @param player
 	 * @param skill
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifySpellFinished(L2Npc instance, L2PcInstance player, L2Skill skill)
+	public final void notifySpellFinished(L2Npc instance, L2PcInstance player, L2Skill skill)
 	{
 		String res = null;
 		try
@@ -650,9 +642,9 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(player, e);
+			showError(player, e);
 		}
-		return showResult(player, res);
+		showResult(player, res);
 	}
 	
 	/**
@@ -660,9 +652,8 @@ public class Quest extends ManagedScript
 	 * @param trap the trap instance which triggers the notification
 	 * @param trigger the character which makes effect on the trap
 	 * @param action 0: trap casting its skill. 1: trigger detects the trap. 2: trigger removes the trap
-	 * @return {@code false} if the event was triggered successfully, {@code true} otherwise
 	 */
-	public final boolean notifyTrapAction(L2Trap trap, L2Character trigger, TrapAction action)
+	public final void notifyTrapAction(L2Trap trap, L2Character trigger, TrapAction action)
 	{
 		String res = null;
 		try
@@ -673,23 +664,21 @@ public class Quest extends ManagedScript
 		{
 			if (trigger.getActingPlayer() != null)
 			{
-				return showError(trigger.getActingPlayer(), e);
+				showError(trigger.getActingPlayer(), e);
 			}
 			_log.log(Level.WARNING, "Exception on onTrapAction() in notifyTrapAction(): " + e.getMessage(), e);
-			return true;
+			return;
 		}
 		if (trigger.getActingPlayer() != null)
 		{
-			return showResult(trigger.getActingPlayer(), res);
+			showResult(trigger.getActingPlayer(), res);
 		}
-		return false;
 	}
 	
 	/**
-	 * @param npc
-	 * @return {@code true} if there was an error, {@code false} otherwise
+	 * @param npc the spawned NPC
 	 */
-	public final boolean notifySpawn(L2Npc npc)
+	public final void notifySpawn(L2Npc npc)
 	{
 		try
 		{
@@ -698,9 +687,7 @@ public class Quest extends ManagedScript
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception on onSpawn() in notifySpawn(): " + e.getMessage(), e);
-			return true;
 		}
-		return false;
 	}
 	
 	/**
@@ -724,10 +711,9 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @param player
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
+	 * @param player the player entering the world
 	 */
-	public final boolean notifyEnterWorld(L2PcInstance player)
+	public final void notifyEnterWorld(L2PcInstance player)
 	{
 		String res = null;
 		try
@@ -736,18 +722,17 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(player, e);
+			showError(player, e);
 		}
-		return showResult(player, res);
+		showResult(player, res);
 	}
 	
 	/**
 	 * @param npc
 	 * @param killer
 	 * @param isSummon
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyKill(L2Npc npc, L2PcInstance killer, boolean isSummon)
+	public final void notifyKill(L2Npc npc, L2PcInstance killer, boolean isSummon)
 	{
 		String res = null;
 		try
@@ -756,9 +741,9 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(killer, e);
+			showError(killer, e);
 		}
-		return showResult(killer, res);
+		showResult(killer, res);
 	}
 	
 	/**
@@ -782,12 +767,12 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Override the default NPC dialogs when a quest defines this for the given NPC.
+	 * Override the default NPC dialogs when a quest defines this for the given NPC.<br>
+	 * Note: If the default html for this npc needs to be shown, onFirstTalk should call npc.showChatWindow(player) and then return null.
 	 * @param npc the NPC whose dialogs to override
 	 * @param player the player talking to the NPC
-	 * @return {@code true} if the event was triggered successfully, {@code false} otherwise
 	 */
-	public final boolean notifyFirstTalk(L2Npc npc, L2PcInstance player)
+	public final void notifyFirstTalk(L2Npc npc, L2PcInstance player)
 	{
 		String res = null;
 		try
@@ -796,27 +781,16 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(player, e);
+			showError(player, e);
 		}
-		// if the quest returns text to display, display it.
-		if ((res != null) && (res.length() > 0))
-		{
-			return showResult(player, res);
-		}
-		// else tell the player that
-		player.sendPacket(ActionFailed.STATIC_PACKET);
-		// note: if the default html for this npc needs to be shown, onFirstTalk should
-		// call npc.showChatWindow(player) and then return null.
-		return true;
+		showResult(player, res);
 	}
 	
 	/**
-	 * TODO: Remove and replace with listeners.
 	 * @param npc
 	 * @param player
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyAcquireSkillList(L2Npc npc, L2PcInstance player)
+	public final void notifyAcquireSkillList(L2Npc npc, L2PcInstance player)
 	{
 		String res = null;
 		try
@@ -825,19 +799,17 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(player, e);
+			showError(player, e);
 		}
-		return showResult(player, res);
+		showResult(player, res);
 	}
 	
 	/**
-	 * TODO: Remove and replace with listeners.
 	 * @param npc
 	 * @param player
 	 * @param skill
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyAcquireSkillInfo(L2Npc npc, L2PcInstance player, L2Skill skill)
+	public final void notifyAcquireSkillInfo(L2Npc npc, L2PcInstance player, L2Skill skill)
 	{
 		String res = null;
 		try
@@ -846,41 +818,28 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(player, e);
+			showError(player, e);
 		}
-		return showResult(player, res);
+		showResult(player, res);
 	}
 	
 	/**
-	 * TODO: Remove and replace with listeners.
 	 * @param npc
 	 * @param player
 	 * @param skill
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyAcquireSkill(L2Npc npc, L2PcInstance player, L2Skill skill)
+	public final void notifyAcquireSkill(L2Npc npc, L2PcInstance player, L2Skill skill)
 	{
 		String res = null;
 		try
 		{
 			res = onAcquireSkill(npc, player, skill);
-			if (res != null)
-			{
-				if (res.equals("true"))
-				{
-					return true;
-				}
-				else if (res.equals("false"))
-				{
-					return false;
-				}
-			}
 		}
 		catch (Exception e)
 		{
-			return showError(player, e);
+			showError(player, e);
 		}
-		return showResult(player, res);
+		showResult(player, res);
 	}
 	
 	/**
@@ -955,61 +914,15 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @param item
-	 * @param player
-	 * @param event
-	 * @return
-	 */
-	public String onItemEvent(L2ItemInstance item, L2PcInstance player, String event)
-	{
-		return null;
-	}
-	
-	public class TmpOnSkillSee implements Runnable
-	{
-		private final L2Npc _npc;
-		private final L2PcInstance _caster;
-		private final L2Skill _skill;
-		private final L2Object[] _targets;
-		private final boolean _isSummon;
-		
-		public TmpOnSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isSummon)
-		{
-			_npc = npc;
-			_caster = caster;
-			_skill = skill;
-			_targets = targets;
-			_isSummon = isSummon;
-		}
-		
-		@Override
-		public void run()
-		{
-			String res = null;
-			try
-			{
-				res = onSkillSee(_npc, _caster, _skill, _targets, _isSummon);
-			}
-			catch (Exception e)
-			{
-				showError(_caster, e);
-			}
-			showResult(_caster, res);
-		}
-	}
-	
-	/**
 	 * @param npc
 	 * @param caster
 	 * @param skill
 	 * @param targets
 	 * @param isSummon
-	 * @return {@code true}
 	 */
-	public final boolean notifySkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isSummon)
+	public final void notifySkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isSummon)
 	{
-		ThreadPoolManager.getInstance().executeAi(new TmpOnSkillSee(npc, caster, skill, targets, isSummon));
-		return true;
+		ThreadPoolManager.getInstance().executeAi(new SkillSee(this, npc, caster, skill, targets, isSummon));
 	}
 	
 	/**
@@ -1017,9 +930,8 @@ public class Quest extends ManagedScript
 	 * @param caller
 	 * @param attacker
 	 * @param isSummon
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isSummon)
+	public final void notifyFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isSummon)
 	{
 		String res = null;
 		try
@@ -1028,51 +940,29 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(attacker, e);
+			showError(attacker, e);
 		}
-		return showResult(attacker, res);
-	}
-	
-	public class TmpOnAggroEnter implements Runnable
-	{
-		private final L2Npc _npc;
-		private final L2PcInstance _pc;
-		private final boolean _isSummon;
-		
-		public TmpOnAggroEnter(L2Npc npc, L2PcInstance pc, boolean isSummon)
-		{
-			_npc = npc;
-			_pc = pc;
-			_isSummon = isSummon;
-		}
-		
-		@Override
-		public void run()
-		{
-			String res = null;
-			try
-			{
-				res = onAggroRangeEnter(_npc, _pc, _isSummon);
-			}
-			catch (Exception e)
-			{
-				showError(_pc, e);
-			}
-			showResult(_pc, res);
-			
-		}
+		showResult(attacker, res);
 	}
 	
 	/**
 	 * @param npc
 	 * @param player
 	 * @param isSummon
-	 * @return {@code true}
 	 */
-	public final boolean notifyAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isSummon)
+	public final void notifyAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isSummon)
 	{
-		ThreadPoolManager.getInstance().executeAi(new TmpOnAggroEnter(npc, player, isSummon));
-		return true;
+		ThreadPoolManager.getInstance().executeAi(new AggroRangeEnter(this, npc, player, isSummon));
+	}
+	
+	/**
+	 * @param npc the NPC that sees the creature
+	 * @param creature the creature seen by the NPC
+	 * @param isSummon
+	 */
+	public final void notifySeeCreature(L2Npc npc, L2Character creature, boolean isSummon)
+	{
+		ThreadPoolManager.getInstance().executeAi(new SeeCreature(this, npc, creature, isSummon));
 	}
 	
 	/**
@@ -1096,9 +986,8 @@ public class Quest extends ManagedScript
 	/**
 	 * @param character
 	 * @param zone
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyEnterZone(L2Character character, L2ZoneType zone)
+	public final void notifyEnterZone(L2Character character, L2ZoneType zone)
 	{
 		L2PcInstance player = character.getActingPlayer();
 		String res = null;
@@ -1110,22 +999,20 @@ public class Quest extends ManagedScript
 		{
 			if (player != null)
 			{
-				return showError(player, e);
+				showError(player, e);
 			}
 		}
 		if (player != null)
 		{
-			return showResult(player, res);
+			showResult(player, res);
 		}
-		return true;
 	}
 	
 	/**
 	 * @param character
 	 * @param zone
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyExitZone(L2Character character, L2ZoneType zone)
+	public final void notifyExitZone(L2Character character, L2ZoneType zone)
 	{
 		L2PcInstance player = character.getActingPlayer();
 		String res = null;
@@ -1137,14 +1024,13 @@ public class Quest extends ManagedScript
 		{
 			if (player != null)
 			{
-				return showError(player, e);
+				showError(player, e);
 			}
 		}
 		if (player != null)
 		{
-			return showResult(player, res);
+			showResult(player, res);
 		}
-		return true;
 	}
 	
 	/**
@@ -1354,8 +1240,19 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * @param item
+	 * @param player
+	 * @param event
+	 * @return
+	 */
+	public String onItemEvent(L2ItemInstance item, L2PcInstance player, String event)
+	{
+		return null;
+	}
+	
+	/**
 	 * This function is called whenever a player request a skill list.<br>
-	 * TODO: Cleanup or re-implement, since Skill Trees rework it's support was removed.
+	 * TODO: Re-implement, since Skill Trees rework it's support was removed.
 	 * @param npc this parameter contains a reference to the exact instance of the NPC that the player requested the skill list.
 	 * @param player this parameter contains a reference to the exact instance of the player who requested the skill list.
 	 * @return
@@ -1367,7 +1264,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * This function is called whenever a player request a skill info.<br>
-	 * TODO: Cleanup or re-implement, since Skill Trees rework it's support was removed.
+	 * TODO: Re-implement, since Skill Trees rework it's support was removed.
 	 * @param npc this parameter contains a reference to the exact instance of the NPC that the player requested the skill info.
 	 * @param player this parameter contains a reference to the exact instance of the player who requested the skill info.
 	 * @param skill this parameter contains a reference to the skill that the player requested its info.
@@ -1380,7 +1277,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * This function is called whenever a player acquire a skill.<br>
-	 * TODO: Cleanup or re-implement, since Skill Trees rework it's support was removed.
+	 * TODO: Re-implement, since Skill Trees rework it's support was removed.
 	 * @param npc this parameter contains a reference to the exact instance of the NPC that the player requested the skill.
 	 * @param player this parameter contains a reference to the exact instance of the player who requested the skill.
 	 * @param skill this parameter contains a reference to the skill that the player requested.
@@ -1392,7 +1289,7 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * This function is called whenever a player uses a quest item that has a quest events list<br>
+	 * This function is called whenever a player uses a quest item that has a quest events list.<br>
 	 * TODO: complete this documentation and unhardcode it to work with all item uses not with those listed.
 	 * @param item the quest item that the player used
 	 * @param player the player who used the item
@@ -1479,6 +1376,18 @@ public class Quest extends ManagedScript
 	 * @return
 	 */
 	public String onAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isSummon)
+	{
+		return null;
+	}
+	
+	/**
+	 * This function is called whenever a NPC "sees" a creature.
+	 * @param npc the NPC who sees the creature
+	 * @param creature the creature seen by the NPC
+	 * @param isSummon this parameter if it's {@code false} it denotes that the character seen by the NPC was indeed the player, else it specifies that the character was the player's summon
+	 * @return
+	 */
+	public String onSeeCreature(L2Npc npc, L2Character creature, boolean isSummon)
 	{
 		return null;
 	}
