@@ -1882,6 +1882,32 @@ public class Quest extends ManagedScript
 		}
 	}
 	
+	// TODO: Remove after all Jython scripts are replaced with Java versions.
+	public void addStartNpc(int npcId)
+	{
+		addEventId(QuestEventType.QUEST_START, npcId);
+	}
+	
+	public void addFirstTalkId(int npcId)
+	{
+		addEventId(QuestEventType.ON_FIRST_TALK, npcId);
+	}
+	
+	public void addTalkId(int npcId)
+	{
+		addEventId(QuestEventType.ON_TALK, npcId);
+	}
+	
+	public void addKillId(int killId)
+	{
+		addEventId(QuestEventType.ON_KILL, killId);
+	}
+	
+	public void addAttackId(int npcId)
+	{
+		addEventId(QuestEventType.ON_ATTACK, npcId);
+	}
+	
 	/**
 	 * Add the quest to the NPC's startQuest
 	 * @param npcIds
