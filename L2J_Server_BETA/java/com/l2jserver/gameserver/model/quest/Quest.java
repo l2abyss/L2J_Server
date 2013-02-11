@@ -1859,351 +1859,153 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for the specified Event type.
-	 * @param npcId id of the NPC to register
 	 * @param eventType type of event being registered
-	 * @return L2NpcTemplate Npc Template corresponding to the npcId, or null if the id is invalid
+	 * @param npcIds NPC Ids to register
 	 */
-	public L2NpcTemplate addEventId(int npcId, QuestEventType eventType)
+	public void addEventId(QuestEventType eventType, int... npcIds)
 	{
 		try
 		{
-			L2NpcTemplate t = NpcTable.getInstance().getTemplate(npcId);
-			if (t != null)
+			for (int npcId : npcIds)
 			{
-				t.addQuestEvent(eventType, this);
+				final L2NpcTemplate t = NpcTable.getInstance().getTemplate(npcId);
+				if (t != null)
+				{
+					t.addQuestEvent(eventType, this);
+					_questInvolvedNpcs.add(npcId);
+				}
 			}
-			
-			_questInvolvedNpcs.add(npcId);
-			return t;
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception on addEventId(): " + e.getMessage(), e);
-			return null;
 		}
 	}
 	
 	/**
 	 * Add the quest to the NPC's startQuest
 	 * @param npcIds
-	 * @return L2NpcTemplate Start NPC
 	 */
-	public L2NpcTemplate[] addStartNpc(int... npcIds)
+	public void addStartNpc(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.QUEST_START);
-		}
-		return value;
-	}
-	
-	public L2NpcTemplate addStartNpc(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.QUEST_START);
+		addEventId(QuestEventType.QUEST_START, npcIds);
 	}
 	
 	/**
 	 * Add the quest to the NPC's first-talk (default action dialog)
 	 * @param npcIds
-	 * @return L2NpcTemplate Start NPC
 	 */
-	public L2NpcTemplate[] addFirstTalkId(int... npcIds)
+	public void addFirstTalkId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_FIRST_TALK);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addFirstTalkId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_FIRST_TALK);
+		addEventId(QuestEventType.ON_FIRST_TALK, npcIds);
 	}
 	
 	/**
 	 * Add the NPC to the AcquireSkill dialog
 	 * @param npcIds
-	 * @return L2NpcTemplate NPC
 	 */
-	public L2NpcTemplate[] addAcquireSkillId(int... npcIds)
+	public void addAcquireSkillId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_SKILL_LEARN);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addAcquireSkillId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_SKILL_LEARN);
+		addEventId(QuestEventType.ON_SKILL_LEARN, npcIds);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for Attack Events.
 	 * @param npcIds
-	 * @return int attackId
 	 */
-	public L2NpcTemplate[] addAttackId(int... npcIds)
+	public void addAttackId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_ATTACK);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addAttackId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_ATTACK);
+		addEventId(QuestEventType.ON_ATTACK, npcIds);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for Kill Events.
 	 * @param killIds
-	 * @return int killId
 	 */
-	public L2NpcTemplate[] addKillId(int... killIds)
+	public void addKillId(int... killIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[killIds.length];
-		int i = 0;
-		for (int killId : killIds)
-		{
-			value[i++] = addEventId(killId, QuestEventType.ON_KILL);
-		}
-		return value;
+		addEventId(QuestEventType.ON_KILL, killIds);
 	}
 	
 	/**
 	 * Add this quest event to the collection of NPC Ids that will respond to for on kill events.
 	 * @param killIds the collection of NPC Ids
-	 * @return the list of NPC templates that has been associated with this event
 	 */
-	public List<L2NpcTemplate> addKillId(Collection<Integer> killIds)
+	public void addKillId(Collection<Integer> killIds)
 	{
-		final List<L2NpcTemplate> list = new ArrayList<>(killIds.size());
 		for (int killId : killIds)
 		{
-			list.add(addEventId(killId, QuestEventType.ON_KILL));
+			addEventId(QuestEventType.ON_KILL, killId);
 		}
-		return list;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addKillId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_KILL);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Talk Events.
-	 * @param talkIds Id of the NPC
-	 * @return int Id of the NPC
+	 * @param npcIds Id of the NPC
 	 */
-	public L2NpcTemplate[] addTalkId(int... talkIds)
+	public void addTalkId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[talkIds.length];
-		int i = 0;
-		for (int talkId : talkIds)
-		{
-			value[i++] = addEventId(talkId, QuestEventType.ON_TALK);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addTalkId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_TALK);
+		addEventId(QuestEventType.ON_TALK, npcIds);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Spawn Events.
 	 * @param npcIds Id of the NPC
-	 * @return int Id of the NPC
 	 */
-	public L2NpcTemplate[] addSpawnId(int... npcIds)
+	public void addSpawnId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_SPAWN);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addSpawnId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_SPAWN);
+		addEventId(QuestEventType.ON_SPAWN, npcIds);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Skill-See Events.
 	 * @param npcIds Id of the NPC
-	 * @return int Id of the NPC
 	 */
-	public L2NpcTemplate[] addSkillSeeId(int... npcIds)
+	public void addSkillSeeId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_SKILL_SEE);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addSkillSeeId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_SKILL_SEE);
+		addEventId(QuestEventType.ON_SKILL_SEE, npcIds);
 	}
 	
 	/**
 	 * @param npcIds
-	 * @return
 	 */
-	public L2NpcTemplate[] addSpellFinishedId(int... npcIds)
+	public void addSpellFinishedId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_SPELL_FINISHED);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addSpellFinishedId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_SPELL_FINISHED);
+		addEventId(QuestEventType.ON_SPELL_FINISHED, npcIds);
 	}
 	
 	/**
 	 * @param npcIds
-	 * @return
 	 */
-	public L2NpcTemplate[] addTrapActionId(int... npcIds)
+	public void addTrapActionId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_TRAP_ACTION);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addTrapActionId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_TRAP_ACTION);
+		addEventId(QuestEventType.ON_TRAP_ACTION, npcIds);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Faction Call Events.
 	 * @param npcIds Id of the NPC
-	 * @return int Id of the NPC
 	 */
-	public L2NpcTemplate[] addFactionCallId(int... npcIds)
+	public void addFactionCallId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_FACTION_CALL);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addFactionCallId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_FACTION_CALL);
+		addEventId(QuestEventType.ON_FACTION_CALL, npcIds);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Character See Events.
 	 * @param npcIds Id of the NPC
-	 * @return int Id of the NPC
 	 */
-	public L2NpcTemplate[] addAggroRangeEnterId(int... npcIds)
+	public void addAggroRangeEnterId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_AGGRO_RANGE_ENTER);
-		}
-		return value;
+		addEventId(QuestEventType.ON_AGGRO_RANGE_ENTER, npcIds);
 	}
 	
 	/**
-	 * @param npcId
-	 * @return
+	 * @param npcIds NPC Ids to register to on see creature event
 	 */
-	public L2NpcTemplate addAggroRangeEnterId(int npcId)
+	public void addSeeCreatureId(int... npcIds)
 	{
-		return addEventId(npcId, QuestEventType.ON_AGGRO_RANGE_ENTER);
-	}
-	
-	/**
-	 * @param npcIds NPCs to register to on see creature event
-	 * @return the templates of the registered NPCs
-	 */
-	public L2NpcTemplate[] addSeeCreatureId(int... npcIds)
-	{
-		final L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		for (int i = 0; i < npcIds.length; i++)
-		{
-			value[i] = addEventId(npcIds[i], QuestEventType.ON_SEE_CREATURE);
-		}
-		return value;
+		addEventId(QuestEventType.ON_SEE_CREATURE, npcIds);
 	}
 	
 	/**
@@ -2231,30 +2033,7 @@ public class Quest extends ManagedScript
 				continue;
 			}
 		}
-		
 		return value;
-	}
-	
-	/**
-	 * @param zoneId
-	 * @return
-	 */
-	public L2ZoneType addEnterZoneId(int zoneId)
-	{
-		try
-		{
-			L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
-			if (zone != null)
-			{
-				zone.addQuestEvent(QuestEventType.ON_ENTER_ZONE, this);
-			}
-			return zone;
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, "Exception on addEnterZoneId(): " + e.getMessage(), e);
-			return null;
-		}
 	}
 	
 	/**
@@ -2282,7 +2061,6 @@ public class Quest extends ManagedScript
 				continue;
 			}
 		}
-		
 		return value;
 	}
 	
@@ -2310,80 +2088,29 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * Register onEventReceived trigger for NPC
-	 * @param npcId id of NPC to register
-	 * @return
-	 */
-	public L2NpcTemplate addEventReceivedId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_EVENT_RECEIVED);
-	}
-	
-	/**
-	 * Register onEventReceived trigger for NPC
 	 * @param npcIds
-	 * @return
 	 */
-	public L2NpcTemplate[] addEventReceivedId(int... npcIds)
+	public void addEventReceivedId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_EVENT_RECEIVED);
-		}
-		return value;
-	}
-	
-	/**
-	 * Register onMoveFinished trigger for NPC
-	 * @param npcId id of NPC to register
-	 * @return
-	 */
-	public L2NpcTemplate addMoveFinishedId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_MOVE_FINISHED);
+		addEventId(QuestEventType.ON_EVENT_RECEIVED, npcIds);
 	}
 	
 	/**
 	 * Register onMoveFinished trigger for NPC
 	 * @param npcIds
-	 * @return
 	 */
-	public L2NpcTemplate[] addMoveFinishedId(int... npcIds)
+	public void addMoveFinishedId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_MOVE_FINISHED);
-		}
-		return value;
-	}
-	
-	/**
-	 * Register addNodeArrived trigger for NPC
-	 * @param npcId id of NPC to register
-	 * @return
-	 */
-	public L2NpcTemplate addNodeArrivedId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_NODE_ARRIVED);
+		addEventId(QuestEventType.ON_MOVE_FINISHED, npcIds);
 	}
 	
 	/**
 	 * Register addNodeArrived trigger for NPC
 	 * @param npcIds id of NPC to register
-	 * @return
 	 */
-	public L2NpcTemplate[] addNodeArrivedId(int... npcIds)
+	public void addNodeArrivedId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_NODE_ARRIVED);
-		}
-		return value;
+		addEventId(QuestEventType.ON_NODE_ARRIVED, npcIds);
 	}
 	
 	/**
