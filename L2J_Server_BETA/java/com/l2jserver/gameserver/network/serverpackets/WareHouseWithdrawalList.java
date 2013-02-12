@@ -31,6 +31,14 @@ public final class WareHouseWithdrawalList extends L2GameServerPacket
 	private L2PcInstance _activeChar;
 	private long _playerAdena;
 	private L2ItemInstance[] _items;
+	/**
+	 * <ul>
+	 * <li>0x01-Private Warehouse</li>
+	 * <li>0x02-Clan Warehouse</li>
+	 * <li>0x03-Castle Warehouse</li>
+	 * <li>0x04-Warehouse</li>
+	 * </ul>
+	 */
 	private int _whType;
 	
 	public WareHouseWithdrawalList(L2PcInstance player, int type)
@@ -60,14 +68,6 @@ public final class WareHouseWithdrawalList extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x42);
-		/**
-		 * <ul>
-		 * <li>0x01-Private Warehouse</li>
-		 * <li>0x02-Clan Warehouse</li>
-		 * <li>0x03-Castle Warehouse</li>
-		 * <li>0x04-Warehouse</li>
-		 * </ul>
-		 */
 		writeH(_whType);
 		writeQ(_playerAdena);
 		writeH(_items.length);

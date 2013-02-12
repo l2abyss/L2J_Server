@@ -88,7 +88,6 @@ public class SellList extends L2GameServerPacket
 			writeH(0x00); // TODO: Verify me
 			writeH(item.getCustomType2());
 			writeQ(item.getItem().getReferencePrice() / 2);
-			
 			// T1
 			writeH(item.getAttackElementType());
 			writeH(item.getAttackElementPower());

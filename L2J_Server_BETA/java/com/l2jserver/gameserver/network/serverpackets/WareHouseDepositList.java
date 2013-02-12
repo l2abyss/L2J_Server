@@ -31,6 +31,14 @@ public final class WareHouseDepositList extends L2GameServerPacket
 	public static final int FREIGHT = 1;
 	private final long _playerAdena;
 	private final FastList<L2ItemInstance> _items;
+	/**
+	 * <ul>
+	 * <li>0x01-Private Warehouse</li>
+	 * <li>0x02-Clan Warehouse</li>
+	 * <li>0x03-Castle Warehouse</li>
+	 * <li>0x04-Warehouse</li>
+	 * </ul>
+	 */
 	private final int _whType;
 	
 	public WareHouseDepositList(L2PcInstance player, int type)
@@ -53,9 +61,6 @@ public final class WareHouseDepositList extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x41);
-		/*
-		 * 0x01-Private Warehouse 0x02-Clan Warehouse 0x03-Castle Warehouse 0x04-Warehouse
-		 */
 		writeH(_whType);
 		writeQ(_playerAdena);
 		final int count = _items.size();

@@ -159,7 +159,7 @@ public abstract class L2Item
 	public static final int CRYSTAL_S80 = 0x06; // ??
 	public static final int CRYSTAL_S84 = 0x07; // ??
 	
-	private static final int[] crystalItemId =
+	private static final int[] CRYSTAL_ITEM_ID =
 	{
 		0,
 		1458,
@@ -170,7 +170,7 @@ public abstract class L2Item
 		1462,
 		1462
 	};
-	private static final int[] crystalEnchantBonusArmor =
+	private static final int[] CRYSTAL_ENCHANT_BONUS_ARMOR =
 	{
 		0,
 		11,
@@ -181,7 +181,7 @@ public abstract class L2Item
 		25,
 		25
 	};
-	private static final int[] crystalEnchantBonusWeapon =
+	private static final int[] CRYSTAL_ENCHANT_BONUS_WEAPON =
 	{
 		0,
 		90,
@@ -513,7 +513,7 @@ public abstract class L2Item
 	 */
 	public final int getCrystalItemId()
 	{
-		return crystalItemId[_crystalType];
+		return CRYSTAL_ITEM_ID[_crystalType];
 	}
 	
 	/**
@@ -564,9 +564,9 @@ public abstract class L2Item
 			{
 				case TYPE2_SHIELD_ARMOR:
 				case TYPE2_ACCESSORY:
-					return _crystalCount + (crystalEnchantBonusArmor[getCrystalType()] * ((3 * enchantLevel) - 6));
+					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_ARMOR[getCrystalType()] * ((3 * enchantLevel) - 6));
 				case TYPE2_WEAPON:
-					return _crystalCount + (crystalEnchantBonusWeapon[getCrystalType()] * ((2 * enchantLevel) - 3));
+					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_WEAPON[getCrystalType()] * ((2 * enchantLevel) - 3));
 				default:
 					return _crystalCount;
 			}
@@ -577,9 +577,9 @@ public abstract class L2Item
 			{
 				case TYPE2_SHIELD_ARMOR:
 				case TYPE2_ACCESSORY:
-					return _crystalCount + (crystalEnchantBonusArmor[getCrystalType()] * enchantLevel);
+					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_ARMOR[getCrystalType()] * enchantLevel);
 				case TYPE2_WEAPON:
-					return _crystalCount + (crystalEnchantBonusWeapon[getCrystalType()] * enchantLevel);
+					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_WEAPON[getCrystalType()] * enchantLevel);
 				default:
 					return _crystalCount;
 			}
