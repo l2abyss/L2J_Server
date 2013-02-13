@@ -391,12 +391,6 @@ public class CharStat
 			}
 		}
 		
-		// Add the power of the skill to the attack effect
-		if (skill != null)
-		{
-			attack += skill.getPower();
-		}
-		
 		// Calculate modifiers Magic Attack
 		return (int) calcStat(Stats.MAGIC_ATTACK, attack, target, skill);
 	}
