@@ -719,7 +719,7 @@ public class L2Party extends AbstractPlayerGroup
 		
 		looter.addItem(spoil ? "Sweep" : "Party", item.getItemId(), item.getCount(), player, true);
 		
-		// Send messages to other aprty members about reward
+		// Send messages to other party members about reward
 		if (item.getCount() > 1)
 		{
 			SystemMessage msg = spoil ? SystemMessage.getSystemMessage(SystemMessageId.C1_SWEEPED_UP_S3_S2) : SystemMessage.getSystemMessage(SystemMessageId.C1_OBTAINED_S3_S2);
@@ -849,31 +849,28 @@ public class L2Party extends AbstractPlayerGroup
 					preCalculation = (sqLevel / sqLevelSum) * (1 - penalty);
 					
 					// Add the XP/SP points to the requested party member
-					if (!member.isDead())
+					long addexp = Math.round(member.calcStat(Stats.EXPSP_RATE, xpReward * preCalculation, null, null));
+					int addsp = (int) member.calcStat(Stats.EXPSP_RATE, spReward * preCalculation, null, null);
+					if (member instanceof L2PcInstance)
 					{
-						long addexp = Math.round(member.calcStat(Stats.EXPSP_RATE, xpReward * preCalculation, null, null));
-						int addsp = (int) member.calcStat(Stats.EXPSP_RATE, spReward * preCalculation, null, null);
-						if (member instanceof L2PcInstance)
+						addexp = calcualteExpSpPartyCutoff(member.getActingPlayer(), topLvl, addexp, addsp, useVitalityRate);
+						final int skillLvl = member.getActingPlayer().getSkillLevel(467);
+						if (skillLvl > 0)
 						{
-							if (((L2PcInstance) member).getSkillLevel(467) > 0)
+							final L2Skill skill = SkillTable.getInstance().getInfo(467, skillLvl);
+							if (skill.getExpNeeded() <= addexp)
 							{
-								L2Skill skill = SkillTable.getInstance().getInfo(467, ((L2PcInstance) member).getSkillLevel(467));
-								
-								if (skill.getExpNeeded() <= addexp)
-								{
-									((L2PcInstance) member).absorbSoul(skill, target);
-								}
-							}
-							calcualteExpSpPartyCutoff(member.getActingPlayer(), addexp, addsp, useVitalityRate);
-							if (addexp > 0)
-							{
-								((L2PcInstance) member).updateVitalityPoints(vitalityPoints, true, false);
+								member.getActingPlayer().absorbSoul(skill, target);
 							}
 						}
-						else
+						if (addexp > 0)
 						{
-							member.addExpAndSp(addexp, addsp);
+							((L2PcInstance) member).updateVitalityPoints(vitalityPoints, true, false);
 						}
+					}
+					else
+					{
+						member.addExpAndSp(addexp, addsp);
 					}
 				}
 				else
@@ -884,16 +881,21 @@ public class L2Party extends AbstractPlayerGroup
 		}
 	}
 	
-	private final void calcualteExpSpPartyCutoff(L2PcInstance player, long addexp, int sp, boolean vit)
+	private final long calcualteExpSpPartyCutoff(L2PcInstance player, int topLvl, long addExp, int addSp, boolean vit)
 	{
+		long xp = addExp;
+		int sp = addSp;
 		if (Config.PARTY_XP_CUTOFF_METHOD.equalsIgnoreCase("highfive"))
 		{
 			int i = 0;
+			final int lvlDiff = topLvl - player.getLevel();
 			for (int[] gap : Config.PARTY_XP_CUTOFF_GAPS)
 			{
-				if ((player.getLevel() >= gap[0]) && (player.getLevel() <= gap[0]))
+				if ((lvlDiff >= gap[0]) && (lvlDiff <= gap[1]))
 				{
-					player.addExpAndSp((addexp * Config.PARTY_XP_CUTOFF_GAP_PERCENTS[i]) / 100, sp, vit);
+					xp = (addExp * Config.PARTY_XP_CUTOFF_GAP_PERCENTS[i]) / 100;
+					sp = (addSp * Config.PARTY_XP_CUTOFF_GAP_PERCENTS[i]) / 100;
+					player.addExpAndSp(xp, sp, vit);
 					break;
 				}
 				i++;
@@ -901,8 +903,9 @@ public class L2Party extends AbstractPlayerGroup
 		}
 		else
 		{
-			player.addExpAndSp(addexp, sp, vit);
+			player.addExpAndSp(addExp, addSp, vit);
 		}
+		return xp;
 	}
 	
 	/**
@@ -991,15 +994,7 @@ public class L2Party extends AbstractPlayerGroup
 		// High Five cutoff method
 		else if (Config.PARTY_XP_CUTOFF_METHOD.equalsIgnoreCase("highfive"))
 		{
-			int levelDiff;
-			for (L2Playable member : members)
-			{
-				levelDiff = topLvl - member.getLevel();
-				if (levelDiff < Config.PARTY_XP_CUTOFF_GAPS[Config.PARTY_XP_CUTOFF_GAPS.length - 1][0])
-				{
-					validMembers.add(member);
-				}
-			}
+			validMembers.addAll(members);
 		}
 		else if (Config.PARTY_XP_CUTOFF_METHOD.equalsIgnoreCase("none"))
 		{

@@ -31,6 +31,14 @@ public class SpecialCamera extends L2GameServerPacket
 	private final int _widescreen;
 	private final int _unknown;
 	
+	/**
+	 * @param id object Id
+	 * @param dist the distance to the object
+	 * @param yaw North = 90, South = 270, East = 0, West = 180
+	 * @param pitch > 0: looks up, pitch < 0: looks down (angle)
+	 * @param time faster if it's smaller
+	 * @param duration animation time
+	 */
 	public SpecialCamera(int id, int dist, int yaw, int pitch, int time, int duration)
 	{
 		_id = id;
@@ -45,6 +53,18 @@ public class SpecialCamera extends L2GameServerPacket
 		_unknown = 0;
 	}
 	
+	/**
+	 * @param id object Id
+	 * @param dist the distance to the object
+	 * @param yaw North = 90, South = 270, East = 0, West = 180
+	 * @param pitch > 0: looks up, pitch < 0: looks down (angle)
+	 * @param time faster if it's smaller
+	 * @param duration animation time
+	 * @param turn
+	 * @param rise
+	 * @param widescreen
+	 * @param unk
+	 */
 	public SpecialCamera(int id, int dist, int yaw, int pitch, int time, int duration, int turn, int rise, int widescreen, int unk)
 	{
 		_id = id;
