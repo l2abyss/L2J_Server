@@ -67,7 +67,6 @@ import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.olympiad.CompetitionType;
 import com.l2jserver.gameserver.model.quest.AITasks.AggroRangeEnter;
-import com.l2jserver.gameserver.model.quest.AITasks.Attack;
 import com.l2jserver.gameserver.model.quest.AITasks.SeeCreature;
 import com.l2jserver.gameserver.model.quest.AITasks.SkillSee;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -588,7 +587,17 @@ public class Quest extends ManagedScript
 	 */
 	public final void notifyAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isSummon, L2Skill skill)
 	{
-		ThreadPoolManager.getInstance().executeAi(new Attack(this, npc, attacker, damage, isSummon, skill));
+		String res = null;
+		try
+		{
+			res = onAttack(npc, attacker, damage, isSummon, skill);
+		}
+		catch (Exception e)
+		{
+			showError(attacker, e);
+			return;
+		}
+		showResult(attacker, res);
 	}
 	
 	/**
