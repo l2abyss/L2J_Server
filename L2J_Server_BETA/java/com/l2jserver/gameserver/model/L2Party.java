@@ -832,7 +832,7 @@ public class L2Party extends AbstractPlayerGroup
 					penalty = ((L2ServitorInstance) member.getSummon()).getExpPenalty();
 				}
 				// Pets that leech xp from the owner (like babypets) do not get rewarded directly
-				if (member instanceof L2PetInstance)
+				if (member.isPet())
 				{
 					if (((L2PetInstance) member).getPetLevelData().getOwnerExpTaken() > 0)
 					{
@@ -851,9 +851,9 @@ public class L2Party extends AbstractPlayerGroup
 					// Add the XP/SP points to the requested party member
 					long addexp = Math.round(member.calcStat(Stats.EXPSP_RATE, xpReward * preCalculation, null, null));
 					int addsp = (int) member.calcStat(Stats.EXPSP_RATE, spReward * preCalculation, null, null);
-					if (member instanceof L2PcInstance)
+					if (member.isPlayer())
 					{
-						addexp = calcualteExpSpPartyCutoff(member.getActingPlayer(), topLvl, addexp, addsp, useVitalityRate);
+						addexp = calculateExpSpPartyCutoff(member.getActingPlayer(), topLvl, addexp, addsp, useVitalityRate);
 						final int skillLvl = member.getActingPlayer().getSkillLevel(467);
 						if (skillLvl > 0)
 						{
@@ -865,7 +865,7 @@ public class L2Party extends AbstractPlayerGroup
 						}
 						if (addexp > 0)
 						{
-							((L2PcInstance) member).updateVitalityPoints(vitalityPoints, true, false);
+							member.getActingPlayer().updateVitalityPoints(vitalityPoints, true, false);
 						}
 					}
 					else
@@ -881,7 +881,7 @@ public class L2Party extends AbstractPlayerGroup
 		}
 	}
 	
-	private final long calcualteExpSpPartyCutoff(L2PcInstance player, int topLvl, long addExp, int addSp, boolean vit)
+	private final long calculateExpSpPartyCutoff(L2PcInstance player, int topLvl, long addExp, int addSp, boolean vit)
 	{
 		long xp = addExp;
 		int sp = addSp;
@@ -1020,22 +1020,12 @@ public class L2Party extends AbstractPlayerGroup
 	
 	private double getExpBonus(int membersCount)
 	{
-		if (membersCount < 2)
-		{
-			// not is a valid party
-			return getBaseExpSpBonus(membersCount);
-		}
-		return getBaseExpSpBonus(membersCount) * Config.RATE_PARTY_XP;
+		return (membersCount < 2) ? (getBaseExpSpBonus(membersCount)) : (getBaseExpSpBonus(membersCount) * Config.RATE_PARTY_XP);
 	}
 	
 	private double getSpBonus(int membersCount)
 	{
-		if (membersCount < 2)
-		{
-			// not is a valid party
-			return getBaseExpSpBonus(membersCount);
-		}
-		return getBaseExpSpBonus(membersCount) * Config.RATE_PARTY_SP;
+		return (membersCount < 2) ? (getBaseExpSpBonus(membersCount)) : (getBaseExpSpBonus(membersCount) * Config.RATE_PARTY_SP);
 	}
 	
 	@Override
