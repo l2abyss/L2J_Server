@@ -36,8 +36,10 @@ import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 import com.l2jserver.gameserver.network.serverpackets.CharInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
@@ -202,20 +204,26 @@ public class L2Event
 		
 	}
 	
+	/**
+	 * Zoey76: TODO: Rewrite this in a way that doesn't iterate over all spawns.
+	 */
 	public static void unspawnEventNpcs()
 	{
-		// Its a little rough, but for sure it will remove every damn event NPC.
-		for (L2Spawn spawn : SpawnTable.getInstance().getSpawnTable())
+		SpawnTable.getInstance().forEachSpawn(new IL2Procedure<L2Spawn>()
 		{
-			if ((spawn.getLastSpawn() != null) && spawn.getLastSpawn().isEventMob())
+			@Override
+			public boolean execute(L2Spawn spawn)
 			{
-				spawn.getLastSpawn().deleteMe();
-				spawn.stopRespawn();
-				SpawnTable.getInstance().deleteSpawn(spawn, false);
+				L2Npc npc = spawn.getLastSpawn();
+				if ((npc != null) && npc.isEventMob())
+				{
+					npc.deleteMe();
+					spawn.stopRespawn();
+					SpawnTable.getInstance().deleteSpawn(spawn, false);
+				}
+				return true;
 			}
-		}
-		// for (L2Npc npc : _npcs)
-		// npc.deleteMe();
+		});
 	}
 	
 	/**
