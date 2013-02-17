@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -73,6 +74,11 @@ public final class SpawnTable
 		}
 	}
 	
+	/**
+	 * Retrieves spawn data from database.
+	 * @param isCustom if {@code true} the spawns are loaded as custom from custom spawn table
+	 * @return the spawn count
+	 */
 	private int fillSpawnTable(boolean isCustom)
 	{
 		int npcSpawnCount = 0;
@@ -106,6 +112,7 @@ public final class SpawnTable
 				spawn.setLocz(rs.getInt("locz"));
 				spawn.setHeading(rs.getInt("heading"));
 				spawn.setRespawnDelay(rs.getInt("respawn_delay"), rs.getInt("respawn_random"));
+				spawn.setCustom(isCustom);
 				int loc_id = rs.getInt("loc_id");
 				spawn.setLocation(loc_id);
 				
@@ -139,11 +146,21 @@ public final class SpawnTable
 		return _spawnTable;
 	}
 	
+	/**
+	 * Get the spawns for the NPC Id.
+	 * @param npcId the NPC Id
+	 * @return the spawn set for the given npcId
+	 */
 	public Set<L2Spawn> getSpawns(int npcId)
 	{
-		return _spawnTable.get(npcId);
+		return _spawnTable.containsKey(npcId) ? _spawnTable.get(npcId) : Collections.<L2Spawn> emptySet();
 	}
 	
+	/**
+	 * Get the first NPC spawn.
+	 * @param npcId the NPC Id to search
+	 * @return the first not null spawn, if any
+	 */
 	public L2Spawn getFirstSpawn(int npcId)
 	{
 		if (_spawnTable.containsKey(npcId))
@@ -159,6 +176,11 @@ public final class SpawnTable
 		return null;
 	}
 	
+	/**
+	 * Add a new spawn to the spawn table.
+	 * @param spawn the spawn to add
+	 * @param storeInDb if {@code true} it'll be saved in the database
+	 */
 	public void addNewSpawn(L2Spawn spawn, boolean storeInDb)
 	{
 		addSpawn(spawn);
@@ -187,6 +209,11 @@ public final class SpawnTable
 		}
 	}
 	
+	/**
+	 * Delete an spawn from the spawn table.
+	 * @param spawn the spawn to delete
+	 * @param updateDb if {@code true} database will be updated
+	 */
 	public void deleteSpawn(L2Spawn spawn, boolean updateDb)
 	{
 		if (!removeSpawn(spawn))
@@ -219,16 +246,11 @@ public final class SpawnTable
 	 */
 	private void addSpawn(L2Spawn spawn)
 	{
-		if (_spawnTable.containsKey(spawn.getNpcid()))
+		if (!_spawnTable.containsKey(spawn.getNpcid()))
 		{
-			_spawnTable.get(spawn.getNpcid()).add(spawn);
+			_spawnTable.put(spawn.getNpcid(), new FastSet<L2Spawn>().shared());
 		}
-		else
-		{
-			final FastSet<L2Spawn> test = new FastSet<L2Spawn>().shared();
-			test.add(spawn);
-			_spawnTable.put(spawn.getNpcid(), test);
-		}
+		_spawnTable.get(spawn.getNpcid()).add(spawn);
 	}
 	
 	/**
