@@ -119,7 +119,7 @@ public class L2Npc extends L2Character
 	/** The fortress index in the array of L2Fort this L2NpcInstance belongs to */
 	private int _fortIndex = -2;
 	
-	public boolean isEventMob = false;
+	private boolean _eventMob = false;
 	private boolean _isInTown = false;
 	
 	/** True if this L2Npc is autoattackable **/
@@ -146,9 +146,7 @@ public class L2Npc extends L2Character
 	private int _displayEffect = 0;
 	private int _scriptVal = 0;
 	
-	/**
-	 * The character that summons this NPC.
-	 */
+	/** The character that summons this NPC. */
 	private L2Character _summoner = null;
 	
 	private final L2NpcAIData _staticAIData = getTemplate().getAIDataStatic();
@@ -686,6 +684,16 @@ public class L2Npc extends L2Character
 	public int getDistanceToForgetObject(L2Object object)
 	{
 		return 2 * getDistanceToWatchObject(object);
+	}
+	
+	public boolean isEventMob()
+	{
+		return _eventMob;
+	}
+	
+	public void setEventMob(boolean val)
+	{
+		_eventMob = val;
 	}
 	
 	@Override

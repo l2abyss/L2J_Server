@@ -186,7 +186,7 @@ public class L2Event
 			spawn.init();
 			spawn.getLastSpawn().setCurrentHp(999999999);
 			spawn.getLastSpawn().setTitle(_eventName);
-			spawn.getLastSpawn().isEventMob = true;
+			spawn.getLastSpawn().setEventMob(true);
 			// spawn.getLastSpawn().decayMe();
 			// spawn.getLastSpawn().spawnMe(spawn.getLastSpawn().getX(), spawn.getLastSpawn().getY(), spawn.getLastSpawn().getZ());
 			
@@ -207,7 +207,7 @@ public class L2Event
 		// Its a little rough, but for sure it will remove every damn event NPC.
 		for (L2Spawn spawn : SpawnTable.getInstance().getSpawnTable())
 		{
-			if ((spawn.getLastSpawn() != null) && spawn.getLastSpawn().isEventMob)
+			if ((spawn.getLastSpawn() != null) && spawn.getLastSpawn().isEventMob())
 			{
 				spawn.getLastSpawn().deleteMe();
 				spawn.stopRespawn();

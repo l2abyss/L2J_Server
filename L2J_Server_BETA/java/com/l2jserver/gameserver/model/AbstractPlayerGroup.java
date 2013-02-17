@@ -105,7 +105,7 @@ public abstract class AbstractPlayerGroup
 	
 	/**
 	 * Broadcasts a System Message to this group
-	 * @param message System Message to bradcast
+	 * @param message System Message to broadcast
 	 */
 	public void broadcastMessage(SystemMessageId message)
 	{

@@ -506,7 +506,7 @@ public class L2Attackable extends L2Npc
 			}
 		}
 		
-		if (isEventMob)
+		if (isEventMob())
 		{
 			return;
 		}
