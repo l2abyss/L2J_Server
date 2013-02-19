@@ -29,8 +29,6 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.ChanceCondition;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
@@ -160,7 +158,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		
 		if (((_skill.getId() > 2277) && (_skill.getId() < 2286)) || ((_skill.getId() >= 2512) && (_skill.getId() <= 2514)))
 		{
-			if ((_effected instanceof L2ServitorInstance) || ((_effected instanceof L2PcInstance) && (((L2PcInstance) _effected).getSummon() instanceof L2ServitorInstance)))
+			if (_effected.isServitor() || (_effected.isPlayer() && _effected.getActingPlayer().getSummon().isServitor()))
 			{
 				temp /= 2;
 			}
@@ -440,7 +438,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		{
 			getEffected().startSpecialEffect(_specialEffect);
 		}
-		if ((_eventEffect != AbnormalEffect.NULL) && (getEffected() instanceof L2PcInstance))
+		if ((_eventEffect != AbnormalEffect.NULL) && getEffected().isPlayer())
 		{
 			getEffected().getActingPlayer().startEventEffect(_eventEffect);
 		}
@@ -460,7 +458,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		{
 			getEffected().stopSpecialEffect(_specialEffect);
 		}
-		if ((_eventEffect != AbnormalEffect.NULL) && (getEffected() instanceof L2PcInstance))
+		if ((_eventEffect != AbnormalEffect.NULL) && getEffected().isPlayer())
 		{
 			getEffected().getActingPlayer().stopEventEffect(_eventEffect);
 		}
@@ -479,7 +477,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 			{
 				_state = EffectState.ACTING;
 				
-				if (_skill.isPvpSkill() && _icon && (getEffected() instanceof L2PcInstance))
+				if (_skill.isPvpSkill() && _icon && getEffected().isPlayer())
 				{
 					SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
 					smsg.addSkillName(_skill);
@@ -518,7 +516,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 			case FINISHING:
 			{
 				// If the time left is equal to zero, send the message
-				if ((_count == 0) && _icon && (getEffected() instanceof L2PcInstance))
+				if ((_count == 0) && _icon && getEffected().isPlayer())
 				{
 					SystemMessage smsg3 = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_WORN_OFF);
 					smsg3.addSkillName(_skill);
@@ -681,11 +679,8 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	
 	public boolean canBeStolen()
 	{
-		if (!effectCanBeStolen() || (getEffectType() == L2EffectType.TRANSFORMATION) || getSkill().isPassive() || getSkill().isToggle() || getSkill().isDebuff() || getSkill().isHeroSkill() || getSkill().isGMSkill() || getSkill().isStatic() || !getSkill().canBeDispeled())
-		{
-			return false;
-		}
-		return true;
+		// TODO: Unhardcode skillId
+		return (!effectCanBeStolen() || (getEffectType() == L2EffectType.TRANSFORMATION) || getSkill().isPassive() || getSkill().isToggle() || getSkill().isDebuff() || getSkill().isHeroSkill() || getSkill().isGMSkill() || (getSkill().isStatic() && ((getSkill().getId() != 2274) && (getSkill().getId() != 2341))) || !getSkill().canBeDispeled()) ? false : true;
 	}
 	
 	/**
