@@ -2096,7 +2096,8 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			return false;
 		}
 		
-		if (!skill.isStatic()) // Skill mute checks.
+		// Skill mute checks.
+		if (!skill.isStatic())
 		{
 			// Check if the skill is a magic spell and if the L2Character is not muted
 			if (skill.isMagic())
@@ -2112,12 +2113,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			{
 				// Check if the skill is physical and if the L2Character is not physical_muted
 				if (isPhysicalMuted())
-				{
-					// Send a Server->Client packet ActionFailed to the L2PcInstance
-					sendPacket(ActionFailed.STATIC_PACKET);
-					return false;
-				}
-				else if (isPhysicalAttackMuted()) // Prevent use attack
 				{
 					// Send a Server->Client packet ActionFailed to the L2PcInstance
 					sendPacket(ActionFailed.STATIC_PACKET);
