@@ -31,7 +31,6 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.effects.EffectFlag;
@@ -771,7 +770,7 @@ public class CharEffectList
 		}
 		
 		// Remove the active skill L2effect from _effects of the L2Character
-		if (effectList.remove(effect) && (_owner instanceof L2PcInstance) && effect.getShowIcon())
+		if (effectList.remove(effect) && _owner.isPlayer() && effect.getShowIcon())
 		{
 			SystemMessage sm;
 			if (effect.getSkill().isToggle())
@@ -1153,7 +1152,7 @@ public class CharEffectList
 			return;
 		}
 		
-		if (!(_owner instanceof L2Playable))
+		if (!_owner.isPlayable())
 		{
 			updateEffectFlags();
 			return;
@@ -1161,9 +1160,11 @@ public class CharEffectList
 		
 		AbnormalStatusUpdate mi = null;
 		PartySpelled ps = null;
+		PartySpelled psSummon = null;
 		ExOlympiadSpelledInfo os = null;
+		boolean isSummon = false;
 		
-		if (_owner instanceof L2PcInstance)
+		if (_owner.isPlayer())
 		{
 			if (_partyOnly)
 			{
@@ -1179,14 +1180,16 @@ public class CharEffectList
 				ps = new PartySpelled(_owner);
 			}
 			
-			if (((L2PcInstance) _owner).isInOlympiadMode() && ((L2PcInstance) _owner).isOlympiadStart())
+			if (_owner.getActingPlayer().isInOlympiadMode() && _owner.getActingPlayer().isOlympiadStart())
 			{
-				os = new ExOlympiadSpelledInfo((L2PcInstance) _owner);
+				os = new ExOlympiadSpelledInfo(_owner.getActingPlayer());
 			}
 		}
-		else if (_owner instanceof L2Summon)
+		else if (_owner.isSummon())
 		{
+			isSummon = true;
 			ps = new PartySpelled(_owner);
+			psSummon = new PartySpelled(_owner);
 		}
 		
 		boolean foundRemovedOnAction = false;
@@ -1231,7 +1234,18 @@ public class CharEffectList
 					
 					if (ps != null)
 					{
-						e.addPartySpelledIcon(ps);
+						if (isSummon || (!e.getSkill().isToggle() && !(e.getSkill().isStatic() && (e.getEffectType() != L2EffectType.BUFF))))
+						{
+							e.addPartySpelledIcon(ps);
+						}
+					}
+					
+					if (psSummon != null)
+					{
+						if (!e.getSkill().isToggle() && !(e.getSkill().isStatic() && (e.getEffectType() != L2EffectType.BUFF)))
+						{
+							e.addPartySpelledIcon(psSummon);
+						}
 					}
 					
 					if (os != null)
@@ -1288,6 +1302,11 @@ public class CharEffectList
 						e.addPartySpelledIcon(ps);
 					}
 					
+					if (psSummon != null)
+					{
+						e.addPartySpelledIcon(psSummon);
+					}
+					
 					if (os != null)
 					{
 						e.addOlympiadSpelledIcon(os);
@@ -1306,7 +1325,7 @@ public class CharEffectList
 		
 		if (ps != null)
 		{
-			if (_owner instanceof L2Summon)
+			if (_owner.isSummon())
 			{
 				L2PcInstance summonOwner = ((L2Summon) _owner).getOwner();
 				
@@ -1314,7 +1333,8 @@ public class CharEffectList
 				{
 					if (summonOwner.isInParty())
 					{
-						summonOwner.getParty().broadcastPacket(ps);
+						summonOwner.getParty().broadcastToPartyMembers(summonOwner, psSummon); // send to all member except summonOwner
+						summonOwner.sendPacket(ps); // now send to summonOwner
 					}
 					else
 					{
@@ -1322,7 +1342,7 @@ public class CharEffectList
 					}
 				}
 			}
-			else if ((_owner instanceof L2PcInstance) && _owner.isInParty())
+			else if (_owner.isPlayer() && _owner.isInParty())
 			{
 				_owner.getParty().broadcastPacket(ps);
 			}
@@ -1330,7 +1350,7 @@ public class CharEffectList
 		
 		if (os != null)
 		{
-			final OlympiadGameTask game = OlympiadGameManager.getInstance().getOlympiadTask(((L2PcInstance) _owner).getOlympiadGameId());
+			final OlympiadGameTask game = OlympiadGameManager.getInstance().getOlympiadTask(_owner.getActingPlayer().getOlympiadGameId());
 			if ((game != null) && game.isBattleStarted())
 			{
 				game.getZone().broadcastPacketToObservers(os);
