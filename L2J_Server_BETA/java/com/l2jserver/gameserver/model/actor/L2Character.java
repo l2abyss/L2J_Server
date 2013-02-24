@@ -798,17 +798,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 */
 	protected void doAttack(L2Character target)
 	{
-		if (target == null)
-		{
-			return;
-		}
-		
-		if (isAttackingDisabled())
-		{
-			return;
-		}
-		
-		if (!fireAttackListeners(target))
+		if ((target == null) || isAttackingDisabled() || !fireAttackListeners(target))
 		{
 			return;
 		}
@@ -1060,24 +1050,13 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		rechargeShots(true, false);
 		
 		// Verify if soulshots are charged.
-		boolean wasSSCharged = isChargedShot(ShotType.SOULSHOTS);
-		
+		final boolean wasSSCharged = isChargedShot(ShotType.SOULSHOTS);
 		// Get the Attack Speed of the L2Character (delay (in milliseconds) before next attack)
-		int timeAtk = calculateTimeBetweenAttacks(target, weaponItem);
-		
+		final int timeAtk = calculateTimeBetweenAttacks(target, weaponItem);
 		// the hit is calculated to happen halfway to the animation - might need further tuning e.g. in bow case
-		int timeToHit = timeAtk / 2;
-		_attackEndTime = GameTimeController.getGameTicks();
-		_attackEndTime += (timeAtk / GameTimeController.MILLIS_IN_TICK);
-		_attackEndTime -= 1;
-		
-		int ssGrade = 0;
-		
-		if (weaponItem != null)
-		{
-			ssGrade = weaponItem.getItemGradeSPlus();
-		}
-		
+		final int timeToHit = timeAtk / 2;
+		_attackEndTime = (GameTimeController.getGameTicks() + (timeAtk / GameTimeController.MILLIS_IN_TICK)) - 1;
+		final int ssGrade = (weaponItem != null) ? weaponItem.getItemGradeSPlus() : 0;
 		// Create a Server->Client packet Attack
 		Attack attack = new Attack(this, target, wasSSCharged, ssGrade);
 		
@@ -1145,7 +1124,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			{
 				if (player.isCursedWeaponEquipped())
 				{
-					// If hitted by a cursed weapon, Cp is reduced to 0
+					// If hit by a cursed weapon, CP is reduced to 0
 					if (!target.isInvul())
 					{
 						target.setCurrentCp(0);
@@ -1153,7 +1132,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				}
 				else if (player.isHero())
 				{
-					// If a cursed weapon is hit by a Hero, Cp is reduced to 0
+					// If a cursed weapon is hit by a Hero, CP is reduced to 0
 					if (target.isPlayer() && target.getActingPlayer().isCursedWeaponEquipped())
 					{
 						target.setCurrentCp(0);
@@ -1227,12 +1206,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		// Check if the L2Character is a L2PcInstance
 		if (isPlayer())
 		{
-			// Send a system message
-			sendPacket(SystemMessageId.GETTING_READY_TO_SHOOT_AN_ARROW);
-			
-			// Send a Server->Client packet SetupGauge
-			SetupGauge sg = new SetupGauge(SetupGauge.RED, sAtk + reuse);
-			sendPacket(sg);
+			sendPacket(new SetupGauge(SetupGauge.RED, sAtk + reuse));
 		}
 		
 		// Create a new hit task with Medium priority
@@ -2600,7 +2574,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 */
 	public boolean isAttackingDisabled()
 	{
-		return isFlying() || isStunned() || isSleeping() || (_attackEndTime > GameTimeController.getGameTicks()) || isAlikeDead() || isParalyzed() || isPhysicalAttackMuted() || isCoreAIDisabled();
+		return isFlying() || isStunned() || isSleeping() || isAttackingNow() || isAlikeDead() || isParalyzed() || isPhysicalAttackMuted() || isCoreAIDisabled();
 	}
 	
 	public final Calculator[] getCalculators()
@@ -5958,31 +5932,20 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 */
 	public int calculateTimeBetweenAttacks(L2Character target, L2Weapon weapon)
 	{
-		double atkSpd = 0;
 		if ((weapon != null) && !isTransformed())
 		{
 			switch (weapon.getItemType())
 			{
 				case BOW:
-					atkSpd = getStat().getPAtkSpd();
-					return (int) ((1500 * 345) / atkSpd);
+					return (1500 * 345) / getPAtkSpd();
 				case CROSSBOW:
-					atkSpd = getStat().getPAtkSpd();
-					return (int) ((1200 * 345) / atkSpd);
+					return (1200 * 345) / getPAtkSpd();
 				case DAGGER:
-					atkSpd = getStat().getPAtkSpd();
 					// atkSpd /= 1.15;
 					break;
-				default:
-					atkSpd = getStat().getPAtkSpd();
 			}
 		}
-		else
-		{
-			atkSpd = getPAtkSpd();
-		}
-		
-		return Formulas.calcPAtkSpd(this, target, atkSpd);
+		return Formulas.calcPAtkSpd(this, target, getPAtkSpd());
 	}
 	
 	public int calculateReuseTime(L2Character target, L2Weapon weapon)
@@ -7296,6 +7259,11 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	public int getAttackEndTime()
 	{
 		return _attackEndTime;
+	}
+	
+	public int getBowAttackEndTime()
+	{
+		return _disableBowAttackEndTime;
 	}
 	
 	/**

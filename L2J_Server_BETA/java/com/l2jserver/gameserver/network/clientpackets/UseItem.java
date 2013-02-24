@@ -49,10 +49,6 @@ import com.l2jserver.gameserver.network.serverpackets.ExUseSharedGroupItem;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-/**
- * This class ...
- * @version $Revision: 1.18.2.7.2.9 $ $Date: 2005/03/27 15:29:30 $
- */
 public final class UseItem extends L2GameClientPacket
 {
 	private static final String _C__19_USEITEM = "[C] 19 UseItem";
@@ -62,12 +58,12 @@ public final class UseItem extends L2GameClientPacket
 	private int _itemId;
 	
 	/** Weapon Equip Task */
-	public static class WeaponEquipTask implements Runnable
+	private static class WeaponEquipTask implements Runnable
 	{
 		L2ItemInstance item;
 		L2PcInstance activeChar;
 		
-		public WeaponEquipTask(L2ItemInstance it, L2PcInstance character)
+		protected WeaponEquipTask(L2ItemInstance it, L2PcInstance character)
 		{
 			item = it;
 			activeChar = character;
@@ -145,7 +141,7 @@ public final class UseItem extends L2GameClientPacket
 		}
 		
 		// Char cannot use item when dead
-		if (activeChar.isDead())
+		if (activeChar.isDead() || !activeChar.getInventory().canManipulateWithItemId(item.getItemId()))
 		{
 			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addItemName(item);
@@ -159,12 +155,6 @@ public final class UseItem extends L2GameClientPacket
 		}
 		
 		_itemId = item.getItemId();
-		if (!activeChar.getInventory().canManipulateWithItemId(_itemId))
-		{
-			activeChar.sendMessage("Cannot use this item.");
-			return;
-		}
-		
 		if (activeChar.isFishing() && ((_itemId < 6535) || (_itemId > 6540)))
 		{
 			// You cannot do anything else while fishing
@@ -174,10 +164,10 @@ public final class UseItem extends L2GameClientPacket
 		
 		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && (activeChar.getKarma() > 0))
 		{
-			SkillHolder[] sHolders = item.getItem().getSkills();
-			if (sHolders != null)
+			SkillHolder[] skills = item.getItem().getSkills();
+			if (skills != null)
 			{
-				for (SkillHolder sHolder : sHolders)
+				for (SkillHolder sHolder : skills)
 				{
 					L2Skill skill = sHolder.getSkill();
 					if ((skill != null) && ((skill.getSkillType() == L2SkillType.TELEPORT) || (skill.getSkillType() == L2SkillType.RECALL)))

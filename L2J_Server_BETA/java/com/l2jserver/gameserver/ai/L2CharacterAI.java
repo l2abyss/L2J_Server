@@ -33,7 +33,9 @@ import java.util.List;
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.GeoData;
+import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Object;
@@ -87,6 +89,34 @@ public class L2CharacterAI extends AbstractAI
 		public CtrlIntention getCtrlIntention()
 		{
 			return _crtlIntention;
+		}
+	}
+	
+	/**
+	 * Cast Task
+	 * @author Zoey76
+	 */
+	public static class CastTask implements Runnable
+	{
+		private final L2Character _activeChar;
+		private final L2Object _target;
+		private final L2Skill _skill;
+		
+		public CastTask(L2Character actor, L2Skill skill, L2Object target)
+		{
+			_activeChar = actor;
+			_target = target;
+			_skill = skill;
+		}
+		
+		@Override
+		public void run()
+		{
+			if (_activeChar.isAttackingNow())
+			{
+				_activeChar.abortAttack();
+			}
+			_activeChar.getAI().changeIntentionToCast(_skill, _target);
 		}
 	}
 	
@@ -293,23 +323,22 @@ public class L2CharacterAI extends AbstractAI
 			return;
 		}
 		
+		if (_actor.getBowAttackEndTime() > GameTimeController.getGameTicks())
+		{
+			ThreadPoolManager.getInstance().scheduleGeneral(new CastTask(_actor, skill, target), (_actor.getBowAttackEndTime() - GameTimeController.getGameTicks()) * GameTimeController.MILLIS_IN_TICK);
+		}
+		else
+		{
+			changeIntentionToCast(skill, target);
+		}
+	}
+	
+	protected void changeIntentionToCast(L2Skill skill, L2Object target)
+	{
 		// Set the AI cast target
 		setCastTarget((L2Character) target);
-		
-		// Stop actions client-side to cast the skill
-		if (skill.getHitTime() > 50)
-		{
-			// Abort the attack of the L2Character and send Server->Client ActionFailed packet
-			_actor.abortAttack();
-			
-			// Cancel action client side by sending Server->Client packet ActionFailed to the L2PcInstance actor
-			// no need for second ActionFailed packet, abortAttack() already sent it
-			// clientActionFailed();
-		}
-		
 		// Set the AI skill used by INTENTION_CAST
 		_skill = skill;
-		
 		// Change the Intention of this AbstractAI to AI_INTENTION_CAST
 		changeIntention(AI_INTENTION_CAST, skill, target);
 		

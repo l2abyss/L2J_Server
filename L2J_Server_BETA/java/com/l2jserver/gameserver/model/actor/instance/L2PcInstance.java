@@ -7355,34 +7355,21 @@ public final class L2PcInstance extends L2Playable
 		return false;
 	}
 	
-	/**
-	 * Return True if the L2PcInstance use a dual weapon.
-	 */
 	@Override
 	public boolean isUsingDualWeapon()
 	{
-		L2Weapon weaponItem = getActiveWeaponItem();
-		if (weaponItem == null)
+		final L2Weapon weaponItem = getActiveWeaponItem();
+		if (weaponItem != null)
 		{
-			return false;
+			switch (weaponItem.getItemType())
+			{
+				case DUAL:
+				case DUALFIST:
+				case DUALDAGGER:
+					return true;
+			}
 		}
-		
-		if (weaponItem.getItemType() == L2WeaponType.DUAL)
-		{
-			return true;
-		}
-		else if (weaponItem.getItemType() == L2WeaponType.DUALFIST)
-		{
-			return true;
-		}
-		else if (weaponItem.getItemType() == L2WeaponType.DUALDAGGER)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 	
 	public void setUptime(long time)
