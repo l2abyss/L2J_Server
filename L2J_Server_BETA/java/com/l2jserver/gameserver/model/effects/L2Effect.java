@@ -29,6 +29,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.ChanceCondition;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
@@ -156,7 +157,8 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		int temp = template.abnormalTime;
 		if (((_skill.getId() > 2277) && (_skill.getId() < 2286)) || ((_skill.getId() >= 2512) && (_skill.getId() <= 2514)))
 		{
-			if ((_effected != null) && (_effected.isServitor() || (_effected.isPlayer() && _effected.getSummon().isServitor())))
+			final L2Summon summon = _effected.getSummon();
+			if ((summon != null) && summon.isServitor())
 			{
 				temp /= 2;
 			}

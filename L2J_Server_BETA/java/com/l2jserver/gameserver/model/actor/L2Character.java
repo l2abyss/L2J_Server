@@ -2697,6 +2697,14 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		return null;
 	}
 	
+	/**
+	 * @return {@code true} if the player has a pet, {@code false} otherwise
+	 */
+	public boolean hasSummon()
+	{
+		return getSummon() != null;
+	}
+	
 	public final boolean isRooted()
 	{
 		return isAffected(EffectFlag.ROOTED);
