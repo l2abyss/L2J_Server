@@ -987,10 +987,10 @@ public final class Formulas
 	
 	public static final double calcMagicDam(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss, boolean bss, boolean mcrit)
 	{
+		int mAtk = attacker.getMAtk(target, skill);
+		int mDef = target.getMDef(attacker, skill);
 		final boolean isPvP = attacker.isPlayable() && target.isPlayable();
 		final boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
-		double mAtk = attacker.getMAtk(target, skill);
-		double mDef = target.getMDef(attacker, skill);
 		// --------------------------------
 		// Pvp bonuses for def
 		if (isPvP)
@@ -1022,8 +1022,8 @@ public final class Formulas
 		{
 			mAtk *= 2;
 		}
-		
-		double damage = ((91 * Math.sqrt(mAtk)) / mDef) * skill.getPower(attacker, target, isPvP, isPvE);
+		// MDAM Formula.
+		double damage = 91 * (Math.sqrt(mAtk / mDef) * skill.getPower(attacker, target, isPvP, isPvE));
 		
 		// Failure calculation
 		if (Config.ALT_GAME_MAGICFAILURES && !calcMagicSuccess(attacker, target, skill))
@@ -1126,11 +1126,10 @@ public final class Formulas
 	
 	public static final double calcMagicDam(L2CubicInstance attacker, L2Character target, L2Skill skill, boolean mcrit, byte shld)
 	{
-		// Current info include mAtk in the skill power.
-		// double mAtk = attacker.getMAtk();
+		int mAtk = attacker.getCubicPower();
+		int mDef = target.getMDef(attacker.getOwner(), skill);
 		final boolean isPvP = target.isPlayable();
 		final boolean isPvE = target.isL2Attackable();
-		double mDef = target.getMDef(attacker.getOwner(), skill);
 		
 		switch (shld)
 		{
@@ -1140,10 +1139,11 @@ public final class Formulas
 			case SHIELD_DEFENSE_PERFECT_BLOCK: // perfect block
 				return 1;
 		}
+		// Cubics MDAM Formula (similar to PDAM formula, but using 91 instead of 70, also resisted by mDef).
+		double damage = 91 * ((mAtk + skill.getPower(isPvP, isPvE)) / mDef);
 		
-		double damage = (91 /* * Math.sqrt(mAtk) *// mDef) * skill.getPower(isPvP, isPvE);
-		L2PcInstance owner = attacker.getOwner();
 		// Failure calculation
+		L2PcInstance owner = attacker.getOwner();
 		if (Config.ALT_GAME_MAGICFAILURES && !calcMagicSuccess(owner, target, skill))
 		{
 			if (calcMagicSuccess(owner, target, skill) && ((target.getLevel() - skill.getMagicLevel()) <= 9))
@@ -2248,7 +2248,7 @@ public final class Formulas
 				mAtkModifier += target.getShldDef();
 			}
 			
-			mAtkModifier = Math.pow(attacker.getMAtk() / mAtkModifier, 0.2);
+			mAtkModifier = Math.pow(attacker.getCubicPower() / mAtkModifier, 0.2);
 			
 			rate += (int) (mAtkModifier * 100) - 100;
 		}

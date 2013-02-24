@@ -43,13 +43,15 @@ public class L2SkillSummon extends L2Skill
 	private final boolean _isCubic;
 	
 	// cubic AI
+	// Power for a cubic
+	private final int _cubicPower;
 	// Duration for a cubic
 	private final int _cubicDuration;
 	// Activation time for a cubic
 	private final int _cubicDelay;
-	// Maximum casts made by the cubic until it goes idle.
+	// Maximum casts made by the cubic until it goes idle
 	private final int _cubicMaxCount;
-	// Activation chance for a cubic.
+	// Activation chance for a cubic
 	private final int _cubicSkillChance;
 	
 	// What is the total lifetime of summons (in millisecs)
@@ -78,6 +80,7 @@ public class L2SkillSummon extends L2Skill
 		_expPenalty = set.getFloat("expPenalty", 0.f);
 		_isCubic = set.getBool("isCubic", false);
 		
+		_cubicPower = set.getInteger("cubicPower", 0);
 		_cubicDuration = set.getInteger("cubicDuration", 0);
 		_cubicDelay = set.getInteger("cubicDelay", 0);
 		_cubicMaxCount = set.getInteger("cubicMaxCount", -1);
@@ -203,11 +206,11 @@ public class L2SkillSummon extends L2Skill
 					}
 					if (player == activeChar)
 					{
-						player.addCubic(getNpcId(), _cubicSkillLevel, getPower(), _cubicDelay, _cubicSkillChance, _cubicMaxCount, _cubicDuration, false);
+						player.addCubic(getNpcId(), _cubicSkillLevel, _cubicPower, _cubicDelay, _cubicSkillChance, _cubicMaxCount, _cubicDuration, false);
 					}
 					else
 					{
-						player.addCubic(getNpcId(), _cubicSkillLevel, getPower(), _cubicDelay, _cubicSkillChance, _cubicMaxCount, _cubicDuration, true);
+						player.addCubic(getNpcId(), _cubicSkillLevel, _cubicPower, _cubicDelay, _cubicSkillChance, _cubicMaxCount, _cubicDuration, true);
 					}
 					player.broadcastUserInfo();
 				}
@@ -236,7 +239,7 @@ public class L2SkillSummon extends L2Skill
 					activeChar.sendPacket(SystemMessageId.CUBIC_SUMMONING_FAILED);
 					return;
 				}
-				activeChar.addCubic(getNpcId(), _cubicSkillLevel, getPower(), _cubicDelay, _cubicSkillChance, _cubicMaxCount, _cubicDuration, false);
+				activeChar.addCubic(getNpcId(), _cubicSkillLevel, _cubicPower, _cubicDelay, _cubicSkillChance, _cubicMaxCount, _cubicDuration, false);
 				activeChar.broadcastUserInfo();
 			}
 			return;

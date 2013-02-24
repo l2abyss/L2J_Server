@@ -83,7 +83,7 @@ public final class L2CubicInstance
 	protected L2Character _target;
 	
 	protected int _id;
-	protected int _matk;
+	protected int _cubicPower;
 	protected int _cubicDuration;
 	protected int _cubicDelay;
 	protected int _cubicSkillChance;
@@ -97,11 +97,11 @@ public final class L2CubicInstance
 	private Future<?> _disappearTask;
 	private Future<?> _actionTask;
 	
-	public L2CubicInstance(L2PcInstance owner, int id, int level, int mAtk, int cubicDelay, int cubicSkillChance, int cubicMaxCount, int cubicDuration, boolean givenByOther)
+	public L2CubicInstance(L2PcInstance owner, int id, int level, int cubicPower, int cubicDelay, int cubicSkillChance, int cubicMaxCount, int cubicDuration, boolean givenByOther)
 	{
 		_owner = owner;
 		_id = id;
-		_matk = mAtk;
+		_cubicPower = cubicPower;
 		_cubicDuration = cubicDuration * 1000;
 		_cubicDelay = cubicDelay * 1000;
 		_cubicSkillChance = cubicSkillChance;
@@ -274,9 +274,9 @@ public final class L2CubicInstance
 		return (int) (BaseStats.WIT.calcBonus(_owner) * 10);
 	}
 	
-	public int getMAtk()
+	public int getCubicPower()
 	{
-		return _matk;
+		return _cubicPower;
 	}
 	
 	public void stopAction()
