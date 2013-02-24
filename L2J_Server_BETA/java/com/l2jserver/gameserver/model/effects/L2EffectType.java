@@ -23,6 +23,7 @@ package com.l2jserver.gameserver.model.effects;
  */
 public enum L2EffectType
 {
+	BALANCE_LIFE,
 	BUFF,
 	DEBUFF,
 	CANCEL,
