@@ -1382,7 +1382,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		
 		switch (sk.getSkillType())
 		{
-		
 			case BUFF:
 			{
 				if (caster.getFirstEffect(sk) == null)
@@ -1428,7 +1427,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			case HOT:
 			case HEAL_PERCENT:
 			case HEAL_STATIC:
-			case BALANCE_LIFE:
 			{
 				double percentage = (caster.getCurrentHp() / caster.getMaxHp()) * 100;
 				if (caster.isMinion() && (sk.getTargetType() != L2TargetType.TARGET_SELF))

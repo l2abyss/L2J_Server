@@ -386,10 +386,26 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			for (L2Skill skill : getTemplate().getSkills().values())
 			{
 				// if the skill is a buff, check if the owner has it already [ owner.getEffect(L2Skill skill) ]
-				if ((Rnd.get(5) < chance) && ((skill.getSkillType() == L2SkillType.HEAL) || (skill.getSkillType() == L2SkillType.HOT) || (skill.getSkillType() == L2SkillType.BALANCE_LIFE) || (skill.getSkillType() == L2SkillType.HEAL_PERCENT) || (skill.getSkillType() == L2SkillType.HEAL_STATIC) || (skill.getSkillType() == L2SkillType.COMBATPOINTHEAL) || (skill.getSkillType() == L2SkillType.CPHOT) || (skill.getSkillType() == L2SkillType.MANAHEAL) || (skill.getSkillType() == L2SkillType.MANA_BY_LEVEL) || (skill.getSkillType() == L2SkillType.MANAHEAL_PERCENT) || (skill.getSkillType() == L2SkillType.MANARECHARGE) || (skill.getSkillType() == L2SkillType.MPHOT)))
+				if (Rnd.get(5) < chance)
 				{
-					sitCastAndFollow(skill, _owner);
-					return;
+					switch (skill.getSkillType())
+					{
+						case COMBATPOINTHEAL:
+						case CPHOT:
+						case HEAL:
+						case HEAL_PERCENT:
+						case HEAL_STATIC:
+						case HOT:
+						case MANA_BY_LEVEL:
+						case MANAHEAL:
+						case MANAHEAL_PERCENT:
+						case MANARECHARGE:
+						case MPHOT:
+						{
+							sitCastAndFollow(skill, _owner);
+							return;
+						}
+					}
 				}
 			}
 		}

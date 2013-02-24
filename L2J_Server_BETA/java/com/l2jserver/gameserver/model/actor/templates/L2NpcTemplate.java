@@ -434,7 +434,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 					case HOT:
 					case HEAL_PERCENT:
 					case HEAL_STATIC:
-					case BALANCE_LIFE:
 						addHealSkill(skill);
 						break;
 					case RESURRECT:

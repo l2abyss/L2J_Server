@@ -1292,7 +1292,6 @@ public class L2CharacterAI extends AbstractAI
 					case HEAL:
 					case HEAL_PERCENT:
 					case HEAL_STATIC:
-					case BALANCE_LIFE:
 					case HOT:
 						healSkills.add(sk);
 						hasHealOrResurrect = true;

@@ -58,7 +58,6 @@ public enum L2SkillType
 	BLOW,
 	SIGNET(L2SkillSignet.class),
 	SIGNET_CASTTIME(L2SkillSignetCasttime.class),
-	
 	// Disablers
 	BLEED,
 	POISON,
@@ -71,11 +70,9 @@ public enum L2SkillType
 	MUTE,
 	PARALYZE,
 	DISARM,
-	
 	// hp, mp, cp
 	HEAL,
 	HOT,
-	BALANCE_LIFE,
 	HEAL_PERCENT,
 	HEAL_STATIC,
 	COMBATPOINTHEAL,
@@ -90,27 +87,23 @@ public enum L2SkillType
 	HPMPHEAL_PERCENT,
 	HPCPHEAL_PERCENT,
 	CHAIN_HEAL,
-	
 	// sp
 	GIVE_SP,
 	// reco
 	GIVE_RECO,
 	// vitality
 	GIVE_VITALITY,
-	
 	// Aggro
 	AGGDAMAGE,
 	AGGREDUCE,
 	AGGREMOVE,
 	AGGREDUCE_CHAR,
 	AGGDEBUFF,
-	
 	// Fishing
 	FISHING,
 	PUMPING,
 	REELING,
-	
-	// MISC
+	// Misc
 	UNLOCK,
 	UNLOCK_SPECIAL,
 	ENCHANT_ARMOR,
@@ -129,13 +122,11 @@ public enum L2SkillType
 	INSTANT_JUMP,
 	DETECTION,
 	DUMMY,
-	
 	// Creation
 	COMMON_CRAFT,
 	DWARVEN_CRAFT,
 	CREATE_ITEM(L2SkillCreateItem.class),
 	LEARN_SKILL(L2SkillLearnSkill.class),
-	
 	// Summons
 	SUMMON(L2SkillSummon.class),
 	FEED_PET,
@@ -145,7 +136,6 @@ public enum L2SkillType
 	BETRAY,
 	DECOY(L2SkillDecoy.class),
 	SPAWN(L2SkillSpawn.class),
-	
 	// Cancel
 	CANCEL,
 	CANCEL_ALL,
@@ -187,12 +177,10 @@ public enum L2SkillType
 	
 	// Skill is done within the core.
 	COREDONE,
-	
 	// Refuel airship
 	REFUEL,
 	// Nornil's Power (Nornil's Garden instance)
 	NORNILS_POWER,
-	
 	// unimplemented
 	NOTDONE,
 	BALLISTA;
