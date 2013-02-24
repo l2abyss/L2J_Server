@@ -144,7 +144,6 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	{
 		_state = EffectState.CREATED;
 		_skill = env.getSkill();
-		// _item = env._item == null ? null : env._item.getItem();
 		_template = template;
 		_effected = env.getTarget();
 		_effector = env.getCharacter();
@@ -155,10 +154,9 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		
 		// Support for retail herbs duration when _effected has a Summon
 		int temp = template.abnormalTime;
-		
 		if (((_skill.getId() > 2277) && (_skill.getId() < 2286)) || ((_skill.getId() >= 2512) && (_skill.getId() <= 2514)))
 		{
-			if (_effected.isServitor() || (_effected.isPlayer() && _effected.getActingPlayer().getSummon().isServitor()))
+			if ((_effected != null) && (_effected.isServitor() || (_effected.isPlayer() && _effected.getSummon().isServitor())))
 			{
 				temp /= 2;
 			}
