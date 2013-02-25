@@ -2929,7 +2929,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		}
 		else
 		{
-			_title = value.length() > 16 ? value.substring(0, 15) : value;
+			_title = value.length() > 21 ? value.substring(0, 20) : value;
 		}
 	}
 	

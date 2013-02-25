@@ -176,7 +176,7 @@ public abstract class L2Script extends Quest
 	 * To set a global notifier (for all L2Character) set character to null!
 	 * @param character
 	 */
-	public void addDeathNodify(final L2Character character)
+	public void addDeathNotify(final L2Character character)
 	{
 		DeathListener listener = new DeathListener(character)
 		{
