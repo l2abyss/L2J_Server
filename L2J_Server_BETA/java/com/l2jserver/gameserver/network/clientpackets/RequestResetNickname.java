@@ -44,7 +44,7 @@ public class RequestResetNickname extends L2GameClientPacket
 		
 		activeChar.getAppearance().setTitleColor(0xFFFF77);
 		activeChar.setTitle("");
-		activeChar.broadcastUserInfo();
+		activeChar.broadcastTitleInfo();
 	}
 	
 	@Override
