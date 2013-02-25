@@ -278,7 +278,10 @@ public class MerchantPriceConfigTable implements InstanceListManager
 		
 		public void updateReferences()
 		{
-			_castle = CastleManager.getInstance().getCastleById(_castleId);
+			if (_castleId > 0)
+			{
+				_castle = CastleManager.getInstance().getCastleById(_castleId);
+			}
 		}
 	}
 	

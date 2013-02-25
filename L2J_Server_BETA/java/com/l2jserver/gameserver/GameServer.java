@@ -310,6 +310,10 @@ public class GameServer
 		AirShipManager.getInstance();
 		GraciaSeedsManager.getInstance();
 		
+		CastleManager.getInstance().activateInstances();
+		FortManager.getInstance().activateInstances();
+		MerchantPriceConfigTable.getInstance().updateReferences();
+		
 		try
 		{
 			_log.info(getClass().getSimpleName() + ": Loading Server Scripts");
@@ -356,9 +360,6 @@ public class GameServer
 		TaskManager.getInstance();
 		
 		AntiFeedManager.getInstance().registerEvent(AntiFeedManager.GAME_ID);
-		MerchantPriceConfigTable.getInstance().updateReferences();
-		CastleManager.getInstance().activateInstances();
-		FortManager.getInstance().activateInstances();
 		
 		if (Config.ALLOW_MAIL)
 		{
