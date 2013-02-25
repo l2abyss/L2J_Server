@@ -1023,7 +1023,7 @@ public final class Formulas
 			mAtk *= 2;
 		}
 		// MDAM Formula.
-		double damage = 91 * (Math.sqrt(mAtk / mDef) * skill.getPower(attacker, target, isPvP, isPvE));
+		double damage = ((91 * Math.sqrt(mAtk)) / mDef) * skill.getPower(attacker, target, isPvP, isPvE);
 		
 		// Failure calculation
 		if (Config.ALT_GAME_MAGICFAILURES && !calcMagicSuccess(attacker, target, skill))
