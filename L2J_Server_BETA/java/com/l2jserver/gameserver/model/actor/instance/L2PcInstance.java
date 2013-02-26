@@ -3030,7 +3030,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * This method reward all AutoGet skills and Normal skills if Auto-Learn configuration is true.<br>
+	 * This method reward all AutoGet skills and Normal skills if Auto-Learn configuration is true.
 	 */
 	public void rewardSkills()
 	{
@@ -3044,6 +3044,7 @@ public final class L2PcInstance extends L2Playable
 			giveAvailableAutoGetSkills();
 		}
 		
+		checkPlayerSkills();
 		checkItemRestriction();
 		sendSkillList();
 	}
@@ -15753,60 +15754,48 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void checkPlayerSkills()
 	{
-		for (int id : getSkills().keySet())
+		L2SkillLearn learn;
+		for (Entry<Integer, L2Skill> e : getSkills().entrySet())
 		{
-			int level = getSkillLevel(id);
-			if (level >= 100)
+			learn = SkillTreesData.getInstance().getClassSkill(e.getKey(), e.getValue().getLevel() % 100, getClassId());
+			if (learn != null)
 			{
-				level = SkillTable.getInstance().getMaxLevel(id);
-			}
-			final L2SkillLearn learn = SkillTreesData.getInstance().getClassSkill(id, level, getClassId());
-			// not found - not a learn skill?
-			if (learn == null)
-			{
-				continue;
-			}
-			// player level is too low for such skill level
-			if (getLevel() < (learn.getGetLevel() - 9))
-			{
-				deacreaseSkillLevel(id);
+				int lvlDiff = e.getKey() == L2Skill.SKILL_EXPERTISE ? 0 : 9;
+				if (getLevel() < (learn.getGetLevel() - lvlDiff))
+				{
+					deacreaseSkillLevel(e.getValue(), lvlDiff);
+				}
 			}
 		}
 	}
 	
-	private void deacreaseSkillLevel(int id)
+	private void deacreaseSkillLevel(L2Skill skill, int lvlDiff)
 	{
 		int nextLevel = -1;
 		final Map<Integer, L2SkillLearn> skillTree = SkillTreesData.getInstance().getCompleteClassSkillTree(getClassId());
 		for (L2SkillLearn sl : skillTree.values())
 		{
-			if ((sl.getSkillId() == id) && (nextLevel < sl.getSkillLevel()) && (getLevel() >= (sl.getGetLevel() - 9)))
+			if ((sl.getSkillId() == skill.getId()) && (nextLevel < sl.getSkillLevel()) && (getLevel() >= (sl.getGetLevel() - lvlDiff)))
 			{
-				// next possible skill level
-				nextLevel = sl.getSkillLevel();
+				nextLevel = sl.getSkillLevel(); // next possible skill level
 			}
 		}
 		
-		if (nextLevel == -1) // there is no lower skill
+		if (nextLevel == -1)
 		{
-			_log.info("Removing skill id " + id + " level " + getSkillLevel(id) + " from player " + this);
-			removeSkill(getSkills().get(id), true);
+			_log.info("Removing skill " + skill + " from player " + toString());
+			removeSkill(skill, true); // there is no lower skill
 		}
 		else
-		// replace with lower one
 		{
-			_log.info("Decreasing skill id " + id + " from " + getSkillLevel(id) + " to " + nextLevel + " for " + this);
-			addSkill(SkillTable.getInstance().getInfo(id, nextLevel), true);
+			_log.info("Decreasing skill " + skill + " to " + nextLevel + " for player " + toString());
+			addSkill(SkillTable.getInstance().getInfo(skill.getId(), nextLevel), true); // replace with lower one
 		}
 	}
 	
 	public boolean canMakeSocialAction()
 	{
-		if ((getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_NONE) && (getActiveRequester() == null) && !isAlikeDead() && (!isAllSkillsDisabled() || isInDuel()) && !isCastingNow() && !isCastingSimultaneouslyNow() && (getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE) && !AttackStanceTaskManager.getInstance().hasAttackStanceTask(this) && !isInOlympiadMode())
-		{
-			return true;
-		}
-		return false;
+		return ((getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_NONE) && (getActiveRequester() == null) && !isAlikeDead() && !isAllSkillsDisabled() && !isInDuel() && !isCastingNow() && !isCastingSimultaneouslyNow() && (getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE) && !AttackStanceTaskManager.getInstance().hasAttackStanceTask(this) && !isInOlympiadMode());
 	}
 	
 	public void setMultiSocialAction(int id, int targetId)

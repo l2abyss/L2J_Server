@@ -74,14 +74,15 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	private static final L2Object[] _emptyTargetList = new L2Object[0];
 	
-	public static final int SKILL_LUCKY = 194;
-	public static final int SKILL_CREATE_COMMON = 1320;
 	public static final int SKILL_CREATE_DWARVEN = 172;
+	public static final int SKILL_LUCKY = 194;
+	public static final int SKILL_EXPERTISE = 239;
 	public static final int SKILL_CRYSTALLIZE = 248;
-	public static final int SKILL_DIVINE_INSPIRATION = 1405;
 	public static final int SKILL_CLAN_LUCK = 390;
-	public static final int SKILL_NPC_RACE = 4416;
 	public static final int SKILL_ONYX_BEAST_TRANSFORMATION = 617;
+	public static final int SKILL_CREATE_COMMON = 1320;
+	public static final int SKILL_DIVINE_INSPIRATION = 1405;
+	public static final int SKILL_NPC_RACE = 4416;
 	
 	public static final boolean geoEnabled = Config.GEODATA > 0;
 	
