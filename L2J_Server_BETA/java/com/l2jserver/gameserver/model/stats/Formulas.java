@@ -1814,10 +1814,6 @@ public final class Formulas
 			{
 				multiplier = target.calcStat(Stats.DEBUFF_VULN, multiplier, target, null);
 			}
-			else if (type == L2SkillType.STEAL_BUFF)
-			{
-				multiplier = target.calcStat(Stats.CANCEL_VULN, multiplier, target, null);
-			}
 		}
 		return multiplier;
 	}
@@ -1888,10 +1884,6 @@ public final class Formulas
 			if ((type == L2SkillType.DEBUFF) || (skill.isDebuff()))
 			{
 				multiplier = target.calcStat(Stats.DEBUFF_PROF, multiplier, target, null);
-			}
-			else if ((type == L2SkillType.CANCEL) || (type == L2SkillType.STEAL_BUFF))
-			{
-				multiplier = attacker.calcStat(Stats.CANCEL_PROF, multiplier, target, null);
 			}
 		}
 		return multiplier;
