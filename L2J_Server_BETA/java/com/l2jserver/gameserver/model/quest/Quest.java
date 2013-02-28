@@ -2211,16 +2211,14 @@ public class Quest extends ManagedScript
 		if ((party == null) || (party.getMembers().isEmpty()))
 		{
 			temp = player.getQuestState(getName());
-			if ((temp != null) && (temp.get(var) != null) && (temp.get(var)).equalsIgnoreCase(value))
+			if ((temp != null) && temp.isSet(var) && temp.get(var).equalsIgnoreCase(value))
 			{
 				return player; // match
 			}
-			
 			return null; // no match
 		}
 		
-		// if the player is in a party, gather a list of all matching party members (possibly
-		// including this player)
+		// if the player is in a party, gather a list of all matching party members (possibly including this player)
 		List<L2PcInstance> candidates = new ArrayList<>();
 		// get the target for enforcing distance limitations.
 		L2Object target = player.getTarget();
@@ -2246,7 +2244,6 @@ public class Quest extends ManagedScript
 		{
 			return null;
 		}
-		// TODO where's the range check?
 		// if a match was found from the party, return one of them at random.
 		return candidates.get(Rnd.get(candidates.size()));
 	}

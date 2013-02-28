@@ -1087,41 +1087,28 @@ public final class L2PcInstance extends L2Playable
 	 * <li>Set the name, the Hair Style, the Hair Color and the Face type of the L2PcInstance</li>
 	 * <li>Add the player in the characters table of the database</li>
 	 * </ul>
-	 * @param objectId Identifier of the object to initialized
 	 * @param template The L2PcTemplate to apply to the L2PcInstance
 	 * @param accountName The name of the L2PcInstance
 	 * @param name The name of the L2PcInstance
-	 * @param hairStyle The hair style Identifier of the L2PcInstance
-	 * @param hairColor The hair color Identifier of the L2PcInstance
-	 * @param face The face type Identifier of the L2PcInstance
-	 * @param sex
+	 * @param app the player's appearance
 	 * @return The L2PcInstance added to the database or null
 	 */
-	public static L2PcInstance create(int objectId, L2PcTemplate template, String accountName, String name, byte hairStyle, byte hairColor, byte face, boolean sex)
+	public static L2PcInstance create(L2PcTemplate template, String accountName, String name, PcAppearance app)
 	{
 		// Create a new L2PcInstance with an account name
-		PcAppearance app = new PcAppearance(face, hairColor, hairStyle, sex);
-		L2PcInstance player = new L2PcInstance(objectId, template, accountName, app);
-		
+		L2PcInstance player = new L2PcInstance(IdFactory.getInstance().getNextId(), template, accountName, app);
 		// Set the name of the L2PcInstance
 		player.setName(name);
-		
 		// Set Character's create time
 		player.setCreateDate(Calendar.getInstance());
-		
 		// Set the base class ID to that of the actual class ID.
 		player.setBaseClass(player.getClassId());
 		// Kept for backwards compatibility.
 		player.setNewbie(1);
+		// Give 20 recommendations
+		player.setRecomLeft(20);
 		// Add the player in the characters table of the database
-		boolean ok = player.createDb();
-		
-		if (!ok)
-		{
-			return null;
-		}
-		
-		return player;
+		return player.createDb() ? player : null;
 	}
 	
 	public static L2PcInstance createDummyPlayer(int objectId, String name)

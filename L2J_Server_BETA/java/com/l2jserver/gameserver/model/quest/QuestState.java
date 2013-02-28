@@ -214,6 +214,11 @@ public final class QuestState
 		return val;
 	}
 	
+	public String set(String var, int val)
+	{
+		return set(var, String.valueOf(val));
+	}
+	
 	/**
 	 * Return value of parameter "val" after adding the couple (var,val) in class variable "vars".<br>
 	 * Actions:<br>
@@ -241,9 +246,7 @@ public final class QuestState
 			val = "";
 		}
 		
-		// FastMap.put() returns previous value associated with specified key, or null if there was no mapping for key.
 		String old = _vars.put(var, val);
-		
 		if (old != null)
 		{
 			Quest.updateQuestVarInDb(this, var, val);

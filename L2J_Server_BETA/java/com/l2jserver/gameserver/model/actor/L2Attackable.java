@@ -1108,10 +1108,8 @@ public class L2Attackable extends L2Npc
 				return;
 			}
 			
-			for (L2Character aggroed : getAggroList().keySet())
+			for (AggroInfo ai : getAggroList().values())
 			{
-				AggroInfo ai = getAggroList().get(aggroed);
-				
 				if (ai == null)
 				{
 					return;
@@ -1120,7 +1118,6 @@ public class L2Attackable extends L2Npc
 			}
 			
 			amount = getHating(mostHated);
-			
 			if (amount <= 0)
 			{
 				((L2AttackableAI) getAI()).setGlobalAggro(-25);
@@ -1130,14 +1127,14 @@ public class L2Attackable extends L2Npc
 			}
 			return;
 		}
-		AggroInfo ai = getAggroList().get(target);
 		
+		AggroInfo ai = getAggroList().get(target);
 		if (ai == null)
 		{
 			return;
 		}
-		ai.addHate(-amount);
 		
+		ai.addHate(-amount);
 		if (ai.getHate() <= 0)
 		{
 			if (getMostHated() == null)
