@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.communityserver;
 
@@ -36,7 +40,10 @@ public class Shutdown extends Thread
 	public static final int ABORT = 3;
 	private static final String[] MODE_TEXT =
 	{
-		"SIGTERM", "shutting down", "restarting", "aborting"
+		"SIGTERM",
+		"shutting down",
+		"restarting",
+		"aborting"
 	};
 	
 	/**
@@ -160,29 +167,29 @@ public class Shutdown extends Thread
 	{
 		if (this == _instance)
 		{
-			// last byebye, save all data and quit this server
-			// logging doesnt work here :(
+			// last bye bye, save all data and quit this server
+			// logging doesn't work here :(
 			saveData();
 			
-			try
-			{
-				// LoginServerThread.getInstance().interrupt();
-			}
-			catch (Throwable t)
-			{
-				// ignore
-			}
+			// try
+			// {
+			// LoginServerThread.getInstance().interrupt();
+			// }
+			// catch (Throwable t)
+			// {
+			// ignore
+			// }
 			
-			// saveData sends messages to exit players, so sgutdown selector after it
-			try
-			{
-				// GameServer.gameServer.getSelectorThread().shutdown();
-				// GameServer.gameServer.getSelectorThread().setDaemon(true);
-			}
-			catch (Throwable t)
-			{
-				// ignore
-			}
+			// saveData sends messages to exit players, so shutdown selector after it
+			// try
+			// {
+			// GameServer.gameServer.getSelectorThread().shutdown();
+			// GameServer.gameServer.getSelectorThread().setDaemon(true);
+			// }
+			// catch (Throwable t)
+			// {
+			// ignore
+			// }
 			
 			// commit data, last chance
 			try
@@ -225,7 +232,7 @@ public class Shutdown extends Thread
 	}
 	
 	/**
-	 * This functions starts a shutdown countdown
+	 * This functions starts a shutdown count down
 	 * @param activeChar GM who issued the shutdown command
 	 * @param seconds seconds until shutdown
 	 * @param restart true if the server will restart after shutdown
@@ -278,7 +285,7 @@ public class Shutdown extends Thread
 	}
 	
 	/**
-	 * This function aborts a running countdown
+	 * This function aborts a running count down
 	 * @param activeChar GM who issued the abort command
 	 */
 	public void abort(L2Player activeChar)
@@ -308,7 +315,7 @@ public class Shutdown extends Thread
 	}
 	
 	/**
-	 * this counts the countdown and reports it to all players countdown is aborted if mode changes to ABORT
+	 * this counts the count down and reports it to all players count down is aborted if mode changes to ABORT
 	 */
 	private void countdown()
 	{
@@ -335,7 +342,7 @@ public class Shutdown extends Thread
 	}
 	
 	/**
-	 * this sends a last byebye, disconnects all players and saves data
+	 * this sends a last bye bye, disconnects all players and saves data
 	 */
 	private void saveData()
 	{

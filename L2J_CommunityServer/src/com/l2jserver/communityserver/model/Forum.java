@@ -1,23 +1,26 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.communityserver.model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -107,12 +110,8 @@ public class Forum
 					_ownerID = Integer.parseInt(result.getString("forum_owner_id"));
 				}
 			}
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			_log.warning("data error on Forum " + _forumId + " : " + e);
 			e.printStackTrace();
@@ -130,10 +129,6 @@ public class Forum
 					_topic.put(t.getID(), t);
 				}
 			}
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
 		}
 		catch (Exception e)
 		{
@@ -144,7 +139,7 @@ public class Forum
 	
 	public int getTopicSize()
 	{
-		if (_loaded == false)
+		if (!_loaded)
 		{
 			load();
 			_loaded = true;
@@ -154,7 +149,7 @@ public class Forum
 	
 	public Topic gettopic(int j)
 	{
-		if (_loaded == false)
+		if (!_loaded)
 		{
 			load();
 			_loaded = true;
@@ -164,7 +159,7 @@ public class Forum
 	
 	public void addtopic(Topic t)
 	{
-		if (_loaded == false)
+		if (!_loaded)
 		{
 			load();
 			_loaded = true;
@@ -187,7 +182,7 @@ public class Forum
 	
 	public String getName()
 	{
-		if (_loaded == false)
+		if (!_loaded)
 		{
 			load();
 			_loaded = true;
@@ -197,7 +192,7 @@ public class Forum
 	
 	public int getType()
 	{
-		if (_loaded == false)
+		if (!_loaded)
 		{
 			load();
 			_loaded = true;
@@ -232,7 +227,7 @@ public class Forum
 			statement.setInt(5, _ownerID);
 			statement.execute();
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			_log.warning("error while saving new Forum to db " + e);
 		}
@@ -240,7 +235,7 @@ public class Forum
 	
 	public void vload()
 	{
-		if (_loaded == false)
+		if (!_loaded)
 		{
 			load();
 			_loaded = true;

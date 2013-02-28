@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.communityserver.communityboard.boards;
 
@@ -35,7 +39,7 @@ import com.l2jserver.communityserver.network.writepackets.RequestWorldInfo;
 
 public final class ClanBoard extends CommunityBoard
 {
-	private static Logger _log = Logger.getLogger(ClanBoard.class.getName());
+	private static final Logger _log = Logger.getLogger(ClanBoard.class.getName());
 	
 	public ClanBoard(final CommunityBoardManager mgr)
 	{
@@ -206,7 +210,7 @@ public final class ClanBoard extends CommunityBoard
 		super.send(playerObjId, content);
 	}
 	
-	public final String getAnnoTemplate(Post p, int clanId)
+	public static final String getAnnoTemplate(Post p, int clanId)
 	{
 		TextBuilder template = new TextBuilder();
 		template.append("<tr><td height=10></td></tr>");
@@ -297,7 +301,7 @@ public final class ClanBoard extends CommunityBoard
 		String ally = "";
 		for (int i : clan.getAllianceClanIdList())
 		{
-			if (ally == "")
+			if (ally.isEmpty())
 			{
 				ally += super.getCommunityBoardManager().getClan(i).getName();
 			}
@@ -326,7 +330,10 @@ public final class ClanBoard extends CommunityBoard
 		content = content.replaceAll("%clanName%", clan.getName());
 		String[] perString =
 		{
-			"No Access", "Read Access", "Write Access", "No Access"
+			"No Access",
+			"Read Access",
+			"Write Access",
+			"No Access"
 		};
 		int perNon = clanForum.gettopic(Topic.ANNOUNCE).getPermissions();
 		int perMem = perNon % 10;

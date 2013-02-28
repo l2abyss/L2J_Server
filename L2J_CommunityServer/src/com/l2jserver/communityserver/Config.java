@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.communityserver;
 
@@ -82,9 +86,10 @@ public final class Config
 		try
 		{
 			Properties serverSettings = new Properties();
-			InputStream is = new FileInputStream(new File(CONFIGURATION_FILE));
-			serverSettings.load(is);
-			is.close();
+			try (InputStream is = new FileInputStream(new File(CONFIGURATION_FILE)))
+			{
+				serverSettings.load(is);
+			}
 			
 			GAME_SERVER_LOGIN_HOST = serverSettings.getProperty("CSHostname", "*");
 			GAME_SERVER_LOGIN_PORT = Integer.parseInt(serverSettings.getProperty("CSPort", "9013"));
@@ -102,10 +107,10 @@ public final class Config
 			GENERAL_THREAD_CORE_SIZE = Integer.parseInt(serverSettings.getProperty("ThreadPoolSize", "1"));
 			
 			Properties generalSettings = new Properties();
-			is = new FileInputStream(new File(GENERAL_FILE));
-			generalSettings.load(is);
-			is.close();
-			
+			try (InputStream is = new FileInputStream(new File(GENERAL_FILE)))
+			{
+				generalSettings.load(is);
+			}
 			MIN_PLAYER_LVL_FOR_FORUM = Integer.parseInt(generalSettings.getProperty("MinPlayerLvLForForum", "1"));
 			MIN_CLAN_LVL_FOR_FORUM = Integer.parseInt(generalSettings.getProperty("MinClanLvLForForum", "2"));
 			MAIL_AUTO_DELETION_TIME = Long.parseLong(generalSettings.getProperty("MailAutoDeletionTime", "90")) * 86400000;

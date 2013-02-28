@@ -16,32 +16,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.communityserver.util.buffer;
+package com.l2jserver.communityserver.util;
+
+import java.io.File;
+import java.io.FileFilter;
 
 /**
- * @author Forsaiken
+ * Specialized {@link FileFilter} class.<br>
+ * Accepts <b>files</b> ending with ".htm" and ".html" only.
+ * @author Zoey76
  */
-public abstract class AbstractBufferedByteReader
+public class HTMLFilter implements FileFilter
 {
-	protected final byte[] buf;
-	protected int rIndex;
-	
-	protected AbstractBufferedByteReader(final byte[] data)
+	@Override
+	public boolean accept(File f)
 	{
-		buf = data;
+		if ((f == null) || !f.isFile())
+		{
+			return false;
+		}
+		final String name = f.getName().toLowerCase();
+		return name.endsWith(".htm") || name.endsWith(".html");
 	}
-	
-	public abstract int readC();
-	
-	public abstract int readH();
-	
-	public abstract int readD();
-	
-	public abstract double readF();
-	
-	public abstract long readQ();
-	
-	public abstract String readS();
-	
-	public abstract byte[] readB(final int length);
 }

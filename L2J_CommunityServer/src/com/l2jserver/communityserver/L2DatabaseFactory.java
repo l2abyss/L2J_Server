@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.communityserver;
 
@@ -23,18 +27,19 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class L2DatabaseFactory
 {
-	static Logger _log = Logger.getLogger(L2DatabaseFactory.class.getName());
+	private static final Logger _log = Logger.getLogger(L2DatabaseFactory.class.getName());
 	
 	public static enum ProviderType
 	{
-		MySql, MsSql
+		MySql,
+		MsSql
 	}
 	
 	private static L2DatabaseFactory _instance;
 	private final ProviderType _providerType;
 	private final ComboPooledDataSource _source;
 	
-	public L2DatabaseFactory() throws SQLException
+	public L2DatabaseFactory() throws Exception
 	{
 		try
 		{
@@ -64,26 +69,30 @@ public class L2DatabaseFactory
 			_source.setUser(Config.DATABASE_LOGIN);
 			_source.setPassword(Config.DATABASE_PASSWORD);
 			_source.getConnection().close();
-			
-			if (Config.DATABASE_DRIVER.toLowerCase().contains("microsoft"))
-			{
-				_providerType = ProviderType.MsSql;
-			}
-			else
-			{
-				_providerType = ProviderType.MySql;
-			}
-		}
-		catch (SQLException x)
-		{
-			_log.fine("Database Connection FAILED");
-			throw x;
+			_providerType = Config.DATABASE_DRIVER.toLowerCase().contains("microsoft") ? ProviderType.MsSql : ProviderType.MySql;
 		}
 		catch (Exception e)
 		{
-			_log.fine("Database Connection FAILED");
-			throw new SQLException("could not init DB connection: " + e);
+			_log.fine("Database connection failed!");
+			throw e;
 		}
+	}
+	
+	/**
+	 * Gets the single instance of L2DatabaseFactory.
+	 * @return single instance of L2DatabaseFactory
+	 * @throws Exception
+	 */
+	public static L2DatabaseFactory getInstance() throws Exception
+	{
+		synchronized (L2DatabaseFactory.class)
+		{
+			if (_instance == null)
+			{
+				_instance = new L2DatabaseFactory();
+			}
+		}
+		return _instance;
 	}
 	
 	public final String prepQuerySelect(String[] fields, String tableName, String whereClause, boolean returnOnlyTopRecord)
@@ -130,44 +139,13 @@ public class L2DatabaseFactory
 		String result = "";
 		for (String word : whatToCheck)
 		{
-			if (result != "")
+			if (!result.isEmpty())
 			{
 				result += ", ";
 			}
 			result += braceLeft + word + braceRight;
 		}
 		return result;
-	}
-	
-	/**
-	 * Close the connection.
-	 * @param con the con
-	 */
-	public static void close(Connection con)
-	{
-		if (con == null)
-		{
-			return;
-		}
-		
-		try
-		{
-			con.close();
-		}
-		catch (SQLException e)
-		{
-			_log.log(Level.WARNING, "Failed to close database connection!", e);
-		}
-	}
-	
-	public static final L2DatabaseFactory getInstance() throws SQLException
-	{
-		if (_instance == null)
-		{
-			_instance = new L2DatabaseFactory();
-		}
-		
-		return _instance;
 	}
 	
 	public final Connection getConnection()

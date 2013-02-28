@@ -1,22 +1,25 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.communityserver.model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import com.l2jserver.communityserver.L2DatabaseFactory;
@@ -38,9 +41,8 @@ public class Comment
 	private final int _commentTopicId;
 	private final int _commentForumId;
 	private final String _commentTxt;
-
+	
 	/**
-	 * 
 	 * @param ct
 	 * @param sqlDPId
 	 * @param commentId
@@ -69,9 +71,9 @@ public class Comment
 	
 	public void insertindb()
 	{
-		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(INSERT_COMMENT))
-		{	
+		{
 			statement.setInt(1, _sqlDPId);
 			statement.setInt(2, _commentId);
 			statement.setInt(3, _commentOwnerId);
@@ -90,7 +92,7 @@ public class Comment
 	
 	public void deleteme()
 	{
-		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(DELETE_COMMENT))
 		{
 			statement.setInt(1, _sqlDPId);
@@ -100,7 +102,7 @@ public class Comment
 			statement.setInt(5, _commentId);
 			statement.execute();
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}

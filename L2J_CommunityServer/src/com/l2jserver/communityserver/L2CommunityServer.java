@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.communityserver;
 
@@ -18,7 +22,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -32,22 +35,10 @@ public final class L2CommunityServer
 {
 	private static final Logger _log = Logger.getLogger(L2CommunityServer.class.getName());
 	
-	private static L2CommunityServer _instance;
-	
-	public static final L2CommunityServer getInstance()
-	{
-		return _instance;
-	}
-	
-	public static final void main(final String[] args)
-	{
-		_instance = new L2CommunityServer();
-	}
-	
 	private GameServerListener _listener;
 	private final Shutdown _shutdownHandler;
 	
-	public L2CommunityServer()
+	protected L2CommunityServer()
 	{
 		final String LOG_FOLDER = "log";
 		final String LOG_NAME = "./log.cfg";
@@ -55,30 +46,13 @@ public final class L2CommunityServer
 		File logFolder = new File(Config.DATAPACK_ROOT, LOG_FOLDER);
 		logFolder.mkdir();
 		
-		InputStream is = null;
-		try
+		try (InputStream is = new FileInputStream(new File(LOG_NAME)))
 		{
-			is = new FileInputStream(new File(LOG_NAME));
 			LogManager.getLogManager().readConfiguration(is);
-			is.close();
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			try
-			{
-				if (is != null)
-				{
-					is.close();
-				}
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
 		}
 		
 		Config.load();
@@ -93,7 +67,7 @@ public final class L2CommunityServer
 		{
 			L2DatabaseFactory.getInstance();
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			_log.severe("FATAL: Failed initializing database. Reason: " + e.getMessage());
 			System.exit(1);
@@ -113,5 +87,20 @@ public final class L2CommunityServer
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+	
+	public static final void main(final String[] args)
+	{
+		getInstance();
+	}
+	
+	public static L2CommunityServer getInstance()
+	{
+		return SingletonHolder._instance;
+	}
+	
+	private static class SingletonHolder
+	{
+		protected static final L2CommunityServer _instance = new L2CommunityServer();
 	}
 }

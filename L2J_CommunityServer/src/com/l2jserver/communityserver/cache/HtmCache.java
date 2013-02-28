@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.communityserver.cache;
 
@@ -37,28 +41,15 @@ import com.l2jserver.communityserver.Config;
 public class HtmCache
 {
 	private static Logger _log = Logger.getLogger(HtmCache.class.getName());
-	private static HtmCache _instance;
 	
-	private final FastMap<Integer, String> _cache;
-	private final FastMap<Integer, String> _serverTopDir;
+	private final FastMap<Integer, String> _cache = new FastMap<>();
+	private final FastMap<Integer, String> _serverTopDir = new FastMap<>();
 	
 	private int _loadedFiles;
 	private long _bytesBuffLen;
 	
-	public static HtmCache getInstance()
+	protected HtmCache()
 	{
-		if (_instance == null)
-		{
-			_instance = new HtmCache();
-		}
-		
-		return _instance;
-	}
-	
-	public HtmCache()
-	{
-		_cache = new FastMap<>();
-		_serverTopDir = new FastMap<>();
 		loadTopDirs();
 		reload();
 	}
@@ -279,5 +270,15 @@ public class HtmCache
 			return true;
 		}
 		return false;
+	}
+	
+	public static HtmCache getInstance()
+	{
+		return SingletonHolder._instance;
+	}
+	
+	private static class SingletonHolder
+	{
+		protected static final HtmCache _instance = new HtmCache();
 	}
 }

@@ -1,23 +1,26 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.communityserver.model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -30,7 +33,7 @@ import com.l2jserver.communityserver.model.Topic.ConstructorType;
 public class Post
 {
 	private static final Logger _log = Logger.getLogger(Post.class.getName());
-	// SQL 
+	// SQL
 	private static final String INSERT_POST = "INSERT INTO posts (serverId, post_id,post_ownerid,post_recipient_list,post_date,post_topic_id,post_forum_id,post_txt,post_title,post_type,post_parent_id,post_read_count) values (?,?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String GET_POSTS = "UPDATE posts SET post_txt=?,post_title=?,post_recipient_list=?,post_read_count=? WHERE serverId=? AND post_id=? AND post_topic_id=? AND post_forum_id=?";
 	private static final String GET_COMMENTS = "SELECT * FROM comments WHERE serverId=? AND comment_forum_id=? AND comment_topic_id=? AND comment_post_id=?";
@@ -57,18 +60,18 @@ public class Post
 	private int _readCount;
 	
 	/**
-	 * @param ct 
-	 * @param sqlDPId 
-	 * @param postId 
-	 * @param postOwnerID 
-	 * @param recipentList 
-	 * @param date 
-	 * @param tid 
-	 * @param postForumID 
-	 * @param title 
-	 * @param txt 
-	 * @param type 
-	 * @param readCount 
+	 * @param ct
+	 * @param sqlDPId
+	 * @param postId
+	 * @param postOwnerID
+	 * @param recipentList
+	 * @param date
+	 * @param tid
+	 * @param postForumID
+	 * @param title
+	 * @param txt
+	 * @param type
+	 * @param readCount
 	 */
 	public Post(ConstructorType ct, final int sqlDPId, int postId, int postOwnerID, String recipentList, long date, int tid, int postForumID, String title, String txt, int type, int readCount)
 	{
@@ -122,32 +125,28 @@ public class Post
 	
 	private void loadComments()
 	{
-		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(GET_COMMENTS))
 		{
 			statement.setInt(1, _sqlDPId);
 			statement.setInt(2, _postForumId);
 			statement.setInt(3, _postTopicId);
 			statement.setInt(4, _postId);
-			try(ResultSet result = statement.executeQuery())
+			try (ResultSet result = statement.executeQuery())
 			{
-			while (result.next())
-			{
-				int commentId = Integer.parseInt(result.getString("comment_id"));
-				int commentOwner = Integer.parseInt(result.getString("comment_ownerid"));
-				long date = Long.parseLong(result.getString("comment_date"));
-				String text = result.getString("comment_txt");
-				Comment c = new Comment(ConstructorType.RESTORE, _sqlDPId, commentId, commentOwner, date, _postId, _postTopicId, _postForumId, text);
-				_comments.put(commentId, c);
-				if (commentId > _lastCommentId)
+				while (result.next())
 				{
-					_lastCommentId = commentId;
+					int commentId = Integer.parseInt(result.getString("comment_id"));
+					int commentOwner = Integer.parseInt(result.getString("comment_ownerid"));
+					long date = Long.parseLong(result.getString("comment_date"));
+					String text = result.getString("comment_txt");
+					Comment c = new Comment(ConstructorType.RESTORE, _sqlDPId, commentId, commentOwner, date, _postId, _postTopicId, _postForumId, text);
+					_comments.put(commentId, c);
+					if (commentId > _lastCommentId)
+					{
+						_lastCommentId = commentId;
+					}
 				}
-			}
-			}
-			catch(SQLException e)
-			{
-				e.printStackTrace();
 			}
 		}
 		catch (Exception e)
@@ -164,11 +163,9 @@ public class Post
 	
 	public void insertindb()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(INSERT_POST))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(INSERT_POST);
 			statement.setInt(1, _sqlDPId);
 			statement.setInt(2, _postId);
 			statement.setInt(3, _postOwnerId);
@@ -188,11 +185,6 @@ public class Post
 		{
 			_log.warning("error while saving new Post to db " + e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
-		
 	}
 	
 	public void deleteme()
@@ -202,7 +194,7 @@ public class Post
 			c.deleteme();
 		}
 		_comments.clear();
-		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(DELETE_COMMENT))
 		{
 			statement.setInt(1, _sqlDPId);
@@ -211,7 +203,7 @@ public class Post
 			statement.setInt(4, _postId);
 			statement.execute();
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -219,7 +211,7 @@ public class Post
 	
 	private void updatePost()
 	{
-		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(GET_POSTS))
 		{
 			statement.setString(1, _postTxt);
@@ -229,7 +221,7 @@ public class Post
 			statement.setInt(5, _sqlDPId);
 			statement.setInt(6, _postId);
 			statement.setInt(7, _postTopicId);
-			statement.setInt(8, _postForumId);	
+			statement.setInt(8, _postForumId);
 			statement.execute();
 		}
 		catch (Exception e)

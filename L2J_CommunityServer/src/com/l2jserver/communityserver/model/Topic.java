@@ -1,23 +1,26 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.communityserver.model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -62,13 +65,13 @@ public class Topic
 	private final Map<Integer, Post> _posts;
 	
 	/**
-	 * @param ct 
-	 * @param sqlDPId 
-	 * @param id 
-	 * @param fid 
-	 * @param name 
-	 * @param oid 
-	 * @param per 
+	 * @param ct
+	 * @param sqlDPId
+	 * @param id
+	 * @param fid
+	 * @param name
+	 * @param oid
+	 * @param per
 	 */
 	public Topic(ConstructorType ct, final int sqlDPId, int id, int fid, String name, int oid, int per)
 	{
@@ -93,39 +96,35 @@ public class Topic
 	
 	private void loadPosts()
 	{
-		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(GET_POSTS))
 		{
 			statement.setInt(1, _sqlDPId);
 			statement.setInt(2, _forumId);
 			statement.setInt(3, _id);
-			try(ResultSet result = statement.executeQuery())
+			try (ResultSet result = statement.executeQuery())
 			{
-			while (result.next())
-			{
-				int postId = Integer.parseInt(result.getString("post_id"));
-				int postOwner = Integer.parseInt(result.getString("post_ownerid"));
-				String recipientList = result.getString("post_recipient_list");
-				long date = Long.parseLong(result.getString("post_date"));
-				String title = result.getString("post_title");
-				String text = result.getString("post_txt");
-				int type = Integer.parseInt(result.getString("post_type"));
-				int parentId = Integer.parseInt(result.getString("post_parent_id"));
-				int readCount = Integer.parseInt(result.getString("post_read_count"));
-				Post p = new Post(ConstructorType.RESTORE, _sqlDPId, postId, postOwner, recipientList, parentId, date, _id, _forumId, title, text, type, readCount);
-				_posts.put(postId, p);
-				if (postId > _lastPostId)
+				while (result.next())
 				{
-					_lastPostId = postId;
+					int postId = Integer.parseInt(result.getString("post_id"));
+					int postOwner = Integer.parseInt(result.getString("post_ownerid"));
+					String recipientList = result.getString("post_recipient_list");
+					long date = Long.parseLong(result.getString("post_date"));
+					String title = result.getString("post_title");
+					String text = result.getString("post_txt");
+					int type = Integer.parseInt(result.getString("post_type"));
+					int parentId = Integer.parseInt(result.getString("post_parent_id"));
+					int readCount = Integer.parseInt(result.getString("post_read_count"));
+					Post p = new Post(ConstructorType.RESTORE, _sqlDPId, postId, postOwner, recipientList, parentId, date, _id, _forumId, title, text, type, readCount);
+					_posts.put(postId, p);
+					if (postId > _lastPostId)
+					{
+						_lastPostId = postId;
+					}
 				}
 			}
-			}
-			catch(SQLException e)
-			{
-				e.printStackTrace();
-			}
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			_log.warning("data error on Forum " + _forumId + " : " + e);
 			e.printStackTrace();
@@ -139,7 +138,7 @@ public class Topic
 	
 	public void insertindb()
 	{
-		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(INSERT_TOPIC))
 		{
 			statement.setInt(1, _sqlDPId);
@@ -148,9 +147,9 @@ public class Topic
 			statement.setString(4, _topicName);
 			statement.setInt(5, _ownerId);
 			statement.setInt(6, _permissions);
-			statement.execute();	
+			statement.execute();
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			_log.warning("error while saving new Topic to db " + e);
 		}
@@ -158,7 +157,8 @@ public class Topic
 	
 	public enum ConstructorType
 	{
-		RESTORE, CREATE
+		RESTORE,
+		CREATE
 	}
 	
 	public void clearPosts()
@@ -252,12 +252,12 @@ public class Topic
 	}
 	
 	/**
-	 * @param f 
+	 * @param f
 	 */
 	public void deleteme(Forum f)
 	{
 		f.rmTopicByID(getID());
-		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(DELETE_TOPIC))
 		{
 			statement.setInt(1, getID());
@@ -265,7 +265,7 @@ public class Topic
 			statement.execute();
 			statement.close();
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -279,7 +279,7 @@ public class Topic
 	public void setPermissions(int val)
 	{
 		_permissions = val;
-		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(UPDATE_TOPIC))
 		{
 			statement.setInt(1, _permissions);
@@ -288,7 +288,7 @@ public class Topic
 			statement.setInt(4, _forumId);
 			statement.execute();
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			_log.warning("error while saving new permissions to db " + e);
 		}

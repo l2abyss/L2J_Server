@@ -1,23 +1,26 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.communityserver.communityboard;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.logging.Logger;
 
@@ -142,14 +145,9 @@ public final class CommunityBoardManager
 					}
 				}
 			}
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
-			// _log.warning("data error on Forum (root): " + e);
 			e.printStackTrace();
 		}
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
@@ -163,14 +161,9 @@ public final class CommunityBoardManager
 					getClan(result.getInt("clanId")).setIntroduction(result.getString("introduction"));
 				}
 			}
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
-			// _log.warning("data error on Forum (root): " + e);
 			e.printStackTrace();
 		}
 		int requestedClanNotices = 0;
@@ -426,7 +419,7 @@ public final class CommunityBoardManager
 	
 	public void storeClanIntro(int clanId, String intro)
 	{
-		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(INSERT_CLAN_INTRO))
 		{
 			statement.setInt(1, _sqlDPId);
@@ -435,7 +428,7 @@ public final class CommunityBoardManager
 			statement.setString(4, intro);
 			statement.execute();
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			_log.warning("error while saving new Topic to db " + e);
 		}

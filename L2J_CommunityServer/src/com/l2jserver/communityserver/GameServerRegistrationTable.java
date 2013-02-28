@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.communityserver;
 
@@ -20,10 +24,10 @@ import java.security.KeyPairGenerator;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
@@ -38,21 +42,10 @@ public final class GameServerRegistrationTable
 	
 	private static final int KEYS_SIZE = 10;
 	
-	private static GameServerRegistrationTable _instance;
-	
-	public static GameServerRegistrationTable getInstance()
-	{
-		if (_instance == null)
-		{
-			_instance = new GameServerRegistrationTable();
-		}
-		return _instance;
-	}
-	
 	private final Map<byte[], Boolean> _registeredGameServers;
 	private final KeyPair[] _keyPairs;
 	
-	public GameServerRegistrationTable()
+	protected GameServerRegistrationTable()
 	{
 		_registeredGameServers = loadRegisteredGameServers();
 		_log.info("Loaded " + _registeredGameServers.size() + " registered GameServers");
@@ -61,10 +54,9 @@ public final class GameServerRegistrationTable
 		_log.info("Cached " + _keyPairs.length + " RSA keys for GameServer communication.");
 	}
 	
-	private final KeyPair[] loadRSAKeys()
+	private static final KeyPair[] loadRSAKeys()
 	{
 		final KeyPair[] keyPairs = new KeyPair[KEYS_SIZE];
-		
 		try
 		{
 			final KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
@@ -80,7 +72,6 @@ public final class GameServerRegistrationTable
 		{
 			
 		}
-		
 		return keyPairs;
 	}
 	
@@ -88,7 +79,7 @@ public final class GameServerRegistrationTable
 	{
 		final Map<byte[], Boolean> registeredGameServers = new FastMap<>();
 		
-		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			Statement statement = con.createStatement();
 			ResultSet rset = statement.executeQuery(GET_GAMESERVERS))
 		{
@@ -98,14 +89,14 @@ public final class GameServerRegistrationTable
 				registeredGameServers.put(stringToHex(rset.getString("hex_id")), false);
 			}
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
-			_log.info(getClass().getName()+": Failed getting gameservers from database");
+			_log.info(getClass().getName() + ": Failed getting gameservers from database");
 		}
 		return registeredGameServers;
 	}
 	
-	private final byte[] stringToHex(final String string)
+	private static final byte[] stringToHex(final String string)
 	{
 		return new BigInteger(string, 16).toByteArray();
 	}
@@ -124,7 +115,6 @@ public final class GameServerRegistrationTable
 				return true;
 			}
 		}
-		
 		return false;
 	}
 	
@@ -137,19 +127,28 @@ public final class GameServerRegistrationTable
 				return true;
 			}
 		}
-		
 		return false;
 	}
 	
 	public final void setHexIdInUse(final byte[] hexId)
 	{
-		for (Map.Entry<byte[], Boolean> entry : _registeredGameServers.entrySet())
+		for (Entry<byte[], Boolean> entry : _registeredGameServers.entrySet())
 		{
 			if (Arrays.equals(entry.getKey(), hexId))
 			{
 				entry.setValue(false);
-				return;
+				break;
 			}
 		}
+	}
+	
+	public static GameServerRegistrationTable getInstance()
+	{
+		return SingletonHolder._instance;
+	}
+	
+	private static class SingletonHolder
+	{
+		protected static final GameServerRegistrationTable _instance = new GameServerRegistrationTable();
 	}
 }
