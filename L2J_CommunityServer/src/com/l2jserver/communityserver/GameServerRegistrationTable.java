@@ -19,9 +19,9 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -33,6 +33,9 @@ import com.l2jserver.communityserver.util.Rnd;
 public final class GameServerRegistrationTable
 {
 	private static Logger _log = Logger.getLogger(GameServerRegistrationTable.class.getName());
+	// SQL
+	private static final String GET_GAMESERVERS = "SELECT hex_id FROM registered_gameservers";
+	
 	private static final int KEYS_SIZE = 10;
 	
 	private static GameServerRegistrationTable _instance;
@@ -85,28 +88,19 @@ public final class GameServerRegistrationTable
 	{
 		final Map<byte[], Boolean> registeredGameServers = new FastMap<>();
 		
-		Connection con = null;
-		try
+		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement statement = con.createStatement();
+			ResultSet rset = statement.executeQuery(GET_GAMESERVERS))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT hex_id FROM registered_gameservers");
-			ResultSet rset = statement.executeQuery();
-			
 			while (rset.next())
 			{
 				// for (byte b : stringToHex(rset.getString("hex_id")))
 				registeredGameServers.put(stringToHex(rset.getString("hex_id")), false);
 			}
-			statement.close();
-			rset.close();
 		}
 		catch (SQLException e)
 		{
-			
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
+			_log.info(getClass().getName()+": Failed getting gameservers from database");
 		}
 		return registeredGameServers;
 	}

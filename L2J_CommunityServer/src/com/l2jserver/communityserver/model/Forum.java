@@ -17,6 +17,7 @@ package com.l2jserver.communityserver.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -27,6 +28,11 @@ import com.l2jserver.communityserver.model.Topic.ConstructorType;
 
 public class Forum
 {
+	// SQL
+	private static final String INSERT_FORUM = "INSERT INTO forums (serverId,forum_id,forum_name,forum_type,forum_owner_id) values (?,?,?,?,?)";
+	private static final String GET_TOPICS = "SELECT * FROM topics WHERE serverId=? AND topic_forum_id=? ORDER BY topic_id DESC";
+	private static final String GET_FORUMS = "SELECT * FROM forums WHERE serverId=? AND forum_id=?";
+	
 	// type
 	public static final int ROOT = 0;
 	public static final int NORMAL = 1;
@@ -43,8 +49,8 @@ public class Forum
 	private boolean _loaded = false;
 	
 	/**
-	 * @param sqlDPId 
-	 * @param Forumid 
+	 * @param sqlDPId
+	 * @param Forumid
 	 */
 	public Forum(final int sqlDPId, int Forumid)
 	{
@@ -54,11 +60,11 @@ public class Forum
 	}
 	
 	/**
-	 * @param sqlDPId 
-	 * @param Forumid 
+	 * @param sqlDPId
+	 * @param Forumid
 	 * @param name
-	 * @param type 
-	 * @param OwnerID 
+	 * @param type
+	 * @param OwnerID
 	 */
 	public Forum(final int sqlDPId, int Forumid, String name, int type, int OwnerID)
 	{
@@ -87,56 +93,52 @@ public class Forum
 	
 	private void load()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(GET_FORUMS))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM forums WHERE serverId=? AND forum_id=?");
 			statement.setInt(1, _sqlDPId);
 			statement.setInt(2, _forumId);
-			ResultSet result = statement.executeQuery();
-			
-			if (result.next())
+			try (ResultSet result = statement.executeQuery())
 			{
-				_forumName = result.getString("forum_name");
-				_forumType = Integer.parseInt(result.getString("forum_type"));
-				_ownerID = Integer.parseInt(result.getString("forum_owner_id"));
+				if (result.next())
+				{
+					_forumName = result.getString("forum_name");
+					_forumType = Integer.parseInt(result.getString("forum_type"));
+					_ownerID = Integer.parseInt(result.getString("forum_owner_id"));
+				}
 			}
-			result.close();
-			statement.close();
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		catch (SQLException e)
+		{
+			_log.warning("data error on Forum " + _forumId + " : " + e);
+			e.printStackTrace();
+		}
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(GET_TOPICS))
+		{
+			statement.setInt(1, _sqlDPId);
+			statement.setInt(2, _forumId);
+			try (ResultSet result = statement.executeQuery())
+			{
+				while (result.next())
+				{
+					Topic t = new Topic(Topic.ConstructorType.RESTORE, _sqlDPId, Integer.parseInt(result.getString("topic_id")), Integer.parseInt(result.getString("topic_forum_id")), result.getString("topic_name"), Integer.parseInt(result.getString("topic_ownerid")), Integer.parseInt(result.getString("topic_permissions")));
+					_topic.put(t.getID(), t);
+				}
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		catch (Exception e)
 		{
 			_log.warning("data error on Forum " + _forumId + " : " + e);
 			e.printStackTrace();
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM topics WHERE serverId=? AND topic_forum_id=? ORDER BY topic_id DESC");
-			statement.setInt(1, _sqlDPId);
-			statement.setInt(2, _forumId);
-			ResultSet result = statement.executeQuery();
-			while (result.next())
-			{
-				Topic t = new Topic(Topic.ConstructorType.RESTORE, _sqlDPId, Integer.parseInt(result.getString("topic_id")), Integer.parseInt(result.getString("topic_forum_id")), result.getString("topic_name"), Integer.parseInt(result.getString("topic_ownerid")), Integer.parseInt(result.getString("topic_permissions")));
-				_topic.put(t.getID(), t);
-			}
-			result.close();
-			statement.close();
-		}
-		catch (Exception e)
-		{
-			_log.warning("data error on Forum " + _forumId + " : " + e);
-			e.printStackTrace();
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -219,28 +221,20 @@ public class Forum
 	
 	public void insertindb()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(INSERT_FORUM))
 		{
 			// TODO: needs to be changed
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("INSERT INTO forums (serverId,forum_id,forum_name,forum_type,forum_owner_id) values (?,?,?,?,?)");
 			statement.setInt(1, _sqlDPId);
 			statement.setInt(2, _forumId);
 			statement.setString(3, _forumName);
 			statement.setInt(4, _forumType);
 			statement.setInt(5, _ownerID);
 			statement.execute();
-			statement.close();
-			
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			_log.warning("error while saving new Forum to db " + e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

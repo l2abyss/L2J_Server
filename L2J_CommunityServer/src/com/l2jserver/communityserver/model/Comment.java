@@ -16,6 +16,7 @@ package com.l2jserver.communityserver.model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import com.l2jserver.communityserver.L2DatabaseFactory;
@@ -24,6 +25,10 @@ import com.l2jserver.communityserver.model.Topic.ConstructorType;
 public class Comment
 {
 	private static final Logger _log = Logger.getLogger(Comment.class.getName());
+	
+	// SQL
+	private static final String INSERT_COMMENT = "INSERT INTO comments (serverId, comment_id,comment_ownerid,comment_date,comment_post_id,comment_topic_id,comment_forum_id,comment_txt) values (?,?,?,?,?,?,?,?)";
+	private static final String DELETE_COMMENT = "DELETE FROM comments WHERE serverId=? AND comment_forum_id=? AND comment_topic_id=? AND comment_Post_id=? AND comment_id=?";
 	
 	private final int _sqlDPId;
 	private final int _commentId;
@@ -64,11 +69,9 @@ public class Comment
 	
 	public void insertindb()
 	{
-		Connection con = null;
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("INSERT INTO comments (serverId, comment_id,comment_ownerid,comment_date,comment_post_id,comment_topic_id,comment_forum_id,comment_txt) values (?,?,?,?,?,?,?,?)");
+		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(INSERT_COMMENT))
+		{	
 			statement.setInt(1, _sqlDPId);
 			statement.setInt(2, _commentId);
 			statement.setInt(3, _commentOwnerId);
@@ -78,40 +81,28 @@ public class Comment
 			statement.setInt(7, _commentForumId);
 			statement.setString(8, _commentTxt);
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.warning("error while saving new Post to db " + e);
 		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
-		}
 	}
 	
 	public void deleteme()
 	{
-		Connection con = null;
-		try
+		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(DELETE_COMMENT))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM comments WHERE serverId=? AND comment_forum_id=? AND comment_topic_id=? AND comment_Post_id=? AND comment_id=?");
 			statement.setInt(1, _sqlDPId);
 			statement.setInt(2, _commentForumId);
 			statement.setInt(3, _commentTopicId);
 			statement.setInt(4, _commentPostId);
 			statement.setInt(5, _commentId);
 			statement.execute();
-			statement.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

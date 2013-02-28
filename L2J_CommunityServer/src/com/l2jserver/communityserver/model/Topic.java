@@ -17,6 +17,7 @@ package com.l2jserver.communityserver.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -29,6 +30,12 @@ import com.l2jserver.communityserver.L2DatabaseFactory;
 public class Topic
 {
 	private static final Logger _log = Logger.getLogger(Topic.class.getName());
+	
+	// SQL
+	private static final String GET_POSTS = "SELECT * FROM posts WHERE serverId=? AND post_forum_id=? AND post_topic_id=?";
+	private static final String INSERT_TOPIC = "INSERT INTO topics (serverId,topic_id,topic_forum_id,topic_name,topic_ownerid,topic_permissions) values (?,?,?,?,?,?)";
+	private static final String UPDATE_TOPIC = "UPDATE topics SET topic_permissions=? WHERE serverId=? AND topic_id=? AND topic_forum_id=?";
+	private static final String DELETE_TOPIC = "DELETE FROM topics WHERE topic_id=? AND topic_forum_id=?";
 	
 	// type
 	public static final int SERVER = 0;
@@ -86,16 +93,14 @@ public class Topic
 	
 	private void loadPosts()
 	{
-		Connection con = null;
-		try
+		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(GET_POSTS))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM posts WHERE serverId=? AND post_forum_id=? AND post_topic_id=?");
 			statement.setInt(1, _sqlDPId);
 			statement.setInt(2, _forumId);
 			statement.setInt(3, _id);
-			ResultSet result = statement.executeQuery();
-			
+			try(ResultSet result = statement.executeQuery())
+			{
 			while (result.next())
 			{
 				int postId = Integer.parseInt(result.getString("post_id"));
@@ -114,17 +119,16 @@ public class Topic
 					_lastPostId = postId;
 				}
 			}
-			result.close();
-			statement.close();
+			}
+			catch(SQLException e)
+			{
+				e.printStackTrace();
+			}
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			_log.warning("data error on Forum " + _forumId + " : " + e);
 			e.printStackTrace();
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -135,28 +139,20 @@ public class Topic
 	
 	public void insertindb()
 	{
-		Connection con = null;
-		try
+		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(INSERT_TOPIC))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("INSERT INTO topics (serverId,topic_id,topic_forum_id,topic_name,topic_ownerid,topic_permissions) values (?,?,?,?,?,?)");
 			statement.setInt(1, _sqlDPId);
 			statement.setInt(2, _id);
 			statement.setInt(3, _forumId);
 			statement.setString(4, _topicName);
 			statement.setInt(5, _ownerId);
 			statement.setInt(6, _permissions);
-			statement.execute();
-			statement.close();
-			
+			statement.execute();	
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			_log.warning("error while saving new Topic to db " + e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -261,23 +257,17 @@ public class Topic
 	public void deleteme(Forum f)
 	{
 		f.rmTopicByID(getID());
-		Connection con = null;
-		try
+		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(DELETE_TOPIC))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM topics WHERE topic_id=? AND topic_forum_id=?");
 			statement.setInt(1, getID());
 			statement.setInt(2, f.getID());
 			statement.execute();
 			statement.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -289,25 +279,18 @@ public class Topic
 	public void setPermissions(int val)
 	{
 		_permissions = val;
-		java.sql.Connection con = null;
-		try
+		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(UPDATE_TOPIC))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE topics SET topic_permissions=? WHERE serverId=? AND topic_id=? AND topic_forum_id=?");
 			statement.setInt(1, _permissions);
 			statement.setInt(2, _sqlDPId);
 			statement.setInt(3, _id);
 			statement.setInt(4, _forumId);
 			statement.execute();
-			statement.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			_log.warning("error while saving new permissions to db " + e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 }

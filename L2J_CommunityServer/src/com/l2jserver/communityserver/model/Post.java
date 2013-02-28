@@ -17,6 +17,7 @@ package com.l2jserver.communityserver.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -29,6 +30,12 @@ import com.l2jserver.communityserver.model.Topic.ConstructorType;
 public class Post
 {
 	private static final Logger _log = Logger.getLogger(Post.class.getName());
+	// SQL 
+	private static final String INSERT_POST = "INSERT INTO posts (serverId, post_id,post_ownerid,post_recipient_list,post_date,post_topic_id,post_forum_id,post_txt,post_title,post_type,post_parent_id,post_read_count) values (?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static final String GET_POSTS = "UPDATE posts SET post_txt=?,post_title=?,post_recipient_list=?,post_read_count=? WHERE serverId=? AND post_id=? AND post_topic_id=? AND post_forum_id=?";
+	private static final String GET_COMMENTS = "SELECT * FROM comments WHERE serverId=? AND comment_forum_id=? AND comment_topic_id=? AND comment_post_id=?";
+	private static final String DELETE_COMMENT = "DELETE FROM posts WHERE serverId=? AND post_forum_id=? AND post_topic_id=? AND post_id=?";
+	
 	// type
 	public static final int ADVERTISE = 0;
 	public static final int MISCELLANEOUS = 1;
@@ -115,17 +122,15 @@ public class Post
 	
 	private void loadComments()
 	{
-		Connection con = null;
-		try
+		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(GET_COMMENTS))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM comments WHERE serverId=? AND comment_forum_id=? AND comment_topic_id=? AND comment_post_id=?");
 			statement.setInt(1, _sqlDPId);
 			statement.setInt(2, _postForumId);
 			statement.setInt(3, _postTopicId);
 			statement.setInt(4, _postId);
-			ResultSet result = statement.executeQuery();
-			
+			try(ResultSet result = statement.executeQuery())
+			{
 			while (result.next())
 			{
 				int commentId = Integer.parseInt(result.getString("comment_id"));
@@ -139,17 +144,16 @@ public class Post
 					_lastCommentId = commentId;
 				}
 			}
-			result.close();
-			statement.close();
+			}
+			catch(SQLException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		catch (Exception e)
 		{
 			_log.warning("data error on Forum " + _postForumId + " : " + e);
 			e.printStackTrace();
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
@@ -164,7 +168,7 @@ public class Post
 		try
 		{
 			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("INSERT INTO posts (serverId, post_id,post_ownerid,post_recipient_list,post_date,post_topic_id,post_forum_id,post_txt,post_title,post_type,post_parent_id,post_read_count) values (?,?,?,?,?,?,?,?,?,?,?,?)");
+			PreparedStatement statement = con.prepareStatement(INSERT_POST);
 			statement.setInt(1, _sqlDPId);
 			statement.setInt(2, _postId);
 			statement.setInt(3, _postOwnerId);
@@ -198,35 +202,26 @@ public class Post
 			c.deleteme();
 		}
 		_comments.clear();
-		Connection con = null;
-		try
+		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(DELETE_COMMENT))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("DELETE FROM posts WHERE serverId=? AND post_forum_id=? AND post_topic_id=? AND post_id=?");
 			statement.setInt(1, _sqlDPId);
 			statement.setInt(2, _postForumId);
 			statement.setInt(3, _postTopicId);
 			statement.setInt(4, _postId);
 			statement.execute();
-			statement.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			e.printStackTrace();
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
 	private void updatePost()
 	{
-		Connection con = null;
-		try
+		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(GET_POSTS))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE posts SET post_txt=?,post_title=?,post_recipient_list=?,post_read_count=? WHERE serverId=? AND post_id=? AND post_topic_id=? AND post_forum_id=?");
 			statement.setString(1, _postTxt);
 			statement.setString(2, _postTitle);
 			statement.setString(3, _postRecipientList);
@@ -234,18 +229,12 @@ public class Post
 			statement.setInt(5, _sqlDPId);
 			statement.setInt(6, _postId);
 			statement.setInt(7, _postTopicId);
-			statement.setInt(8, _postForumId);
-			
+			statement.setInt(8, _postForumId);	
 			statement.execute();
-			statement.close();
 		}
 		catch (Exception e)
 		{
 			_log.warning("error while saving new Post to db " + e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	

@@ -17,6 +17,7 @@ package com.l2jserver.communityserver.communityboard;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.logging.Logger;
 
@@ -44,6 +45,12 @@ import com.l2jserver.communityserver.network.writepackets.RequestWorldInfo;
 public final class CommunityBoardManager
 {
 	private static Logger _log = Logger.getLogger(CommunityBoardManager.class.getName());
+	
+	// SQL
+	private static final String GET_FORUMS = "SELECT forum_id, forum_type, forum_owner_id FROM forums WHERE serverId=?";
+	private static final String GET_CLAN_INTROS = "SELECT introduction,clanId FROM clan_introductions WHERE serverId=?";
+	private static final String INSERT_CLAN_INTRO = "INSERT INTO clan_introductions (serverId,clanId,introduction) values (?,?,?) ON DUPLICATE KEY UPDATE introduction = ?";
+	
 	private static FastMap<Integer, CommunityBoardManager> _instances;
 	
 	public static CommunityBoardManager getInstance(final int sqlDPId)
@@ -95,79 +102,76 @@ public final class CommunityBoardManager
 	
 	private void loadDataBase()
 	{
-		Connection con = null;
-		try
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(GET_FORUMS))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT forum_id, forum_type, forum_owner_id FROM forums WHERE serverId=?");
 			statement.setInt(1, _sqlDPId);
-			ResultSet result = statement.executeQuery();
-			while (result.next())
+			try (ResultSet result = statement.executeQuery())
 			{
-				Forum f = new Forum(_sqlDPId, Integer.parseInt(result.getString("forum_id")));
-				int type = result.getInt("forum_type");
-				if (type == Forum.CLAN)
+				while (result.next())
 				{
-					if (getClan(result.getInt("forum_owner_id")) == null)
+					Forum f = new Forum(_sqlDPId, Integer.parseInt(result.getString("forum_id")));
+					int type = result.getInt("forum_type");
+					if (type == Forum.CLAN)
 					{
-						// delete this forum
+						if (getClan(result.getInt("forum_owner_id")) == null)
+						{
+							// delete this forum
+						}
+						else
+						{
+							getClan(result.getInt("forum_owner_id")).setForum(f);
+							_forumRoot.put(Integer.parseInt(result.getString("forum_id")), f);
+						}
 					}
-					else
+					else if (type == Forum.PLAYER)
 					{
-						getClan(result.getInt("forum_owner_id")).setForum(f);
-						_forumRoot.put(Integer.parseInt(result.getString("forum_id")), f);
+						if (getPlayer(result.getInt("forum_owner_id")) == null)
+						{
+							// delete this forum
+						}
+						else
+						{
+							getPlayer(result.getInt("forum_owner_id")).setForum(f);
+							_forumRoot.put(Integer.parseInt(result.getString("forum_id")), f);
+						}
 					}
-				}
-				else if (type == Forum.PLAYER)
-				{
-					if (getPlayer(result.getInt("forum_owner_id")) == null)
+					if (f.getID() > _lastForumId)
 					{
-						// delete this forum
+						_lastForumId = f.getID();
 					}
-					else
-					{
-						getPlayer(result.getInt("forum_owner_id")).setForum(f);
-						_forumRoot.put(Integer.parseInt(result.getString("forum_id")), f);
-					}
-				}
-				if (f.getID() > _lastForumId)
-				{
-					_lastForumId = f.getID();
 				}
 			}
-			result.close();
-			statement.close();
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			// _log.warning("data error on Forum (root): " + e);
 			e.printStackTrace();
 		}
-		finally
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(GET_CLAN_INTROS))
 		{
-			L2DatabaseFactory.close(con);
-		}
-		try
-		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT introduction,clanId FROM clan_introductions WHERE serverId=?");
 			statement.setInt(1, _sqlDPId);
-			ResultSet result = statement.executeQuery();
-			while (result.next())
+			try (ResultSet result = statement.executeQuery())
 			{
-				getClan(result.getInt("clanId")).setIntroduction(result.getString("introduction"));
+				while (result.next())
+				{
+					getClan(result.getInt("clanId")).setIntroduction(result.getString("introduction"));
+				}
 			}
-			result.close();
-			statement.close();
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			// _log.warning("data error on Forum (root): " + e);
 			e.printStackTrace();
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 		int requestedClanNotices = 0;
 		try
@@ -422,25 +426,18 @@ public final class CommunityBoardManager
 	
 	public void storeClanIntro(int clanId, String intro)
 	{
-		Connection con = null;
-		try
+		try(Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(INSERT_CLAN_INTRO))
 		{
-			con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("INSERT INTO clan_introductions (serverId,clanId,introduction) values (?,?,?) ON DUPLICATE KEY UPDATE introduction = ?");
 			statement.setInt(1, _sqlDPId);
 			statement.setInt(2, clanId);
 			statement.setString(3, intro);
 			statement.setString(4, intro);
 			statement.execute();
-			statement.close();
 		}
-		catch (Exception e)
+		catch (SQLException e)
 		{
 			_log.warning("error while saving new Topic to db " + e);
-		}
-		finally
-		{
-			L2DatabaseFactory.close(con);
 		}
 	}
 	
