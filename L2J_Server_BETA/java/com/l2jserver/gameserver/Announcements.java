@@ -256,7 +256,6 @@ public class Announcements
 			String text = command.substring(lengthToTrim);
 			SingletonHolder._instance.announceToAll(text, isCritical);
 		}
-		
 		// No body cares!
 		catch (StringIndexOutOfBoundsException e)
 		{
