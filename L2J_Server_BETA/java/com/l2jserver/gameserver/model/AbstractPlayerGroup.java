@@ -35,12 +35,12 @@ import com.l2jserver.util.Rnd;
 public abstract class AbstractPlayerGroup
 {
 	/**
-	 * @return all members of this group
+	 * @return a list of all members of this group
 	 */
 	public abstract List<L2PcInstance> getMembers();
 	
 	/**
-	 * @return object IDs of all members of this group
+	 * @return a list of object IDs of the members of this group
 	 */
 	public List<Integer> getMembersObjectId()
 	{
@@ -58,9 +58,15 @@ public abstract class AbstractPlayerGroup
 	}
 	
 	/**
-	 * @return leader of this group
+	 * @return the leader of this group
 	 */
 	public abstract L2PcInstance getLeader();
+	
+	/**
+	 * Change the leader of this group to the specified player.
+	 * @param leader the player to set as the new leader of this group
+	 */
+	public abstract void setLeader(L2PcInstance leader);
 	
 	/**
 	 * @return the leader's object ID
@@ -71,7 +77,17 @@ public abstract class AbstractPlayerGroup
 	}
 	
 	/**
-	 * @return count of all players in this group
+	 * Check if a given player is the leader of this group.
+	 * @param player the player to check
+	 * @return {@code true} if the specified player is the leader of this group, {@code false} otherwise
+	 */
+	public boolean isLeader(L2PcInstance player)
+	{
+		return (getLeaderObjectId() == player.getObjectId());
+	}
+	
+	/**
+	 * @return the count of all players in this group
 	 */
 	public int getMemberCount()
 	{
@@ -79,13 +95,13 @@ public abstract class AbstractPlayerGroup
 	}
 	
 	/**
-	 * @return level of this group
+	 * @return the level of this group
 	 */
 	public abstract int getLevel();
 	
 	/**
-	 * Broadcast packet to every member of this group
-	 * @param packet packet to broadcast
+	 * Broadcast a packet to every member of this group.
+	 * @param packet the packet to broadcast
 	 */
 	public void broadcastPacket(final L2GameServerPacket packet)
 	{
@@ -104,8 +120,8 @@ public abstract class AbstractPlayerGroup
 	}
 	
 	/**
-	 * Broadcasts a System Message to this group
-	 * @param message System Message to broadcast
+	 * Broadcast a system message to this group.
+	 * @param message the system message to broadcast
 	 */
 	public void broadcastMessage(SystemMessageId message)
 	{
@@ -113,7 +129,7 @@ public abstract class AbstractPlayerGroup
 	}
 	
 	/**
-	 * Broadcasts a string message to this group
+	 * Broadcast a text message to this group.
 	 * @param text to broadcast
 	 */
 	public void broadcastString(String text)
@@ -138,8 +154,9 @@ public abstract class AbstractPlayerGroup
 	}
 	
 	/**
-	 * @param player to be contained
-	 * @return {@code true} if this group contains player
+	 * Check if this group contains a given player.
+	 * @param player the player to check
+	 * @return {@code true} if this group contains the specified player, {@code false} otherwise
 	 */
 	public boolean containsPlayer(L2PcInstance player)
 	{
@@ -147,7 +164,7 @@ public abstract class AbstractPlayerGroup
 	}
 	
 	/**
-	 * @return random member of this group
+	 * @return a random member of this group
 	 */
 	public L2PcInstance getRandomPlayer()
 	{
@@ -156,10 +173,9 @@ public abstract class AbstractPlayerGroup
 	
 	/**
 	 * Iterates over the group and executes procedure on each member
-	 * @param procedure to be executed on members, <br>
-	 *            if it returns {@code true}, loop will continue, <br>
-	 *            if it returns {@code false}, loop will break
-	 * @return {@code false} if it was interrupted by a {@code false} return of the procedure
+	 * @param procedure the prodecure to be executed on each member.<br>
+	 *            If executing the procedure on a member returns {@code true}, the loop continues to the next member, otherwise it breaks the loop
+	 * @return {@code true} if the procedure executed correctly, {@code false} if the loop was broken prematurely
 	 */
 	public boolean forEachMember(IL2Procedure<L2PcInstance> procedure)
 	{

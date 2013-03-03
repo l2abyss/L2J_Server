@@ -18,15 +18,14 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * This class ...
- * @version $Revision: 1.3.4.2 $ $Date: 2005/03/27 15:29:30 $
+ * This packet is received from client when a party leader requests to change the leadership to another player in his party.
  */
 public final class RequestChangePartyLeader extends L2GameClientPacket
 {
-	
 	private static final String _C__D0_0C_REQUESTCHANGEPARTYLEADER = "[C] D0:0C RequestChangePartyLeader";
 	
 	private String _name;
@@ -46,9 +45,10 @@ public final class RequestChangePartyLeader extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.isInParty() && activeChar.getParty().isLeader(activeChar))
+		L2Party party = activeChar.getParty();
+		if ((party != null) && party.isLeader(activeChar))
 		{
-			activeChar.getParty().changePartyLeader(_name);
+			party.changePartyLeader(_name);
 		}
 	}
 	

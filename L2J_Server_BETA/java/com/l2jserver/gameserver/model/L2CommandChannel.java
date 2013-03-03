@@ -27,40 +27,40 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.ExCloseMPCC;
 import com.l2jserver.gameserver.network.serverpackets.ExMPCCPartyInfoUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ExOpenMPCC;
-import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
+ * This class serves as a container for command channels.
  * @author chris_00
  */
 public class L2CommandChannel extends AbstractPlayerGroup
 {
-	private final List<L2Party> _partys;
+	private final List<L2Party> _parties;
 	private L2PcInstance _commandLeader = null;
 	private int _channelLvl;
 	
 	/**
-	 * Creates a New Command Channel and Add the Leaders party to the CC
-	 * @param leader
+	 * Create a new command channel and add the leader's party to it.
+	 * @param leader the leader of this command channel
 	 */
 	public L2CommandChannel(L2PcInstance leader)
 	{
 		_commandLeader = leader;
-		_partys = new FastList<L2Party>().shared();
-		_partys.add(leader.getParty());
-		_channelLvl = leader.getParty().getLevel();
-		leader.getParty().setCommandChannel(this);
-		leader.getParty().broadcastMessage(SystemMessageId.COMMAND_CHANNEL_FORMED);
-		leader.getParty().broadcastPacket(ExOpenMPCC.STATIC_PACKET);
+		L2Party party = leader.getParty();
+		_parties = new FastList<L2Party>().shared();
+		_parties.add(party);
+		_channelLvl = party.getLevel();
+		party.setCommandChannel(this);
+		party.broadcastMessage(SystemMessageId.COMMAND_CHANNEL_FORMED);
+		party.broadcastPacket(ExOpenMPCC.STATIC_PACKET);
 	}
 	
 	/**
-	 * Adds a Party to the Command Channel
-	 * @param party
+	 * Add a party to this command channel.
+	 * @param party the party to add
 	 */
 	public void addParty(L2Party party)
 	{
@@ -71,7 +71,7 @@ public class L2CommandChannel extends AbstractPlayerGroup
 		// Update the CCinfo for existing players
 		broadcastPacket(new ExMPCCPartyInfoUpdate(party, 1));
 		
-		_partys.add(party);
+		_parties.add(party);
 		if (party.getLevel() > _channelLvl)
 		{
 			_channelLvl = party.getLevel();
@@ -82,8 +82,8 @@ public class L2CommandChannel extends AbstractPlayerGroup
 	}
 	
 	/**
-	 * Removes a Party from the Command Channel
-	 * @param party
+	 * Remove a party from this command channel.
+	 * @param party the party to remove
 	 */
 	public void removeParty(L2Party party)
 	{
@@ -92,9 +92,9 @@ public class L2CommandChannel extends AbstractPlayerGroup
 			return;
 		}
 		
-		_partys.remove(party);
+		_parties.remove(party);
 		_channelLvl = 0;
-		for (L2Party pty : _partys)
+		for (L2Party pty : _parties)
 		{
 			if (pty.getLevel() > _channelLvl)
 			{
@@ -103,7 +103,7 @@ public class L2CommandChannel extends AbstractPlayerGroup
 		}
 		party.setCommandChannel(null);
 		party.broadcastPacket(new ExCloseMPCC());
-		if (_partys.size() < 2)
+		if (_parties.size() < 2)
 		{
 			broadcastPacket(SystemMessage.getSystemMessage(SystemMessageId.COMMAND_CHANNEL_DISBANDED));
 			disbandChannel();
@@ -116,31 +116,31 @@ public class L2CommandChannel extends AbstractPlayerGroup
 	}
 	
 	/**
-	 * disbands the whole Command Channel
+	 * Disband this command channel.
 	 */
 	public void disbandChannel()
 	{
-		if (_partys != null)
+		if (_parties != null)
 		{
-			for (L2Party party : _partys)
+			for (L2Party party : _parties)
 			{
 				if (party != null)
 				{
 					removeParty(party);
 				}
 			}
-			_partys.clear();
+			_parties.clear();
 		}
 	}
 	
 	/**
-	 * @return overall member count of the Command Channel
+	 * @return the total count of all members of this command channel
 	 */
 	@Override
 	public int getMemberCount()
 	{
 		int count = 0;
-		for (L2Party party : _partys)
+		for (L2Party party : _parties)
 		{
 			if (party != null)
 			{
@@ -151,33 +151,15 @@ public class L2CommandChannel extends AbstractPlayerGroup
 	}
 	
 	/**
-	 * Broadcast packet to every channel member
-	 * @param gsp
-	 * @deprecated
-	 * @see L2CommandChannel#broadcastPacket(L2GameServerPacket)
-	 */
-	@Deprecated
-	public void broadcastToChannelMembers(L2GameServerPacket gsp)
-	{
-		broadcastPacket(gsp);
-	}
-	
-	@Deprecated
-	public void broadcastCSToChannelMembers(CreatureSay gsp, L2PcInstance broadcaster)
-	{
-		broadcastCreatureSay(gsp, broadcaster);
-	}
-	
-	/**
-	 * @return list of Parties in Command Channel
+	 * @return a list of all parties in this command channel
 	 */
 	public List<L2Party> getPartys()
 	{
-		return _partys;
+		return _parties;
 	}
 	
 	/**
-	 * @return list of all Members in Command Channel
+	 * @return a list of all members in this command channel
 	 */
 	@Override
 	public List<L2PcInstance> getMembers()
@@ -191,7 +173,7 @@ public class L2CommandChannel extends AbstractPlayerGroup
 	}
 	
 	/**
-	 * @return Level of CC
+	 * @return the level of this command channel (equals the level of the highest-leveled character in this command channel)
 	 */
 	@Override
 	public int getLevel()
@@ -199,23 +181,14 @@ public class L2CommandChannel extends AbstractPlayerGroup
 		return _channelLvl;
 	}
 	
-	/**
-	 * @param leader the leader of the Command Channel
-	 */
-	public void setChannelLeader(L2PcInstance leader)
+	@Override
+	public void setLeader(L2PcInstance leader)
 	{
 		_commandLeader = leader;
-	}
-	
-	/**
-	 * @return the leader of the Command Channel
-	 * @deprecated
-	 * @see L2CommandChannel#getLeader()
-	 */
-	@Deprecated
-	public L2PcInstance getChannelLeader()
-	{
-		return getLeader();
+		if (leader.getLevel() > _channelLvl)
+		{
+			_channelLvl = leader.getLevel();
+		}
 	}
 	
 	/**
@@ -232,7 +205,7 @@ public class L2CommandChannel extends AbstractPlayerGroup
 	}
 	
 	/**
-	 * @return the leader of the Command Channel
+	 * @return the leader of this command channel
 	 */
 	@Override
 	public L2PcInstance getLeader()
@@ -240,12 +213,17 @@ public class L2CommandChannel extends AbstractPlayerGroup
 		return _commandLeader;
 	}
 	
+	/**
+	 * Check if a given player is in this command channel.
+	 * @param player the player to check
+	 * @return {@code true} if he does, {@code false} otherwise
+	 */
 	@Override
 	public boolean containsPlayer(L2PcInstance player)
 	{
-		if ((_partys != null) && !_partys.isEmpty())
+		if ((_parties != null) && !_parties.isEmpty())
 		{
-			for (L2Party party : _partys)
+			for (L2Party party : _parties)
 			{
 				if (party.containsPlayer(player))
 				{
@@ -257,15 +235,15 @@ public class L2CommandChannel extends AbstractPlayerGroup
 	}
 	
 	/**
-	 * Iterates over CC without need to allocate any new list
+	 * Iterates over all command channel members without the need to allocate a new list
 	 * @see com.l2jserver.gameserver.model.AbstractPlayerGroup#forEachMember(IL2Procedure)
 	 */
 	@Override
 	public boolean forEachMember(IL2Procedure<L2PcInstance> procedure)
 	{
-		if ((_partys != null) && !_partys.isEmpty())
+		if ((_parties != null) && !_parties.isEmpty())
 		{
-			for (L2Party party : _partys)
+			for (L2Party party : _parties)
 			{
 				if (!party.forEachMember(procedure))
 				{
@@ -274,5 +252,16 @@ public class L2CommandChannel extends AbstractPlayerGroup
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Check whether the leader of this command channel is the same as the leader of the specified command channel<br>
+	 * (which essentially means they're the same group).
+	 * @param cc the other command channel to check against
+	 * @return {@code true} if this command channel equals the specified command channel, {@code false} otherwise
+	 */
+	public boolean equals(L2CommandChannel cc)
+	{
+		return (getLeaderObjectId() == cc.getLeaderObjectId());
 	}
 }

@@ -49,7 +49,7 @@ public class RequestPartyLootModification extends L2GameClientPacket
 			return;
 		}
 		L2Party party = activeChar.getParty();
-		if ((party == null) || (_mode == party.getLootDistribution()) || (party.getLeader() != activeChar))
+		if ((party == null) || !party.isLeader(activeChar) || (_mode == party.getLootDistribution()))
 		{
 			return;
 		}
