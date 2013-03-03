@@ -182,6 +182,21 @@ public class GrandBossManager
 		}
 	}
 	
+	public final L2BossZone getZone(int zoneId)
+	{
+		if (_zones != null)
+		{
+			for (L2BossZone temp : _zones)
+			{
+				if (temp.getId() == zoneId)
+				{
+					return temp;
+				}
+			}
+		}
+		return null;
+	}
+	
 	public final L2BossZone getZone(L2Character character)
 	{
 		if (_zones != null)

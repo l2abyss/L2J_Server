@@ -1046,25 +1046,40 @@ public final class Config
 	
 	// GrandBoss Settings
 	
-	public static int Antharas_Wait_Time;
-	public static int Valakas_Wait_Time;
-	public static int Interval_Of_Antharas_Spawn;
-	public static int Random_Of_Antharas_Spawn;
-	public static int Interval_Of_Valakas_Spawn;
-	public static int Random_Of_Valakas_Spawn;
-	public static int Interval_Of_Baium_Spawn;
-	public static int Random_Of_Baium_Spawn;
-	public static int Interval_Of_Core_Spawn;
-	public static int Random_Of_Core_Spawn;
-	public static int Interval_Of_Orfen_Spawn;
-	public static int Random_Of_Orfen_Spawn;
-	public static int Interval_Of_QueenAnt_Spawn;
-	public static int Random_Of_QueenAnt_Spawn;
-	public static int Interval_Of_Zaken_Spawn;
-	public static int Random_Of_Zaken_Spawn;
+	// Antharas
+	public static int ANTHARAS_WAIT_TIME;
+	public static int ANTHARAS_SPAWN_INTERVAL;
+	public static int ANTHARAS_SPAWN_RANDOM;
+	
+	// Valakas
+	public static int VALAKAS_WAIT_TIME;
+	public static int VALAKAS_SPAWN_INTERVAL;
+	public static int VALAKAS_SPAWN_RANDOM;
+	
+	// Baium
+	public static int BAIUM_SPAWN_INTERVAL;
+	public static int BAIUM_SPAWN_RANDOM;
+	
+	// Core
+	public static int CORE_SPAWN_INTERVAL;
+	public static int CORE_SPAWN_RANDOM;
+	
+	// Offen
+	public static int ORFEN_SPAWN_INTERVAL;
+	public static int ORFEN_SPAWN_RANDOM;
+	
+	// Queen Ant
+	public static int QUEEN_ANT_SPAWN_INTERVAL;
+	public static int QUEEN_ANT_SPAWN_RANDOM;
+	
+	// Zaken
+	public static int ZAKEN_SPAWN_INTERVAL;
+	public static int ZAKEN_SPAWN_RANDOM;
+	
+	// Beleth
 	public static int BELETH_MIN_PLAYERS;
-	public static int INTERVAL_OF_BELETH_SPAWN;
-	public static int RANDOM_OF_BELETH_SPAWN;
+	public static int BELETH_SPAWN_INTERVAL;
+	public static int BELETH_SPAWN_RANDOM;
 	
 	// Gracia Seeds Settings
 	
@@ -2833,132 +2848,31 @@ public final class Config
 				_log.log(Level.SEVERE, "Error while loading Grand Bosses settings!", e);
 			}
 			
-			Antharas_Wait_Time = Integer.parseInt(GrandBossSettings.getProperty("AntharasWaitTime", "30"));
-			if ((Antharas_Wait_Time < 3) || (Antharas_Wait_Time > 60))
-			{
-				Antharas_Wait_Time = 30;
-			}
-			Antharas_Wait_Time = Antharas_Wait_Time * 60000;
+			ANTHARAS_WAIT_TIME = Integer.parseInt(GrandBossSettings.getProperty("AntharasWaitTime", "30"));
+			ANTHARAS_SPAWN_INTERVAL = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfAntharasSpawn", "264"));
+			ANTHARAS_SPAWN_RANDOM = Integer.parseInt(GrandBossSettings.getProperty("RandomOfAntharasSpawn", "72"));
 			
-			Valakas_Wait_Time = Integer.parseInt(GrandBossSettings.getProperty("ValakasWaitTime", "30"));
-			if ((Valakas_Wait_Time < 3) || (Valakas_Wait_Time > 60))
-			{
-				Valakas_Wait_Time = 30;
-			}
-			Valakas_Wait_Time = Valakas_Wait_Time * 60000;
+			VALAKAS_WAIT_TIME = Integer.parseInt(GrandBossSettings.getProperty("ValakasWaitTime", "30"));
+			VALAKAS_SPAWN_INTERVAL = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfValakasSpawn", "264"));
+			VALAKAS_SPAWN_RANDOM = Integer.parseInt(GrandBossSettings.getProperty("RandomOfValakasSpawn", "72"));
 			
-			Interval_Of_Antharas_Spawn = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfAntharasSpawn", "264"));
-			if ((Interval_Of_Antharas_Spawn < 1) || (Interval_Of_Antharas_Spawn > 480))
-			{
-				Interval_Of_Antharas_Spawn = 264;
-			}
-			Interval_Of_Antharas_Spawn = Interval_Of_Antharas_Spawn * 3600000;
+			BAIUM_SPAWN_INTERVAL = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfBaiumSpawn", "168"));
+			BAIUM_SPAWN_RANDOM = Integer.parseInt(GrandBossSettings.getProperty("RandomOfBaiumSpawn", "48"));
 			
-			Random_Of_Antharas_Spawn = Integer.parseInt(GrandBossSettings.getProperty("RandomOfAntharasSpawn", "72"));
-			if ((Random_Of_Antharas_Spawn < 1) || (Random_Of_Antharas_Spawn > 192))
-			{
-				Random_Of_Antharas_Spawn = 72;
-			}
-			Random_Of_Antharas_Spawn = Random_Of_Antharas_Spawn * 3600000;
+			CORE_SPAWN_INTERVAL = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfCoreSpawn", "60"));
+			CORE_SPAWN_RANDOM = Integer.parseInt(GrandBossSettings.getProperty("RandomOfCoreSpawn", "24"));
 			
-			Interval_Of_Valakas_Spawn = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfValakasSpawn", "264"));
-			if ((Interval_Of_Valakas_Spawn < 1) || (Interval_Of_Valakas_Spawn > 480))
-			{
-				Interval_Of_Valakas_Spawn = 264;
-			}
-			Interval_Of_Valakas_Spawn = Interval_Of_Valakas_Spawn * 3600000;
+			ORFEN_SPAWN_INTERVAL = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfOrfenSpawn", "48"));
+			ORFEN_SPAWN_RANDOM = Integer.parseInt(GrandBossSettings.getProperty("RandomOfOrfenSpawn", "20"));
 			
-			Random_Of_Valakas_Spawn = Integer.parseInt(GrandBossSettings.getProperty("RandomOfValakasSpawn", "72"));
-			if ((Random_Of_Valakas_Spawn < 1) || (Random_Of_Valakas_Spawn > 192))
-			{
-				Random_Of_Valakas_Spawn = 72;
-			}
-			Random_Of_Valakas_Spawn = Random_Of_Valakas_Spawn * 3600000;
+			QUEEN_ANT_SPAWN_INTERVAL = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfQueenAntSpawn", "36"));
+			QUEEN_ANT_SPAWN_RANDOM = Integer.parseInt(GrandBossSettings.getProperty("RandomOfQueenAntSpawn", "17"));
 			
-			Interval_Of_Baium_Spawn = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfBaiumSpawn", "168"));
-			if ((Interval_Of_Baium_Spawn < 1) || (Interval_Of_Baium_Spawn > 480))
-			{
-				Interval_Of_Baium_Spawn = 168;
-			}
-			Interval_Of_Baium_Spawn = Interval_Of_Baium_Spawn * 3600000;
+			ZAKEN_SPAWN_INTERVAL = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfZakenSpawn", "60"));
+			ZAKEN_SPAWN_RANDOM = Integer.parseInt(GrandBossSettings.getProperty("RandomOfZakenSpawn", "20"));
 			
-			Random_Of_Baium_Spawn = Integer.parseInt(GrandBossSettings.getProperty("RandomOfBaiumSpawn", "48"));
-			if ((Random_Of_Baium_Spawn < 1) || (Random_Of_Baium_Spawn > 192))
-			{
-				Random_Of_Baium_Spawn = 48;
-			}
-			Random_Of_Baium_Spawn = Random_Of_Baium_Spawn * 3600000;
-			
-			Interval_Of_Core_Spawn = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfCoreSpawn", "60"));
-			if ((Interval_Of_Core_Spawn < 1) || (Interval_Of_Core_Spawn > 480))
-			{
-				Interval_Of_Core_Spawn = 60;
-			}
-			Interval_Of_Core_Spawn = Interval_Of_Core_Spawn * 3600000;
-			
-			Random_Of_Core_Spawn = Integer.parseInt(GrandBossSettings.getProperty("RandomOfCoreSpawn", "24"));
-			if ((Random_Of_Core_Spawn < 1) || (Random_Of_Core_Spawn > 192))
-			{
-				Random_Of_Core_Spawn = 24;
-			}
-			Random_Of_Core_Spawn = Random_Of_Core_Spawn * 3600000;
-			
-			Interval_Of_Orfen_Spawn = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfOrfenSpawn", "48"));
-			if ((Interval_Of_Orfen_Spawn < 1) || (Interval_Of_Orfen_Spawn > 480))
-			{
-				Interval_Of_Orfen_Spawn = 48;
-			}
-			Interval_Of_Orfen_Spawn = Interval_Of_Orfen_Spawn * 3600000;
-			
-			Random_Of_Orfen_Spawn = Integer.parseInt(GrandBossSettings.getProperty("RandomOfOrfenSpawn", "20"));
-			if ((Random_Of_Orfen_Spawn < 1) || (Random_Of_Orfen_Spawn > 192))
-			{
-				Random_Of_Orfen_Spawn = 20;
-			}
-			Random_Of_Orfen_Spawn = Random_Of_Orfen_Spawn * 3600000;
-			
-			Interval_Of_QueenAnt_Spawn = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfQueenAntSpawn", "36"));
-			if ((Interval_Of_QueenAnt_Spawn < 1) || (Interval_Of_QueenAnt_Spawn > 480))
-			{
-				Interval_Of_QueenAnt_Spawn = 36;
-			}
-			Interval_Of_QueenAnt_Spawn = Interval_Of_QueenAnt_Spawn * 3600000;
-			
-			Random_Of_QueenAnt_Spawn = Integer.parseInt(GrandBossSettings.getProperty("RandomOfQueenAntSpawn", "17"));
-			if ((Random_Of_QueenAnt_Spawn < 1) || (Random_Of_QueenAnt_Spawn > 192))
-			{
-				Random_Of_QueenAnt_Spawn = 17;
-			}
-			Random_Of_QueenAnt_Spawn = Random_Of_QueenAnt_Spawn * 3600000;
-			
-			Interval_Of_Zaken_Spawn = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfZakenSpawn", "60"));
-			if ((Interval_Of_Zaken_Spawn < 1) || (Interval_Of_Zaken_Spawn > 480))
-			{
-				Interval_Of_Zaken_Spawn = 60;
-			}
-			Interval_Of_Zaken_Spawn = Interval_Of_Zaken_Spawn * 3600000;
-			
-			Random_Of_Zaken_Spawn = Integer.parseInt(GrandBossSettings.getProperty("RandomOfZakenSpawn", "20"));
-			if ((Random_Of_Zaken_Spawn < 1) || (Random_Of_Zaken_Spawn > 192))
-			{
-				Random_Of_Zaken_Spawn = 20;
-			}
-			Random_Of_Zaken_Spawn = Random_Of_Zaken_Spawn * 3600000;
-			
-			INTERVAL_OF_BELETH_SPAWN = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfBelethSpawn", "192"));
-			if ((INTERVAL_OF_BELETH_SPAWN < 1) || (INTERVAL_OF_BELETH_SPAWN > 480))
-			{
-				INTERVAL_OF_BELETH_SPAWN = 192;
-			}
-			INTERVAL_OF_BELETH_SPAWN *= 3600000;
-			
-			RANDOM_OF_BELETH_SPAWN = Integer.parseInt(GrandBossSettings.getProperty("RandomOfBelethSpawn", "148"));
-			if ((RANDOM_OF_BELETH_SPAWN < 1) || (RANDOM_OF_BELETH_SPAWN > 192))
-			{
-				RANDOM_OF_BELETH_SPAWN = 148;
-			}
-			RANDOM_OF_BELETH_SPAWN *= 3600000;
-			
+			BELETH_SPAWN_INTERVAL = Integer.parseInt(GrandBossSettings.getProperty("IntervalOfBelethSpawn", "192"));
+			BELETH_SPAWN_RANDOM = Integer.parseInt(GrandBossSettings.getProperty("RandomOfBelethSpawn", "148"));
 			BELETH_MIN_PLAYERS = Integer.parseInt(GrandBossSettings.getProperty("BelethMinPlayers", "36"));
 			
 			// Gracia Seeds
