@@ -182,7 +182,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 							if (!activeChar.destroyItemByItemId("Consume", item.getId(), item.getCount(), trainer, false))
 							{
 								// Doesn't have required item.
-								activeChar.sendPacket(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL);
+								activeChar.sendPacket(SystemMessageId.ITEM_OR_PREREQUISITES_MISSING_TO_LEARN_SKILL);
 								L2VillageMasterInstance.showPledgeSkillList(activeChar);
 								return;
 							}
@@ -249,7 +249,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 					{
 						if (!activeChar.destroyItemByItemId("SubSkills", item.getId(), item.getCount(), trainer, false))
 						{
-							activeChar.sendPacket(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL);
+							activeChar.sendPacket(SystemMessageId.ITEM_OR_PREREQUISITES_MISSING_TO_LEARN_SKILL);
 							return;
 						}
 						
@@ -349,7 +349,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				}
 				
 				// Player doesn't have required item.
-				activeChar.sendPacket(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL);
+				activeChar.sendPacket(SystemMessageId.ITEM_OR_PREREQUISITES_MISSING_TO_LEARN_SKILL);
 				showSkillList(trainer, activeChar);
 				break;
 			}
@@ -419,8 +419,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 							}
 							else
 							{
-								// TODO: Find retail message.
-								player.sendMessage("You must learn the " + skill.getSkill().getName() + " skill before you can acquire further skills.");
+								player.sendPacket(SystemMessageId.ITEM_OR_PREREQUISITES_MISSING_TO_LEARN_SKILL);
 							}
 							return false;
 						}
@@ -438,7 +437,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 						if (reqItemCount < item.getCount())
 						{
 							// Player doesn't have required item.
-							player.sendPacket(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL);
+							player.sendPacket(SystemMessageId.ITEM_OR_PREREQUISITES_MISSING_TO_LEARN_SKILL);
 							showSkillList(trainer, player);
 							return false;
 						}
