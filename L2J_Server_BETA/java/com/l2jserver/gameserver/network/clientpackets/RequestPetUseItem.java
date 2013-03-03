@@ -63,6 +63,12 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			return;
 		}
 		
+		if (!item.getItem().isForNpc())
+		{
+			activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
+			return;
+		}
+		
 		if (activeChar.isAlikeDead() || pet.isDead())
 		{
 			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);

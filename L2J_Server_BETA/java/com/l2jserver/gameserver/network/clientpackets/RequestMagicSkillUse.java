@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 
 public final class RequestMagicSkillUse extends L2GameClientPacket
@@ -80,6 +81,14 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 		// Check the validity of the skill
 		if (skill != null)
 		{
+			// Avoid Use of Skills in AirShip.
+			if (activeChar.isPlayable() && activeChar.isInAirShip())
+			{
+				activeChar.sendPacket(SystemMessageId.ACTION_PROHIBITED_WHILE_MOUNTED_OR_ON_AN_AIRSHIP);
+				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
+			
 			if ((activeChar.isTransformed() || activeChar.isInStance()) && !activeChar.containsAllowedTransformSkill(skill.getId()))
 			{
 				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
