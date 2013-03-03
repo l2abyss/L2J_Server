@@ -131,6 +131,7 @@ import com.l2jserver.gameserver.model.PartyMatchRoom;
 import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.PartyMatchWaitingList;
 import com.l2jserver.gameserver.model.PcCondOverride;
+import com.l2jserver.gameserver.model.PlayerVariables;
 import com.l2jserver.gameserver.model.ShortCuts;
 import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.TerritoryWard;
@@ -8186,6 +8187,12 @@ public final class L2PcInstance extends L2Playable
 			storeUISettings();
 		}
 		SevenSigns.getInstance().saveSevenSignsData(getObjectId());
+		
+		final PlayerVariables vars = getScript(PlayerVariables.class);
+		if (vars != null)
+		{
+			vars.store();
+		}
 	}
 	
 	@Override

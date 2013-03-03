@@ -32,7 +32,7 @@ import javolution.util.FastMap;
  *         This class is used in order to have a set of couples (key,value).<BR>
  *         Methods deployed are accessors to the set (add/get value from its key) and addition of a whole set in the current one.
  */
-public final class StatsSet
+public class StatsSet
 {
 	private static final Logger _log = Logger.getLogger(StatsSet.class.getName());
 	private final Map<String, Object> _set;

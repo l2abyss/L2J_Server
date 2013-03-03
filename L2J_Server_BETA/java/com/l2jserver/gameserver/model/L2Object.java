@@ -18,6 +18,10 @@
  */
 package com.l2jserver.gameserver.model;
 
+import java.util.Map;
+
+import javolution.util.FastMap;
+
 import com.l2jserver.gameserver.handler.ActionHandler;
 import com.l2jserver.gameserver.handler.ActionShiftHandler;
 import com.l2jserver.gameserver.handler.IActionHandler;
@@ -54,6 +58,7 @@ public abstract class L2Object
 	private int _instanceId = 0;
 	
 	private InstanceType _instanceType = null;
+	private volatile Map<String, Object> _scripts;
 	
 	public L2Object(int objectId)
 	{
@@ -872,5 +877,55 @@ public abstract class L2Object
 	 */
 	public void rechargeShots(boolean physical, boolean magical)
 	{
+	}
+	
+	/**
+	 * @param <T>
+	 * @param script
+	 * @return
+	 */
+	public final <T> T addScript(T script)
+	{
+		if (_scripts == null)
+		{
+			// Double-checked locking
+			synchronized (this)
+			{
+				if (_scripts == null)
+				{
+					_scripts = new FastMap<String, Object>().shared();
+				}
+			}
+		}
+		_scripts.put(script.getClass().getName(), script);
+		return script;
+	}
+	
+	/**
+	 * @param <T>
+	 * @param script
+	 */
+	public final <T> void removeScript(T script)
+	{
+		if (_scripts == null)
+		{
+			return;
+		}
+		_scripts.remove(script.getClass().getName());
+	}
+	
+	/**
+	 * @param <T>
+	 * @param script
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public final <T> T getScript(Class<T> script)
+	{
+		if (_scripts == null)
+		{
+			return null;
+		}
+		return (T) _scripts.get(script.getName());
 	}
 }
