@@ -50,7 +50,7 @@ public final class PetDataTable extends DocumentParser
 	public void load()
 	{
 		_pets.clear();
-		parseDatapackFile("data/stats/npc/PetData.xml");
+		parseDirectory("data/stats/pets/");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _pets.size() + " Pets.");
 	}
 	
@@ -64,8 +64,9 @@ public final class PetDataTable extends DocumentParser
 			if (d.getNodeName().equals("pet"))
 			{
 				int npcId = parseInt(d.getAttributes(), "id");
+				int itemId = parseInt(d.getAttributes(), "itemId");
 				// index ignored for now
-				L2PetData data = new L2PetData();
+				L2PetData data = new L2PetData(npcId, itemId);
 				for (Node p = d.getFirstChild(); p != null; p = p.getNextSibling())
 				{
 					if (p.getNodeName().equals("set"))
@@ -87,7 +88,11 @@ public final class PetDataTable extends DocumentParser
 						{
 							data.setHungryLimit(parseInt(attrs, "val"));
 						}
-						// sync_level and evolve ignored
+						else if ("sync_level".equals(type))
+						{
+							data.setSyncLevel(parseInt(attrs, "val") == 1);
+						}
+						// evolve ignored
 					}
 					else if (p.getNodeName().equals("skills"))
 					{
@@ -124,6 +129,22 @@ public final class PetDataTable extends DocumentParser
 				_pets.put(npcId, data);
 			}
 		}
+	}
+	
+	/**
+	 * @param itemId
+	 * @return
+	 */
+	public L2PetData getPetDataByItemId(int itemId)
+	{
+		for (L2PetData data : _pets.values())
+		{
+			if (data.getItemId() == itemId)
+			{
+				return data;
+			}
+		}
+		return null;
 	}
 	
 	/**

@@ -264,12 +264,17 @@ public class L2PetInstance extends L2Summon
 		{
 			return null; // owner has a pet listed in world
 		}
+		final L2PetData data = PetDataTable.getInstance().getPetData(template.getNpcId());
 		
 		L2PetInstance pet = restore(control, template, owner);
 		// add the pet instance to world
 		if (pet != null)
 		{
 			pet.setTitle(owner.getName());
+			if (data.isSynchLevel() && (pet.getLevel() != owner.getLevel()))
+			{
+				pet.getStat().setLevel((byte) owner.getLevel());
+			}
 			L2World.getInstance().addPet(owner.getObjectId(), pet);
 		}
 		

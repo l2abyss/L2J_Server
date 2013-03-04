@@ -27,8 +27,8 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.NpcTable;
-import com.l2jserver.gameserver.datatables.SummonItemsData;
-import com.l2jserver.gameserver.model.L2SummonItem;
+import com.l2jserver.gameserver.datatables.PetDataTable;
+import com.l2jserver.gameserver.model.L2PetData;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -72,28 +72,28 @@ public final class Evolve
 		int oldY = currentPet.getY();
 		int oldZ = currentPet.getZ();
 		
-		L2SummonItem olditem = SummonItemsData.getInstance().getSummonItem(itemIdtake);
+		L2PetData oldData = PetDataTable.getInstance().getPetDataByItemId(itemIdtake);
 		
-		if (olditem == null)
+		if (oldData == null)
 		{
 			return false;
 		}
 		
-		int oldnpcID = olditem.getNpcId();
+		int oldnpcID = oldData.getNpcId();
 		
 		if ((currentPet.getStat().getLevel() < petminlvl) || (currentPet.getNpcId() != oldnpcID))
 		{
 			return false;
 		}
 		
-		L2SummonItem sitem = SummonItemsData.getInstance().getSummonItem(itemIdgive);
+		L2PetData petData = PetDataTable.getInstance().getPetDataByItemId(itemIdgive);
 		
-		if (sitem == null)
+		if (petData == null)
 		{
 			return false;
 		}
 		
-		int npcID = sitem.getNpcId();
+		int npcID = petData.getNpcId();
 		
 		if (npcID == 0)
 		{
@@ -175,19 +175,19 @@ public final class Evolve
 			oldpetlvl = petminlvl;
 		}
 		
-		L2SummonItem oldItem = SummonItemsData.getInstance().getSummonItem(itemIdtake);
-		if (oldItem == null)
+		L2PetData oldData = PetDataTable.getInstance().getPetDataByItemId(itemIdtake);
+		if (oldData == null)
 		{
 			return false;
 		}
 		
-		L2SummonItem sItem = SummonItemsData.getInstance().getSummonItem(itemIdgive);
-		if (sItem == null)
+		L2PetData petData = PetDataTable.getInstance().getPetDataByItemId(itemIdgive);
+		if (petData == null)
 		{
 			return false;
 		}
 		
-		int npcId = sItem.getNpcId();
+		int npcId = petData.getNpcId();
 		if (npcId == 0)
 		{
 			return false;

@@ -904,14 +904,16 @@ public abstract class L2Object
 	/**
 	 * @param <T>
 	 * @param script
+	 * @return
 	 */
-	public final <T> void removeScript(T script)
+	@SuppressWarnings("unchecked")
+	public final <T> T removeScript(Class<T> script)
 	{
 		if (_scripts == null)
 		{
-			return;
+			return null;
 		}
-		_scripts.remove(script.getClass().getName());
+		return (T) _scripts.remove(script.getName());
 	}
 	
 	/**

@@ -1940,10 +1940,28 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		broadcastPacket(new MagicSkillUse(this, target, displayId, level, skillTime, reuseDelay));
 		
 		// Send a system message USE_S1 to the L2Character
-		if (isPlayer() && (magicId != 1312))
+		if (isPlayer())
 		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.USE_S1);
-			sm.addSkillName(skill);
+			SystemMessage sm = null;
+			switch (magicId)
+			{
+				case 1312: // Fishing
+				{
+					// Done in L2PcInstance.startFishing()
+					break;
+				}
+				case 2046: // Wolf Collar
+				{
+					sm = SystemMessage.getSystemMessage(SystemMessageId.SUMMON_A_PET);
+					break;
+				}
+				default:
+				{
+					sm = SystemMessage.getSystemMessage(SystemMessageId.USE_S1);
+					sm.addSkillName(skill);
+				}
+			}
+			
 			sendPacket(sm);
 		}
 		

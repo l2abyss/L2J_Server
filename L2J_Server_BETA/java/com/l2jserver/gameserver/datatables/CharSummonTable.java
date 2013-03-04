@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.idfactory.IdFactory;
-import com.l2jserver.gameserver.model.L2SummonItem;
+import com.l2jserver.gameserver.model.L2PetData;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
@@ -241,8 +241,8 @@ public class CharSummonTable
 	public void restorePet(L2PcInstance activeChar)
 	{
 		L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_pets.get(activeChar.getObjectId()));
-		final L2SummonItem sitem = SummonItemsData.getInstance().getSummonItem(item.getItemId());
-		L2NpcTemplate npcTemplate = NpcTable.getInstance().getTemplate(sitem.getNpcId());
+		final L2PetData petData = PetDataTable.getInstance().getPetDataByItemId(item.getItemId());
+		L2NpcTemplate npcTemplate = NpcTable.getInstance().getTemplate(petData.getNpcId());
 		
 		if (npcTemplate == null)
 		{

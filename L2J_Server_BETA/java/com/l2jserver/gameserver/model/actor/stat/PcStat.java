@@ -288,6 +288,16 @@ public class PcStat extends PlayableStat
 			getActiveChar().getTransformation().onLevelUp();
 		}
 		
+		// Synchronize level with pet if possible.
+		if (getActiveChar().hasSummon() && getActiveChar().getSummon().isPet())
+		{
+			final L2PetInstance pet = (L2PetInstance) getActiveChar().getSummon();
+			if (pet.getPetData().isSynchLevel() && (pet.getLevel() != getLevel()))
+			{
+				pet.getStat().setLevel(getLevel());
+			}
+		}
+		
 		StatusUpdate su = new StatusUpdate(getActiveChar());
 		su.addAttribute(StatusUpdate.LEVEL, getLevel());
 		su.addAttribute(StatusUpdate.MAX_CP, getMaxCp());
