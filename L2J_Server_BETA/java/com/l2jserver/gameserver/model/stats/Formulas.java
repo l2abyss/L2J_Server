@@ -1902,7 +1902,7 @@ public final class Formulas
 	
 	public static int calcLvlDependModifier(L2Character attacker, L2Character target, L2Skill skill)
 	{
-		if (skill.getLevelDepend() == 0)
+		if (skill.getLvlBonusRate() == 0)
 		{
 			return 0;
 		}
@@ -1917,7 +1917,7 @@ public final class Formulas
 			attackerMod = attacker.getLevel();
 		}
 		
-		return skill.getLevelDepend() * (attackerMod - target.getLevel());
+		return skill.getLvlBonusRate() * (attackerMod - target.getLevel());
 	}
 	
 	public static int calcElementModifier(L2Character attacker, L2Character target, L2Skill skill)

@@ -852,7 +852,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		if (!_skillrender.getSuicideSkills().isEmpty() && ((int) ((npc.getCurrentHp() / npc.getMaxHp()) * 100) < 30))
 		{
 			final L2Skill skill = _skillrender.getSuicideSkills().get(Rnd.nextInt(_skillrender.getSuicideSkills().size()));
-			if (Util.checkIfInRange(skill.getSkillRadius(), getActiveChar(), mostHate, false) && (Rnd.get(100) < Rnd.get(npc.getMinSkillChance(), npc.getMaxSkillChance())))
+			if (Util.checkIfInRange(skill.getAffectRange(), getActiveChar(), mostHate, false) && (Rnd.get(100) < Rnd.get(npc.getMinSkillChance(), npc.getMaxSkillChance())))
 			{
 				if (cast(skill))
 				{
@@ -1484,7 +1484,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				if (isParty(sk))
 				{
-					for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius() + caster.getTemplate().getCollisionRadius()))
+					for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getAffectRange() + caster.getTemplate().getCollisionRadius()))
 					{
 						if (!(obj instanceof L2Attackable))
 						{
@@ -1554,7 +1554,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				else if (isParty(sk))
 				{
-					for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getSkillRadius() + caster.getTemplate().getCollisionRadius()))
+					for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getAffectRange() + caster.getTemplate().getCollisionRadius()))
 					{
 						if (!(obj instanceof L2Attackable))
 						{

@@ -160,7 +160,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final double _pvpPower;
 	private final double _pvePower;
 	private final int _magicLevel;
-	private final int _levelDepend;
+	private final int _lvlBonusRate;
 	private final boolean _ignoreResists;
 	private final int _minChance;
 	private final int _maxChance;
@@ -170,7 +170,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	// Effecting area of the skill, in radius.
 	// The radius center varies according to the _targetType:
 	// "caster" if targetType = AURA/PARTY/CLAN or "target" if targetType = AREA
-	private final int _skillRadius;
+	private final int _affectRange;
 	
 	private final L2SkillType _skillType;
 	private final L2SkillType _effectType; // additional effect has a type
@@ -417,14 +417,14 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			_reuseDelay = set.getInteger("reuseDelay", 0);
 		}
 		
-		_skillRadius = set.getInteger("skillRadius", 0);
+		_affectRange = set.getInteger("affectRange", 0);
 		
 		_targetType = set.getEnum("target", L2TargetType.class);
 		_power = set.getFloat("power", 0.f);
 		_pvpPower = set.getFloat("pvpPower", (float) getPower());
 		_pvePower = set.getFloat("pvePower", (float) getPower());
 		_magicLevel = set.getInteger("magicLvl", 0);
-		_levelDepend = set.getInteger("lvlDepend", 0);
+		_lvlBonusRate = set.getInteger("lvlBonusRate", 0);
 		_ignoreResists = set.getBool("ignoreResists", false);
 		_minChance = set.getInteger("minChance", Config.MIN_ABNORMAL_STATE_SUCCESS_RATE);
 		_maxChance = set.getInteger("maxChance", Config.MAX_ABNORMAL_STATE_SUCCESS_RATE);
@@ -688,9 +688,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _maxNegatedEffects;
 	}
 	
-	public final int getLevelDepend()
+	public final int getLvlBonusRate()
 	{
-		return _levelDepend;
+		return _lvlBonusRate;
 	}
 	
 	/**
@@ -1026,9 +1026,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _coolTime;
 	}
 	
-	public final int getSkillRadius()
+	public final int getAffectRange()
 	{
-		return _skillRadius;
+		return _affectRange;
 	}
 	
 	public final boolean isActive()
