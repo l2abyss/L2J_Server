@@ -5,6 +5,7 @@
 	<classpathentry kind="lib" path="dist/libs/c3p0-0.9.2.jar" />
 	<classpathentry kind="lib" path="dist/libs/javolution-5.5.1.jar" sourcepath="dist/libs/javolution-5.5.1-src.zip" />
 	<classpathentry kind="lib" path="dist/libs/jna-3.5.1.jar" />
+	<classpathentry kind="lib" path="dist/libs/jython.jar" />
 	<classpathentry kind="lib" path="dist/libs/jython-engine-2.2.1.jar" />
 	<classpathentry kind="lib" path="dist/libs/mmocore.jar" />
 	<classpathentry kind="lib" path="dist/libs/mail-1.4.6.jar" />
