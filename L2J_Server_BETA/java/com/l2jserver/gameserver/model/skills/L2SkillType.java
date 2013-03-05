@@ -87,8 +87,6 @@ public enum L2SkillType
 	HPMPHEAL_PERCENT,
 	HPCPHEAL_PERCENT,
 	CHAIN_HEAL,
-	// sp
-	GIVE_SP,
 	// reco
 	GIVE_RECO,
 	// vitality

@@ -51,6 +51,7 @@ public enum L2EffectType
 	FAKE_DEATH,
 	FEAR,
 	FUSION,
+	GIVE_SP,
 	HARVESTING,
 	HEAL,
 	HEAL_OVER_TIME,
