@@ -161,7 +161,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final double _pvePower;
 	private final int _magicLevel;
 	private final int _lvlBonusRate;
-	private final boolean _ignoreResists;
 	private final int _minChance;
 	private final int _maxChance;
 	private final int _blowChance;
@@ -425,7 +424,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_pvePower = set.getFloat("pvePower", (float) getPower());
 		_magicLevel = set.getInteger("magicLvl", 0);
 		_lvlBonusRate = set.getInteger("lvlBonusRate", 0);
-		_ignoreResists = set.getBool("ignoreResists", false);
 		_minChance = set.getInteger("minChance", Config.MIN_ABNORMAL_STATE_SUCCESS_RATE);
 		_maxChance = set.getInteger("maxChance", Config.MAX_ABNORMAL_STATE_SUCCESS_RATE);
 		_stat = set.getEnum("stat", Stats.class, null);
@@ -691,15 +689,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final int getLvlBonusRate()
 	{
 		return _lvlBonusRate;
-	}
-	
-	/**
-	 * Return true if skill should ignore all resistances
-	 * @return
-	 */
-	public final boolean ignoreResists()
-	{
-		return _ignoreResists;
 	}
 	
 	/**

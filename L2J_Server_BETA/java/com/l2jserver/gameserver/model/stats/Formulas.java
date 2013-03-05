@@ -1700,9 +1700,12 @@ public final class Formulas
 		double attack = 2 * actor.getMAtk(target, skill) * (1 + (calcSkillVulnerability(actor, target, skill) / 100));
 		double d = (attack - defence) / (attack + defence);
 		
-		if ((target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0) && skill.isDebuff() && !skill.ignoreResists())
+		if (skill.isDebuff())
 		{
-			return false;
+			if (target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0)
+			{
+				return false;
+			}
 		}
 		
 		d += 0.5 * Rnd.nextGaussian();
@@ -1950,14 +1953,20 @@ public final class Formulas
 	
 	public static boolean calcEffectSuccess(L2Character attacker, L2Character target, EffectTemplate effect, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
 	{
-		if (skill.getPower() == -1)
+		if (skill.isDebuff())
 		{
-			return true;
-		}
-		
-		if ((target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0) && skill.isDebuff() && !skill.ignoreResists())
-		{
-			return false;
+			if (skill.getPower() == -1)
+			{
+				if (attacker.isDebug())
+				{
+					attacker.sendDebugMessage(skill.getName() + " effect ignoring resists");
+				}
+				return true;
+			}
+			else if (target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0)
+			{
+				return false;
+			}
 		}
 		
 		final L2SkillType effectType = effect.effectType;
@@ -1965,10 +1974,6 @@ public final class Formulas
 		
 		if (effectType == null)
 		{
-			if (attacker.isDebug())
-			{
-				attacker.sendDebugMessage(skill.getName() + " effect ignoring resists");
-			}
 			if (effectPower > skill.getMaxChance())
 			{
 				return Rnd.get(100) < skill.getMaxChance();
@@ -2084,26 +2089,24 @@ public final class Formulas
 	
 	public static boolean calcSkillSuccess(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
 	{
-		if (skill.getPower() == -1)
+		if (skill.isDebuff())
 		{
-			return true;
+			if (skill.getPower() == -1)
+			{
+				if (attacker.isDebug())
+				{
+					attacker.sendDebugMessage(skill.getName() + " ignoring resists");
+				}
+				return true;
+			}
+			else if (target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0)
+			{
+				return false;
+			}
 		}
 		
 		final boolean isPvP = attacker.isPlayable() && target.isPlayable();
 		final boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
-		if (skill.ignoreResists())
-		{
-			if (attacker.isDebug())
-			{
-				attacker.sendDebugMessage(skill.getName() + " ignoring resists");
-			}
-			
-			return (Rnd.get(100) < skill.getPower(isPvP, isPvE));
-		}
-		else if ((target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0) && skill.isDebuff())
-		{
-			return false;
-		}
 		
 		if (shld == SHIELD_DEFENSE_PERFECT_BLOCK) // perfect block
 		{
@@ -2206,22 +2209,25 @@ public final class Formulas
 	
 	public static boolean calcCubicSkillSuccess(L2CubicInstance attacker, L2Character target, L2Skill skill, byte shld)
 	{
-		if (skill.getPower() == -1)
+		if (skill.isDebuff())
 		{
-			return true;
+			if (skill.getPower() == -1)
+			{
+				return true;
+			}
+			else if (target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0)
+			{
+				return false;
+			}
 		}
 		
 		if (shld == SHIELD_DEFENSE_PERFECT_BLOCK)
 		{
 			return false;
 		}
+		
 		final boolean isPvP = target.isPlayable();
 		final boolean isPvE = target.isL2Attackable();
-		
-		if ((target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0) && skill.isDebuff() && !skill.ignoreResists())
-		{
-			return false;
-		}
 		
 		// if target reflect this skill then the effect will fail
 		if (calcSkillReflect(target, skill) != SKILL_REFLECT_FAILED)
@@ -2566,7 +2572,7 @@ public final class Formulas
 	public static byte calcSkillReflect(L2Character target, L2Skill skill)
 	{
 		// Neither some special skills (like hero debuffs...) or those skills ignoring resistances can be reflected
-		if (skill.ignoreResists() || !skill.canBeReflected())
+		if (!skill.canBeReflected() || skill.getPower() == -1)
 		{
 			return SKILL_REFLECT_FAILED;
 		}
