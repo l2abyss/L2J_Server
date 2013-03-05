@@ -666,7 +666,7 @@ public final class Formulas
 			proximityBonus = 1.1; // +10% crit dmg when side stabbed
 		}
 		
-		damage += calcValakasTrait(attacker, target, skill);
+		damage *= calcValakasTrait(attacker, target, skill);
 		
 		double element = calcElemental(attacker, target, skill);
 		
@@ -723,7 +723,7 @@ public final class Formulas
 		final boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
-		damage += calcValakasTrait(attacker, target, skill);
+		damage *= calcValakasTrait(attacker, target, skill);
 		
 		// Def bonusses in PvP fight
 		if (isPvP)
@@ -2468,7 +2468,7 @@ public final class Formulas
 				calcDefen = target.calcStat(Stats.VALAKAS_VULN, calcDefen, target, skill);
 			}
 		}
-		return calcPower - calcDefen;
+		return 1 + ((calcDefen + calcPower) / 100);
 	}
 	
 	public static double calcElemental(L2Character attacker, L2Character target, L2Skill skill)
