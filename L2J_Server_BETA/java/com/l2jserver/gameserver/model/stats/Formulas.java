@@ -18,6 +18,8 @@
  */
 package com.l2jserver.gameserver.model.stats;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,6 +40,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.effects.EffectTemplate;
+import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Fort;
@@ -2740,5 +2743,135 @@ public final class Formulas
 			return true;
 		}
 		return false;
+	}
+	
+	public static List<L2Effect> calcCancel(L2Character activeChar, L2Character target, L2Skill skill, double power)
+	{
+		int cancelMagicLvl = skill.getMagicLevel();
+		int count = skill.getMaxNegatedEffects();
+		final double vulnMod = target.calcStat(Stats.CANCEL_VULN, 0, target, null);
+		final double profMod = activeChar.calcStat(Stats.CANCEL_PROF, 0, target, null);
+		double resMod = 1 + ((vulnMod + profMod) / 100);
+		double rate = power * resMod;
+		
+		if (activeChar.isDebug() || Config.DEVELOPER)
+		{
+			final StringBuilder stat = new StringBuilder(100);
+			StringUtil.append(stat, skill.getName(), " power:", String.valueOf((int) power), " lvl:", String.valueOf(cancelMagicLvl), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", profMod), "/", String.format("%1.2f", vulnMod), ") total:", String.valueOf(rate));
+			final String result = stat.toString();
+			if (activeChar.isDebug())
+			{
+				activeChar.sendDebugMessage(result);
+			}
+			if (Config.DEVELOPER)
+			{
+				_log.info(result);
+			}
+		}
+		
+		int lastCanceledSkillId = 0;
+		final L2Effect[] effects = target.getAllEffects();
+		List<L2Effect> canceled = new ArrayList<>(count);
+		L2Effect effect;
+		for (int i = effects.length; --i >= 0;) // reverse order
+		{
+			effect = effects[i];
+			if (effect == null)
+			{
+				continue;
+			}
+			
+			// remove effect if can't be stolen
+			if (!effect.canBeStolen())
+			{
+				effects[i] = null;
+				continue;
+			}
+			
+			// if eff time is smaller than 5 sec, will not be stolen, just to save CPU,
+			// avoid synchronization(?) problems and NPEs
+			if ((effect.getAbnormalTime() - effect.getTime()) < 5)
+			{
+				effects[i] = null;
+				continue;
+			}
+			
+			// first pass - only dances/songs
+			if (!effect.getSkill().isDance())
+			{
+				continue;
+			}
+			
+			if (!Formulas.calcCancelSuccess(effect, cancelMagicLvl, (int) rate, skill))
+			{
+				continue;
+			}
+			
+			if (effect.getSkill().getId() != lastCanceledSkillId)
+			{
+				lastCanceledSkillId = effect.getSkill().getId();
+				count--;
+			}
+			
+			canceled.add(effect);
+			if (count == 0)
+			{
+				break;
+			}
+		}
+		
+		// second pass
+		if (count > 0)
+		{
+			lastCanceledSkillId = 0;
+			for (int i = effects.length; --i >= 0;)
+			{
+				effect = effects[i];
+				if (effect == null)
+				{
+					continue;
+				}
+				
+				// second pass - all except dances/songs
+				if (effect.getSkill().isDance())
+				{
+					continue;
+				}
+				
+				if (!Formulas.calcCancelSuccess(effect, cancelMagicLvl, (int) rate, skill))
+				{
+					continue;
+				}
+				
+				if (effect.getSkill().getId() != lastCanceledSkillId)
+				{
+					lastCanceledSkillId = effect.getSkill().getId();
+					count--;
+				}
+				
+				canceled.add(effect);
+				if (count == 0)
+				{
+					break;
+				}
+			}
+		}
+		return canceled;
+	}
+	
+	public static boolean calcCancelSuccess(L2Effect eff, int cancelMagicLvl, int rate, L2Skill skill)
+	{
+		rate *= (eff.getSkill().getMagicLevel() > 0) ? (cancelMagicLvl / eff.getSkill().getMagicLevel()) : 1;
+		
+		if (rate > skill.getMaxChance())
+		{
+			rate = skill.getMaxChance();
+		}
+		else if (rate < skill.getMinChance())
+		{
+			rate = skill.getMinChance();
+		}
+		
+		return Rnd.get(100) < rate;
 	}
 }
