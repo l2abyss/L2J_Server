@@ -2572,7 +2572,7 @@ public final class Formulas
 	public static byte calcSkillReflect(L2Character target, L2Skill skill)
 	{
 		// Neither some special skills (like hero debuffs...) or those skills ignoring resistances can be reflected
-		if (!skill.canBeReflected() || skill.getPower() == -1)
+		if (!skill.canBeReflected() || (skill.getPower() == -1))
 		{
 			return SKILL_REFLECT_FAILED;
 		}
@@ -2757,13 +2757,13 @@ public final class Formulas
 		int count = skill.getMaxNegatedEffects();
 		final double vulnMod = target.calcStat(Stats.CANCEL_VULN, 0, target, null);
 		final double profMod = activeChar.calcStat(Stats.CANCEL_PROF, 0, target, null);
-		double resMod = 1 + ((vulnMod + profMod) / 100);
-		double rate = power * resMod;
+		double resMod = 1 + (((vulnMod + profMod) * -1) / 100);
+		double rate = power / resMod;
 		
 		if (activeChar.isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, skill.getName(), " power:", String.valueOf((int) power), " lvl:", String.valueOf(cancelMagicLvl), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", profMod), "/", String.format("%1.2f", vulnMod), ") total:", String.valueOf(rate));
+			StringUtil.append(stat, skill.getName(), " Base Rate:", String.valueOf((int) power), " Magiclvl:", String.valueOf(cancelMagicLvl), " resMod:", String.format("%1.2f", resMod), "(", String.format("%1.2f", profMod), "/", String.format("%1.2f", vulnMod), ") Rate:", String.valueOf(rate));
 			final String result = stat.toString();
 			if (activeChar.isDebug())
 			{
