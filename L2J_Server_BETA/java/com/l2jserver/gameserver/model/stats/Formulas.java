@@ -384,7 +384,7 @@ public final class Formulas
 			init = ((L2PetInstance) cha).getPetLevelData().getPetRegenHP() * Config.PET_HP_REGEN_MULTIPLIER;
 		}
 		
-		return (cha.calcStat(Stats.REGENERATE_HP_RATE, Math.min(1, init), null, null) * hpRegenMultiplier) + hpRegenBonus;
+		return (cha.calcStat(Stats.REGENERATE_HP_RATE, Math.max(1, init), null, null) * hpRegenMultiplier) + hpRegenBonus;
 	}
 	
 	/**
@@ -495,7 +495,7 @@ public final class Formulas
 			init = ((L2PetInstance) cha).getPetLevelData().getPetRegenMP() * Config.PET_MP_REGEN_MULTIPLIER;
 		}
 		
-		return (cha.calcStat(Stats.REGENERATE_MP_RATE, Math.min(1, init), null, null) * mpRegenMultiplier) + mpRegenBonus;
+		return (cha.calcStat(Stats.REGENERATE_MP_RATE, Math.max(1, init), null, null) * mpRegenMultiplier) + mpRegenBonus;
 	}
 	
 	/**
@@ -545,7 +545,7 @@ public final class Formulas
 		
 		// Apply CON bonus
 		init *= cha.getLevelMod() * BaseStats.CON.calcBonus(cha);
-		return (cha.calcStat(Stats.REGENERATE_CP_RATE, Math.min(1, init), null, null) * cpRegenMultiplier) + cpRegenBonus;
+		return (cha.calcStat(Stats.REGENERATE_CP_RATE, Math.max(1, init), null, null) * cpRegenMultiplier) + cpRegenBonus;
 	}
 	
 	@SuppressWarnings("deprecation")
