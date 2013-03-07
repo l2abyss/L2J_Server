@@ -94,9 +94,7 @@ public final class Formulas
 {
 	private static final Logger _log = Logger.getLogger(Formulas.class.getName());
 	
-	/**
-	 * Regen Task period.
-	 */
+	/** Regen Task period. */
 	private static final int HP_REGENERATE_PERIOD = 3000; // 3 secs
 	
 	public static final byte SHIELD_DEFENSE_FAILED = 0; // no shield defense
@@ -116,12 +114,7 @@ public final class Formulas
 	 */
 	public static int getRegeneratePeriod(L2Character cha)
 	{
-		if (cha.isDoor())
-		{
-			return HP_REGENERATE_PERIOD * 100; // 5 mins
-		}
-		
-		return HP_REGENERATE_PERIOD; // 3s
+		return cha.isDoor() ? HP_REGENERATE_PERIOD * 100 : HP_REGENERATE_PERIOD;
 	}
 	
 	/**
@@ -391,12 +384,7 @@ public final class Formulas
 			init = ((L2PetInstance) cha).getPetLevelData().getPetRegenHP() * Config.PET_HP_REGEN_MULTIPLIER;
 		}
 		
-		if (init < 1)
-		{
-			init = 1;
-		}
-		
-		return (cha.calcStat(Stats.REGENERATE_HP_RATE, init, null, null) * hpRegenMultiplier) + hpRegenBonus;
+		return (cha.calcStat(Stats.REGENERATE_HP_RATE, Math.min(1, init), null, null) * hpRegenMultiplier) + hpRegenBonus;
 	}
 	
 	/**
@@ -507,12 +495,7 @@ public final class Formulas
 			init = ((L2PetInstance) cha).getPetLevelData().getPetRegenMP() * Config.PET_MP_REGEN_MULTIPLIER;
 		}
 		
-		if (init < 1)
-		{
-			init = 1;
-		}
-		
-		return (cha.calcStat(Stats.REGENERATE_MP_RATE, init, null, null) * mpRegenMultiplier) + mpRegenBonus;
+		return (cha.calcStat(Stats.REGENERATE_MP_RATE, Math.min(1, init), null, null) * mpRegenMultiplier) + mpRegenBonus;
 	}
 	
 	/**
@@ -562,12 +545,7 @@ public final class Formulas
 		
 		// Apply CON bonus
 		init *= cha.getLevelMod() * BaseStats.CON.calcBonus(cha);
-		if (init < 1)
-		{
-			init = 1;
-		}
-		
-		return (cha.calcStat(Stats.REGENERATE_CP_RATE, init, null, null) * cpRegenMultiplier) + cpRegenBonus;
+		return (cha.calcStat(Stats.REGENERATE_CP_RATE, Math.min(1, init), null, null) * cpRegenMultiplier) + cpRegenBonus;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -624,7 +602,7 @@ public final class Formulas
 			return 0;
 		}
 		
-		return 1.5; // If all is true, then modifer will be 50% more
+		return 1.5; // If all is true, then modifier will be 50% more
 	}
 	
 	public static double calcBlowDamage(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss)
@@ -651,9 +629,9 @@ public final class Formulas
 		
 		if (attacker.isPlayable() && target.isPlayable())
 		{
-			// Dmg bonusses in PvP fight
+			// Dmg bonuses in PvP fight
 			pvpBonus *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);
-			// Def bonusses in PvP fight
+			// Def bonuses in PvP fight
 			defence *= target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);
 		}
 		
@@ -725,7 +703,7 @@ public final class Formulas
 		double defence = target.getPDef(attacker);
 		damage *= calcValakasTrait(attacker, target, skill);
 		
-		// Def bonusses in PvP fight
+		// Def bonuses in PvP fight
 		if (isPvP)
 		{
 			if (skill == null)
@@ -834,7 +812,7 @@ public final class Formulas
 			}
 		}
 		
-		// for summon use pet weapon vuln, since they cant hold weapon
+		// for summon use pet weapon vuln, since they can't hold weapon
 		if (attacker.isServitor())
 		{
 			stat = Stats.PET_WPN_VULN;
@@ -909,7 +887,7 @@ public final class Formulas
 			damage = 0;
 		}
 		
-		// Dmg bonusses in PvP fight
+		// Dmg bonuses in PvP fight
 		if (isPvP)
 		{
 			if (skill == null)
@@ -994,7 +972,6 @@ public final class Formulas
 		int mDef = target.getMDef(attacker, skill);
 		final boolean isPvP = attacker.isPlayable() && target.isPlayable();
 		final boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
-		// --------------------------------
 		// Pvp bonuses for def
 		if (isPvP)
 		{
@@ -1059,18 +1036,9 @@ public final class Formulas
 			
 			if (target.isPlayer())
 			{
-				if (skill.getSkillType() == L2SkillType.DRAIN)
-				{
-					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.RESISTED_C1_DRAIN);
-					sm.addCharName(attacker);
-					target.sendPacket(sm);
-				}
-				else
-				{
-					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.RESISTED_C1_MAGIC);
-					sm.addCharName(attacker);
-					target.sendPacket(sm);
-				}
+				final SystemMessage sm = (skill.getSkillType() == L2SkillType.DRAIN) ? SystemMessage.getSystemMessage(SystemMessageId.RESISTED_C1_DRAIN) : SystemMessage.getSystemMessage(SystemMessageId.RESISTED_C1_MAGIC);
+				sm.addCharName(attacker);
+				target.sendPacket(sm);
 			}
 		}
 		else if (mcrit)
@@ -1470,142 +1438,6 @@ public final class Formulas
 		return chance < Rnd.get(1000);
 	}
 	
-	public static boolean __calcHitMiss(L2Character attacker, L2Character target)
-	{
-		int delta = attacker.getAccuracy() - target.getEvasionRate(attacker);
-		int chance;
-		if (delta >= 10)
-		{
-			chance = 980;
-		}
-		else
-		{
-			switch (delta)
-			{
-				case 9:
-					chance = 975;
-					break;
-				case 8:
-					chance = 970;
-					break;
-				case 7:
-					chance = 965;
-					break;
-				case 6:
-					chance = 960;
-					break;
-				case 5:
-					chance = 955;
-					break;
-				case 4:
-					chance = 945;
-					break;
-				case 3:
-					chance = 935;
-					break;
-				case 2:
-					chance = 925;
-					break;
-				case 1:
-					chance = 915;
-					break;
-				case 0:
-					chance = 905;
-					break;
-				case -1:
-					chance = 890;
-					break;
-				case -2:
-					chance = 875;
-					break;
-				case -3:
-					chance = 860;
-					break;
-				case -4:
-					chance = 845;
-					break;
-				case -5:
-					chance = 830;
-					break;
-				case -6:
-					chance = 815;
-					break;
-				case -7:
-					chance = 800;
-					break;
-				case -8:
-					chance = 785;
-					break;
-				case -9:
-					chance = 770;
-					break;
-				case -10:
-					chance = 755;
-					break;
-				case -11:
-					chance = 735;
-					break;
-				case -12:
-					chance = 715;
-					break;
-				case -13:
-					chance = 695;
-					break;
-				case -14:
-					chance = 675;
-					break;
-				case -15:
-					chance = 655;
-					break;
-				case -16:
-					chance = 625;
-					break;
-				case -17:
-					chance = 595;
-					break;
-				case -18:
-					chance = 565;
-					break;
-				case -19:
-					chance = 535;
-					break;
-				case -20:
-					chance = 505;
-					break;
-				case -21:
-					chance = 455;
-					break;
-				case -22:
-					chance = 405;
-					break;
-				case -23:
-					chance = 355;
-					break;
-				case -24:
-					chance = 305;
-					break;
-				default:
-					chance = 275;
-			}
-			if (!attacker.isInFrontOfTarget())
-			{
-				if (attacker.isBehindTarget())
-				{
-					chance *= 1.2;
-				}
-				else
-				{
-					chance *= 1.1;
-				}
-				if (chance > 980)
-				{
-					chance = 980;
-				}
-			}
-		}
-		return chance < Rnd.get(1000);
-	}
-	
 	/**
 	 * Returns:<br>
 	 * 0 = shield defense doesn't succeed<br>
@@ -1750,7 +1582,7 @@ public final class Formulas
 				}
 			}
 			
-			// Finally, calculate skilltype vulnerabilities
+			// Finally, calculate skill type vulnerabilities
 			multiplier = calcSkillTraitVulnerability(multiplier, target, skill);
 		}
 		return multiplier;
@@ -1906,24 +1738,12 @@ public final class Formulas
 		return 1 / saveVs.calcBonus(target);
 	}
 	
-	public static int calcLvlDependModifier(L2Character attacker, L2Character target, L2Skill skill)
+	public static double calcLvlBonusMod(L2Character attacker, L2Character target, L2Skill skill)
 	{
-		if (skill.getLvlBonusRate() == 0)
-		{
-			return 0;
-		}
-		
-		final int attackerMod;
-		if (skill.getMagicLevel() > 0)
-		{
-			attackerMod = skill.getMagicLevel();
-		}
-		else
-		{
-			attackerMod = attacker.getLevel();
-		}
-		
-		return skill.getLvlBonusRate() * (attackerMod - target.getLevel());
+		int attackerLvl = skill.getMagicLevel() > 0 ? skill.getMagicLevel() : attacker.getLevel();
+		double skillLvlBonusRateMod = 1 + (skill.getLvlBonusRate() / 100.);
+		double lvlMod = 1 + ((attackerLvl - target.getLevel()) / 100.);
+		return skillLvlBonusRateMod * lvlMod;
 	}
 	
 	public static int calcElementModifier(L2Character attacker, L2Character target, L2Skill skill)
@@ -2057,9 +1877,9 @@ public final class Formulas
 		int elementModifier = calcElementModifier(attacker, target, skill);
 		rate += elementModifier;
 		
-		// lvl modifier.
-		int deltamod = calcLvlDependModifier(attacker, target, skill);
-		rate += deltamod;
+		// Lvl Bonus Modifier.
+		double lvlBonusMod = calcLvlBonusMod(attacker, target, skill);
+		rate *= lvlBonusMod;
 		
 		if (rate > skill.getMaxChance())
 		{
@@ -2073,7 +1893,7 @@ public final class Formulas
 		if (attacker.isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, skill.getName(), " eff.type:", effectType.toString(), " power:", String.valueOf(effectPower), " stat:", String.format("%1.2f", statModifier), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", profModifier), "/", String.format("%1.2f", vulnModifier), ") elem:", String.valueOf(elementModifier), " mAtk:", String.format("%1.2f", mAtkModifier), " ss:", String.valueOf(ssModifier), " lvl:", String.valueOf(deltamod), " total:", String.valueOf(rate));
+			StringUtil.append(stat, skill.getName(), " eff.type:", effectType.toString(), " power:", String.valueOf(effectPower), " stat:", String.format("%1.2f", statModifier), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", profModifier), "/", String.format("%1.2f", vulnModifier), ") elem:", String.valueOf(elementModifier), " mAtk:", String.format("%1.2f", mAtkModifier), " ss:", String.valueOf(ssModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
 			final String result = stat.toString();
 			if (attacker.isDebug())
 			{
@@ -2177,9 +1997,9 @@ public final class Formulas
 		int elementModifier = calcElementModifier(attacker, target, skill);
 		rate += elementModifier;
 		
-		// lvl modifier.
-		int deltamod = calcLvlDependModifier(attacker, target, skill);
-		rate += deltamod;
+		// Lvl Bonus Modifier.
+		double lvlBonusMod = calcLvlBonusMod(attacker, target, skill);
+		rate *= lvlBonusMod;
 		
 		if (rate > skill.getMaxChance())
 		{
@@ -2193,7 +2013,7 @@ public final class Formulas
 		if (attacker.isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, skill.getName(), " type:", skill.getSkillType().toString(), " power:", String.valueOf(value), " stat:", String.format("%1.2f", statModifier), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", profModifier), "/", String.format("%1.2f", vulnModifier), ") elem:", String.valueOf(elementModifier), " mAtk:", String.format("%1.2f", mAtkModifier), " ss:", String.valueOf(ssModifier), " lvl:", String.valueOf(deltamod), " total:", String.valueOf(rate));
+			StringUtil.append(stat, skill.getName(), " type:", skill.getSkillType().toString(), " power:", String.valueOf(value), " stat:", String.format("%1.2f", statModifier), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", profModifier), "/", String.format("%1.2f", vulnModifier), ") elem:", String.valueOf(elementModifier), " mAtk:", String.format("%1.2f", mAtkModifier), " ss:", String.valueOf(ssModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
 			final String result = stat.toString();
 			if (attacker.isDebug())
 			{
@@ -2277,9 +2097,9 @@ public final class Formulas
 		int elementModifier = calcElementModifier(attacker.getOwner(), target, skill);
 		rate += elementModifier;
 		
-		// lvl modifier.
-		int deltamod = calcLvlDependModifier(attacker.getOwner(), target, skill);
-		rate += deltamod;
+		// Lvl Bonus Modifier.
+		double lvlBonusMod = calcLvlBonusMod(attacker.getOwner(), target, skill);
+		rate *= lvlBonusMod;
 		
 		if (rate > skill.getMaxChance())
 		{
@@ -2293,7 +2113,7 @@ public final class Formulas
 		if (attacker.getOwner().isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, skill.getName(), " type:", skill.getSkillType().toString(), " power:", String.valueOf(value), " stat:", String.format("%1.2f", statModifier), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", profModifier), "/", String.format("%1.2f", vulnModifier), ") elem:", String.valueOf(elementModifier), " mAtk:", String.format("%1.2f", mAtkModifier), " lvl:", String.valueOf(deltamod), " total:", String.valueOf(rate));
+			StringUtil.append(stat, skill.getName(), " type:", skill.getSkillType().toString(), " power:", String.valueOf(value), " stat:", String.format("%1.2f", statModifier), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", profModifier), "/", String.format("%1.2f", vulnModifier), ") elem:", String.valueOf(elementModifier), " mAtk:", String.format("%1.2f", mAtkModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
 			final String result = stat.toString();
 			if (attacker.getOwner().isDebug())
 			{
