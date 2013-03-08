@@ -36,6 +36,7 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.cache.CrestCache;
 import com.l2jserver.gameserver.communitybbs.BB.Forum;
 import com.l2jserver.gameserver.communitybbs.Manager.ForumsBBSManager;
+import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
@@ -64,7 +65,6 @@ import com.l2jserver.gameserver.network.serverpackets.PledgeShowMemberListUpdate
 import com.l2jserver.gameserver.network.serverpackets.PledgeSkillList;
 import com.l2jserver.gameserver.network.serverpackets.PledgeSkillList.SubPledgeSkill;
 import com.l2jserver.gameserver.network.serverpackets.PledgeSkillListAdd;
-import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
@@ -82,8 +82,8 @@ public class L2Clan
 	private static final Logger _log = Logger.getLogger(L2Clan.class.getName());
 	
 	// SQL queries
-	private static final String INSERT_CLAN_DATA = "INSERT INTO clan_data (clan_id,clan_name,clan_level,hasCastle,blood_alliance_count,blood_oath_count,ally_id,ally_name,leader_id,crest_id,crest_large_id,ally_crest_id) values (?,?,?,?,?,?,?,?,?,?,?,?)";
-	private static final String SELECT_CLAN_DATA = "SELECT clan_name,clan_level,hasCastle,blood_alliance_count,blood_oath_count,ally_id,ally_name,leader_id,crest_id,crest_large_id,ally_crest_id,reputation_score,auction_bid_at,ally_penalty_expiry_time,ally_penalty_type,char_penalty_expiry_time,dissolving_expiry_time FROM clan_data where clan_id=?";
+	private static final String INSERT_CLAN_DATA = "INSERT INTO clan_data (clan_id,clan_name,clan_level,hasCastle,blood_alliance_count,blood_oath_count,ally_id,ally_name,leader_id,crest_id,crest_large_id,ally_crest_id,new_leader_id) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static final String SELECT_CLAN_DATA = "SELECT * FROM clan_data where clan_id=?";
 	
 	// Ally Penalty Types
 	/** Clan leaved ally */
@@ -188,6 +188,7 @@ public class L2Clan
 	private String _notice;
 	private boolean _noticeEnabled = false;
 	private static final int MAX_NOTICE_LENGTH = 8192;
+	private int _newLeaderId;
 	
 	/**
 	 * Called if a clan is referenced only by id. In this case all other data needs to be fetched from db
@@ -257,68 +258,92 @@ public class L2Clan
 	
 	public void setNewLeader(L2ClanMember member)
 	{
-		if (!getLeader().isOnline())
-		{
-			return;
-		}
-		if (member == null)
-		{
-			return;
-		}
-		if (!member.isOnline())
-		{
-			return;
-		}
+		final L2PcInstance newLeader = member.getPlayerInstance();
+		final L2ClanMember exMember = getLeader();
+		final L2PcInstance exLeader = exMember.getPlayerInstance();
 		
-		L2PcInstance exLeader = getLeader().getPlayerInstance();
-		L2PcInstance newLeader = member.getPlayerInstance();
 		if (!fireClanLeaderChangeListeners(newLeader, exLeader))
 		{
 			return;
 		}
 		
-		SiegeManager.getInstance().removeSiegeSkills(exLeader);
-		exLeader.setClan(this);
-		exLeader.setClanPrivileges(L2Clan.CP_NOTHING);
-		exLeader.broadcastUserInfo();
-		
-		setLeader(member);
-		updateClanInDB();
-		
-		exLeader.setPledgeClass(L2ClanMember.calculatePledgeClass(exLeader));
-		exLeader.broadcastUserInfo();
-		exLeader.checkItemRestriction();
-		newLeader.setClan(this);
-		newLeader.setPledgeClass(L2ClanMember.calculatePledgeClass(newLeader));
-		newLeader.setClanPrivileges(L2Clan.CP_ALL);
-		if (getLevel() >= SiegeManager.getInstance().getSiegeClanMinLevel())
+		if (exLeader != null)
 		{
-			SiegeManager.getInstance().addSiegeSkills(newLeader);
-			
-			// Transferring siege skills TimeStamps from old leader to new leader to prevent unlimited headquarters
-			if (!exLeader.getSkillReuseTimeStamps().isEmpty())
+			if (exLeader.isFlying())
 			{
-				TimeStamp t;
-				for (L2Skill sk : SkillTable.getInstance().getSiegeSkills(newLeader.isNoble(), getCastleId() > 0))
-				{
-					if (exLeader.hasSkillReuse(sk.getReuseHashCode()))
-					{
-						t = exLeader.getSkillReuseTimeStamp(sk.getReuseHashCode());
-						newLeader.addTimeStamp(sk, t.getReuse(), t.getStamp());
-					}
-				}
-				newLeader.sendPacket(new SkillCoolTime(newLeader));
+				exLeader.dismount();
+			}
+			
+			if (getLevel() >= SiegeManager.getInstance().getSiegeClanMinLevel())
+			{
+				SiegeManager.getInstance().removeSiegeSkills(exLeader);
+			}
+			exLeader.setClanPrivileges(L2Clan.CP_NOTHING);
+			exLeader.broadcastUserInfo();
+			
+		}
+		else
+		{
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement statement = con.prepareStatement("UPDATE characters SET clan_privs = ? WHERE charId = ?"))
+			{
+				statement.setInt(1, L2Clan.CP_NOTHING);
+				statement.setInt(2, getLeaderId());
+				statement.execute();
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.WARNING, "Couldn't update clan privs for old clan leader", e);
 			}
 		}
-		newLeader.broadcastUserInfo();
+		
+		setLeader(member);
+		if (getNewLeaderId() != 0)
+		{
+			setNewLeaderId(0, true);
+		}
+		updateClanInDB();
+		
+		if (exLeader != null)
+		{
+			exLeader.setPledgeClass(L2ClanMember.calculatePledgeClass(exLeader));
+			exLeader.broadcastUserInfo();
+			exLeader.checkItemRestriction();
+		}
+		
+		if (newLeader != null)
+		{
+			newLeader.setPledgeClass(L2ClanMember.calculatePledgeClass(newLeader));
+			newLeader.setClanPrivileges(L2Clan.CP_ALL);
+			
+			if (getLevel() >= SiegeManager.getInstance().getSiegeClanMinLevel())
+			{
+				SiegeManager.getInstance().addSiegeSkills(newLeader);
+			}
+			newLeader.broadcastUserInfo();
+		}
+		else
+		{
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement statement = con.prepareStatement("UPDATE characters SET clan_privs = ? WHERE charId = ?"))
+			{
+				statement.setInt(1, L2Clan.CP_ALL);
+				statement.setInt(2, getLeaderId());
+				statement.execute();
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.WARNING, "Couldn't update clan privs for new clan leader", e);
+			}
+		}
 		
 		broadcastClanStatus();
-		
-		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_LEADER_PRIVILEGES_HAVE_BEEN_TRANSFERRED_TO_C1);
-		sm.addString(newLeader.getName());
-		broadcastToOnlineMembers(sm);
-		sm = null;
-		CommunityServerThread.getInstance().sendPacket(new WorldInfo(null, this, WorldInfo.TYPE_UPDATE_CLAN_DATA));
+		broadcastToOnlineMembers(SystemMessage.getSystemMessage(SystemMessageId.CLAN_LEADER_PRIVILEGES_HAVE_BEEN_TRANSFERRED_TO_C1).addString(member.getName()));
+		if (CommunityServerThread.getInstance() != null)
+		{
+			CommunityServerThread.getInstance().sendPacket(new WorldInfo(null, this, WorldInfo.TYPE_UPDATE_CLAN_DATA));
+		}
+		_log.log(Level.INFO, "Leader of Clan: " + getName() + " changed to: " + member.getName() + " ex leader: " + exMember.getName());
 	}
 	
 	/**
@@ -418,12 +443,12 @@ public class L2Clan
 	}
 	
 	/**
-	 * @param objectID the required clan member object Id.
-	 * @return the clan member for a given {@code objectID}.
+	 * @param objectId the required clan member object Id.
+	 * @return the clan member for a given {@code objectId}.
 	 */
-	public L2ClanMember getClanMember(int objectID)
+	public L2ClanMember getClanMember(int objectId)
 	{
-		return _members.get(objectID);
+		return _members.get(objectId);
 	}
 	
 	/**
@@ -959,7 +984,7 @@ public class L2Clan
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			final PreparedStatement statement = con.prepareStatement("UPDATE clan_data SET leader_id=?,ally_id=?,ally_name=?,reputation_score=?,ally_penalty_expiry_time=?,ally_penalty_type=?,char_penalty_expiry_time=?,dissolving_expiry_time=? WHERE clan_id=?");
+			final PreparedStatement statement = con.prepareStatement("UPDATE clan_data SET leader_id=?,ally_id=?,ally_name=?,reputation_score=?,ally_penalty_expiry_time=?,ally_penalty_type=?,char_penalty_expiry_time=?,dissolving_expiry_time=?,new_leader_id=? WHERE clan_id=?");
 			statement.setInt(1, getLeaderId());
 			statement.setInt(2, getAllyId());
 			statement.setString(3, getAllyName());
@@ -968,7 +993,8 @@ public class L2Clan
 			statement.setInt(6, getAllyPenaltyType());
 			statement.setLong(7, getCharPenaltyExpiryTime());
 			statement.setLong(8, getDissolvingExpiryTime());
-			statement.setInt(9, getClanId());
+			statement.setInt(9, getNewLeaderId());
+			statement.setInt(10, getClanId());
 			statement.execute();
 			statement.close();
 			if (Config.DEBUG)
@@ -1014,6 +1040,7 @@ public class L2Clan
 			ps.setInt(10, getCrestId());
 			ps.setInt(11, getCrestLargeId());
 			ps.setInt(12, getAllyCrestId());
+			ps.setInt(13, getNewLeaderId());
 			ps.execute();
 			if (Config.DEBUG)
 			{
@@ -1114,6 +1141,7 @@ public class L2Clan
 					
 					setReputationScore(clanData.getInt("reputation_score"), false);
 					setAuctionBiddedAt(clanData.getInt("auction_bid_at"), false);
+					setNewLeaderId(clanData.getInt("new_leader_id"), false);
 					
 					final int leaderId = (clanData.getInt("leader_id"));
 					
@@ -3089,6 +3117,30 @@ public class L2Clan
 		SubPledgeSkill[] result = list.toArray(new SubPledgeSkill[list.size()]);
 		FastList.recycle(list);
 		return result;
+	}
+	
+	public void setNewLeaderId(int objectId, boolean storeInDb)
+	{
+		_newLeaderId = objectId;
+		if (storeInDb)
+		{
+			updateClanInDB();
+		}
+	}
+	
+	public int getNewLeaderId()
+	{
+		return _newLeaderId;
+	}
+	
+	public L2PcInstance getNewLeader()
+	{
+		return L2World.getInstance().getPlayer(_newLeaderId);
+	}
+	
+	public String getNewLeaderName()
+	{
+		return CharNameTable.getInstance().getNameById(_newLeaderId);
 	}
 	
 	// Listeners

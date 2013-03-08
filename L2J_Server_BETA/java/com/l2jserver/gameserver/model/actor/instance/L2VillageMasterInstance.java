@@ -203,7 +203,80 @@ public class L2VillageMasterInstance extends L2NpcInstance
 				return;
 			}
 			
-			changeClanLeader(player, cmdParams);
+			if (!player.isClanLeader())
+			{
+				player.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
+				return;
+			}
+			
+			if (player.getName().equalsIgnoreCase(cmdParams))
+			{
+				return;
+			}
+			
+			final L2Clan clan = player.getClan();
+			final L2ClanMember member = clan.getClanMember(cmdParams);
+			if (member == null)
+			{
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DOES_NOT_EXIST);
+				sm.addString(cmdParams);
+				player.sendPacket(sm);
+				return;
+			}
+			
+			if (!member.isOnline())
+			{
+				player.sendPacket(SystemMessageId.INVITED_USER_NOT_ONLINE);
+				return;
+			}
+			
+			// To avoid clans with null clan leader, academy members shouldn't be eligible for clan leader.
+			if (member.getPlayerInstance().isAcademyMember())
+			{
+				player.sendPacket(SystemMessageId.RIGHT_CANT_TRANSFERRED_TO_ACADEMY_MEMBER);
+				return;
+			}
+			
+			if (Config.ALT_CLAN_LEADER_INSTANT_ACTIVATION)
+			{
+				clan.setNewLeader(member);
+			}
+			else
+			{
+				final NpcHtmlMessage msg = new NpcHtmlMessage(getObjectId());
+				if (clan.getNewLeaderId() == 0)
+				{
+					clan.setNewLeaderId(member.getObjectId(), true);
+					msg.setFile(player.getHtmlPrefix(), "data/scripts/village_master/Clan/9000-07-success.htm");
+				}
+				else
+				{
+					msg.setFile(player.getHtmlPrefix(), "data/scripts/village_master/Clan/9000-07-in-progress.htm");
+				}
+				player.sendPacket(msg);
+			}
+		}
+		else if (actualCommand.equalsIgnoreCase("cancel_clan_leader_change"))
+		{
+			if (!player.isClanLeader())
+			{
+				player.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
+				return;
+			}
+			
+			final L2Clan clan = player.getClan();
+			final NpcHtmlMessage msg = new NpcHtmlMessage(getObjectId());
+			if (clan.getNewLeaderId() != 0)
+			{
+				clan.setNewLeaderId(0, true);
+				msg.setFile(player.getHtmlPrefix(), "data/scripts/village_master/Clan/9000-07-canceled.htm");
+			}
+			else
+			{
+				msg.setHtml("<html><body>You don't have clan leader delegation applications submitted yet!</body></html>");
+			}
+			
+			player.sendPacket(msg);
 		}
 		else if (actualCommand.equalsIgnoreCase("recover_clan"))
 		{
@@ -886,49 +959,6 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		final L2Clan clan = player.getClan();
 		clan.setDissolvingExpiryTime(0);
 		clan.updateClanInDB();
-	}
-	
-	private static final void changeClanLeader(L2PcInstance player, String target)
-	{
-		if (!player.isClanLeader())
-		{
-			player.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
-			return;
-		}
-		if (player.getName().equalsIgnoreCase(target))
-		{
-			return;
-		}
-		/*
-		 * Until proper clan leader change support is done, this is a little exploit fix (leader, while fliying wyvern changes clan leader and the new leader can ride the wyvern too) DrHouse
-		 */
-		if (player.isFlying())
-		{
-			player.sendMessage("Please, stop flying");
-			return;
-		}
-		
-		final L2Clan clan = player.getClan();
-		final L2ClanMember member = clan.getClanMember(target);
-		if (member == null)
-		{
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DOES_NOT_EXIST);
-			sm.addString(target);
-			player.sendPacket(sm);
-			return;
-		}
-		if (!member.isOnline())
-		{
-			player.sendPacket(SystemMessageId.INVITED_USER_NOT_ONLINE);
-			return;
-		}
-		// To avoid clans with null clan leader, academy members shouldn't be eligible for clan leader.
-		if (member.getPlayerInstance().isAcademyMember())
-		{
-			player.sendPacket(SystemMessageId.RIGHT_CANT_TRANSFERRED_TO_ACADEMY_MEMBER);
-			return;
-		}
-		clan.setNewLeader(member);
 	}
 	
 	private static final void createSubPledge(L2PcInstance player, String clanName, String leaderName, int pledgeType, int minClanLvl)
