@@ -2566,62 +2566,37 @@ public final class Formulas
 			}
 		}
 		
-		int lastCanceledSkillId = 0;
+		// Cancel for Abnormals.
 		final L2Effect[] effects = target.getAllEffects();
 		List<L2Effect> canceled = new ArrayList<>(count);
-		L2Effect effect;
-		for (int i = effects.length; --i >= 0;) // reverse order
+		if (skill.getNegateAbnormals() != null)
 		{
-			effect = effects[i];
-			if (effect == null)
+			for (L2Effect eff : effects)
 			{
-				continue;
-			}
-			
-			// remove effect if can't be stolen
-			if (!effect.canBeStolen())
-			{
-				effects[i] = null;
-				continue;
-			}
-			
-			// if eff time is smaller than 5 sec, will not be stolen, just to save CPU,
-			// avoid synchronization(?) problems and NPEs
-			if ((effect.getAbnormalTime() - effect.getTime()) < 5)
-			{
-				effects[i] = null;
-				continue;
-			}
-			
-			// first pass - only dances/songs
-			if (!effect.getSkill().isDance())
-			{
-				continue;
-			}
-			
-			if (!Formulas.calcCancelSuccess(effect, cancelMagicLvl, (int) rate, skill))
-			{
-				continue;
-			}
-			
-			if (effect.getSkill().getId() != lastCanceledSkillId)
-			{
-				lastCanceledSkillId = effect.getSkill().getId();
-				count--;
-			}
-			
-			canceled.add(effect);
-			if (count == 0)
-			{
-				break;
+				if (eff == null)
+				{
+					continue;
+				}
+				
+				for (String negateAbnormalType : skill.getNegateAbnormals().keySet())
+				{
+					if (negateAbnormalType.equalsIgnoreCase(eff.getAbnormalType()) && (skill.getNegateAbnormals().get(negateAbnormalType) >= eff.getAbnormalLvl()))
+					{
+						if (calcCancelSuccess(eff, cancelMagicLvl, (int) rate, skill))
+						{
+							eff.exit();
+						}
+					}
+				}
 			}
 		}
-		
-		// second pass
-		if (count > 0)
+		// Common Cancel/Steal.
+		else
 		{
-			lastCanceledSkillId = 0;
-			for (int i = effects.length; --i >= 0;)
+			// First Pass.
+			int lastCanceledSkillId = 0;
+			L2Effect effect;
+			for (int i = effects.length; --i >= 0;) // reverse order
 			{
 				effect = effects[i];
 				if (effect == null)
@@ -2629,13 +2604,28 @@ public final class Formulas
 					continue;
 				}
 				
-				// second pass - all except dances/songs
-				if (effect.getSkill().isDance())
+				// remove effect if can't be stolen
+				if (!effect.canBeStolen())
+				{
+					effects[i] = null;
+					continue;
+				}
+				
+				// if effect time is smaller than 5 seconds, will not be stolen, just to save CPU,
+				// avoid synchronization(?) problems and NPEs
+				if ((effect.getAbnormalTime() - effect.getTime()) < 5)
+				{
+					effects[i] = null;
+					continue;
+				}
+				
+				// Only Dances/Songs.
+				if (!effect.getSkill().isDance())
 				{
 					continue;
 				}
 				
-				if (!Formulas.calcCancelSuccess(effect, cancelMagicLvl, (int) rate, skill))
+				if (!calcCancelSuccess(effect, cancelMagicLvl, (int) rate, skill))
 				{
 					continue;
 				}
@@ -2650,6 +2640,42 @@ public final class Formulas
 				if (count == 0)
 				{
 					break;
+				}
+			}
+			// Second Pass.
+			if (count > 0)
+			{
+				lastCanceledSkillId = 0;
+				for (int i = effects.length; --i >= 0;)
+				{
+					effect = effects[i];
+					if (effect == null)
+					{
+						continue;
+					}
+					
+					// All Except Dances/Songs.
+					if (effect.getSkill().isDance())
+					{
+						continue;
+					}
+					
+					if (!calcCancelSuccess(effect, cancelMagicLvl, (int) rate, skill))
+					{
+						continue;
+					}
+					
+					if (effect.getSkill().getId() != lastCanceledSkillId)
+					{
+						lastCanceledSkillId = effect.getSkill().getId();
+						count--;
+					}
+					
+					canceled.add(effect);
+					if (count == 0)
+					{
+						break;
+					}
 				}
 			}
 		}
