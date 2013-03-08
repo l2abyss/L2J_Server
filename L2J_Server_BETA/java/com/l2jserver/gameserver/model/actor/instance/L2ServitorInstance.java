@@ -67,7 +67,7 @@ public class L2ServitorInstance extends L2Summon
 	private int _nextItemConsumeTime;
 	public int lastShowntimeRemaining; // Following FbiAgent's example to avoid sending useless packets
 	
-	private Future<?> _summonLifeTask;
+	protected Future<?> _summonLifeTask;
 	
 	private int _referenceSkill;
 	
@@ -575,7 +575,7 @@ public class L2ServitorInstance extends L2Summon
 				{
 					_summon.decNextItemConsumeTime(maxTime / (_summon.getItemConsumeSteps() + 1));
 					
-					// check if owner has enought itemConsume, if requested
+					// check if owner has enough itemConsume, if requested
 					if ((_summon.getItemConsumeCount() > 0) && (_summon.getItemConsumeId() != 0) && !_summon.isDead() && !_summon.destroyItemByItemId("Consume", _summon.getItemConsumeId(), _summon.getItemConsumeCount(), _activeChar, true))
 					{
 						_summon.unSummon(_activeChar);
@@ -602,7 +602,7 @@ public class L2ServitorInstance extends L2Summon
 	{
 		if (Config.DEBUG)
 		{
-			_log.warning(getClass().getSimpleName() + ": " + getTemplate().getName() + " (" + owner.getName() + ") unsummoned.");
+			_log.info(getClass().getSimpleName() + ": " + getTemplate().getName() + " (" + owner.getName() + ") unsummoned.");
 		}
 		
 		if (_summonLifeTask != null)

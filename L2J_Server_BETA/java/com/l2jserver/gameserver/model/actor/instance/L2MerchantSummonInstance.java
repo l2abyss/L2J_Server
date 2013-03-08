@@ -81,6 +81,12 @@ public class L2MerchantSummonInstance extends L2ServitorInstance
 			}
 			getKnownList().removeAllKnownObjects();
 			setTarget(null);
+			
+			if (_summonLifeTask != null)
+			{
+				_summonLifeTask.cancel(false);
+				_summonLifeTask = null;
+			}
 		}
 	}
 	

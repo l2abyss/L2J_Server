@@ -73,7 +73,7 @@ public abstract class L2Summon extends L2Playable
 	private int _attackRange = 36; // Melee range
 	private boolean _follow = true;
 	private boolean _previousFollowStatus = true;
-	public boolean _restoreSummon = true;
+	protected boolean _restoreSummon = true;
 	private int _shotsMask = 0;
 	
 	// TODO: Unhardcode
