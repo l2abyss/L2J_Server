@@ -3445,16 +3445,16 @@ public final class Config
 				WAREHOUSE_SLOTS_CLAN = Integer.parseInt(pValue);
 				break;
 			case "enchantchanceelementstone":
-				ENCHANT_CHANCE_ELEMENT_STONE = Integer.parseInt(pValue);
+				ENCHANT_CHANCE_ELEMENT_STONE = Double.parseDouble(pValue);
 				break;
 			case "enchantchanceelementcrystal":
-				ENCHANT_CHANCE_ELEMENT_CRYSTAL = Integer.parseInt(pValue);
+				ENCHANT_CHANCE_ELEMENT_CRYSTAL = Double.parseDouble(pValue);
 				break;
 			case "enchantchanceelementjewel":
-				ENCHANT_CHANCE_ELEMENT_JEWEL = Integer.parseInt(pValue);
+				ENCHANT_CHANCE_ELEMENT_JEWEL = Double.parseDouble(pValue);
 				break;
 			case "enchantchanceelementenergy":
-				ENCHANT_CHANCE_ELEMENT_ENERGY = Integer.parseInt(pValue);
+				ENCHANT_CHANCE_ELEMENT_ENERGY = Double.parseDouble(pValue);
 				break;
 			case "enchantsafemax":
 				ENCHANT_SAFE_MAX = Integer.parseInt(pValue);
