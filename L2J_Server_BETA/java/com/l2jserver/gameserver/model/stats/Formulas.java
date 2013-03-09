@@ -1783,12 +1783,6 @@ public final class Formulas
 			}
 		}
 		
-		final L2SkillType effectType = effect.effectType;
-		if (effectType.equals(L2SkillType.CANCEL))
-		{
-			return true;
-		}
-		
 		// Perfect Shield Block.
 		if (shld == SHIELD_DEFENSE_PERFECT_BLOCK)
 		{
@@ -1800,8 +1794,26 @@ public final class Formulas
 			return false;
 		}
 		
-		// Calculate BaseRate.
+		final L2SkillType effectType = effect.effectType;
 		double baseRate = effect.effectPower;
+		if (effectType == null)
+		{
+			if (baseRate > skill.getMaxChance())
+			{
+				return Rnd.get(100) < skill.getMaxChance();
+			}
+			else if (baseRate < skill.getMinChance())
+			{
+				return Rnd.get(100) < skill.getMinChance();
+			}
+			return Rnd.get(100) < baseRate;
+		}
+		else if (effectType.equals(L2SkillType.CANCEL))
+		{
+			return true;
+		}
+		
+		// Calculate BaseRate.
 		double statMod = calcSkillStatMod(skill, target);
 		double rate = (baseRate / statMod);
 		
