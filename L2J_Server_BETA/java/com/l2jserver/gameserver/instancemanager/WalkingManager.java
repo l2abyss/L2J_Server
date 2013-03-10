@@ -413,7 +413,6 @@ public class WalkingManager extends DocumentParser
 					
 					if (!npc.isInsideRadius(node.getMoveX(), node.getMoveY(), node.getMoveZ(), 3000, true, false))
 					{
-						_log.info(routeName + " " + npc.getNpcId());
 						npc.sendDebugMessage("Route " + routeName + ", NPC is too far from starting point, walking will no start");
 						return;
 					}
