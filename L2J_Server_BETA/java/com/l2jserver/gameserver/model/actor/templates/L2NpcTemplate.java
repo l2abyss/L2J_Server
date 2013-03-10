@@ -431,9 +431,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 						addBuffSkill(skill);
 						break;
 					case HEAL:
-					case HOT:
 					case HEAL_PERCENT:
-					case HEAL_STATIC:
 						addHealSkill(skill);
 						break;
 					case RESURRECT:

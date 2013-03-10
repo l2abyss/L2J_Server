@@ -1424,9 +1424,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				break;
 			}
 			case HEAL:
-			case HOT:
 			case HEAL_PERCENT:
-			case HEAL_STATIC:
 			{
 				double percentage = (caster.getCurrentHp() / caster.getMaxHp()) * 100;
 				if (caster.isMinion() && (sk.getTargetType() != L2TargetType.TARGET_SELF))

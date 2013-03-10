@@ -1686,7 +1686,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 					case BUFF:
 					case HEAL:
 					case COMBATPOINTHEAL:
-					case MANAHEAL:
 						doit = true;
 						break;
 				}

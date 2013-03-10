@@ -31,6 +31,7 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
@@ -386,26 +387,9 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			for (L2Skill skill : getTemplate().getSkills().values())
 			{
 				// if the skill is a buff, check if the owner has it already [ owner.getEffect(L2Skill skill) ]
-				if (Rnd.get(5) < chance)
+				if ((Rnd.get(5) < chance) && skill.hasEffectType(L2EffectType.CPHEAL, L2EffectType.HEAL, L2EffectType.HEAL_PERCENT, L2EffectType.MANAHEAL_BY_LEVEL, L2EffectType.MANAHEAL_PERCENT))
 				{
-					switch (skill.getSkillType())
-					{
-						case COMBATPOINTHEAL:
-						case CPHOT:
-						case HEAL:
-						case HEAL_PERCENT:
-						case HEAL_STATIC:
-						case HOT:
-						case MANA_BY_LEVEL:
-						case MANAHEAL:
-						case MANAHEAL_PERCENT:
-						case MANARECHARGE:
-						case MPHOT:
-						{
-							sitCastAndFollow(skill, _owner);
-							return;
-						}
-					}
+					sitCastAndFollow(skill, _owner);
 				}
 			}
 		}

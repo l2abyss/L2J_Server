@@ -9727,20 +9727,6 @@ public final class L2PcInstance extends L2Playable
 			}
 		}
 		
-		// Check if the skill is Drain Soul (Soul Crystals) and if the target is a MOB
-		if (sklType == L2SkillType.DRAIN_SOUL)
-		{
-			if (!(target instanceof L2MonsterInstance))
-			{
-				// Send a System Message to the L2PcInstance
-				sendPacket(SystemMessageId.INCORRECT_TARGET);
-				
-				// Send a Server->Client packet ActionFailed to the L2PcInstance
-				sendPacket(ActionFailed.STATIC_PACKET);
-				return false;
-			}
-		}
-		
 		// Check if this is a Pvp skill and target isn't a non-flagged/non-karma player
 		switch (sklTargetType)
 		{
