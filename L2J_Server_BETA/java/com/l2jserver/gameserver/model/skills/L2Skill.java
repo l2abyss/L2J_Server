@@ -51,6 +51,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.conditions.Condition;
 import com.l2jserver.gameserver.model.effects.EffectTemplate;
 import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
@@ -2198,5 +2199,30 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public int getHairStyleId()
 	{
 		return _hairStyleId;
+	}
+	
+	/**
+	 * @param types
+	 * @return {@code true} if at least one of specified {@link L2EffectType} types present on the current skill's effects, {@code false} otherwise.
+	 */
+	public boolean hasEffectType(L2EffectType... types)
+	{
+		if (hasEffects())
+		{
+			final Env env = new Env();
+			env.setSkill(this);
+			for (EffectTemplate et : _effectTemplates)
+			{
+				final L2Effect e = et.getEffect(env);
+				for (L2EffectType type : types)
+				{
+					if (e.getEffectType() == type)
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 }

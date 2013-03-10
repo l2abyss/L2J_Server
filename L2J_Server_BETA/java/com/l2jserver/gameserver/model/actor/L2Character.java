@@ -5713,7 +5713,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				// Maybe launch chance skills on us
 				if (_chanceSkills != null)
 				{
-					_chanceSkills.onHit(target, damage, false, crit);
+					_chanceSkills.onHit(target, reflectedDamage, false, crit);
 					// Reflect triggers onHit
 					if (reflectedDamage > 0)
 					{
@@ -5724,7 +5724,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				// Maybe launch chance skills on target
 				if (target.getChanceSkills() != null)
 				{
-					target.getChanceSkills().onHit(this, damage, true, crit);
+					target.getChanceSkills().onHit(this, reflectedDamage, true, crit);
 				}
 			}
 			
