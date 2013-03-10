@@ -51,6 +51,15 @@ public final class NpcSay extends L2GameServerPacket
 		_text = text;
 	}
 	
+	public NpcSay(L2Npc npc, int messageType, String text)
+	{
+		_objectId = npc.getObjectId();
+		_textType = messageType;
+		_npcId = 1000000 + npc.getNpcId();
+		_npcString = -1;
+		_text = text;
+	}
+	
 	public NpcSay(int objectId, int messageType, int npcId, NpcStringId npcString)
 	{
 		_objectId = objectId;

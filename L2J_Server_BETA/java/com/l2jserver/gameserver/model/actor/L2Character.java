@@ -68,7 +68,6 @@ import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2NpcWalkerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.SkillDat;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
@@ -4930,8 +4929,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		m.disregardingGeodata = false;
 		
 		if ((Config.GEODATA > 0) && !isFlying() // flying chars not checked - even canSeeTarget doesn't work yet
-			&& (!isInsideZone(ZoneId.WATER) || isInsideZone(ZoneId.SIEGE)) // swimming also not checked unless in siege zone - but distance is limited
-			&& !(this instanceof L2NpcWalkerInstance)) // npc walkers not checked
+			&& (!isInsideZone(ZoneId.WATER) || isInsideZone(ZoneId.SIEGE))) // swimming also not checked unless in siege zone - but distance is limited
 		{
 			final boolean isInVehicle = isPlayer() && (getActingPlayer().getVehicle() != null);
 			if (isInVehicle)

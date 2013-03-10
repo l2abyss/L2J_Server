@@ -84,7 +84,6 @@ public abstract class L2Object
 		L2WarehouseInstance(L2NpcInstance),
 		L2StaticObjectInstance(L2Character),
 		L2DoorInstance(L2Character),
-		L2NpcWalkerInstance(L2Npc),
 		L2TerrainObjectInstance(L2Npc),
 		L2EffectPointInstance(L2Npc),
 		// Summons, Pets, Decoys and Traps
@@ -146,7 +145,7 @@ public abstract class L2Object
 		L2FortEnvoyInstance(L2Npc),
 		L2FortLogisticsInstance(L2MerchantInstance),
 		L2FortManagerInstance(L2MerchantInstance),
-		L2FortSiegeNpcInstance(L2NpcWalkerInstance),
+		L2FortSiegeNpcInstance(L2Npc),
 		L2FortSupportCaptainInstance(L2MerchantInstance),
 		// Seven Signs
 		L2SignsPriestInstance(L2Npc),

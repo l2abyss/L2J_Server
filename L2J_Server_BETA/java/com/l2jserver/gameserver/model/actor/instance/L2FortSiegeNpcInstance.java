@@ -18,6 +18,7 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
+import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -25,7 +26,7 @@ import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 /**
  * @author Vice
  */
-public class L2FortSiegeNpcInstance extends L2NpcWalkerInstance
+public class L2FortSiegeNpcInstance extends L2Npc
 {
 	public L2FortSiegeNpcInstance(int objectID, L2NpcTemplate template)
 	{
