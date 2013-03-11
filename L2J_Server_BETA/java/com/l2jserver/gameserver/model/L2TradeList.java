@@ -305,7 +305,7 @@ public class L2TradeList
 		 */
 		public void setRestoreDelay(long restoreDelay)
 		{
-			_restoreDelay = restoreDelay * 60 * 60 * 1000;
+			_restoreDelay = restoreDelay * 3600000;
 		}
 		
 		/**

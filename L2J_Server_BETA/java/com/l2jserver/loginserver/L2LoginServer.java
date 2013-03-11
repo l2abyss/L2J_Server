@@ -294,7 +294,7 @@ public final class L2LoginServer
 			{
 				try
 				{
-					Thread.sleep(Config.LOGIN_SERVER_SCHEDULE_RESTART_TIME * 60 * 60 * 1000);
+					Thread.sleep(Config.LOGIN_SERVER_SCHEDULE_RESTART_TIME * 3600000);
 				}
 				catch (InterruptedException e)
 				{

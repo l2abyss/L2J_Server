@@ -234,7 +234,7 @@ public class Auction
 		long taskDelay = 0;
 		if (_endDate <= currentTime)
 		{
-			_endDate = currentTime + (7 * 24 * 60 * 60 * 1000);
+			_endDate = currentTime + (7 * 24 * 3600000);
 			saveAuctionDate();
 		}
 		else
