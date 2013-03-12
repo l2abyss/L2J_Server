@@ -2143,6 +2143,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			for (EffectTemplate et : _effectTemplates)
 			{
 				final L2Effect e = et.getEffect(env);
+				if (e == null)
+				{
+					continue;
+				}
+				
 				for (L2EffectType type : types)
 				{
 					if (e.getEffectType() == type)
