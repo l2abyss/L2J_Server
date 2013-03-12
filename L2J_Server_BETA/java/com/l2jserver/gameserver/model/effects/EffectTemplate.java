@@ -101,7 +101,12 @@ public class EffectTemplate
 	
 	public L2Effect getEffect(Env env)
 	{
-		if ((attachCond != null) && !attachCond.test(env))
+		return getEffect(env, false);
+	}
+	
+	public L2Effect getEffect(Env env, boolean ignoreTest)
+	{
+		if (ignoreTest && ((attachCond != null) && !attachCond.test(env)))
 		{
 			return null;
 		}
