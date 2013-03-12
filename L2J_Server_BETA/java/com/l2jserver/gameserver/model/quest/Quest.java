@@ -2405,11 +2405,7 @@ public class Quest extends ManagedScript
 			content = hc.getHtm(prefix, "data/scripts/" + getDescr() + "/" + getName() + "/" + fileName);
 			if (content == null)
 			{
-				content = hc.getHtm(prefix, "data/scripts/quests/Q" + getName() + "/" + fileName);
-				if (content == null)
-				{
-					content = hc.getHtmForce(prefix, "data/scripts/quests/" + getName() + "/" + fileName);
-				}
+				content = hc.getHtmForce(prefix, "data/scripts/quests/" + getName() + "/" + fileName);
 			}
 		}
 		return content;
