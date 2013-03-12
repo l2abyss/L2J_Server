@@ -34,6 +34,7 @@ import com.l2jserver.gameserver.model.L2MinionData;
 import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.ClassId;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -487,13 +488,16 @@ public final class L2NpcTemplate extends L2CharTemplate
 						addCOTSkill(skill);
 						addRangeSkill(skill);
 						break;
-					case CANCEL:
-					case NEGATE:
-						addNegativeSkill(skill);
-						addRangeSkill(skill);
-						break;
 					default:
-						addUniversalSkill(skill);
+						if (skill.hasEffectType(L2EffectType.CANCEL, L2EffectType.CANCEL_ALL, L2EffectType.NEGATE))
+						{
+							addNegativeSkill(skill);
+							addRangeSkill(skill);
+						}
+						else
+						{
+							addUniversalSkill(skill);
+						}
 						break;
 				}
 			}

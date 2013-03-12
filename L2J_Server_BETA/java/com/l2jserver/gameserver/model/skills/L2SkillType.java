@@ -121,10 +121,6 @@ public enum L2SkillType
 	BETRAY,
 	DECOY(L2SkillDecoy.class),
 	SPAWN(L2SkillSpawn.class),
-	// Cancel
-	CANCEL,
-	CANCEL_DEBUFF,
-	NEGATE,
 	
 	BUFF,
 	DEBUFF,
@@ -138,7 +134,6 @@ public enum L2SkillType
 	SUMMON_FRIEND,
 	SPOIL,
 	SWEEP(L2SkillSweeper.class),
-	FAKE_DEATH,
 	BEAST_FEED,
 	BEAST_RELEASE,
 	BEAST_RELEASE_ALL,

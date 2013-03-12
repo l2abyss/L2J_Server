@@ -57,7 +57,6 @@ import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.util.Util;
@@ -1749,58 +1748,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				break;
 			}
-			case CANCEL:
-			case NEGATE:
-			{
-				// decrease cancel probability
-				if (Rnd.get(50) != 0)
-				{
-					return true;
-				}
-				
-				if (sk.getTargetType() == L2TargetType.TARGET_ONE)
-				{
-					if ((attackTarget.getFirstEffect(L2EffectType.BUFF) != null) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
-					{
-						clientStopMoving(null);
-						// L2Object target = attackTarget;
-						// _actor.setTarget(_actor);
-						caster.doCast(sk);
-						// _actor.setTarget(target);
-						return true;
-					}
-					L2Character target = effectTargetReconsider(sk, false);
-					if (target != null)
-					{
-						clientStopMoving(null);
-						L2Object targets = attackTarget;
-						caster.setTarget(target);
-						caster.doCast(sk);
-						caster.setTarget(targets);
-						return true;
-					}
-				}
-				else if (canAOE(sk))
-				{
-					if (((sk.getTargetType() == L2TargetType.TARGET_AURA) || (sk.getTargetType() == L2TargetType.TARGET_BEHIND_AURA) || (sk.getTargetType() == L2TargetType.TARGET_FRONT_AURA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget))
-					
-					{
-						clientStopMoving(null);
-						// L2Object target = attackTarget;
-						// _actor.setTarget(_actor);
-						caster.doCast(sk);
-						// _actor.setTarget(target);
-						return true;
-					}
-					else if (((sk.getTargetType() == L2TargetType.TARGET_AREA) || (sk.getTargetType() == L2TargetType.TARGET_BEHIND_AREA) || (sk.getTargetType() == L2TargetType.TARGET_FRONT_AREA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
-					{
-						clientStopMoving(null);
-						caster.doCast(sk);
-						return true;
-					}
-				}
-				break;
-			}
 			case PDAM:
 			case MDAM:
 			case BLOW:
@@ -1842,6 +1789,56 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			}
 			default:
 			{
+				if (sk.hasEffectType(L2EffectType.CANCEL, L2EffectType.CANCEL_ALL, L2EffectType.NEGATE))
+				{
+					// decrease cancel probability
+					if (Rnd.get(50) != 0)
+					{
+						return true;
+					}
+					
+					if (sk.getTargetType() == L2TargetType.TARGET_ONE)
+					{
+						if ((attackTarget.getFirstEffect(L2EffectType.BUFF) != null) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
+						{
+							clientStopMoving(null);
+							// L2Object target = attackTarget;
+							// _actor.setTarget(_actor);
+							caster.doCast(sk);
+							// _actor.setTarget(target);
+							return true;
+						}
+						L2Character target = effectTargetReconsider(sk, false);
+						if (target != null)
+						{
+							clientStopMoving(null);
+							L2Object targets = attackTarget;
+							caster.setTarget(target);
+							caster.doCast(sk);
+							caster.setTarget(targets);
+							return true;
+						}
+					}
+					else if (canAOE(sk))
+					{
+						if (((sk.getTargetType() == L2TargetType.TARGET_AURA) || (sk.getTargetType() == L2TargetType.TARGET_BEHIND_AURA) || (sk.getTargetType() == L2TargetType.TARGET_FRONT_AURA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget))
+						
+						{
+							clientStopMoving(null);
+							// L2Object target = attackTarget;
+							// _actor.setTarget(_actor);
+							caster.doCast(sk);
+							// _actor.setTarget(target);
+							return true;
+						}
+						else if (((sk.getTargetType() == L2TargetType.TARGET_AREA) || (sk.getTargetType() == L2TargetType.TARGET_BEHIND_AREA) || (sk.getTargetType() == L2TargetType.TARGET_FRONT_AREA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
+						{
+							clientStopMoving(null);
+							caster.doCast(sk);
+							return true;
+						}
+					}
+				}
 				if (!canAura(sk))
 				{
 					
@@ -2129,7 +2126,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			return null;
 		}
 		L2Attackable actor = getActiveChar();
-		if ((sk.getSkillType() != L2SkillType.NEGATE) || (sk.getSkillType() != L2SkillType.CANCEL))
+		if (!sk.hasEffectType(L2EffectType.CANCEL, L2EffectType.CANCEL_ALL, L2EffectType.NEGATE))
 		{
 			if (!positive)
 			{

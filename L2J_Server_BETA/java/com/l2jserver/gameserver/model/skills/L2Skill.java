@@ -132,9 +132,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	// Abnormal levels for skills and their canceling, e.g. poison vs negate
 	private final int _abnormalLvl; // e.g. poison or bleed lvl 2
 	// Note: see also _effectAbnormalLvl
-	private final int _negateLvl; // abnormalLvl is negated with negateLvl
-	private final int[] _negateId; // cancels the effect of skill ID
-	private final L2SkillType[] _negateStats; // lists the effect types that are canceled
 	private final Map<String, Byte> _negateAbnormals; // lists the effect abnormal types with order below the presented that are canceled
 	private final int _maxNegatedEffects; // maximum number of effects to negate
 	
@@ -290,37 +287,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		
 		_abnormalLvl = set.getInteger("abnormalLvl", -1);
 		_effectAbnormalLvl = set.getInteger("effectAbnormalLvl", -1); // support for a separate effect abnormal lvl, e.g. poison inside a different skill
-		_negateLvl = set.getInteger("negateLvl", -1);
-		
 		_attribute = set.getString("attribute", "");
-		String str = set.getString("negateStats", "");
-		
-		if (str.isEmpty())
-		{
-			_negateStats = new L2SkillType[0];
-		}
-		else
-		{
-			String[] stats = str.split(" ");
-			L2SkillType[] array = new L2SkillType[stats.length];
-			
-			for (int i = 0; i < stats.length; i++)
-			{
-				L2SkillType type = null;
-				try
-				{
-					type = Enum.valueOf(L2SkillType.class, stats[i]);
-				}
-				catch (Exception e)
-				{
-					throw new IllegalArgumentException("SkillId: " + _id + "Enum value of type " + L2SkillType.class.getName() + "required, but found: " + stats[i]);
-				}
-				
-				array[i] = type;
-			}
-			_negateStats = array;
-		}
-		
 		String negateAbnormals = set.getString("negateAbnormals", null);
 		if ((negateAbnormals != null) && !negateAbnormals.isEmpty())
 		{
@@ -354,20 +321,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			_negateAbnormals = null;
 		}
 		
-		String negateId = set.getString("negateId", null);
-		if (negateId != null)
-		{
-			String[] valuesSplit = negateId.split(",");
-			_negateId = new int[valuesSplit.length];
-			for (int i = 0; i < valuesSplit.length; i++)
-			{
-				_negateId[i] = Integer.parseInt(valuesSplit[i]);
-			}
-		}
-		else
-		{
-			_negateId = new int[0];
-		}
 		_maxNegatedEffects = set.getInteger("maxNegated", 0);
 		
 		_stayAfterDeath = set.getBool("stayAfterDeath", false);
@@ -650,11 +603,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return isPvE ? _pvePower : isPvP ? _pvpPower : _power;
 	}
 	
-	public final L2SkillType[] getNegateStats()
-	{
-		return _negateStats;
-	}
-	
 	public final Map<String, Byte> getNegateAbnormals()
 	{
 		return _negateAbnormals;
@@ -663,16 +611,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final int getAbnormalLvl()
 	{
 		return _abnormalLvl;
-	}
-	
-	public final int getNegateLvl()
-	{
-		return _negateLvl;
-	}
-	
-	public final int[] getNegateId()
-	{
-		return _negateId;
 	}
 	
 	public final int getMagicLevel()
@@ -1199,7 +1137,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			case MDOT:
 			case MUTE:
 			case PARALYZE:
-			case CANCEL:
 			case BETRAY:
 			case DISARM:
 			case AGGDAMAGE:
@@ -1208,7 +1145,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			case MANADAM:
 				return true;
 			default:
-				return false;
+			{
+				return hasEffectType(L2EffectType.CANCEL);
+			}
 		}
 	}
 	
@@ -1247,7 +1186,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			case SWEEP:
 			case PARALYZE:
 			case AGGREDUCE:
-			case CANCEL:
 			case AGGREMOVE:
 			case AGGREDUCE_CHAR:
 			case BETRAY:
@@ -1258,7 +1196,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			case INSTANT_JUMP:
 				return true;
 			default:
-				return false;
+				return hasEffectType(L2EffectType.CANCEL);
 		}
 	}
 	

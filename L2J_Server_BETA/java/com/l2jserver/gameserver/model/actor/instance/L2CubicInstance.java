@@ -38,6 +38,7 @@ import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.entity.TvTEventTeam;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -804,34 +805,6 @@ public final class L2CubicInstance
 			
 			switch (type)
 			{
-				case CANCEL_DEBUFF:
-				{
-					L2Effect[] effects = target.getAllEffects();
-					
-					if ((effects == null) || (effects.length == 0))
-					{
-						break;
-					}
-					
-					int count = (skill.getMaxNegatedEffects() > 0) ? 0 : -2;
-					for (L2Effect e : effects)
-					{
-						if (e.getSkill().isDebuff() && (count < skill.getMaxNegatedEffects()))
-						{
-							// Do not remove raid curse skills
-							if ((e.getSkill().getId() != 4215) && (e.getSkill().getId() != 4515) && (e.getSkill().getId() != 4082))
-							{
-								e.exit();
-								if (count > -1)
-								{
-									count++;
-								}
-							}
-						}
-					}
-					
-					break;
-				}
 				case STUN:
 				case PARALYZE:
 				case ROOT:
@@ -894,6 +867,36 @@ public final class L2CubicInstance
 						}
 					}
 					break;
+				}
+				default:
+				{
+					if (skill.hasEffectType(L2EffectType.CANCEL_DEBUFF))
+					{
+						L2Effect[] effects = target.getAllEffects();
+						
+						if ((effects == null) || (effects.length == 0))
+						{
+							break;
+						}
+						
+						int count = (skill.getMaxNegatedEffects() > 0) ? 0 : -2;
+						for (L2Effect e : effects)
+						{
+							if (e.getSkill().isDebuff() && (count < skill.getMaxNegatedEffects()))
+							{
+								// Do not remove raid curse skills
+								if ((e.getSkill().getId() != 4215) && (e.getSkill().getId() != 4515) && (e.getSkill().getId() != 4082))
+								{
+									e.exit();
+									if (count > -1)
+									{
+										count++;
+									}
+								}
+							}
+						}
+					}
+					
 				}
 			}
 		}

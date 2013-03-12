@@ -47,13 +47,13 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -1331,10 +1331,6 @@ public class L2CharacterAI extends AbstractAI
 					case DEBUFF:
 						debuffSkills.add(sk);
 						break;
-					case CANCEL:
-					case NEGATE:
-						cancelSkills.add(sk);
-						break;
 					case RESURRECT:
 						resurrectSkills.add(sk);
 						hasHealOrResurrect = true;
@@ -1343,8 +1339,15 @@ public class L2CharacterAI extends AbstractAI
 					case COREDONE:
 						continue; // won't be considered something for fighting
 					default:
-						generalSkills.add(sk);
-						hasLongRangeDamageSkill = true;
+						if (sk.hasEffectType(L2EffectType.CANCEL, L2EffectType.CANCEL_ALL, L2EffectType.NEGATE))
+						{
+							cancelSkills.add(sk);
+						}
+						else
+						{
+							generalSkills.add(sk);
+							hasLongRangeDamageSkill = true;
+						}
 						break;
 				}
 				if (castRange > 70)
@@ -1475,7 +1478,7 @@ public class L2CharacterAI extends AbstractAI
 	
 	public boolean canAOE(L2Skill sk)
 	{
-		if ((sk.getSkillType() != L2SkillType.NEGATE) || (sk.getSkillType() != L2SkillType.CANCEL))
+		if (sk.hasEffectType(L2EffectType.CANCEL, L2EffectType.CANCEL_ALL, L2EffectType.NEGATE))
 		{
 			if ((sk.getTargetType() == L2TargetType.TARGET_AURA) || (sk.getTargetType() == L2TargetType.TARGET_BEHIND_AURA) || (sk.getTargetType() == L2TargetType.TARGET_FRONT_AURA) || (sk.getTargetType() == L2TargetType.TARGET_AURA_CORPSE_MOB))
 			{
