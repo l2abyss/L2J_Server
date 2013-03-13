@@ -34,7 +34,6 @@ import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSignet;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSignetCasttime;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSpawn;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSweeper;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillTeleport;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillTrap;
 
@@ -133,7 +132,6 @@ public enum L2SkillType
 	TELEPORT(L2SkillTeleport.class),
 	SUMMON_FRIEND,
 	SPOIL,
-	SWEEP(L2SkillSweeper.class),
 	BEAST_FEED,
 	BEAST_RELEASE,
 	BEAST_RELEASE_ALL,

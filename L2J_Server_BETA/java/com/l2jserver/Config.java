@@ -72,7 +72,6 @@ public final class Config
 	// Constants
 	// --------------------------------------------------
 	public static final String EOL = System.getProperty("line.separator");
-	
 	// --------------------------------------------------
 	// L2J Property File Definitions
 	// --------------------------------------------------
@@ -104,7 +103,6 @@ public final class Config
 	public static final String SECURITY_CONFIG_FILE = "./config/Security.properties";
 	public static final String EMAIL_CONFIG_FILE = "./config/Email.properties";
 	public static final String CH_SIEGE_FILE = "./config/ConquerableHallSiege.properties";
-	
 	// --------------------------------------------------
 	// L2J Variable Definitions
 	// --------------------------------------------------
@@ -232,7 +230,7 @@ public final class Config
 	public static int UNSTUCK_INTERVAL;
 	public static int TELEPORT_WATCHDOG_TIMEOUT;
 	public static int PLAYER_SPAWN_PROTECTION;
-	public static ArrayList<Integer> SPAWN_PROTECTION_ALLOWED_ITEMS;
+	public static List<Integer> SPAWN_PROTECTION_ALLOWED_ITEMS;
 	public static int PLAYER_TELEPORT_PROTECTION;
 	public static boolean RANDOM_RESPAWN_IN_TOWN_ENABLED;
 	public static boolean OFFSET_ON_TELEPORT_ENABLED;
@@ -258,7 +256,6 @@ public final class Config
 	public static boolean STORE_UI_SETTINGS;
 	public static String[] FORBIDDEN_NAMES;
 	public static boolean SILENCE_MODE_EXCLUDE;
-	
 	// --------------------------------------------------
 	// ClanHall Settings
 	// --------------------------------------------------
@@ -313,7 +310,6 @@ public final class Config
 	public static int CH_FRONT1_FEE;
 	public static int CH_FRONT2_FEE;
 	public static boolean CH_BUFF_FREE;
-	
 	// --------------------------------------------------
 	// Castle Settings
 	// --------------------------------------------------
@@ -344,7 +340,6 @@ public final class Config
 	public static List<String> CL_SET_SIEGE_TIME_LIST;
 	public static List<Integer> SIEGE_HOUR_LIST_MORNING;
 	public static List<Integer> SIEGE_HOUR_LIST_AFTERNOON;
-	
 	// --------------------------------------------------
 	// Fortress Settings
 	// --------------------------------------------------
@@ -368,7 +363,6 @@ public final class Config
 	public static int FS_MAX_SUPPLY_LEVEL;
 	public static int FS_FEE_FOR_CASTLE;
 	public static int FS_MAX_OWN_TIME;
-	
 	// --------------------------------------------------
 	// Feature Settings
 	// --------------------------------------------------
@@ -414,7 +408,6 @@ public final class Config
 	public static int CLAN_LEVEL_10_REQUIREMENT;
 	public static int CLAN_LEVEL_11_REQUIREMENT;
 	public static boolean ALLOW_WYVERN_DURING_SIEGE;
-	
 	// --------------------------------------------------
 	// General Settings
 	// --------------------------------------------------
@@ -658,7 +651,6 @@ public final class Config
 	public static boolean CLEAR_CREST_CACHE;
 	public static int NORMAL_ENCHANT_COST_MULTIPLIER;
 	public static int SAFE_ENCHANT_COST_MULTIPLIER;
-	
 	// --------------------------------------------------
 	// FloodProtector Settings
 	// --------------------------------------------------
@@ -678,7 +670,6 @@ public final class Config
 	public static FloodProtectorConfig FLOOD_PROTECTOR_SENDMAIL;
 	public static FloodProtectorConfig FLOOD_PROTECTOR_CHARACTER_SELECT;
 	public static FloodProtectorConfig FLOOD_PROTECTOR_ITEM_AUCTION;
-	
 	// --------------------------------------------------
 	// L2JMods Settings
 	// --------------------------------------------------
@@ -786,7 +777,6 @@ public final class Config
 	public static int L2JMOD_DUALBOX_CHECK_MAX_L2EVENT_PARTICIPANTS_PER_IP;
 	public static Map<Integer, Integer> L2JMOD_DUALBOX_CHECK_WHITELIST;
 	public static boolean L2JMOD_ALLOW_CHANGE_PASSWORD;
-	
 	// --------------------------------------------------
 	// NPC Settings
 	// --------------------------------------------------
@@ -810,6 +800,7 @@ public final class Config
 	public static int NPC_DECAY_TIME;
 	public static int RAID_BOSS_DECAY_TIME;
 	public static int SPOILED_DECAY_TIME;
+	public static int MAX_SWEEPER_TIME;
 	public static boolean GUARD_ATTACK_AGGRO_MOB;
 	public static boolean ALLOW_WYVERN_UPGRADER;
 	public static List<Integer> LIST_PET_RENT_NPC;
@@ -1724,7 +1715,6 @@ public final class Config
 					SPAWN_PROTECTION_ALLOWED_ITEMS.add(itm);
 				}
 			}
-			SPAWN_PROTECTION_ALLOWED_ITEMS.trimToSize();
 			PLAYER_TELEPORT_PROTECTION = Integer.parseInt(Character.getProperty("PlayerTeleportProtection", "0"));
 			RANDOM_RESPAWN_IN_TOWN_ENABLED = Boolean.parseBoolean(Character.getProperty("RandomRespawnInTownEnabled", "True"));
 			OFFSET_ON_TELEPORT_ENABLED = Boolean.parseBoolean(Character.getProperty("OffsetOnTeleportEnabled", "True"));
@@ -2176,6 +2166,7 @@ public final class Config
 			NPC_DECAY_TIME = Integer.parseInt(NPC.getProperty("NpcDecayTime", "8500"));
 			RAID_BOSS_DECAY_TIME = Integer.parseInt(NPC.getProperty("RaidBossDecayTime", "30000"));
 			SPOILED_DECAY_TIME = Integer.parseInt(NPC.getProperty("SpoiledDecayTime", "18500"));
+			MAX_SWEEPER_TIME = Integer.parseInt(NPC.getProperty("MaxSweeperTime", "15000"));
 			ENABLE_DROP_VITALITY_HERBS = Boolean.parseBoolean(NPC.getProperty("EnableVitalityHerbs", "True"));
 			GUARD_ATTACK_AGGRO_MOB = Boolean.parseBoolean(NPC.getProperty("GuardAttackAggroMob", "False"));
 			ALLOW_WYVERN_UPGRADER = Boolean.parseBoolean(NPC.getProperty("AllowWyvernUpgrader", "False"));

@@ -172,6 +172,7 @@ import com.l2jserver.gameserver.model.entity.Siege;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.fishing.L2Fish;
 import com.l2jserver.gameserver.model.fishing.L2Fishing;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 import com.l2jserver.gameserver.model.itemcontainer.PcFreight;
@@ -3882,7 +3883,7 @@ public final class L2PcInstance extends L2Playable
 				}
 				else
 				{
-					if (process.equalsIgnoreCase("sweep") || process.equalsIgnoreCase("Quest"))
+					if (process.equalsIgnoreCase("Sweeper") || process.equalsIgnoreCase("Quest"))
 					{
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_ITEM_S1);
 						sm.addItemName(itemId);
@@ -3957,6 +3958,17 @@ public final class L2PcInstance extends L2Playable
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * @param process the process name
+	 * @param item the item holder
+	 * @param reference the reference object
+	 * @param sendMessage if {@code true} a system message will be sent
+	 */
+	public void addItem(String process, ItemHolder item, L2Object reference, boolean sendMessage)
+	{
+		addItem(process, item.getId(), item.getCount(), reference, sendMessage);
 	}
 	
 	/**
@@ -5036,19 +5048,19 @@ public final class L2PcInstance extends L2Playable
 	 * @param target The L2ItemInstance dropped
 	 * @param item
 	 */
-	public void doAutoLoot(L2Attackable target, L2Attackable.RewardItem item)
+	public void doAutoLoot(L2Attackable target, ItemHolder item)
 	{
-		if (isInParty() && (ItemTable.getInstance().getTemplate(item.getItemId()).getItemType() != L2EtcItemType.HERB))
+		if (isInParty() && (ItemTable.getInstance().getTemplate(item.getId()).getItemType() != L2EtcItemType.HERB))
 		{
 			getParty().distributeItem(this, item, false, target);
 		}
-		else if (item.getItemId() == PcInventory.ADENA_ID)
+		else if (item.getId() == PcInventory.ADENA_ID)
 		{
 			addAdena("Loot", item.getCount(), target, true);
 		}
 		else
 		{
-			addItem("Loot", item.getItemId(), item.getCount(), target, true);
+			addItem("Loot", item, target, true);
 		}
 	}
 	

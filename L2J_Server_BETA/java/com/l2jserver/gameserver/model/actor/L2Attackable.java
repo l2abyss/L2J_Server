@@ -57,6 +57,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.AttackableKnownList;
 import com.l2jserver.gameserver.model.actor.status.AttackableStatus;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -241,29 +242,6 @@ public class L2Attackable extends L2Npc
 		}
 	}
 	
-	public static final class RewardItem
-	{
-		protected int _itemId;
-		
-		protected int _count;
-		
-		public RewardItem(int itemId, int count)
-		{
-			_itemId = itemId;
-			_count = count;
-		}
-		
-		public int getItemId()
-		{
-			return _itemId;
-		}
-		
-		public int getCount()
-		{
-			return _count;
-		}
-	}
-	
 	private final FastMap<L2Character, AggroInfo> _aggroList = new FastMap<L2Character, AggroInfo>().shared();
 	
 	public final FastMap<L2Character, AggroInfo> getAggroList()
@@ -307,9 +285,8 @@ public class L2Attackable extends L2Npc
 		_seeThroughSilentMove = val;
 	}
 	
-	private RewardItem[] _sweepItems;
-	
-	private RewardItem[] _harvestItems;
+	private ItemHolder[] _sweepItems;
+	private ItemHolder[] _harvestItems;
 	private boolean _seeded;
 	private int _seedType = 0;
 	private int _seederObjId = 0;
@@ -1313,7 +1290,7 @@ public class L2Attackable extends L2Npc
 	 * @param isSweep
 	 * @return
 	 */
-	private RewardItem calculateRewardItem(L2PcInstance lastAttacker, L2DropData drop, int levelModifier, boolean isSweep)
+	private ItemHolder calculateRewardItem(L2PcInstance lastAttacker, L2DropData drop, int levelModifier, boolean isSweep)
 	{
 		// Get default drop chance
 		double dropChance = drop.getChance();
@@ -1425,7 +1402,7 @@ public class L2Attackable extends L2Npc
 		
 		if (itemCount > 0)
 		{
-			return new RewardItem(drop.getItemId(), itemCount);
+			return new ItemHolder(drop.getItemId(), itemCount);
 		}
 		return null;
 	}
@@ -1438,7 +1415,7 @@ public class L2Attackable extends L2Npc
 	 * @param levelModifier level modifier in %'s (will be subtracted from drop chance)
 	 * @return
 	 */
-	private RewardItem calculateCategorizedRewardItem(L2PcInstance lastAttacker, L2DropCategory categoryDrops, int levelModifier)
+	private ItemHolder calculateCategorizedRewardItem(L2PcInstance lastAttacker, L2DropCategory categoryDrops, int levelModifier)
 	{
 		if (categoryDrops == null)
 		{
@@ -1596,7 +1573,7 @@ public class L2Attackable extends L2Npc
 			
 			if (itemCount > 0)
 			{
-				return new RewardItem(drop.getItemId(), itemCount);
+				return new ItemHolder(drop.getItemId(), itemCount);
 			}
 		}
 		return null;
@@ -1634,7 +1611,7 @@ public class L2Attackable extends L2Npc
 		return 0;
 	}
 	
-	private RewardItem calculateCategorizedHerbItem(L2PcInstance lastAttacker, L2DropCategory categoryDrops)
+	private ItemHolder calculateCategorizedHerbItem(L2PcInstance lastAttacker, L2DropCategory categoryDrops)
 	{
 		if (categoryDrops == null)
 		{
@@ -1778,7 +1755,7 @@ public class L2Attackable extends L2Npc
 			
 			if (itemCount > 0)
 			{
-				return new RewardItem(drop.getItemId(), itemCount);
+				return new ItemHolder(drop.getItemId(), itemCount);
 			}
 		}
 		return null;
@@ -1829,13 +1806,13 @@ public class L2Attackable extends L2Npc
 		// now throw all categorized drops and handle spoil.
 		for (L2DropCategory cat : npcTemplate.getDropData())
 		{
-			RewardItem item = null;
+			ItemHolder item = null;
 			if (cat.isSweep())
 			{
 				// according to sh1ny, seeded mobs CAN be spoiled and swept.
 				if (isSpoil()/* && !isSeeded() */)
 				{
-					FastList<RewardItem> sweepList = new FastList<>();
+					FastList<ItemHolder> sweepList = new FastList<>();
 					
 					for (L2DropData drop : cat.getAllDrops())
 					{
@@ -1849,7 +1826,7 @@ public class L2Attackable extends L2Npc
 					// Set the table _sweepItems of this L2Attackable
 					if (!sweepList.isEmpty())
 					{
-						_sweepItems = sweepList.toArray(new RewardItem[sweepList.size()]);
+						_sweepItems = sweepList.toArray(new ItemHolder[sweepList.size()]);
 					}
 				}
 			}
@@ -1889,7 +1866,7 @@ public class L2Attackable extends L2Npc
 						SystemMessage sm;
 						sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DIED_DROPPED_S3_S2);
 						sm.addCharName(this);
-						sm.addItemName(item.getItemId());
+						sm.addItemName(item.getId());
 						sm.addItemNumber(item.getCount());
 						broadcastPacket(sm);
 					}
@@ -1900,13 +1877,13 @@ public class L2Attackable extends L2Npc
 		if (Config.L2JMOD_CHAMPION_ENABLE && isChampion() && ((Config.L2JMOD_CHAMPION_REWARD_LOWER_LVL_ITEM_CHANCE > 0) || (Config.L2JMOD_CHAMPION_REWARD_HIGHER_LVL_ITEM_CHANCE > 0)))
 		{
 			int champqty = Rnd.get(Config.L2JMOD_CHAMPION_REWARD_QTY);
-			RewardItem item = new RewardItem(Config.L2JMOD_CHAMPION_REWARD_ID, ++champqty);
+			ItemHolder item = new ItemHolder(Config.L2JMOD_CHAMPION_REWARD_ID, ++champqty);
 			
 			if ((player.getLevel() <= getLevel()) && (Rnd.get(100) < Config.L2JMOD_CHAMPION_REWARD_LOWER_LVL_ITEM_CHANCE))
 			{
 				if (Config.AUTO_LOOT || isFlying())
 				{
-					player.addItem("ChampionLoot", item.getItemId(), item.getCount(), this, true); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
+					player.addItem("ChampionLoot", item.getId(), item.getCount(), this, true); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
 				}
 				else
 				{
@@ -1917,7 +1894,7 @@ public class L2Attackable extends L2Npc
 			{
 				if (Config.AUTO_LOOT || isFlying())
 				{
-					player.addItem("ChampionLoot", item.getItemId(), item.getCount(), this, true); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
+					player.addItem("ChampionLoot", item.getId(), item.getCount(), this, true); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
 				}
 				else
 				{
@@ -1931,22 +1908,22 @@ public class L2Attackable extends L2Npc
 		{
 			for (L2DropCategory cat : HerbDropTable.getInstance().getHerbDroplist(getTemplate().getDropHerbGroup()))
 			{
-				RewardItem item = calculateCategorizedHerbItem(player, cat);
+				ItemHolder item = calculateCategorizedHerbItem(player, cat);
 				if (item != null)
 				{
-					// more than one herb cant be auto looted!
-					int count = item.getCount();
+					// more than one herb can't be auto looted!
+					long count = item.getCount();
 					if (count > 1)
 					{
-						item._count = 1;
+						final ItemHolder herb = new ItemHolder(item.getId(), 1);
 						for (int i = 0; i < count; i++)
 						{
-							dropItem(player, item);
+							dropItem(player, herb);
 						}
 					}
 					else if (isFlying() || Config.AUTO_LOOT_HERBS)
 					{
-						player.addItem("Loot", item.getItemId(), count, this, true);
+						player.addItem("Loot", item.getId(), count, this, true);
 					}
 					else
 					{
@@ -1996,7 +1973,7 @@ public class L2Attackable extends L2Npc
 		{
 			if (Rnd.get(L2DropData.MAX_CHANCE) < drop.getEventDrop().getDropChance())
 			{
-				final RewardItem rewardItem = new RewardItem(drop.getEventDrop().getItemIdList()[Rnd.get(drop.getEventDrop().getItemIdList().length)], Rnd.get(drop.getEventDrop().getMinCount(), drop.getEventDrop().getMaxCount()));
+				final ItemHolder rewardItem = new ItemHolder(drop.getEventDrop().getItemIdList()[Rnd.get(drop.getEventDrop().getItemIdList().length)], Rnd.get(drop.getEventDrop().getMinCount(), drop.getEventDrop().getMaxCount()));
 				
 				if (Config.AUTO_LOOT || isFlying())
 				{
@@ -2016,7 +1993,7 @@ public class L2Attackable extends L2Npc
 	 * @param item
 	 * @return
 	 */
-	public L2ItemInstance dropItem(L2PcInstance mainDamageDealer, RewardItem item)
+	public L2ItemInstance dropItem(L2PcInstance mainDamageDealer, ItemHolder item)
 	{
 		int randDropLim = 70;
 		
@@ -2028,15 +2005,15 @@ public class L2Attackable extends L2Npc
 			int newY = (getY() + Rnd.get((randDropLim * 2) + 1)) - randDropLim;
 			int newZ = Math.max(getZ(), mainDamageDealer.getZ()) + 20; // TODO: temp hack, do something nicer when we have geodatas
 			
-			if (ItemTable.getInstance().getTemplate(item.getItemId()) != null)
+			if (ItemTable.getInstance().getTemplate(item.getId()) != null)
 			{
 				// Init the dropped L2ItemInstance and add it in the world as a visible object at the position where mob was last
-				ditem = ItemTable.getInstance().createItem("Loot", item.getItemId(), item.getCount(), mainDamageDealer, this);
+				ditem = ItemTable.getInstance().createItem("Loot", item.getId(), item.getCount(), mainDamageDealer, this);
 				ditem.getDropProtection().protect(mainDamageDealer);
 				ditem.dropMe(this, newX, newY, newZ);
 				
 				// Add drop to auto destroy item task
-				if (!Config.LIST_PROTECTED_ITEMS.contains(item.getItemId()))
+				if (!Config.LIST_PROTECTED_ITEMS.contains(item.getId()))
 				{
 					if (((Config.AUTODESTROY_ITEM_AFTER > 0) && (ditem.getItemType() != L2EtcItemType.HERB)) || ((Config.HERB_AUTO_DESTROY_TIME > 0) && (ditem.getItemType() == L2EtcItemType.HERB)))
 					{
@@ -2053,7 +2030,7 @@ public class L2Attackable extends L2Npc
 			}
 			else
 			{
-				_log.log(Level.SEVERE, "Item doesn't exist so cannot be dropped. Item ID: " + item.getItemId());
+				_log.log(Level.SEVERE, "Item doesn't exist so cannot be dropped. Item ID: " + item.getId());
 			}
 		}
 		return ditem;
@@ -2061,7 +2038,7 @@ public class L2Attackable extends L2Npc
 	
 	public L2ItemInstance dropItem(L2PcInstance lastAttacker, int itemId, int itemCount)
 	{
-		return dropItem(lastAttacker, new RewardItem(itemId, itemCount));
+		return dropItem(lastAttacker, new ItemHolder(itemId, itemCount));
 	}
 	
 	/**
@@ -2118,9 +2095,9 @@ public class L2Attackable extends L2Npc
 		final FastList<L2Item> lootItems = new FastList<>();
 		if (isSweepActive())
 		{
-			for (RewardItem item : _sweepItems)
+			for (ItemHolder item : _sweepItems)
 			{
-				lootItems.add(ItemTable.getInstance().createDummyItem(item.getItemId()).getItem());
+				lootItems.add(ItemTable.getInstance().createDummyItem(item.getId()).getItem());
 			}
 		}
 		return lootItems;
@@ -2129,9 +2106,9 @@ public class L2Attackable extends L2Npc
 	/**
 	 * @return table containing all L2ItemInstance that can be spoiled.
 	 */
-	public synchronized RewardItem[] takeSweep()
+	public synchronized ItemHolder[] takeSweep()
 	{
-		RewardItem[] sweep = _sweepItems;
+		ItemHolder[] sweep = _sweepItems;
 		_sweepItems = null;
 		return sweep;
 	}
@@ -2139,20 +2116,21 @@ public class L2Attackable extends L2Npc
 	/**
 	 * @return table containing all L2ItemInstance that can be harvested.
 	 */
-	public synchronized RewardItem[] takeHarvest()
+	public synchronized ItemHolder[] takeHarvest()
 	{
-		RewardItem[] harvest = _harvestItems;
+		ItemHolder[] harvest = _harvestItems;
 		_harvestItems = null;
 		return harvest;
 	}
 	
 	/**
-	 * @param attacker the player to validate.
-	 * @param time the time to check.
-	 * @param sendMessage if {@code true} will send a message of corpse too old.
-	 * @return {@code true} if the corpse isn't too old.
+	 * Check if the corpse is too old.
+	 * @param attacker the player to validate
+	 * @param time the time to check
+	 * @param sendMessage if {@code true} will send a message of corpse too old
+	 * @return {@code true} if the corpse is too old
 	 */
-	public boolean checkCorpseTime(L2PcInstance attacker, int time, boolean sendMessage)
+	public boolean isOldCorpse(L2PcInstance attacker, int time, boolean sendMessage)
 	{
 		if (DecayTaskManager.getInstance().getTasks().containsKey(this) && ((System.currentTimeMillis() - DecayTaskManager.getInstance().getTasks().get(this)) > time))
 		{
@@ -2160,9 +2138,9 @@ public class L2Attackable extends L2Npc
 			{
 				attacker.sendPacket(SystemMessageId.CORPSE_TOO_OLD_SKILL_NOT_USED);
 			}
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 	
 	/**
@@ -2513,11 +2491,11 @@ public class L2Attackable extends L2Npc
 			count += diff;
 		}
 		
-		FastList<RewardItem> harvested = new FastList<>();
+		FastList<ItemHolder> harvested = new FastList<>();
 		
-		harvested.add(new RewardItem(ManorData.getInstance().getCropType(_seedType), count * Config.RATE_DROP_MANOR));
+		harvested.add(new ItemHolder(ManorData.getInstance().getCropType(_seedType), count * Config.RATE_DROP_MANOR));
 		
-		_harvestItems = harvested.toArray(new RewardItem[harvested.size()]);
+		_harvestItems = harvested.toArray(new ItemHolder[harvested.size()]);
 	}
 	
 	public int getSeederId()

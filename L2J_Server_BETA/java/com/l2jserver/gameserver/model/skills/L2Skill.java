@@ -1175,7 +1175,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			case SOULSHOT:
 			case SPIRITSHOT:
 			case SPOIL:
-			case SWEEP:
 			case PARALYZE:
 			case AGGREDUCE:
 			case AGGREMOVE:

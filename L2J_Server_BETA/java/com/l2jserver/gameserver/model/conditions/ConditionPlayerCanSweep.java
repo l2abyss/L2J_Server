@@ -18,6 +18,7 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -39,7 +40,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
  */
 public class ConditionPlayerCanSweep extends Condition
 {
-	private static final int MAX_SWEEP_TIME = 15000;
 	private final boolean _val;
 	
 	public ConditionPlayerCanSweep(boolean val)
@@ -71,7 +71,7 @@ public class ConditionPlayerCanSweep extends Condition
 								if (target.isSpoil())
 								{
 									canSweep = target.checkSpoilOwner(sweeper, true);
-									canSweep &= target.checkCorpseTime(sweeper, MAX_SWEEP_TIME, true);
+									canSweep &= !target.isOldCorpse(sweeper, Config.MAX_SWEEPER_TIME, true);
 									canSweep &= sweeper.getInventory().checkInventorySlotsAndWeight(target.getSpoilLootItems(), true, true);
 								}
 								else

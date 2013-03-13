@@ -41,6 +41,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.entity.DimensionalRift;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -647,29 +648,29 @@ public class L2Party extends AbstractPlayerGroup
 	 * @param spoil
 	 * @param target
 	 */
-	public void distributeItem(L2PcInstance player, L2Attackable.RewardItem item, boolean spoil, L2Attackable target)
+	public void distributeItem(L2PcInstance player, ItemHolder item, boolean spoil, L2Attackable target)
 	{
 		if (item == null)
 		{
 			return;
 		}
 		
-		if (item.getItemId() == PcInventory.ADENA_ID)
+		if (item.getId() == PcInventory.ADENA_ID)
 		{
 			distributeAdena(player, item.getCount(), target);
 			return;
 		}
 		
-		L2PcInstance looter = getActualLooter(player, item.getItemId(), spoil, target);
+		L2PcInstance looter = getActualLooter(player, item.getId(), spoil, target);
 		
-		looter.addItem(spoil ? "Sweep" : "Party", item.getItemId(), item.getCount(), player, true);
+		looter.addItem(spoil ? "Sweeper" : "Party", item, player, true);
 		
 		// Send messages to other party members about reward
 		if (item.getCount() > 1)
 		{
 			SystemMessage msg = spoil ? SystemMessage.getSystemMessage(SystemMessageId.C1_SWEEPED_UP_S3_S2) : SystemMessage.getSystemMessage(SystemMessageId.C1_OBTAINED_S3_S2);
 			msg.addString(looter.getName());
-			msg.addItemName(item.getItemId());
+			msg.addItemName(item.getId());
 			msg.addItemNumber(item.getCount());
 			broadcastToPartyMembers(looter, msg);
 		}
@@ -677,7 +678,7 @@ public class L2Party extends AbstractPlayerGroup
 		{
 			SystemMessage msg = spoil ? SystemMessage.getSystemMessage(SystemMessageId.C1_SWEEPED_UP_S2) : SystemMessage.getSystemMessage(SystemMessageId.C1_OBTAINED_S2);
 			msg.addString(looter.getName());
-			msg.addItemName(item.getItemId());
+			msg.addItemName(item.getId());
 			broadcastToPartyMembers(looter, msg);
 		}
 	}
