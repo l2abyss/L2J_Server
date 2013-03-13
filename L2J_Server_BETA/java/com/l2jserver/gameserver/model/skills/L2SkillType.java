@@ -21,14 +21,12 @@ package com.l2jserver.gameserver.model.skills;
 import java.lang.reflect.Constructor;
 
 import com.l2jserver.gameserver.model.StatsSet;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillChangeWeapon;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillChargeDmg;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillCreateItem;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDecoy;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDefault;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDrain;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillLearnSkill;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillMount;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSiegeFlag;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSignet;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSignetCasttime;
@@ -103,7 +101,6 @@ public enum L2SkillType
 	DELUXE_KEY_UNLOCK,
 	SOW,
 	GET_PLAYER,
-	MOUNT(L2SkillMount.class),
 	INSTANT_JUMP,
 	DETECTION,
 	DUMMY,
@@ -143,8 +140,6 @@ public enum L2SkillType
 	DETECT_TRAP,
 	REMOVE_TRAP,
 	SHIFT_TARGET,
-	// Kamael WeaponChange
-	CHANGEWEAPON(L2SkillChangeWeapon.class),
 	
 	STEAL_BUFF,
 	

@@ -95,7 +95,6 @@ import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillMount;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.stats.BaseStats;
@@ -6160,11 +6159,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			}
 			if (isPlayer())
 			{
-				if ((oldSkill instanceof L2SkillMount) && getActingPlayer().isMounted())
-				{
-					getActingPlayer().dismount();
-				}
-				
 				// TODO: Unhardcode it!
 				if ((oldSkill instanceof L2SkillSummon) && (oldSkill.getId() == 710) && hasSummon() && (getSummon().getNpcId() == 14870))
 				{
