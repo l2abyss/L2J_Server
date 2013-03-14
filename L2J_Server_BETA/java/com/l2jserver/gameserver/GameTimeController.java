@@ -49,17 +49,7 @@ public final class GameTimeController extends Thread
 	
 	private static GameTimeController _instance;
 	
-	public static final void init()
-	{
-		_instance = new GameTimeController();
-	}
-	
-	public static final GameTimeController getInstance()
-	{
-		return _instance;
-	}
-	
-	private final FastMap<Integer, L2Character> _movingObjects;
+	private final FastMap<Integer, L2Character> _movingObjects = new FastMap<Integer, L2Character>().shared();
 	private final long _referenceTime;
 	
 	private GameTimeController()
@@ -67,8 +57,6 @@ public final class GameTimeController extends Thread
 		super("GameTimeController");
 		super.setDaemon(true);
 		super.setPriority(MAX_PRIORITY);
-		
-		_movingObjects = new FastMap<Integer, L2Character>().shared();
 		
 		final Calendar c = Calendar.getInstance();
 		c.set(Calendar.HOUR_OF_DAY, 0);
@@ -78,6 +66,11 @@ public final class GameTimeController extends Thread
 		_referenceTime = c.getTimeInMillis();
 		
 		super.start();
+	}
+	
+	public static final void init()
+	{
+		_instance = new GameTimeController();
 	}
 	
 	public final int getGameTime()
@@ -110,12 +103,7 @@ public final class GameTimeController extends Thread
 	}
 	
 	/**
-	 * Add a L2Character to movingObjects of GameTimeController.<BR>
-	 * <BR>
-	 * <B><U> Concept</U> :</B><BR>
-	 * <BR>
-	 * All L2Character in movement are identified in <B>movingObjects</B> of GameTimeController.<BR>
-	 * <BR>
+	 * Add a L2Character to movingObjects of GameTimeController.
 	 * @param cha The L2Character to add to movingObjects of GameTimeController
 	 */
 	public final void registerMovingObject(final L2Character cha)
@@ -130,16 +118,14 @@ public final class GameTimeController extends Thread
 	
 	/**
 	 * Move all L2Characters contained in movingObjects of GameTimeController.<BR>
-	 * <BR>
 	 * <B><U> Concept</U> :</B><BR>
-	 * <BR>
 	 * All L2Character in movement are identified in <B>movingObjects</B> of GameTimeController.<BR>
-	 * <BR>
 	 * <B><U> Actions</U> :</B><BR>
-	 * <BR>
-	 * <li>Update the position of each L2Character</li> <li>If movement is finished, the L2Character is removed from movingObjects</li> <li>Create a task to update the _knownObject and _knowPlayers of each L2Character that finished its movement and of their already known L2Object then notify AI with
-	 * EVT_ARRIVED</li><BR>
-	 * <BR>
+	 * <ul>
+	 * <li>Update the position of each L2Character</li>
+	 * <li>If movement is finished, the L2Character is removed from movingObjects</li>
+	 * <li>Create a task to update the _knownObject and _knowPlayers of each L2Character that finished its movement and of their already known L2Object then notify AI with EVT_ARRIVED</li>
+	 * </ul>
 	 */
 	private final void moveObjects()
 	{
@@ -190,13 +176,13 @@ public final class GameTimeController extends Thread
 	public final void stopTimer()
 	{
 		super.interrupt();
-		System.out.println("Stopping GameTimeController.");
+		_log.log(Level.INFO, "Stopping " + getClass().getSimpleName());
 	}
 	
 	@Override
 	public final void run()
 	{
-		_log.log(Level.CONFIG, "GameClientController: Started.");
+		_log.log(Level.CONFIG, getClass().getSimpleName() + ": Started.");
 		
 		long nextTickTime, sleepTime;
 		boolean isNight = isNight();
@@ -253,5 +239,10 @@ public final class GameTimeController extends Thread
 				});
 			}
 		}
+	}
+	
+	public static final GameTimeController getInstance()
+	{
+		return _instance;
 	}
 }
