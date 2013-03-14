@@ -29,8 +29,8 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-
-import gnu.trove.map.hash.TIntIntHashMap;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
 
 public class NpcBufferTable
 {
@@ -38,39 +38,52 @@ public class NpcBufferTable
 	
 	private final Map<Integer, NpcBufferSkills> _buffers = new HashMap<>();
 	
+	public static class NpcBufferData
+	{
+		private final SkillHolder _skill;
+		private final ItemHolder _fee;
+		
+		protected NpcBufferData(int skillId, int skillLevel, int feeId, int feeAmount)
+		{
+			_skill = new SkillHolder(skillId, skillLevel);
+			_fee = new ItemHolder(feeId, feeAmount);
+		}
+		
+		public SkillHolder getSkill()
+		{
+			return _skill;
+		}
+		
+		public ItemHolder getFee()
+		{
+			return _fee;
+		}
+	}
+	
 	private static class NpcBufferSkills
 	{
-		private final TIntIntHashMap _skillId = new TIntIntHashMap();
-		private final TIntIntHashMap _skillLevels = new TIntIntHashMap();
-		private final TIntIntHashMap _skillFeeIds = new TIntIntHashMap();
-		private final TIntIntHashMap _skillFeeAmounts = new TIntIntHashMap();
+		private final int _npcId;
+		private final Map<Integer, NpcBufferData> _skills = new HashMap<>();
 		
-		public NpcBufferSkills(int npcId)
+		protected NpcBufferSkills(int npcId)
 		{
-			//
+			_npcId = npcId;
 		}
 		
 		public void addSkill(int skillId, int skillLevel, int skillFeeId, int skillFeeAmount, int buffGroup)
 		{
-			_skillId.put(buffGroup, skillId);
-			_skillLevels.put(buffGroup, skillLevel);
-			_skillFeeIds.put(buffGroup, skillFeeId);
-			_skillFeeAmounts.put(buffGroup, skillFeeAmount);
+			_skills.put(buffGroup, new NpcBufferData(skillId, skillLevel, skillFeeId, skillFeeAmount));
 		}
 		
-		public int[] getSkillGroupInfo(int buffGroup)
+		public NpcBufferData getSkillGroupInfo(int buffGroup)
 		{
-			if (_skillId.containsKey(buffGroup) && _skillLevels.containsKey(buffGroup) && _skillFeeIds.containsKey(buffGroup) && _skillFeeAmounts.containsKey(buffGroup))
-			{
-				return new int[]
-				{
-					_skillId.get(buffGroup),
-					_skillLevels.get(buffGroup),
-					_skillFeeIds.get(buffGroup),
-					_skillFeeAmounts.get(buffGroup)
-				};
-			}
-			return null;
+			return _skills.get(buffGroup);
+		}
+		
+		@SuppressWarnings("unused")
+		public int getNpcId()
+		{
+			return _npcId;
 		}
 	}
 	
@@ -170,10 +183,17 @@ public class NpcBufferTable
 		_log.info(getClass().getSimpleName() + ": Loaded " + _buffers.size() + " buffers and " + skillCount + " skills.");
 	}
 	
-	public int[] getSkillInfo(int npcId, int buffGroup)
+	public NpcBufferData getSkillInfo(int npcId, int buffGroup)
 	{
-		final NpcBufferSkills skills = _buffers.get(npcId);
-		return (skills == null) ? null : skills.getSkillGroupInfo(buffGroup);
+		if (_buffers.containsKey(npcId))
+		{
+			final NpcBufferSkills skills = _buffers.get(npcId);
+			if (skills != null)
+			{
+				return skills.getSkillGroupInfo(buffGroup);
+			}
+		}
+		return null;
 	}
 	
 	public static NpcBufferTable getInstance()
