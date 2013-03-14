@@ -1402,8 +1402,9 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		
 		// Get char's heading degree
 		// angleChar = Util.convertHeadingToDegree(getHeading());
-		// In H5 ATTACK_COUNT_MAX 1 is by default and 2 was in skill 3599, total 3.
-		int attackRandomCountMax = (int) getStat().calcStat(Stats.ATTACK_COUNT_MAX, 1, null, null) - 1;
+		
+		// H5 Changes: without Polearm Mastery (skill 216) max simultaneous attacks is 3 (1 by default + 2 in skill 3599).
+		int attackRandomCountMax = (int) getStat().calcStat(Stats.ATTACK_COUNT_MAX, 0, null, null);
 		int attackcount = 0;
 		
 		// if (angleChar <= 0) angleChar += 360;
