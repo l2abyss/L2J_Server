@@ -120,7 +120,7 @@ public final class HitConditionBonus extends DocumentParser
 		}
 		
 		// Get weather bonus
-		if (GameTimeController.getInstance().isNowNight())
+		if (GameTimeController.getInstance().isNight())
 		{
 			mod += darkBonus;
 			// else if () No rain support yet.

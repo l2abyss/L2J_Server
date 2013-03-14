@@ -201,7 +201,7 @@ public class GameServer
 		
 		printSection("World");
 		// start game time control early
-		GameTimeController.getInstance();
+		GameTimeController.init();
 		InstanceManager.getInstance();
 		L2World.getInstance();
 		MapRegionManager.getInstance();

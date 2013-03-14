@@ -519,7 +519,7 @@ public abstract class AbstractAI implements Ctrl
 			{
 				if (_clientMovingToPawnOffset == offset)
 				{
-					if (GameTimeController.getGameTicks() < _moveToPawnTimeout)
+					if (GameTimeController.getInstance().getGameTicks() < _moveToPawnTimeout)
 					{
 						return;
 					}
@@ -528,7 +528,7 @@ public abstract class AbstractAI implements Ctrl
 				else if (_actor.isOnGeodataPath())
 				{
 					// minimum time to calculate new route is 2 seconds
-					if (GameTimeController.getGameTicks() < (_moveToPawnTimeout + 10))
+					if (GameTimeController.getInstance().getGameTicks() < (_moveToPawnTimeout + 10))
 					{
 						return;
 					}
@@ -539,7 +539,7 @@ public abstract class AbstractAI implements Ctrl
 			_clientMoving = true;
 			_clientMovingToPawnOffset = offset;
 			_target = pawn;
-			_moveToPawnTimeout = GameTimeController.getGameTicks();
+			_moveToPawnTimeout = GameTimeController.getInstance().getGameTicks();
 			_moveToPawnTimeout += 1000 / GameTimeController.MILLIS_IN_TICK;
 			
 			if ((pawn == null) || (_accessor == null))

@@ -228,7 +228,7 @@ public abstract class ItemContainer
 			if ((item.getItemId() == PcInventory.ADENA_ID) && (count < (10000 * Config.RATE_DROP_ITEMS_ID.get(PcInventory.ADENA_ID))))
 			{
 				// Small adena changes won't be saved to database all the time
-				if ((GameTimeController.getGameTicks() % 5) == 0)
+				if ((GameTimeController.getInstance().getGameTicks() % 5) == 0)
 				{
 					item.updateDatabase();
 				}
@@ -280,7 +280,7 @@ public abstract class ItemContainer
 			if ((itemId == PcInventory.ADENA_ID) && (count < (10000 * adenaRate)))
 			{
 				// Small adena changes won't be saved to database all the time
-				if ((GameTimeController.getGameTicks() % 5) == 0)
+				if ((GameTimeController.getInstance().getGameTicks() % 5) == 0)
 				{
 					item.updateDatabase();
 				}
@@ -442,7 +442,7 @@ public abstract class ItemContainer
 				item.setLastChange(L2ItemInstance.MODIFIED);
 				
 				// don't update often for untraced items
-				if ((process != null) || ((GameTimeController.getGameTicks() % 10) == 0))
+				if ((process != null) || ((GameTimeController.getInstance().getGameTicks() % 10) == 0))
 				{
 					item.updateDatabase();
 				}

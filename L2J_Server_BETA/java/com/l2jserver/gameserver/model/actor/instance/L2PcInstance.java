@@ -733,14 +733,14 @@ public final class L2PcInstance extends L2Playable
 	
 	public boolean isSpawnProtected()
 	{
-		return _protectEndTime > GameTimeController.getGameTicks();
+		return _protectEndTime > GameTimeController.getInstance().getGameTicks();
 	}
 	
 	private long _teleportProtectEndTime = 0;
 	
 	public boolean isTeleportProtected()
 	{
-		return _teleportProtectEndTime > GameTimeController.getGameTicks();
+		return _teleportProtectEndTime > GameTimeController.getInstance().getGameTicks();
 	}
 	
 	// protects a char from agro mobs when getting up from fake death
@@ -4543,20 +4543,20 @@ public final class L2PcInstance extends L2Playable
 	{
 		if (Config.DEVELOPER && (protect || (_protectEndTime > 0)))
 		{
-			_log.warning(getName() + ": Protection " + (protect ? "ON " + (GameTimeController.getGameTicks() + (Config.PLAYER_SPAWN_PROTECTION * GameTimeController.TICKS_PER_SECOND)) : "OFF") + " (currently " + GameTimeController.getGameTicks() + ")");
+			_log.warning(getName() + ": Protection " + (protect ? "ON " + (GameTimeController.getInstance().getGameTicks() + (Config.PLAYER_SPAWN_PROTECTION * GameTimeController.TICKS_PER_SECOND)) : "OFF") + " (currently " + GameTimeController.getInstance().getGameTicks() + ")");
 		}
 		
-		_protectEndTime = protect ? GameTimeController.getGameTicks() + (Config.PLAYER_SPAWN_PROTECTION * GameTimeController.TICKS_PER_SECOND) : 0;
+		_protectEndTime = protect ? GameTimeController.getInstance().getGameTicks() + (Config.PLAYER_SPAWN_PROTECTION * GameTimeController.TICKS_PER_SECOND) : 0;
 	}
 	
 	public void setTeleportProtection(boolean protect)
 	{
 		if (Config.DEVELOPER && (protect || (_teleportProtectEndTime > 0)))
 		{
-			_log.warning(getName() + ": Tele Protection " + (protect ? "ON " + (GameTimeController.getGameTicks() + (Config.PLAYER_TELEPORT_PROTECTION * GameTimeController.TICKS_PER_SECOND)) : "OFF") + " (currently " + GameTimeController.getGameTicks() + ")");
+			_log.warning(getName() + ": Tele Protection " + (protect ? "ON " + (GameTimeController.getInstance().getGameTicks() + (Config.PLAYER_TELEPORT_PROTECTION * GameTimeController.TICKS_PER_SECOND)) : "OFF") + " (currently " + GameTimeController.getInstance().getGameTicks() + ")");
 		}
 		
-		_teleportProtectEndTime = protect ? GameTimeController.getGameTicks() + (Config.PLAYER_TELEPORT_PROTECTION * GameTimeController.TICKS_PER_SECOND) : 0;
+		_teleportProtectEndTime = protect ? GameTimeController.getInstance().getGameTicks() + (Config.PLAYER_TELEPORT_PROTECTION * GameTimeController.TICKS_PER_SECOND) : 0;
 	}
 	
 	/**
@@ -4565,12 +4565,12 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void setRecentFakeDeath(boolean protect)
 	{
-		_recentFakeDeathEndTime = protect ? GameTimeController.getGameTicks() + (Config.PLAYER_FAKEDEATH_UP_PROTECTION * GameTimeController.TICKS_PER_SECOND) : 0;
+		_recentFakeDeathEndTime = protect ? GameTimeController.getInstance().getGameTicks() + (Config.PLAYER_FAKEDEATH_UP_PROTECTION * GameTimeController.TICKS_PER_SECOND) : 0;
 	}
 	
 	public boolean isRecentFakeDeath()
 	{
-		return _recentFakeDeathEndTime > GameTimeController.getGameTicks();
+		return _recentFakeDeathEndTime > GameTimeController.getInstance().getGameTicks();
 	}
 	
 	public final boolean isFakeDeath()
@@ -6656,7 +6656,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean isProcessingRequest()
 	{
-		return (getActiveRequester() != null) || (_requestExpireTime > GameTimeController.getGameTicks());
+		return (getActiveRequester() != null) || (_requestExpireTime > GameTimeController.getInstance().getGameTicks());
 	}
 	
 	/**
@@ -6664,7 +6664,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean isProcessingTransaction()
 	{
-		return (getActiveRequester() != null) || (_activeTradeList != null) || (_requestExpireTime > GameTimeController.getGameTicks());
+		return (getActiveRequester() != null) || (_activeTradeList != null) || (_requestExpireTime > GameTimeController.getInstance().getGameTicks());
 	}
 	
 	/**
@@ -6673,7 +6673,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void onTransactionRequest(L2PcInstance partner)
 	{
-		_requestExpireTime = GameTimeController.getGameTicks() + (REQUEST_TIMEOUT * GameTimeController.TICKS_PER_SECOND);
+		_requestExpireTime = GameTimeController.getInstance().getGameTicks() + (REQUEST_TIMEOUT * GameTimeController.TICKS_PER_SECOND);
 		partner.setActiveRequester(this);
 	}
 	
@@ -6683,7 +6683,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean isRequestExpired()
 	{
-		return !(_requestExpireTime > GameTimeController.getGameTicks());
+		return !(_requestExpireTime > GameTimeController.getInstance().getGameTicks());
 	}
 	
 	/**
@@ -6956,7 +6956,7 @@ public final class L2PcInstance extends L2Playable
 				arrows.setLastChange(L2ItemInstance.MODIFIED);
 				
 				// could do also without saving, but let's save approx 1 of 10
-				if ((GameTimeController.getGameTicks() % 10) == 0)
+				if ((GameTimeController.getInstance().getGameTicks() % 10) == 0)
 				{
 					arrows.updateDatabase();
 				}
@@ -7381,7 +7381,7 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	public boolean isInvul()
 	{
-		return super.isInvul() || (_teleportProtectEndTime > GameTimeController.getGameTicks());
+		return super.isInvul() || (_teleportProtectEndTime > GameTimeController.getInstance().getGameTicks());
 	}
 	
 	/**
@@ -12818,7 +12818,7 @@ public final class L2PcInstance extends L2Playable
 		fishs.clear();
 		fishs = null;
 		sendPacket(SystemMessageId.CAST_LINE_AND_START_FISHING);
-		if (!GameTimeController.getInstance().isNowNight() && _lure.isNightLure())
+		if (!GameTimeController.getInstance().isNight() && _lure.isNightLure())
 		{
 			_fish.setFishGroup(-1);
 		}

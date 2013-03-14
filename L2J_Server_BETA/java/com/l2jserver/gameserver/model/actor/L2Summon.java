@@ -1037,7 +1037,7 @@ public abstract class L2Summon extends L2Playable
 		
 		if (isAttackingDisabled())
 		{
-			if (getAttackEndTime() <= GameTimeController.getGameTicks())
+			if (getAttackEndTime() <= GameTimeController.getInstance().getGameTicks())
 			{
 				return false;
 			}

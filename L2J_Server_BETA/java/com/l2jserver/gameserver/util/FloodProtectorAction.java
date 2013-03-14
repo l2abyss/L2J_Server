@@ -49,7 +49,7 @@ public final class FloodProtectorAction
 	/**
 	 * Next game tick when new request is allowed.
 	 */
-	private volatile int _nextGameTick = GameTimeController.getGameTicks();
+	private volatile int _nextGameTick = GameTimeController.getInstance().getGameTicks();
 	/**
 	 * Request counter.
 	 */
@@ -82,7 +82,7 @@ public final class FloodProtectorAction
 	 */
 	public boolean tryPerformAction(final String command)
 	{
-		final int curTick = GameTimeController.getGameTicks();
+		final int curTick = GameTimeController.getInstance().getGameTicks();
 		
 		if ((_client.getActiveChar() != null) && _client.getActiveChar().canOverrideCond(PcCondOverride.FLOOD_CONDITIONS))
 		{

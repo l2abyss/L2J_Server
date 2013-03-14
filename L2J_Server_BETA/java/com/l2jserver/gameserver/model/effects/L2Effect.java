@@ -108,7 +108,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 			try
 			{
 				_periodFirstTime = 0;
-				_periodStartTicks = GameTimeController.getGameTicks();
+				_periodStartTicks = GameTimeController.getInstance().getGameTicks();
 				scheduleEffect();
 			}
 			catch (Exception e)
@@ -175,7 +175,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		_eventEffect = template.eventEffect;
 		_abnormalType = template.abnormalType;
 		_abnormalLvl = template.abnormalLvl;
-		_periodStartTicks = GameTimeController.getGameTicks();
+		_periodStartTicks = GameTimeController.getInstance().getGameTicks();
 		_periodFirstTime = 0;
 		_icon = template.icon;
 		_effectPower = template.effectPower;
@@ -252,7 +252,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	
 	public int getTime()
 	{
-		return (GameTimeController.getGameTicks() - _periodStartTicks) / GameTimeController.TICKS_PER_SECOND;
+		return (GameTimeController.getInstance().getGameTicks() - _periodStartTicks) / GameTimeController.TICKS_PER_SECOND;
 	}
 	
 	/**
