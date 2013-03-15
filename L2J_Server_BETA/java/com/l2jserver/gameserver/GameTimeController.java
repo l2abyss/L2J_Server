@@ -32,11 +32,12 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.util.StackTrace;
 
 /**
+ * Game Time controller class.
  * @author Unknown, Forsaiken
  */
 public final class GameTimeController extends Thread
 {
-	static final Logger _log = Logger.getLogger(GameTimeController.class.getName());
+	private static final Logger _log = Logger.getLogger(GameTimeController.class.getName());
 	
 	public static final int TICKS_PER_SECOND = 10; // not able to change this without checking through code
 	public static final int MILLIS_IN_TICK = 1000 / TICKS_PER_SECOND;

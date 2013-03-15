@@ -16,27 +16,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.entity;
+package com.l2jserver.gameserver.model;
 
 /**
- * @author mrTJO
+ * Action Key DTO.
+ * @author mrTJO, Zoey76
  */
 public class ActionKey
 {
-	int _cat;
-	int _cmd;
-	int _key;
-	int _tgKey1;
-	int _tgKey2;
-	int _show;
+	private final int _cat;
+	private int _cmd = 0;
+	private int _key = 0;
+	private int _tgKey1 = 0;
+	private int _tgKey2 = 0;
+	private int _show = 1;
+	
+	/**
+	 * @param cat category Id
+	 */
+	public ActionKey(int cat)
+	{
+		_cat = cat;
+	}
 	
 	/**
 	 * L2ActionKey Initialization
 	 * @param cat Category ID
 	 * @param cmd Command ID
 	 * @param key User Defined Primary Key
-	 * @param tgKey1 1st Toogled Key (eg. Alt, Ctrl or Shift)
-	 * @param tgKey2 2nd Toogled Key (eg. Alt, Ctrl or Shift)
+	 * @param tgKey1 1st Toggled Key (eg. Alt, Ctrl or Shift)
+	 * @param tgKey2 2nd Toggled Key (eg. Alt, Ctrl or Shift)
 	 * @param show Show Action in UI
 	 */
 	public ActionKey(int cat, int cmd, int key, int tgKey1, int tgKey2, int show)
@@ -59,9 +68,19 @@ public class ActionKey
 		return _cmd;
 	}
 	
+	public void setCommandId(int cmd)
+	{
+		_cmd = cmd;
+	}
+	
 	public int getKeyId()
 	{
 		return _key;
+	}
+	
+	public void setKeyId(int key)
+	{
+		_key = key;
 	}
 	
 	public int getToogleKey1()
@@ -69,14 +88,29 @@ public class ActionKey
 		return _tgKey1;
 	}
 	
+	public void setToogleKey1(int tKey1)
+	{
+		_tgKey1 = tKey1;
+	}
+	
 	public int getToogleKey2()
 	{
 		return _tgKey2;
 	}
 	
+	public void setToogleKey2(int tKey2)
+	{
+		_tgKey2 = tKey2;
+	}
+	
 	public int getShowStatus()
 	{
 		return _show;
+	}
+	
+	public void setShowStatus(int show)
+	{
+		_show = show;
 	}
 	
 	public String getSqlSaveString(int playerId, int order)

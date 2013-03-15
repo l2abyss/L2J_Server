@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 public class StackTrace
 {
-	private static Logger _log = Logger.getLogger(StackTrace.class.getName());
+	private static final Logger _log = Logger.getLogger(StackTrace.class.getName());
 	
 	public static boolean displayStackTraceInformation(Throwable ex)
 	{
@@ -76,62 +76,54 @@ public class StackTrace
 	
 	private static String extractPackageName(String fullClassName)
 	{
-		if ((null == fullClassName) || ("".equals(fullClassName)))
+		if ((null == fullClassName) || fullClassName.isEmpty())
 		{
 			return "";
 		}
-		
-		int lastDot = fullClassName.lastIndexOf('.');
-		
+		final int lastDot = fullClassName.lastIndexOf('.');
 		if (0 >= lastDot)
 		{
 			return "";
 		}
-		
 		return fullClassName.substring(0, lastDot);
 	}
 	
 	private static String extractSimpleClassName(String fullClassName)
 	{
-		if ((null == fullClassName) || ("".equals(fullClassName)))
+		if ((null == fullClassName) || fullClassName.isEmpty())
 		{
 			return "";
 		}
 		
 		int lastDot = fullClassName.lastIndexOf('.');
-		
 		if (0 > lastDot)
 		{
 			return fullClassName;
 		}
-		
 		return fullClassName.substring(++lastDot);
 	}
 	
 	private static String extractDirectClassName(String simpleClassName)
 	{
-		if ((null == simpleClassName) || ("".equals(simpleClassName)))
+		if ((null == simpleClassName) || simpleClassName.isEmpty())
 		{
 			return "";
 		}
 		
 		int lastSign = simpleClassName.lastIndexOf('$');
-		
 		if (0 > lastSign)
 		{
 			return simpleClassName;
 		}
-		
 		return simpleClassName.substring(++lastSign);
 	}
 	
 	private static String unmungeSimpleClassName(String simpleClassName)
 	{
-		if ((null == simpleClassName) || ("".equals(simpleClassName)))
+		if ((null == simpleClassName) || simpleClassName.isEmpty())
 		{
 			return "";
 		}
-		
 		return simpleClassName.replace('$', '.');
 	}
 }

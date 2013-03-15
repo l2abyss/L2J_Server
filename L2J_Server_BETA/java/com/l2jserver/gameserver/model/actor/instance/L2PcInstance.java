@@ -122,7 +122,7 @@ import com.l2jserver.gameserver.model.L2Request;
 import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2Transformation;
-import com.l2jserver.gameserver.model.L2UIKeysSettings;
+import com.l2jserver.gameserver.model.UIKeysSettings;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
@@ -936,7 +936,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	// Character UI
-	private L2UIKeysSettings _uiKeySettings;
+	private UIKeysSettings _uiKeySettings;
 	
 	/** Herbs Task Time **/
 	private int _herbstask = 0;
@@ -15651,7 +15651,7 @@ public final class L2PcInstance extends L2Playable
 	
 	private void restoreUISettings()
 	{
-		_uiKeySettings = new L2UIKeysSettings(this);
+		_uiKeySettings = new UIKeysSettings(getObjectId());
 	}
 	
 	private void storeUISettings()
@@ -15667,7 +15667,7 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	public L2UIKeysSettings getUISettings()
+	public UIKeysSettings getUISettings()
 	{
 		return _uiKeySettings;
 	}

@@ -20,16 +20,16 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
 
-import com.l2jserver.gameserver.model.L2UIKeysSettings;
+import com.l2jserver.gameserver.model.ActionKey;
+import com.l2jserver.gameserver.model.UIKeysSettings;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.entity.ActionKey;
 
 /**
  * @author mrTJO
  */
 public class ExUISetting extends L2GameServerPacket
 {
-	private final L2UIKeysSettings _uiSettings;
+	private final UIKeysSettings _uiSettings;
 	private int buffsize, categories;
 	
 	public ExUISetting(L2PcInstance player)
