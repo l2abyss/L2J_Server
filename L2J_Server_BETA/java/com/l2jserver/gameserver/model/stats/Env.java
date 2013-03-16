@@ -43,11 +43,10 @@ public final class Env
 	private boolean _soulShot = false;
 	private boolean _spiritShot = false;
 	private L2Character _target;
-	private volatile double _value;
+	private double _value;
 	
 	public Env()
 	{
-		//
 	}
 	
 	public Env(byte shield, boolean soulShot, boolean spiritShot, boolean blessedSpiritShot)
