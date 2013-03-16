@@ -332,7 +332,7 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 		{
 			return false;
 		}
-		if (item.isPvp())
+		if (item.isPvp() && !Config.ALT_ALLOW_AUGMENT_PVP_ITEMS)
 		{
 			return false;
 		}

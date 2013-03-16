@@ -67,7 +67,7 @@ public final class RequestConfirmCancelItem extends L2GameClientPacket
 			return;
 		}
 		
-		if (item.isPvp())
+		if (item.isPvp() && !Config.ALT_ALLOW_AUGMENT_PVP_ITEMS)
 		{
 			activeChar.sendPacket(SystemMessageId.THIS_IS_NOT_A_SUITABLE_ITEM);
 			return;

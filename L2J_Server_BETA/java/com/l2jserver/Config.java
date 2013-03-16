@@ -1022,6 +1022,7 @@ public final class Config
 	public static int AUGMENTATION_BASESTAT_CHANCE;
 	public static int AUGMENTATION_ACC_SKILL_CHANCE;
 	public static int[] AUGMENTATION_BLACKLIST;
+	public static boolean ALT_ALLOW_AUGMENT_PVP_ITEMS;
 	public static double HP_REGEN_MULTIPLIER;
 	public static double MP_REGEN_MULTIPLIER;
 	public static double CP_REGEN_MULTIPLIER;
@@ -1635,7 +1636,7 @@ public final class Config
 			}
 			
 			Arrays.sort(AUGMENTATION_BLACKLIST);
-			
+			ALT_ALLOW_AUGMENT_PVP_ITEMS = Boolean.parseBoolean(Character.getProperty("AltAllowAugmentPvPItems", "false"));
 			ALT_GAME_KARMA_PLAYER_CAN_BE_KILLED_IN_PEACEZONE = Boolean.parseBoolean(Character.getProperty("AltKarmaPlayerCanBeKilledInPeaceZone", "false"));
 			ALT_GAME_KARMA_PLAYER_CAN_SHOP = Boolean.parseBoolean(Character.getProperty("AltKarmaPlayerCanShop", "true"));
 			ALT_GAME_KARMA_PLAYER_CAN_TELEPORT = Boolean.parseBoolean(Character.getProperty("AltKarmaPlayerCanTeleport", "true"));
