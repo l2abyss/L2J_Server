@@ -122,7 +122,6 @@ import com.l2jserver.gameserver.model.L2Request;
 import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2Transformation;
-import com.l2jserver.gameserver.model.UIKeysSettings;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
@@ -137,6 +136,7 @@ import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.TerritoryWard;
 import com.l2jserver.gameserver.model.TimeStamp;
 import com.l2jserver.gameserver.model.TradeList;
+import com.l2jserver.gameserver.model.UIKeysSettings;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Decoy;
@@ -327,8 +327,8 @@ public final class L2PcInstance extends L2Playable
 	
 	// Character Character SQL String Definitions:
 	private static final String INSERT_CHARACTER = "INSERT INTO characters (account_name,charId,char_name,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,face,hairStyle,hairColor,sex,exp,sp,karma,fame,pvpkills,pkkills,clanid,race,classid,deletetime,cancraft,title,title_color,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,newbie,nobless,power_grade,createDate) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	private static final String UPDATE_CHARACTER = "UPDATE characters SET level=?,maxHp=?,curHp=?,maxCp=?,curCp=?,maxMp=?,curMp=?,face=?,hairStyle=?,hairColor=?,sex=?,heading=?,x=?,y=?,z=?,exp=?,expBeforeDeath=?,sp=?,karma=?,fame=?,pvpkills=?,pkkills=?,clanid=?,race=?,classid=?,deletetime=?,title=?,title_color=?,accesslevel=?,online=?,isin7sdungeon=?,clan_privs=?,wantspeace=?,base_class=?,onlinetime=?,punish_level=?,punish_timer=?,newbie=?,nobless=?,power_grade=?,subpledge=?,lvl_joined_academy=?,apprentice=?,sponsor=?,varka_ketra_ally=?,clan_join_expiry_time=?,clan_create_expiry_time=?,char_name=?,death_penalty_level=?,bookmarkslot=?,vitality_points=?,language=? WHERE charId=?";
-	private static final String RESTORE_CHARACTER = "SELECT account_name, charId, char_name, level, maxHp, curHp, maxCp, curCp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, expBeforeDeath, sp, karma, fame, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, title_color, accesslevel, online, char_slot, lastAccess, clan_privs, wantspeace, base_class, onlinetime, isin7sdungeon, punish_level, punish_timer, newbie, nobless, power_grade, subpledge, lvl_joined_academy, apprentice, sponsor, varka_ketra_ally,clan_join_expiry_time,clan_create_expiry_time,death_penalty_level,bookmarkslot,vitality_points,createDate,language FROM characters WHERE charId=?";
+	private static final String UPDATE_CHARACTER = "UPDATE characters SET level=?,maxHp=?,curHp=?,maxCp=?,curCp=?,maxMp=?,curMp=?,face=?,hairStyle=?,hairColor=?,sex=?,heading=?,x=?,y=?,z=?,exp=?,expBeforeDeath=?,sp=?,karma=?,fame=?,pvpkills=?,pkkills=?,clanid=?,race=?,classid=?,deletetime=?,title=?,title_color=?,accesslevel=?,online=?,isin7sdungeon=?,clan_privs=?,wantspeace=?,base_class=?,onlinetime=?,punish_level=?,punish_timer=?,newbie=?,nobless=?,power_grade=?,subpledge=?,lvl_joined_academy=?,apprentice=?,sponsor=?,clan_join_expiry_time=?,clan_create_expiry_time=?,char_name=?,death_penalty_level=?,bookmarkslot=?,vitality_points=?,language=? WHERE charId=?";
+	private static final String RESTORE_CHARACTER = "SELECT account_name, charId, char_name, level, maxHp, curHp, maxCp, curCp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, expBeforeDeath, sp, karma, fame, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, title_color, accesslevel, online, char_slot, lastAccess, clan_privs, wantspeace, base_class, onlinetime, isin7sdungeon, punish_level, punish_timer, newbie, nobless, power_grade, subpledge, lvl_joined_academy, apprentice, sponsor, clan_join_expiry_time,clan_create_expiry_time,death_penalty_level,bookmarkslot,vitality_points,createDate,language FROM characters WHERE charId=?";
 	
 	// Character Teleport Bookmark:
 	private static final String INSERT_TP_BOOKMARK = "INSERT INTO character_tpbookmark (charId,Id,x,y,z,icon,tag,name) values (?,?,?,?,?,?,?,?)";
@@ -785,11 +785,6 @@ public final class L2PcInstance extends L2Playable
 	private final int _race[] = new int[2];
 	
 	private final BlockList _blockList = new BlockList(this);
-	
-	/**
-	 * lvl of alliance with ketra orcs or varka silenos, used in quests and aggro checks [-5,-1] varka, 0 neutral, [1,5] ketra
-	 */
-	private int _alliedVarkaKetra = 0;
 	
 	private L2Fishing _fishCombat;
 	private boolean _fishing = false;
@@ -7818,8 +7813,6 @@ public final class L2PcInstance extends L2Playable
 					
 					CursedWeaponsManager.getInstance().checkPlayer(player);
 					
-					player.setAllianceWithVarkaKetra(rset.getInt("varka_ketra_ally"));
-					
 					player.setDeathPenaltyBuffLevel(rset.getInt("death_penalty_level"));
 					
 					player.setVitalityPoints(rset.getInt("vitality_points"), true);
@@ -8277,15 +8270,14 @@ public final class L2PcInstance extends L2Playable
 			statement.setInt(42, getLvlJoinedAcademy());
 			statement.setLong(43, getApprentice());
 			statement.setLong(44, getSponsor());
-			statement.setInt(45, getAllianceWithVarkaKetra());
-			statement.setLong(46, getClanJoinExpiryTime());
-			statement.setLong(47, getClanCreateExpiryTime());
-			statement.setString(48, getName());
-			statement.setLong(49, getDeathPenaltyBuffLevel());
-			statement.setInt(50, getBookMarkSlot());
-			statement.setInt(51, getVitalityPoints());
-			statement.setString(52, getLang());
-			statement.setInt(53, getObjectId());
+			statement.setLong(45, getClanJoinExpiryTime());
+			statement.setLong(46, getClanCreateExpiryTime());
+			statement.setString(47, getName());
+			statement.setLong(48, getDeathPenaltyBuffLevel());
+			statement.setInt(49, getBookMarkSlot());
+			statement.setInt(50, getVitalityPoints());
+			statement.setString(51, getLang());
+			statement.setInt(52, getObjectId());
 			
 			statement.execute();
 			statement.close();
@@ -11057,27 +11049,6 @@ public final class L2PcInstance extends L2Playable
 	public void setFishing(boolean fishing)
 	{
 		_fishing = fishing;
-	}
-	
-	public void setAllianceWithVarkaKetra(int sideAndLvlOfAlliance)
-	{
-		// [-5,-1] varka, 0 neutral, [1,5] ketra
-		_alliedVarkaKetra = sideAndLvlOfAlliance;
-	}
-	
-	public int getAllianceWithVarkaKetra()
-	{
-		return _alliedVarkaKetra;
-	}
-	
-	public boolean isAlliedWithVarka()
-	{
-		return (_alliedVarkaKetra < 0);
-	}
-	
-	public boolean isAlliedWithKetra()
-	{
-		return (_alliedVarkaKetra > 0);
 	}
 	
 	public void sendSkillList()

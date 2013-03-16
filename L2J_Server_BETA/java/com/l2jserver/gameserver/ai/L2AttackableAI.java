@@ -201,20 +201,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				return false;
 			}
 			
-			// TODO: Ideally, autoattack condition should be called from the AI script. In that case,
-			// it should only implement the basic behaviors while the script will add more specific
-			// behaviors (like varka/ketra alliance, etc). Once implemented, remove specialized stuff
-			// from this location. (Fulminus)
-			
-			// Check if player is an ally (comparing mem addr)
-			if ("varka_silenos_clan".equals(me.getFactionId()) && player.isAlliedWithVarka())
-			{
-				return false;
-			}
-			if ("ketra_orc_clan".equals(me.getFactionId()) && player.isAlliedWithKetra())
-			{
-				return false;
-			}
 			// check if the target is within the grace period for JUST getting up from fake death
 			if (player.isRecentFakeDeath())
 			{
