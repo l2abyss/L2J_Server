@@ -7074,7 +7074,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				Collection<L2Object> objs = player.getKnownList().getKnownObjects().values();
 				for (L2Object spMob : objs)
 				{
-					if (spMob.isNpc())
+					if ((spMob != null) && spMob.isNpc())
 					{
 						L2Npc npcMob = (L2Npc) spMob;
 						
