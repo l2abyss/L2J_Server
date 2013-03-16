@@ -232,11 +232,14 @@ public class DayNightSpawnManager
 		{
 			case 0:
 				boss.deleteMe();
-				_log.info("DayNightSpawnManager: Deleting Hellman raidboss");
+				_log.info(getClass().getSimpleName() + ": Deleting Hellman raidboss");
 				break;
 			case 1:
-				boss.spawnMe();
-				_log.info("DayNightSpawnManager: Spawning Hellman raidboss");
+				if (!boss.isVisible())
+				{
+					boss.spawnMe();
+				}
+				_log.info(getClass().getSimpleName() + ": Spawning Hellman raidboss");
 				break;
 		}
 	}
