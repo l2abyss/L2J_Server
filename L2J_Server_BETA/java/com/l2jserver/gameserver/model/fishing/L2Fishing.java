@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.datatables.FishingMonstersData;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2PenaltyMonsterInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExFishingHpRegen;
@@ -387,7 +386,8 @@ public class L2Fishing implements Runnable
 				spawn.setAmount(1);
 				spawn.setHeading(_fisher.getHeading());
 				spawn.stopRespawn();
-				((L2PenaltyMonsterInstance) spawn.doSpawn().scheduleDespawn(3 * 60 * 1000)).setPlayerToKill(_fisher);
+				spawn.doSpawn().scheduleDespawn(3 * 60 * 1000);
+				spawn.getLastSpawn().setTarget(_fisher);
 			}
 			catch (Exception e)
 			{
