@@ -85,6 +85,7 @@ public enum L2EffectType
 	SILENT_MOVE,
 	SLEEP,
 	SPOIL,
+	SWEEPER,
 	STUN,
 	SUMMON_AGATHION,
 	SUMMON_PET,

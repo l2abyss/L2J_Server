@@ -1187,7 +1187,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			case INSTANT_JUMP:
 				return true;
 			default:
-				return hasEffectType(L2EffectType.CANCEL);
+				return hasEffectType(L2EffectType.CANCEL, L2EffectType.SWEEPER);
 		}
 	}
 	
