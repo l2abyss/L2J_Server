@@ -45,7 +45,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.DimensionalRift;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
@@ -70,8 +69,6 @@ public class DimensionalRiftManager
 	{
 		loadRooms();
 		loadSpawns();
-		// UnAfraid: TODO: Move that quest to datapack lol!!!
-		new Quest(635, "RiftQuest", "Dummy Quest shown in players' questlist when inside the rift");
 	}
 	
 	public DimensionalRiftRoom getRoom(byte type, byte room)
