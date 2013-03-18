@@ -43,17 +43,9 @@ public class FuncMAtkMod extends Func
 	@Override
 	public void calc(Env env)
 	{
-		if (env.getCharacter().isPlayer())
-		{
-			double intb = BaseStats.INT.calcBonus(env.getPlayer());
-			double lvlb = env.getPlayer().getLevelMod();
-			env.mulValue((lvlb * lvlb) * (intb * intb));
-		}
-		else
-		{
-			double intb = BaseStats.INT.calcBonus(env.getCharacter());
-			double lvlb = env.getCharacter().getLevelMod();
-			env.mulValue((lvlb * lvlb) * (intb * intb));
-		}
+		// Level Modifier^2 * INT Modifier^2
+		double lvlMod = env.getCharacter().isPlayer() ? BaseStats.INT.calcBonus(env.getPlayer()) : BaseStats.INT.calcBonus(env.getCharacter());
+		double intMod = env.getCharacter().isPlayer() ? env.getPlayer().getLevelMod() : env.getCharacter().getLevelMod();
+		env.mulValue(Math.pow(lvlMod, 2) * Math.pow(intMod, 2));
 	}
 }
