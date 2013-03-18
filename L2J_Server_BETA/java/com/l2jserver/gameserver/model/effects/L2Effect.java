@@ -32,7 +32,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
 import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.skills.funcs.Lambda;
@@ -133,7 +132,6 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	 * For special behavior. See Formulas.calcEffectSuccess
 	 */
 	private double _effectPower;
-	private L2SkillType _effectSkillType;
 	
 	/**
 	 * <font color="FF0000"><b>WARNING: scheduleEffect no longer inside constructor</b></font><br>
@@ -179,11 +177,6 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		_periodFirstTime = 0;
 		_icon = template.icon;
 		_effectPower = template.effectPower;
-		_effectSkillType = template.effectType;
-		
-		// Commented out by DrHouse:
-		// scheduleEffect can call onStart before effect is completely initialized on constructor (child classes constructor)
-		// scheduleEffect();
 	}
 	
 	/**
@@ -477,7 +470,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 			{
 				_state = EffectState.ACTING;
 				
-				if (_skill.isPvpSkill() && _icon && getEffected().isPlayer())
+				if (_skill.isPVP() && _icon && getEffected().isPlayer())
 				{
 					SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
 					smsg.addSkillName(_skill);
@@ -670,11 +663,6 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	public double getEffectPower()
 	{
 		return _effectPower;
-	}
-	
-	public L2SkillType getSkillType()
-	{
-		return _effectSkillType;
 	}
 	
 	public boolean canBeStolen()

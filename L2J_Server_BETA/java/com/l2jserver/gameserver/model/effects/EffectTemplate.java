@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 import com.l2jserver.gameserver.handler.EffectHandler;
 import com.l2jserver.gameserver.model.ChanceCondition;
 import com.l2jserver.gameserver.model.conditions.Condition;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.skills.funcs.Lambda;
 import com.l2jserver.gameserver.model.stats.Env;
@@ -54,14 +53,13 @@ public class EffectTemplate
 	public final byte abnormalLvl;
 	public final boolean icon;
 	public final String funcName;
-	public final double effectPower; // to thandle chance
-	public final L2SkillType effectType; // to handle resistences etc...
+	public final double effectPower; // to handle chance
 	
 	public final int triggeredId;
 	public final int triggeredLevel;
 	public final ChanceCondition chanceCondition;
 	
-	public EffectTemplate(Condition pAttachCond, Condition pApplayCond, String func, Lambda pLambda, int pCounter, int pAbnormalTime, AbnormalEffect pAbnormalEffect, AbnormalEffect[] pSpecialEffect, AbnormalEffect pEventEffect, String pAbnormalType, byte pAbnormalLvl, boolean showicon, double ePower, L2SkillType eType, int trigId, int trigLvl, ChanceCondition chanceCond)
+	public EffectTemplate(Condition pAttachCond, Condition pApplayCond, String func, Lambda pLambda, int pCounter, int pAbnormalTime, AbnormalEffect pAbnormalEffect, AbnormalEffect[] pSpecialEffect, AbnormalEffect pEventEffect, String pAbnormalType, byte pAbnormalLvl, boolean showicon, double ePower, int trigId, int trigLvl, ChanceCondition chanceCond)
 	{
 		attachCond = pAttachCond;
 		applayCond = pApplayCond;
@@ -76,7 +74,6 @@ public class EffectTemplate
 		icon = showicon;
 		funcName = func;
 		effectPower = ePower;
-		effectType = eType;
 		
 		triggeredId = trigId;
 		triggeredLevel = trigLvl;

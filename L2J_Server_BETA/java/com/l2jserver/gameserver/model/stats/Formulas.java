@@ -41,7 +41,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.effects.EffectTemplate;
 import com.l2jserver.gameserver.model.effects.L2Effect;
-import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Fort;
@@ -1525,7 +1524,7 @@ public final class Formulas
 	{
 		// TODO: CHECK/FIX THIS FORMULA UP!!
 		double defence = 0;
-		if (skill.isActive() && skill.isOffensive() && !skill.isNeutral())
+		if (skill.isActive() && skill.isOffensive())
 		{
 			defence = target.getMDef(actor, skill);
 		}
@@ -1768,6 +1767,13 @@ public final class Formulas
 	
 	public static boolean calcEffectSuccess(L2Character attacker, L2Character target, EffectTemplate effect, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
 	{
+		// Effect base rate, if it's -1 (or less) always land.
+		final double baseRate = effect.effectPower;
+		if (baseRate < 0)
+		{
+			return true;
+		}
+		
 		if (skill.isDebuff())
 		{
 			if (skill.getPower() == -1)
@@ -1793,25 +1799,6 @@ public final class Formulas
 			}
 			
 			return false;
-		}
-		
-		final L2SkillType effectType = effect.effectType;
-		double baseRate = effect.effectPower;
-		if (effectType == null)
-		{
-			if (baseRate > skill.getMaxChance())
-			{
-				return Rnd.get(100) < skill.getMaxChance();
-			}
-			else if (baseRate < skill.getMinChance())
-			{
-				return Rnd.get(100) < skill.getMinChance();
-			}
-			return Rnd.get(100) < baseRate;
-		}
-		else if (skill.hasEffectType(L2EffectType.CANCEL))
-		{
-			return true;
 		}
 		
 		// Calculate BaseRate.
@@ -1885,7 +1872,7 @@ public final class Formulas
 		if (attacker.isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, skill.getName(), " eff.type:", effectType.toString(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.valueOf(elementModifier), " mAtk:", String.format("%1.2f", mAtkModifier), " ss:", String.valueOf(ssModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
+			StringUtil.append(stat, skill.getName(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.valueOf(elementModifier), " mAtk:", String.format("%1.2f", mAtkModifier), " ss:", String.valueOf(ssModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
 			final String result = stat.toString();
 			if (attacker.isDebug())
 			{
@@ -2118,9 +2105,7 @@ public final class Formulas
 			return true;
 		}
 		
-		// DS: remove skill magic level dependence from nukes
-		// int lvlDifference = (target.getLevel() - (skill.getMagicLevel() > 0 ? skill.getMagicLevel() : attacker.getLevel()));
-		int lvlDifference = (target.getLevel() - (skill.getSkillType() == L2SkillType.SPOIL ? skill.getMagicLevel() : attacker.getLevel()));
+		int lvlDifference = (target.getLevel() - (skill.getMagicLevel() > 0 ? skill.getMagicLevel() : attacker.getLevel()));
 		double lvlModifier = Math.pow(1.3, lvlDifference);
 		float targetModifier = 1;
 		if (target.isL2Attackable() && !target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_MAGIC_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 3))
@@ -2405,7 +2390,6 @@ public final class Formulas
 			case CHARGEDAM:
 			case FATAL:
 			case DEATHLINK:
-			case CPDAM:
 			case MANADAM:
 			case CPDAMPERCENT:
 				final Stats stat = skill.isMagic() ? Stats.VENGEANCE_SKILL_MAGIC_DAMAGE : Stats.VENGEANCE_SKILL_PHYSICAL_DAMAGE;

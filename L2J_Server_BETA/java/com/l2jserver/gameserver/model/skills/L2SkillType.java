@@ -43,7 +43,6 @@ public enum L2SkillType
 	// Damage
 	PDAM,
 	MDAM,
-	CPDAM,
 	MANADAM,
 	CPDAMPERCENT,
 	DOT,
@@ -128,7 +127,6 @@ public enum L2SkillType
 	RECALL(L2SkillTeleport.class),
 	TELEPORT(L2SkillTeleport.class),
 	SUMMON_FRIEND,
-	SPOIL,
 	BEAST_FEED,
 	BEAST_RELEASE,
 	BEAST_RELEASE_ALL,

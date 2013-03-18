@@ -3868,7 +3868,7 @@ public final class L2PcInstance extends L2Playable
 			{
 				if (count > 1)
 				{
-					if (process.equalsIgnoreCase("sweep") || process.equalsIgnoreCase("Quest"))
+					if (process.equalsIgnoreCase("Sweeper") || process.equalsIgnoreCase("Quest"))
 					{
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
 						sm.addItemName(itemId);
@@ -9143,25 +9143,25 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		// Check if the attacker is a L2MonsterInstance
-		if (attacker instanceof L2MonsterInstance)
+		if (attacker.isMonster())
 		{
 			return true;
 		}
 		
 		// is AutoAttackable if both players are in the same duel and the duel is still going on
-		if ((attacker instanceof L2PcInstance) && (getDuelState() == Duel.DUELSTATE_DUELLING) && (getDuelId() == ((L2PcInstance) attacker).getDuelId()))
+		if (attacker.isPlayer() && (getDuelState() == Duel.DUELSTATE_DUELLING) && (getDuelId() == ((L2PcInstance) attacker).getDuelId()))
 		{
 			return true;
 		}
 		
 		// Check if the attacker is not in the same party. NOTE: Party checks goes before oly checks in order to prevent patry member autoattack at oly.
-		if ((getParty() != null) && getParty().getMembers().contains(attacker))
+		if (isInParty() && getParty().getMembers().contains(attacker))
 		{
 			return false;
 		}
 		
 		// Check if the attacker is in olympia and olympia start
-		if ((attacker instanceof L2PcInstance) && ((L2PcInstance) attacker).isInOlympiadMode())
+		if (attacker.isPlayer() && attacker.getActingPlayer().isInOlympiadMode())
 		{
 			if (isInOlympiadMode() && isOlympiadStart() && (((L2PcInstance) attacker).getOlympiadGameId() == getOlympiadGameId()))
 			{
@@ -9177,7 +9177,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		// Check if the attacker is a L2Playable
-		if (attacker instanceof L2Playable)
+		if (attacker.isPlayable())
 		{
 			if (isInsideZone(ZoneId.PEACE))
 			{
@@ -9226,7 +9226,7 @@ public final class L2PcInstance extends L2Playable
 			}
 			
 			// Check if the attacker is not in the same ally
-			if ((attacker instanceof L2PcInstance) && (getAllyId() != 0) && (getAllyId() == attackerPlayer.getAllyId()))
+			if (attacker.isPlayer() && (getAllyId() != 0) && (getAllyId() == attackerPlayer.getAllyId()))
 			{
 				return false;
 			}
@@ -9687,7 +9687,7 @@ public final class L2PcInstance extends L2Playable
 			
 		}
 		// Check if the skill is defensive
-		if (!skill.isOffensive() && (target instanceof L2MonsterInstance) && !forceUse && !skill.isNeutral())
+		if (!skill.isOffensive() && target.isMonster() && !forceUse)
 		{
 			// check if the target is a monster and if force attack is set.. if not then we don't want to cast.
 			switch (sklTargetType)
@@ -9721,20 +9721,6 @@ public final class L2PcInstance extends L2Playable
 					}
 					break;
 				}
-			}
-		}
-		
-		// Check if the skill is Spoil type and if the target isn't already spoiled
-		if (sklType == L2SkillType.SPOIL)
-		{
-			if (!(target instanceof L2MonsterInstance))
-			{
-				// Send a System Message to the L2PcInstance
-				sendPacket(SystemMessageId.INCORRECT_TARGET);
-				
-				// Send a Server->Client packet ActionFailed to the L2PcInstance
-				sendPacket(ActionFailed.STATIC_PACKET);
-				return false;
 			}
 		}
 		
@@ -10004,7 +9990,7 @@ public final class L2PcInstance extends L2Playable
 		{
 			SkillDat skilldat = getCurrentSkill();
 			SkillDat skilldatpet = getCurrentPetSkill();
-			if (skill.isPvpSkill()) // pvp skill
+			if (skill.isPVP())
 			{
 				if ((getClan() != null) && (((L2PcInstance) target).getClan() != null))
 				{

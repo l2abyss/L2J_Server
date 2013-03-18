@@ -1741,7 +1741,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			case CHARGEDAM:
 			case FATAL:
 			case DEATHLINK:
-			case CPDAM:
 			case MANADAM:
 			case CPDAMPERCENT:
 			{

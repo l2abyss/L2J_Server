@@ -469,7 +469,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 					case CHARGEDAM:
 					case FATAL:
 					case DEATHLINK:
-					case CPDAM:
 					case MANADAM:
 					case CPDAMPERCENT:
 						addAtkSkill(skill);

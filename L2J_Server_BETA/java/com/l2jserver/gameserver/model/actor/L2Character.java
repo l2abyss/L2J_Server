@@ -6392,7 +6392,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 						_skipgeo++;
 						continue;
 					}
-					if (skill.isOffensive() && !skill.isNeutral())
+					if (skill.isOffensive())
 					{
 						if (isPlayer())
 						{
@@ -6708,7 +6708,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, target);
 			}
 		}
-		if (skill.isOffensive() && !skill.isNeutral() && !(skill.getSkillType() == L2SkillType.UNLOCK) && !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK))
+		if (skill.isOffensive() && !(skill.getSkillType() == L2SkillType.UNLOCK) && !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK))
 		{
 			getAI().clientStartAutoAttack();
 		}
@@ -6985,11 +6985,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 					// EVT_ATTACKED and PvPStatus
 					if (target instanceof L2Character)
 					{
-						if (skill.isNeutral())
-						{
-							// no flags
-						}
-						else if (skill.isOffensive())
+						if (skill.isOffensive())
 						{
 							if (target.isPlayer() || target.isSummon() || target.isTrap())
 							{
@@ -7042,7 +7038,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 								}
 							}
 						}
-						else
+						else if (skill.isPVP())
 						{
 							if (target.isPlayer())
 							{

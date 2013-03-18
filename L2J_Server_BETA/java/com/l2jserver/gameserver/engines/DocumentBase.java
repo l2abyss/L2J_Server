@@ -117,7 +117,6 @@ import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.type.L2ArmorType;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.skills.funcs.Lambda;
 import com.l2jserver.gameserver.model.skills.funcs.LambdaCalc;
@@ -397,21 +396,6 @@ public abstract class DocumentBase
 			effectPower = Double.parseDouble(getValue(attrs.getNamedItem("effectPower").getNodeValue(), template));
 		}
 		
-		L2SkillType type = null;
-		if (attrs.getNamedItem("effectType") != null)
-		{
-			String typeName = getValue(attrs.getNamedItem("effectType").getNodeValue(), template);
-			
-			try
-			{
-				type = Enum.valueOf(L2SkillType.class, typeName);
-			}
-			catch (Exception e)
-			{
-				throw new IllegalArgumentException("Not skilltype found for: " + typeName);
-			}
-		}
-		
 		final boolean isChanceSkillTrigger = name.equals("ChanceSkillTrigger");
 		int trigId = 0;
 		if (attrs.getNamedItem("triggeredId") != null)
@@ -472,7 +456,7 @@ public abstract class DocumentBase
 			throw new NoSuchElementException("Invalid chance condition: " + chanceCond + " " + activationChance);
 		}
 		
-		final EffectTemplate lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, abnormalTime, abnormalVisualEffect, special, event, abnormalType, abnormalLvl, icon, effectPower, type, trigId, trigLvl, chance);
+		final EffectTemplate lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, abnormalTime, abnormalVisualEffect, special, event, abnormalType, abnormalLvl, icon, effectPower, trigId, trigLvl, chance);
 		parseTemplate(n, lt);
 		if (template instanceof L2Item)
 		{
