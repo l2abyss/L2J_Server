@@ -71,7 +71,7 @@ public class PcAppearance
 	{
 		if (_visibleName == null)
 		{
-			_visibleName = getOwner().getName();
+			return getOwner().getName();
 		}
 		return _visibleName;
 	}
@@ -91,7 +91,7 @@ public class PcAppearance
 	{
 		if (_visibleTitle == null)
 		{
-			_visibleTitle = getOwner().getTitle();
+			return getOwner().getTitle();
 		}
 		return _visibleTitle;
 	}
