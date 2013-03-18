@@ -2535,7 +2535,7 @@ public final class Formulas
 		return false;
 	}
 	
-	public static List<L2Effect> calcCancel(L2Character activeChar, L2Character target, L2Skill skill, double power)
+	public static List<L2Effect> calcCancelStealEffects(L2Character activeChar, L2Character target, L2Skill skill, double power)
 	{
 		int cancelMagicLvl = skill.getMagicLevel();
 		int count = skill.getMaxNegatedEffects();
@@ -2679,15 +2679,6 @@ public final class Formulas
 	{
 		rate *= (eff.getSkill().getMagicLevel() > 0) ? (cancelMagicLvl / eff.getSkill().getMagicLevel()) : 1;
 		
-		// Check the Rate Limits.
-		if (rate > skill.getMaxChance())
-		{
-			rate = skill.getMaxChance();
-		}
-		else if (rate < skill.getMinChance())
-		{
-			rate = skill.getMinChance();
-		}
-		return Rnd.get(100) < rate;
+		return Rnd.get(100) < Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
 	}
 }
