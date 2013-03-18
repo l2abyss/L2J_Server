@@ -23,6 +23,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -367,13 +368,13 @@ public final class L2PcInstance extends L2Playable
 	public static final int STORE_PRIVATE_MANUFACTURE = 5;
 	public static final int STORE_PRIVATE_PACKAGE_SELL = 8;
 	
-	public static FastList<PlayerDespawnListener> despawnListeners = new FastList<PlayerDespawnListener>().shared();
-	public static FastList<HennaListener> hennaListeners = new FastList<HennaListener>().shared();
-	public FastList<EquipmentListener> equipmentListeners = new FastList<EquipmentListener>().shared();
-	public static FastList<EquipmentListener> globalEquipmentListeners = new FastList<EquipmentListener>().shared();
-	public FastList<TransformListener> transformListeners = new FastList<TransformListener>().shared();
-	public FastList<ProfessionChangeListener> professionChangeListeners = new FastList<ProfessionChangeListener>().shared();
-	public static FastList<ProfessionChangeListener> globalProfessionChangeListeners = new FastList<ProfessionChangeListener>().shared();
+	public static final FastList<PlayerDespawnListener> despawnListeners = new FastList<PlayerDespawnListener>().shared();
+	public static final FastList<HennaListener> hennaListeners = new FastList<HennaListener>().shared();
+	public final FastList<EquipmentListener> equipmentListeners = new FastList<EquipmentListener>().shared();
+	public static final FastList<EquipmentListener> globalEquipmentListeners = new FastList<EquipmentListener>().shared();
+	public final FastList<TransformListener> transformListeners = new FastList<TransformListener>().shared();
+	public final FastList<ProfessionChangeListener> professionChangeListeners = new FastList<ProfessionChangeListener>().shared();
+	public static final FastList<ProfessionChangeListener> globalProfessionChangeListeners = new FastList<ProfessionChangeListener>().shared();
 	
 	public class AIAccessor extends L2Character.AIAccessor
 	{
@@ -616,7 +617,7 @@ public final class L2PcInstance extends L2Playable
 	private boolean _noble = false;
 	private boolean _hero = false;
 	
-	/** The L2FolkInstance corresponding to the last Folk wich one the player talked. */
+	/** The L2FolkInstance corresponding to the last Folk which one the player talked. */
 	private L2Npc _lastFolkNpc = null;
 	
 	/** Last NPC Id talked on a quest */
@@ -743,11 +744,11 @@ public final class L2PcInstance extends L2Playable
 		return _teleportProtectEndTime > GameTimeController.getInstance().getGameTicks();
 	}
 	
-	// protects a char from agro mobs when getting up from fake death
+	// protects a char from aggro mobs when getting up from fake death
 	private long _recentFakeDeathEndTime = 0;
 	private boolean _isFakeDeath;
 	
-	/** The fists L2Weapon of the L2PcInstance (used when no weapon is equiped) */
+	/** The fists L2Weapon of the L2PcInstance (used when no weapon is equipped) */
 	private L2Weapon _fistsWeaponItem;
 	
 	private final Map<Integer, String> _chars = new FastMap<>();
@@ -895,14 +896,9 @@ public final class L2PcInstance extends L2Playable
 		_PvPRegTask = null;
 	}
 	
-	/** Task lauching the function stopPvPFlag() */
-	private class PvPFlag implements Runnable
+	/** Task launching the function stopPvPFlag() */
+	protected class PvPFlag implements Runnable
 	{
-		public PvPFlag()
-		{
-			
-		}
-		
 		@Override
 		public void run()
 		{
@@ -1456,8 +1452,6 @@ public final class L2PcInstance extends L2Playable
 		return (getPrivateStoreType() > L2PcInstance.STORE_PRIVATE_NONE);
 	}
 	
-	// public boolean isInCraftMode() { return (getPrivateStoreType() == STORE_PRIVATE_MANUFACTURE); }
-	
 	public boolean isInCraftMode()
 	{
 		return _inCraftMode;
@@ -1589,9 +1583,7 @@ public final class L2PcInstance extends L2Playable
 			_log.warning("Attempted to remove unknown RecipeList: " + recipeId);
 		}
 		
-		L2ShortCut[] allShortCuts = getAllShortCuts();
-		
-		for (L2ShortCut sc : allShortCuts)
+		for (L2ShortCut sc : getAllShortCuts())
 		{
 			if ((sc != null) && (sc.getId() == recipeId) && (sc.getType() == L2ShortCut.TYPE_RECIPE))
 			{
@@ -1693,31 +1685,18 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public Quest[] getAllActiveQuests()
 	{
-		FastList<Quest> quests = new FastList<>();
-		
+		List<Quest> quests = new ArrayList<>();
 		for (QuestState qs : _quests.values())
 		{
-			if (qs == null)
+			if ((qs == null) || (qs.getQuest() == null) || (!qs.isStarted() && !Config.DEVELOPER))
 			{
 				continue;
 			}
-			
-			if (qs.getQuest() == null)
-			{
-				continue;
-			}
-			
-			int questId = qs.getQuest().getQuestIntId();
+			final int questId = qs.getQuest().getQuestIntId();
 			if ((questId > 19999) || (questId < 1))
 			{
 				continue;
 			}
-			
-			if (!qs.isStarted() && !Config.DEVELOPER)
-			{
-				continue;
-			}
-			
 			quests.add(qs.getQuest());
 		}
 		
@@ -1736,7 +1715,7 @@ public final class L2PcInstance extends L2Playable
 		// Go through the QuestState of the L2PcInstance quests
 		for (Quest quest : npc.getTemplate().getEventQuests(QuestEventType.ON_ATTACK))
 		{
-			// Check if the Identifier of the L2Attackable attck is needed for the current quest
+			// Check if the Identifier of the L2Attackable attack is needed for the current quest
 			if (getQuestState(quest.getName()) != null)
 			{
 				// Copy the current L2PcInstance QuestState in the QuestState table
@@ -2300,18 +2279,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void setRecomHave(int value)
 	{
-		if (value > 255)
-		{
-			_recomHave = 255;
-		}
-		else if (value < 0)
-		{
-			_recomHave = 0;
-		}
-		else
-		{
-			_recomHave = value;
-		}
+		_recomHave = Math.min(Math.max(value, 0), 255);
 	}
 	
 	/**
@@ -2320,18 +2288,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void setRecomLeft(int value)
 	{
-		if (value > 255)
-		{
-			_recomLeft = 255;
-		}
-		else if (value < 0)
-		{
-			_recomLeft = 0;
-		}
-		else
-		{
-			_recomLeft = value;
-		}
+		_recomLeft = Math.min(Math.max(value, 0), 255);
 	}
 	
 	/**
@@ -2655,7 +2612,7 @@ public final class L2PcInstance extends L2Playable
 			sendPacket(sm);
 			
 			int slot = getInventory().getSlotFromItem(item);
-			// we cant unequip talisman by body slot
+			// we can't unequip talisman by body slot
 			if (slot == L2Item.SLOT_DECO)
 			{
 				items = getInventory().unEquipItemInSlotAndRecord(item.getLocationSlot());
@@ -2886,7 +2843,7 @@ public final class L2PcInstance extends L2Playable
 	
 	public void setActiveEnchantItem(L2ItemInstance scroll)
 	{
-		// If we dont have a Enchant Item, we are not enchanting.
+		// If we don't have a Enchant Item, we are not enchanting.
 		if (scroll == null)
 		{
 			setActiveEnchantSupportItem(null);
