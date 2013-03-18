@@ -98,9 +98,7 @@ public final class SkillTreesData extends DocumentParser
 	
 	private boolean _loading = true;
 	
-	/**
-	 * Parent class IDs are read from XML and stored in this map, to allow easy customization.
-	 */
+	/** Parent class Ids are read from XML and stored in this map, to allow easy customization. */
 	private static final Map<ClassId, ClassId> _parentClassMap = new HashMap<>();
 	
 	/**
@@ -327,8 +325,8 @@ public final class SkillTreesData extends DocumentParser
 	 * Method to get the complete skill tree for a given class id.<br>
 	 * Include all skills common to all classes.<br>
 	 * Includes all parent skill trees.
-	 * @param classId the class skill tree ID.
-	 * @return the complete Class Skill Tree including skill trees from parent class for a given {@code classId}.
+	 * @param classId the class skill tree Id
+	 * @return the complete Class Skill Tree including skill trees from parent class for a given {@code classId}
 	 */
 	public Map<Integer, L2SkillLearn> getCompleteClassSkillTree(ClassId classId)
 	{
@@ -346,8 +344,8 @@ public final class SkillTreesData extends DocumentParser
 	/**
 	 * Gets the transfer skill tree.<br>
 	 * If new classes are implemented over 3rd class, we use a recursive call.
-	 * @param classId the transfer skill tree ID.
-	 * @return the complete Transfer Skill Tree for a given {@code classId}.
+	 * @param classId the transfer skill tree Id
+	 * @return the complete Transfer Skill Tree for a given {@code classId}
 	 */
 	public Map<Integer, L2SkillLearn> getTransferSkillTree(ClassId classId)
 	{
@@ -360,7 +358,7 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the common skill tree.
-	 * @return the complete Common Skill Tree.
+	 * @return the complete Common Skill Tree
 	 */
 	public Map<Integer, L2SkillLearn> getCommonSkillTree()
 	{
@@ -369,7 +367,7 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the collect skill tree.
-	 * @return the complete Collect Skill Tree.
+	 * @return the complete Collect Skill Tree
 	 */
 	public Map<Integer, L2SkillLearn> getCollectSkillTree()
 	{
@@ -378,7 +376,7 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the fishing skill tree.
-	 * @return the complete Fishing Skill Tree.
+	 * @return the complete Fishing Skill Tree
 	 */
 	public Map<Integer, L2SkillLearn> getFishingSkillTree()
 	{
@@ -387,7 +385,7 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the pledge skill tree.
-	 * @return the complete Pledge Skill Tree.
+	 * @return the complete Pledge Skill Tree
 	 */
 	public Map<Integer, L2SkillLearn> getPledgeSkillTree()
 	{
@@ -396,7 +394,7 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the sub class skill tree.
-	 * @return the complete Sub-Class Skill Tree.
+	 * @return the complete Sub-Class Skill Tree
 	 */
 	public Map<Integer, L2SkillLearn> getSubClassSkillTree()
 	{
@@ -405,7 +403,7 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the sub pledge skill tree.
-	 * @return the complete Sub-Pledge Skill Tree.
+	 * @return the complete Sub-Pledge Skill Tree
 	 */
 	public Map<Integer, L2SkillLearn> getSubPledgeSkillTree()
 	{
@@ -414,7 +412,7 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the transform skill tree.
-	 * @return the complete Transform Skill Tree.
+	 * @return the complete Transform Skill Tree
 	 */
 	public Map<Integer, L2SkillLearn> getTransformSkillTree()
 	{
@@ -423,7 +421,7 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the noble skill tree.
-	 * @return the complete Noble Skill Tree.
+	 * @return the complete Noble Skill Tree
 	 */
 	public Map<Integer, L2Skill> getNobleSkillTree()
 	{
@@ -438,7 +436,7 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the hero skill tree.
-	 * @return the complete Hero Skill Tree.
+	 * @return the complete Hero Skill Tree
 	 */
 	public Map<Integer, L2Skill> getHeroSkillTree()
 	{
@@ -452,8 +450,8 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
-	 * Gets the gM skill tree.
-	 * @return the complete Game Master Skill Tree.
+	 * Gets the Game Master skill tree.
+	 * @return the complete Game Master Skill Tree
 	 */
 	public Map<Integer, L2Skill> getGMSkillTree()
 	{
@@ -467,8 +465,8 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
-	 * Gets the gM aura skill tree.
-	 * @return the complete Game Master Aura Skill Tree.
+	 * Gets the Game Master Aura skill tree.
+	 * @return the complete Game Master Aura Skill Tree
 	 */
 	public Map<Integer, L2Skill> getGMAuraSkillTree()
 	{
@@ -483,11 +481,11 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the available skills.
-	 * @param player the learning skill player.
-	 * @param classId the learning skill class ID.
-	 * @param includeByFs if {@code true} skills from Forgotten Scroll will be included.
-	 * @param includeAutoGet if {@code true} Auto-Get skills will be included.
-	 * @return all available skills for a given {@code player}, {@code classId}, {@code includeByFs} and {@code includeAutoGet}.
+	 * @param player the learning skill player
+	 * @param classId the learning skill class Id
+	 * @param includeByFs if {@code true} skills from Forgotten Scroll will be included
+	 * @param includeAutoGet if {@code true} Auto-Get skills will be included
+	 * @return all available skills for a given {@code player}, {@code classId}, {@code includeByFs} and {@code includeAutoGet}
 	 */
 	public List<L2SkillLearn> getAvailableSkills(L2PcInstance player, ClassId classId, boolean includeByFs, boolean includeAutoGet)
 	{
@@ -496,12 +494,12 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the available skills.
-	 * @param player the learning skill player.
-	 * @param classId the learning skill class ID.
-	 * @param includeByFs if {@code true} skills from Forgotten Scroll will be included.
-	 * @param includeAutoGet if {@code true} Auto-Get skills will be included.
+	 * @param player the learning skill player
+	 * @param classId the learning skill class Id
+	 * @param includeByFs if {@code true} skills from Forgotten Scroll will be included
+	 * @param includeAutoGet if {@code true} Auto-Get skills will be included
 	 * @param holder
-	 * @return all available skills for a given {@code player}, {@code classId}, {@code includeByFs} and {@code includeAutoGet}.
+	 * @return all available skills for a given {@code player}, {@code classId}, {@code includeByFs} and {@code includeAutoGet}
 	 */
 	private List<L2SkillLearn> getAvailableSkills(L2PcInstance player, ClassId classId, boolean includeByFs, boolean includeAutoGet, ISkillsHolder holder)
 	{
@@ -563,8 +561,8 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the available auto get skills.
-	 * @param player the player requesting the Auto-Get skills.
-	 * @return all the available Auto-Get skills for a given {@code player}.
+	 * @param player the player requesting the Auto-Get skills
+	 * @return all the available Auto-Get skills for a given {@code player}
 	 */
 	public List<L2SkillLearn> getAvailableAutoGetSkills(L2PcInstance player)
 	{
@@ -607,7 +605,7 @@ public final class SkillTreesData extends DocumentParser
 	/**
 	 * Dwarvens will get additional dwarven only fishing skills.
 	 * @param player the player
-	 * @return all the available Fishing skills for a given {@code player}.
+	 * @return all the available Fishing skills for a given {@code player}
 	 */
 	public List<L2SkillLearn> getAvailableFishingSkills(L2PcInstance player)
 	{
@@ -642,8 +640,8 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Used in Gracia continent.
-	 * @param player the collecting skill learning player.
-	 * @return all the available Collecting skills for a given {@code player}.
+	 * @param player the collecting skill learning player
+	 * @return all the available Collecting skills for a given {@code player}
 	 */
 	public List<L2SkillLearn> getAvailableCollectSkills(L2PcInstance player)
 	{
@@ -668,8 +666,8 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the available transfer skills.
-	 * @param player the transfer skill learning player.
-	 * @return all the available Transfer skills for a given {@code player}.
+	 * @param player the transfer skill learning player
+	 * @return all the available Transfer skills for a given {@code player}
 	 */
 	public List<L2SkillLearn> getAvailableTransferSkills(L2PcInstance player)
 	{
@@ -699,8 +697,8 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Some transformations are not available for some races.
-	 * @param player the transformation skill learning player.
-	 * @return all the available Transformation skills for a given {@code player}.
+	 * @param player the transformation skill learning player
+	 * @return all the available Transformation skills for a given {@code player}
 	 */
 	public List<L2SkillLearn> getAvailableTransformSkills(L2PcInstance player)
 	{
@@ -729,8 +727,8 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the available pledge skills.
-	 * @param clan the pledge skill learning clan.
-	 * @return all the available Pledge skills for a given {@code clan}.
+	 * @param clan the pledge skill learning clan
+	 * @return all the available Pledge skills for a given {@code clan}
 	 */
 	public List<L2SkillLearn> getAvailablePledgeSkills(L2Clan clan)
 	{
@@ -758,8 +756,8 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the available sub pledge skills.
-	 * @param clan the sub-pledge skill learning clan.
-	 * @return all the available Sub-Pledge skills for a given {@code clan}.
+	 * @param clan the sub-pledge skill learning clan
+	 * @return all the available Sub-Pledge skills for a given {@code clan}
 	 */
 	public List<L2SkillLearn> getAvailableSubPledgeSkills(L2Clan clan)
 	{
@@ -776,8 +774,8 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the available sub class skills.
-	 * @param player the sub-class skill learning player.
-	 * @return all the available Sub-Class skills for a given {@code player}.
+	 * @param player the sub-class skill learning player
+	 * @return all the available Sub-Class skills for a given {@code player}
 	 */
 	public List<L2SkillLearn> getAvailableSubClassSkills(L2PcInstance player)
 	{
@@ -813,8 +811,8 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the available residential skills.
-	 * @param residenceId the id of the Castle, Fort, Territory.
-	 * @return all the available Residential skills for a given {@code residenceId}.
+	 * @param residenceId the id of the Castle, Fort, Territory
+	 * @return all the available Residential skills for a given {@code residenceId}
 	 */
 	public List<L2SkillLearn> getAvailableResidentialSkills(int residenceId)
 	{
@@ -831,11 +829,11 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Just a wrapper for all skill trees.
-	 * @param skillType the skill type.
-	 * @param id the skill Id.
-	 * @param lvl the skill level.
-	 * @param player the player learning the skill.
-	 * @return the skill learn for the specified parameters.
+	 * @param skillType the skill type
+	 * @param id the skill Id
+	 * @param lvl the skill level
+	 * @param player the player learning the skill
+	 * @return the skill learn for the specified parameters
 	 */
 	public L2SkillLearn getSkillLearn(AcquireSkillType skillType, int id, int lvl, L2PcInstance player)
 	{
@@ -872,9 +870,9 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the transform skill.
-	 * @param id the transformation skill ID.
-	 * @param lvl the transformation skill level.
-	 * @return the transform skill from the Transform Skill Tree for a given {@code id} and {@code lvl}.
+	 * @param id the transformation skill Id
+	 * @param lvl the transformation skill level
+	 * @return the transform skill from the Transform Skill Tree for a given {@code id} and {@code lvl}
 	 */
 	public L2SkillLearn getTransformSkill(int id, int lvl)
 	{
@@ -883,10 +881,10 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the class skill.
-	 * @param id the class skill ID.
+	 * @param id the class skill Id
 	 * @param lvl the class skill level.
-	 * @param classId the class skill tree ID.
-	 * @return the class skill from the Class Skill Trees for a given {@code classId}, {@code id} and {@code lvl}.
+	 * @param classId the class skill tree Id
+	 * @return the class skill from the Class Skill Trees for a given {@code classId}, {@code id} and {@code lvl}
 	 */
 	public L2SkillLearn getClassSkill(int id, int lvl, ClassId classId)
 	{
@@ -895,9 +893,9 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the fishing skill.
-	 * @param id the fishing skill ID.
-	 * @param lvl the fishing skill level.
-	 * @return Fishing skill from the Fishing Skill Tree for a given {@code id} and {@code lvl}.
+	 * @param id the fishing skill Id
+	 * @param lvl the fishing skill level
+	 * @return Fishing skill from the Fishing Skill Tree for a given {@code id} and {@code lvl}
 	 */
 	public L2SkillLearn getFishingSkill(int id, int lvl)
 	{
@@ -906,9 +904,9 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the pledge skill.
-	 * @param id the pledge skill ID.
-	 * @param lvl the pledge skill level.
-	 * @return the pledge skill from the Pledge Skill Tree for a given {@code id} and {@code lvl}.
+	 * @param id the pledge skill Id
+	 * @param lvl the pledge skill level
+	 * @return the pledge skill from the Pledge Skill Tree for a given {@code id} and {@code lvl}
 	 */
 	public L2SkillLearn getPledgeSkill(int id, int lvl)
 	{
@@ -917,9 +915,9 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the sub pledge skill.
-	 * @param id the sub-pledge skill ID.
-	 * @param lvl the sub-pledge skill level.
-	 * @return the sub-pledge skill from the Sub-Pledge Skill Tree for a given {@code id} and {@code lvl}.
+	 * @param id the sub-pledge skill Id
+	 * @param lvl the sub-pledge skill level
+	 * @return the sub-pledge skill from the Sub-Pledge Skill Tree for a given {@code id} and {@code lvl}
 	 */
 	public L2SkillLearn getSubPledgeSkill(int id, int lvl)
 	{
@@ -928,10 +926,10 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the transfer skill.
-	 * @param id the transfer skill ID.
+	 * @param id the transfer skill Id
 	 * @param lvl the transfer skill level.
-	 * @param classId the transfer skill tree ID.
-	 * @return the transfer skill from the Transfer Skill Trees for a given {@code classId}, {@code id} and {@code lvl}.
+	 * @param classId the transfer skill tree Id
+	 * @return the transfer skill from the Transfer Skill Trees for a given {@code classId}, {@code id} and {@code lvl}
 	 */
 	public L2SkillLearn getTransferSkill(int id, int lvl, ClassId classId)
 	{
@@ -948,9 +946,9 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the sub class skill.
-	 * @param id the sub-class skill ID.
-	 * @param lvl the sub-class skill level.
-	 * @return the sub-class skill from the Sub-Class Skill Tree for a given {@code id} and {@code lvl}.
+	 * @param id the sub-class skill Id
+	 * @param lvl the sub-class skill level
+	 * @return the sub-class skill from the Sub-Class Skill Tree for a given {@code id} and {@code lvl}
 	 */
 	public L2SkillLearn getSubClassSkill(int id, int lvl)
 	{
@@ -960,8 +958,8 @@ public final class SkillTreesData extends DocumentParser
 	/**
 	 * Gets the common skill.
 	 * @param id the common skill Id.
-	 * @param lvl the common skill level.
-	 * @return the common skill from the Common Skill Tree for a given {@code id} and {@code lvl}.
+	 * @param lvl the common skill level
+	 * @return the common skill from the Common Skill Tree for a given {@code id} and {@code lvl}
 	 */
 	public L2SkillLearn getCommonSkill(int id, int lvl)
 	{
@@ -970,9 +968,9 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the collect skill.
-	 * @param id the collect skill ID.
-	 * @param lvl the collect skill level.
-	 * @return the collect skill from the Collect Skill Tree for a given {@code id} and {@code lvl}.
+	 * @param id the collect skill Id
+	 * @param lvl the collect skill level
+	 * @return the collect skill from the Collect Skill Tree for a given {@code id} and {@code lvl}
 	 */
 	public L2SkillLearn getCollectSkill(int id, int lvl)
 	{
@@ -980,10 +978,10 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
-	 * Gets the min level for new skill.
-	 * @param player the player that requires the minimum level.
-	 * @param skillTree the skill tree to search the minimum get level.
-	 * @return the minimum level for a new skill for a given {@code player} and {@code skillTree}.
+	 * Gets the minimum level for new skill.
+	 * @param player the player that requires the minimum level
+	 * @param skillTree the skill tree to search the minimum get level
+	 * @return the minimum level for a new skill for a given {@code player} and {@code skillTree}
 	 */
 	public int getMinLevelForNewSkill(L2PcInstance player, Map<Integer, L2SkillLearn> skillTree)
 	{
@@ -1010,9 +1008,9 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Checks if is hero skill.
-	 * @param skillId the Id of the skill to check.
-	 * @param skillLevel the level of the skill to check, if it's -1 only Id will be checked.
-	 * @return {@code true} if the skill is present in the Hero Skill Tree, {@code false} otherwise.
+	 * @param skillId the Id of the skill to check
+	 * @param skillLevel the level of the skill to check, if it's -1 only Id will be checked
+	 * @return {@code true} if the skill is present in the Hero Skill Tree, {@code false} otherwise
 	 */
 	public boolean isHeroSkill(int skillId, int skillLevel)
 	{
@@ -1033,9 +1031,9 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Checks if is GM skill.
-	 * @param skillId skillId the Id of the skill to check.
-	 * @param skillLevel skillLevel the level of the skill to check, if it's -1 only Id will be checked.
-	 * @return {@code true} if the skill is present in the Game Master Skill Trees, {@code false} otherwise.
+	 * @param skillId the Id of the skill to check
+	 * @param skillLevel the level of the skill to check, if it's -1 only Id will be checked
+	 * @return {@code true} if the skill is present in the Game Master Skill Trees, {@code false} otherwise
 	 */
 	public boolean isGMSkill(int skillId, int skillLevel)
 	{
@@ -1058,9 +1056,21 @@ public final class SkillTreesData extends DocumentParser
 	}
 	
 	/**
+	 * Checks if a skill is a Clan skill.
+	 * @param skillId the Id of the skill to check
+	 * @param skillLevel the level of the skill to check
+	 * @return {@code true} if the skill is present in the Pledge or Subpledge Skill Trees, {@code false} otherwise
+	 */
+	public boolean isClanSkill(int skillId, int skillLevel)
+	{
+		final int hashCode = SkillTable.getSkillHashCode(skillId, skillId);
+		return _pledgeSkillTree.containsKey(hashCode) || _subPledgeSkillTree.containsKey(hashCode);
+	}
+	
+	/**
 	 * Adds the skills.
-	 * @param gmchar the player to add the Game Master skills.
-	 * @param auraSkills if {@code true} it will add "GM Aura" skills, else will add the "GM regular" skills.
+	 * @param gmchar the player to add the Game Master skills
+	 * @param auraSkills if {@code true} it will add "GM Aura" skills, else will add the "GM regular" skills
 	 */
 	public void addSkills(L2PcInstance gmchar, boolean auraSkills)
 	{
@@ -1171,10 +1181,10 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Verify if the give skill is valid for the given player.<br>
-	 * GM's skills are excluded for GM players.
-	 * @param player the player to verify the skill.
-	 * @param skill the skill to be verified.
-	 * @return {@code true} if the skill is allowed to the given player.
+	 * GM's skills are excluded for GM players
+	 * @param player the player to verify the skill
+	 * @param skill the skill to be verified
+	 * @return {@code true} if the skill is allowed to the given player
 	 */
 	public boolean isSkillAllowed(L2PcInstance player, L2Skill skill)
 	{
@@ -1277,7 +1287,7 @@ public final class SkillTreesData extends DocumentParser
 	
 	/**
 	 * Gets the single instance of SkillTreesData.
-	 * @return the only instance of this class.
+	 * @return the only instance of this class
 	 */
 	public static SkillTreesData getInstance()
 	{

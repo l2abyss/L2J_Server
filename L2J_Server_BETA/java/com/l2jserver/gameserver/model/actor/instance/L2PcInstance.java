@@ -11055,10 +11055,7 @@ public final class L2PcInstance extends L2Playable
 			{
 				continue;
 			}
-			if ((s.getId() > 9000) && (s.getId() < 9007))
-			{
-				continue; // Fake skills to change base stats
-			}
+			
 			if ((_transformation != null) && (!containsAllowedTransformSkill(s.getId()) && !s.allowOnTransform()))
 			{
 				continue;

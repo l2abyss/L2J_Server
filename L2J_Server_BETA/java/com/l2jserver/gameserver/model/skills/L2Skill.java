@@ -211,7 +211,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _afterEffectLvl;
 	private final boolean _isHeroSkill; // If true the skill is a Hero Skill
 	private final boolean _isGMSkill; // True if skill is GM skill
-	private final boolean _isSevenSings;
+	private final boolean _isSevenSigns;
 	
 	private final int _baseCritRate; // percent of success for skill critical hit (especially for PDAM & BLOW - they're not affected by rCrit values or buffs). Default loads -1 for all other skills but 0 to PDAM & BLOW
 	private final int _lethalEffect1; // percent of success for lethal 1st effect (hit cp to 1 or if mob hp to 50%) (only for PDAM skills)
@@ -436,7 +436,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_triggeredId = set.getInteger("triggeredId", 0);
 		_triggeredLevel = set.getInteger("triggeredLevel", 1);
 		_chanceType = set.getString("chanceType", "");
-		if (!_chanceType.isEmpty() && !_chanceType.isEmpty())
+		if (!_chanceType.isEmpty())
 		{
 			_chanceCondition = ChanceCondition.parse(set);
 		}
@@ -452,7 +452,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		
 		_isHeroSkill = SkillTreesData.getInstance().isHeroSkill(_id, _level);
 		_isGMSkill = SkillTreesData.getInstance().isGMSkill(_id, _level);
-		_isSevenSings = (_id > 4360) && (_id < 4367);
+		_isSevenSigns = (_id > 4360) && (_id < 4367);
+		_isClanSkill = SkillTreesData.getInstance().isClanSkill(_id, _level);
 		
 		_baseCritRate = set.getInteger("baseCritRate", ((_skillType == L2SkillType.PDAM) || (_skillType == L2SkillType.BLOW)) ? 0 : -1);
 		_lethalEffect1 = set.getInteger("lethal1", 0);
@@ -470,7 +471,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		
 		_canBeDispeled = set.getBool("canBeDispeled", true);
 		
-		_isClanSkill = set.getBool("isClanSkill", false);
 		_excludedFromCheck = set.getBool("excludedFromCheck", false);
 		_dependOnTargetBuff = set.getBool("dependOnTargetBuff", false);
 		_simultaneousCast = set.getBool("simultaneousCast", false);
@@ -1046,7 +1046,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	public final boolean is7Signs()
 	{
-		return _isSevenSings;
+		return _isSevenSigns;
 	}
 	
 	public final int getChargeConsume()
