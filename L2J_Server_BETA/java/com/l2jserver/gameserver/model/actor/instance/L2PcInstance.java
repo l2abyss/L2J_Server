@@ -6336,12 +6336,11 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * TODO: Unhardcode by implementing Lucky effect (Support for effects on passive skills required).
-	 * @return Returns {@code true} if player has Lucky skill and is level 9 or less.
+	 * @return {@code true} if player has Lucky effect and is level 9 or less
 	 */
 	public boolean isLucky()
 	{
-		return ((getLevel() <= 9) && (getKnownSkill(L2Skill.SKILL_LUCKY) != null));
+		return ((getLevel() <= 9) && (getFirstPassiveEffect(L2EffectType.LUCKY) != null));
 	}
 	
 	/**

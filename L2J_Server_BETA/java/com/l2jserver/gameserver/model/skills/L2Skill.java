@@ -76,7 +76,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private static final L2Object[] _emptyTargetList = new L2Object[0];
 	
 	public static final int SKILL_CREATE_DWARVEN = 172;
-	public static final int SKILL_LUCKY = 194;
 	public static final int SKILL_EXPERTISE = 239;
 	public static final int SKILL_CRYSTALLIZE = 248;
 	public static final int SKILL_CLAN_LUCK = 390;

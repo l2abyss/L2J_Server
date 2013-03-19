@@ -287,6 +287,24 @@ public class CharEffectList
 		return effectNotInUse;
 	}
 	
+	public final L2Effect getFirstPassiveEffect(L2EffectType type)
+	{
+		if (_passives != null)
+		{
+			for (L2Effect e : _passives)
+			{
+				if ((e != null) && (e.getEffectType() == type))
+				{
+					if (e.getInUse())
+					{
+						return e;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Checks if the given skill stacks with an existing one.
 	 * @param checkSkill the skill to be checked

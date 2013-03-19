@@ -3829,6 +3829,11 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		return _effects.getFirstEffect(tp);
 	}
 	
+	public final L2Effect getFirstPassiveEffect(L2EffectType type)
+	{
+		return _effects.getFirstPassiveEffect(type);
+	}
+	
 	// TODO: NEED TO ORGANIZE AND MOVE TO PROPER PLACE
 	/** This class permit to the L2Character AI to obtain informations and uses L2Character method */
 	public class AIAccessor
@@ -7652,7 +7657,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 */
 	public int getMaxBuffCount()
 	{
-		final L2Effect effect = getFirstEffect(L2Skill.SKILL_DIVINE_INSPIRATION);
+		final L2Effect effect = getFirstPassiveEffect(L2EffectType.ENLARGE_ABNORMAL_SLOT);
 		return Config.BUFFS_MAX_AMOUNT + (effect == null ? 0 : (int) effect.calc());
 	}
 	
