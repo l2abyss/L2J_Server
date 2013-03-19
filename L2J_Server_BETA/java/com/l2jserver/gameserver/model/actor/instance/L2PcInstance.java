@@ -8330,6 +8330,12 @@ public final class L2PcInstance extends L2Playable
 						continue;
 					}
 					
+					// Dances and songs are not kept in retail.
+					if (skill.isDance() && !Config.ALT_STORE_DANCES)
+					{
+						continue;
+					}
+					
 					storedSkills.add(skill.getReuseHashCode());
 					
 					if (effect.getInUse() && !skill.isToggle())

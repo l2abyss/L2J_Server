@@ -127,6 +127,7 @@ public final class Config
 	public static byte DANCES_MAX_AMOUNT;
 	public static boolean DANCE_CANCEL_BUFF;
 	public static boolean DANCE_CONSUME_ADDITIONAL_MP;
+	public static boolean ALT_STORE_DANCES;
 	public static boolean AUTO_LEARN_DIVINE_INSPIRATION;
 	public static boolean ALT_GAME_CANCEL_BOW;
 	public static boolean ALT_GAME_CANCEL_CAST;
@@ -1541,6 +1542,7 @@ public final class Config
 			DANCES_MAX_AMOUNT = Byte.parseByte(Character.getProperty("MaxDanceAmount", "12"));
 			DANCE_CANCEL_BUFF = Boolean.parseBoolean(Character.getProperty("DanceCancelBuff", "false"));
 			DANCE_CONSUME_ADDITIONAL_MP = Boolean.parseBoolean(Character.getProperty("DanceConsumeAdditionalMP", "true"));
+			ALT_STORE_DANCES = Boolean.parseBoolean(Character.getProperty("AltStoreDances", "false"));
 			AUTO_LEARN_DIVINE_INSPIRATION = Boolean.parseBoolean(Character.getProperty("AutoLearnDivineInspiration", "false"));
 			ALT_GAME_CANCEL_BOW = Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("bow") || Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("all");
 			ALT_GAME_CANCEL_CAST = Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("cast") || Character.getProperty("AltGameCancelByHit", "Cast").equalsIgnoreCase("all");
