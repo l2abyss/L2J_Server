@@ -43,7 +43,7 @@ public class ExShowScreenMessage extends L2GameServerPacket
 	private final String _text;
 	private final int _time;
 	private final int _npcString;
-	private List<String> _parameters;
+	private List<String> _parameters = null;
 	// Positions
 	public static final byte TOP_LEFT = 0x01;
 	public static final byte TOP_CENTER = 0x02;
@@ -96,7 +96,10 @@ public class ExShowScreenMessage extends L2GameServerPacket
 		_size = 0x00;
 		_effect = false;
 		_npcString = npcString.getId();
-		_parameters = Arrays.asList(params);
+		if (params != null)
+		{
+			_parameters = Arrays.asList(params);
+		}
 	}
 	
 	/**
@@ -120,7 +123,10 @@ public class ExShowScreenMessage extends L2GameServerPacket
 		_size = 0x00;
 		_effect = false;
 		_npcString = -1;
-		_parameters = Arrays.asList(params);
+		if (params != null)
+		{
+			_parameters = Arrays.asList(params);
+		}
 	}
 	
 	/**
