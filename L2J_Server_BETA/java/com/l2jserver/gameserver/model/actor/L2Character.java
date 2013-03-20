@@ -7043,7 +7043,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 								}
 							}
 						}
-						else if (skill.isPVP())
+						else
 						{
 							if (target.isPlayer())
 							{
