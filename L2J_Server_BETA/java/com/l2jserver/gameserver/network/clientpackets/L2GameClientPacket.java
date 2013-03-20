@@ -38,7 +38,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 {
-	protected final Logger _log = Logger.getLogger(getClass().getName());
+	protected static final Logger _log = Logger.getLogger(L2GameClientPacket.class.getName());
 	
 	@Override
 	public boolean read()
