@@ -151,13 +151,10 @@ public class L2Fishing implements Runnable
 		
 		if (win)
 		{
-			int lvl = _fisher.getLevel();
-			L2NpcTemplate monster;
-			L2FishingMonster fishingMonster = FishingMonstersData.getInstance().getFishingMonster(lvl);
-			
+			L2FishingMonster fishingMonster = FishingMonstersData.getInstance().getFishingMonster(_fisher.getLevel());
 			if (Rnd.get(100) <= fishingMonster.getProbability())
 			{
-				monster = NpcTable.getInstance().getTemplate(fishingMonster.getFishingMonsterId());
+				L2NpcTemplate monster = NpcTable.getInstance().getTemplate(fishingMonster.getFishingMonsterId());
 				_fisher.sendPacket(SystemMessageId.YOU_CAUGHT_SOMETHING_SMELLY_THROW_IT_BACK);
 				spawnMonster(monster);
 			}
@@ -386,7 +383,7 @@ public class L2Fishing implements Runnable
 				spawn.setAmount(1);
 				spawn.setHeading(_fisher.getHeading());
 				spawn.stopRespawn();
-				spawn.doSpawn().scheduleDespawn(3 * 60 * 1000);
+				spawn.doSpawn();
 				spawn.getLastSpawn().setTarget(_fisher);
 			}
 			catch (Exception e)
