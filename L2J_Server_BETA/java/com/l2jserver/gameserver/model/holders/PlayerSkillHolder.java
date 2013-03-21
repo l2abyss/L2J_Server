@@ -21,6 +21,8 @@ package com.l2jserver.gameserver.model.holders;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.l2jserver.gameserver.datatables.SkillTreesData;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.interfaces.ISkillsHolder;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
@@ -31,9 +33,16 @@ public class PlayerSkillHolder implements ISkillsHolder
 {
 	private final Map<Integer, L2Skill> _skills = new HashMap<>();
 	
-	public PlayerSkillHolder(Map<Integer, L2Skill> map)
+	public PlayerSkillHolder(L2PcInstance player)
 	{
-		_skills.putAll(map);
+		for (L2Skill skill : player.getSkills().values())
+		{
+			// Adding only skills that can be learned by the player.
+			if (SkillTreesData.getInstance().isSkillAllowed(player, skill))
+			{
+				addSkill(skill);
+			}
+		}
 	}
 	
 	/**

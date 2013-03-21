@@ -537,7 +537,7 @@ public final class SkillTreesData extends DocumentParser
 	{
 		// Get available skills
 		int unLearnable = 0;
-		PlayerSkillHolder holder = new PlayerSkillHolder(player.getSkills());
+		PlayerSkillHolder holder = new PlayerSkillHolder(player);
 		List<L2SkillLearn> learnable = getAvailableSkills(player, classId, includeByFs, includeAutoGet, holder);
 		while (learnable.size() > unLearnable)
 		{

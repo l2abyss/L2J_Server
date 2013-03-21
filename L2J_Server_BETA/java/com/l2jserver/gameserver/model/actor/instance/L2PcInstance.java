@@ -3045,13 +3045,11 @@ public final class L2PcInstance extends L2Playable
 	public int giveAvailableSkills(boolean includedByFs, boolean includeAutoGet)
 	{
 		int skillCounter = 0;
-		boolean storeInDb;
-		
 		// Get available skills
 		Collection<L2Skill> skills = SkillTreesData.getInstance().getAllAvailableSkills(this, getClassId(), includedByFs, includeAutoGet);
 		for (L2Skill sk : skills)
 		{
-			if (sk.getLevel() == 0)
+			if (getKnownSkill(sk.getId()) == sk)
 			{
 				continue;
 			}
@@ -3072,8 +3070,8 @@ public final class L2PcInstance extends L2Playable
 					sk.getEffects(this, this);
 				}
 			}
-			storeInDb = (sk.getId() != FrequentSkill.ARMOR_GRADE_PENALTY.getId()) && (sk.getId() != FrequentSkill.WEAPON_GRADE_PENALTY.getId());
-			addSkill(sk, storeInDb);
+			
+			addSkill(sk, true);
 		}
 		
 		if (Config.AUTO_LEARN_SKILLS && (skillCounter > 0))
