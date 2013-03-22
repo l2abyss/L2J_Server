@@ -1854,7 +1854,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					// _actor.setTarget(targets);
 					return true;
 				}
-				
 			}
 				break;
 		}

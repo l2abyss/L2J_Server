@@ -4543,12 +4543,7 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	public final boolean isAlikeDead()
 	{
-		if (super.isAlikeDead())
-		{
-			return true;
-		}
-		
-		return isFakeDeath();
+		return super.isAlikeDead() || isFakeDeath();
 	}
 	
 	/**
