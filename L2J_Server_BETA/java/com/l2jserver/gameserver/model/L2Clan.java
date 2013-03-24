@@ -1971,7 +1971,7 @@ public class L2Clan
 		
 		// Royal Guard 5000 points per each
 		// Order of Knights 10000 points per each
-		if ((pledgeType != -1) && (((getReputationScore() < 5000) && (pledgeType < L2Clan.SUBUNIT_KNIGHT1)) || ((getReputationScore() < 10000) && (pledgeType > L2Clan.SUBUNIT_ROYAL2))))
+		if ((pledgeType != -1) && (((getReputationScore() < Config.ROYAL_GUARD_COST) && (pledgeType < L2Clan.SUBUNIT_KNIGHT1)) || ((getReputationScore() < Config.KNIGHT_UNIT_COST) && (pledgeType > L2Clan.SUBUNIT_ROYAL2))))
 		{
 			player.sendPacket(SystemMessageId.THE_CLAN_REPUTATION_SCORE_IS_TOO_LOW);
 			return null;
