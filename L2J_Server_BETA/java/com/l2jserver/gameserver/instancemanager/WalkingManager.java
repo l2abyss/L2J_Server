@@ -163,7 +163,6 @@ public class WalkingManager extends DocumentParser
 				_currentNode = newNode;
 				npc.sendDebugMessage("Route: " + getRoute().getName() + ", next random node is " + _currentNode);
 			}
-			
 			else
 			{
 				if (_forward)
@@ -177,6 +176,14 @@ public class WalkingManager extends DocumentParser
 				
 				if (_currentNode == getRoute().getNodesCount()) // Last node arrived
 				{
+					// Notify quest
+					if (npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_ROUTE_FINISHED) != null)
+					{
+						for (Quest quest : npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_ROUTE_FINISHED))
+						{
+							quest.notifyRouteFinished(npc);
+						}
+					}
 					npc.sendDebugMessage("Route: " + getRoute().getName() + ", last node arrived");
 					
 					if (!getRoute().repeatWalk())

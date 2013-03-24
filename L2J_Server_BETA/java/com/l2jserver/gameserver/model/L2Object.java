@@ -104,7 +104,6 @@ public abstract class L2Object
 		L2FeedableBeastInstance(L2MonsterInstance),
 		L2TamedBeastInstance(L2FeedableBeastInstance),
 		L2FriendlyMobInstance(L2Attackable),
-		L2PenaltyMonsterInstance(L2MonsterInstance),
 		L2RiftInvaderInstance(L2MonsterInstance),
 		L2RaidBossInstance(L2MonsterInstance),
 		L2GrandBossInstance(L2RaidBossInstance),
@@ -135,11 +134,8 @@ public abstract class L2Object
 		L2FortBallistaInstance(L2Npc),
 		L2FortCommanderInstance(L2DefenderInstance),
 		// Castle NPCs
-		L2CastleBlacksmithInstance(L2NpcInstance),
 		L2CastleChamberlainInstance(L2MerchantInstance),
 		L2CastleMagicianInstance(L2NpcInstance),
-		L2CastleTeleporterInstance(L2Npc),
-		L2CastleWarehouseInstance(L2WarehouseInstance),
 		L2MercManagerInstance(L2MerchantInstance),
 		// Fort NPCs
 		L2FortEnvoyInstance(L2Npc),
@@ -167,7 +163,6 @@ public abstract class L2Object
 		L2RaceManagerInstance(L2Npc),
 		L2SymbolMakerInstance(L2Npc),
 		L2TeleporterInstance(L2Npc),
-		L2TownPetInstance(L2Npc),
 		L2TrainerInstance(L2NpcInstance),
 		L2TrainerHealersInstance(L2TrainerInstance),
 		L2TransformManagerInstance(L2MerchantInstance),

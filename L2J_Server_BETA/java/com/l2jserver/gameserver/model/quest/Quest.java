@@ -358,7 +358,8 @@ public class Quest extends ManagedScript
 		ON_EVENT_RECEIVED(true), // onEventReceived action, triggered when NPC receiving an event, sent by other NPC
 		ON_MOVE_FINISHED(true), // onMoveFinished action, triggered when NPC stops after moving
 		ON_NODE_ARRIVED(true), // onNodeArrived action, triggered when NPC, controlled by Walking Manager, arrives to next node
-		ON_SEE_CREATURE(true); // onSeeCreature action, triggered when NPC's known list include the character
+		ON_SEE_CREATURE(true), // onSeeCreature action, triggered when NPC's known list include the character
+		ON_ROUTE_FINISHED(true); // onRouteFinished action, triggered when NPC, controlled by Walking Manager, arrives to last node
 		
 		// control whether this event type is allowed for the same npc template in multiple quests
 		// or if the npc must be registered in at most one quest for the specified event
@@ -1104,6 +1105,21 @@ public class Quest extends ManagedScript
 		}
 	}
 	
+	/**
+	 * @param npc
+	 */
+	public final void notifyRouteFinished(L2Npc npc)
+	{
+		try
+		{
+			onRouteFinished(npc);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Exception on onRouteFinished() in notifyRouteFinished(): " + e.getMessage(), e);
+		}
+	}
+	
 	// These are methods that java calls to invoke scripts.
 	
 	/**
@@ -1468,21 +1484,28 @@ public class Quest extends ManagedScript
 	/**
 	 * This function is called whenever a NPC finishes moving
 	 * @param npc registered NPC
-	 * @return
 	 */
-	public String onMoveFinished(L2Npc npc)
+	public void onMoveFinished(L2Npc npc)
 	{
-		return null;
+		
 	}
 	
 	/**
 	 * This function is called whenever a walker NPC (controlled by WalkingManager) arrive a walking node
 	 * @param npc registered NPC
-	 * @return
 	 */
-	public String onNodeArrived(L2Npc npc)
+	public void onNodeArrived(L2Npc npc)
 	{
-		return null;
+		
+	}
+	
+	/**
+	 * This function is called whenever a walker NPC (controlled by WalkingManager) arrive to last node
+	 * @param npc registered NPC
+	 */
+	public void onRouteFinished(L2Npc npc)
+	{
+		
 	}
 	
 	/**
@@ -2140,12 +2163,21 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Register addNodeArrived trigger for NPC
+	 * Register onNodeArrived trigger for NPC
 	 * @param npcIds id of NPC to register
 	 */
 	public void addNodeArrivedId(int... npcIds)
 	{
 		addEventId(QuestEventType.ON_NODE_ARRIVED, npcIds);
+	}
+	
+	/**
+	 * Register onRouteFinished trigger for NPC
+	 * @param npcIds id of NPC to register
+	 */
+	public void addRouteFinishedId(int... npcIds)
+	{
+		addEventId(QuestEventType.ON_ROUTE_FINISHED, npcIds);
 	}
 	
 	/**
