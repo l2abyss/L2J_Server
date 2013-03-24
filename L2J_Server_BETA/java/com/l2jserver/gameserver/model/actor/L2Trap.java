@@ -275,9 +275,9 @@ public class L2Trap extends L2Character
 						{
 							switch (getSkill().getTargetType())
 							{
-								case TARGET_AURA:
-								case TARGET_FRONT_AURA:
-								case TARGET_BEHIND_AURA:
+								case AURA:
+								case FRONT_AURA:
+								case BEHIND_AURA:
 									trigger(L2Trap.this);
 									break;
 								default:

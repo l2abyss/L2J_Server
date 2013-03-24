@@ -626,16 +626,16 @@ public abstract class L2Summon extends L2Playable
 		switch (skill.getTargetType())
 		{
 		// OWNER_PET should be cast even if no target has been found
-			case TARGET_OWNER_PET:
+			case OWNER_PET:
 				target = getOwner();
 				break;
 			// PARTY, AURA, SELF should be cast even if no target has been found
-			case TARGET_PARTY:
-			case TARGET_AURA:
-			case TARGET_FRONT_AURA:
-			case TARGET_BEHIND_AURA:
-			case TARGET_SELF:
-			case TARGET_AURA_CORPSE_MOB:
+			case PARTY:
+			case AURA:
+			case FRONT_AURA:
+			case BEHIND_AURA:
+			case SELF:
+			case AURA_CORPSE_MOB:
 				target = this;
 				break;
 			default:
@@ -728,7 +728,7 @@ public abstract class L2Summon extends L2Playable
 				}
 				
 				// Check if a Forced attack is in progress on non-attackable target
-				if (!target.isAutoAttackable(this) && !forceUse && !target.isNpc() && (skill.getTargetType() != L2TargetType.TARGET_AURA) && (skill.getTargetType() != L2TargetType.TARGET_FRONT_AURA) && (skill.getTargetType() != L2TargetType.TARGET_BEHIND_AURA) && (skill.getTargetType() != L2TargetType.TARGET_CLAN) && (skill.getTargetType() != L2TargetType.TARGET_ALLY) && (skill.getTargetType() != L2TargetType.TARGET_PARTY) && (skill.getTargetType() != L2TargetType.TARGET_SELF))
+				if (!target.isAutoAttackable(this) && !forceUse && !target.isNpc() && (skill.getTargetType() != L2TargetType.AURA) && (skill.getTargetType() != L2TargetType.FRONT_AURA) && (skill.getTargetType() != L2TargetType.BEHIND_AURA) && (skill.getTargetType() != L2TargetType.CLAN) && (skill.getTargetType() != L2TargetType.ALLY) && (skill.getTargetType() != L2TargetType.PARTY) && (skill.getTargetType() != L2TargetType.SELF))
 				{
 					return false;
 				}

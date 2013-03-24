@@ -117,7 +117,7 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 			activeChar.useMagic(skill, _ctrlPressed, _shiftPressed);
 			
 			// Stop if use self-buff (except if on AirShip or Boat).
-			if (((skill.getSkillType() == L2SkillType.BUFF) && (skill.getTargetType() == L2TargetType.TARGET_SELF)) && (!activeChar.isInAirShip() || !activeChar.isInBoat()))
+			if (((skill.getSkillType() == L2SkillType.BUFF) && (skill.getTargetType() == L2TargetType.SELF)) && (!activeChar.isInAirShip() || !activeChar.isInBoat()))
 			{
 				final PcPosition charPos = activeChar.getPosition();
 				final L2CharPosition stopPos = new L2CharPosition(charPos.getX(), charPos.getY(), charPos.getZ(), charPos.getHeading());

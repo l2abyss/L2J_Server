@@ -384,7 +384,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			}
 		}
 		
-		_targetType = set.getEnum("target", L2TargetType.class);
+		_targetType = set.getEnum("targetType", L2TargetType.class);
 		_power = set.getFloat("power", 0.f);
 		_pvpPower = set.getFloat("pvpPower", (float) getPower());
 		_pvePower = set.getFloat("pvePower", (float) getPower());

@@ -56,7 +56,7 @@ public final class L2SkillSignet extends L2Skill
 		int y = caster.getY();
 		int z = caster.getZ();
 		
-		if (caster.isPlayer() && (getTargetType() == L2TargetType.TARGET_GROUND))
+		if (caster.isPlayer() && (getTargetType() == L2TargetType.GROUND))
 		{
 			Point3D wordPosition = caster.getActingPlayer().getCurrentSkillWorldPosition();
 			

@@ -2562,7 +2562,7 @@ public final class L2PcInstance extends L2Playable
 			L2Skill effectSkill = currenteffect.getSkill();
 			
 			// Ignore all buff skills that are party related (ie. songs, dances) while still remaining weapon dependent on cast though.
-			if (!effectSkill.isOffensive() && !((effectSkill.getTargetType() == L2TargetType.TARGET_PARTY) && (effectSkill.getSkillType() == L2SkillType.BUFF)))
+			if (!effectSkill.isOffensive() && !((effectSkill.getTargetType() == L2TargetType.PARTY) && (effectSkill.getSkillType() == L2SkillType.BUFF)))
 			{
 				// Check to rest to assure current effect meets weapon requirements.
 				if (!effectSkill.getWeaponDependancy(this))
@@ -9280,12 +9280,12 @@ public final class L2PcInstance extends L2Playable
 		L2Object target = null;
 		switch (skill.getTargetType())
 		{
-			case TARGET_AURA: // AURA, SELF should be cast even if no target has been found
-			case TARGET_FRONT_AURA:
-			case TARGET_BEHIND_AURA:
-			case TARGET_GROUND:
-			case TARGET_SELF:
-			case TARGET_AURA_CORPSE_MOB:
+			case AURA: // AURA, SELF should be cast even if no target has been found
+			case FRONT_AURA:
+			case BEHIND_AURA:
+			case GROUND:
+			case SELF:
+			case AURA_CORPSE_MOB:
 				target = this;
 				break;
 			default:
@@ -9378,7 +9378,7 @@ public final class L2PcInstance extends L2Playable
 		L2TargetType sklTargetType = skill.getTargetType();
 		Point3D worldPosition = getCurrentSkillWorldPosition();
 		
-		if ((sklTargetType == L2TargetType.TARGET_GROUND) && (worldPosition == null))
+		if ((sklTargetType == L2TargetType.GROUND) && (worldPosition == null))
 		{
 			_log.info("WorldPosition is null for skill: " + skill.getName() + ", player: " + getName() + ".");
 			sendPacket(ActionFailed.STATIC_PACKET);
@@ -9388,21 +9388,21 @@ public final class L2PcInstance extends L2Playable
 		switch (sklTargetType)
 		{
 		// Target the player if skill type is AURA, PARTY, CLAN or SELF
-			case TARGET_AURA:
-			case TARGET_FRONT_AURA:
-			case TARGET_BEHIND_AURA:
-			case TARGET_PARTY:
-			case TARGET_ALLY:
-			case TARGET_CLAN:
-			case TARGET_PARTY_CLAN:
-			case TARGET_GROUND:
-			case TARGET_SELF:
-			case TARGET_AREA_SUMMON:
-			case TARGET_AURA_CORPSE_MOB:
+			case AURA:
+			case FRONT_AURA:
+			case BEHIND_AURA:
+			case PARTY:
+			case ALLY:
+			case CLAN:
+			case PARTY_CLAN:
+			case GROUND:
+			case SELF:
+			case AREA_SUMMON:
+			case AURA_CORPSE_MOB:
 				target = this;
 				break;
-			case TARGET_PET:
-			case TARGET_SUMMON:
+			case PET:
+			case SUMMON:
 				target = getSummon();
 				break;
 			default:
@@ -9567,17 +9567,17 @@ public final class L2PcInstance extends L2Playable
 			{
 				switch (sklTargetType)
 				{
-					case TARGET_AURA:
-					case TARGET_FRONT_AURA:
-					case TARGET_BEHIND_AURA:
-					case TARGET_AURA_CORPSE_MOB:
-					case TARGET_CLAN:
-					case TARGET_PARTY_CLAN:
-					case TARGET_ALLY:
-					case TARGET_PARTY:
-					case TARGET_SELF:
-					case TARGET_GROUND:
-					case TARGET_AREA_SUMMON:
+					case AURA:
+					case FRONT_AURA:
+					case BEHIND_AURA:
+					case AURA_CORPSE_MOB:
+					case CLAN:
+					case PARTY_CLAN:
+					case ALLY:
+					case PARTY:
+					case SELF:
+					case GROUND:
+					case AREA_SUMMON:
 						break;
 					default: // Send a Server->Client packet ActionFailed to the L2PcInstance
 						sendPacket(ActionFailed.STATIC_PACKET);
@@ -9589,7 +9589,7 @@ public final class L2PcInstance extends L2Playable
 			if (dontMove)
 			{
 				// Calculate the distance between the L2PcInstance and the target
-				if (sklTargetType == L2TargetType.TARGET_GROUND)
+				if (sklTargetType == L2TargetType.GROUND)
 				{
 					if (!isInsideRadius(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), skill.getCastRange() + getTemplate().getCollisionRadius(), false, false))
 					{
@@ -9647,20 +9647,20 @@ public final class L2PcInstance extends L2Playable
 			// check if the target is a monster and if force attack is set.. if not then we don't want to cast.
 			switch (sklTargetType)
 			{
-				case TARGET_PET:
-				case TARGET_SUMMON:
-				case TARGET_AURA:
-				case TARGET_FRONT_AURA:
-				case TARGET_BEHIND_AURA:
-				case TARGET_AURA_CORPSE_MOB:
-				case TARGET_CLAN:
-				case TARGET_PARTY_CLAN:
-				case TARGET_SELF:
-				case TARGET_PARTY:
-				case TARGET_ALLY:
-				case TARGET_CORPSE_MOB:
-				case TARGET_AREA_CORPSE_MOB:
-				case TARGET_GROUND:
+				case PET:
+				case SUMMON:
+				case AURA:
+				case FRONT_AURA:
+				case BEHIND_AURA:
+				case AURA_CORPSE_MOB:
+				case CLAN:
+				case PARTY_CLAN:
+				case SELF:
+				case PARTY:
+				case ALLY:
+				case CORPSE_MOB:
+				case AREA_CORPSE_MOB:
+				case GROUND:
 					break;
 				default:
 				{
@@ -9682,15 +9682,15 @@ public final class L2PcInstance extends L2Playable
 		// Check if this is a Pvp skill and target isn't a non-flagged/non-karma player
 		switch (sklTargetType)
 		{
-			case TARGET_PARTY:
-			case TARGET_ALLY: // For such skills, checkPvpSkill() is called from L2Skill.getTargetList()
-			case TARGET_CLAN: // For such skills, checkPvpSkill() is called from L2Skill.getTargetList()
-			case TARGET_PARTY_CLAN: // For such skills, checkPvpSkill() is called from L2Skill.getTargetList()
-			case TARGET_AURA:
-			case TARGET_FRONT_AURA:
-			case TARGET_BEHIND_AURA:
-			case TARGET_GROUND:
-			case TARGET_SELF:
+			case PARTY:
+			case ALLY: // For such skills, checkPvpSkill() is called from L2Skill.getTargetList()
+			case CLAN: // For such skills, checkPvpSkill() is called from L2Skill.getTargetList()
+			case PARTY_CLAN: // For such skills, checkPvpSkill() is called from L2Skill.getTargetList()
+			case AURA:
+			case FRONT_AURA:
+			case BEHIND_AURA:
+			case GROUND:
+			case SELF:
 				break;
 			default:
 				if (!checkPvpSkill(target, skill) && !getAccessLevel().allowPeaceAttack())
@@ -9705,7 +9705,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		// TODO: Unhardcode skillId 844 which is the outpost construct skill
-		if (((sklTargetType == L2TargetType.TARGET_HOLY) && !checkIfOkToCastSealOfRule(CastleManager.getInstance().getCastle(this), false, skill, target)) || ((sklTargetType == L2TargetType.TARGET_FLAGPOLE) && !checkIfOkToCastFlagDisplay(FortManager.getInstance().getFort(this), false, skill, target)) || ((sklType == L2SkillType.SIEGEFLAG) && !L2SkillSiegeFlag.checkIfOkToPlaceFlag(this, false, skill.getId() == 844)) || ((sklType == L2SkillType.STRSIEGEASSAULT) && !checkIfOkToUseStriderSiegeAssault()) || ((sklType == L2SkillType.SUMMON_FRIEND) && !(checkSummonerStatus(this) && checkSummonTargetStatus(target, this))))
+		if (((sklTargetType == L2TargetType.HOLY) && !checkIfOkToCastSealOfRule(CastleManager.getInstance().getCastle(this), false, skill, target)) || ((sklTargetType == L2TargetType.FLAGPOLE) && !checkIfOkToCastFlagDisplay(FortManager.getInstance().getFort(this), false, skill, target)) || ((sklType == L2SkillType.SIEGEFLAG) && !L2SkillSiegeFlag.checkIfOkToPlaceFlag(this, false, skill.getId() == 844)) || ((sklType == L2SkillType.STRSIEGEASSAULT) && !checkIfOkToUseStriderSiegeAssault()) || ((sklType == L2SkillType.SUMMON_FRIEND) && !(checkSummonerStatus(this) && checkSummonTargetStatus(target, this))))
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			abortCast();
@@ -9715,7 +9715,7 @@ public final class L2PcInstance extends L2Playable
 		// GeoData Los Check here
 		if (skill.getCastRange() > 0)
 		{
-			if (sklTargetType == L2TargetType.TARGET_GROUND)
+			if (sklTargetType == L2TargetType.GROUND)
 			{
 				if (!GeoData.getInstance().canSeeTarget(this, worldPosition))
 				{

@@ -1642,24 +1642,24 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		// AURA skills should always be using caster as target
 		switch (skill.getTargetType())
 		{
-			case TARGET_AREA_SUMMON: // We need it to correct facing
+			case AREA_SUMMON: // We need it to correct facing
 				target = getSummon();
 				break;
-			case TARGET_AURA:
-			case TARGET_AURA_CORPSE_MOB:
-			case TARGET_FRONT_AURA:
-			case TARGET_BEHIND_AURA:
-			case TARGET_GROUND:
+			case AURA:
+			case AURA_CORPSE_MOB:
+			case FRONT_AURA:
+			case BEHIND_AURA:
+			case GROUND:
 				target = this;
 				break;
-			case TARGET_SELF:
-			case TARGET_PET:
-			case TARGET_SUMMON:
-			case TARGET_OWNER_PET:
-			case TARGET_PARTY:
-			case TARGET_CLAN:
-			case TARGET_PARTY_CLAN:
-			case TARGET_ALLY:
+			case SELF:
+			case PET:
+			case SUMMON:
+			case OWNER_PET:
+			case PARTY:
+			case CLAN:
+			case PARTY_CLAN:
+			case ALLY:
 				doit = true;
 			default:
 				if (targets.length == 0)
@@ -2125,7 +2125,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				return false;
 			}
 			boolean canCast = true;
-			if ((skill.getTargetType() == L2TargetType.TARGET_GROUND) && isPlayer())
+			if ((skill.getTargetType() == L2TargetType.GROUND) && isPlayer())
 			{
 				Point3D wp = getActingPlayer().getCurrentSkillWorldPosition();
 				if (!region.checkEffectRangeInsidePeaceZone(skill, wp.getX(), wp.getY(), wp.getZ()))
@@ -6360,10 +6360,10 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			switch (skill.getTargetType())
 			{
 			// only AURA-type skills can be cast without target
-				case TARGET_AURA:
-				case TARGET_FRONT_AURA:
-				case TARGET_BEHIND_AURA:
-				case TARGET_AURA_CORPSE_MOB:
+				case AURA:
+				case FRONT_AURA:
+				case BEHIND_AURA:
+				case AURA_CORPSE_MOB:
 					break;
 				default:
 					abortCast();

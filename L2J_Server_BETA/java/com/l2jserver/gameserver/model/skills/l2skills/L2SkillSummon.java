@@ -107,7 +107,7 @@ public class L2SkillSummon extends L2Skill
 			
 			if (isCubic())
 			{
-				if (getTargetType() != L2TargetType.TARGET_SELF)
+				if (getTargetType() != L2TargetType.SELF)
 				{
 					return true; // Player is always able to cast mass cubic skill
 				}

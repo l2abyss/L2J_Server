@@ -1463,7 +1463,7 @@ public class L2CharacterAI extends AbstractAI
 	
 	public boolean canAura(L2Skill sk)
 	{
-		if ((sk.getTargetType() == L2TargetType.TARGET_AURA) || (sk.getTargetType() == L2TargetType.TARGET_BEHIND_AURA) || (sk.getTargetType() == L2TargetType.TARGET_FRONT_AURA) || (sk.getTargetType() == L2TargetType.TARGET_AURA_CORPSE_MOB))
+		if ((sk.getTargetType() == L2TargetType.AURA) || (sk.getTargetType() == L2TargetType.BEHIND_AURA) || (sk.getTargetType() == L2TargetType.FRONT_AURA) || (sk.getTargetType() == L2TargetType.AURA_CORPSE_MOB))
 		{
 			for (L2Object target : _actor.getKnownList().getKnownCharactersInRadius(sk.getAffectRange()))
 			{
@@ -1480,7 +1480,7 @@ public class L2CharacterAI extends AbstractAI
 	{
 		if (sk.hasEffectType(L2EffectType.CANCEL, L2EffectType.CANCEL_ALL, L2EffectType.NEGATE))
 		{
-			if ((sk.getTargetType() == L2TargetType.TARGET_AURA) || (sk.getTargetType() == L2TargetType.TARGET_BEHIND_AURA) || (sk.getTargetType() == L2TargetType.TARGET_FRONT_AURA) || (sk.getTargetType() == L2TargetType.TARGET_AURA_CORPSE_MOB))
+			if ((sk.getTargetType() == L2TargetType.AURA) || (sk.getTargetType() == L2TargetType.BEHIND_AURA) || (sk.getTargetType() == L2TargetType.FRONT_AURA) || (sk.getTargetType() == L2TargetType.AURA_CORPSE_MOB))
 			{
 				boolean cancast = true;
 				for (L2Character target : _actor.getKnownList().getKnownCharactersInRadius(sk.getAffectRange()))
@@ -1515,7 +1515,7 @@ public class L2CharacterAI extends AbstractAI
 					return true;
 				}
 			}
-			else if ((sk.getTargetType() == L2TargetType.TARGET_AREA) || (sk.getTargetType() == L2TargetType.TARGET_BEHIND_AREA) || (sk.getTargetType() == L2TargetType.TARGET_FRONT_AREA))
+			else if ((sk.getTargetType() == L2TargetType.AREA) || (sk.getTargetType() == L2TargetType.BEHIND_AREA) || (sk.getTargetType() == L2TargetType.FRONT_AREA))
 			{
 				boolean cancast = true;
 				for (L2Character target : getAttackTarget().getKnownList().getKnownCharactersInRadius(sk.getAffectRange()))
@@ -1547,7 +1547,7 @@ public class L2CharacterAI extends AbstractAI
 		}
 		else
 		{
-			if ((sk.getTargetType() == L2TargetType.TARGET_AURA) || (sk.getTargetType() == L2TargetType.TARGET_BEHIND_AURA) || (sk.getTargetType() == L2TargetType.TARGET_FRONT_AURA) || (sk.getTargetType() == L2TargetType.TARGET_AURA_CORPSE_MOB))
+			if ((sk.getTargetType() == L2TargetType.AURA) || (sk.getTargetType() == L2TargetType.BEHIND_AURA) || (sk.getTargetType() == L2TargetType.FRONT_AURA) || (sk.getTargetType() == L2TargetType.AURA_CORPSE_MOB))
 			{
 				boolean cancast = false;
 				for (L2Character target : _actor.getKnownList().getKnownCharactersInRadius(sk.getAffectRange()))
@@ -1576,7 +1576,7 @@ public class L2CharacterAI extends AbstractAI
 					return true;
 				}
 			}
-			else if ((sk.getTargetType() == L2TargetType.TARGET_AREA) || (sk.getTargetType() == L2TargetType.TARGET_BEHIND_AREA) || (sk.getTargetType() == L2TargetType.TARGET_FRONT_AREA))
+			else if ((sk.getTargetType() == L2TargetType.AREA) || (sk.getTargetType() == L2TargetType.BEHIND_AREA) || (sk.getTargetType() == L2TargetType.FRONT_AREA))
 			{
 				boolean cancast = true;
 				for (L2Character target : getAttackTarget().getKnownList().getKnownCharactersInRadius(sk.getAffectRange()))
@@ -1616,7 +1616,7 @@ public class L2CharacterAI extends AbstractAI
 	
 	public boolean canParty(L2Skill sk)
 	{
-		if (sk.getTargetType() == L2TargetType.TARGET_PARTY)
+		if (sk.getTargetType() == L2TargetType.PARTY)
 		{
 			int count = 0;
 			int ccount = 0;
@@ -1655,6 +1655,6 @@ public class L2CharacterAI extends AbstractAI
 	
 	public boolean isParty(L2Skill sk)
 	{
-		return (sk.getTargetType() == L2TargetType.TARGET_PARTY);
+		return (sk.getTargetType() == L2TargetType.PARTY);
 	}
 }

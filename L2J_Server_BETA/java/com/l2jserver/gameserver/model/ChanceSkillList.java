@@ -229,7 +229,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			{
 				return;
 			}
-			L2Character caster = triggered.getTargetType() == L2TargetType.TARGET_SELF ? _owner : effect.getEffector();
+			L2Character caster = triggered.getTargetType() == L2TargetType.SELF ? _owner : effect.getEffector();
 			
 			if ((caster == null) || (triggered.getSkillType() == L2SkillType.NOTDONE) || caster.isSkillDisabled(triggered))
 			{
