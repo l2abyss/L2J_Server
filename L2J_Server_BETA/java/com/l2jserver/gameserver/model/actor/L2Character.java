@@ -1688,7 +1688,10 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 						doit = true;
 						break;
 					case DUMMY:
-						doit = skill.hasEffectType(L2EffectType.CPHEAL);
+						if (skill.hasEffectType(L2EffectType.CPHEAL))
+						{
+							doit = true;
+						}
 						break;
 				}
 				
