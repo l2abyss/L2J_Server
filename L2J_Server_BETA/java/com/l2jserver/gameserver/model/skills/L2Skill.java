@@ -105,8 +105,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _id;
 	private final int _level;
 	
-	/** Identifier for a skill that client can't display */
-	private int _displayId;
+	/** Custom skill Id displayed by the client. */
+	private final int _displayId;
+	/** Custom skill level displayed by the client. */
+	private final int _displayLevel;
 	
 	// not needed, just for easier debug
 	private final String _name;
@@ -264,6 +266,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_level = set.getInteger("level");
 		_refId = set.getInteger("referenceId", 0);
 		_displayId = set.getInteger("displayId", _id);
+		_displayLevel = set.getInteger("displayLevel", _level);
 		_name = set.getString("name", "");
 		_operateType = set.getEnum("operateType", L2SkillOpType.class);
 		_magic = set.getInteger("isMagic", 0);
@@ -789,9 +792,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _displayId;
 	}
 	
-	public void setDisplayId(int id)
+	public int getDisplayLevel()
 	{
-		_displayId = id;
+		return _displayLevel;
 	}
 	
 	public int getTriggeredId()

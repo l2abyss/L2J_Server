@@ -194,8 +194,8 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 				
 				ISkillHandler handler = SkillHandler.getInstance().getHandler(skill.getSkillType());
 				
-				_owner.broadcastPacket(new MagicSkillLaunched(_owner, skill.getDisplayId(), skill.getLevel(), targets));
-				_owner.broadcastPacket(new MagicSkillUse(_owner, firstTarget, skill.getDisplayId(), skill.getLevel(), 0, 0));
+				_owner.broadcastPacket(new MagicSkillLaunched(_owner, skill.getDisplayId(), skill.getDisplayLevel(), targets));
+				_owner.broadcastPacket(new MagicSkillUse(_owner, firstTarget, skill.getDisplayId(), skill.getDisplayLevel(), 0, 0));
 				
 				// Launch the magic skill and calculate its effects
 				// TODO: once core will support all possible effects, use effects (not handler)
@@ -252,8 +252,8 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			
 			ISkillHandler handler = SkillHandler.getInstance().getHandler(triggered.getSkillType());
 			
-			_owner.broadcastPacket(new MagicSkillLaunched(_owner, triggered.getDisplayId(), triggered.getLevel(), targets));
-			_owner.broadcastPacket(new MagicSkillUse(_owner, firstTarget, triggered.getDisplayId(), triggered.getLevel(), 0, 0));
+			_owner.broadcastPacket(new MagicSkillLaunched(_owner, triggered.getDisplayId(), triggered.getDisplayLevel(), targets));
+			_owner.broadcastPacket(new MagicSkillUse(_owner, firstTarget, triggered.getDisplayId(), triggered.getDisplayLevel(), 0, 0));
 			
 			// Launch the magic skill and calculate its effects
 			// TODO: once core will support all possible effects, use effects (not handler)

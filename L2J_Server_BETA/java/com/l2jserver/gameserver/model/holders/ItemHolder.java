@@ -22,7 +22,7 @@ package com.l2jserver.gameserver.model.holders;
  * Holder for item id-count.
  * @author UnAfraid
  */
-public final class ItemHolder
+public class ItemHolder
 {
 	private final int _id;
 	private final int _objectId;

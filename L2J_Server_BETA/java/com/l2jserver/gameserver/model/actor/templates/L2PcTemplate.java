@@ -23,7 +23,6 @@ import java.util.List;
 import com.l2jserver.gameserver.datatables.InitialEquipmentData;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.ClassId;
-import com.l2jserver.gameserver.model.base.ClassInfo;
 import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.items.PcItemTemplate;
 
@@ -34,7 +33,6 @@ public class L2PcTemplate extends L2CharTemplate
 {
 	private final ClassId _classId;
 	private final Race _race;
-	private final String _className;
 	
 	private final int _spawnX;
 	private final int _spawnY;
@@ -63,7 +61,6 @@ public class L2PcTemplate extends L2CharTemplate
 		super(set);
 		_classId = ClassId.getClassId(set.getInteger("classId"));
 		_race = Race.values()[set.getInteger("raceId")];
-		_className = set.getString("className");
 		
 		_spawnX = set.getInteger("spawnX");
 		_spawnY = set.getInteger("spawnY");
@@ -102,16 +99,6 @@ public class L2PcTemplate extends L2CharTemplate
 	public Race getRace()
 	{
 		return _race;
-	}
-	
-	/**
-	 * @return the template server side class name.
-	 * @deprecated replaced by {@link ClassInfo#getClassName()}
-	 */
-	@Deprecated
-	public String getClassName()
-	{
-		return _className;
 	}
 	
 	/**

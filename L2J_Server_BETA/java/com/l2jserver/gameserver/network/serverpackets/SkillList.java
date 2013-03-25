@@ -18,13 +18,12 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import javolution.util.FastList;
 
 public final class SkillList extends L2GameServerPacket
 {
-	private final List<Skill> _skills;
+	private final List<Skill> _skills = new ArrayList<>();
 	
 	static class Skill
 	{
@@ -42,11 +41,6 @@ public final class SkillList extends L2GameServerPacket
 			disabled = pDisabled;
 			enchanted = pEnchanted;
 		}
-	}
-	
-	public SkillList()
-	{
-		_skills = new FastList<>();
 	}
 	
 	public void addSkill(int id, int level, boolean passive, boolean disabled, boolean enchanted)

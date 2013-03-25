@@ -48,7 +48,7 @@ public class GMViewSkillInfo extends L2GameServerPacket
 		for (L2Skill skill : _skills)
 		{
 			writeD(skill.isPassive() ? 1 : 0);
-			writeD(skill.getLevel());
+			writeD(skill.getDisplayLevel());
 			writeD(skill.getDisplayId());
 			writeC(isDisabled && skill.isClanSkill() ? 1 : 0);
 			writeC(SkillTable.getInstance().isEnchantable(skill.getDisplayId()) ? 1 : 0);

@@ -60,7 +60,7 @@ public class PledgeSkillList extends L2GameServerPacket
 		for (L2Skill sk : _skills)
 		{
 			writeD(sk.getDisplayId());
-			writeD(sk.getLevel());
+			writeD(sk.getDisplayLevel());
 		}
 		for (SubPledgeSkill sk : _subSkills)
 		{

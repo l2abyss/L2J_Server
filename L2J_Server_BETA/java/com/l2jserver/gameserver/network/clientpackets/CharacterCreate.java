@@ -291,10 +291,10 @@ public final class CharacterCreate extends L2GameClientPacket
 			L2ItemInstance item;
 			for (PcItemTemplate ie : template.getInitialEquipment())
 			{
-				item = newChar.getInventory().addItem("Init", ie.getItemId(), ie.getCount(), newChar, null);
+				item = newChar.getInventory().addItem("Init", ie.getId(), ie.getCount(), newChar, null);
 				if (item == null)
 				{
-					_log.warning("Could not create item during char creation: itemId " + ie.getItemId() + ", amount " + ie.getCount() + ".");
+					_log.warning("Could not create item during char creation: itemId " + ie.getId() + ", amount " + ie.getCount() + ".");
 					continue;
 				}
 				

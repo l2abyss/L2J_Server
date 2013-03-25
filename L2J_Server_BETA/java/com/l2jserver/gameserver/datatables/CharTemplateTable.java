@@ -55,7 +55,6 @@ public final class CharTemplateTable
 				set = new StatsSet();
 				cId = rset.getInt("ClassId");
 				set.set("classId", cId);
-				set.set("className", rset.getString("className"));
 				set.set("raceId", rset.getInt("raceId"));
 				set.set("baseSTR", rset.getInt("STR"));
 				set.set("baseCON", rset.getInt("CON"));

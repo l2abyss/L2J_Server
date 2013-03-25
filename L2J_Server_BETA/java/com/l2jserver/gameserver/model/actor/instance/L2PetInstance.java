@@ -1387,7 +1387,7 @@ public class L2PetInstance extends L2Summon
 				}
 				else
 				{
-					super.removeSkill(getKnownSkill(4270));
+					removeSkill(getKnownSkill(4270), true);
 					setIsOverloaded(false);
 				}
 			}

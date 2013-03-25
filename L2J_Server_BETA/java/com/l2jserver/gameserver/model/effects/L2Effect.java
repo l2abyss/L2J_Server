@@ -590,11 +590,11 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		{
 			if (sk.isStatic())
 			{
-				mi.addEffect(sk.getDisplayId(), getLevel(), sk.getBuffDuration() - (getTaskTime() * 1000));
+				mi.addEffect(sk.getDisplayId(), sk.getDisplayLevel(), sk.getBuffDuration() - (getTaskTime() * 1000));
 			}
 			else
 			{
-				mi.addEffect(sk.getDisplayId(), getLevel(), -1);
+				mi.addEffect(sk.getDisplayId(), sk.getDisplayLevel(), -1);
 			}
 		}
 		else if (future != null)
@@ -637,11 +637,11 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		final L2Skill sk = getSkill();
 		if (future != null)
 		{
-			os.addEffect(sk.getDisplayId(), getLevel(), (int) future.getDelay(TimeUnit.MILLISECONDS));
+			os.addEffect(sk.getDisplayId(), sk.getDisplayLevel(), (int) future.getDelay(TimeUnit.MILLISECONDS));
 		}
 		else if (_abnormalTime == -1)
 		{
-			os.addEffect(sk.getDisplayId(), getLevel(), _abnormalTime);
+			os.addEffect(sk.getDisplayId(), sk.getDisplayLevel(), _abnormalTime);
 		}
 	}
 	

@@ -19,44 +19,26 @@
 package com.l2jserver.gameserver.model.items;
 
 import com.l2jserver.gameserver.model.StatsSet;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
 
 /**
  * @author Zoey76
  */
-public final class PcItemTemplate
+public final class PcItemTemplate extends ItemHolder
 {
-	private final int _itemId;
-	private final long _count;
 	private final boolean _equipped;
 	
 	/**
-	 * @param set the set containing the values for this object.
+	 * @param set the set containing the values for this object
 	 */
 	public PcItemTemplate(StatsSet set)
 	{
-		_itemId = set.getInteger("id");
-		_count = set.getInteger("count");
+		super(set.getInteger("id"), set.getInteger("count"));
 		_equipped = set.getBool("equipped", false);
 	}
 	
 	/**
-	 * @return the item Id.
-	 */
-	public int getItemId()
-	{
-		return _itemId;
-	}
-	
-	/**
-	 * @return the item count.
-	 */
-	public long getCount()
-	{
-		return _count;
-	}
-	
-	/**
-	 * @return {@code true} if the items is equipped upon character creation, {@code false} otherwise.
+	 * @return {@code true} if the items is equipped upon character creation, {@code false} otherwise
 	 */
 	public boolean isEquipped()
 	{
