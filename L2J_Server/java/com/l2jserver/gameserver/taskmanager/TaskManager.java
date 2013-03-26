@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.taskmanager;
 
@@ -25,16 +29,16 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
-import javolution.util.FastMap;
-
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskBirthday;
+import com.l2jserver.gameserver.taskmanager.tasks.TaskClanLeaderApply;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskCleanUp;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskDailySkillReuseClean;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskGlobalVariablesSave;
@@ -46,6 +50,8 @@ import com.l2jserver.gameserver.taskmanager.tasks.TaskRestart;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskScript;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskSevenSignsUpdate;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskShutdown;
+import com.l2jserver.util.L2FastList;
+import com.l2jserver.util.L2FastMap;
 
 /**
  * @author Layane
@@ -54,8 +60,8 @@ public final class TaskManager
 {
 	protected static final Logger _log = Logger.getLogger(TaskManager.class.getName());
 	
-	private final FastMap<Integer, Task> _tasks = new FastMap<>();
-	protected final FastList<ExecutedTask> _currentTasks = new FastList<>();
+	private final Map<Integer, Task> _tasks = new L2FastMap<>(true);
+	protected final List<ExecutedTask> _currentTasks = new L2FastList<>(true);
 	
 	protected static final String[] SQL_STATEMENTS =
 	{
@@ -64,6 +70,13 @@ public final class TaskManager
 		"SELECT id FROM global_tasks WHERE task=?",
 		"INSERT INTO global_tasks (task,type,last_activation,param1,param2,param3) VALUES(?,?,?,?,?,?)"
 	};
+	
+	protected TaskManager()
+	{
+		initializate();
+		startAllTasks();
+		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _tasks.size() + " Tasks");
+	}
 	
 	public class ExecutedTask implements Runnable
 	{
@@ -102,7 +115,7 @@ public final class TaskManager
 			}
 			catch (SQLException e)
 			{
-				_log.log(Level.WARNING, "Cannot updated the Global Task " + id + ": " + e.getMessage(), e);
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": Cannot updated the Global Task " + id + ": " + e.getMessage(), e);
 			}
 			
 			if ((type == TYPE_SHEDULED) || (type == TYPE_TIME))
@@ -170,20 +183,10 @@ public final class TaskManager
 		
 	}
 	
-	public static TaskManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
-	protected TaskManager()
-	{
-		initializate();
-		startAllTasks();
-	}
-	
 	private void initializate()
 	{
 		registerTask(new TaskBirthday());
+		registerTask(new TaskClanLeaderApply());
 		registerTask(new TaskCleanUp());
 		registerTask(new TaskDailySkillReuseClean());
 		registerTask(new TaskGlobalVariablesSave());
@@ -234,7 +237,7 @@ public final class TaskManager
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error while loading Global Task table: " + e.getMessage(), e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while loading Global Task table: " + e.getMessage(), e);
 		}
 	}
 	
@@ -267,7 +270,7 @@ public final class TaskManager
 						task.scheduled = scheduler.scheduleGeneral(task, diff);
 						return true;
 					}
-					_log.info("Task " + task.getId() + " is obsoleted.");
+					_log.info(getClass().getSimpleName() + ": Task " + task.getId() + " is obsoleted.");
 				}
 				catch (Exception e)
 				{
@@ -287,7 +290,7 @@ public final class TaskManager
 				
 				if (hour.length != 3)
 				{
-					_log.warning("Task " + task.getId() + " has incorrect parameters");
+					_log.warning(getClass().getSimpleName() + ": Task " + task.getId() + " has incorrect parameters");
 					return false;
 				}
 				
@@ -303,7 +306,7 @@ public final class TaskManager
 				}
 				catch (Exception e)
 				{
-					_log.log(Level.WARNING, "Bad parameter on task " + task.getId() + ": " + e.getMessage(), e);
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Bad parameter on task " + task.getId() + ": " + e.getMessage(), e);
 					return false;
 				}
 				
@@ -330,7 +333,7 @@ public final class TaskManager
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement ps1 = con.prepareStatement(SQL_STATEMENTS[2]))
-			{
+		{
 			ps1.setString(1, task);
 			try (ResultSet rs = ps1.executeQuery())
 			{
@@ -352,7 +355,7 @@ public final class TaskManager
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "Cannot add the unique task: " + e.getMessage(), e);
+			_log.log(Level.WARNING, TaskManager.class.getSimpleName() + ": Cannot add the unique task: " + e.getMessage(), e);
 		}
 		return false;
 	}
@@ -378,9 +381,14 @@ public final class TaskManager
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "Cannot add the task:  " + e.getMessage(), e);
+			_log.log(Level.WARNING, TaskManager.class.getSimpleName() + ": Cannot add the task:  " + e.getMessage(), e);
 		}
 		return false;
+	}
+	
+	public static TaskManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

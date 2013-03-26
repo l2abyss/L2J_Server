@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
@@ -141,6 +145,18 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 	
 	/**
 	 * @param npcObjId
+	 * @param itemId
+	 * @param text
+	 */
+	public NpcHtmlMessage(int npcObjId, int itemId, String text)
+	{
+		_npcObjId = npcObjId;
+		_itemId = itemId;
+		_html = text;
+	}
+	
+	/**
+	 * @param npcObjId
 	 * @param text
 	 */
 	public NpcHtmlMessage(int npcObjId, String text)
@@ -166,7 +182,9 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 	public void runImpl()
 	{
 		if (Config.BYPASS_VALIDATION && _validate)
+		{
 			buildBypassCache(getClient().getActiveChar());
+		}
 	}
 	
 	public void setHtml(String text)
@@ -177,7 +195,9 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 			_html = text.substring(0, 17200);
 		}
 		if (!text.contains("<html>"))
+		{
 			text = "<html><body>" + text + "</body></html>";
+		}
 		
 		_html = text;
 	}
@@ -205,7 +225,9 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 	private final void buildBypassCache(L2PcInstance activeChar)
 	{
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		activeChar.clearBypass();
 		int len = _html.length();
@@ -213,20 +235,30 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 		{
 			int start = _html.indexOf("\"bypass ", i);
 			int finish = _html.indexOf("\"", start + 1);
-			if (start < 0 || finish < 0)
+			if ((start < 0) || (finish < 0))
+			{
 				break;
+			}
 			
 			if (_html.substring(start + 8, start + 10).equals("-h"))
+			{
 				start += 11;
+			}
 			else
+			{
 				start += 8;
+			}
 			
 			i = finish;
 			int finish2 = _html.indexOf("$", start);
-			if (finish2 < finish && finish2 > 0)
+			if ((finish2 < finish) && (finish2 > 0))
+			{
 				activeChar.addBypass2(_html.substring(start, finish2).trim());
+			}
 			else
+			{
 				activeChar.addBypass(_html.substring(start, finish).trim());
+			}
 		}
 	}
 	
@@ -238,6 +270,8 @@ public final class NpcHtmlMessage extends L2GameServerPacket
 		writeD(_npcObjId);
 		writeS(_html);
 		if (_npcObjId != 0)
+		{
 			writeD(_itemId);
+		}
 	}
 }

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
@@ -54,20 +58,30 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 				esd = enchantLearn.getEnchantSkillHolder(skilllvl);
 			}
 			else
+			{
 				esd = enchantLearn.getFirstRouteGroup().getEnchantGroupDetails().get(0);
+			}
 		}
 		
 		if (esd == null)
+		{
 			throw new IllegalArgumentException("Skill " + skillid + " dont have enchant data for level " + skilllvl);
+		}
 		
 		if (type == 0)
+		{
 			multi = EnchantGroupsData.NORMAL_ENCHANT_COST_MULTIPLIER;
+		}
 		else if (type == 1)
+		{
 			multi = EnchantGroupsData.SAFE_ENCHANT_COST_MULTIPLIER;
+		}
 		_chance = esd.getRate(ply);
 		_sp = esd.getSpCost();
 		if (type == TYPE_UNTRAIN_ENCHANT)
+		{
 			_sp = (int) (0.8 * _sp);
+		}
 		_adenacount = esd.getAdenaCost() * multi;
 		_type = type;
 		_skillid = skillid;
@@ -77,7 +91,7 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 		{
 			case TYPE_NORMAL_ENCHANT:
 				bookId = EnchantGroupsData.NORMAL_ENCHANT_BOOK;
-				reqCount = ((_skilllvl % 100 > 1) ? 0 : 1);
+				reqCount = (((_skilllvl % 100) > 1) ? 0 : 1);
 				break;
 			case TYPE_SAFE_ENCHANT:
 				bookId = EnchantGroupsData.SAFE_ENCHANT_BOOK;
@@ -95,8 +109,10 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 				return;
 		}
 		
-		if (type != TYPE_SAFE_ENCHANT && !Config.ES_SP_BOOK_NEEDED)
+		if ((type != TYPE_SAFE_ENCHANT) && !Config.ES_SP_BOOK_NEEDED)
+		{
 			reqCount = 0;
+		}
 	}
 	
 	@Override

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.datatables;
 
@@ -51,7 +55,6 @@ public final class CharTemplateTable
 				set = new StatsSet();
 				cId = rset.getInt("ClassId");
 				set.set("classId", cId);
-				set.set("className", rset.getString("className"));
 				set.set("raceId", rset.getInt("raceId"));
 				set.set("baseSTR", rset.getInt("STR"));
 				set.set("baseCON", rset.getInt("CON"));
@@ -93,11 +96,11 @@ public final class CharTemplateTable
 				final L2PcTemplate ct = new L2PcTemplate(set);
 				_charTemplates.put(ClassId.getClassId(cId), ct);
 			}
-			_log.info("CharTemplateTable: Loaded " + _charTemplates.size() + " Character Templates.");
+			_log.info(getClass().getSimpleName() + ": Loaded " + _charTemplates.size() + " Character Templates.");
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.SEVERE, "Failed loading char templates", e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Failed loading char templates", e);
 		}
 	}
 	

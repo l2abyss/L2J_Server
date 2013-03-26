@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
@@ -19,11 +23,7 @@ import com.l2jserver.gameserver.network.serverpackets.Ex2ndPasswordAck;
 import com.l2jserver.gameserver.security.SecondaryPasswordAuth;
 
 /**
- * (ch)cS{S}
- * c: change pass?
- * S: current password
- * S: new password
- * 
+ * (ch)cS{S} c: change pass? S: current password S: new password
  * @author mrTJO
  */
 public class RequestEx2ndPasswordReq extends L2GameClientPacket
@@ -39,25 +39,35 @@ public class RequestEx2ndPasswordReq extends L2GameClientPacket
 		_changePass = readC();
 		_password = readS();
 		if (_changePass == 2)
+		{
 			_newPassword = readS();
+		}
 	}
 	
 	@Override
 	protected void runImpl()
 	{
 		if (!Config.SECOND_AUTH_ENABLED)
+		{
 			return;
+		}
 		
 		SecondaryPasswordAuth spa = getClient().getSecondaryAuth();
 		boolean exVal = false;
 		
-		if (_changePass == 0 && !spa.passwordExist())
+		if ((_changePass == 0) && !spa.passwordExist())
+		{
 			exVal = spa.savePassword(_password);
-		else if (_changePass == 2 && spa.passwordExist())
+		}
+		else if ((_changePass == 2) && spa.passwordExist())
+		{
 			exVal = spa.changePassword(_password, _newPassword);
+		}
 		
 		if (exVal)
+		{
 			getClient().sendPacket(new Ex2ndPasswordAck(Ex2ndPasswordAck.SUCCESS));
+		}
 	}
 	
 	@Override

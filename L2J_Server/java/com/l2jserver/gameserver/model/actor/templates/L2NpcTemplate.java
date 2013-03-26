@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.templates;
 
@@ -29,8 +33,8 @@ import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2MinionData;
 import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.StatsSet;
-import com.l2jserver.gameserver.model.actor.instance.L2XmassTreeInstance;
 import com.l2jserver.gameserver.model.base.ClassId;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -359,7 +363,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 			}
 		}
 	}
-
+	
 	public void removeQuest(Quest q)
 	{
 		for (Entry<QuestEventType, List<Quest>> entry : _questEvents.entrySet())
@@ -371,7 +375,9 @@ public final class L2NpcTemplate extends L2CharTemplate
 				{
 					Quest q1 = it.next();
 					if (q1 == q)
+					{
 						it.remove();
+					}
 				}
 				
 				if (entry.getValue().isEmpty())
@@ -426,10 +432,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 						addBuffSkill(skill);
 						break;
 					case HEAL:
-					case HOT:
 					case HEAL_PERCENT:
-					case HEAL_STATIC:
-					case BALANCE_LIFE:
 						addHealSkill(skill);
 						break;
 					case RESURRECT:
@@ -466,7 +469,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 					case CHARGEDAM:
 					case FATAL:
 					case DEATHLINK:
-					case CPDAM:
 					case MANADAM:
 					case CPDAMPERCENT:
 						addAtkSkill(skill);
@@ -485,13 +487,16 @@ public final class L2NpcTemplate extends L2CharTemplate
 						addCOTSkill(skill);
 						addRangeSkill(skill);
 						break;
-					case CANCEL:
-					case NEGATE:
-						addNegativeSkill(skill);
-						addRangeSkill(skill);
-						break;
 					default:
-						addUniversalSkill(skill);
+						if (skill.hasEffectType(L2EffectType.CANCEL, L2EffectType.CANCEL_ALL, L2EffectType.NEGATE))
+						{
+							addNegativeSkill(skill);
+							addRangeSkill(skill);
+						}
+						else
+						{
+							addUniversalSkill(skill);
+						}
 						break;
 				}
 			}
@@ -867,14 +872,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public boolean isServerSideTitle()
 	{
 		return _serverSideTitle;
-	}
-	
-	/**
-	 * @return {@code true} if the NPC is Christmas Special Tree, {@code false} otherwise.
-	 */
-	public boolean isSpecialTree()
-	{
-		return _npcId == L2XmassTreeInstance.SPECIAL_TREE_ID;
 	}
 	
 	/**

@@ -1,26 +1,29 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.datatables;
-
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,7 +48,7 @@ public class NpcTable
 {
 	private static final Logger _log = Logger.getLogger(NpcTable.class.getName());
 	
-	private static final TIntObjectHashMap<L2NpcTemplate> _npcs = new TIntObjectHashMap<>();
+	private static final Map<Integer, L2NpcTemplate> _npcs = new HashMap<>();
 	
 	// SQL Queries
 	private static final String SELECT_NPC_ALL = "SELECT * FROM npc ORDER BY id";
@@ -332,10 +335,11 @@ public class NpcTable
 			sbQuery.append(" WHERE ");
 			sbQuery.append(key);
 			sbQuery.append(" = ?");
-			final PreparedStatement statement = con.prepareStatement(sbQuery.toString());
-			statement.setInt(1, npcId);
-			updated = statement.executeUpdate();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement(sbQuery.toString()))
+			{
+				ps.setInt(1, npcId);
+				updated = ps.executeUpdate();
+			}
 		}
 		return updated;
 	}
@@ -357,7 +361,7 @@ public class NpcTable
 	 */
 	public L2NpcTemplate getTemplateByName(String name)
 	{
-		for (L2NpcTemplate npcTemplate : _npcs.values(new L2NpcTemplate[0]))
+		for (L2NpcTemplate npcTemplate : _npcs.values())
 		{
 			if (npcTemplate.getName().equalsIgnoreCase(name))
 			{
@@ -377,7 +381,7 @@ public class NpcTable
 		final List<L2NpcTemplate> list = new ArrayList<>();
 		for (int lvl : lvls)
 		{
-			for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[0]))
+			for (L2NpcTemplate t : _npcs.values())
 			{
 				if (t.getLevel() == lvl)
 				{
@@ -398,7 +402,7 @@ public class NpcTable
 		final List<L2NpcTemplate> list = new ArrayList<>();
 		for (int lvl : lvls)
 		{
-			for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[0]))
+			for (L2NpcTemplate t : _npcs.values())
 			{
 				if ((t.getLevel() == lvl) && t.isType("L2Monster"))
 				{
@@ -419,7 +423,7 @@ public class NpcTable
 		final List<L2NpcTemplate> list = new ArrayList<>();
 		for (String letter : letters)
 		{
-			for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[0]))
+			for (L2NpcTemplate t : _npcs.values())
 			{
 				if (t.getName().startsWith(letter) && t.isType("L2Npc"))
 				{
@@ -440,7 +444,7 @@ public class NpcTable
 		final List<L2NpcTemplate> list = new ArrayList<>();
 		for (String classType : classTypes)
 		{
-			for (L2NpcTemplate t : _npcs.values(new L2NpcTemplate[0]))
+			for (L2NpcTemplate t : _npcs.values())
 			{
 				if (t.isType(classType))
 				{
@@ -824,8 +828,8 @@ public class NpcTable
 					npcAIDat.setMaxSkillChance(rs.getInt("maxSkillChance"));
 					npcAIDat.setAggro(rs.getInt("aggro"));
 					npcAIDat.setCanMove(rs.getInt("canMove"));
-					npcAIDat.setShowName(rs.getBoolean("showName"));
-					npcAIDat.setTargetable(rs.getBoolean("targetable"));
+					npcAIDat.setShowName(rs.getInt("showName") == 1);
+					npcAIDat.setTargetable(rs.getInt("targetable") == 1);
 					npcAIDat.setSoulShot(rs.getInt("soulshot"));
 					npcAIDat.setSpiritShot(rs.getInt("spiritshot"));
 					npcAIDat.setSoulShotChance(rs.getInt("ssChance"));

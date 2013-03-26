@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver;
 
@@ -33,22 +37,12 @@ import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.L2TradeList;
 import com.l2jserver.gameserver.model.L2TradeList.L2TradeItem;
 
-/**
- * This class ...
- *
- * @version $Revision: 1.5.4.13 $ $Date: 2005/04/06 16:13:38 $
- */
 public class TradeController
 {
-	private static Logger _log = Logger.getLogger(TradeController.class.getName());
+	private static final Logger _log = Logger.getLogger(TradeController.class.getName());
 	
 	private int _nextListId;
-	private Map<Integer, L2TradeList> _lists = new FastMap<>();
-	
-	public static TradeController getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	private final Map<Integer, L2TradeList> _lists = new FastMap<>();
 	
 	protected TradeController()
 	{
@@ -60,10 +54,7 @@ public class TradeController
 		{
 			int itemId, price, maxCount, currentCount, time;
 			long saveTimer;
-			try (PreparedStatement ps = con.prepareStatement("SELECT item_id, price, shop_id, "
-					+ L2DatabaseFactory.getInstance().safetyString("order")
-					+ ", count, currentCount, time, savetimer FROM merchant_buylists WHERE shop_id=? ORDER BY "
-					+ L2DatabaseFactory.getInstance().safetyString("order") + " ASC"))
+			try (PreparedStatement ps = con.prepareStatement("SELECT item_id, price, shop_id, " + L2DatabaseFactory.getInstance().safetyString("order") + ", count, currentCount, time, savetimer FROM merchant_buylists WHERE shop_id=? ORDER BY " + L2DatabaseFactory.getInstance().safetyString("order") + " ASC"))
 			{
 				while (rs1.next())
 				{
@@ -94,18 +85,6 @@ public class TradeController
 							if (price <= -1)
 							{
 								price = ItemTable.getInstance().getTemplate(itemId).getReferencePrice();
-							}
-							
-							if (Config.DEBUG)
-							{
-								// debug
-								double diff = ((double) (price)) / ItemTable.getInstance().getTemplate(itemId).getReferencePrice();
-								if (diff < 0.8 || diff > 1.2)
-								{
-									_log.severe("PRICING DEBUG: TradeListId: " + buy1.getListId() + " -  ItemId: " + itemId + " ("
-											+ ItemTable.getInstance().getTemplate(itemId).getName() + ") diff: " + diff + " - Price: " + price
-											+ " - Reference: " + ItemTable.getInstance().getTemplate(itemId).getReferencePrice());
-								}
 							}
 							
 							item.setPrice(price);
@@ -150,80 +129,63 @@ public class TradeController
 				int initialSize = _lists.size();
 				int itemId, price, maxCount, currentCount, time;
 				long saveTimer;
-				PreparedStatement statement = con.prepareStatement("SELECT item_id, price, shop_id, "
-						+ L2DatabaseFactory.getInstance().safetyString("order")
-						+ ", count, currentCount, time, savetimer FROM custom_merchant_buylists WHERE shop_id=? ORDER BY "
-						+ L2DatabaseFactory.getInstance().safetyString("order") + " ASC");
-				while (rset1.next())
+				try (PreparedStatement ps = con.prepareStatement("SELECT item_id, price, shop_id, " + L2DatabaseFactory.getInstance().safetyString("order") + ", count, currentCount, time, savetimer FROM custom_merchant_buylists WHERE shop_id=? ORDER BY " + L2DatabaseFactory.getInstance().safetyString("order") + " ASC"))
 				{
-					statement.setString(1, String.valueOf(rset1.getInt("shop_id")));
-					ResultSet rset = statement.executeQuery();
-					statement.clearParameters();
-					
-					int shopId = rset1.getInt("shop_id");
-					L2TradeList buy1 = new L2TradeList(shopId);
-					
-					while (rset.next())
+					while (rset1.next())
 					{
-						itemId = rset.getInt("item_id");
-						price = rset.getInt("price");
-						maxCount = rset.getInt("count");
-						currentCount = rset.getInt("currentCount");
-						time = rset.getInt("time");
-						saveTimer = rset.getLong("saveTimer");
-						
-						L2TradeItem item = new L2TradeItem(shopId, itemId);
-						if (ItemTable.getInstance().getTemplate(itemId) == null)
+						ps.setString(1, String.valueOf(rset1.getInt("shop_id")));
+						try (ResultSet rset = ps.executeQuery())
 						{
-							_log.warning("Skipping itemId: " + itemId + " on buylistId: " + buy1.getListId()
-									+ ", missing data for that item.");
-							continue;
-						}
-						
-						if (price <= -1)
-						{
-							price = ItemTable.getInstance().getTemplate(itemId).getReferencePrice();
-						}
-						
-						if (Config.DEBUG)
-						{
-							// debug
-							double diff = ((double) (price)) / ItemTable.getInstance().getTemplate(itemId).getReferencePrice();
-							if (diff < 0.8 || diff > 1.2)
+							ps.clearParameters();
+							
+							int shopId = rset1.getInt("shop_id");
+							L2TradeList buy1 = new L2TradeList(shopId);
+							
+							while (rset.next())
 							{
-								_log.severe("PRICING DEBUG: TradeListId: " + buy1.getListId() + " -  ItemId: " + itemId + " ("
-										+ ItemTable.getInstance().getTemplate(itemId).getName() + ") diff: " + diff + " - Price: " + price
-										+ " - Reference: " + ItemTable.getInstance().getTemplate(itemId).getReferencePrice());
+								itemId = rset.getInt("item_id");
+								price = rset.getInt("price");
+								maxCount = rset.getInt("count");
+								currentCount = rset.getInt("currentCount");
+								time = rset.getInt("time");
+								saveTimer = rset.getLong("saveTimer");
+								
+								L2TradeItem item = new L2TradeItem(shopId, itemId);
+								if (ItemTable.getInstance().getTemplate(itemId) == null)
+								{
+									_log.warning("Skipping itemId: " + itemId + " on buylistId: " + buy1.getListId() + ", missing data for that item.");
+									continue;
+								}
+								
+								if (price <= -1)
+								{
+									price = ItemTable.getInstance().getTemplate(itemId).getReferencePrice();
+								}
+								
+								item.setPrice(price);
+								
+								item.setRestoreDelay(time);
+								item.setNextRestoreTime(saveTimer);
+								item.setMaxCount(maxCount);
+								
+								if (currentCount > -1)
+								{
+									item.setCurrentCount(currentCount);
+								}
+								else
+								{
+									item.setCurrentCount(maxCount);
+								}
+								
+								buy1.addItem(item);
 							}
+							
+							buy1.setNpcId(rset1.getString("npc_id"));
+							_lists.put(buy1.getListId(), buy1);
+							_nextListId = Math.max(_nextListId, buy1.getListId() + 1);
 						}
-						
-						item.setPrice(price);
-						
-						item.setRestoreDelay(time);
-						item.setNextRestoreTime(saveTimer);
-						item.setMaxCount(maxCount);
-						
-						if (currentCount > -1)
-						{
-							item.setCurrentCount(currentCount);
-						}
-						else
-						{
-							item.setCurrentCount(maxCount);
-						}
-						
-						buy1.addItem(item);
 					}
-					
-					buy1.setNpcId(rset1.getString("npc_id"));
-					_lists.put(buy1.getListId(), buy1);
-					_nextListId = Math.max(_nextListId, buy1.getListId() + 1);
-					
-					rset.close();
 				}
-				statement.close();
-				rset1.close();
-				
 				_log.info("TradeController: Loaded " + (_lists.size() - initialSize) + " Custom Buylists.");
 				
 			}
@@ -249,9 +211,13 @@ public class TradeController
 		{
 			String tradeNpcId = list.getNpcId();
 			if (tradeNpcId.startsWith("gm"))
+			{
 				continue;
+			}
 			if (npcId == Integer.parseInt(tradeNpcId))
+			{
 				lists.add(list);
+			}
 		}
 		return lists;
 	}
@@ -268,7 +234,7 @@ public class TradeController
 					for (L2TradeItem item : list.getItems())
 					{
 						long currentCount;
-						if (item.hasLimitedStock() && (currentCount = item.getCurrentCount()) < item.getMaxCount())
+						if (item.hasLimitedStock() && ((currentCount = item.getCurrentCount()) < item.getMaxCount()))
 						{
 							statement.setLong(1, currentCount);
 							statement.setInt(2, item.getItemId());
@@ -292,6 +258,11 @@ public class TradeController
 	public synchronized int getNextId()
 	{
 		return _nextListId++;
+	}
+	
+	public static TradeController getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

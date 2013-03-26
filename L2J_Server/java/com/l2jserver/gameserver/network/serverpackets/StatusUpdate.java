@@ -1,30 +1,29 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.ArrayList;
 
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2World;
-import com.l2jserver.gameserver.model.actor.L2Attackable;
-import com.l2jserver.gameserver.model.actor.L2Character;
 
 public final class StatusUpdate extends L2GameServerPacket
 {
-	private static final int HP_MOD = 10000000;
-	
 	public static final int LEVEL = 0x01;
 	public static final int EXP = 0x02;
 	public static final int STR = 0x03;
@@ -59,8 +58,7 @@ public final class StatusUpdate extends L2GameServerPacket
 	public static final int MAX_CP = 0x22;
 	
 	private final int _objectId;
-	private int _maxHp = -1;
-	private final ArrayList<Attribute> _attributes;
+	private final ArrayList<Attribute> _attributes = new ArrayList<>();
 	
 	static class Attribute
 	{
@@ -83,13 +81,7 @@ public final class StatusUpdate extends L2GameServerPacket
 	 */
 	public StatusUpdate(int objectId)
 	{
-		_attributes = new ArrayList<>();
 		_objectId = objectId;
-		L2Object obj = L2World.getInstance().findObject(objectId);
-		if (obj != null && obj instanceof L2Attackable)
-		{
-			_maxHp = ((L2Character) obj).getMaxVisibleHp();
-		}
 	}
 	
 	/**
@@ -98,24 +90,17 @@ public final class StatusUpdate extends L2GameServerPacket
 	 */
 	public StatusUpdate(L2Object object)
 	{
-		_attributes = new ArrayList<>();
 		_objectId = object.getObjectId();
-		if (object instanceof L2Attackable)
-			_maxHp = ((L2Character) object).getMaxVisibleHp();
 	}
 	
 	public void addAttribute(int id, int level)
 	{
-		if (_maxHp != -1)
-		{
-			if (id == MAX_HP)
-				level = HP_MOD;
-			else if (id == CUR_HP)
-			{
-				level = (int) ((level / (float) _maxHp) * HP_MOD);
-			}
-		}
 		_attributes.add(new Attribute(id, level));
+	}
+	
+	public boolean hasAttributes()
+	{
+		return !_attributes.isEmpty();
 	}
 	
 	@Override

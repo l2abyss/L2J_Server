@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
@@ -40,9 +44,13 @@ public final class L2ClanTraderInstance extends L2Npc
 		if (command.equalsIgnoreCase("crp"))
 		{
 			if (player.getClan().getLevel() > 4)
+			{
 				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-2.htm");
+			}
 			else
+			{
 				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-1.htm");
+			}
 			
 			sendHtmlMessage(player, html);
 			return;
@@ -80,20 +88,24 @@ public final class L2ClanTraderInstance extends L2Npc
 				player.getClan().addReputationScore(reputation, true);
 				player.getClan().broadcastToOnlineMembers(new PledgeShowInfoUpdate(player.getClan()));
 				
-				SystemMessage sm =  SystemMessage.getSystemMessage(SystemMessageId.CLAN_ADDED_S1S_POINTS_TO_REPUTATION_SCORE);
+				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_ADDED_S1S_POINTS_TO_REPUTATION_SCORE);
 				sm.addNumber(reputation);
 				player.sendPacket(sm);
 				
 				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-ExchangeSuccess.htm");
 			}
 			else
+			{
 				html.setFile(player.getHtmlPrefix(), "data/html/clantrader/" + getNpcId() + "-ExchangeFailed.htm");
+			}
 			
 			sendHtmlMessage(player, html);
 			return;
 		}
 		else
+		{
 			super.onBypassFeedback(player, command);
+		}
 	}
 	
 	private void sendHtmlMessage(L2PcInstance player, NpcHtmlMessage html)
@@ -109,7 +121,9 @@ public final class L2ClanTraderInstance extends L2Npc
 		String filename = "data/html/clantrader/" + getNpcId() + "-no.htm";
 		
 		if (player.isClanLeader())
+		{
 			filename = "data/html/clantrader/" + getNpcId() + ".htm";
+		}
 		
 		NpcHtmlMessage html = new NpcHtmlMessage(1);
 		html.setFile(player.getHtmlPrefix(), filename);
@@ -123,9 +137,13 @@ public final class L2ClanTraderInstance extends L2Npc
 		String pom = "";
 		
 		if (val == 0)
+		{
 			pom = "" + npcId;
+		}
 		else
+		{
 			pom = npcId + "-" + val;
+		}
 		
 		return "data/html/clantrader/" + pom + ".htm";
 	}

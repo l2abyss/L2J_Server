@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.entity;
 
@@ -269,9 +273,9 @@ public class Hero
 				else if (action == ACTION_CASTLE_TAKEN)
 				{
 					Castle castle = CastleManager.getInstance().getCastleById(param);
-					if(castle != null)
+					if (castle != null)
 					{
-						_diaryentry.set("action", castle.getName()+" Castle was successfuly taken");
+						_diaryentry.set("action", castle.getName() + " Castle was successfuly taken");
 					}
 				}
 				_diary.add(_diaryentry);
@@ -337,7 +341,7 @@ public class Hero
 				{
 					String name = CharNameTable.getInstance().getNameById(charTwoId);
 					String cls = ClassListData.getInstance().getClass(charTwoClass).getClientCode();
-					if(name != null && cls != null)
+					if ((name != null) && (cls != null))
 					{
 						StatsSet fight = new StatsSet();
 						fight.set("oponent", name);
@@ -373,7 +377,7 @@ public class Hero
 				{
 					String name = CharNameTable.getInstance().getNameById(charOneId);
 					String cls = ClassListData.getInstance().getClass(charOneClass).getClientCode();
-					if(name != null && cls != null)
+					if ((name != null) && (cls != null))
 					{
 						StatsSet fight = new StatsSet();
 						fight.set("oponent", name);
@@ -457,8 +461,8 @@ public class Hero
 		{
 			List<StatsSet> _mainlist = _herodiary.get(charid);
 			NpcHtmlMessage DiaryReply = new NpcHtmlMessage(5);
-			final String htmContent = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(),"data/html/olympiad/herodiary.htm");
-			if (htmContent != null && _heroMessage.containsKey(charid))
+			final String htmContent = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(), "data/html/olympiad/herodiary.htm");
+			if ((htmContent != null) && _heroMessage.containsKey(charid))
 			{
 				DiaryReply.setHtml(htmContent);
 				DiaryReply.replace("%heroname%", CharNameTable.getInstance().getNameById(charid));
@@ -546,7 +550,7 @@ public class Hero
 			List<StatsSet> _list = _herofights.get(charid);
 			
 			NpcHtmlMessage FightReply = new NpcHtmlMessage(5);
-			final String htmContent = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(),"data/html/olympiad/herohistory.htm");
+			final String htmContent = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(), "data/html/olympiad/herohistory.htm");
 			if (htmContent != null)
 			{
 				FightReply.setHtml(htmContent);
@@ -719,7 +723,7 @@ public class Hero
 		updateHeroes(false);
 		
 		L2PcInstance player;
-		for(Integer charId : _heroes.keySet())
+		for (Integer charId : _heroes.keySet())
 		{
 			player = L2World.getInstance().getPlayer(charId);
 			if (player != null)
@@ -787,8 +791,8 @@ public class Hero
 	
 	public void updateHeroes(boolean setDefault)
 	{
-		//_herofights = new FastMap<Integer, List<StatsSet>>();
-		//_herocounts = new FastMap<Integer, StatsSet>();
+		// _herofights = new FastMap<Integer, List<StatsSet>>();
+		// _herocounts = new FastMap<Integer, StatsSet>();
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
@@ -957,7 +961,9 @@ public class Hero
 	{
 		_heroMessage.put(player.getObjectId(), message);
 		if (player.isDebug())
-			_log.info("Hero message for player: "+player.getName()+":["+player.getObjectId()+"] set to: ["+message+"]");
+		{
+			_log.info("Hero message for player: " + player.getName() + ":[" + player.getObjectId() + "] set to: [" + message + "]");
+		}
 	}
 	
 	/**
@@ -967,7 +973,9 @@ public class Hero
 	public void saveHeroMessage(int charId)
 	{
 		if (_heroMessage.get(charId) == null)
+		{
 			return;
+		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
@@ -1003,7 +1011,7 @@ public class Hero
 	 */
 	public void shutdown()
 	{
-		for (int charId: _heroMessage.keySet())
+		for (int charId : _heroMessage.keySet())
 		{
 			saveHeroMessage(charId);
 		}

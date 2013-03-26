@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.entity;
 
@@ -28,8 +32,7 @@ import com.l2jserver.gameserver.model.itemcontainer.Mail;
 import com.l2jserver.util.Rnd;
 
 /**
- *
- * @author  Migi, DS
+ * @author Migi, DS
  */
 public class Message
 {
@@ -52,7 +55,7 @@ public class Message
 	private int _sendBySystem;
 	private boolean _deletedBySender;
 	private boolean _deletedByReceiver;
-	private long _reqAdena;
+	private final long _reqAdena;
 	private boolean _hasAttachments;
 	private Mail _attachments = null;
 	private ScheduledFuture<?> _unloadTask = null;
@@ -95,7 +98,7 @@ public class Message
 		_receiverId = receiverId;
 		_subject = subject;
 		_content = text;
-		_expiration = (isCod ? System.currentTimeMillis() + COD_EXPIRATION * 3600000 : System.currentTimeMillis() + EXPIRATION * 3600000);
+		_expiration = (isCod ? System.currentTimeMillis() + (COD_EXPIRATION * 3600000) : System.currentTimeMillis() + (EXPIRATION * 3600000));
 		_hasAttachments = false;
 		_unread = true;
 		_deletedBySender = false;
@@ -111,9 +114,9 @@ public class Message
 		_messageId = IdFactory.getInstance().getNextId();
 		_senderId = -1;
 		_receiverId = receiverId;
-		_subject = subject; 
+		_subject = subject;
 		_content = content;
-		_expiration = System.currentTimeMillis() + EXPIRATION * 3600000;
+		_expiration = System.currentTimeMillis() + (EXPIRATION * 3600000);
 		_reqAdena = 0;
 		_hasAttachments = false;
 		_unread = true;
@@ -133,7 +136,7 @@ public class Message
 		_receiverId = msg.getSenderId();
 		_subject = "";
 		_content = "";
-		_expiration = System.currentTimeMillis() + EXPIRATION * 3600000;
+		_expiration = System.currentTimeMillis() + (EXPIRATION * 3600000);
 		_unread = true;
 		_deletedBySender = true;
 		_deletedByReceiver = false;
@@ -188,11 +191,15 @@ public class Message
 		if (_senderName == null)
 		{
 			if (_sendBySystem != 0)
+			{
 				return "****";
+			}
 			
 			_senderName = CharNameTable.getInstance().getNameById(_senderId);
 			if (_senderName == null)
+			{
 				_senderName = "";
+			}
 		}
 		return _senderName;
 	}
@@ -203,7 +210,9 @@ public class Message
 		{
 			_receiverName = CharNameTable.getInstance().getNameById(_receiverId);
 			if (_receiverName == null)
+			{
 				_receiverName = "";
+			}
 		}
 		return _receiverName;
 	}
@@ -230,7 +239,7 @@ public class Message
 	
 	public final int getExpirationSeconds()
 	{
-		return (int)(_expiration / 1000);
+		return (int) (_expiration / 1000);
 	}
 	
 	public final boolean isUnread()
@@ -258,9 +267,13 @@ public class Message
 		{
 			_deletedBySender = true;
 			if (_deletedByReceiver)
+			{
 				MailManager.getInstance().deleteMessageInDb(_messageId);
+			}
 			else
+			{
 				MailManager.getInstance().markAsDeletedBySenderInDb(_messageId);
+			}
 		}
 	}
 	
@@ -275,9 +288,13 @@ public class Message
 		{
 			_deletedByReceiver = true;
 			if (_deletedBySender)
+			{
 				MailManager.getInstance().deleteMessageInDb(_messageId);
+			}
 			else
+			{
 				MailManager.getInstance().markAsDeletedByReceiverInDb(_messageId);
+			}
 		}
 	}
 	
@@ -304,7 +321,9 @@ public class Message
 	public final synchronized Mail getAttachments()
 	{
 		if (!_hasAttachments)
+		{
 			return null;
+		}
 		
 		if (_attachments == null)
 		{
@@ -328,14 +347,18 @@ public class Message
 			_hasAttachments = false;
 			MailManager.getInstance().removeAttachmentsInDb(_messageId);
 			if (_unloadTask != null)
+			{
 				_unloadTask.cancel(false);
+			}
 		}
 	}
 	
 	public final synchronized Mail createAttachments()
 	{
-		if (_hasAttachments || _attachments != null)
+		if (_hasAttachments || (_attachments != null))
+		{
 			return null;
+		}
 		
 		_attachments = new Mail(_senderId, _messageId);
 		_hasAttachments = true;

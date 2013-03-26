@@ -1,284 +1,249 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-import gnu.trove.procedure.TObjectProcedure;
-
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlEvent;
+import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.instancemanager.DayNightSpawnManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.util.StackTrace;
 
 /**
- * Removed TimerThread watcher [DrHouse]<br>
- * One in-game day is 240 real minutes.
- * @version $Date: 2010/02/02 22:43:00 $
+ * Game Time controller class.
+ * @author Unknown, Forsaiken
  */
-public class GameTimeController
+public final class GameTimeController extends Thread
 {
-	protected static final Logger _log = Logger.getLogger(GameTimeController.class.getName());
+	private static final Logger _log = Logger.getLogger(GameTimeController.class.getName());
 	
 	public static final int TICKS_PER_SECOND = 10; // not able to change this without checking through code
 	public static final int MILLIS_IN_TICK = 1000 / TICKS_PER_SECOND;
+	public static final int IG_DAYS_PER_DAY = 6;
+	public static final int MILLIS_PER_IG_DAY = (3600000 * 24) / IG_DAYS_PER_DAY;
+	public static final int SECONDS_PER_IG_DAY = MILLIS_PER_IG_DAY / 1000;
+	public static final int MINUTES_PER_IG_DAY = SECONDS_PER_IG_DAY / 60;
+	public static final int TICKS_PER_IG_DAY = SECONDS_PER_IG_DAY * TICKS_PER_SECOND;
+	public static final int TICKS_SUN_STATE_CHANGE = TICKS_PER_IG_DAY / 4;
 	
-	protected static int _gameTicks;
-	protected static long _gameStartTime;
-	protected static boolean _isNight = false;
-	protected static boolean _interruptRequest = false;
+	private static GameTimeController _instance;
 	
-	protected static final TIntObjectHashMap<L2Character> _movingObjects = new TIntObjectHashMap<>();
-	private static final ReentrantLock _lock = new ReentrantLock();
+	private final FastMap<Integer, L2Character> _movingObjects = new FastMap<Integer, L2Character>().shared();
+	private final long _referenceTime;
 	
-	protected static TimerThread _timer;
-	
-	/**
-	 * Gets the single instance of GameTimeController.
-	 * @return single instance of GameTimeController
-	 */
-	public static GameTimeController getInstance()
+	private GameTimeController()
 	{
-		return SingletonHolder._instance;
-	}
-	
-	/**
-	 * Instantiates a new game time controller.
-	 */
-	protected GameTimeController()
-	{
-		_gameStartTime = System.currentTimeMillis() - 3600000; // offset so that the server starts a day begin
-		_gameTicks = 3600000 / MILLIS_IN_TICK; // offset so that the server starts a day begin
+		super("GameTimeController");
+		super.setDaemon(true);
+		super.setPriority(MAX_PRIORITY);
 		
-		_timer = new TimerThread();
-		_timer.start();
+		final Calendar c = Calendar.getInstance();
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
+		_referenceTime = c.getTimeInMillis();
 		
-		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new BroadcastSunState(), 0, 600000);
-		
+		super.start();
 	}
 	
-	/**
-	 * Checks if is now night.
-	 * @return true, if is now night
-	 */
-	public boolean isNowNight()
+	public static final void init()
 	{
-		return _isNight;
+		_instance = new GameTimeController();
 	}
 	
-	/**
-	 * Gets the game time.
-	 * @return the game time
-	 */
-	public int getGameTime()
+	public final int getGameTime()
 	{
-		return (_gameTicks / (TICKS_PER_SECOND * 10));
+		return (getGameTicks() % TICKS_PER_IG_DAY) / MILLIS_IN_TICK;
 	}
 	
-	/**
-	 * Gets the game ticks.
-	 * @return the game ticks
-	 */
-	public static int getGameTicks()
+	public final int getGameHour()
 	{
-		return _gameTicks;
+		return getGameTime() / 60;
+	}
+	
+	public final int getGameMinute()
+	{
+		return getGameTime() % 60;
+	}
+	
+	public final boolean isNight()
+	{
+		return getGameHour() < 6;
 	}
 	
 	/**
-	 * Add a L2Character to movingObjects of GameTimeController.<br>
-	 * All characters in movement are identified in <b>movingObjects</b> of GameTimeController.
-	 * @param cha the character to add to movingObjects of GameTimeController
+	 * The true GameTime tick. Directly taken from current time. This represents the tick of the time.
+	 * @return
 	 */
-	public void registerMovingObject(L2Character cha)
+	public final int getGameTicks()
+	{
+		return (int) ((System.currentTimeMillis() - _referenceTime) / MILLIS_IN_TICK);
+	}
+	
+	/**
+	 * Add a L2Character to movingObjects of GameTimeController.
+	 * @param cha The L2Character to add to movingObjects of GameTimeController
+	 */
+	public final void registerMovingObject(final L2Character cha)
 	{
 		if (cha == null)
+		{
 			return;
+		}
 		
-		_lock.lock();
-		try
-		{
-			_movingObjects.putIfAbsent(cha.getObjectId(), cha);
-		}
-		finally
-		{
-			_lock.unlock();
-		}
+		_movingObjects.putIfAbsent(cha.getObjectId(), cha);
 	}
 	
 	/**
-	 * Move all characters contained in movingObjects of GameTimeController.<br>
-	 * All characters in movement are identified in <b>movingObjects</b> of GameTimeController.<br>
-	 * <b><u> Actions</u> :</b><br>
-	 * <li>Update the position of each L2Character </li>
-	 * <li>If movement is finished, the L2Character is removed from movingObjects </li>
-	 * <li>Create a task to update the _knownObject and _knowPlayers of each L2Character that finished its movement and of their already known L2Object then notify AI with EVT_ARRIVED </li>
+	 * Move all L2Characters contained in movingObjects of GameTimeController.<BR>
+	 * <B><U> Concept</U> :</B><BR>
+	 * All L2Character in movement are identified in <B>movingObjects</B> of GameTimeController.<BR>
+	 * <B><U> Actions</U> :</B><BR>
+	 * <ul>
+	 * <li>Update the position of each L2Character</li>
+	 * <li>If movement is finished, the L2Character is removed from movingObjects</li>
+	 * <li>Create a task to update the _knownObject and _knowPlayers of each L2Character that finished its movement and of their already known L2Object then notify AI with EVT_ARRIVED</li>
+	 * </ul>
 	 */
-	protected void moveObjects()
+	private final void moveObjects()
 	{
-		_lock.lock();
-		try
+		L2Character character;
+		for (FastMap.Entry<Integer, L2Character> e = _movingObjects.head(), tail = _movingObjects.tail(); (e = e.getNext()) != tail;)
 		{
-			_movingObjects.forEachValue(new MoveObjects());
-		}
-		finally
-		{
-			_lock.unlock();
-		}
-	}
-	
-	protected final class MoveObjects implements TObjectProcedure<L2Character>
-	{
-		@Override
-		public final boolean execute(final L2Character ch)
-		{
-			if (ch.updatePosition(_gameTicks))
-			{
-				// If movement is finished, the L2Character is removed from
-				// movingObjects and added to the ArrayList ended
-				_movingObjects.remove(ch.getObjectId());
-				ThreadPoolManager.getInstance().executeTask(new MovingObjectArrived(ch));
-			}
-			return true;
-		}
-	}
-	
-	/**
-	 * Stop timer.
-	 */
-	public void stopTimer()
-	{
-		_interruptRequest = true;
-		_timer.interrupt();
-	}
-	
-	class TimerThread extends Thread
-	{
-		/**
-		 * Instantiates a new timer thread.
-		 */
-		public TimerThread()
-		{
-			super("GameTimeController");
-			setDaemon(true);
-			setPriority(MAX_PRIORITY);
-		}
-		
-		@Override
-		public void run()
-		{
-			int oldTicks;
-			long runtime;
-			int sleepTime;
+			character = e.getValue();
 			
-			for(;;)
+			if (character.updatePosition(getGameTicks()))
+			{
+				// Destination reached. Remove from map and execute arrive event.
+				_movingObjects.remove(e.getKey());
+				fireCharacterArrived(character);
+			}
+		}
+	}
+	
+	private final void fireCharacterArrived(final L2Character character)
+	{
+		final L2CharacterAI ai = character.getAI();
+		if (ai == null)
+		{
+			return;
+		}
+		
+		ThreadPoolManager.getInstance().executeAi(new Runnable()
+		{
+			@Override
+			public final void run()
 			{
 				try
 				{
-					oldTicks = _gameTicks; // save old ticks value to avoid moving objects 2x in same tick
-					runtime = System.currentTimeMillis() - _gameStartTime; // from server boot to now
+					if (Config.MOVE_BASED_KNOWNLIST)
+					{
+						character.getKnownList().findObjects();
+					}
 					
-					_gameTicks = (int) (runtime / MILLIS_IN_TICK); // new ticks value (ticks now)
-					
-					if (oldTicks != _gameTicks)
-						moveObjects(); // Runs possibly too often
-					
-					runtime = (System.currentTimeMillis() - _gameStartTime) - runtime;
-					
-					// calculate sleep time... time needed to next tick minus time it takes to call moveObjects()
-					sleepTime = 1 + MILLIS_IN_TICK - ((int) runtime) % MILLIS_IN_TICK;
-					
-					//_log.finest("TICK: "+_gameTicks);
-					
-					if (sleepTime > 0)
-						Thread.sleep(sleepTime);
+					ai.notifyEvent(CtrlEvent.EVT_ARRIVED);
 				}
-				catch (InterruptedException ie)
+				catch (final Throwable e)
 				{
-					if (_interruptRequest)
-						return;
-					
-					_log.log(Level.WARNING, "", ie);
-				}
-				catch (Exception e)
-				{
-					_log.log(Level.WARNING, "", e);
+					StackTrace.displayStackTraceInformation(e);
 				}
 			}
-		}
+		});
 	}
 	
-	/**
-	 * Update the _knownObject and _knowPlayers of each L2Character that finished its movement and of their already known L2Object then notify AI with EVT_ARRIVED.
-	 */
-	private static class MovingObjectArrived implements Runnable
+	public final void stopTimer()
 	{
-		private final L2Character _ended;
+		super.interrupt();
+		_log.log(Level.INFO, "Stopping " + getClass().getSimpleName());
+	}
+	
+	@Override
+	public final void run()
+	{
+		_log.log(Level.CONFIG, getClass().getSimpleName() + ": Started.");
 		
-		/**
-		 * Instantiates a new moving object arrived.
-		 * @param ended the ended
-		 */
-		MovingObjectArrived(L2Character ended)
+		long nextTickTime, sleepTime;
+		boolean isNight = isNight();
+		
+		if (isNight)
 		{
-			_ended = ended;
+			ThreadPoolManager.getInstance().executeAi(new Runnable()
+			{
+				@Override
+				public final void run()
+				{
+					DayNightSpawnManager.getInstance().notifyChangeMode();
+				}
+			});
 		}
 		
-		@Override
-		public void run()
+		while (true)
 		{
+			nextTickTime = ((System.currentTimeMillis() / MILLIS_IN_TICK) * MILLIS_IN_TICK) + 100;
+			
 			try
 			{
-				if (_ended.hasAI()) // AI could be just disabled due to region turn off
+				moveObjects();
+			}
+			catch (final Throwable e)
+			{
+				StackTrace.displayStackTraceInformation(e);
+			}
+			
+			sleepTime = nextTickTime - System.currentTimeMillis();
+			if (sleepTime > 0)
+			{
+				try
 				{
-					if (Config.MOVE_BASED_KNOWNLIST)
-						_ended.getKnownList().findObjects();
-					_ended.getAI().notifyEvent(CtrlEvent.EVT_ARRIVED);
+					Thread.sleep(sleepTime);
+				}
+				catch (final InterruptedException e)
+				{
+					
 				}
 			}
-			catch (NullPointerException e)
-			{
-				_log.log(Level.WARNING, "", e);
-			}
-		}
-	}
-	
-	class BroadcastSunState implements Runnable
-	{
-		int h;
-		boolean tempIsNight;
-		
-		@Override
-		public void run()
-		{
-			h = ((getGameTime() + 29) / 60) % 24; // Time in hour (+ 29 is to round 60)
-			tempIsNight = (h < 6);
 			
-			if (tempIsNight != _isNight)
+			if (isNight() != isNight)
 			{
-				// If diff day/night state
-				_isNight = tempIsNight; // Set current day/night variable to value of temp variable
-				DayNightSpawnManager.getInstance().notifyChangeMode();
+				isNight = !isNight;
+				
+				ThreadPoolManager.getInstance().executeAi(new Runnable()
+				{
+					@Override
+					public final void run()
+					{
+						DayNightSpawnManager.getInstance().notifyChangeMode();
+					}
+				});
 			}
 		}
 	}
 	
-	private static class SingletonHolder
+	public static final GameTimeController getInstance()
 	{
-		protected static final GameTimeController _instance = new GameTimeController();
+		return _instance;
 	}
 }

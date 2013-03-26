@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.tools.dbinstaller.console;
 
@@ -21,6 +25,7 @@ import java.util.prefs.Preferences;
 import com.l2jserver.tools.dbinstaller.DBOutputInterface;
 import com.l2jserver.tools.dbinstaller.RunTasks;
 import com.l2jserver.tools.dbinstaller.util.mysql.MySqlConnect;
+import com.l2jserver.util.CloseShieldedInputStream;
 
 /**
  * @author mrTJO
@@ -34,7 +39,7 @@ public class DBInstallerConsole implements DBOutputInterface
 		System.out.println("Welcome to L2J DataBase installer");
 		Preferences prop = Preferences.userRoot();
 		RunTasks rt = null;
-		try (Scanner scn = new Scanner(System.in))
+		try (Scanner scn = new Scanner(new CloseShieldedInputStream(System.in)))
 		{
 			while (_con == null)
 			{
@@ -121,15 +126,12 @@ public class DBInstallerConsole implements DBOutputInterface
 	public int requestConfirm(String title, String message, int type)
 	{
 		System.out.print(message);
-		try (Scanner scn = new Scanner(System.in))
+		String res = "";
+		try (Scanner scn = new Scanner(new CloseShieldedInputStream(System.in)))
 		{
-			String res = scn.next();
-			if (res.equalsIgnoreCase("y"))
-			{
-				return 0;
-			}
+			res = scn.next();
 		}
-		return 1;
+		return res.equalsIgnoreCase("y") ? 0 : 1;
 	}
 	
 	@Override

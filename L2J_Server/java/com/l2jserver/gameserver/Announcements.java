@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver;
 
@@ -39,18 +43,13 @@ import com.l2jserver.gameserver.script.DateRange;
 import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.util.StringUtil;
 
-/**
- * This class ...
- * 
- * @version $Revision: 1.5.2.1.2.7 $ $Date: 2005/03/29 23:15:14 $
- */
 public class Announcements
 {
 	private static Logger _log = Logger.getLogger(Announcements.class.getName());
 	
-	private List<String> _announcements = new FastList<>();
-	private List<String> _critAnnouncements = new FastList<>();
-	private List<List<Object>> _eventAnnouncements = new FastList<>();
+	private final List<String> _announcements = new FastList<>();
+	private final List<String> _critAnnouncements = new FastList<>();
+	private final List<List<Object>> _eventAnnouncements = new FastList<>();
 	
 	protected Announcements()
 	{
@@ -70,7 +69,9 @@ public class Announcements
 		readFromDisk("data/critannouncements.txt", _critAnnouncements);
 		
 		if (Config.DEBUG)
-			_log.info("Announcements: Loaded " + (_announcements.size() + _critAnnouncements.size())  + " announcements.");
+		{
+			_log.info("Announcements: Loaded " + (_announcements.size() + _critAnnouncements.size()) + " announcements.");
+		}
 	}
 	
 	public void showAnnouncements(L2PcInstance activeChar)
@@ -98,9 +99,9 @@ public class Announcements
 			if (!validDateRange.isValid() || validDateRange.isWithinRange(currentDate))
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1);
-				for (int j = 0; j < msg.length; j++)
+				for (String element : msg)
 				{
-					sm.addString(msg[j]);
+					sm.addString(element);
 				}
 				activeChar.sendPacket(sm);
 			}
@@ -108,7 +109,7 @@ public class Announcements
 		}
 	}
 	
-	public void addEventAnnouncement(DateRange validDateRange, String[] msg)
+	public void addEventAnnouncement(DateRange validDateRange, String... msg)
 	{
 		List<Object> entry = new FastList<>();
 		entry.add(validDateRange);
@@ -124,8 +125,7 @@ public class Announcements
 		final StringBuilder replyMSG = StringUtil.startAppend(500, "<br>");
 		for (int i = 0; i < _announcements.size(); i++)
 		{
-			StringUtil.append(replyMSG, "<table width=260><tr><td width=220>", _announcements.get(i), "</td><td width=40>"
-					+ "<button value=\"Delete\" action=\"bypass -h admin_del_announcement ", String.valueOf(i), "\" width=60 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr></table>");
+			StringUtil.append(replyMSG, "<table width=260><tr><td width=220>", _announcements.get(i), "</td><td width=40>" + "<button value=\"Delete\" action=\"bypass -h admin_del_announcement ", String.valueOf(i), "\" width=60 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr></table>");
 		}
 		adminReply.replace("%announces%", replyMSG.toString());
 		activeChar.sendPacket(adminReply);
@@ -139,8 +139,7 @@ public class Announcements
 		final StringBuilder replyMSG = StringUtil.startAppend(500, "<br>");
 		for (int i = 0; i < _critAnnouncements.size(); i++)
 		{
-			StringUtil.append(replyMSG, "<table width=260><tr><td width=220>", _critAnnouncements.get(i), "</td><td width=40>"
-					+ "<button value=\"Delete\" action=\"bypass -h admin_del_critannouncement ", String.valueOf(i), "\" width=60 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr></table>");
+			StringUtil.append(replyMSG, "<table width=260><tr><td width=220>", _critAnnouncements.get(i), "</td><td width=40>" + "<button value=\"Delete\" action=\"bypass -h admin_del_critannouncement ", String.valueOf(i), "\" width=60 height=20 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr></table>");
 		}
 		adminReply.replace("%critannounces%", replyMSG.toString());
 		activeChar.sendPacket(adminReply);
@@ -179,7 +178,7 @@ public class Announcements
 			String line = null;
 			while ((line = lnr.readLine()) != null)
 			{
-				StringTokenizer st = new StringTokenizer(line, "\n\r");
+				StringTokenizer st = new StringTokenizer(line, Config.EOL);
 				if (st.hasMoreTokens())
 				{
 					list.add(st.nextToken());
@@ -214,7 +213,7 @@ public class Announcements
 			for (String announce : list)
 			{
 				save.write(announce);
-				save.write("\r\n");
+				save.write(Config.EOL);
 			}
 		}
 		catch (IOException e)
@@ -257,7 +256,6 @@ public class Announcements
 			String text = command.substring(lengthToTrim);
 			SingletonHolder._instance.announceToAll(text, isCritical);
 		}
-		
 		// No body cares!
 		catch (StringIndexOutOfBoundsException e)
 		{

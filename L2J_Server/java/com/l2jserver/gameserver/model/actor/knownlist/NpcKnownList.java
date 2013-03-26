@@ -1,20 +1,25 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.knownlist;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -24,11 +29,9 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.L2Playable;
-import com.l2jserver.gameserver.model.actor.instance.L2CabaleBufferInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FestivalGuideInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.quest.Quest;
 
 public class NpcKnownList extends CharKnownList
 {
@@ -37,6 +40,29 @@ public class NpcKnownList extends CharKnownList
 	public NpcKnownList(L2Npc activeChar)
 	{
 		super(activeChar);
+	}
+	
+	@Override
+	public boolean addKnownObject(L2Object object)
+	{
+		if (!super.addKnownObject(object))
+		{
+			return false;
+		}
+		
+		if (getActiveObject().isNpc() && (object instanceof L2Character))
+		{
+			final L2Npc npc = (L2Npc) getActiveObject();
+			final List<Quest> quests = npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_SEE_CREATURE);
+			if (quests != null)
+			{
+				for (Quest quest : quests)
+				{
+					quest.notifySeeCreature(npc, (L2Character) object, object.isSummon());
+				}
+			}
+		}
+		return true;
 	}
 	
 	@Override
@@ -54,22 +80,17 @@ public class NpcKnownList extends CharKnownList
 	@Override
 	public int getDistanceToWatchObject(L2Object object)
 	{
+		if (!(object instanceof L2Character))
+		{
+			return 0;
+		}
+		
 		if (object instanceof L2FestivalGuideInstance)
 		{
 			return 4000;
 		}
 		
-		if ((object instanceof L2NpcInstance) || !(object instanceof L2Character))
-		{
-			return 0;
-		}
-		
-		if (object instanceof L2CabaleBufferInstance)
-		{
-			return 900;
-		}
-		
-		if (object instanceof L2Playable)
+		if (object.isPlayable())
 		{
 			return 1500;
 		}
@@ -77,7 +98,7 @@ public class NpcKnownList extends CharKnownList
 		return 500;
 	}
 	
-	//L2Master mod - support for Walking monsters aggro
+	// Support for Walking monsters aggro
 	public void startTrackingTask()
 	{
 		if ((_trackingTask == null) && (getActiveChar().getAggroRange() > 0))
@@ -86,7 +107,7 @@ public class NpcKnownList extends CharKnownList
 		}
 	}
 	
-	//L2Master mod - support for Walking monsters aggro
+	// Support for Walking monsters aggro
 	public void stopTrackingTask()
 	{
 		if (_trackingTask != null)
@@ -96,14 +117,9 @@ public class NpcKnownList extends CharKnownList
 		}
 	}
 	
-	//L2Master mod - support for Walking monsters aggro
-	private class TrackingTask implements Runnable
+	// Support for Walking monsters aggro
+	protected class TrackingTask implements Runnable
 	{
-		public TrackingTask()
-		{
-			//
-		}
-		
 		@Override
 		public void run()
 		{
@@ -117,12 +133,21 @@ public class NpcKnownList extends CharKnownList
 					{
 						for (L2PcInstance pl : players)
 						{
-							if (pl.isInsideRadius(monster, monster.getAggroRange(), true, false) && !pl.isDead() && !pl.isInvul())
+							if (!pl.isDead() && !pl.isInvul() && pl.isInsideRadius(monster, monster.getAggroRange(), true, false))
 							{
-								WalkingManager.getInstance().stopMoving(getActiveChar(), false);
-								monster.addDamageHate(pl, 0, 100);
-								monster.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, pl, null);
-								break;
+								// Send aggroRangeEnter
+								if (monster.getHating(pl) == 0)
+								{
+									monster.addDamageHate(pl, 0, 0);
+								}
+								
+								// Skip attack for other targets, if one is already chosen for attack
+								if ((monster.getAI().getIntention() != CtrlIntention.AI_INTENTION_ATTACK) && !monster.isCoreAIDisabled())
+								{
+									WalkingManager.getInstance().stopMoving(getActiveChar(), false, true);
+									monster.addDamageHate(pl, 0, 100);
+									monster.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, pl, null);
+								}
 							}
 						}
 					}

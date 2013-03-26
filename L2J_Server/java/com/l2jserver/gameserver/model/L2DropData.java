@@ -1,28 +1,28 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model;
 
 import java.util.Arrays;
 
 /**
-/*
- *
- * Special thanks to nuocnam
- * Author: LittleVexy
- *
- * @version $Revision: 1.1.4.4 $ $Date: 2005/03/29 23:15:15 $
+ * Special thanks to nuocnam.
+ * @author LittleVexy
  */
 public class L2DropData
 {
@@ -34,6 +34,18 @@ public class L2DropData
 	private double _chance;
 	private String _questID = null;
 	private String[] _stateID = null;
+	
+	public L2DropData()
+	{
+	}
+	
+	public L2DropData(int id, int min, int max, double chance)
+	{
+		_itemId = id;
+		_minDrop = min;
+		_maxDrop = max;
+		_chance = chance;
+	}
 	
 	/**
 	 * Returns the ID of the item dropped
@@ -106,6 +118,7 @@ public class L2DropData
 	{
 		_chance = chance;
 	}
+	
 	/**
 	 * Returns the stateID.
 	 * @return String[]
@@ -148,7 +161,7 @@ public class L2DropData
 	 */
 	public boolean isQuestDrop()
 	{
-		return _questID != null && _stateID != null;
+		return (_questID != null) && (_stateID != null);
 	}
 	
 	/**
@@ -158,8 +171,7 @@ public class L2DropData
 	@Override
 	public String toString()
 	{
-		String out = "ItemID: " + getItemId() + " Min: " + getMinDrop() +
-		" Max: " + getMaxDrop() + " Chance: " + (getChance() / 10000.0) + "%";
+		String out = "ItemID: " + getItemId() + " Min: " + getMinDrop() + " Max: " + getMaxDrop() + " Chance: " + (getChance() / 10000.0) + "%";
 		if (isQuestDrop())
 		{
 			out += " QuestID: " + getQuestID() + " StateID's: " + Arrays.toString(getStateIDs());
@@ -168,33 +180,35 @@ public class L2DropData
 		return out;
 	}
 	
-	/**
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode()
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + _itemId;
+		result = (prime * result) + _itemId;
 		return result;
 	}
 	
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj)
 	{
 		if (this == obj)
+		{
 			return true;
+		}
 		if (obj == null)
+		{
 			return false;
+		}
 		if (!(obj instanceof L2DropData))
+		{
 			return false;
+		}
 		final L2DropData other = (L2DropData) obj;
 		if (_itemId != other._itemId)
+		{
 			return false;
+		}
 		return true;
 	}
 }

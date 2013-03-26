@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.l2jserver.gameserver.network.clientpackets;
@@ -47,7 +51,10 @@ public final class RequestJoinSiege extends L2GameClientPacket
 	protected void runImpl()
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null)	return;
+		if (activeChar == null)
+		{
+			return;
+		}
 		
 		if ((activeChar.getClanPrivileges() & L2Clan.CP_CS_MANAGE_SIEGE) != L2Clan.CP_CS_MANAGE_SIEGE)
 		{
@@ -56,7 +63,10 @@ public final class RequestJoinSiege extends L2GameClientPacket
 		}
 		
 		L2Clan clan = activeChar.getClan();
-		if (clan == null) return;
+		if (clan == null)
+		{
+			return;
+		}
 		
 		Castle castle = CastleManager.getInstance().getCastleById(_castleId);
 		if (castle != null)
@@ -69,17 +79,23 @@ public final class RequestJoinSiege extends L2GameClientPacket
 					return;
 				}
 				if (_isAttacker == 1)
+				{
 					castle.getSiege().registerAttacker(activeChar);
+				}
 				else
+				{
 					castle.getSiege().registerDefender(activeChar);
+				}
 			}
 			else
+			{
 				castle.getSiege().removeSiegeClan(activeChar);
+			}
 			castle.getSiege().listRegisterClan(activeChar);
 		}
 		
 		SiegableHall hall = CHSiegeManager.getInstance().getSiegableHall(_castleId);
-		if(hall != null)
+		if (hall != null)
 		{
 			if (_isJoining == 1)
 			{
@@ -91,7 +107,9 @@ public final class RequestJoinSiege extends L2GameClientPacket
 				CHSiegeManager.getInstance().registerClan(clan, hall, activeChar);
 			}
 			else
+			{
 				CHSiegeManager.getInstance().unRegisterClan(clan, hall);
+			}
 			activeChar.sendPacket(new SiegeInfo(hall));
 		}
 	}

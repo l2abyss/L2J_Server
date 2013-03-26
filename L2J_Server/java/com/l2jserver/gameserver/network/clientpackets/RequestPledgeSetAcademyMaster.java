@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
@@ -22,7 +26,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * Format: (ch) dSS
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public final class RequestPledgeSetAcademyMaster extends L2GameClientPacket
 {
@@ -45,9 +49,12 @@ public final class RequestPledgeSetAcademyMaster extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		L2Clan clan = activeChar.getClan();
-		if (clan == null) return;
+		if (clan == null)
+		{
+			return;
+		}
 		
-		if((activeChar.getClanPrivileges() & L2Clan.CP_CL_APPRENTICE) != L2Clan.CP_CL_APPRENTICE)
+		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_APPRENTICE) != L2Clan.CP_CL_APPRENTICE)
 		{
 			activeChar.sendPacket(SystemMessageId.YOU_DO_NOT_HAVE_THE_RIGHT_TO_DISMISS_AN_APPRENTICE);
 			return;
@@ -55,7 +62,10 @@ public final class RequestPledgeSetAcademyMaster extends L2GameClientPacket
 		
 		L2ClanMember currentMember = clan.getClanMember(_currPlayerName);
 		L2ClanMember targetMember = clan.getClanMember(_targetPlayerName);
-		if (currentMember == null || targetMember == null) return;
+		if ((currentMember == null) || (targetMember == null))
+		{
+			return;
+		}
 		
 		L2ClanMember apprenticeMember, sponsorMember;
 		if (currentMember.getPledgeType() == L2Clan.SUBUNIT_ACADEMY)
@@ -73,16 +83,26 @@ public final class RequestPledgeSetAcademyMaster extends L2GameClientPacket
 		L2PcInstance sponsor = sponsorMember.getPlayerInstance();
 		
 		SystemMessage sm = null;
-		if(_set == 0)
+		if (_set == 0)
 		{
 			// test: do we get the current sponsor & apprentice from this packet or no?
-			if (apprentice != null) apprentice.setSponsor(0);
-			else // offline
-				apprenticeMember.initApprenticeAndSponsor(0, 0);
+			if (apprentice != null)
+			{
+				apprentice.setSponsor(0);
+			}
+			else
+			{
+				apprenticeMember.setApprenticeAndSponsor(0, 0);
+			}
 			
-			if (sponsor != null) sponsor.setApprentice(0);
-			else // offline
-				sponsorMember.initApprenticeAndSponsor(0, 0);
+			if (sponsor != null)
+			{
+				sponsor.setApprentice(0);
+			}
+			else
+			{
+				sponsorMember.setApprenticeAndSponsor(0, 0);
+			}
 			
 			apprenticeMember.saveApprenticeAndSponsor(0, 0);
 			sponsorMember.saveApprenticeAndSponsor(0, 0);
@@ -91,21 +111,28 @@ public final class RequestPledgeSetAcademyMaster extends L2GameClientPacket
 		}
 		else
 		{
-			if (apprenticeMember.getSponsor() != 0 || sponsorMember.getApprentice() != 0
-					|| apprenticeMember.getApprentice() != 0 || sponsorMember.getSponsor() != 0)
+			if ((apprenticeMember.getSponsor() != 0) || (sponsorMember.getApprentice() != 0) || (apprenticeMember.getApprentice() != 0) || (sponsorMember.getSponsor() != 0))
 			{
 				activeChar.sendMessage("Remove previous connections first.");
 				return;
 			}
 			if (apprentice != null)
+			{
 				apprentice.setSponsor(sponsorMember.getObjectId());
-			else // offline
-				apprenticeMember.initApprenticeAndSponsor(0, sponsorMember.getObjectId());
+			}
+			else
+			{
+				apprenticeMember.setApprenticeAndSponsor(0, sponsorMember.getObjectId());
+			}
 			
 			if (sponsor != null)
+			{
 				sponsor.setApprentice(apprenticeMember.getObjectId());
-			else // offline
-				sponsorMember.initApprenticeAndSponsor(apprenticeMember.getObjectId(), 0);
+			}
+			else
+			{
+				sponsorMember.setApprenticeAndSponsor(apprenticeMember.getObjectId(), 0);
+			}
 			
 			// saving to database even if online, since both must match
 			apprenticeMember.saveApprenticeAndSponsor(0, sponsorMember.getObjectId());
@@ -115,9 +142,18 @@ public final class RequestPledgeSetAcademyMaster extends L2GameClientPacket
 		}
 		sm.addString(sponsorMember.getName());
 		sm.addString(apprenticeMember.getName());
-		if (sponsor != activeChar && sponsor != apprentice) activeChar.sendPacket(sm);
-		if (sponsor != null) sponsor.sendPacket(sm);
-		if (apprentice != null) apprentice.sendPacket(sm);
+		if ((sponsor != activeChar) && (sponsor != apprentice))
+		{
+			activeChar.sendPacket(sm);
+		}
+		if (sponsor != null)
+		{
+			sponsor.sendPacket(sm);
+		}
+		if (apprentice != null)
+		{
+			apprentice.sendPacket(sm);
+		}
 	}
 	
 	@Override

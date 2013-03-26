@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.skills.l2skills;
 
@@ -20,6 +24,7 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.effects.L2Effect;
@@ -50,19 +55,21 @@ public class L2SkillChargeDmg extends L2Skill
 		double modifier = 0;
 		if (caster.isPlayer())
 		{
-			// thanks Diego Vargas of L2Guru: 70*((0.8+0.201*No.Charges) * (PATK+POWER)) / PDEF
-			modifier = 0.8 + 0.201 * (getNumCharges() + caster.getActingPlayer().getCharges());
+			// Charges Formula (each charge increase +25%)
+			modifier = ((caster.getActingPlayer().getCharges() * 0.25) + 1);
 		}
-		boolean soul = caster.isSoulshotCharged(this);
+		boolean ss = useSoulShot() && caster.isChargedShot(ShotType.SOULSHOTS);
 		
-		for (L2Character target: (L2Character[]) targets)
+		for (L2Character target : (L2Character[]) targets)
 		{
 			if (target.isAlikeDead())
+			{
 				continue;
+			}
 			
-			//	Calculate skill evasion
+			// Calculate skill evasion
 			boolean skillIsEvaded = Formulas.calcPhysicalSkillEvasion(target, this);
-			if(skillIsEvaded)
+			if (skillIsEvaded)
 			{
 				if (caster.isPlayer())
 				{
@@ -77,22 +84,26 @@ public class L2SkillChargeDmg extends L2Skill
 					target.getActingPlayer().sendPacket(sm);
 				}
 				
-				//no futher calculations needed.
+				// no futher calculations needed.
 				continue;
 			}
 			
 			// TODO: should we use dual or not?
 			// because if so, damage are lowered but we don't do anything special with dual then
 			// like in doAttackHitByDual which in fact does the calcPhysDam call twice
-			//boolean dual  = caster.isUsingDualWeapon();
+			// boolean dual = caster.isUsingDualWeapon();
 			byte shld = Formulas.calcShldUse(caster, target, this);
 			boolean crit = false;
-			if (getBaseCritRate() > 0 && !isStaticDamage())
-				crit = Formulas.calcCrit(this.getBaseCritRate() * 10 * BaseStats.STR.calcBonus(caster), true, target);
+			if ((getBaseCritRate() > 0) && !isStaticDamage())
+			{
+				crit = Formulas.calcCrit(getBaseCritRate() * 10 * BaseStats.STR.calcBonus(caster), true, target);
+			}
 			// damage calculation, crit is static 2x
-			double damage = isStaticDamage() ? getPower() : Formulas.calcPhysDam(caster, target, this, shld, false, false, soul);
+			double damage = isStaticDamage() ? getPower() : Formulas.calcPhysDam(caster, target, this, shld, false, false, ss);
 			if (crit)
+			{
 				damage *= 2;
+			}
 			
 			if (damage > 0)
 			{
@@ -129,20 +140,26 @@ public class L2SkillChargeDmg extends L2Skill
 					}
 				}
 				
-				double finalDamage = isStaticDamage() ? damage : damage*modifier;
+				double finalDamage = isStaticDamage() ? damage : damage * modifier;
 				
-				if (Config.LOG_GAME_DAMAGE
-						&& caster.isPlayable()
-						&& damage > Config.LOG_GAME_DAMAGE_THRESHOLD)
+				if (Config.LOG_GAME_DAMAGE && caster.isPlayable() && (damage > Config.LOG_GAME_DAMAGE_THRESHOLD))
 				{
 					LogRecord record = new LogRecord(Level.INFO, "");
-					record.setParameters(new Object[]{caster, " did damage ", (int)damage, this, " to ", target});
+					record.setParameters(new Object[]
+					{
+						caster,
+						" did damage ",
+						(int) damage,
+						this,
+						" to ",
+						target
+					});
 					record.setLoggerName("pdam");
 					_logDamage.log(record);
 				}
 				
 				target.reduceCurrentHp(finalDamage, caster, this);
-
+				
 				// vengeance reflected damage
 				if ((reflect & Formulas.SKILL_REFLECT_VENGEANCE) != 0)
 				{
@@ -160,11 +177,11 @@ public class L2SkillChargeDmg extends L2Skill
 					}
 					// Formula from Diego Vargas post: http://www.l2guru.com/forum/showthread.php?p=3122630
 					// 1189 x Your PATK / PDEF of target
-					double vegdamage = (1189 * target.getPAtk(caster) / (double)caster.getPDef(target));
+					double vegdamage = ((1189 * target.getPAtk(caster)) / (double) caster.getPDef(target));
 					caster.reduceCurrentHp(vegdamage, target, this);
 				}
 				
-				caster.sendDamageMessage(target, (int)finalDamage, false, crit, false);
+				caster.sendDamageMessage(target, (int) finalDamage, false, crit, false);
 				
 			}
 			else
@@ -177,15 +194,16 @@ public class L2SkillChargeDmg extends L2Skill
 		if (hasSelfEffects())
 		{
 			L2Effect effect = caster.getFirstEffect(getId());
-			if (effect != null && effect.isSelfEffect())
+			if ((effect != null) && effect.isSelfEffect())
 			{
-				//Replace old effect with new one.
+				// Replace old effect with new one.
 				effect.exit();
 			}
 			// cast self effect if any
 			getEffectsSelf(caster);
 		}
 		
-		caster.ssUncharge(this);
+		// Consume shot
+		caster.setChargedShot(ShotType.SOULSHOTS, false);
 	}
 }

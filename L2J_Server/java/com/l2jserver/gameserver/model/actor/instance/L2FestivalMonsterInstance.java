@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
@@ -22,9 +26,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 
 /**
- * L2FestivalMonsterInstance
  * This class manages all attackable festival NPCs, spawned during the Festival of Darkness.
- *
  * @author Tempy
  */
 public class L2FestivalMonsterInstance extends L2MonsterInstance
@@ -32,13 +34,13 @@ public class L2FestivalMonsterInstance extends L2MonsterInstance
 	protected int _bonusMultiplier = 1;
 	
 	/**
-	 * Constructor of L2FestivalMonsterInstance (use L2Character and L2NpcInstance constructor).<BR><BR>
-	 *
-	 * <B><U> Actions</U> :</B><BR><BR>
-	 * <li>Call the L2Character constructor to set the _template of the L2FestivalMonsterInstance (copy skills from template to object and link _calculators to NPC_STD_CALCULATOR) </li>
+	 * Constructor of L2FestivalMonsterInstance (use L2Character and L2NpcInstance constructor).<br>
+	 * <B><U>Actions</U>:</B>
+	 * <ul>
+	 * <li>Call the L2Character constructor to set the _template of the L2FestivalMonsterInstance (copy skills from template to object and link _calculators to NPC_STD_CALCULATOR)</li>
 	 * <li>Set the name of the L2MonsterInstance</li>
-	 * <li>Create a RandomAnimation Task that will be launched after the calculated delay if the server allow it </li><BR><BR>
-	 *
+	 * <li>Create a RandomAnimation Task that will be launched after the calculated delay if the server allow it</li>
+	 * </ul>
 	 * @param objectId the identifier of the object to initialized
 	 * @param template to apply to the NPC
 	 */
@@ -54,13 +56,15 @@ public class L2FestivalMonsterInstance extends L2MonsterInstance
 	}
 	
 	/**
-	 * Return True if the attacker is not another L2FestivalMonsterInstance.<BR><BR>
+	 * Return True if the attacker is not another L2FestivalMonsterInstance.
 	 */
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
 		if (attacker instanceof L2FestivalMonsterInstance)
+		{
 			return false;
+		}
 		
 		return true;
 	}
@@ -85,9 +89,11 @@ public class L2FestivalMonsterInstance extends L2MonsterInstance
 	
 	/**
 	 * Actions:
+	 * <ul>
 	 * <li>Check if the killing object is a player, and then find the party they belong to.</li>
 	 * <li>Add a blood offering item to the leader of the party.</li>
 	 * <li>Update the party leader's inventory to show the new item addition.</li>
+	 * </ul>
 	 */
 	@Override
 	public void doItemDrop(L2Character lastAttacker)
@@ -95,13 +101,17 @@ public class L2FestivalMonsterInstance extends L2MonsterInstance
 		L2PcInstance killingChar = null;
 		
 		if (!(lastAttacker instanceof L2PcInstance))
+		{
 			return;
+		}
 		
-		killingChar = (L2PcInstance)lastAttacker;
+		killingChar = (L2PcInstance) lastAttacker;
 		L2Party associatedParty = killingChar.getParty();
 		
 		if (associatedParty == null)
+		{
 			return;
+		}
 		
 		L2PcInstance partyLeader = associatedParty.getLeader();
 		L2ItemInstance addedOfferings = partyLeader.getInventory().addItem("Sign", SevenSignsFestival.FESTIVAL_OFFERING_ID, _bonusMultiplier, partyLeader, this);
@@ -109,9 +119,13 @@ public class L2FestivalMonsterInstance extends L2MonsterInstance
 		InventoryUpdate iu = new InventoryUpdate();
 		
 		if (addedOfferings.getCount() != _bonusMultiplier)
+		{
 			iu.addModifiedItem(addedOfferings);
+		}
 		else
+		{
 			iu.addNewItem(addedOfferings);
+		}
 		
 		partyLeader.sendPacket(iu);
 		

@@ -1,29 +1,34 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import java.util.concurrent.Future;
-
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
+import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.stats.Stats;
+import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.TaskZoneSettings;
 
 /**
  * A damage zone
@@ -33,7 +38,6 @@ public class L2DamageZone extends L2ZoneType
 {
 	private int _damageHPPerSec;
 	private int _damageMPPerSec;
-	private Future<?> _task;
 	
 	private int _castleId;
 	private Castle _castle;
@@ -63,6 +67,18 @@ public class L2DamageZone extends L2ZoneType
 		_enabled = true;
 		
 		setTargetType(InstanceType.L2Playable); // default only playabale
+		AbstractZoneSettings settings = ZoneManager.getSettings(getName());
+		if (settings == null)
+		{
+			settings = new TaskZoneSettings();
+		}
+		setSettings(settings);
+	}
+	
+	@Override
+	public TaskZoneSettings getSettings()
+	{
+		return (TaskZoneSettings) super.getSettings();
 	}
 	
 	@Override
@@ -101,12 +117,12 @@ public class L2DamageZone extends L2ZoneType
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (_task == null && (_damageHPPerSec != 0 || _damageMPPerSec != 0))
+		if ((getSettings().getTask() == null) && ((_damageHPPerSec != 0) || (_damageMPPerSec != 0)))
 		{
 			L2PcInstance player = character.getActingPlayer();
 			if (getCastle() != null) // Castle zone
 			{
-				if (!(getCastle().getSiege().getIsInProgress() && player != null && player.getSiegeState() != 2)) // Siege and no defender
+				if (!(getCastle().getSiege().getIsInProgress() && (player != null) && (player.getSiegeState() != 2))) // Siege and no defender
 				{
 					return;
 				}
@@ -114,8 +130,10 @@ public class L2DamageZone extends L2ZoneType
 			
 			synchronized (this)
 			{
-				if (_task == null)
-					_task = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplyDamage(this), _startTask, _reuseTask);
+				if (getSettings().getTask() == null)
+				{
+					getSettings().setTask(ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplyDamage(this), _startTask, _reuseTask));
+				}
 			}
 		}
 	}
@@ -123,7 +141,7 @@ public class L2DamageZone extends L2ZoneType
 	@Override
 	protected void onExit(L2Character character)
 	{
-		if (_characterList.isEmpty() && _task != null)
+		if (_characterList.isEmpty() && (getSettings().getTask() != null))
 		{
 			stopTask();
 		}
@@ -141,17 +159,18 @@ public class L2DamageZone extends L2ZoneType
 	
 	protected void stopTask()
 	{
-		if (_task != null)
+		if (getSettings().getTask() != null)
 		{
-			_task.cancel(false);
-			_task = null;
+			getSettings().getTask().cancel(false);
 		}
 	}
 	
 	protected Castle getCastle()
 	{
-		if (_castleId > 0 && _castle == null)
+		if ((_castleId > 0) && (_castle == null))
+		{
 			_castle = CastleManager.getInstance().getCastleById(_castleId);
+		}
 		
 		return _castle;
 	}
@@ -169,7 +188,7 @@ public class L2DamageZone extends L2ZoneType
 		
 		@Override
 		public void run()
-		{	
+		{
 			if (!_enabled)
 			{
 				return;
@@ -190,22 +209,28 @@ public class L2DamageZone extends L2ZoneType
 			
 			for (L2Character temp : _dmgZone.getCharactersInside())
 			{
-				if (temp != null && !temp.isDead())
+				if ((temp != null) && !temp.isDead())
 				{
 					if (siege)
 					{
 						// during siege defenders not affected
 						final L2PcInstance player = temp.getActingPlayer();
-						if (player != null && player.isInSiege() && player.getSiegeState() == 2)
+						if ((player != null) && player.isInSiege() && (player.getSiegeState() == 2))
+						{
 							continue;
+						}
 					}
 					
 					double multiplier = 1 + (temp.calcStat(Stats.DAMAGE_ZONE_VULN, 0, null, null) / 100);
 					
 					if (getHPDamagePerSecond() != 0)
+					{
 						temp.reduceCurrentHp(_dmgZone.getHPDamagePerSecond() * multiplier, null, null);
+					}
 					if (getMPDamagePerSecond() != 0)
+					{
 						temp.reduceCurrentMp(_dmgZone.getMPDamagePerSecond() * multiplier);
+					}
 				}
 			}
 		}

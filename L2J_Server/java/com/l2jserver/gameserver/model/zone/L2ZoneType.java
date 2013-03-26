@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.zone;
 
@@ -33,7 +37,7 @@ import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 /**
- * Abstract base class for any zone type Handles basic operations
+ * Abstract base class for any zone type handles basic operations.
  * @author durgus
  */
 public abstract class L2ZoneType
@@ -46,7 +50,6 @@ public abstract class L2ZoneType
 	
 	/** Parameters to affect specific characters */
 	private boolean _checkAffected = false;
-	
 	private String _name = null;
 	private int _instanceId = -1;
 	private String _instanceTemplate = "";
@@ -58,6 +61,7 @@ public abstract class L2ZoneType
 	private Map<QuestEventType, List<Quest>> _questEvents;
 	private InstanceType _target = InstanceType.L2Character; // default all chars
 	private boolean _allowStore;
+	private AbstractZoneSettings _settings;
 	
 	protected L2ZoneType(int id)
 	{
@@ -131,7 +135,9 @@ public abstract class L2ZoneType
 				
 				int i = 0;
 				for (; i < _race.length; i++)
+				{
 					temp[i] = _race[i];
+				}
 				
 				temp[i] = Integer.parseInt(value);
 				
@@ -153,7 +159,9 @@ public abstract class L2ZoneType
 				
 				int i = 0;
 				for (; i < _class.length; i++)
+				{
 					temp[i] = _class[i];
+				}
 				
 				temp[i] = Integer.parseInt(value);
 				
@@ -193,12 +201,16 @@ public abstract class L2ZoneType
 	private boolean isAffected(L2Character character)
 	{
 		// Check lvl
-		if (character.getLevel() < _minLvl || character.getLevel() > _maxLvl)
+		if ((character.getLevel() < _minLvl) || (character.getLevel() > _maxLvl))
+		{
 			return false;
+		}
 		
 		// check obj class
 		if (!character.isInstanceType(_target))
+		{
 			return false;
+		}
 		
 		if (character instanceof L2PcInstance)
 		{
@@ -208,10 +220,14 @@ public abstract class L2ZoneType
 				if (((L2PcInstance) character).isMageClass())
 				{
 					if (_classType == 1)
+					{
 						return false;
+					}
 				}
 				else if (_classType == 2)
+				{
 					return false;
+				}
 			}
 			
 			// Check race
@@ -219,9 +235,9 @@ public abstract class L2ZoneType
 			{
 				boolean ok = false;
 				
-				for (int i = 0; i < _race.length; i++)
+				for (int element : _race)
 				{
-					if (((L2PcInstance) character).getRace().ordinal() == _race[i])
+					if (((L2PcInstance) character).getRace().ordinal() == element)
 					{
 						ok = true;
 						break;
@@ -229,7 +245,9 @@ public abstract class L2ZoneType
 				}
 				
 				if (!ok)
+				{
 					return false;
+				}
 			}
 			
 			// Check class
@@ -237,9 +255,9 @@ public abstract class L2ZoneType
 			{
 				boolean ok = false;
 				
-				for (int i = 0; i < _class.length; i++)
+				for (int _clas : _class)
 				{
-					if (((L2PcInstance) character).getClassId().ordinal() == _class[i])
+					if (((L2PcInstance) character).getClassId().ordinal() == _clas)
 					{
 						ok = true;
 						break;
@@ -247,7 +265,9 @@ public abstract class L2ZoneType
 				}
 				
 				if (!ok)
+				{
 					return false;
+				}
 			}
 		}
 		return true;
@@ -260,7 +280,9 @@ public abstract class L2ZoneType
 	public void setZone(L2ZoneForm zone)
 	{
 		if (_zone != null)
+		{
 			throw new IllegalStateException("Zone already set");
+		}
 		_zone = zone;
 	}
 	
@@ -353,8 +375,10 @@ public abstract class L2ZoneType
 	{
 		// It will check if coords are within the zone if the given instanceId or
 		// the zone's _instanceId are in the multiverse or they match
-		if (_instanceId == -1 || instanceId == -1 || _instanceId == instanceId)
+		if ((_instanceId == -1) || (instanceId == -1) || (_instanceId == instanceId))
+		{
 			return _zone.isInsideZone(x, y, z);
+		}
 		
 		return false;
 	}
@@ -385,7 +409,9 @@ public abstract class L2ZoneType
 		if (_checkAffected)
 		{
 			if (!isAffected(character))
+			{
 				return;
+			}
 		}
 		
 		// If the object is inside the zone...
@@ -456,6 +482,20 @@ public abstract class L2ZoneType
 		return _characterList.containsKey(character.getObjectId());
 	}
 	
+	public AbstractZoneSettings getSettings()
+	{
+		return _settings;
+	}
+	
+	public void setSettings(AbstractZoneSettings settings)
+	{
+		if (_settings != null)
+		{
+			_settings.clear();
+		}
+		_settings = settings;
+	}
+	
 	protected abstract void onEnter(L2Character character);
 	
 	protected abstract void onExit(L2Character character);
@@ -479,7 +519,7 @@ public abstract class L2ZoneType
 		List<L2PcInstance> players = new ArrayList<>();
 		for (L2Character ch : _characterList.values())
 		{
-			if (ch != null && ch.isPlayer())
+			if ((ch != null) && ch.isPlayer())
 			{
 				players.add(ch.getActingPlayer());
 			}
@@ -491,19 +531,27 @@ public abstract class L2ZoneType
 	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)
 	{
 		if (_questEvents == null)
+		{
 			_questEvents = new HashMap<>();
+		}
 		List<Quest> questByEvents = _questEvents.get(EventType);
 		if (questByEvents == null)
+		{
 			questByEvents = new ArrayList<>();
+		}
 		if (!questByEvents.contains(q))
+		{
 			questByEvents.add(q);
+		}
 		_questEvents.put(EventType, questByEvents);
 	}
 	
 	public List<Quest> getQuestByEvent(Quest.QuestEventType EventType)
 	{
 		if (_questEvents == null)
+		{
 			return null;
+		}
 		return _questEvents.get(EventType);
 	}
 	
@@ -514,11 +562,13 @@ public abstract class L2ZoneType
 	public void broadcastPacket(L2GameServerPacket packet)
 	{
 		if (_characterList.isEmpty())
+		{
 			return;
+		}
 		
 		for (L2Character character : _characterList.values())
 		{
-			if (character != null && character.isPlayer())
+			if ((character != null) && character.isPlayer())
 			{
 				character.sendPacket(packet);
 			}

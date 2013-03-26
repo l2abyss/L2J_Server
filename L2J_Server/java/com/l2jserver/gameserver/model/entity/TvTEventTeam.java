@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.entity;
 
@@ -26,7 +30,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 public class TvTEventTeam
 {
 	/** The name of the team<br> */
-	private String _name;
+	private final String _name;
 	/** The team spot coordinated<br> */
 	private int[] _coordinates = new int[3];
 	/** The points of the team<br> */
@@ -35,8 +39,8 @@ public class TvTEventTeam
 	private Map<Integer, L2PcInstance> _participatedPlayers = new FastMap<>();
 	
 	/**
-	 * C'tor initialize the team<br><br>
-	 *
+	 * C'tor initialize the team<br>
+	 * <br>
 	 * @param name as String<br>
 	 * @param coordinates as int[]<br>
 	 */
@@ -48,8 +52,8 @@ public class TvTEventTeam
 	}
 	
 	/**
-	 * Adds a player to the team<br><br>
-	 *
+	 * Adds a player to the team<br>
+	 * <br>
 	 * @param playerInstance as L2PcInstance<br>
 	 * @return boolean: true if success, otherwise false<br>
 	 */
@@ -116,8 +120,8 @@ public class TvTEventTeam
 	}
 	
 	/**
-	 * Returns the name of the team<br><br>
-	 *
+	 * Returns the name of the team<br>
+	 * <br>
 	 * @return String: name of the team<br>
 	 */
 	public String getName()
@@ -126,8 +130,8 @@ public class TvTEventTeam
 	}
 	
 	/**
-	 * Returns the coordinates of the team spot<br><br>
-	 *
+	 * Returns the coordinates of the team spot<br>
+	 * <br>
 	 * @return int[]: team coordinates<br>
 	 */
 	public int[] getCoordinates()
@@ -136,8 +140,8 @@ public class TvTEventTeam
 	}
 	
 	/**
-	 * Returns the points of the team<br><br>
-	 *
+	 * Returns the points of the team<br>
+	 * <br>
 	 * @return short: team points<br>
 	 */
 	public short getPoints()
@@ -146,8 +150,8 @@ public class TvTEventTeam
 	}
 	
 	/**
-	 * Returns name and instance of all participated players in FastMap<br><br>
-	 *
+	 * Returns name and instance of all participated players in FastMap<br>
+	 * <br>
 	 * @return Map<String, L2PcInstance>: map of players in this team<br>
 	 */
 	public Map<Integer, L2PcInstance> getParticipatedPlayers()
@@ -163,8 +167,8 @@ public class TvTEventTeam
 	}
 	
 	/**
-	 * Returns player count of this team<br><br>
-	 *
+	 * Returns player count of this team<br>
+	 * <br>
 	 * @return int: number of players in team<br>
 	 */
 	public int getParticipatedPlayerCount()

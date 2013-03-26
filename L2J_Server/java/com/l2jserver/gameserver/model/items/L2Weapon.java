@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.items;
 
@@ -60,8 +64,8 @@ public final class L2Weapon extends L2Item
 	private final int _changeWeaponId;
 	
 	// Attached skills for Special Abilities
-	private SkillHolder _skillsOnCast;
-	private Condition _skillsOnCastCondition = null;
+	private SkillHolder _skillsOnMagic;
+	private Condition _skillsOnMagicCondition = null;
 	private SkillHolder _skillsOnCrit;
 	private Condition _skillsOnCritCondition = null;
 	
@@ -78,7 +82,6 @@ public final class L2Weapon extends L2Item
 	/**
 	 * Constructor for Weapon.
 	 * @param set the StatsSet designating the set of couples (key,value) characterizing the weapon.
-	 * @see L2Item constructor
 	 */
 	public L2Weapon(StatsSet set)
 	{
@@ -126,11 +129,11 @@ public final class L2Weapon extends L2Item
 			}
 		}
 		
-		skill = set.getString("oncast_skill", null);
+		skill = set.getString("onmagic_skill", null);
 		if (skill != null)
 		{
 			String[] info = skill.split("-");
-			final int chance = set.getInteger("oncast_chance", 100);
+			final int chance = set.getInteger("onmagic_chance", 100);
 			if ((info != null) && (info.length == 2))
 			{
 				int id = 0;
@@ -143,12 +146,12 @@ public final class L2Weapon extends L2Item
 				catch (Exception nfe)
 				{
 					// Incorrect syntax, don't add new skill
-					_log.info(StringUtil.concat("> Couldnt parse ", skill, " in weapon oncast skills! item ", toString()));
+					_log.info(StringUtil.concat("> Couldnt parse ", skill, " in weapon onmagic skills! item ", toString()));
 				}
 				if ((id > 0) && (level > 0) && (chance > 0))
 				{
-					_skillsOnCast = new SkillHolder(id, level);
-					_skillsOnCastCondition = new ConditionGameChance(chance);
+					_skillsOnMagic = new SkillHolder(id, level);
+					_skillsOnMagicCondition = new ConditionGameChance(chance);
 				}
 			}
 		}
@@ -410,65 +413,67 @@ public final class L2Weapon extends L2Item
 	 * @param caster the L2Character pointing out the caster
 	 * @param target the L2Character pointing out the target
 	 * @param trigger the L2Skill pointing out the skill triggering this action
-	 * @return the effects of skills associated with the item to be triggered onCast.
+	 * @return the effects of skills associated with the item to be triggered onMagic.
 	 */
 	public L2Effect[] getSkillEffects(L2Character caster, L2Character target, L2Skill trigger)
 	{
-		if (_skillsOnCast == null)
+		if (_skillsOnMagic == null)
 		{
 			return _emptyEffectSet;
 		}
 		
-		final L2Skill onCastSkill = _skillsOnCast.getSkill();
+		final L2Skill onMagicSkill = _skillsOnMagic.getSkill();
 		// No Trigger if Offensive Skill
-		if (trigger.isOffensive() && onCastSkill.isOffensive())
+		if (trigger.isOffensive() && onMagicSkill.isOffensive())
 		{
 			return _emptyEffectSet;
 		}
 		// No Trigger if not Magic Skill
-		if (!trigger.isMagic() && !onCastSkill.isMagic())
+		if (!trigger.isMagic() && !onMagicSkill.isMagic())
 		{
 			return _emptyEffectSet;
 		}
 		
-		if (_skillsOnCastCondition != null)
+		if (_skillsOnMagicCondition != null)
 		{
 			Env env = new Env();
 			env.setCharacter(caster);
 			env.setTarget(target);
-			env.setSkill(onCastSkill);
-			if (!_skillsOnCastCondition.test(env))
+			env.setSkill(onMagicSkill);
+			if (!_skillsOnMagicCondition.test(env))
 			{
 				// Chance not met
 				return _emptyEffectSet;
 			}
 		}
 		
-		if (!onCastSkill.checkCondition(caster, target, false))
+		if (!onMagicSkill.checkCondition(caster, target, false))
 		{
 			// Skill condition not met
 			return _emptyEffectSet;
 		}
 		
-		
-		final byte shld = Formulas.calcShldUse(caster, target, onCastSkill);
-		if (onCastSkill.isOffensive() && !Formulas.calcSkillSuccess(caster, target, onCastSkill, shld, false, false, false))
+		final byte shld = Formulas.calcShldUse(caster, target, onMagicSkill);
+		if (onMagicSkill.isOffensive() && !Formulas.calcSkillSuccess(caster, target, onMagicSkill, shld, false, false, false))
 		{
 			return _emptyEffectSet;
 		}
 		
-		L2Character[] targets = { target };
+		L2Character[] targets =
+		{
+			target
+		};
 		
 		// Launch the magic skill and calculate its effects
 		// Get the skill handler corresponding to the skill type
-		final ISkillHandler handler = SkillHandler.getInstance().getHandler(onCastSkill.getSkillType());
+		final ISkillHandler handler = SkillHandler.getInstance().getHandler(onMagicSkill.getSkillType());
 		if (handler != null)
 		{
-			handler.useSkill(caster, onCastSkill, targets);
+			handler.useSkill(caster, onMagicSkill, targets);
 		}
 		else
 		{
-			onCastSkill.useSkill(caster, targets);
+			onMagicSkill.useSkill(caster, targets);
 		}
 		
 		// notify quests of a skill use
@@ -485,7 +490,7 @@ public final class L2Weapon extends L2Item
 					{
 						for (Quest quest : npcMob.getTemplate().getEventQuests(QuestEventType.ON_SKILL_SEE))
 						{
-							quest.notifySkillSee(npcMob, caster.getActingPlayer(), onCastSkill, targets, false);
+							quest.notifySkillSee(npcMob, caster.getActingPlayer(), onMagicSkill, targets, false);
 						}
 					}
 				}

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
@@ -25,7 +29,6 @@ import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-
 
 public abstract class AbstractRefinePacket extends L2GameClientPacket
 {
@@ -44,7 +47,23 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 	protected static final class LifeStone
 	{
 		// lifestone level to player level table
-		private static final int[] LEVELS = {46, 49, 52, 55, 58, 61, 64, 67, 70, 76, 80, 82, 84, 85};
+		private static final int[] LEVELS =
+		{
+			46,
+			49,
+			52,
+			55,
+			58,
+			61,
+			64,
+			67,
+			70,
+			76,
+			80,
+			82,
+			84,
+			85
+		};
 		private final int _grade;
 		private final int _level;
 		
@@ -181,102 +200,146 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 	
 	/**
 	 * Checks player, source item, lifestone and gemstone validity for augmentation process
-	 * @param player 
-	 * @param item 
-	 * @param refinerItem 
-	 * @param gemStones 
-	 * @return 
+	 * @param player
+	 * @param item
+	 * @param refinerItem
+	 * @param gemStones
+	 * @return
 	 */
 	protected static final boolean isValid(L2PcInstance player, L2ItemInstance item, L2ItemInstance refinerItem, L2ItemInstance gemStones)
 	{
 		if (!isValid(player, item, refinerItem))
+		{
 			return false;
+		}
 		
 		// GemStones must belong to owner
 		if (gemStones.getOwnerId() != player.getObjectId())
+		{
 			return false;
+		}
 		// .. and located in inventory
 		if (gemStones.getLocation() != L2ItemInstance.ItemLocation.INVENTORY)
+		{
 			return false;
+		}
 		
 		final int grade = item.getItem().getItemGrade();
 		final LifeStone ls = _lifeStones.get(refinerItem.getItemId());
 		
 		// Check for item id
 		if (getGemStoneId(grade) != gemStones.getItemId())
+		{
 			return false;
+		}
 		// Count must be greater or equal of required number
 		if (getGemStoneCount(grade, ls.getGrade()) > gemStones.getCount())
+		{
 			return false;
+		}
 		
 		return true;
 	}
 	
 	/**
 	 * Checks player, source item and lifestone validity for augmentation process
-	 * @param player 
-	 * @param item 
-	 * @param refinerItem 
-	 * @return 
+	 * @param player
+	 * @param item
+	 * @param refinerItem
+	 * @return
 	 */
 	protected static final boolean isValid(L2PcInstance player, L2ItemInstance item, L2ItemInstance refinerItem)
 	{
 		if (!isValid(player, item))
+		{
 			return false;
+		}
 		
 		// Item must belong to owner
 		if (refinerItem.getOwnerId() != player.getObjectId())
+		{
 			return false;
+		}
 		// Lifestone must be located in inventory
 		if (refinerItem.getLocation() != L2ItemInstance.ItemLocation.INVENTORY)
+		{
 			return false;
+		}
 		
 		final LifeStone ls = _lifeStones.get(refinerItem.getItemId());
 		if (ls == null)
+		{
 			return false;
+		}
 		// weapons can't be augmented with accessory ls
-		if (item.getItem() instanceof L2Weapon && ls.getGrade() == GRADE_ACC)
+		if ((item.getItem() instanceof L2Weapon) && (ls.getGrade() == GRADE_ACC))
+		{
 			return false;
+		}
 		// and accessory can't be augmented with weapon ls
-		if (item.getItem() instanceof L2Armor && ls.getGrade() != GRADE_ACC)
+		if ((item.getItem() instanceof L2Armor) && (ls.getGrade() != GRADE_ACC))
+		{
 			return false;
+		}
 		// check for level of the lifestone
 		if (player.getLevel() < ls.getPlayerLevel())
+		{
 			return false;
+		}
 		
 		return true;
 	}
 	
 	/**
 	 * Check both player and source item conditions for augmentation process
-	 * @param player 
-	 * @param item 
-	 * @return 
+	 * @param player
+	 * @param item
+	 * @return
 	 */
 	protected static final boolean isValid(L2PcInstance player, L2ItemInstance item)
 	{
 		if (!isValid(player))
+		{
 			return false;
+		}
 		
 		// Item must belong to owner
 		if (item.getOwnerId() != player.getObjectId())
+		{
 			return false;
+		}
 		if (item.isAugmented())
+		{
 			return false;
+		}
 		if (item.isHeroItem())
+		{
 			return false;
+		}
 		if (item.isShadowItem())
+		{
 			return false;
+		}
 		if (item.isCommonItem())
+		{
 			return false;
+		}
 		if (item.isEtcItem())
+		{
 			return false;
+		}
 		if (item.isTimeLimitedItem())
+		{
 			return false;
-		if (item.isPvp())
+		}
+		if (item.isPvp() && !Config.ALT_ALLOW_AUGMENT_PVP_ITEMS)
+		{
 			return false;
+		}
 		if (item.getItem().getCrystalType() < L2Item.CRYSTAL_C)
+		{
 			return false;
+		}
 		
 		// Source item can be equipped or in inventory
 		switch (item.getLocation())
@@ -290,7 +353,7 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 		
 		if (item.getItem() instanceof L2Weapon)
 		{
-			switch (((L2Weapon)item.getItem()).getItemType())
+			switch (((L2Weapon) item.getItem()).getItemType())
 			{
 				case NONE:
 				case FISHINGROD:
@@ -313,19 +376,23 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 			}
 		}
 		else
+		{
 			return false; // neither weapon nor armor ?
+		}
 		
 		// blacklist check
 		if (Arrays.binarySearch(Config.AUGMENTATION_BLACKLIST, item.getItemId()) >= 0)
+		{
 			return false;
+		}
 		
 		return true;
 	}
 	
 	/**
 	 * Check if player's conditions valid for augmentation process
-	 * @param player 
-	 * @return 
+	 * @param player
+	 * @return
 	 */
 	protected static final boolean isValid(L2PcInstance player)
 	{
@@ -360,15 +427,19 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 			return false;
 		}
 		if (player.isCursedWeaponEquipped())
+		{
 			return false;
+		}
 		if (player.isEnchanting() || player.isProcessingTransaction())
+		{
 			return false;
+		}
 		
 		return true;
 	}
 	
 	/**
-	 * @param itemGrade 
+	 * @param itemGrade
 	 * @return GemStone itemId based on item grade
 	 */
 	protected static final int getGemStoneId(int itemGrade)
@@ -391,8 +462,8 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 	
 	/**
 	 * Different for weapon and accessory augmentation.
-	 * @param itemGrade 
-	 * @param lifeStoneGrade 
+	 * @param itemGrade
+	 * @param lifeStoneGrade
 	 * @return GemStone count based on item grade and life stone grade
 	 */
 	protected static final int getGemStoneCount(int itemGrade, int lifeStoneGrade)

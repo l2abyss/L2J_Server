@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.itemauction;
 
@@ -55,7 +59,7 @@ public final class ItemAuction
 	private volatile ItemAuctionExtendState _scheduledAuctionEndingExtendState;
 	private volatile ItemAuctionExtendState _auctionEndingExtendState;
 	
-	private ItemInfo _itemInfo;
+	private final ItemInfo _itemInfo;
 	
 	private ItemAuctionBid _highestBid;
 	private int _lastBidPlayerObjId;
@@ -82,14 +86,16 @@ public final class ItemAuction
 		_scheduledAuctionEndingExtendState = ItemAuctionExtendState.INITIAL;
 		_auctionEndingExtendState = ItemAuctionExtendState.INITIAL;
 		
-		final L2ItemInstance item  = _auctionItem.createNewItemInstance();
+		final L2ItemInstance item = _auctionItem.createNewItemInstance();
 		_itemInfo = new ItemInfo(item);
 		L2World.getInstance().removeObject(item);
 		
 		for (final ItemAuctionBid bid : _auctionBids)
 		{
-			if (_highestBid == null || _highestBid.getLastBid() < bid.getLastBid())
+			if ((_highestBid == null) || (_highestBid.getLastBid() < bid.getLastBid()))
+			{
 				_highestBid = bid;
+			}
 		}
 	}
 	
@@ -110,7 +116,9 @@ public final class ItemAuction
 		synchronized (_auctionStateLock)
 		{
 			if (_auctionState != expected)
+			{
 				return false;
+			}
 			
 			_auctionState = wanted;
 			storeMe();
@@ -240,7 +248,9 @@ public final class ItemAuction
 	public final void registerBid(final L2PcInstance player, final long newBid)
 	{
 		if (player == null)
+		{
 			throw new NullPointerException();
+		}
 		
 		if (newBid < getAuctionInitBid())
 		{
@@ -255,13 +265,15 @@ public final class ItemAuction
 		}
 		
 		if (getAuctionState() != ItemAuctionState.STARTED)
+		{
 			return;
+		}
 		
 		final int playerObjId = player.getObjectId();
 		
 		synchronized (_auctionBids)
 		{
-			if (_highestBid != null && newBid < _highestBid.getLastBid())
+			if ((_highestBid != null) && (newBid < _highestBid.getLastBid()))
 			{
 				player.sendPacket(SystemMessageId.BID_MUST_BE_HIGHER_THAN_CURRENT_BID);
 				return;
@@ -307,7 +319,7 @@ public final class ItemAuction
 			onPlayerBid(player, bid);
 			updatePlayerBid(bid, false);
 			
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.SUBMITTED_A_BID);
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.SUBMITTED_A_BID_OF_S1);
 			sm.addItemNumber(newBid);
 			player.sendPacket(sm);
 			return;
@@ -324,12 +336,14 @@ public final class ItemAuction
 		{
 			final L2PcInstance old = _highestBid.getPlayer();
 			if (old != null)
+			{
 				old.sendPacket(SystemMessageId.YOU_HAVE_BEEN_OUTBID);
+			}
 			
 			_highestBid = bid;
 		}
 		
-		if (getEndingTime() - System.currentTimeMillis() <= (1000 * 60 * 10)) // 10 minutes
+		if ((getEndingTime() - System.currentTimeMillis()) <= (1000 * 60 * 10)) // 10 minutes
 		{
 			switch (_auctionEndingExtendState)
 			{
@@ -408,7 +422,9 @@ public final class ItemAuction
 			{
 				final L2PcInstance player = bid.getPlayer();
 				if (player != null)
+				{
 					player.sendPacket(packet);
+				}
 			}
 		}
 	}
@@ -416,7 +432,9 @@ public final class ItemAuction
 	public final boolean cancelBid(final L2PcInstance player)
 	{
 		if (player == null)
+		{
 			throw new NullPointerException();
+		}
 		
 		switch (getAuctionState())
 		{
@@ -424,8 +442,10 @@ public final class ItemAuction
 				return false;
 				
 			case FINISHED:
-				if (_startingTime < System.currentTimeMillis() - TimeUnit.MILLISECONDS.convert(Config.ALT_ITEM_AUCTION_EXPIRED_AFTER, TimeUnit.DAYS))
+				if (_startingTime < (System.currentTimeMillis() - TimeUnit.MILLISECONDS.convert(Config.ALT_ITEM_AUCTION_EXPIRED_AFTER, TimeUnit.DAYS)))
+				{
 					return false;
+				}
 				break;
 		}
 		
@@ -434,25 +454,33 @@ public final class ItemAuction
 		synchronized (_auctionBids)
 		{
 			if (_highestBid == null)
+			{
 				return false;
+			}
 			
 			final int bidIndex = getBidIndexFor(playerObjId);
 			if (bidIndex == -1)
+			{
 				return false;
+			}
 			
 			final ItemAuctionBid bid = _auctionBids.get(bidIndex);
 			if (bid.getPlayerObjId() == _highestBid.getPlayerObjId())
 			{
 				// can't return winning bid
 				if (getAuctionState() == ItemAuctionState.FINISHED)
+				{
 					return false;
+				}
 				
 				player.sendPacket(SystemMessageId.HIGHEST_BID_BUT_RESERVE_NOT_MET);
 				return true;
 			}
 			
 			if (bid.isCanceled())
+			{
 				return false;
+			}
 			
 			increaseItemCount(player, bid.getLastBid());
 			bid.cancelBid();
@@ -468,14 +496,18 @@ public final class ItemAuction
 	public final void clearCanceledBids()
 	{
 		if (getAuctionState() != ItemAuctionState.FINISHED)
+		{
 			throw new IllegalStateException("Attempt to clear canceled bids for non-finished auction");
+		}
 		
 		synchronized (_auctionBids)
 		{
 			for (ItemAuctionBid bid : _auctionBids)
 			{
-				if (bid == null || !bid.isCanceled())
+				if ((bid == null) || !bid.isCanceled())
+				{
 					continue;
+				}
 				updatePlayerBid(bid, true);
 			}
 		}
@@ -498,7 +530,6 @@ public final class ItemAuction
 	
 	/**
 	 * Returns the last bid for the given player or -1 if he did not made one yet.
-	 * 
 	 * @param player The player that made the bid
 	 * @return The last bid the player made or -1
 	 */
@@ -519,8 +550,10 @@ public final class ItemAuction
 		for (int i = _auctionBids.size(); i-- > 0;)
 		{
 			final ItemAuctionBid bid = _auctionBids.get(i);
-			if (bid != null && bid.getPlayerObjId() == playerObjId)
+			if ((bid != null) && (bid.getPlayerObjId() == playerObjId))
+			{
 				return i;
+			}
 		}
 		return -1;
 	}

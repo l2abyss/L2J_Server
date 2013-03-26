@@ -1,30 +1,31 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -39,7 +40,7 @@ public class L2DatabaseFactory
 	/**
 	 * The Enum ProviderType.
 	 */
-	public static enum ProviderType
+	private static enum ProviderType
 	{
 		MySql,
 		MsSql
@@ -47,7 +48,6 @@ public class L2DatabaseFactory
 	
 	private static L2DatabaseFactory _instance;
 	private static volatile ScheduledExecutorService _executor;
-	private static Map<Connection, ScheduledFuture<?>> _connectionClosers = new FastMap<Connection, ScheduledFuture<?>>().shared();
 	private ProviderType _providerType;
 	private ComboPooledDataSource _source;
 	
@@ -270,7 +270,7 @@ public class L2DatabaseFactory
 				con = _source.getConnection();
 				if (Server.serverMode == Server.MODE_GAMESERVER)
 				{
-					_connectionClosers.put(con, ThreadPoolManager.getInstance().scheduleGeneral(new ConnectionCloser(con, new RuntimeException()), Config.CONNECTION_CLOSE_TIME));
+					ThreadPoolManager.getInstance().scheduleGeneral(new ConnectionCloser(con, new RuntimeException()), Config.CONNECTION_CLOSE_TIME);
 				}
 				else
 				{
@@ -329,7 +329,7 @@ public class L2DatabaseFactory
 	/**
 	 * Close the connection.
 	 * @param con the con the connection
-	 * @deprecated now database connections are closed using try-with-resoruce.
+	 * @deprecated now database connections are closed using try-with-resource.
 	 */
 	@Deprecated
 	public static void close(Connection con)
@@ -342,12 +342,6 @@ public class L2DatabaseFactory
 		try
 		{
 			con.close();
-			ScheduledFuture<?> conCloser = _connectionClosers.remove(con);
-			if (conCloser != null)
-			{
-				conCloser.cancel(true);
-				conCloser = null;
-			}
 		}
 		catch (SQLException e)
 		{
@@ -401,5 +395,24 @@ public class L2DatabaseFactory
 	public final ProviderType getProviderType()
 	{
 		return _providerType;
+	}
+	
+	/**
+	 * Designed to execute simple db operations like INSERT, UPDATE, DELETE.
+	 * @param query
+	 * @param params
+	 * @throws SQLException
+	 */
+	public void executeQuery(String query, Object... params) throws SQLException
+	{
+		try (Connection con = getConnection();
+			PreparedStatement st = con.prepareStatement(query))
+		{
+			for (int i = 0; i < params.length; i++)
+			{
+				st.setObject(i + 1, params[i]);
+			}
+			st.execute();
+		}
 	}
 }

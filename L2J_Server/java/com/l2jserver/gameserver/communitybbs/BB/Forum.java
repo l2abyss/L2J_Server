@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.communitybbs.BB;
 
@@ -31,36 +35,32 @@ import com.l2jserver.gameserver.communitybbs.Manager.TopicBBSManager;
 
 public class Forum
 {
-	//type
+	// type
 	public static final int ROOT = 0;
 	public static final int NORMAL = 1;
 	public static final int CLAN = 2;
 	public static final int MEMO = 3;
 	public static final int MAIL = 4;
-	//perm
+	// perm
 	public static final int INVISIBLE = 0;
 	public static final int ALL = 1;
 	public static final int CLANMEMBERONLY = 2;
 	public static final int OWNERONLY = 3;
 	
 	private static Logger _log = Logger.getLogger(Forum.class.getName());
-	private List<Forum> _children;
-	private Map<Integer, Topic> _topic;
-	private int _forumId;
+	private final List<Forum> _children;
+	private final Map<Integer, Topic> _topic;
+	private final int _forumId;
 	private String _forumName;
-	//private int _ForumParent;
 	private int _forumType;
 	private int _forumPost;
 	private int _forumPerm;
-	private Forum _fParent;
+	private final Forum _fParent;
 	private int _ownerID;
 	private boolean _loaded = false;
 	
 	/**
-	 * Creates new instance of Forum. When you create new forum, use
-	 * {@link com.l2jserver.gameserver.communitybbs.Manager.ForumsBBSManager#
-	 * addForum(com.l2jserver.gameserver.communitybbs.BB.Forum)} to add forum
-	 * to the forums manager.
+	 * Creates new instance of Forum. When you create new forum, use {@link com.l2jserver.gameserver.communitybbs.Manager.ForumsBBSManager# addForum(com.l2jserver.gameserver.communitybbs.BB.Forum)} to add forum to the forums manager.
 	 * @param Forumid
 	 * @param FParent
 	 */
@@ -70,9 +70,6 @@ public class Forum
 		_fParent = FParent;
 		_children = new FastList<>();
 		_topic = new FastMap<>();
-		
-		/*load();
-		getChildren();	*/
 	}
 	
 	/**
@@ -80,13 +77,12 @@ public class Forum
 	 * @param parent
 	 * @param type
 	 * @param perm
-	 * @param OwnerID 
+	 * @param OwnerID
 	 */
 	public Forum(String name, Forum parent, int type, int perm, int OwnerID)
 	{
 		_forumName = name;
 		_forumId = ForumsBBSManager.getInstance().getANewID();
-		//_ForumParent = parent.getID();
 		_forumType = type;
 		_forumPost = 0;
 		_forumPerm = perm;
@@ -110,7 +106,6 @@ public class Forum
 				if (rs.next())
 				{
 					_forumName = rs.getString("forum_name");
-					//_ForumParent = result.getInt("forum_parent");
 					_forumPost = rs.getInt("forum_post");
 					_forumType = rs.getInt("forum_type");
 					_forumPerm = rs.getInt("forum_perm");
@@ -252,9 +247,6 @@ public class Forum
 		}
 	}
 	
-	/**
-	 *
-	 */
 	public void vload()
 	{
 		if (!_loaded)

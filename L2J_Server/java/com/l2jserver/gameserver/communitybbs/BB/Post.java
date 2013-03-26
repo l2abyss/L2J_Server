@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.communitybbs.BB;
 
@@ -44,8 +48,7 @@ public class Post
 		public String postTxt;
 	}
 	
-	private List<CPost> _post;
-	//public enum ConstructorType {REPLY, CREATE };
+	private final List<CPost> _post;
 	
 	/**
 	 * @param _PostOwner
@@ -55,7 +58,7 @@ public class Post
 	 * @param _PostForumID
 	 * @param txt
 	 */
-	public Post(String _PostOwner,int _PostOwnerID,long date,int tid,int _PostForumID,String txt)
+	public Post(String _PostOwner, int _PostOwnerID, long date, int tid, int _PostForumID, String txt)
 	{
 		_post = new FastList<>();
 		CPost cp = new CPost();
@@ -100,9 +103,9 @@ public class Post
 	public CPost getCPost(int id)
 	{
 		int i = 0;
-		for(CPost cp : _post)
+		for (CPost cp : _post)
 		{
-			if(i++ == id)
+			if (i++ == id)
 			{
 				return cp;
 			}
@@ -138,7 +141,7 @@ public class Post
 			ps.setInt(2, t.getID());
 			try (ResultSet rs = ps.executeQuery())
 			{
-				while(rs.next())
+				while (rs.next())
 				{
 					CPost cp = new CPost();
 					cp.postId = rs.getInt("post_id");
@@ -154,7 +157,7 @@ public class Post
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Data error on Post " + t.getForumID() + "/"+t.getID()+" : " + e.getMessage(), e);
+			_log.log(Level.WARNING, "Data error on Post " + t.getForumID() + "/" + t.getID() + " : " + e.getMessage(), e);
 		}
 	}
 	

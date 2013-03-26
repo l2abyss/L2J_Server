@@ -1,26 +1,28 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.datatables;
 
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javolution.util.FastList;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.script.DateRange;
 import com.l2jserver.gameserver.script.EventDrop;
 
@@ -32,8 +34,6 @@ import com.l2jserver.gameserver.script.EventDrop;
  */
 public class EventDroplist
 {
-	private static Logger _log = Logger.getLogger(EventDroplist.class.getName());
-	
 	/**
 	 * The table containing all DataDrop object
 	 */
@@ -80,6 +80,18 @@ public class EventDroplist
 	}
 	
 	/**
+	 * @param itemId the item Id for the drop
+	 * @param minCount the minimum drop count
+	 * @param maxCount the maximum drop count
+	 * @param chance the drop chance
+	 * @param dateRange the event drop rate range
+	 */
+	public void addGlobalDrop(int itemId, int minCount, int maxCount, int chance, DateRange dateRange)
+	{
+		_allNpcDateDrops.add(new DateDrop(dateRange, new EventDrop(itemId, minCount, maxCount, chance)));
+	}
+	
+	/**
 	 * Adds an event drop for a given date range.
 	 * @param dateRange the date range.
 	 * @param eventDrop the event drop.
@@ -98,10 +110,6 @@ public class EventDroplist
 		final Date currentDate = new Date();
 		for (DateDrop drop : _allNpcDateDrops)
 		{
-			if (Config.DEBUG)
-			{
-				_log.info(drop._dateRange.toString() + " Now: " + currentDate);
-			}
 			if (drop._dateRange.isWithinRange(currentDate))
 			{
 				list.add(drop);

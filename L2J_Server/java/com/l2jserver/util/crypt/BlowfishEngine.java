@@ -1,38 +1,24 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * This file is based on the Blowfish Engine that is part of the BouncyCastle JCE.
+ * Copyright (c) 2000 The Legion Of The Bouncy Castle (http://www.bouncycastle.org)
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ * and associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * The above copyright notice and this permission notice shall be included in all copies
+ * or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package com.l2jserver.util.crypt;
 
 import java.io.IOException;
 
-/**
- * This file is based on the Blowfish Engine that is part of the BouncyCastle JCE.<br>
- * Copyright (c) 2000 The Legion Of The Bouncy Castle (http://www.bouncycastle.org)<br>
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software<br>
- * and associated documentation files (the "Software"), to deal in the Software without restriction,<br>
- * including without limitation the rights to use, copy, modify, merge, publish, distribute,<br>
- * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is<br>
- * furnished to do so, subject to the following conditions:<br>
- * <br>
- * The above copyright notice and this permission notice shall be included in all copies<br>
- * or substantial portions of the Software.<br>
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,<br>
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR<br>
- * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE<br>
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,<br>
- * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
 public final class BlowfishEngine
 {
 	private static final int[] KP =
@@ -1093,9 +1079,6 @@ public final class BlowfishEngine
 		0x3AC372E6
 	};
 	
-	// ====================================
-	// Useful constants
-	// ====================================
 	private static final int ROUNDS = 16;
 	private static final int BLOCK_SIZE = 8; // bytes = 64 bits
 	private static final int SBOX_SK = 256;
@@ -1133,9 +1116,6 @@ public final class BlowfishEngine
 		return BLOCK_SIZE;
 	}
 	
-	// ==================================
-	// Private Implementation
-	// ==================================
 	private int func(int x)
 	{
 		return (((S0[(x >>> 24)] + S1[(x >>> 16) & 0xff]) ^ S2[(x >>> 8) & 0xff]) + S3[x & 0xff]);
@@ -1180,7 +1160,7 @@ public final class BlowfishEngine
 	
 	private void setKey(byte[] key)
 	{
-		/*
+		/**
 		 * - comments are from _Applied Crypto_, Schneier, p338.<br>
 		 * Please be careful comparing the two, AC numbers the arrays from 1, the enclosed code from 0.<br>
 		 * (1) Initialize the S-boxes and the P-array, with a fixed string This string contains the hexadecimal digits of pi (3.141...)
@@ -1190,7 +1170,7 @@ public final class BlowfishEngine
 		System.arraycopy(KS2, 0, S2, 0, SBOX_SK);
 		System.arraycopy(KS3, 0, S3, 0, SBOX_SK);
 		System.arraycopy(KP, 0, P, 0, P_SZ);
-		/*
+		/**
 		 * (2) Now, XOR P[0] with the first 32 bits of the key, XOR P[1] with the second 32-bits of the key, and so on for all bits of the key (up to P[17]).<br>
 		 * Repeatedly cycle through the key bits until the entire P-array has been XOR-ed with the key bits
 		 */
@@ -1213,7 +1193,7 @@ public final class BlowfishEngine
 			// XOR the newly created 32 bit chunk onto the P-array
 			P[i] ^= data;
 		}
-		/*
+		/**
 		 * (3) Encrypt the all-zero string with the Blowfish algorithm, using the subkeys described in (1) and (2)<br>
 		 * (4) Replace P1 and P2 with the output of step (3)<br>
 		 * (5) Encrypt the output of step(3) using the Blowfish algorithm, with the modified subkeys.<br>
@@ -1229,8 +1209,7 @@ public final class BlowfishEngine
 	
 	/**
 	 * Method to encrypt the block at the given index.<br>
-	 * The encrypted block goes directly to the source array at the given<br>
-	 * index.
+	 * The encrypted block goes directly to the source array at the given index.
 	 * @param src source array with the plain data
 	 * @param srcIndex index where the block to encrypt is located
 	 * @throws IllegalStateException The cipher was not yet initialized
@@ -1240,7 +1219,7 @@ public final class BlowfishEngine
 	{
 		if (workingKey == null)
 		{
-			throw new IllegalStateException("Blowfish not initialised");
+			throw new IllegalStateException("Blowfish not initialized");
 		}
 		if ((srcIndex + BLOCK_SIZE) > src.length)
 		{
@@ -1264,7 +1243,7 @@ public final class BlowfishEngine
 	{
 		if (workingKey == null)
 		{
-			throw new IllegalStateException("Blowfish not initialised");
+			throw new IllegalStateException("Blowfish not initialized");
 		}
 		if ((srcIndex + BLOCK_SIZE) > src.length)
 		{
@@ -1350,7 +1329,7 @@ public final class BlowfishEngine
 	{
 		if (workingKey == null)
 		{
-			throw new IllegalStateException("Blowfish not initialised");
+			throw new IllegalStateException("Blowfish not initialized");
 		}
 		if ((srcIndex + BLOCK_SIZE) > src.length)
 		{
@@ -1373,7 +1352,7 @@ public final class BlowfishEngine
 	{
 		if (workingKey == null)
 		{
-			throw new IllegalStateException("Blowfish not initialised");
+			throw new IllegalStateException("Blowfish not initialized");
 		}
 		if ((srcIndex + BLOCK_SIZE) > src.length)
 		{

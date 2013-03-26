@@ -1,30 +1,37 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.zone.type;
 
 import java.util.Map.Entry;
-import java.util.concurrent.Future;
 
 import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.model.zone.TaskZoneSettings;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.StringUtil;
@@ -41,8 +48,7 @@ public class L2EffectZone extends L2ZoneType
 	private boolean _enabled;
 	protected boolean _bypassConditions;
 	private boolean _isShowDangerIcon;
-	private volatile Future<?> _task;
-	protected volatile FastMap<Integer, Integer> _skills;
+	protected FastMap<Integer, Integer> _skills;
 	
 	public L2EffectZone(int id)
 	{
@@ -54,6 +60,18 @@ public class L2EffectZone extends L2ZoneType
 		setTargetType(InstanceType.L2Playable); // default only playabale
 		_bypassConditions = false;
 		_isShowDangerIcon = true;
+		AbstractZoneSettings settings = ZoneManager.getSettings(getName());
+		if (settings == null)
+		{
+			settings = new TaskZoneSettings();
+		}
+		setSettings(settings);
+	}
+	
+	@Override
+	public TaskZoneSettings getSettings()
+	{
+		return (TaskZoneSettings) super.getSettings();
 	}
 	
 	@Override
@@ -91,7 +109,9 @@ public class L2EffectZone extends L2ZoneType
 			{
 				String[] skillSplit = skill.split("-");
 				if (skillSplit.length != 2)
+				{
 					_log.warning(StringUtil.concat(getClass().getSimpleName() + ": invalid config property -> skillsIdLvl \"", skill, "\""));
+				}
 				else
 				{
 					try
@@ -113,7 +133,9 @@ public class L2EffectZone extends L2ZoneType
 			_isShowDangerIcon = Boolean.parseBoolean(value);
 		}
 		else
+		{
 			super.setParameter(name, value);
+		}
 	}
 	
 	@Override
@@ -121,21 +143,23 @@ public class L2EffectZone extends L2ZoneType
 	{
 		if (_skills != null)
 		{
-			if (_task == null)
+			if (getSettings().getTask() == null)
 			{
 				synchronized (this)
 				{
-					if (_task == null)
-						_task = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplySkill(), _initialDelay, _reuse);
+					if (getSettings().getTask() == null)
+					{
+						getSettings().setTask(ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new ApplySkill(), _initialDelay, _reuse));
+					}
 				}
 			}
 		}
 		if (character.isPlayer())
 		{
-			character.setInsideZone(L2Character.ZONE_ALTERED, true);
+			character.setInsideZone(ZoneId.ALTERED, true);
 			if (_isShowDangerIcon)
 			{
-				character.setInsideZone(L2Character.ZONE_DANGERAREA, true);
+				character.setInsideZone(ZoneId.DANGER_AREA, true);
 				character.sendPacket(new EtcStatusUpdate(character.getActingPlayer()));
 			}
 		}
@@ -146,18 +170,19 @@ public class L2EffectZone extends L2ZoneType
 	{
 		if (character.isPlayer())
 		{
-			character.setInsideZone(L2Character.ZONE_ALTERED, false);
+			character.setInsideZone(ZoneId.ALTERED, false);
 			if (_isShowDangerIcon)
 			{
-				character.setInsideZone(L2Character.ZONE_DANGERAREA, false);
-				if (!character.isInsideZone(L2Character.ZONE_DANGERAREA))
+				character.setInsideZone(ZoneId.DANGER_AREA, false);
+				if (!character.isInsideZone(ZoneId.DANGER_AREA))
+				{
 					character.sendPacket(new EtcStatusUpdate(character.getActingPlayer()));
+				}
 			}
 		}
-		if (_characterList.isEmpty() && _task != null)
+		if (_characterList.isEmpty() && (getSettings().getTask() != null))
 		{
-			_task.cancel(true);
-			_task = null;
+			getSettings().clear();
 		}
 	}
 	
@@ -188,7 +213,9 @@ public class L2EffectZone extends L2ZoneType
 			synchronized (this)
 			{
 				if (_skills == null)
+				{
 					_skills = new FastMap<Integer, Integer>(3).shared();
+				}
 			}
 		}
 		_skills.put(skillId, skillLvL);
@@ -197,13 +224,17 @@ public class L2EffectZone extends L2ZoneType
 	public void removeSkill(int skillId)
 	{
 		if (_skills != null)
+		{
 			_skills.remove(skillId);
+		}
 	}
 	
 	public void clearSkills()
 	{
 		if (_skills != null)
+		{
 			_skills.clear();
+		}
 	}
 	
 	public void setZoneEnabled(boolean val)
@@ -213,8 +244,10 @@ public class L2EffectZone extends L2ZoneType
 	
 	public int getSkillLevel(int skillId)
 	{
-		if (_skills == null || !_skills.containsKey(skillId))
+		if ((_skills == null) || !_skills.containsKey(skillId))
+		{
 			return 0;
+		}
 		return _skills.get(skillId);
 	}
 	
@@ -223,7 +256,9 @@ public class L2EffectZone extends L2ZoneType
 		protected ApplySkill()
 		{
 			if (_skills == null)
+			{
 				throw new IllegalStateException("No skills defined.");
+			}
 		}
 		
 		@Override
@@ -233,7 +268,7 @@ public class L2EffectZone extends L2ZoneType
 			{
 				for (L2Character temp : getCharactersInside())
 				{
-					if (temp != null && !temp.isDead())
+					if ((temp != null) && !temp.isDead())
 					{
 						if (Rnd.get(100) < getChance())
 						{

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
@@ -24,7 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 
 public class L2TvTEventNpcInstance extends L2Npc
 {
-	private static final String htmlPath="data/html/mods/TvTEvent/";
+	private static final String htmlPath = "data/html/mods/TvTEvent/";
 	
 	public L2TvTEventNpcInstance(int objectId, L2NpcTemplate template)
 	{
@@ -42,7 +46,9 @@ public class L2TvTEventNpcInstance extends L2Npc
 	public void showChatWindow(L2PcInstance playerInstance, int val)
 	{
 		if (playerInstance == null)
+		{
 			return;
+		}
 		
 		if (TvTEvent.isParticipating())
 		{
@@ -50,9 +56,13 @@ public class L2TvTEventNpcInstance extends L2Npc
 			final String htmContent;
 			
 			if (!isParticipant)
+			{
 				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath + "Participation.htm");
+			}
 			else
+			{
 				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath + "RemoveParticipation.htm");
+			}
 			
 			if (htmContent != null)
 			{
@@ -65,9 +75,11 @@ public class L2TvTEventNpcInstance extends L2Npc
 				npcHtmlMessage.replace("%team1playercount%", String.valueOf(teamsPlayerCounts[0]));
 				npcHtmlMessage.replace("%team2name%", Config.TVT_EVENT_TEAM_2_NAME);
 				npcHtmlMessage.replace("%team2playercount%", String.valueOf(teamsPlayerCounts[1]));
-				npcHtmlMessage.replace("%playercount%", String.valueOf(teamsPlayerCounts[0]+teamsPlayerCounts[1]));
+				npcHtmlMessage.replace("%playercount%", String.valueOf(teamsPlayerCounts[0] + teamsPlayerCounts[1]));
 				if (!isParticipant)
+				{
 					npcHtmlMessage.replace("%fee%", TvTEvent.getParticipationFee());
+				}
 				
 				playerInstance.sendPacket(npcHtmlMessage);
 			}
@@ -83,7 +95,7 @@ public class L2TvTEventNpcInstance extends L2Npc
 				NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
 				
 				npcHtmlMessage.setHtml(htmContent);
-				//npcHtmlMessage.replace("%objectId%", String.valueOf(getObjectId()));
+				// npcHtmlMessage.replace("%objectId%", String.valueOf(getObjectId()));
 				npcHtmlMessage.replace("%team1name%", Config.TVT_EVENT_TEAM_1_NAME);
 				npcHtmlMessage.replace("%team1playercount%", String.valueOf(teamsPlayerCounts[0]));
 				npcHtmlMessage.replace("%team1points%", String.valueOf(teamsPointsCounts[0]));

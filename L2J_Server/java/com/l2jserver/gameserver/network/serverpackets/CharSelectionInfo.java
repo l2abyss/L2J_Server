@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
@@ -107,9 +111,13 @@ public class CharSelectionInfo extends L2GameServerPacket
 			writeD(charInfoPackage.getRace());
 			
 			if (charInfoPackage.getClassId() == charInfoPackage.getBaseClassId())
+			{
 				writeD(charInfoPackage.getClassId());
+			}
 			else
+			{
 				writeD(charInfoPackage.getBaseClassId());
+			}
 			
 			writeD(0x01); // active ??
 			
@@ -182,8 +190,8 @@ public class CharSelectionInfo extends L2GameServerPacket
 			// delete .. if != 0
 			// then char is inactive
 			writeD(charInfoPackage.getClassId());
-			writeD(i == _activeId ? 0x01 : 0x00); // c3 auto-select char 
-				
+			writeD(i == _activeId ? 0x01 : 0x00); // c3 auto-select char
+			
 			writeC(charInfoPackage.getEnchantEffect() > 127 ? 127 : charInfoPackage.getEnchantEffect());
 			writeH(0x00);
 			writeH(0x00);
@@ -220,7 +228,9 @@ public class CharSelectionInfo extends L2GameServerPacket
 				{
 					charInfopackage = restoreChar(charList);
 					if (charInfopackage != null)
+					{
 						characterList.add(charInfopackage);
+					}
 				}
 			}
 			return characterList.toArray(new CharSelectInfoPackage[characterList.size()]);
@@ -268,7 +278,9 @@ public class CharSelectionInfo extends L2GameServerPacket
 			{
 				L2Clan clan = ClanTable.getInstance().getClan(chardata.getInt("clanid"));
 				if (clan != null)
+				{
 					clan.removeClanMember(objectId, 0);
+				}
 				
 				L2GameClient.deleteCharByObjId(objectId);
 				return null;
@@ -308,20 +320,26 @@ public class CharSelectionInfo extends L2GameServerPacket
 		{
 			String lang = chardata.getString("language");
 			if (!Config.L2JMOD_MULTILANG_ALLOWED.contains(lang))
+			{
 				lang = Config.L2JMOD_MULTILANG_DEFAULT;
+			}
 			charInfopackage.setHtmlPrefix("data/lang/" + lang + "/");
 		}
 		
 		// if is in subclass, load subclass exp, sp, lvl info
 		if (baseClassId != activeClassId)
+		{
 			loadCharacterSubclassInfo(charInfopackage, objectId, activeClassId);
+		}
 		
 		charInfopackage.setClassId(activeClassId);
 		
 		// Get the augmentation id for equipped weapon
 		int weaponObjId = charInfopackage.getPaperdollObjectId(Inventory.PAPERDOLL_RHAND);
 		if (weaponObjId < 1)
+		{
 			weaponObjId = charInfopackage.getPaperdollObjectId(Inventory.PAPERDOLL_RHAND);
+		}
 		
 		// Check Transformation
 		int cursedWeaponId = CursedWeaponsManager.getInstance().checkOwnsWeaponId(objectId);
@@ -329,18 +347,26 @@ public class CharSelectionInfo extends L2GameServerPacket
 		{
 			// cursed weapon transformations
 			if (cursedWeaponId == 8190)
+			{
 				charInfopackage.setTransformId(301);
+			}
 			else if (cursedWeaponId == 8689)
+			{
 				charInfopackage.setTransformId(302);
+			}
 			else
+			{
 				charInfopackage.setTransformId(0);
+			}
 		}
 		else if (chardata.getInt("transform_id") > 0)
 		{
 			charInfopackage.setTransformId(chardata.getInt("transform_id"));
 		}
 		else
+		{
 			charInfopackage.setTransformId(0);
+		}
 		
 		if (weaponObjId > 0)
 		{
@@ -364,10 +390,14 @@ public class CharSelectionInfo extends L2GameServerPacket
 		}
 		
 		// Check if the base class is set to zero and also doesn't match with the current active class, otherwise send the base class ID. This prevents chars created before base class was introduced from being displayed incorrectly.
-		if (baseClassId == 0 && activeClassId > 0)
+		if ((baseClassId == 0) && (activeClassId > 0))
+		{
 			charInfopackage.setBaseClassId(activeClassId);
+		}
 		else
+		{
 			charInfopackage.setBaseClassId(baseClassId);
+		}
 		
 		charInfopackage.setDeleteTimer(deletetime);
 		charInfopackage.setLastAccess(chardata.getLong("lastAccess"));

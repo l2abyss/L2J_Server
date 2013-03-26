@@ -1,18 +1,26 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model;
+
+import java.util.Map;
+
+import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.handler.ActionHandler;
 import com.l2jserver.gameserver.handler.ActionShiftHandler;
@@ -26,6 +34,7 @@ import com.l2jserver.gameserver.model.actor.knownlist.ObjectKnownList;
 import com.l2jserver.gameserver.model.actor.poly.ObjectPoly;
 import com.l2jserver.gameserver.model.actor.position.ObjectPosition;
 import com.l2jserver.gameserver.model.entity.Instance;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExSendUIEvent;
@@ -49,6 +58,7 @@ public abstract class L2Object
 	private int _instanceId = 0;
 	
 	private InstanceType _instanceType = null;
+	private volatile Map<String, Object> _scripts;
 	
 	public L2Object(int objectId)
 	{
@@ -74,7 +84,6 @@ public abstract class L2Object
 		L2WarehouseInstance(L2NpcInstance),
 		L2StaticObjectInstance(L2Character),
 		L2DoorInstance(L2Character),
-		L2NpcWalkerInstance(L2Npc),
 		L2TerrainObjectInstance(L2Npc),
 		L2EffectPointInstance(L2Npc),
 		// Summons, Pets, Decoys and Traps
@@ -95,7 +104,6 @@ public abstract class L2Object
 		L2FeedableBeastInstance(L2MonsterInstance),
 		L2TamedBeastInstance(L2FeedableBeastInstance),
 		L2FriendlyMobInstance(L2Attackable),
-		L2PenaltyMonsterInstance(L2MonsterInstance),
 		L2RiftInvaderInstance(L2MonsterInstance),
 		L2RaidBossInstance(L2MonsterInstance),
 		L2GrandBossInstance(L2RaidBossInstance),
@@ -126,20 +134,16 @@ public abstract class L2Object
 		L2FortBallistaInstance(L2Npc),
 		L2FortCommanderInstance(L2DefenderInstance),
 		// Castle NPCs
-		L2CastleBlacksmithInstance(L2NpcInstance),
 		L2CastleChamberlainInstance(L2MerchantInstance),
 		L2CastleMagicianInstance(L2NpcInstance),
-		L2CastleTeleporterInstance(L2Npc),
-		L2CastleWarehouseInstance(L2WarehouseInstance),
 		L2MercManagerInstance(L2MerchantInstance),
 		// Fort NPCs
 		L2FortEnvoyInstance(L2Npc),
 		L2FortLogisticsInstance(L2MerchantInstance),
 		L2FortManagerInstance(L2MerchantInstance),
-		L2FortSiegeNpcInstance(L2NpcWalkerInstance),
+		L2FortSiegeNpcInstance(L2Npc),
 		L2FortSupportCaptainInstance(L2MerchantInstance),
 		// Seven Signs
-		L2CabaleBufferInstance(L2Npc),
 		L2SignsPriestInstance(L2Npc),
 		L2DawnPriestInstance(L2SignsPriestInstance),
 		L2DuskPriestInstance(L2SignsPriestInstance),
@@ -159,14 +163,11 @@ public abstract class L2Object
 		L2RaceManagerInstance(L2Npc),
 		L2SymbolMakerInstance(L2Npc),
 		L2TeleporterInstance(L2Npc),
-		L2TotemInstance(L2NpcInstance),
-		L2TownPetInstance(L2Npc),
 		L2TrainerInstance(L2NpcInstance),
 		L2TrainerHealersInstance(L2TrainerInstance),
 		L2TransformManagerInstance(L2MerchantInstance),
 		L2VillageMasterInstance(L2NpcInstance),
 		L2WyvernManagerInstance(L2NpcInstance),
-		L2XmassTreeInstance(L2NpcInstance),
 		// Doormens
 		L2DoormenInstance(L2NpcInstance),
 		L2CastleDoormenInstance(L2DoormenInstance),
@@ -177,8 +178,7 @@ public abstract class L2Object
 		L2NpcBufferInstance(L2Npc),
 		L2TvTEventNpcInstance(L2Npc),
 		L2WeddingManagerInstance(L2Npc),
-		L2EventMobInstance(L2Npc),
-		L2BirthdayCakeInstance(L2Npc);
+		L2EventMobInstance(L2Npc);
 		
 		private final InstanceType _parent;
 		private final long _typeL;
@@ -190,10 +190,10 @@ public abstract class L2Object
 		{
 			_parent = parent;
 			
-			final int high = this.ordinal() - (Long.SIZE - 1);
+			final int high = ordinal() - (Long.SIZE - 1);
 			if (high < 0)
 			{
-				_typeL = 1L << this.ordinal();
+				_typeL = 1L << ordinal();
 				_typeH = 0;
 			}
 			else
@@ -202,8 +202,10 @@ public abstract class L2Object
 				_typeH = 1L << high;
 			}
 			
-			if (_typeL < 0 || _typeH < 0)
-				throw new Error("Too many instance types, failed to load " + this.name());
+			if ((_typeL < 0) || (_typeH < 0))
+			{
+				throw new Error("Too many instance types, failed to load " + name());
+			}
 			
 			if (parent != null)
 			{
@@ -224,7 +226,7 @@ public abstract class L2Object
 		
 		public final boolean isType(InstanceType it)
 		{
-			return (_maskL & it._typeL) > 0 || (_maskH & it._typeH) > 0;
+			return ((_maskL & it._typeL) > 0) || ((_maskH & it._typeH) > 0);
 		}
 		
 		public final boolean isTypes(InstanceType... it)
@@ -232,7 +234,9 @@ public abstract class L2Object
 			for (InstanceType i : it)
 			{
 				if (isType(i))
+				{
 					return true;
+				}
 			}
 			return false;
 		}
@@ -267,7 +271,9 @@ public abstract class L2Object
 	{
 		IActionHandler handler = ActionHandler.getInstance().getHandler(getInstanceType());
 		if (handler != null)
+		{
 			handler.action(player, this, interact);
+		}
 		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
@@ -276,7 +282,9 @@ public abstract class L2Object
 	{
 		IActionHandler handler = ActionShiftHandler.getInstance().getHandler(getInstanceType());
 		if (handler != null)
+		{
 			handler.action(player, this, true);
+		}
 		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
@@ -311,7 +319,7 @@ public abstract class L2Object
 	
 	public final int getX()
 	{
-		assert getPosition().getWorldRegion() != null || _isVisible;
+		assert (getPosition().getWorldRegion() != null) || _isVisible;
 		return getPosition().getX();
 	}
 	
@@ -324,22 +332,28 @@ public abstract class L2Object
 	}
 	
 	/**
+	 * UnAfraid: TODO: Add listener here.
 	 * @param instanceId The id of the instance zone the object is in - id 0 is global
 	 */
 	public void setInstanceId(int instanceId)
 	{
-		if (_instanceId == instanceId)
+		if ((instanceId < 0) || (_instanceId == instanceId))
+		{
 			return;
+		}
 		
 		Instance oldI = InstanceManager.getInstance().getInstance(_instanceId);
 		Instance newI = InstanceManager.getInstance().getInstance(instanceId);
 		
 		if (newI == null)
-			return;
-		
-		if (this instanceof L2PcInstance)
 		{
-			if (_instanceId > 0 && oldI != null)
+			return;
+		}
+		
+		if (isPlayer())
+		{
+			L2PcInstance player = getActingPlayer();
+			if ((_instanceId > 0) && (oldI != null))
 			{
 				oldI.removePlayer(getObjectId());
 				if (oldI.isShowTimer())
@@ -347,9 +361,13 @@ public abstract class L2Object
 					int startTime = (int) ((System.currentTimeMillis() - oldI.getInstanceStartTime()) / 1000);
 					int endTime = (int) ((oldI.getInstanceEndTime() - oldI.getInstanceStartTime()) / 1000);
 					if (oldI.isTimerIncrease())
+					{
 						sendPacket(new ExSendUIEvent(this, true, true, startTime, endTime, oldI.getTimerText()));
+					}
 					else
+					{
 						sendPacket(new ExSendUIEvent(this, true, false, endTime - startTime, 0, oldI.getTimerText()));
+					}
 				}
 			}
 			if (instanceId > 0)
@@ -360,31 +378,41 @@ public abstract class L2Object
 					int startTime = (int) ((System.currentTimeMillis() - newI.getInstanceStartTime()) / 1000);
 					int endTime = (int) ((newI.getInstanceEndTime() - newI.getInstanceStartTime()) / 1000);
 					if (newI.isTimerIncrease())
+					{
 						sendPacket(new ExSendUIEvent(this, false, true, startTime, endTime, newI.getTimerText()));
+					}
 					else
+					{
 						sendPacket(new ExSendUIEvent(this, false, false, endTime - startTime, 0, newI.getTimerText()));
+					}
 				}
 			}
 			
-			if (((L2PcInstance) this).getPet() != null)
-				((L2PcInstance) this).getPet().setInstanceId(instanceId);
+			if (player.hasSummon())
+			{
+				player.getSummon().setInstanceId(instanceId);
+			}
 		}
-		else if (this instanceof L2Npc)
+		else if (isNpc())
 		{
-			if (_instanceId > 0 && oldI != null)
-				oldI.removeNpc(((L2Npc) this));
+			L2Npc npc = (L2Npc) this;
+			if ((_instanceId > 0) && (oldI != null))
+			{
+				oldI.removeNpc(npc);
+			}
 			if (instanceId > 0)
-				newI.addNpc(((L2Npc) this));
+			{
+				newI.addNpc(npc);
+			}
 		}
 		
 		_instanceId = instanceId;
 		
 		// If we change it for visible objects, me must clear & revalidates knownlists
-		if (_isVisible && _knownList != null)
+		if (_isVisible && (_knownList != null))
 		{
-			if (this instanceof L2PcInstance)
+			if (isPlayer())
 			{
-				
 				// We don't want some ugly looking disappear/appear effects, so don't update
 				// the knownlist here, but players usually enter instancezones through teleporting
 				// and the teleport will do the revalidation for us.
@@ -399,13 +427,13 @@ public abstract class L2Object
 	
 	public final int getY()
 	{
-		assert getPosition().getWorldRegion() != null || _isVisible;
+		assert (getPosition().getWorldRegion() != null) || _isVisible;
 		return getPosition().getY();
 	}
 	
 	public final int getZ()
 	{
-		assert getPosition().getWorldRegion() != null || _isVisible;
+		assert (getPosition().getWorldRegion() != null) || _isVisible;
 		return getPosition().getZ();
 	}
 	
@@ -471,7 +499,7 @@ public abstract class L2Object
 	 */
 	public final void spawnMe()
 	{
-		assert getPosition().getWorldRegion() == null && getPosition().getWorldPosition().getX() != 0 && getPosition().getWorldPosition().getY() != 0 && getPosition().getWorldPosition().getZ() != 0;
+		assert (getPosition().getWorldRegion() == null) && (getPosition().getWorldPosition().getX() != 0) && (getPosition().getWorldPosition().getY() != 0) && (getPosition().getWorldPosition().getZ() != 0);
 		
 		synchronized (this)
 		{
@@ -504,13 +532,21 @@ public abstract class L2Object
 			_isVisible = true;
 			
 			if (x > L2World.MAP_MAX_X)
+			{
 				x = L2World.MAP_MAX_X - 5000;
+			}
 			if (x < L2World.MAP_MIN_X)
+			{
 				x = L2World.MAP_MIN_X + 5000;
+			}
 			if (y > L2World.MAP_MAX_Y)
+			{
 				y = L2World.MAP_MAX_Y - 5000;
+			}
 			if (y < L2World.MAP_MIN_Y)
+			{
 				y = L2World.MAP_MIN_Y + 5000;
+			}
 			
 			getPosition().setWorldPosition(x, y, z);
 			getPosition().setWorldRegion(L2World.getInstance().getRegion(getPosition().getWorldPosition()));
@@ -535,9 +571,13 @@ public abstract class L2Object
 	public void toggleVisible()
 	{
 		if (isVisible())
+		{
 			decayMe();
+		}
 		else
+		{
 			spawnMe();
+		}
 	}
 	
 	public boolean isAttackable()
@@ -568,7 +608,9 @@ public abstract class L2Object
 	{
 		_isVisible = value;
 		if (!_isVisible)
+		{
 			getPosition().setWorldRegion(null);
+		}
 	}
 	
 	public ObjectKnownList getKnownList()
@@ -607,7 +649,9 @@ public abstract class L2Object
 	public final ObjectPoly getPoly()
 	{
 		if (_poly == null)
+		{
 			_poly = new ObjectPoly(this);
+		}
 		return _poly;
 	}
 	
@@ -776,7 +820,7 @@ public abstract class L2Object
 	}
 	
 	/**
-	 * @return {@code true} if object Npc Walker
+	 * @return {@code true} if object Npc Walker or Vehicle
 	 */
 	public boolean isWalker()
 	{
@@ -784,10 +828,100 @@ public abstract class L2Object
 	}
 	
 	/**
-	 * @return {@code true} if object Can be targetable
+	 * @return {@code true} if object Can be targeted
 	 */
 	public boolean isTargetable()
 	{
 		return true;
+	}
+	
+	/**
+	 * Check if the object is in the given zone Id.
+	 * @param zone the zone Id to check
+	 * @return {@code true} if the object is in that zone Id
+	 */
+	public boolean isInsideZone(ZoneId zone)
+	{
+		return false;
+	}
+	
+	/**
+	 * Check if current object has charged shot.
+	 * @param type of the shot to be checked.
+	 * @return {@code true} if the object has charged shot
+	 */
+	public boolean isChargedShot(ShotType type)
+	{
+		return false;
+	}
+	
+	/**
+	 * Charging shot into the current object.
+	 * @param type of the shot to be charged.
+	 * @param charged
+	 */
+	public void setChargedShot(ShotType type, boolean charged)
+	{
+	}
+	
+	/**
+	 * Try to recharge a shot.
+	 * @param physical skill are using Soul shots.
+	 * @param magical skill are using Spirit shots.
+	 */
+	public void rechargeShots(boolean physical, boolean magical)
+	{
+	}
+	
+	/**
+	 * @param <T>
+	 * @param script
+	 * @return
+	 */
+	public final <T> T addScript(T script)
+	{
+		if (_scripts == null)
+		{
+			// Double-checked locking
+			synchronized (this)
+			{
+				if (_scripts == null)
+				{
+					_scripts = new FastMap<String, Object>().shared();
+				}
+			}
+		}
+		_scripts.put(script.getClass().getName(), script);
+		return script;
+	}
+	
+	/**
+	 * @param <T>
+	 * @param script
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public final <T> T removeScript(Class<T> script)
+	{
+		if (_scripts == null)
+		{
+			return null;
+		}
+		return (T) _scripts.remove(script.getName());
+	}
+	
+	/**
+	 * @param <T>
+	 * @param script
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public final <T> T getScript(Class<T> script)
+	{
+		if (_scripts == null)
+		{
+			return null;
+		}
+		return (T) _scripts.get(script.getName());
 	}
 }

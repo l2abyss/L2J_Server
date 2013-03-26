@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.instancemanager;
 
@@ -176,11 +180,6 @@ public class MapRegionManager extends DocumentParser
 		{
 			return region.getLocId();
 		}
-		
-		if (Config.DEBUG)
-		{
-			_log.warning(getClass().getSimpleName() + ": Player outside map regions at X,Y=" + locX + "," + locY);
-		}
 		return 0;
 	}
 	
@@ -260,7 +259,7 @@ public class MapRegionManager extends DocumentParser
 	 */
 	public Location getTeleToLocation(L2Character activeChar, TeleportWhereType teleportWhere)
 	{
-		int[] coord;
+		Location loc;
 		
 		if (activeChar instanceof L2PcInstance)
 		{
@@ -460,10 +459,10 @@ public class MapRegionManager extends DocumentParser
 				Instance inst = InstanceManager.getInstance().getInstance(player.getInstanceId());
 				if (inst != null)
 				{
-					coord = inst.getSpawnLoc();
-					if ((coord[0] != 0) && (coord[1] != 0) && (coord[2] != 0))
+					loc = inst.getSpawnLoc();
+					if (loc != null)
 					{
-						return new Location(coord[0], coord[1], coord[2]);
+						return loc;
 					}
 				}
 			}
@@ -482,10 +481,6 @@ public class MapRegionManager extends DocumentParser
 		catch (Exception e)
 		{
 			// Port to the default respawn if no closest town found.
-			if (Config.DEBUG)
-			{
-				_log.warning(getClass().getSimpleName() + ": Not defined respawn point for coords loc X=" + activeChar.getX() + " Y=" + activeChar.getY() + " Z=" + activeChar.getZ());
-			}
 			return _regions.get(defaultRespawn).getSpawnLoc();
 		}
 	}

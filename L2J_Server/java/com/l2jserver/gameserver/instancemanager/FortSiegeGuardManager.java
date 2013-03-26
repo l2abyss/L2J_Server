@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.instancemanager;
 
@@ -32,10 +36,9 @@ import com.l2jserver.gameserver.model.entity.Fort;
 
 public class FortSiegeGuardManager
 {
-	
 	private static final Logger _log = Logger.getLogger(FortSiegeGuardManager.class.getName());
 	
-	private Fort _fort;
+	private final Fort _fort;
 	protected FastMap<Integer, FastList<L2Spawn>> _siegeGuards = new FastMap<>();
 	protected FastList<L2Spawn> _siegeGuardsSpawns;
 	
@@ -45,7 +48,7 @@ public class FortSiegeGuardManager
 	}
 	
 	/**
-	 * Spawn guards.<BR><BR>
+	 * Spawn guards.
 	 */
 	public void spawnSiegeGuard()
 	{
@@ -58,9 +61,13 @@ public class FortSiegeGuardManager
 				{
 					spawnDat.doSpawn();
 					if (spawnDat.getLastSpawn() instanceof L2FortBallistaInstance)
+					{
 						spawnDat.stopRespawn();
+					}
 					else
+					{
 						spawnDat.startRespawn();
+					}
 				}
 			}
 		}
@@ -71,7 +78,7 @@ public class FortSiegeGuardManager
 	}
 	
 	/**
-	 * Unspawn guards.<BR><BR>
+	 * Unspawn guards.
 	 */
 	public void unspawnSiegeGuard()
 	{
@@ -85,7 +92,9 @@ public class FortSiegeGuardManager
 				{
 					spawnDat.stopRespawn();
 					if (spawnDat.getLastSpawn() != null)
+					{
 						spawnDat.getLastSpawn().doDie(spawnDat.getLastSpawn());
+					}
 				}
 			}
 		}
@@ -96,45 +105,44 @@ public class FortSiegeGuardManager
 	}
 	
 	/**
-	 * Load guards.<BR><BR>
+	 * Load guards.
 	 */
 	void loadSiegeGuard()
 	{
 		_siegeGuards.clear();
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM fort_siege_guards Where fortId = ? "))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM fort_siege_guards Where fortId = ? ");
-			statement.setInt(1, getFort().getFortId());
-			ResultSet rs = statement.executeQuery();
-			
-			L2Spawn spawn1;
-			L2NpcTemplate template1;
-			_siegeGuardsSpawns = new FastList<>();
-			while (rs.next())
+			ps.setInt(1, getFort().getFortId());
+			try (ResultSet rs = ps.executeQuery())
 			{
-				int fortId = rs.getInt("fortId");
-				template1 = NpcTable.getInstance().getTemplate(rs.getInt("npcId"));
-				if (template1 != null)
+				L2Spawn spawn1;
+				L2NpcTemplate template1;
+				_siegeGuardsSpawns = new FastList<>();
+				while (rs.next())
 				{
-					spawn1 = new L2Spawn(template1);
-					spawn1.setAmount(1);
-					spawn1.setLocx(rs.getInt("x"));
-					spawn1.setLocy(rs.getInt("y"));
-					spawn1.setLocz(rs.getInt("z"));
-					spawn1.setHeading(rs.getInt("heading"));
-					spawn1.setRespawnDelay(rs.getInt("respawnDelay"));
-					spawn1.setLocation(0);
-					
-					_siegeGuardsSpawns.add(spawn1);
+					int fortId = rs.getInt("fortId");
+					template1 = NpcTable.getInstance().getTemplate(rs.getInt("npcId"));
+					if (template1 != null)
+					{
+						spawn1 = new L2Spawn(template1);
+						spawn1.setAmount(1);
+						spawn1.setLocx(rs.getInt("x"));
+						spawn1.setLocy(rs.getInt("y"));
+						spawn1.setLocz(rs.getInt("z"));
+						spawn1.setHeading(rs.getInt("heading"));
+						spawn1.setRespawnDelay(rs.getInt("respawnDelay"));
+						spawn1.setLocation(0);
+						
+						_siegeGuardsSpawns.add(spawn1);
+					}
+					else
+					{
+						_log.warning("Missing npc data in npc table for id: " + rs.getInt("npcId"));
+					}
+					_siegeGuards.put(fortId, _siegeGuardsSpawns);
 				}
-				else
-				{
-					_log.warning("Missing npc data in npc table for id: " + rs.getInt("npcId"));
-				}
-				_siegeGuards.put(fortId, _siegeGuardsSpawns);
 			}
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
@@ -19,14 +23,18 @@ import java.util.Arrays;
 import java.util.logging.Level;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
+import com.l2jserver.gameserver.instancemanager.InstanceManager;
+import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Summon;
+import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.effects.L2Effect;
@@ -34,6 +42,7 @@ import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.SystemMessageId.SMLocalisation;
 
@@ -83,9 +92,13 @@ public final class SystemMessage extends L2GameServerPacket
 		}
 	}
 	
+	// TODO: UnAfraid: Check/Implement id's: 14,15.
+	// 15 exists in goddess of destruction but also may works in h5 needs to be verified!
+	// private static final byte TYPE_CLASS_ID = 15;
+	// id 14 unknown
 	private static final byte TYPE_SYSTEM_STRING = 13;
 	private static final byte TYPE_PLAYER_NAME = 12;
-	// id 11 - unknown
+	private static final byte TYPE_DOOR_NAME = 11;
 	private static final byte TYPE_INSTANCE_NAME = 10;
 	private static final byte TYPE_ELEMENT_NAME = 9;
 	// id 8 - same as 3
@@ -101,7 +114,9 @@ public final class SystemMessage extends L2GameServerPacket
 	public static final SystemMessage sendString(final String text)
 	{
 		if (text == null)
+		{
 			throw new NullPointerException();
+		}
 		
 		final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1);
 		sm.addString(text);
@@ -112,11 +127,15 @@ public final class SystemMessage extends L2GameServerPacket
 	{
 		SystemMessage sm = smId.getStaticSystemMessage();
 		if (sm != null)
+		{
 			return sm;
+		}
 		
 		sm = new SystemMessage(smId);
 		if (smId.getParamCount() == 0)
+		{
 			smId.setStaticSystemMessage(sm);
+		}
 		
 		return sm;
 	}
@@ -172,15 +191,25 @@ public final class SystemMessage extends L2GameServerPacket
 	}
 	
 	/**
-	 * Castlename-e.dat<br>
-	 * 0-9 Castle names<br>
-	 * 21-64 CH names<br>
-	 * 81-89 Territory names<br>
-	 * 101-121 Fortress names<br>
-	 * @param number
-	 * @return
+	 * Appends a Castle name parameter type, the name will be read from CastleName-e.dat.<br>
+	 * <ul>
+	 * <li>1-9 Castle names</li>
+	 * <li>21 Fortress of Resistance</li>
+	 * <li>22-33 Clan Hall names</li>
+	 * <li>34 Devastated Castle</li>
+	 * <li>35 Bandit Stronghold</li>
+	 * <li>36-61 Clan Hall names</li>
+	 * <li>62 Rainbow Springs</li>
+	 * <li>63 Wild Beast Reserve</li>
+	 * <li>64 Fortress of the Dead</li>
+	 * <li>81-89 Territory names</li>
+	 * <li>90-100 null</li>
+	 * <li>101-121 Fortress names</li>
+	 * </ul>
+	 * @param number the conquerable entity
+	 * @return the system message with the proper parameter
 	 */
-	public final SystemMessage addFortId(final int number)
+	public final SystemMessage addCastleId(final int number)
 	{
 		append(new SMParam(TYPE_CASTLE_NAME, number));
 		return this;
@@ -200,21 +229,32 @@ public final class SystemMessage extends L2GameServerPacket
 	
 	public final SystemMessage addCharName(final L2Character cha)
 	{
-		if (cha instanceof L2Npc)
+		if (cha.isNpc())
 		{
-			if (((L2Npc) cha).getTemplate().isServerSideName())
-				return addString(((L2Npc) cha).getTemplate().getName());
-			return addNpcName((L2Npc) cha);
+			L2Npc npc = (L2Npc) cha;
+			if (npc.getTemplate().isServerSideName())
+			{
+				return addString(npc.getTemplate().getName());
+			}
+			return addNpcName(npc);
 		}
-		else if (cha instanceof L2PcInstance)
+		else if (cha.isPlayer())
 		{
-			return addPcName((L2PcInstance) cha);
+			return addPcName(cha.getActingPlayer());
 		}
-		else if (cha instanceof L2Summon)
+		else if (cha.isSummon())
 		{
-			if (((L2Summon) cha).getTemplate().isServerSideName())
-				return addString(((L2Summon) cha).getTemplate().getName());
-			return addNpcName((L2Summon) cha);
+			L2Summon summon = (L2Summon) cha;
+			if (summon.getTemplate().isServerSideName())
+			{
+				return addString(summon.getTemplate().getName());
+			}
+			return addNpcName(summon);
+		}
+		else if (cha.isDoor())
+		{
+			L2DoorInstance door = (L2DoorInstance) cha;
+			return addDoorName(door.getDoorId());
 		}
 		return addString(cha.getName());
 	}
@@ -225,7 +265,18 @@ public final class SystemMessage extends L2GameServerPacket
 		return this;
 	}
 	
-	public final SystemMessage addNpcName(final L2Npc npc)
+	/**
+	 * ID from doorData.xml
+	 * @param doorId
+	 * @return
+	 */
+	public SystemMessage addDoorName(int doorId)
+	{
+		append(new SMParam(TYPE_DOOR_NAME, doorId));
+		return this;
+	}
+	
+	public final SystemMessage addNpcName(L2Npc npc)
 	{
 		return addNpcName(npc.getTemplate());
 	}
@@ -238,7 +289,9 @@ public final class SystemMessage extends L2GameServerPacket
 	public final SystemMessage addNpcName(final L2NpcTemplate template)
 	{
 		if (template.isCustom())
+		{
 			return addString(template.getName());
+		}
 		return addNpcName(template.getNpcId());
 	}
 	
@@ -250,16 +303,22 @@ public final class SystemMessage extends L2GameServerPacket
 	
 	public final SystemMessage addItemName(final L2ItemInstance item)
 	{
-		return addItemName(item.getItem().getDisplayId());
+		return addItemName(item.getItemId());
 	}
 	
 	public final SystemMessage addItemName(final L2Item item)
 	{
-		return addItemName(item.getDisplayId());
+		return addItemName(item.getItemId());
 	}
 	
 	public final SystemMessage addItemName(final int id)
 	{
+		L2Item item = ItemTable.getInstance().getTemplate(id);
+		if (item.getDisplayId() != id)
+		{
+			return addString(item.getName());
+		}
+		
 		append(new SMParam(TYPE_ITEM_NAME, id));
 		return this;
 	}
@@ -282,8 +341,10 @@ public final class SystemMessage extends L2GameServerPacket
 	
 	public final SystemMessage addSkillName(final L2Skill skill)
 	{
-		if (skill.getId() != skill.getDisplayId()) // custom skill - need nameId or smth like this.
+		if (skill.getId() != skill.getDisplayId())
+		{
 			return addString(skill.getName());
+		}
 		return addSkillName(skill.getId(), skill.getLevel());
 	}
 	
@@ -342,12 +403,16 @@ public final class SystemMessage extends L2GameServerPacket
 	
 	public final SystemMessage getLocalizedMessage(final String lang)
 	{
-		if (!Config.L2JMOD_MULTILANG_SM_ENABLE || _smId == SystemMessageId.S1)
+		if (!Config.L2JMOD_MULTILANG_SM_ENABLE || (_smId == SystemMessageId.S1))
+		{
 			return this;
+		}
 		
 		final SMLocalisation sml = _smId.getLocalisation(lang);
 		if (sml == null)
+		{
 			return this;
+		}
 		
 		final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1);
 		final Object[] params = new Object[_paramIndex];
@@ -407,13 +472,21 @@ public final class SystemMessage extends L2GameServerPacket
 				
 				case TYPE_SYSTEM_STRING:
 				{
-					params[i] = "SYS-S-" + param.getIntValue(); // super.writeD(param.getIntValue());
+					params[i] = "SYS-S-" + param.getIntValue(); // writeD(param.getIntValue());
 					break;
 				}
 				
 				case TYPE_INSTANCE_NAME:
 				{
-					params[i] = "INS-N-" + param.getIntValue(); // super.writeD(param.getIntValue());
+					final String instanceName = InstanceManager.getInstance().getInstanceIdName(param.getIntValue());
+					params[i] = instanceName == null ? "Unknown" : instanceName;
+					break;
+				}
+				
+				case TYPE_DOOR_NAME:
+				{
+					final L2DoorInstance door = DoorTable.getInstance().getDoor(param.getIntValue());
+					params[i] = door == null ? "Unknown" : door.getName();
 					break;
 				}
 				
@@ -428,10 +501,8 @@ public final class SystemMessage extends L2GameServerPacket
 				case TYPE_ZONE_NAME:
 				{
 					final int[] array = param.getIntArrayValue();
-					// super.writeD(array[0]); // x
-					// super.writeD(array[1]); // y
-					// super.writeD(array[2]); // z
-					params[i] = "ZON-N-" + Arrays.toString(array);
+					final L2ZoneType zone = ZoneManager.getInstance().getZone(array[0], array[1], array[2], L2ZoneType.class);
+					params[i] = zone == null ? "Unknown ZONE-N-" + Arrays.toString(array) : zone.getName();
 					break;
 				}
 			}
@@ -476,6 +547,7 @@ public final class SystemMessage extends L2GameServerPacket
 				case TYPE_ELEMENT_NAME:
 				case TYPE_SYSTEM_STRING:
 				case TYPE_INSTANCE_NAME:
+				case TYPE_DOOR_NAME:
 				{
 					out.println(param.getIntValue());
 					break;
@@ -537,6 +609,7 @@ public final class SystemMessage extends L2GameServerPacket
 				case TYPE_ELEMENT_NAME:
 				case TYPE_SYSTEM_STRING:
 				case TYPE_INSTANCE_NAME:
+				case TYPE_DOOR_NAME:
 				{
 					writeD(param.getIntValue());
 					break;

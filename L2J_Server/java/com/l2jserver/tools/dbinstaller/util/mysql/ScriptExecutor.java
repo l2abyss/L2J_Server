@@ -1,24 +1,30 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.tools.dbinstaller.util.mysql;
 
+import java.awt.HeadlessException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import javax.swing.JOptionPane;
@@ -46,6 +52,7 @@ public class ScriptExecutor
 	public void execSqlBatch(File dir, boolean skipErrors)
 	{
 		File[] file = dir.listFiles(new SQLFilter());
+		Arrays.sort(file);
 		_frame.setProgressIndeterminate(false);
 		_frame.setProgressMaximum(file.length - 1);
 		for (int i = 0; i < file.length; i++)
@@ -64,8 +71,8 @@ public class ScriptExecutor
 	{
 		_frame.appendToProgressArea("Installing " + file.getName());
 		String line = "";
-		try (Connection con = _frame.getConnection();
-			Statement stmt = con.createStatement();
+		Connection con = _frame.getConnection();
+		try (Statement stmt = con.createStatement();
 			Scanner scn = new Scanner(file))
 		{
 			StringBuilder sb = new StringBuilder();
@@ -84,7 +91,7 @@ public class ScriptExecutor
 				line = line.trim();
 				if (!line.isEmpty())
 				{
-					sb.append(line + "\n");
+					sb.append(line + System.getProperty("line.separator"));
 				}
 				
 				if (line.endsWith(";"))
@@ -102,16 +109,23 @@ public class ScriptExecutor
 		{
 			if (!skipErrors)
 			{
-				Object[] options =
+				try
 				{
-					"Continue",
-					"Abort"
-				};
-				
-				int n = JOptionPane.showOptionDialog(null, "MySQL Error: " + e.getMessage(), "Script Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
-				if (n == 1)
+					Object[] options =
+					{
+						"Continue",
+						"Abort"
+					};
+					
+					int n = JOptionPane.showOptionDialog(null, "MySQL Error: " + e.getMessage(), "Script Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+					if (n == 1)
+					{
+						System.exit(0);
+					}
+				}
+				catch (HeadlessException h)
 				{
-					System.exit(0);
+					e.printStackTrace();
 				}
 			}
 		}

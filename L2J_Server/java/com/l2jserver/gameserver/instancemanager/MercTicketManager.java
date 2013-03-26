@@ -1,22 +1,26 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.instancemanager;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,7 +31,6 @@ import javolution.util.FastList;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
-import com.l2jserver.gameserver.model.AutoChatHandler;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -48,10 +51,12 @@ public class MercTicketManager
 	
 	private static final FastList<L2ItemInstance> _droppedTickets = new FastList<>();
 	
-	//TODO move all these values into siege.properties
+	// TODO: move all these values into siege.properties
 	// max tickets per merc type = 10 + (castleid * 2)?
 	// max ticker per castle = 40 + (castleid * 20)?
-	private static final int[] MAX_MERC_PER_TYPE = {
+	// @formatter:off
+	private static final int[] MAX_MERC_PER_TYPE =
+	{
 		10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, // Gludio
 		15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, // Dion
 		10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, // Giran
@@ -64,7 +69,8 @@ public class MercTicketManager
 	};
 	
 	//TODO: not retail like: clan lvl 5 - 30 ticks max, lvl 7+ - 50 max
-	protected static final int[] MERCS_MAX_PER_CASTLE = {
+	protected static final int[] MERCS_MAX_PER_CASTLE =
+	{
 		100, // Gludio
 		150, // Dion
 		200, // Giran
@@ -76,7 +82,8 @@ public class MercTicketManager
 		400 // Schuttgart
 	};
 	
-	private static final int[] ITEM_IDS = {
+	private static final int[] ITEM_IDS =
+	{
 		3960, 3961, 3962, 3963, 3964, 3965, 3966, 3967, 3968, 3969, 6115, 6116, 6117, 6118, 6119, 6120, 6121, 6122, 6123, 6124, 6038, 6039, 6040, 6041, 6042, 6043, 6044, 6045, 6046, 6047, 6175, 6176, 6177, 6178, 6179, 6180, 6181, 6182, 6183, 6184, 6235, 6236, 6237, 6238, 6239, 6240, 6241, 6242, 6243, 6244, 6295, 6296,	// Gludio
 		3973, 3974, 3975, 3976, 3977, 3978, 3979, 3980, 3981, 3982, 6125, 6126, 6127, 6128, 6129, 6130, 6131, 6132, 6133, 6134, 6051, 6052, 6053, 6054, 6055, 6056, 6057, 6058, 6059, 6060, 6185, 6186, 6187, 6188, 6189, 6190, 6191, 6192, 6193, 6194, 6245, 6246, 6247, 6248, 6249, 6250, 6251, 6252, 6253, 6254, 6297, 6298,	// Dion
 		3986, 3987, 3988, 3989, 3990, 3991, 3992, 3993, 3994, 3995, 6135, 6136, 6137, 6138, 6139, 6140, 6141, 6142, 6143, 6144, 6064, 6065, 6066, 6067, 6068, 6069, 6070, 6071, 6072, 6073, 6195, 6196, 6197, 6198, 6199, 6200, 6201, 6202, 6203, 6204, 6255, 6256, 6257, 6258, 6259, 6260, 6261, 6262, 6263, 6264, 6299, 6300,	// Giran
@@ -88,7 +95,9 @@ public class MercTicketManager
 		7918, 7919, 7920, 7921, 7922, 7923, 7924, 7925, 7926, 7927, 7941, 7942, 7943, 7944, 7945, 7946, 7947, 7948, 7949, 7950, 7931, 7932, 7933, 7934, 7935, 7936, 7937, 7938, 7939, 7940, 7951, 7952, 7953, 7954, 7955, 7956, 7957, 7958, 7959, 7960, 7961, 7962, 7963, 7964, 7965, 7966, 7967, 7968, 7969, 7970, 7971, 7972	// Schuttgart
 	};
 	
-	private static final int[] NPC_IDS = {35010, 35011, 35012, 35013, 35014, 35015, 35016, 35017, 35018, 35019, 35020, 35021, 35022, 35023, 35024, 35025, 35026, 35027, 35028, 35029, 35030,35031,35032,35033,35034,35035,35036,35037,35038,35039, 35040, 35041, 35042, 35043, 35044, 35045, 35046, 35047, 35048, 35049, 35050, 35051, 35052, 35053, 35054, 35055, 35056, 35057, 35058, 35059, 35060, 35061, // Gludio
+	private static final int[] NPC_IDS =
+	{
+		35010, 35011, 35012, 35013, 35014, 35015, 35016, 35017, 35018, 35019, 35020, 35021, 35022, 35023, 35024, 35025, 35026, 35027, 35028, 35029, 35030,35031,35032,35033,35034,35035,35036,35037,35038,35039, 35040, 35041, 35042, 35043, 35044, 35045, 35046, 35047, 35048, 35049, 35050, 35051, 35052, 35053, 35054, 35055, 35056, 35057, 35058, 35059, 35060, 35061, // Gludio
 		35010, 35011, 35012, 35013, 35014, 35015, 35016, 35017, 35018, 35019, 35020, 35021, 35022, 35023, 35024, 35025, 35026, 35027, 35028, 35029, 35030,35031,35032,35033,35034,35035,35036,35037,35038,35039, 35040, 35041, 35042, 35043, 35044, 35045, 35046, 35047, 35048, 35049, 35050, 35051, 35052, 35053, 35054, 35055, 35056, 35057, 35058, 35059, 35060, 35061, // Dion
 		35010, 35011, 35012, 35013, 35014, 35015, 35016, 35017, 35018, 35019, 35020, 35021, 35022, 35023, 35024, 35025, 35026, 35027, 35028, 35029, 35030,35031,35032,35033,35034,35035,35036,35037,35038,35039, 35040, 35041, 35042, 35043, 35044, 35045, 35046, 35047, 35048, 35049, 35050, 35051, 35052, 35053, 35054, 35055, 35056, 35057, 35058, 35059, 35060, 35061, // Giran
 		35010, 35011, 35012, 35013, 35014, 35015, 35016, 35017, 35018, 35019, 35020, 35021, 35022, 35023, 35024, 35025, 35026, 35027, 35028, 35029, 35030,35031,35032,35033,35034,35035,35036,35037,35038,35039, 35040, 35041, 35042, 35043, 35044, 35045, 35046, 35047, 35048, 35049, 35050, 35051, 35052, 35053, 35054, 35055, 35056, 35057, 35058, 35059, 35060, 35061, // Oren
@@ -98,6 +107,7 @@ public class MercTicketManager
 		35010, 35011, 35012, 35013, 35014, 35015, 35016, 35017, 35018, 35019, 35020, 35021, 35022, 35023, 35024, 35025, 35026, 35027, 35028, 35029, 35030,35031,35032,35033,35034,35035,35036,35037,35038,35039, 35040, 35041, 35042, 35043, 35044, 35045, 35046, 35047, 35048, 35049, 35050, 35051, 35052, 35053, 35054, 35055, 35056, 35057, 35058, 35059, 35060, 35061, // Rune
 		35010, 35011, 35012, 35013, 35014, 35015, 35016, 35017, 35018, 35019, 35020, 35021, 35022, 35023, 35024, 35025, 35026, 35027, 35028, 35029, 35030,35031,35032,35033,35034,35035,35036,35037,35038,35039, 35040, 35041, 35042, 35043, 35044, 35045, 35046, 35047, 35048, 35049, 35050, 35051, 35052, 35053, 35054, 35055, 35056, 35057, 35058, 35059, 35060, 35061, // Schuttgart
 	};
+	// @formatter:on
 	
 	private static final int GUARDIAN_TYPES_COUNT = 52;
 	
@@ -110,14 +120,20 @@ public class MercTicketManager
 	// returns the castleId for the passed ticket item id
 	public int getTicketCastleId(int itemId)
 	{
-		for (int i = 0; i < 9; i++) //CastleID`s from 1 to 9 minus;
+		for (int i = 0; i < 9; i++) // CastleID`s from 1 to 9 minus;
 		{
 			for (int i2 = 0; i2 < 50; i2 += 10)
-				//Simplified if statement;
-				if ((itemId >= ITEM_IDS[i2 + i * GUARDIAN_TYPES_COUNT] && itemId <= ITEM_IDS[i2 + 9 + i * GUARDIAN_TYPES_COUNT]))
+			{
+				// Simplified if statement;
+				if (((itemId >= ITEM_IDS[i2 + (i * GUARDIAN_TYPES_COUNT)]) && (itemId <= ITEM_IDS[i2 + 9 + (i * GUARDIAN_TYPES_COUNT)])))
+				{
 					return i + 1;
-			if (itemId >= ITEM_IDS[50] && itemId <= ITEM_IDS[51])
+				}
+			}
+			if ((itemId >= ITEM_IDS[50]) && (itemId <= ITEM_IDS[51]))
+			{
 				return i + 1;
+			}
 		}
 		return -1;
 	}
@@ -133,19 +149,18 @@ public class MercTicketManager
 	 */
 	private final void load()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT * FROM castle_siege_guards Where isHired = 1"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM castle_siege_guards Where isHired = 1");
-			ResultSet rs = statement.executeQuery();
-			
 			int npcId;
 			int itemId;
 			int x, y, z;
 			int mercPlaced[] = new int[20];
 			// start index to begin the search for the itemId corresponding to this NPC
 			// this will help with:
-			//	a) skip unnecessary iterations in the search loop
-			//	b) avoid finding the wrong itemId whenever tickets of different spawn the same npc!
+			// a) skip unnecessary iterations in the search loop
+			// b) avoid finding the wrong itemId whenever tickets of different spawn the same npc!
 			int startindex = 0;
 			
 			while (rs.next())
@@ -158,13 +173,16 @@ public class MercTicketManager
 				if (castle != null)
 				{
 					if (mercPlaced[castle.getCastleId() - 1] >= MERCS_MAX_PER_CASTLE[castle.getCastleId() - 1])
+					{
 						continue;
+					}
 					startindex = GUARDIAN_TYPES_COUNT * (castle.getCastleId() - 1);
 					mercPlaced[castle.getCastleId() - 1] += 1;
 				}
 				
 				// find the FIRST ticket itemId with spawns the saved NPC in the saved location
-				for (int i = startindex; i < startindex + GUARDIAN_TYPES_COUNT; i++)
+				for (int i = startindex; i < (startindex + GUARDIAN_TYPES_COUNT); i++)
+				{
 					if (NPC_IDS[i] == npcId) // Find the index of the item used
 					{
 						// only handle tickets if a siege is not ongoing in this npc's castle
@@ -175,17 +193,18 @@ public class MercTicketManager
 							L2ItemInstance dropticket = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
 							dropticket.setLocation(L2ItemInstance.ItemLocation.VOID);
 							dropticket.dropMe(null, x, y, z);
-							dropticket.setDropTime(0); //avoids it from being removed by the auto item destroyer
+							dropticket.setDropTime(0); // avoids it from being removed by the auto item destroyer
 							L2World.getInstance().storeObject(dropticket);
 							_droppedTickets.add(dropticket);
 						}
 						break;
 					}
+				}
 			}
 			rs.close();
-			statement.close();
+			s.close();
 			
-			_log.info("Loaded: " + _droppedTickets.size() + " Mercenary Tickets");
+			_log.info(getClass().getSimpleName() + ": Loaded: " + _droppedTickets.size() + " Mercenary Tickets");
 		}
 		catch (Exception e)
 		{
@@ -194,59 +213,73 @@ public class MercTicketManager
 	}
 	
 	/**
-	 * Checks if the passed item has reached the limit of number of dropped
-	 * tickets that this SPECIFIC item may have in its castle
-	 * @param itemId 
-	 * @return 
+	 * Checks if the passed item has reached the limit of number of dropped tickets that this SPECIFIC item may have in its castle
+	 * @param itemId
+	 * @return
 	 */
 	public boolean isAtTypeLimit(int itemId)
 	{
 		int limit = -1;
 		// find the max value for this item
 		for (int i = 0; i < ITEM_IDS.length; i++)
+		{
 			if (ITEM_IDS[i] == itemId) // Find the index of the item used
 			{
 				limit = MAX_MERC_PER_TYPE[i];
 				break;
 			}
+		}
 		
 		if (limit <= 0)
+		{
 			return true;
+		}
 		
 		int count = 0;
 		for (L2ItemInstance ticket : _droppedTickets)
 		{
-			if (ticket != null && ticket.getItemId() == itemId)
+			if ((ticket != null) && (ticket.getItemId() == itemId))
+			{
 				count++;
+			}
 		}
 		if (count >= limit)
+		{
 			return true;
+		}
 		return false;
 	}
 	
 	/**
-	 * Checks if the passed item belongs to a castle which has reached its limit
-	 * of number of dropped tickets.
-	 * @param itemId 
-	 * @return 
+	 * Checks if the passed item belongs to a castle which has reached its limit of number of dropped tickets.
+	 * @param itemId
+	 * @return
 	 */
 	public boolean isAtCasleLimit(int itemId)
 	{
 		int castleId = getTicketCastleId(itemId);
 		if (castleId <= 0)
+		{
 			return true;
+		}
 		int limit = MERCS_MAX_PER_CASTLE[castleId - 1];
 		if (limit <= 0)
+		{
 			return true;
+		}
 		
 		int count = 0;
 		for (L2ItemInstance ticket : _droppedTickets)
 		{
 			if ((ticket != null) && (getTicketCastleId(ticket.getItemId()) == castleId))
+			{
 				count++;
+			}
 		}
 		if (count >= limit)
+		{
 			return true;
+		}
 		return false;
 	}
 	
@@ -263,25 +296,22 @@ public class MercTicketManager
 			double dy = y - item.getY();
 			double dz = z - item.getZ();
 			
-			if ((dx * dx + dy * dy + dz * dz) < 25 * 25)
+			if (((dx * dx) + (dy * dy) + (dz * dz)) < (25 * 25))
+			{
 				return true;
+			}
 		}
 		return false;
 	}
 	
 	/**
-	 * addTicket actions
-	 * 1) find the npc that needs to be saved in the mercenary spawns, given this item
-	 * 2) Use the passed character's location info to add the spawn
-	 * 3) create a copy of the item to drop in the world
-	 * returns the id of the mercenary npc that was added to the spawn
-	 * returns -1 if this fails.
-	 * @param itemId 
-	 * @param activeChar 
-	 * @param messages 
-	 * @return 
+	 * addTicket actions 1) find the npc that needs to be saved in the mercenary spawns, given this item 2) Use the passed character's location info to add the spawn 3) create a copy of the item to drop in the world returns the id of the mercenary npc that was added to the spawn returns -1 if this
+	 * fails.
+	 * @param itemId
+	 * @param activeChar
+	 * @return
 	 */
-	public int addTicket(int itemId, L2PcInstance activeChar, String[] messages)
+	public int addTicket(int itemId, L2PcInstance activeChar)
 	{
 		int x = activeChar.getX();
 		int y = activeChar.getY();
@@ -289,24 +319,26 @@ public class MercTicketManager
 		int heading = activeChar.getHeading();
 		
 		Castle castle = CastleManager.getInstance().getCastle(activeChar);
-		if (castle == null) //this should never happen at this point
+		if (castle == null)
+		{
 			return -1;
+		}
 		
 		for (int i = 0; i < ITEM_IDS.length; i++)
 		{
 			if (ITEM_IDS[i] == itemId) // Find the index of the item used
 			{
-				spawnMercenary(NPC_IDS[i], x, y, z, 3000, messages, 0);
+				spawnMercenary(NPC_IDS[i], x, y, z, 3000);
 				
-				// Hire merc for this castle.  NpcId is at the same index as the item used.
+				// Hire merc for this castle. NpcId is at the same index as the item used.
 				castle.getSiege().getSiegeGuardManager().hireMerc(x, y, z, heading, NPC_IDS[i]);
 				
 				// create the ticket in the gameworld
 				L2ItemInstance dropticket = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
 				dropticket.setLocation(L2ItemInstance.ItemLocation.VOID);
 				dropticket.dropMe(null, x, y, z);
-				dropticket.setDropTime(0); //avoids it from beeing removed by the auto item destroyer
-				L2World.getInstance().storeObject(dropticket); //add to the world
+				dropticket.setDropTime(0); // avoids it from beeing removed by the auto item destroyer
+				L2World.getInstance().storeObject(dropticket); // add to the world
 				// and keep track of this ticket in the list
 				_droppedTickets.add(dropticket);
 				
@@ -316,7 +348,7 @@ public class MercTicketManager
 		return -1;
 	}
 	
-	private void spawnMercenary(int npcId, int x, int y, int z, int despawnDelay, String[] messages, int chatDelay)
+	private void spawnMercenary(int npcId, int x, int y, int z, int despawnDelay)
 	{
 		L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId);
 		if (template != null)
@@ -326,18 +358,16 @@ public class MercTicketManager
 			npc.setDecayed(false);
 			npc.spawnMe(x, y, (z + 20));
 			
-			if (messages != null && messages.length > 0)
-				AutoChatHandler.getInstance().registerChat(npc, messages, chatDelay);
-			
 			if (despawnDelay > 0)
+			{
 				npc.scheduleDespawn(despawnDelay);
+			}
 		}
 	}
 	
 	/**
-	 * Delete all tickets from a castle;
-	 * remove the items from the world and remove references to them from this class
-	 * @param castleId 
+	 * Delete all tickets from a castle; remove the items from the world and remove references to them from this class
+	 * @param castleId
 	 */
 	public void deleteTickets(int castleId)
 	{
@@ -355,9 +385,8 @@ public class MercTicketManager
 	}
 	
 	/**
-	 * remove a single ticket and its associated spawn from the world
-	 * (used when the castle lord picks up a ticket, for example)
-	 * @param item 
+	 * remove a single ticket and its associated spawn from the world (used when the castle lord picks up a ticket, for example)
+	 * @param item
 	 */
 	public void removeTicket(L2ItemInstance item)
 	{
@@ -366,15 +395,17 @@ public class MercTicketManager
 		
 		// find the FIRST ticket itemId with spawns the saved NPC in the saved location
 		for (int i = 0; i < ITEM_IDS.length; i++)
+		{
 			if (ITEM_IDS[i] == itemId) // Find the index of the item used
 			{
 				npcId = NPC_IDS[i];
 				break;
 			}
+		}
 		// find the castle where this item is
 		Castle castle = CastleManager.getInstance().getCastleById(getTicketCastleId(itemId));
 		
-		if (npcId > 0 && castle != null)
+		if ((npcId > 0) && (castle != null))
 		{
 			(new SiegeGuardManager(castle)).removeMerc(npcId, item.getX(), item.getY(), item.getZ());
 		}

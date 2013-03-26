@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.tools.gsregistering;
 
@@ -125,7 +129,7 @@ public abstract class BaseGameServerRegister
 					{
 						if (bundle != null)
 						{
-							System.out.printf(bundle.getString("wrongUnregisterArg") + '\n', gsId);
+							System.out.printf(bundle.getString("wrongUnregisterArg") + Config.EOL, gsId);
 						}
 						System.exit(1);
 					}
@@ -448,12 +452,12 @@ public abstract class BaseGameServerRegister
 			if (getBundle() != null)
 			{
 				title = getBundle().getString("error");
-				msg += '\n' + getBundle().getString("reason") + ' ' + t.getLocalizedMessage();
+				msg += Config.EOL + getBundle().getString("reason") + ' ' + t.getLocalizedMessage();
 			}
 			else
 			{
 				title = "Error";
-				msg += "\nCause: " + t.getLocalizedMessage();
+				msg += Config.EOL + "Cause: " + t.getLocalizedMessage();
 			}
 			System.out.println(title + ": " + msg);
 		}
@@ -511,21 +515,21 @@ public abstract class BaseGameServerRegister
 					}
 					else
 					{
-						System.out.printf(getBundle().getString("registrationOk") + '\n', registeredId);
+						System.out.printf(getBundle().getString("registrationOk") + Config.EOL, registeredId);
 					}
 				}
 				else
 				{
-					System.out.printf(getBundle().getString("checkingIdInUse") + '\n', _id);
+					System.out.printf(getBundle().getString("checkingIdInUse") + Config.EOL, _id);
 					if (GameServerTable.getInstance().hasRegisteredGameServerOnId(_id))
 					{
 						System.out.println(getBundle().getString("yes"));
 						if (_force)
 						{
-							System.out.printf(getBundle().getString("forcingRegistration") + '\n', _id);
+							System.out.printf(getBundle().getString("forcingRegistration") + Config.EOL, _id);
 							BaseGameServerRegister.unregisterGameServer(_id);
 							BaseGameServerRegister.registerGameServer(_id, _outDir);
-							System.out.printf(getBundle().getString("registrationOk") + '\n', _id);
+							System.out.printf(getBundle().getString("registrationOk") + Config.EOL, _id);
 						}
 						else if (_fallback)
 						{
@@ -538,7 +542,7 @@ public abstract class BaseGameServerRegister
 							}
 							else
 							{
-								System.out.printf(getBundle().getString("registrationOk") + '\n', registeredId);
+								System.out.printf(getBundle().getString("registrationOk") + Config.EOL, registeredId);
 							}
 						}
 						else
@@ -584,7 +588,7 @@ public abstract class BaseGameServerRegister
 		@Override
 		public void run()
 		{
-			System.out.printf(getBundle().getString("removingGsId") + '\n', _id);
+			System.out.printf(getBundle().getString("removingGsId") + Config.EOL, _id);
 			try
 			{
 				BaseGameServerRegister.unregisterGameServer(_id);

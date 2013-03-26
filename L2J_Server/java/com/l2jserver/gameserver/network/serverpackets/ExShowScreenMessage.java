@@ -1,26 +1,32 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
+ * ExShowScreenMessage server packet implementation.
  * @author Kerberos
  */
 public class ExShowScreenMessage extends L2GameServerPacket
@@ -37,17 +43,31 @@ public class ExShowScreenMessage extends L2GameServerPacket
 	private final String _text;
 	private final int _time;
 	private final int _npcString;
-	private List<String> _parameters;
+	private List<String> _parameters = null;
+	// Positions
+	public static final byte TOP_LEFT = 0x01;
+	public static final byte TOP_CENTER = 0x02;
+	public static final byte TOP_RIGHT = 0x03;
+	public static final byte MIDDLE_LEFT = 0x04;
+	public static final byte MIDDLE_CENTER = 0x05;
+	public static final byte MIDDLE_RIGHT = 0x06;
+	public static final byte BOTTOM_CENTER = 0x07;
+	public static final byte BOTTOM_RIGHT = 0x08;
 	
+	/**
+	 * Display a String on the screen for a given time.
+	 * @param text the text to display
+	 * @param time the display time
+	 */
 	public ExShowScreenMessage(String text, int time)
 	{
-		_type = 1;
+		_type = 2;
 		_sysMessageId = -1;
 		_unk1 = 0;
 		_unk2 = 0;
 		_unk3 = 0;
 		_fade = false;
-		_position = 0x02;
+		_position = TOP_CENTER;
 		_text = text;
 		_time = time;
 		_size = 0;
@@ -55,39 +75,77 @@ public class ExShowScreenMessage extends L2GameServerPacket
 		_npcString = -1;
 	}
 	
-	public ExShowScreenMessage(NpcStringId npcString, int position, int time) // For npcstring
+	/**
+	 * Display a NPC String on the screen for a given position and time.
+	 * @param npcString the NPC String Id
+	 * @param position the position on the screen
+	 * @param time the display time
+	 * @param params the String parameters
+	 */
+	public ExShowScreenMessage(NpcStringId npcString, int position, int time, String... params)
 	{
 		_type = 2;
 		_sysMessageId = -1;
-		_unk1 = 0;
-		_unk2 = 0;
-		_unk3 = 0;
+		_unk1 = 0x00;
+		_unk2 = 0x00;
+		_unk3 = 0x00;
 		_fade = false;
 		_position = position;
 		_text = null;
 		_time = time;
-		_size = 0;
+		_size = 0x00;
 		_effect = false;
 		_npcString = npcString.getId();
+		if (params != null)
+		{
+			_parameters = Arrays.asList(params);
+		}
 	}
 	
-	public ExShowScreenMessage(SystemMessageId systemMsg, int position, int time) // For SystemMessage
+	/**
+	 * Display a System Message on the screen for a given position and time.
+	 * @param systemMsg the System Message Id
+	 * @param position the position on the screen
+	 * @param time the display time
+	 * @param params the String parameters
+	 */
+	public ExShowScreenMessage(SystemMessageId systemMsg, int position, int time, String... params)
 	{
 		_type = 2;
 		_sysMessageId = systemMsg.getId();
-		_unk1 = 0;
-		_unk2 = 0;
-		_unk3 = 0;
+		_unk1 = 0x00;
+		_unk2 = 0x00;
+		_unk3 = 0x00;
 		_fade = false;
 		_position = position;
 		_text = null;
 		_time = time;
-		_size = 0;
+		_size = 0x00;
 		_effect = false;
 		_npcString = -1;
+		if (params != null)
+		{
+			_parameters = Arrays.asList(params);
+		}
 	}
 	
-	public ExShowScreenMessage(int type, int messageId, int position, int unk1, int size, int unk2, int unk3, boolean showEffect, int time, boolean fade, String text, NpcStringId npcString)
+	/**
+	 * Display a Text, System Message or a NPC String on the screen for the given parameters.
+	 * @param type 0 - System Message, 1 - Text, 2 - NPC String
+	 * @param messageId the System Message Id
+	 * @param position the position on the screen
+	 * @param unk1
+	 * @param size the font size 0 - normal, 1 - small
+	 * @param unk2
+	 * @param unk3
+	 * @param showEffect upper effect (0 - disabled, 1 enabled) - _position must be 2 (center) otherwise no effect
+	 * @param time the display time
+	 * @param fade the fade effect (0 - disabled, 1 enabled)
+	 * @param text the text to display
+	 * @param npcString
+	 * @param params the String parameters
+	 */
+	public ExShowScreenMessage(int type, int messageId, int position, int unk1, int size, int unk2, int unk3, boolean showEffect, int time, boolean fade, String text, NpcStringId npcString, String params)
 	{
 		_type = type;
 		_sysMessageId = messageId;
@@ -105,12 +163,14 @@ public class ExShowScreenMessage extends L2GameServerPacket
 	
 	/**
 	 * String parameter for argument S1,S2,.. in npcstring-e.dat
-	 * @param text
+	 * @param text the parameter
 	 */
 	public void addStringParameter(String text)
 	{
 		if (_parameters == null)
+		{
 			_parameters = new ArrayList<>();
+		}
 		_parameters.add(text);
 	}
 	
@@ -119,27 +179,29 @@ public class ExShowScreenMessage extends L2GameServerPacket
 	{
 		writeC(0xFE);
 		writeH(0x39);
-		writeD(_type); // 0 - system messages, 1 - your defined text, 2 - npcstring
-		writeD(_sysMessageId); // system message id (_type must be 0 otherwise no effect)
-		writeD(_position); // message position
-		writeD(_unk1); // ?
-		writeD(_size); // font size 0 - normal, 1 - small
-		writeD(_unk2); // ?
-		writeD(_unk3); // ?
-		writeD(_effect ? 1 : 0); // upper effect (0 - disabled, 1 enabled) - _position must be 2 (center) otherwise no effect
-		writeD(_time); // time
-		writeD(_fade ? 1 : 0); // fade effect (0 - disabled, 1 enabled)
-		writeD(_npcString); // npcString
+		writeD(_type);
+		writeD(_sysMessageId);
+		writeD(_position);
+		writeD(_unk1);
+		writeD(_size);
+		writeD(_unk2);
+		writeD(_unk3);
+		writeD(_effect ? 0x01 : 0x00);
+		writeD(_time);
+		writeD(_fade ? 0x01 : 0x00);
+		writeD(_npcString);
 		if (_npcString == -1)
 		{
-			writeS(_text); // your text (_type must be 1, otherwise no effect)
+			writeS(_text);
 		}
 		else
 		{
 			if (_parameters != null)
 			{
 				for (String s : _parameters)
+				{
 					writeS(s);
+				}
 			}
 		}
 	}

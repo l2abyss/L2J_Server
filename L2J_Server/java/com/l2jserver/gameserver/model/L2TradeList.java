@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model;
 
@@ -34,13 +38,12 @@ import com.l2jserver.gameserver.model.items.L2Item;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.4.2.1.2.5 $ $Date: 2005/03/27 15:29:33 $
  */
 public class L2TradeList
 {
-	private Map<Integer, L2TradeItem> _items;
-	private int _listId;
+	private final Map<Integer, L2TradeItem> _items;
+	private final int _listId;
 	private String _buystorename, _sellstorename;
 	private boolean _hasLimitedStockItem;
 	private String _npcId;
@@ -66,7 +69,7 @@ public class L2TradeList
 		_items.put(item.getItemId(), item);
 		if (item.hasLimitedStock())
 		{
-			this.setHasLimitedStockItem(true);
+			setHasLimitedStockItem(true);
 		}
 	}
 	
@@ -159,15 +162,8 @@ public class L2TradeList
 	}
 	
 	/*
-	public boolean countDecrease(int itemId)
-	{
-	    L2TradeItem item = _items.get(itemId);
-	    if (item != null)
-	    {
-	        return item.hasLimitedStock();
-	    }
-		return false;
-	}*/
+	 * public boolean countDecrease(int itemId) { L2TradeItem item = _items.get(itemId); if (item != null) { return item.hasLimitedStock(); } return false; }
+	 */
 	
 	public boolean containsItemId(int itemId)
 	{
@@ -176,8 +172,7 @@ public class L2TradeList
 	
 	/**
 	 * Itens representation for trade lists
-	 *
-	 * @author  KenM
+	 * @author KenM
 	 */
 	public static class L2TradeItem
 	{
@@ -189,7 +184,7 @@ public class L2TradeList
 		private long _price;
 		
 		// count related
-		private AtomicLong _currentCount = new AtomicLong();
+		private final AtomicLong _currentCount = new AtomicLong();
 		private long _maxCount = -1;
 		private long _restoreDelay;
 		private long _nextRestoreTime;
@@ -248,7 +243,7 @@ public class L2TradeList
 		 */
 		public long getCurrentCount()
 		{
-			if (hasLimitedStock() && this.isPendingStockUpdate())
+			if (hasLimitedStock() && isPendingStockUpdate())
 			{
 				restoreInitialCount();
 			}
@@ -264,10 +259,10 @@ public class L2TradeList
 		public void restoreInitialCount()
 		{
 			setCurrentCount(getMaxCount());
-			_nextRestoreTime = _nextRestoreTime + this.getRestoreDelay();
+			_nextRestoreTime = _nextRestoreTime + getRestoreDelay();
 			
 			// consume until next update is on future
-			if (this.isPendingStockUpdate() && this.getRestoreDelay() > 0)
+			if (isPendingStockUpdate() && (getRestoreDelay() > 0))
 			{
 				_nextRestoreTime = System.currentTimeMillis() + getRestoreDelay();
 			}
@@ -310,7 +305,7 @@ public class L2TradeList
 		 */
 		public void setRestoreDelay(long restoreDelay)
 		{
-			_restoreDelay = restoreDelay * 60 * 60 * 1000;
+			_restoreDelay = restoreDelay * 3600000;
 		}
 		
 		/**
@@ -340,13 +335,10 @@ public class L2TradeList
 		
 		class TimerSave implements Runnable
 		{
-			/**
-			 * @see java.lang.Runnable#run()
-			 */
 			@Override
 			public void run()
 			{
-				L2TradeItem.this.saveDataTimer();
+				saveDataTimer();
 			}
 		}
 		

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
@@ -40,17 +44,27 @@ public final class L2TerritoryWardInstance extends L2Attackable
 	public boolean isAutoAttackable(L2Character attacker)
 	{
 		if (isInvul())
+		{
 			return false;
-		if (getCastle() == null || !getCastle().getZone().isActive())
+		}
+		if ((getCastle() == null) || !getCastle().getZone().isActive())
+		{
 			return false;
+		}
 		
 		final L2PcInstance actingPlayer = attacker.getActingPlayer();
 		if (actingPlayer == null)
+		{
 			return false;
+		}
 		if (actingPlayer.getSiegeSide() == 0)
+		{
 			return false;
+		}
 		if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, getCastle().getCastleId()))
+		{
 			return false;
+		}
 		
 		return true;
 	}
@@ -67,26 +81,40 @@ public final class L2TerritoryWardInstance extends L2Attackable
 		super.onSpawn();
 		
 		if (getCastle() == null)
+		{
 			_log.warning("L2TerritoryWardInstance(" + getName() + ") spawned outside Castle Zone!");
+		}
 	}
 	
 	@Override
 	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
 	{
-		if (skill != null || !TerritoryWarManager.getInstance().isTWInProgress()) //wards can't be damaged by skills
+		if ((skill != null) || !TerritoryWarManager.getInstance().isTWInProgress())
+		{
 			return;
+		}
 		
 		final L2PcInstance actingPlayer = attacker.getActingPlayer();
 		if (actingPlayer == null)
+		{
 			return;
+		}
 		if (actingPlayer.isCombatFlagEquipped())
+		{
 			return;
+		}
 		if (actingPlayer.getSiegeSide() == 0)
+		{
 			return;
-		if (getCastle() == null) // ?
+		}
+		if (getCastle() == null)
+		{
 			return;
+		}
 		if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, getCastle().getCastleId()))
+		{
 			return;
+		}
 		
 		super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
 	}
@@ -101,22 +129,30 @@ public final class L2TerritoryWardInstance extends L2Attackable
 	public boolean doDie(L2Character killer)
 	{
 		// Kill the L2NpcInstance (the corpse disappeared after 7 seconds)
-		if (!super.doDie(killer) || getCastle() == null || !TerritoryWarManager.getInstance().isTWInProgress())
+		if (!super.doDie(killer) || (getCastle() == null) || !TerritoryWarManager.getInstance().isTWInProgress())
+		{
 			return false;
+		}
 		
 		if (killer instanceof L2PcInstance)
 		{
-			if (((L2PcInstance)killer).getSiegeSide() > 0 && !((L2PcInstance)killer).isCombatFlagEquipped())
-				((L2PcInstance)killer).addItem("Pickup", getNpcId() - 23012, 1, null, false);
+			if ((((L2PcInstance) killer).getSiegeSide() > 0) && !((L2PcInstance) killer).isCombatFlagEquipped())
+			{
+				((L2PcInstance) killer).addItem("Pickup", getNpcId() - 23012, 1, null, false);
+			}
 			else
+			{
 				TerritoryWarManager.getInstance().getTerritoryWard(getNpcId() - 36491).spawnMe();
+			}
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THE_S1_WARD_HAS_BEEN_DESTROYED_C2_HAS_THE_WARD);
-			sm.addString(this.getName().replaceAll(" Ward", ""));
-			sm.addPcName((L2PcInstance)killer);
+			sm.addString(getName().replaceAll(" Ward", ""));
+			sm.addPcName((L2PcInstance) killer);
 			TerritoryWarManager.getInstance().announceToParticipants(sm, 0, 0);
 		}
 		else
+		{
 			TerritoryWarManager.getInstance().getTerritoryWard(getNpcId() - 36491).spawnMe();
+		}
 		decayMe();
 		return true;
 	}
@@ -130,8 +166,10 @@ public final class L2TerritoryWardInstance extends L2Attackable
 	@Override
 	public void onAction(L2PcInstance player, boolean interact)
 	{
-		if (player == null || !canTarget(player))
+		if ((player == null) || !canTarget(player))
+		{
 			return;
+		}
 		
 		// Check if the L2PcInstance already target the L2NpcInstance
 		if (this != player.getTarget())
@@ -145,8 +183,8 @@ public final class L2TerritoryWardInstance extends L2Attackable
 			
 			// Send a Server->Client packet StatusUpdate of the L2NpcInstance to the L2PcInstance to update its HP bar
 			StatusUpdate su = new StatusUpdate(this);
-			su.addAttribute(StatusUpdate.CUR_HP, (int)getStatus().getCurrentHp() );
-			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp() );
+			su.addAttribute(StatusUpdate.CUR_HP, (int) getStatus().getCurrentHp());
+			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
 			player.sendPacket(su);
 			
 			// Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
@@ -154,8 +192,10 @@ public final class L2TerritoryWardInstance extends L2Attackable
 		}
 		else if (interact)
 		{
-			if (isAutoAttackable(player) && Math.abs(player.getZ() - getZ()) < 100)
+			if (isAutoAttackable(player) && (Math.abs(player.getZ() - getZ()) < 100))
+			{
 				player.getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, this);
+			}
 			else
 			{
 				// Send a Server->Client ActionFailed to the L2PcInstance in order to avoid that the client wait another packet

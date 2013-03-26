@@ -1,20 +1,22 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.idfactory;
-
-import gnu.trove.list.array.TIntArrayList;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,6 +28,8 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
+
+import gnu.trove.list.array.TIntArrayList;
 
 /**
  * This class ...
@@ -104,6 +108,17 @@ public abstract class IdFactory
 		"SELECT item_obj_id FROM pets                  WHERE item_obj_id >= ? AND item_obj_id < ?",
 		"SELECT object_id   FROM itemsonground        WHERE object_id >= ?   AND object_id < ?"
 	};
+	
+	//@formatter:off
+	private static final String[][] ID_EXTRACTS =
+	{
+		{"characters","charId"},
+		{"items","object_id"},
+		{"clan_data","clan_id"},
+		{"itemsonground","object_id"},
+		{"messages","messageId"}
+	};
+	//@formatter:on
 	
 	private static final String[] TIMESTAMPS_CLEAN =
 	{
@@ -271,6 +286,7 @@ public abstract class IdFactory
 			
 			// Update needed items after cleaning has taken place.
 			stmt.executeUpdate("UPDATE clan_data SET auction_bid_at = 0 WHERE auction_bid_at NOT IN (SELECT auctionId FROM auction_bid);");
+			stmt.executeUpdate("UPDATE clan_data SET new_leader_id = 0 WHERE new_leader_id <> 0 AND new_leader_id NOT IN (SELECT charId FROM characters);");
 			stmt.executeUpdate("UPDATE clan_subpledges SET leader_id=0 WHERE clan_subpledges.leader_id NOT IN (SELECT charId FROM characters) AND leader_id > 0;");
 			stmt.executeUpdate("UPDATE castle SET taxpercent=0 WHERE castle.id NOT IN (SELECT hasCastle FROM clan_data);");
 			stmt.executeUpdate("UPDATE characters SET clanid=0, clan_privs=0, wantspeace=0, subpledge=0, lvl_joined_academy=0, apprentice=0, sponsor=0, clan_join_expiry_time=0, clan_create_expiry_time=0 WHERE characters.clanid > 0 AND characters.clanid NOT IN (SELECT clan_id FROM clan_data);");
@@ -327,74 +343,35 @@ public abstract class IdFactory
 	 */
 	protected final int[] extractUsedObjectIDTable() throws Exception
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement())
 		{
-			Statement statement = null;
-			ResultSet rset = null;
-			
-			statement = con.createStatement();
 			final TIntArrayList temp = new TIntArrayList();
 			
-			rset = statement.executeQuery("SELECT COUNT(*) FROM characters");
-			rset.next();
-			temp.ensureCapacity(rset.getInt(1));
-			rset.close();
+			String ensureCapacityQuery = "SELECT ";
+			String extractUsedObjectIdsQuery = "";
 			
-			rset = statement.executeQuery("SELECT charId FROM characters");
-			while (rset.next())
+			for (String[] tblClmn : ID_EXTRACTS)
 			{
-				temp.add(rset.getInt(1));
+				ensureCapacityQuery += "(SELECT COUNT(*) FROM " + tblClmn[0] + ") + ";
+				extractUsedObjectIdsQuery += "SELECT " + tblClmn[1] + " FROM " + tblClmn[0] + " UNION ";
 			}
-			rset.close();
+			ensureCapacityQuery = ensureCapacityQuery.substring(0, ensureCapacityQuery.length() - 3); // Remove the last " + "
+			extractUsedObjectIdsQuery = extractUsedObjectIdsQuery.substring(0, extractUsedObjectIdsQuery.length() - 7); // Remove the last " UNION "
 			
-			rset = statement.executeQuery("SELECT COUNT(*) FROM items");
-			rset.next();
-			temp.ensureCapacity(temp.size() + rset.getInt(1));
-			rset.close();
-			
-			rset = statement.executeQuery("SELECT object_id FROM items");
-			while (rset.next())
+			try (ResultSet rs = s.executeQuery(ensureCapacityQuery))
 			{
-				temp.add(rset.getInt(1));
+				rs.next();
+				temp.ensureCapacity(rs.getInt(1));
 			}
-			rset.close();
 			
-			rset = statement.executeQuery("SELECT COUNT(*) FROM clan_data");
-			rset.next();
-			temp.ensureCapacity(temp.size() + rset.getInt(1));
-			rset.close();
-			
-			rset = statement.executeQuery("SELECT clan_id FROM clan_data");
-			while (rset.next())
+			try (ResultSet rs = s.executeQuery(extractUsedObjectIdsQuery))
 			{
-				temp.add(rset.getInt(1));
+				while (rs.next())
+				{
+					temp.add(rs.getInt(1));
+				}
 			}
-			rset.close();
-			
-			rset = statement.executeQuery("SELECT COUNT(*) FROM itemsonground");
-			rset.next();
-			temp.ensureCapacity(temp.size() + rset.getInt(1));
-			rset.close();
-			
-			rset = statement.executeQuery("SELECT object_id FROM itemsonground");
-			while (rset.next())
-			{
-				temp.add(rset.getInt(1));
-			}
-			rset.close();
-			
-			rset = statement.executeQuery("SELECT COUNT(*) FROM messages");
-			rset.next();
-			temp.ensureCapacity(temp.size() + rset.getInt(1));
-			rset.close();
-			
-			rset = statement.executeQuery("SELECT messageId FROM messages");
-			while (rset.next())
-			{
-				temp.add(rset.getInt(1));
-			}
-			rset.close();
-			statement.close();
 			
 			temp.sort();
 			return temp.toArray();

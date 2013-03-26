@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.instancemanager.games;
 
@@ -31,7 +35,6 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Rnd;
-
 
 public class Lottery
 {
@@ -62,7 +65,9 @@ public class Lottery
 		_enddate = System.currentTimeMillis();
 		
 		if (Config.ALLOW_LOTTERY)
+		{
 			(new startLottery()).run();
+		}
 	}
 	
 	public static Lottery getInstance()
@@ -88,14 +93,13 @@ public class Lottery
 	public void increasePrize(long count)
 	{
 		_prize += count;
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(UPDATE_PRICE))
 		{
-			PreparedStatement statement = con.prepareStatement(UPDATE_PRICE);
 			statement.setLong(1, getPrize());
 			statement.setLong(2, getPrize());
 			statement.setInt(3, getId());
 			statement.execute();
-			statement.close();
 		}
 		catch (SQLException e)
 		{
@@ -142,7 +146,7 @@ public class Lottery
 						_prize = rset.getLong("prize");
 						_enddate = rset.getLong("enddate");
 						
-						if (_enddate <= System.currentTimeMillis() + 2 * MINUTE)
+						if (_enddate <= (System.currentTimeMillis() + (2 * MINUTE)))
 						{
 							(new finishLottery()).run();
 							return;
@@ -153,10 +157,10 @@ public class Lottery
 							_isStarted = true;
 							ThreadPoolManager.getInstance().scheduleGeneral(new finishLottery(), _enddate - System.currentTimeMillis());
 							
-							if (_enddate > System.currentTimeMillis() + 12 * MINUTE)
+							if (_enddate > (System.currentTimeMillis() + (12 * MINUTE)))
 							{
 								_isSellingTickets = true;
-								ThreadPoolManager.getInstance().scheduleGeneral(new stopSellingTickets(), _enddate - System.currentTimeMillis() - 10 * MINUTE);
+								ThreadPoolManager.getInstance().scheduleGeneral(new stopSellingTickets(), _enddate - System.currentTimeMillis() - (10 * MINUTE));
 							}
 							return;
 						}
@@ -169,7 +173,9 @@ public class Lottery
 			}
 			
 			if (Config.DEBUG)
+			{
 				_log.info("Lottery: Starting ticket sell for lottery #" + getId() + ".");
+			}
 			_isSellingTickets = true;
 			_isStarted = true;
 			
@@ -192,7 +198,7 @@ public class Lottery
 				_enddate = finishtime.getTimeInMillis();
 			}
 			
-			ThreadPoolManager.getInstance().scheduleGeneral(new stopSellingTickets(), _enddate - System.currentTimeMillis() - 10 * MINUTE);
+			ThreadPoolManager.getInstance().scheduleGeneral(new stopSellingTickets(), _enddate - System.currentTimeMillis() - (10 * MINUTE));
 			ThreadPoolManager.getInstance().scheduleGeneral(new finishLottery(), _enddate - System.currentTimeMillis());
 			
 			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
@@ -223,7 +229,9 @@ public class Lottery
 		public void run()
 		{
 			if (Config.DEBUG)
+			{
 				_log.info("Lottery: Stopping ticket sell for lottery #" + getId() + ".");
+			}
 			_isSellingTickets = false;
 			
 			Announcements.getInstance().announceToAll(SystemMessage.getSystemMessage(SystemMessageId.LOTTERY_TICKET_SALES_TEMP_SUSPENDED));
@@ -241,7 +249,9 @@ public class Lottery
 		public void run()
 		{
 			if (Config.DEBUG)
+			{
 				_log.info("Lottery: Ending lottery #" + getId() + ".");
+			}
 			
 			int[] luckynums = new int[5];
 			int luckynum = 0;
@@ -256,15 +266,21 @@ public class Lottery
 					found = false;
 					
 					for (int j = 0; j < i; j++)
+					{
 						if (luckynums[j] == luckynum)
+						{
 							found = true;
+						}
+					}
 				}
 				
 				luckynums[i] = luckynum;
 			}
 			
 			if (Config.DEBUG)
+			{
 				_log.info("Lottery: The lucky numbers are " + luckynums[0] + ", " + luckynums[1] + ", " + luckynums[2] + ", " + luckynums[3] + ", " + luckynums[4] + ".");
+			}
 			
 			int enchant = 0;
 			int type2 = 0;
@@ -272,13 +288,19 @@ public class Lottery
 			for (int i = 0; i < 5; i++)
 			{
 				if (luckynums[i] < 17)
+				{
 					enchant += Math.pow(2, luckynums[i] - 1);
+				}
 				else
+				{
 					type2 += Math.pow(2, luckynums[i] - 17);
+				}
 			}
 			
 			if (Config.DEBUG)
+			{
 				_log.info("Lottery: Encoded lucky numbers are " + enchant + ", " + type2);
+			}
 			
 			int count1 = 0;
 			int count2 = 0;
@@ -296,8 +318,10 @@ public class Lottery
 						int curenchant = rset.getInt("enchant_level") & enchant;
 						int curtype2 = rset.getInt("custom_type2") & type2;
 						
-						if (curenchant == 0 && curtype2 == 0)
+						if ((curenchant == 0) && (curtype2 == 0))
+						{
 							continue;
+						}
 						
 						int count = 0;
 						
@@ -306,25 +330,37 @@ public class Lottery
 							int val = curenchant / 2;
 							
 							if (val != Math.round((double) curenchant / 2))
+							{
 								count++;
+							}
 							
 							int val2 = curtype2 / 2;
 							
-							if (val2 != (double) curtype2 / 2)
+							if (val2 != ((double) curtype2 / 2))
+							{
 								count++;
+							}
 							
 							curenchant = val;
 							curtype2 = val2;
 						}
 						
 						if (count == 5)
+						{
 							count1++;
+						}
 						else if (count == 4)
+						{
 							count2++;
+						}
 						else if (count == 3)
+						{
 							count3++;
+						}
 						else if (count > 0)
+						{
 							count4++;
+						}
 					}
 				}
 			}
@@ -339,13 +375,19 @@ public class Lottery
 			long prize3 = 0;
 			
 			if (count1 > 0)
-				prize1 = (long) ((getPrize() - prize4) * Config.ALT_LOTTERY_5_NUMBER_RATE / count1);
+			{
+				prize1 = (long) (((getPrize() - prize4) * Config.ALT_LOTTERY_5_NUMBER_RATE) / count1);
+			}
 			
 			if (count2 > 0)
-				prize2 = (long) ((getPrize() - prize4) * Config.ALT_LOTTERY_4_NUMBER_RATE / count2);
+			{
+				prize2 = (long) (((getPrize() - prize4) * Config.ALT_LOTTERY_4_NUMBER_RATE) / count2);
+			}
 			
 			if (count3 > 0)
-				prize3 = (long) ((getPrize() - prize4) * Config.ALT_LOTTERY_3_NUMBER_RATE / count3);
+			{
+				prize3 = (long) (((getPrize() - prize4) * Config.ALT_LOTTERY_3_NUMBER_RATE) / count3);
+			}
 			
 			if (Config.DEBUG)
 			{
@@ -357,7 +399,9 @@ public class Lottery
 			
 			long newprize = getPrize() - (prize1 + prize2 + prize3 + prize4);
 			if (Config.DEBUG)
+			{
 				_log.info("Lottery: Jackpot for next lottery is " + newprize + ".");
+			}
 			
 			SystemMessage sm;
 			if (count1 > 0)
@@ -425,7 +469,7 @@ public class Lottery
 		while (type2 > 0)
 		{
 			int val = type2 / 2;
-			if (val != (double) type2 / 2)
+			if (val != ((double) type2 / 2))
 			{
 				res[id++] = nr;
 			}
@@ -443,7 +487,11 @@ public class Lottery
 	
 	public long[] checkTicket(int id, int enchant, int type2)
 	{
-		long res[] = { 0, 0 };
+		long res[] =
+		{
+			0,
+			0
+		};
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(SELECT_LOTTERY_TICKET))
 		{
@@ -455,7 +503,7 @@ public class Lottery
 					int curenchant = rset.getInt("number1") & enchant;
 					int curtype2 = rset.getInt("number2") & type2;
 					
-					if (curenchant == 0 && curtype2 == 0)
+					if ((curenchant == 0) && (curtype2 == 0))
 					{
 						return res;
 					}
@@ -466,10 +514,14 @@ public class Lottery
 					{
 						int val = curenchant / 2;
 						if (val != Math.round((double) curenchant / 2))
+						{
 							count++;
+						}
 						int val2 = curtype2 / 2;
-						if (val2 != (double) curtype2 / 2)
+						if (val2 != ((double) curtype2 / 2))
+						{
 							count++;
+						}
 						curenchant = val;
 						curtype2 = val2;
 					}
@@ -496,7 +548,9 @@ public class Lottery
 					}
 					
 					if (Config.DEBUG)
+					{
 						_log.warning("count: " + count + ", id: " + id + ", enchant: " + enchant + ", type2: " + type2);
+					}
 				}
 			}
 		}

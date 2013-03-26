@@ -19,7 +19,6 @@ Stop now.
 ====================
 L2J Server 
 ====================
-$Date: 2010/01/06 13:12:11 $
 
 TOC:
 I.    OVERVIEW
@@ -55,22 +54,24 @@ participate on development by submitting the code.
 II. LEGAL
 ====================
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 3, or (at your option)
-any later version.
+Copyright (C) 2004-2013 L2J Server
 
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+This file is part of L2J Server.
+
+L2J Server is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+L2J Server is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-USA.
+along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-Full GNU/GPL License is included in LICENSE.TXT file.
+Full GNU/GPL License is included in L2J_Server_LICENSE.txt file.
 
 Whereas L2J is distributed under the terms of GNU/GPL, we require you to:
 a) Preserve login notice. This gives us, L2J Developers, appropriate

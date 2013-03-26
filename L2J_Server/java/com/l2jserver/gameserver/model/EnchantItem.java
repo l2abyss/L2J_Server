@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model;
 
@@ -54,23 +58,29 @@ public class EnchantItem
 	public final boolean isValid(L2ItemInstance enchantItem)
 	{
 		if (enchantItem == null)
+		{
 			return false;
-		
+		}
 		else if (enchantItem.isEnchantable() == 0)
+		{
 			return false;
-		
+		}
 		else if (!isValidItemType(enchantItem.getItem().getType2()))
+		{
 			return false;
-		
-		else if (_maxEnchantLevel != 0 && enchantItem.getEnchantLevel() >= _maxEnchantLevel)
+		}
+		else if ((_maxEnchantLevel != 0) && (enchantItem.getEnchantLevel() >= _maxEnchantLevel))
+		{
 			return false;
-		
+		}
 		else if (_grade != enchantItem.getItem().getItemGradeSPlus())
+		{
 			return false;
-		
-		else if ((enchantItem.isEnchantable() > 1 && (_itemIds.isEmpty() || !_itemIds.contains(enchantItem.getItemId())))
-				|| !_itemIds.isEmpty() && !_itemIds.contains(enchantItem.getItemId()))
+		}
+		else if (((enchantItem.isEnchantable() > 1) && (_itemIds.isEmpty() || !_itemIds.contains(enchantItem.getItemId()))) || (!_itemIds.isEmpty() && !_itemIds.contains(enchantItem.getItemId())))
+		{
 			return false;
+		}
 		
 		return true;
 	}
@@ -81,7 +91,7 @@ public class EnchantItem
 		{
 			return _isWeapon;
 		}
-		else if (type2 == L2Item.TYPE2_SHIELD_ARMOR || type2 == L2Item.TYPE2_ACCESSORY)
+		else if ((type2 == L2Item.TYPE2_SHIELD_ARMOR) || (type2 == L2Item.TYPE2_ACCESSORY))
 		{
 			return !_isWeapon;
 		}

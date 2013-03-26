@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
@@ -22,7 +26,7 @@ import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.serverpackets.ExRpItemLink;
 
 /**
- * @author  KenM
+ * @author KenM
  */
 public class RequestExRqItemLink extends L2GameClientPacket
 {
@@ -38,13 +42,13 @@ public class RequestExRqItemLink extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2GameClient client = this.getClient();
+		L2GameClient client = getClient();
 		if (client != null)
 		{
 			L2Object object = L2World.getInstance().findObject(_objectId);
 			if (object instanceof L2ItemInstance)
 			{
-				L2ItemInstance item = (L2ItemInstance)object;
+				L2ItemInstance item = (L2ItemInstance) object;
 				if (item.isPublished())
 				{
 					client.sendPacket(new ExRpItemLink(item));
@@ -52,7 +56,9 @@ public class RequestExRqItemLink extends L2GameClientPacket
 				else
 				{
 					if (Config.DEBUG)
-						_log.info(getClient()+" requested item link for item which wasnt published! ID:"+_objectId);
+					{
+						_log.info(getClient() + " requested item link for item which wasnt published! ID:" + _objectId);
+					}
 				}
 			}
 		}

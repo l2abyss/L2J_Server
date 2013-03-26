@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.geoeditorcon;
 
@@ -35,15 +39,14 @@ public class GeoEditorThread extends Thread
 	
 	private int _mode = 0; // 0 - don't send coords, 1 - send each
 	
-	// validateposition from client, 2 - send in
-	// intervals of _sendDelay ms.
+	// validateposition from client, 2 - send in intervals of _sendDelay ms.
 	private int _sendDelay = 1000; // default - once in second
 	
-	private Socket _geSocket;
+	private final Socket _geSocket;
 	
 	private OutputStream _out;
 	
-	private FastList<L2PcInstance> _gms;
+	private final FastList<L2PcInstance> _gms;
 	
 	public GeoEditorThread(Socket ge)
 	{
@@ -76,15 +79,23 @@ public class GeoEditorThread extends Thread
 			while (_working)
 			{
 				if (!isConnected())
+				{
 					_working = false;
+				}
 				
-				if (_mode == 2 && timer > _sendDelay)
+				if ((_mode == 2) && (timer > _sendDelay))
 				{
 					for (L2PcInstance gm : _gms)
+					{
 						if (!gm.getClient().getConnection().isClosed())
+						{
 							sendGmPosition(gm);
+						}
 						else
+						{
 							_gms.remove(gm);
+						}
+					}
 					timer = 0;
 				}
 				
@@ -92,7 +103,9 @@ public class GeoEditorThread extends Thread
 				{
 					sleep(100);
 					if (_mode == 2)
+					{
 						timer += 100;
+					}
 				}
 				catch (Exception e)
 				{
@@ -119,7 +132,9 @@ public class GeoEditorThread extends Thread
 	public void sendGmPosition(int gx, int gy, short z)
 	{
 		if (!isConnected())
+		{
 			return;
+		}
 		try
 		{
 			synchronized (_out)
@@ -158,7 +173,9 @@ public class GeoEditorThread extends Thread
 	public void sendPing()
 	{
 		if (!isConnected())
+		{
 			return;
+		}
 		try
 		{
 			synchronized (_out)
@@ -190,15 +207,15 @@ public class GeoEditorThread extends Thread
 	private void writeD(int value) throws IOException
 	{
 		_out.write(value & 0xff);
-		_out.write(value >> 8 & 0xff);
-		_out.write(value >> 16 & 0xff);
-		_out.write(value >> 24 & 0xff);
+		_out.write((value >> 8) & 0xff);
+		_out.write((value >> 16) & 0xff);
+		_out.write((value >> 24) & 0xff);
 	}
 	
 	private void writeH(int value) throws IOException
 	{
 		_out.write(value & 0xff);
-		_out.write(value >> 8 & 0xff);
+		_out.write((value >> 8) & 0xff);
 	}
 	
 	private void writeC(int value) throws IOException
@@ -214,29 +231,41 @@ public class GeoEditorThread extends Thread
 	public void setTimer(int value)
 	{
 		if (value < 500)
+		{
 			_sendDelay = 500; // maximum - 2 times per second!
+		}
 		else if (value > 60000)
+		{
 			_sendDelay = 60000; // Minimum - 1 time per minute.
+		}
 		else
+		{
 			_sendDelay = value;
+		}
 	}
 	
 	public void addGM(L2PcInstance gm)
 	{
 		if (!_gms.contains(gm))
+		{
 			_gms.add(gm);
+		}
 	}
 	
 	public void removeGM(L2PcInstance gm)
 	{
 		if (_gms.contains(gm))
+		{
 			_gms.remove(gm);
+		}
 	}
 	
 	public boolean isSend(L2PcInstance gm)
 	{
-		if (_mode == 1 && _gms.contains(gm))
+		if ((_mode == 1) && _gms.contains(gm))
+		{
 			return true;
+		}
 		return false;
 	}
 	

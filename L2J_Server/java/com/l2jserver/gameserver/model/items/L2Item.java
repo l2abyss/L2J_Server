@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.items;
 
@@ -25,6 +29,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
@@ -40,6 +45,7 @@ import com.l2jserver.gameserver.model.items.type.L2ActionType;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.model.items.type.L2ItemType;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.stats.Env;
@@ -50,9 +56,11 @@ import com.l2jserver.util.StringUtil;
 /**
  * This class contains all informations concerning the item (weapon, armor, etc).<BR>
  * Mother class of :
- * <LI>L2Armor</LI>
- * <LI>L2EtcItem</LI>
- * <LI>L2Weapon</LI>
+ * <ul>
+ * <li>L2Armor</li>
+ * <li>L2EtcItem</li>
+ * <li>L2Weapon</li>
+ * </ul>
  * @version $Revision: 1.7.2.2.2.5 $ $Date: 2005/04/06 18:25:18 $
  */
 public abstract class L2Item
@@ -151,17 +159,38 @@ public abstract class L2Item
 	public static final int CRYSTAL_S80 = 0x06; // ??
 	public static final int CRYSTAL_S84 = 0x07; // ??
 	
-	private static final int[] crystalItemId =
+	private static final int[] CRYSTAL_ITEM_ID =
 	{
-		0, 1458, 1459, 1460, 1461, 1462, 1462, 1462
+		0,
+		1458,
+		1459,
+		1460,
+		1461,
+		1462,
+		1462,
+		1462
 	};
-	private static final int[] crystalEnchantBonusArmor =
+	private static final int[] CRYSTAL_ENCHANT_BONUS_ARMOR =
 	{
-		0, 11, 6, 11, 19, 25, 25, 25
+		0,
+		11,
+		6,
+		11,
+		19,
+		25,
+		25,
+		25
 	};
-	private static final int[] crystalEnchantBonusWeapon =
+	private static final int[] CRYSTAL_ENCHANT_BONUS_WEAPON =
 	{
-		0, 90, 45, 67, 144, 250, 250, 250
+		0,
+		90,
+		45,
+		67,
+		144,
+		250,
+		250,
+		250
 	};
 	
 	private final int _itemId;
@@ -189,19 +218,22 @@ public abstract class L2Item
 	private final boolean _questItem;
 	private final boolean _freightable;
 	private final boolean _is_oly_restricted;
+	private final boolean _for_npc;
 	private final boolean _common;
 	private final boolean _heroItem;
 	private final boolean _pvpItem;
 	private final boolean _ex_immediate_effect;
+	private final int _defaultEnchantLevel;
 	private final L2ActionType _defaultAction;
 	
 	protected int _type1; // needed for item list (inventory)
-	protected int _type2; // different lists for armor, weapon, etc	
+	protected int _type2; // different lists for armor, weapon, etc
 	protected Elementals[] _elementals = null;
 	protected FuncTemplate[] _funcTemplates;
 	protected EffectTemplate[] _effectTemplates;
-	protected List <Condition> _preConditions;
+	protected List<Condition> _preConditions;
 	private SkillHolder[] _skillHolder;
+	private SkillHolder _unequipSkill = null;
 	
 	protected static final Func[] _emptyFunctionSet = new Func[0];
 	protected static final L2Effect[] _emptyEffectSet = new L2Effect[0];
@@ -209,10 +241,11 @@ public abstract class L2Item
 	private final List<Quest> _questEvents = new FastList<>();
 	private final int _useSkillDisTime;
 	private final int _reuseDelay;
-	private int _sharedReuseGroup;
+	private final int _sharedReuseGroup;
 	
 	/**
-	 * Constructor of the L2Item that fill class variables.<BR><BR>
+	 * Constructor of the L2Item that fill class variables.<BR>
+	 * <BR>
 	 * @param set : StatsSet corresponding to a set of couples (key,value) for description of the item
 	 */
 	protected L2Item(StatsSet set)
@@ -243,39 +276,57 @@ public abstract class L2Item
 		_questItem = set.getBool("is_questitem", false);
 		_freightable = set.getBool("is_freightable", false);
 		_is_oly_restricted = set.getBool("is_oly_restricted", false);
+		_for_npc = set.getBool("for_npc", false);
 		
-		//_immediate_effect - herb
+		// _immediate_effect - herb
 		_ex_immediate_effect = set.getBool("ex_immediate_effect", false);
 		
-		//used for custom type select
+		// used for custom type select
 		_defaultAction = set.getEnum("default_action", L2ActionType.class, L2ActionType.none);
 		_useSkillDisTime = set.getInteger("useSkillDisTime", 0);
+		_defaultEnchantLevel = set.getInteger("enchanted", 0);
 		_reuseDelay = set.getInteger("reuse_delay", 0);
 		_sharedReuseGroup = set.getInteger("shared_reuse_group", 0);
 		
-		//TODO cleanup + finish
+		// TODO cleanup + finish
 		String equip_condition = set.getString("equip_condition", null);
 		if (equip_condition != null)
 		{
-			//pet conditions
+			// pet conditions
 			ConditionLogicOr cond = new ConditionLogicOr();
 			if (equip_condition.contains("all_wolf_group"))
+			{
 				cond.add(new ConditionPetType(ALL_WOLF));
+			}
 			if (equip_condition.contains("hatchling_group"))
+			{
 				cond.add(new ConditionPetType(HATCHLING));
+			}
 			if (equip_condition.contains("strider"))
+			{
 				cond.add(new ConditionPetType(STRIDER));
+			}
 			if (equip_condition.contains("baby_pet_group"))
+			{
 				cond.add(new ConditionPetType(BABY));
+			}
 			if (equip_condition.contains("upgrade_baby_pet_group"))
+			{
 				cond.add(new ConditionPetType(IMPROVED_BABY));
+			}
 			if (equip_condition.contains("grown_up_wolf_group"))
+			{
 				cond.add(new ConditionPetType(GROWN_WOLF));
+			}
 			if (equip_condition.contains("item_equip_pet_group"))
+			{
 				cond.add(new ConditionPetType(ALL_PET));
+			}
 			
 			if (cond.conditions.length > 0)
+			{
 				attach(cond);
+			}
 		}
 		
 		String skills = set.getString("item_skill", null);
@@ -285,35 +336,35 @@ public abstract class L2Item
 			_skillHolder = new SkillHolder[skillsSplit.length];
 			int used = 0;
 			
-			for (int i = 0;i < skillsSplit.length;++ i)
+			for (String element : skillsSplit)
 			{
 				try
 				{
-					String[] skillSplit = skillsSplit[i].split("-");
+					String[] skillSplit = element.split("-");
 					int id = Integer.parseInt(skillSplit[0]);
 					int level = Integer.parseInt(skillSplit[1]);
 					
-			        if (id == 0)
-			        {
-			        	_log.info(StringUtil.concat("Ignoring item_skill(", skillsSplit[i], ") for item ", toString(), ". Skill id is 0!"));
-			        	continue;
-			        }
-			        
-			        if (level == 0)
-			        {
-			        	_log.info(StringUtil.concat("Ignoring item_skill(", skillsSplit[i], ") for item ", toString(), ". Skill level is 0!"));
-			        	continue;
-			        }
-			        
-			        _skillHolder[used] = new SkillHolder(id, level);
-			        ++ used;
+					if (id == 0)
+					{
+						_log.info(StringUtil.concat("Ignoring item_skill(", element, ") for item ", toString(), ". Skill id is 0!"));
+						continue;
+					}
+					
+					if (level == 0)
+					{
+						_log.info(StringUtil.concat("Ignoring item_skill(", element, ") for item ", toString(), ". Skill level is 0!"));
+						continue;
+					}
+					
+					_skillHolder[used] = new SkillHolder(id, level);
+					++used;
 				}
 				catch (Exception e)
 				{
-					_log.warning(StringUtil.concat("Failed to parse item_skill(", skillsSplit[i], ") for item ", toString(), "! Format: SkillId0-SkillLevel0[;SkillIdN-SkillLevelN]"));
+					_log.warning(StringUtil.concat("Failed to parse item_skill(", element, ") for item ", toString(), "! Format: SkillId0-SkillLevel0[;SkillIdN-SkillLevelN]"));
 				}
 			}
-				
+			
 			// this is only loading? just don't leave a null or use a collection?
 			if (used != _skillHolder.length)
 			{
@@ -322,10 +373,35 @@ public abstract class L2Item
 				_skillHolder = skillHolder;
 			}
 		}
-
-		_common = (_itemId >= 11605 && _itemId <= 12361);
-		_heroItem = (_itemId >= 6611 && _itemId <= 6621) || (_itemId >= 9388 && _itemId <= 9390) || _itemId == 6842;
-		_pvpItem = (_itemId >= 10667 && _itemId <= 10835) || (_itemId >= 12852 && _itemId <= 12977) || (_itemId >= 14363 && _itemId <= 14525) || _itemId == 14528 || _itemId == 14529 || _itemId == 14558 || (_itemId >=15913 && _itemId <= 16024) || (_itemId >=16134 && _itemId <= 16147) || _itemId == 16149 || _itemId == 16151 || _itemId == 16153 || _itemId == 16155 || _itemId == 16157 || _itemId == 16159 || (_itemId >=16168 && _itemId <= 16176) || (_itemId >=16179 && _itemId <= 16220);
+		
+		skills = set.getString("unequip_skill", null);
+		if (skills != null)
+		{
+			String[] info = skills.split("-");
+			if ((info != null) && (info.length == 2))
+			{
+				int id = 0;
+				int level = 0;
+				try
+				{
+					id = Integer.parseInt(info[0]);
+					level = Integer.parseInt(info[1]);
+				}
+				catch (Exception nfe)
+				{
+					// Incorrect syntax, don't add new skill
+					_log.info(StringUtil.concat("Couldnt parse ", skills, " in weapon unequip skills! item ", toString()));
+				}
+				if ((id > 0) && (level > 0))
+				{
+					_unequipSkill = new SkillHolder(id, level);
+				}
+			}
+		}
+		
+		_common = ((_itemId >= 11605) && (_itemId <= 12361));
+		_heroItem = ((_itemId >= 6611) && (_itemId <= 6621)) || ((_itemId >= 9388) && (_itemId <= 9390)) || (_itemId == 6842);
+		_pvpItem = ((_itemId >= 10667) && (_itemId <= 10835)) || ((_itemId >= 12852) && (_itemId <= 12977)) || ((_itemId >= 14363) && (_itemId <= 14525)) || (_itemId == 14528) || (_itemId == 14529) || (_itemId == 14558) || ((_itemId >= 15913) && (_itemId <= 16024)) || ((_itemId >= 16134) && (_itemId <= 16147)) || (_itemId == 16149) || (_itemId == 16151) || (_itemId == 16153) || (_itemId == 16155) || (_itemId == 16157) || (_itemId == 16159) || ((_itemId >= 16168) && (_itemId <= 16176)) || ((_itemId >= 16179) && (_itemId <= 16220));
 	}
 	
 	/**
@@ -341,7 +417,7 @@ public abstract class L2Item
 	{
 		return _equipReuseDelay;
 	}
-
+	
 	/**
 	 * Returns the duration of the item
 	 * @return int
@@ -421,7 +497,7 @@ public abstract class L2Item
 	 */
 	public final boolean isCrystallizable()
 	{
-		return _crystalType != L2Item.CRYSTAL_NONE && _crystalCount > 0;
+		return (_crystalType != L2Item.CRYSTAL_NONE) && (_crystalCount > 0);
 	}
 	
 	/**
@@ -439,11 +515,12 @@ public abstract class L2Item
 	 */
 	public final int getCrystalItemId()
 	{
-		return crystalItemId[_crystalType];
+		return CRYSTAL_ITEM_ID[_crystalType];
 	}
 	
 	/**
-	 * Returns the grade of the item.<BR><BR>
+	 * Returns the grade of the item.<BR>
+	 * <BR>
 	 * <U><I>Concept :</I></U><BR>
 	 * In fact, this function returns the type of crystal of the item.
 	 * @return int
@@ -478,35 +555,41 @@ public abstract class L2Item
 	}
 	
 	/**
-	 * @param enchantLevel 
+	 * @param enchantLevel
 	 * @return the quantity of crystals for crystallization on specific enchant level
 	 */
 	public final int getCrystalCount(int enchantLevel)
 	{
 		if (enchantLevel > 3)
+		{
 			switch (_type2)
 			{
 				case TYPE2_SHIELD_ARMOR:
 				case TYPE2_ACCESSORY:
-					return _crystalCount + crystalEnchantBonusArmor[getCrystalType()] * (3 * enchantLevel - 6);
+					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_ARMOR[getCrystalType()] * ((3 * enchantLevel) - 6));
 				case TYPE2_WEAPON:
-					return _crystalCount + crystalEnchantBonusWeapon[getCrystalType()] * (2 * enchantLevel - 3);
+					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_WEAPON[getCrystalType()] * ((2 * enchantLevel) - 3));
 				default:
 					return _crystalCount;
 			}
+		}
 		else if (enchantLevel > 0)
+		{
 			switch (_type2)
 			{
 				case TYPE2_SHIELD_ARMOR:
 				case TYPE2_ACCESSORY:
-					return _crystalCount + crystalEnchantBonusArmor[getCrystalType()] * enchantLevel;
+					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_ARMOR[getCrystalType()] * enchantLevel);
 				case TYPE2_WEAPON:
-					return _crystalCount + crystalEnchantBonusWeapon[getCrystalType()] * enchantLevel;
+					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_WEAPON[getCrystalType()] * enchantLevel);
 				default:
 					return _crystalCount;
 			}
+		}
 		else
+		{
 			return _crystalCount;
+		}
 	}
 	
 	/**
@@ -530,7 +613,9 @@ public abstract class L2Item
 		for (Elementals elm : _elementals)
 		{
 			if (elm.getElement() == attribute)
+			{
 				return elm;
+			}
 		}
 		return null;
 	}
@@ -570,7 +655,8 @@ public abstract class L2Item
 	public final int getBodyPart()
 	{
 		return _bodyPart;
-	}	
+	}
+	
 	/**
 	 * @return the type 1 of the item.
 	 */
@@ -600,7 +686,7 @@ public abstract class L2Item
 	 */
 	public boolean isEquipable()
 	{
-		return getBodyPart() != 0 && !(getItemType() instanceof L2EtcItemType);
+		return (getBodyPart() != 0) && !(getItemType() instanceof L2EtcItemType);
 	}
 	
 	/**
@@ -608,7 +694,7 @@ public abstract class L2Item
 	 */
 	public final int getReferencePrice()
 	{
-		return (isConsumable() ? (int)(_referencePrice * Config.RATE_CONSUMABLE_COST) : _referencePrice);
+		return (isConsumable() ? (int) (_referencePrice * Config.RATE_CONSUMABLE_COST) : _referencePrice);
 	}
 	
 	/**
@@ -657,7 +743,7 @@ public abstract class L2Item
 	 */
 	public final int isEnchantable()
 	{
-		return Arrays.binarySearch(Config.ENCHANT_BLACKLIST, getItemId()) < 0 ?  _enchantable : 0;
+		return Arrays.binarySearch(Config.ENCHANT_BLACKLIST, getItemId()) < 0 ? _enchantable : 0;
 	}
 	
 	/**
@@ -695,16 +781,16 @@ public abstract class L2Item
 		return _pvpItem;
 	}
 	
-	public boolean isPotion() 
-	{ 
+	public boolean isPotion()
+	{
 		return (getItemType() == L2EtcItemType.POTION);
 	}
-
-	public boolean isElixir() 
-	{ 
+	
+	public boolean isElixir()
+	{
 		return (getItemType() == L2EtcItemType.ELIXIR);
 	}
-
+	
 	/**
 	 * Returns array of Func objects containing the list of functions used by the item
 	 * @param item : L2ItemInstance pointing out the item
@@ -713,8 +799,10 @@ public abstract class L2Item
 	 */
 	public Func[] getStatFuncs(L2ItemInstance item, L2Character player)
 	{
-		if (_funcTemplates == null || _funcTemplates.length == 0)
+		if ((_funcTemplates == null) || (_funcTemplates.length == 0))
+		{
 			return _emptyFunctionSet;
+		}
 		
 		ArrayList<Func> funcs = new ArrayList<>(_funcTemplates.length);
 		
@@ -728,7 +816,9 @@ public abstract class L2Item
 		{
 			f = t.getFunc(env, this); // skill is owner
 			if (f != null)
+			{
 				funcs.add(f);
+			}
 		}
 		
 		if (funcs.isEmpty())
@@ -746,8 +836,10 @@ public abstract class L2Item
 	 */
 	public L2Effect[] getEffects(L2ItemInstance item, L2Character player)
 	{
-		if (_effectTemplates == null || _effectTemplates.length == 0)
+		if ((_effectTemplates == null) || (_effectTemplates.length == 0))
+		{
 			return _emptyEffectSet;
+		}
 		
 		FastList<L2Effect> effects = FastList.newInstance();
 		
@@ -769,7 +861,9 @@ public abstract class L2Item
 		}
 		
 		if (effects.isEmpty())
+		{
 			return _emptyEffectSet;
+		}
 		
 		L2Effect[] result = effects.toArray(new L2Effect[effects.size()]);
 		FastList.recycle(effects);
@@ -780,28 +874,9 @@ public abstract class L2Item
 	 * Returns effects of skills associated with the item.
 	 * @param caster : L2Character pointing out the caster
 	 * @param target : L2Character pointing out the target
-	 * @return L2Effect[] : array of effects generated by the skill
-	 
-	public L2Effect[] getSkillEffects(L2Character caster, L2Character target)
-	{
-		if (_skills == null)
-			return _emptyEffectSet;
-		List<L2Effect> effects = new FastList<L2Effect>();
-		
-		for (L2Skill skill : _skills)
-		{
-			if (!skill.checkCondition(caster, target, true))
-				continue; // Skill condition not met
-				
-			if (target.getFirstEffect(skill.getId()) != null)
-				target.removeEffect(target.getFirstEffect(skill.getId()));
-			for (L2Effect e : skill.getEffects(caster, target))
-				effects.add(e);
-		}
-		if (effects.isEmpty())
-			return _emptyEffectSet;
-		return effects.toArray(new L2Effect[effects.size()]);
-	}
+	 * @return L2Effect[] : array of effects generated by the skill public L2Effect[] getSkillEffects(L2Character caster, L2Character target) { if (_skills == null) return _emptyEffectSet; List<L2Effect> effects = new FastList<L2Effect>(); for (L2Skill skill : _skills) { if
+	 *         (!skill.checkCondition(caster, target, true)) continue; // Skill condition not met if (target.getFirstEffect(skill.getId()) != null) target.removeEffect(target.getFirstEffect(skill.getId())); for (L2Effect e : skill.getEffects(caster, target)) effects.add(e); } if (effects.isEmpty())
+	 *         return _emptyEffectSet; return effects.toArray(new L2Effect[effects.size()]); }
 	 */
 	/**
 	 * Add the FuncTemplate f to the list of functions used with the item
@@ -809,7 +884,7 @@ public abstract class L2Item
 	 */
 	public void attach(FuncTemplate f)
 	{
-		switch(f.stat)
+		switch (f.stat)
 		{
 			case FIRE_RES:
 			case FIRE_POWER:
@@ -840,16 +915,16 @@ public abstract class L2Item
 		if (_funcTemplates == null)
 		{
 			_funcTemplates = new FuncTemplate[]
-			                                  {
-					f
-			                                  };
+			{
+				f
+			};
 		}
 		else
 		{
 			int len = _funcTemplates.length;
 			FuncTemplate[] tmp = new FuncTemplate[len + 1];
 			// Definition : arraycopy(array source, begins copy at this position of source, array destination, begins copy at this position in dest,
-			//						  number of components to be copied)
+			// number of components to be copied)
 			System.arraycopy(_funcTemplates, 0, tmp, 0, len);
 			tmp[len] = f;
 			_funcTemplates = tmp;
@@ -865,16 +940,16 @@ public abstract class L2Item
 		if (_effectTemplates == null)
 		{
 			_effectTemplates = new EffectTemplate[]
-			                                      {
-					effect
-			                                      };
+			{
+				effect
+			};
 		}
 		else
 		{
 			int len = _effectTemplates.length;
 			EffectTemplate[] tmp = new EffectTemplate[len + 1];
 			// Definition : arraycopy(array source, begins copy at this position of source, array destination, begins copy at this position in dest,
-			//						  number of components to be copied)
+			// number of components to be copied)
 			System.arraycopy(_effectTemplates, 0, tmp, 0, len);
 			tmp[len] = effect;
 			_effectTemplates = tmp;
@@ -884,9 +959,13 @@ public abstract class L2Item
 	public final void attach(Condition c)
 	{
 		if (_preConditions == null)
+		{
 			_preConditions = new FastList<>();
+		}
 		if (!_preConditions.contains(c))
+		{
 			_preConditions.add(c);
+		}
 	}
 	
 	public boolean hasSkills()
@@ -895,11 +974,7 @@ public abstract class L2Item
 	}
 	
 	/**
-	 * Method to retrive skills linked to this item
-	 *
-	 * armor and weapon: passive skills
-	 * etcitem: skills used on item use <-- ???
-	 *
+	 * Method to retrive skills linked to this item armor and weapon: passive skills etcitem: skills used on item use <-- ???
 	 * @return Skills linked to this item as SkillHolder[]
 	 */
 	public final SkillHolder[] getSkills()
@@ -907,33 +982,53 @@ public abstract class L2Item
 		return _skillHolder;
 	}
 	
+	/**
+	 * @return skill that activates, when player unequip this weapon or armor
+	 */
+	public final L2Skill getUnequipSkill()
+	{
+		return _unequipSkill == null ? null : _unequipSkill.getSkill();
+	}
+	
 	public boolean checkCondition(L2Character activeChar, L2Object target, boolean sendMessage)
 	{
-		if (activeChar.isGM() && !Config.GM_ITEM_RESTRICTION)
+		if (activeChar.canOverrideCond(PcCondOverride.ITEM_CONDITIONS) && !Config.GM_ITEM_RESTRICTION)
+		{
 			return true;
+		}
 		
 		// Don't allow hero equipment and restricted items during Olympiad
 		if ((isOlyRestrictedItem() || isHeroItem()) && ((activeChar instanceof L2PcInstance) && activeChar.getActingPlayer().isInOlympiadMode()))
 		{
 			if (isEquipable())
+			{
 				activeChar.sendPacket(SystemMessageId.THIS_ITEM_CANT_BE_EQUIPPED_FOR_THE_OLYMPIAD_EVENT);
+			}
 			else
+			{
 				activeChar.sendPacket(SystemMessageId.THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT);
+			}
 			return false;
 		}
 		
 		if (!isConditionAttached())
+		{
 			return true;
+		}
 		
 		Env env = new Env();
 		env.setCharacter(activeChar);
 		if (target instanceof L2Character)
+		{
 			env.setTarget((L2Character) target);
+		}
 		
 		for (Condition preCondition : _preConditions)
 		{
 			if (preCondition == null)
+			{
 				continue;
+			}
 			
 			if (!preCondition.test(env))
 			{
@@ -951,11 +1046,13 @@ public abstract class L2Item
 					{
 						activeChar.sendMessage(msg);
 					}
-					else if (msgId !=0)
+					else if (msgId != 0)
 					{
 						SystemMessage sm = SystemMessage.getSystemMessage(msgId);
 						if (preCondition.isAddName())
+						{
 							sm.addItemName(_itemId);
+						}
 						activeChar.sendPacket(sm);
 					}
 				}
@@ -967,7 +1064,7 @@ public abstract class L2Item
 	
 	public boolean isConditionAttached()
 	{
-		return _preConditions != null && !_preConditions.isEmpty();
+		return (_preConditions != null) && !_preConditions.isEmpty();
 	}
 	
 	public boolean isQuestItem()
@@ -984,7 +1081,12 @@ public abstract class L2Item
 	{
 		return _is_oly_restricted || Config.LIST_OLY_RESTRICTED_ITEMS.contains(_itemId);
 	}
-
+	
+	public boolean isForNpc()
+	{
+		return _for_npc;
+	}
+	
 	/**
 	 * Returns the name of the item
 	 * @return String
@@ -992,9 +1094,9 @@ public abstract class L2Item
 	@Override
 	public String toString()
 	{
-		return _name+"("+_itemId+")";
+		return _name + "(" + _itemId + ")";
 	}
-
+	
 	/**
 	 * @return the _ex_immediate_effect
 	 */
@@ -1002,7 +1104,7 @@ public abstract class L2Item
 	{
 		return _ex_immediate_effect;
 	}
-
+	
 	/**
 	 * @return the _default_action
 	 */
@@ -1049,6 +1151,11 @@ public abstract class L2Item
 	public List<Quest> getQuestEvents()
 	{
 		return _questEvents;
+	}
+	
+	public int getDefaultEnchantLevel()
+	{
+		return _defaultEnchantLevel;
 	}
 	
 	public boolean isPetItem()

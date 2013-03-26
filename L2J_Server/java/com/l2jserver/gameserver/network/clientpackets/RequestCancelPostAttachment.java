@@ -1,20 +1,22 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
-
-import static com.l2jserver.gameserver.model.actor.L2Character.ZONE_PEACE;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.instancemanager.MailManager;
@@ -24,6 +26,7 @@ import com.l2jserver.gameserver.model.entity.Message;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExChangePostState;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
@@ -51,23 +54,28 @@ public final class RequestCancelPostAttachment extends L2GameClientPacket
 	public void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null || !Config.ALLOW_MAIL || !Config.ALLOW_ATTACHMENTS)
-			return;
-		
-		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("cancelpost"))
-			return;
-		
-		Message msg = MailManager.getInstance().getMessage(_msgId);
-		if (msg == null)
-			return;
-		if (msg.getSenderId() != activeChar.getObjectId())
+		if ((activeChar == null) || !Config.ALLOW_MAIL || !Config.ALLOW_ATTACHMENTS)
 		{
-			Util.handleIllegalPlayerAction(activeChar,
-					"Player "+activeChar.getName()+" tried to cancel not own post!", Config.DEFAULT_PUNISH);
 			return;
 		}
 		
-		if (!activeChar.isInsideZone(ZONE_PEACE))
+		if (!getClient().getFloodProtectors().getTransaction().tryPerformAction("cancelpost"))
+		{
+			return;
+		}
+		
+		Message msg = MailManager.getInstance().getMessage(_msgId);
+		if (msg == null)
+		{
+			return;
+		}
+		if (msg.getSenderId() != activeChar.getObjectId())
+		{
+			Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to cancel not own post!", Config.DEFAULT_PUNISH);
+			return;
+		}
+		
+		if (!activeChar.isInsideZone(ZoneId.PEACE))
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_CANCEL_NOT_IN_PEACE_ZONE);
 			return;
@@ -85,7 +93,7 @@ public final class RequestCancelPostAttachment extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.getPrivateStoreType() > 0)
+		if (activeChar.getPrivateStoreType() > L2PcInstance.STORE_PRIVATE_NONE)
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_CANCEL_PRIVATE_STORE);
 			return;
@@ -98,7 +106,7 @@ public final class RequestCancelPostAttachment extends L2GameClientPacket
 		}
 		
 		final ItemContainer attachments = msg.getAttachments();
-		if (attachments == null || attachments.getSize() == 0)
+		if ((attachments == null) || (attachments.getSize() == 0))
 		{
 			activeChar.sendPacket(SystemMessageId.YOU_CANT_CANCEL_RECEIVED_MAIL);
 			return;
@@ -110,34 +118,37 @@ public final class RequestCancelPostAttachment extends L2GameClientPacket
 		for (L2ItemInstance item : attachments.getItems())
 		{
 			if (item == null)
+			{
 				continue;
+			}
 			
 			if (item.getOwnerId() != activeChar.getObjectId())
 			{
-				Util.handleIllegalPlayerAction(activeChar,
-						"Player "+activeChar.getName()+" tried to get not own item from cancelled attachment!", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to get not own item from cancelled attachment!", Config.DEFAULT_PUNISH);
 				return;
 			}
 			
 			if (!item.getLocation().equals(ItemLocation.MAIL))
 			{
-				Util.handleIllegalPlayerAction(activeChar,
-						"Player "+activeChar.getName()+" tried to get items not from mail !", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to get items not from mail !", Config.DEFAULT_PUNISH);
 				return;
 			}
 			
 			if (item.getLocationSlot() != msg.getId())
 			{
-				Util.handleIllegalPlayerAction(activeChar,
-						"Player "+activeChar.getName()+" tried to get items from different attachment!", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to get items from different attachment!", Config.DEFAULT_PUNISH);
 				return;
 			}
 			
 			weight += item.getCount() * item.getItem().getWeight();
 			if (!item.isStackable())
+			{
 				slots += item.getCount();
+			}
 			else if (activeChar.getInventory().getItemByItemId(item.getItemId()) == null)
+			{
 				slots++;
+			}
 		}
 		
 		if (!activeChar.getInventory().validateCapacity(slots))
@@ -157,19 +168,27 @@ public final class RequestCancelPostAttachment extends L2GameClientPacket
 		for (L2ItemInstance item : attachments.getItems())
 		{
 			if (item == null)
+			{
 				continue;
+			}
 			
 			long count = item.getCount();
 			final L2ItemInstance newItem = attachments.transferItem(attachments.getName(), item.getObjectId(), count, activeChar.getInventory(), activeChar, null);
 			if (newItem == null)
+			{
 				return;
+			}
 			
 			if (playerIU != null)
 			{
 				if (newItem.getCount() > count)
+				{
 					playerIU.addModifiedItem(newItem);
+				}
 				else
+				{
 					playerIU.addNewItem(newItem);
+				}
 			}
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_ACQUIRED_S2_S1);
 			sm.addItemName(item.getItemId());
@@ -181,9 +200,13 @@ public final class RequestCancelPostAttachment extends L2GameClientPacket
 		
 		// Send updated item list to the player
 		if (playerIU != null)
+		{
 			activeChar.sendPacket(playerIU);
+		}
 		else
+		{
 			activeChar.sendPacket(new ItemList(activeChar, false));
+		}
 		
 		// Update current load status on player
 		StatusUpdate su = new StatusUpdate(activeChar);

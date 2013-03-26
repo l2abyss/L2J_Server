@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.util;
 
@@ -22,30 +26,42 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.l2jserver.Config;
 import com.l2jserver.util.lib.Log;
 
+/**
+ * Audits Game Master's actions.
+ */
 public class GMAudit
 {
+	private static final Logger _log = Logger.getLogger(Log.class.getName());
+	
 	static
 	{
 		new File("log/GMAudit").mkdirs();
 	}
 	
-	private static final Logger _log = Logger.getLogger(Log.class.getName());
-	
 	/**
-	 * @param gmName
-	 * @param action
-	 * @param target
-	 * @param params
+	 * Logs a Game Master's action into a file.
+	 * @param gmName the Game Master's name
+	 * @param action the performed action
+	 * @param target the target's name
+	 * @param params the parameters
 	 */
 	public static void auditGMAction(String gmName, String action, String target, String params)
 	{
-		final File file = new File("log/GMAudit/" + gmName + ".txt");
 		final SimpleDateFormat _formatter = new SimpleDateFormat("dd/MM/yyyy H:mm:ss");
+		final String date = _formatter.format(new Date());
+		String name = com.l2jserver.util.Util.replaceIllegalCharacters(gmName);
+		if (!com.l2jserver.util.Util.isValidFileName(name))
+		{
+			name = "INVALID_GM_NAME_" + date;
+		}
+		
+		final File file = new File("log/GMAudit/" + name + ".txt");
 		try (FileWriter save = new FileWriter(file, true))
 		{
-			save.write(_formatter.format(new Date()) + ">" + gmName + ">" + action + ">" + target + ">" + params + "\r\n");
+			save.write(date + ">" + gmName + ">" + action + ">" + target + ">" + params + Config.EOL);
 		}
 		catch (IOException e)
 		{
@@ -55,9 +71,9 @@ public class GMAudit
 	
 	/**
 	 * Wrapper method.
-	 * @param gmName
-	 * @param action
-	 * @param target
+	 * @param gmName the Game Master's name
+	 * @param action the performed action
+	 * @param target the target's name
 	 */
 	public static void auditGMAction(String gmName, String action, String target)
 	{

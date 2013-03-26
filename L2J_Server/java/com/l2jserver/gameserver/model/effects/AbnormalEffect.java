@@ -1,23 +1,27 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.effects;
 
 import java.util.NoSuchElementException;
 
 /**
- * @author  DrHouse
+ * @author DrHouse
  */
 public enum AbnormalEffect
 {
@@ -54,8 +58,6 @@ public enum AbnormalEffect
 	REAL_TARGET("realtarget", 0x20000000),
 	DEATH_MARK("deathmark", 0x40000000),
 	SKULL_FEAR("skull_fear", 0x80000000),
-	ARCANE_SHIELD("arcane_shield", 0x008000),
-	//CONFUSED("confused", 0x0020),
 	
 	// special effects
 	S_INVINCIBLE("invincible", 0x000001),
@@ -72,6 +74,7 @@ public enum AbnormalEffect
 	S_VESPER_S("vesper_s", 0x000800),
 	S_VESPER_C("vesper_c", 0x001000),
 	S_VESPER_D("vesper_d", 0x002000),
+	ARCANE_SHIELD("arcane_shield", 0x008000),
 	
 	// event effects
 	E_AFRO_1("afrobaguette1", 0x000001),
@@ -113,8 +116,10 @@ public enum AbnormalEffect
 		for (AbnormalEffect eff : AbnormalEffect.values())
 		{
 			if (eff.getName().equals(name))
+			{
 				return eff;
+			}
 		}
-		throw new NoSuchElementException("AbnormalEffect not found for name: '"+name+ "'.\n Please check "+AbnormalEffect.class.getCanonicalName());
+		throw new NoSuchElementException(AbnormalEffect.class.getSimpleName() + ": Abnormal effect not found for name: " + name + "!");
 	}
 }

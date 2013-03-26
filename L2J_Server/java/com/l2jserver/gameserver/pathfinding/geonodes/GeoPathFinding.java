@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.pathfinding.geonodes;
 
@@ -384,16 +388,16 @@ public class GeoPathFinding extends PathFinding
 	
 	protected GeoPathFinding()
 	{
-		final File file = new File("./data/pathnode/pn_index.txt");
+		final File file = new File(Config.PATHNODE_DIR, "pn_index.txt");
 		try (FileReader fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr);
 			LineNumberReader lnr = new LineNumberReader(br))
 		{
-			_log.info("PathFinding Engine: - Loading Path Nodes...");
+			_log.info("Path Engine: - Loading Path Nodes...");
 			String line;
 			while ((line = lnr.readLine()) != null)
 			{
-				if (line.trim().length() == 0)
+				if (line.trim().isEmpty())
 				{
 					continue;
 				}
@@ -414,17 +418,17 @@ public class GeoPathFinding extends PathFinding
 	{
 		if ((rx < Config.WORLD_X_MIN) || (rx > Config.WORLD_X_MAX) || (ry < Config.WORLD_Y_MIN) || (ry > Config.WORLD_Y_MAX))
 		{
-			_log.warning("Failed to Load PathNode File: invalid region " + rx + "," + ry + "\n");
+			_log.warning("Failed to Load PathNode File: invalid region " + rx + "," + ry + Config.EOL);
 			return;
 		}
-		String fname = "./data/pathnode/" + rx + "_" + ry + ".pn";
 		short regionoffset = getRegionOffset(rx, ry);
-		_log.info("PathFinding Engine: - Loading: " + fname + " -> region offset: " + regionoffset + "X: " + rx + " Y: " + ry);
-		File Pn = new File(fname);
+		File file = new File(Config.PATHNODE_DIR, rx + "_" + ry + ".pn");
+		_log.info("Path Engine: - Loading: " + file.getName() + " -> region offset: " + regionoffset + " X: " + rx + " Y: " + ry);
 		int node = 0, size, index = 0;
 		
 		// Create a read-only memory-mapped file
-		try (RandomAccessFile raf = new RandomAccessFile(Pn, "r"); FileChannel roChannel = raf.getChannel())
+		try (RandomAccessFile raf = new RandomAccessFile(file, "r");
+			FileChannel roChannel = raf.getChannel())
 		{
 			size = (int) roChannel.size();
 			MappedByteBuffer nodes;
@@ -452,7 +456,7 @@ public class GeoPathFinding extends PathFinding
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Failed to Load PathNode File: " + fname + " : " + e.getMessage(), e);
+			_log.log(Level.WARNING, "Failed to Load PathNode File: " + file.getAbsolutePath() + " : " + e.getMessage(), e);
 		}
 	}
 	

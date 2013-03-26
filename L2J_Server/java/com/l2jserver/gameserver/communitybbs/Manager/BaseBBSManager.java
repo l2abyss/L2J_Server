@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.communitybbs.Manager;
 
@@ -30,44 +34,45 @@ public abstract class BaseBBSManager
 	protected void separateAndSend(String html, L2PcInstance acha)
 	{
 		if (html == null)
+		{
 			return;
-		if (html.length() < 4090)
+		}
+		if (html.length() < 4096)
 		{
 			acha.sendPacket(new ShowBoard(html, "101"));
 			acha.sendPacket(new ShowBoard(null, "102"));
 			acha.sendPacket(new ShowBoard(null, "103"));
 			
 		}
-		else if (html.length() < 8180)
+		else if (html.length() < 8192)
 		{
-			acha.sendPacket(new ShowBoard(html.substring(0, 4090), "101"));
-			acha.sendPacket(new ShowBoard(html.substring(4090, html.length()), "102"));
+			acha.sendPacket(new ShowBoard(html.substring(0, 4096), "101"));
+			acha.sendPacket(new ShowBoard(html.substring(4096), "102"));
 			acha.sendPacket(new ShowBoard(null, "103"));
 			
 		}
-		else if (html.length() < 12270)
+		else if (html.length() < 16384)
 		{
-			acha.sendPacket(new ShowBoard(html.substring(0, 4090), "101"));
-			acha.sendPacket(new ShowBoard(html.substring(4090, 8180), "102"));
-			acha.sendPacket(new ShowBoard(html.substring(8180, html.length()), "103"));
-			
+			acha.sendPacket(new ShowBoard(html.substring(0, 4096), "101"));
+			acha.sendPacket(new ShowBoard(html.substring(4096, 8192), "102"));
+			acha.sendPacket(new ShowBoard(html.substring(8192), "103"));
 		}
 	}
 	
 	/**
 	 * @param html
-	 * @param acha 
+	 * @param acha
 	 */
 	protected void send1001(String html, L2PcInstance acha)
 	{
-		if (html.length() < 8180)
+		if (html.length() < 8192)
 		{
 			acha.sendPacket(new ShowBoard(html, "1001"));
 		}
 	}
 	
 	/**
-	 * @param acha 
+	 * @param acha
 	 */
 	protected void send1002(L2PcInstance acha)
 	{
@@ -78,7 +83,7 @@ public abstract class BaseBBSManager
 	 * @param activeChar
 	 * @param string
 	 * @param string2
-	 * @param string3 
+	 * @param string3
 	 */
 	protected void send1002(L2PcInstance activeChar, String string, String string2, String string3)
 	{

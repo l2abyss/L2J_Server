@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.instancemanager;
 
@@ -38,16 +42,17 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
 
 /**
+ * Raid Boss spawn manager.
  * @author godson
  */
 public class RaidBossSpawnManager
 {
-	private static Logger _log = Logger.getLogger(RaidBossSpawnManager.class.getName());
+	private static final Logger _log = Logger.getLogger(RaidBossSpawnManager.class.getName());
 	
-	protected static Map<Integer, L2RaidBossInstance> _bosses;
-	protected static Map<Integer, L2Spawn> _spawns;
-	protected static Map<Integer, StatsSet> _storedInfo;
-	protected static Map<Integer, ScheduledFuture<?>> _schedules;
+	protected static final Map<Integer, L2RaidBossInstance> _bosses = new FastMap<>();
+	protected static final Map<Integer, L2Spawn> _spawns = new FastMap<>();
+	protected static final Map<Integer, StatsSet> _storedInfo = new FastMap<>();
+	protected static final Map<Integer, ScheduledFuture<?>> _schedules = new FastMap<>();
 	
 	public static enum StatusEnum
 	{
@@ -56,22 +61,23 @@ public class RaidBossSpawnManager
 		UNDEFINED
 	}
 	
+	/**
+	 * Instantiates a new raid boss spawn manager.
+	 */
 	protected RaidBossSpawnManager()
 	{
-		init();
+		load();
 	}
 	
-	public static RaidBossSpawnManager getInstance()
+	/**
+	 * Load.
+	 */
+	public void load()
 	{
-		return SingletonHolder._instance;
-	}
-	
-	private void init()
-	{
-		_bosses = new FastMap<>();
-		_schedules = new FastMap<>();
-		_storedInfo = new FastMap<>();
-		_spawns = new FastMap<>();
+		_bosses.clear();
+		_spawns.clear();
+		_storedInfo.clear();
+		_schedules.clear();
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("SELECT * FROM raidboss_spawnlist ORDER BY boss_id");
@@ -91,28 +97,27 @@ public class RaidBossSpawnManager
 					spawnDat.setLocz(rset.getInt("loc_z"));
 					spawnDat.setAmount(rset.getInt("amount"));
 					spawnDat.setHeading(rset.getInt("heading"));
-					spawnDat.setRespawnMinDelay(rset.getInt("respawn_min_delay"));
-					spawnDat.setRespawnMaxDelay(rset.getInt("respawn_max_delay"));
+					spawnDat.setRespawnDelay(rset.getInt("respawn_delay"), rset.getInt("respawn_random"));
 					respawnTime = rset.getLong("respawn_time");
 					
 					addNewSpawn(spawnDat, respawnTime, rset.getDouble("currentHP"), rset.getDouble("currentMP"), false);
 				}
 				else
 				{
-					_log.warning("RaidBossSpawnManager: Could not load raidboss #" + rset.getInt("boss_id") + " from DB");
+					_log.warning(getClass().getSimpleName() + ": Could not load raidboss #" + rset.getInt("boss_id") + " from DB");
 				}
 			}
 			
-			_log.info("RaidBossSpawnManager: Loaded " + _bosses.size() + " Instances");
-			_log.info("RaidBossSpawnManager: Scheduled " + _schedules.size() + " Instances");
+			_log.info(getClass().getSimpleName() + ": Loaded " + _bosses.size() + " Instances");
+			_log.info(getClass().getSimpleName() + ": Scheduled " + _schedules.size() + " Instances");
 		}
 		catch (SQLException e)
 		{
-			_log.warning("RaidBossSpawnManager: Couldnt load raidboss_spawnlist table");
+			_log.warning(getClass().getSimpleName() + ": Couldnt load raidboss_spawnlist table");
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Error while initializing RaidBossSpawnManager: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while initializing RaidBossSpawnManager: " + e.getMessage(), e);
 		}
 	}
 	
@@ -122,6 +127,10 @@ public class RaidBossSpawnManager
 		
 		private final int bossId;
 		
+		/**
+		 * Instantiates a new spawn schedule.
+		 * @param npcId the npc id
+		 */
 		public SpawnSchedule(int npcId)
 		{
 			bossId = npcId;
@@ -133,22 +142,26 @@ public class RaidBossSpawnManager
 			L2RaidBossInstance raidboss = null;
 			
 			if (bossId == 25328)
+			{
 				raidboss = DayNightSpawnManager.getInstance().handleBoss(_spawns.get(bossId));
+			}
 			else
+			{
 				raidboss = (L2RaidBossInstance) _spawns.get(bossId).doSpawn();
+			}
 			
 			if (raidboss != null)
 			{
 				raidboss.setRaidStatus(StatusEnum.ALIVE);
 				
-				StatsSet info = new StatsSet();
+				final StatsSet info = new StatsSet();
 				info.set("currentHP", raidboss.getCurrentHp());
 				info.set("currentMP", raidboss.getCurrentMp());
 				info.set("respawnTime", 0L);
 				
 				_storedInfo.put(bossId, info);
 				
-				_log.info("Spawning Raid Boss " + raidboss.getName());
+				_log.info(getClass().getSimpleName() + ": Spawning Raid Boss " + raidboss.getName());
 				
 				_bosses.put(bossId, raidboss);
 			}
@@ -157,38 +170,40 @@ public class RaidBossSpawnManager
 		}
 	}
 	
+	/**
+	 * Update status.
+	 * @param boss the boss
+	 * @param isBossDead the is boss dead
+	 */
 	public void updateStatus(L2RaidBossInstance boss, boolean isBossDead)
 	{
 		if (!_storedInfo.containsKey(boss.getNpcId()))
+		{
 			return;
+		}
 		
-		StatsSet info = _storedInfo.get(boss.getNpcId());
+		final StatsSet info = _storedInfo.get(boss.getNpcId());
 		
 		if (isBossDead)
 		{
 			boss.setRaidStatus(StatusEnum.DEAD);
 			
-			long respawnTime;
-			int RespawnMinDelay = boss.getSpawn().getRespawnMinDelay();
-			int RespawnMaxDelay = boss.getSpawn().getRespawnMaxDelay();
-			long respawn_delay = Rnd.get((int) (RespawnMinDelay * 1000 * Config.RAID_MIN_RESPAWN_MULTIPLIER), (int) (RespawnMaxDelay * 1000 * Config.RAID_MAX_RESPAWN_MULTIPLIER));
-			respawnTime = Calendar.getInstance().getTimeInMillis() + respawn_delay;
+			final int respawnMinDelay = (int) (boss.getSpawn().getRespawnMinDelay() * Config.RAID_MIN_RESPAWN_MULTIPLIER);
+			final int respawnMaxDelay = (int) (boss.getSpawn().getRespawnMaxDelay() * Config.RAID_MAX_RESPAWN_MULTIPLIER);
+			final int respawnDelay = Rnd.get(respawnMinDelay, respawnMaxDelay);
+			final long respawnTime = Calendar.getInstance().getTimeInMillis() + respawnDelay;
 			
 			info.set("currentHP", boss.getMaxHp());
 			info.set("currentMP", boss.getMaxMp());
 			info.set("respawnTime", respawnTime);
 			
-			Calendar time = Calendar.getInstance();
-			time.setTimeInMillis(respawnTime);
-			_log.info("RaidBossSpawnManager: Updated " + boss.getName() + " respawn time to " + time.getTime());
-			
-			if (!_schedules.containsKey(boss.getNpcId()))
+			if (!_schedules.containsKey(boss.getNpcId()) && ((respawnMinDelay > 0) || (respawnMaxDelay > 0)))
 			{
-				ScheduledFuture<?> futureSpawn;
-				futureSpawn = ThreadPoolManager.getInstance().scheduleGeneral(new SpawnSchedule(boss.getNpcId()), respawn_delay);
+				final Calendar time = Calendar.getInstance();
+				time.setTimeInMillis(respawnTime);
+				_log.info(getClass().getSimpleName() + ": Updated " + boss.getName() + " respawn time to " + time.getTime());
 				
-				_schedules.put(boss.getNpcId(), futureSpawn);
-				//To update immediately Database uncomment on the following line, to post the hour of respawn raid boss on your site for example or to envisage a crash landing of the waiter.
+				_schedules.put(boss.getNpcId(), ThreadPoolManager.getInstance().scheduleGeneral(new SpawnSchedule(boss.getNpcId()), respawnDelay));
 				updateDb();
 			}
 		}
@@ -200,30 +215,45 @@ public class RaidBossSpawnManager
 			info.set("currentMP", boss.getCurrentMp());
 			info.set("respawnTime", 0L);
 		}
-		
 		_storedInfo.put(boss.getNpcId(), info);
 	}
 	
+	/**
+	 * Adds the new spawn.
+	 * @param spawnDat the spawn dat
+	 * @param respawnTime the respawn time
+	 * @param currentHP the current hp
+	 * @param currentMP the current mp
+	 * @param storeInDb the store in db
+	 */
 	public void addNewSpawn(L2Spawn spawnDat, long respawnTime, double currentHP, double currentMP, boolean storeInDb)
 	{
 		if (spawnDat == null)
+		{
 			return;
+		}
 		if (_spawns.containsKey(spawnDat.getNpcid()))
+		{
 			return;
+		}
 		
-		int bossId = spawnDat.getNpcid();
-		long time = Calendar.getInstance().getTimeInMillis();
+		final int bossId = spawnDat.getNpcid();
+		final long time = Calendar.getInstance().getTimeInMillis();
 		
 		SpawnTable.getInstance().addNewSpawn(spawnDat, false);
 		
-		if (respawnTime == 0L || (time > respawnTime))
+		if ((respawnTime == 0L) || (time > respawnTime))
 		{
 			L2RaidBossInstance raidboss = null;
 			
 			if (bossId == 25328)
+			{
 				raidboss = DayNightSpawnManager.getInstance().handleBoss(spawnDat);
+			}
 			else
+			{
 				raidboss = (L2RaidBossInstance) spawnDat.doSpawn();
+			}
 			
 			if (raidboss != null)
 			{
@@ -233,7 +263,7 @@ public class RaidBossSpawnManager
 				
 				_bosses.put(bossId, raidboss);
 				
-				StatsSet info = new StatsSet();
+				final StatsSet info = new StatsSet();
 				info.set("currentHP", currentHP);
 				info.set("currentMP", currentMP);
 				info.set("respawnTime", 0L);
@@ -243,12 +273,8 @@ public class RaidBossSpawnManager
 		}
 		else
 		{
-			ScheduledFuture<?> futureSpawn;
-			long spawnTime = respawnTime - Calendar.getInstance().getTimeInMillis();
-			
-			futureSpawn = ThreadPoolManager.getInstance().scheduleGeneral(new SpawnSchedule(bossId), spawnTime);
-			
-			_schedules.put(bossId, futureSpawn);
+			final long spawnTime = respawnTime - Calendar.getInstance().getTimeInMillis();
+			_schedules.put(bossId, ThreadPoolManager.getInstance().scheduleGeneral(new SpawnSchedule(bossId), spawnTime));
 		}
 		
 		_spawns.put(bossId, spawnDat);
@@ -272,36 +298,47 @@ public class RaidBossSpawnManager
 			catch (Exception e)
 			{
 				// problem with storing spawn
-				_log.log(Level.WARNING, "RaidBossSpawnManager: Could not store raidboss #" + bossId + " in the DB:" + e.getMessage(), e);
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not store raidboss #" + bossId + " in the DB:" + e.getMessage(), e);
 			}
 		}
 	}
 	
+	/**
+	 * Delete spawn.
+	 * @param spawnDat the spawn dat
+	 * @param updateDb the update db
+	 */
 	public void deleteSpawn(L2Spawn spawnDat, boolean updateDb)
 	{
 		if (spawnDat == null)
+		{
 			return;
+		}
 		
-		int bossId = spawnDat.getNpcid();
-		
+		final int bossId = spawnDat.getNpcid();
 		if (!_spawns.containsKey(bossId))
+		{
 			return;
+		}
 		
 		SpawnTable.getInstance().deleteSpawn(spawnDat, false);
 		_spawns.remove(bossId);
 		
 		if (_bosses.containsKey(bossId))
+		{
 			_bosses.remove(bossId);
+		}
 		
 		if (_schedules.containsKey(bossId))
 		{
-			ScheduledFuture<?> f = _schedules.get(bossId);
+			final ScheduledFuture<?> f = _schedules.remove(bossId);
 			f.cancel(true);
-			_schedules.remove(bossId);
 		}
 		
 		if (_storedInfo.containsKey(bossId))
+		{
 			_storedInfo.remove(bossId);
+		}
 		
 		if (updateDb)
 		{
@@ -314,11 +351,14 @@ public class RaidBossSpawnManager
 			catch (Exception e)
 			{
 				// problem with deleting spawn
-				_log.log(Level.WARNING, "RaidBossSpawnManager: Could not remove raidboss #" + bossId + " from DB: " + e.getMessage(), e);
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not remove raidboss #" + bossId + " from DB: " + e.getMessage(), e);
 			}
 		}
 	}
 	
+	/**
+	 * Update database.
+	 */
 	private void updateDb()
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
@@ -327,20 +367,28 @@ public class RaidBossSpawnManager
 			for (Integer bossId : _storedInfo.keySet())
 			{
 				if (bossId == null)
+				{
 					continue;
+				}
 				
 				L2RaidBossInstance boss = _bosses.get(bossId);
 				
 				if (boss == null)
+				{
 					continue;
+				}
 				
 				if (boss.getRaidStatus().equals(StatusEnum.ALIVE))
+				{
 					updateStatus(boss, false);
+				}
 				
 				StatsSet info = _storedInfo.get(bossId);
 				
 				if (info == null)
+				{
 					continue;
+				}
 				
 				try
 				{
@@ -353,19 +401,23 @@ public class RaidBossSpawnManager
 				}
 				catch (SQLException e)
 				{
-					_log.log(Level.WARNING, "RaidBossSpawnManager: Couldnt update raidboss_spawnlist table " + e.getMessage(), e);
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldnt update raidboss_spawnlist table " + e.getMessage(), e);
 				}
 			}
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "SQL error while updating RaidBoss spawn to database: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": SQL error while updating RaidBoss spawn to database: " + e.getMessage(), e);
 		}
 	}
 	
+	/**
+	 * Gets the all raid boss status.
+	 * @return the all raid boss status
+	 */
 	public String[] getAllRaidBossStatus()
 	{
-		String[] msg = new String[_bosses == null ? 0 : _bosses.size()];
+		final String[] msg = new String[(_bosses == null) ? 0 : _bosses.size()];
 		
 		if (_bosses == null)
 		{
@@ -385,9 +437,14 @@ public class RaidBossSpawnManager
 		return msg;
 	}
 	
+	/**
+	 * Gets the raid boss status.
+	 * @param bossId the boss id
+	 * @return the raid boss status
+	 */
 	public String getRaidBossStatus(int bossId)
 	{
-		String msg = "RaidBoss Status....\n";
+		String msg = "RaidBoss Status..." + Config.EOL;
 		
 		if (_bosses == null)
 		{
@@ -397,7 +454,7 @@ public class RaidBossSpawnManager
 		
 		if (_bosses.containsKey(bossId))
 		{
-			L2RaidBossInstance boss = _bosses.get(bossId);
+			final L2RaidBossInstance boss = _bosses.get(bossId);
 			
 			msg += boss.getName() + ": " + boss.getRaidStatus().name();
 		}
@@ -405,29 +462,53 @@ public class RaidBossSpawnManager
 		return msg;
 	}
 	
+	/**
+	 * Gets the raid boss status id.
+	 * @param bossId the boss id
+	 * @return the raid boss status id
+	 */
 	public StatusEnum getRaidBossStatusId(int bossId)
 	{
 		if (_bosses.containsKey(bossId))
+		{
 			return _bosses.get(bossId).getRaidStatus();
+		}
 		else if (_schedules.containsKey(bossId))
+		{
 			return StatusEnum.DEAD;
+		}
 		else
+		{
 			return StatusEnum.UNDEFINED;
+		}
 	}
 	
+	/**
+	 * Gets the valid template.
+	 * @param bossId the boss id
+	 * @return the valid template
+	 */
 	public L2NpcTemplate getValidTemplate(int bossId)
 	{
-		L2NpcTemplate template = NpcTable.getInstance().getTemplate(bossId);
+		final L2NpcTemplate template = NpcTable.getInstance().getTemplate(bossId);
 		if (template == null)
+		{
 			return null;
+		}
 		if (!template.isType("L2RaidBoss"))
+		{
 			return null;
+		}
 		return template;
 	}
 	
+	/**
+	 * Notify spawn night boss.
+	 * @param raidboss the raidboss
+	 */
 	public void notifySpawnNightBoss(L2RaidBossInstance raidboss)
 	{
-		StatsSet info = new StatsSet();
+		final StatsSet info = new StatsSet();
 		info.set("currentHP", raidboss.getCurrentHp());
 		info.set("currentMP", raidboss.getCurrentMp());
 		info.set("respawnTime", 0L);
@@ -436,34 +517,50 @@ public class RaidBossSpawnManager
 		
 		_storedInfo.put(raidboss.getNpcId(), info);
 		
-		_log.info("Spawning Night Raid Boss " + raidboss.getName());
+		_log.info(getClass().getSimpleName() + ": Spawning Night Raid Boss " + raidboss.getName());
 		
 		_bosses.put(raidboss.getNpcId(), raidboss);
 	}
 	
+	/**
+	 * Checks if the boss is defined.
+	 * @param bossId the boss id
+	 * @return {@code true} if is defined
+	 */
 	public boolean isDefined(int bossId)
 	{
 		return _spawns.containsKey(bossId);
 	}
 	
+	/**
+	 * Gets the bosses.
+	 * @return the bosses
+	 */
 	public Map<Integer, L2RaidBossInstance> getBosses()
 	{
 		return _bosses;
 	}
 	
+	/**
+	 * Gets the spawns.
+	 * @return the spawns
+	 */
 	public Map<Integer, L2Spawn> getSpawns()
 	{
 		return _spawns;
 	}
 	
-	public void reloadBosses()
+	/**
+	 * Gets the stored info.
+	 * @return the stored info
+	 */
+	public Map<Integer, StatsSet> getStoredInfo()
 	{
-		init();
+		return _storedInfo;
 	}
 	
 	/**
-	 * Saves all raidboss status and then clears all info from memory,
-	 * including all schedules.
+	 * Saves and clears the raid bosses status, including all schedules.
 	 */
 	public void cleanUp()
 	{
@@ -483,6 +580,15 @@ public class RaidBossSpawnManager
 		
 		_storedInfo.clear();
 		_spawns.clear();
+	}
+	
+	/**
+	 * Gets the single instance of RaidBossSpawnManager.
+	 * @return single instance of RaidBossSpawnManager
+	 */
+	public static RaidBossSpawnManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

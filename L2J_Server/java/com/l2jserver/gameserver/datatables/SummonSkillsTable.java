@@ -1,29 +1,34 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.datatables;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javolution.util.FastList;
-import javolution.util.FastMap;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.actor.L2Summon;
@@ -31,69 +36,51 @@ import com.l2jserver.gameserver.model.actor.L2Summon;
 public class SummonSkillsTable
 {
 	private static Logger _log = Logger.getLogger(SummonSkillsTable.class.getName());
-	private FastMap<Integer, Map<Integer, L2PetSkillLearn>> _skillTrees;
-	
-	public static SummonSkillsTable getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
-	public void reload()
-	{
-		_skillTrees.clear();
-		load();
-	}
+	private final Map<Integer, Map<Integer, L2PetSkillLearn>> _skillTrees = new HashMap<>();
 	
 	protected SummonSkillsTable()
 	{
-		_skillTrees = new FastMap<>();
 		load();
 	}
 	
-	private void load()
+	public void load()
 	{
+		_skillTrees.clear();
 		int npcId = 0;
 		int count = 0;
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT id FROM npc WHERE type IN ('L2Pet','L2BabyPet','L2SiegeSummon') ORDER BY id"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT id FROM npc WHERE type IN ('L2Pet','L2BabyPet','L2SiegeSummon') ORDER BY id");
-			ResultSet petlist = statement.executeQuery();
 			Map<Integer, L2PetSkillLearn> map;
-			L2PetSkillLearn skillLearn;
-			
-			PreparedStatement statement2 = con.prepareStatement("SELECT minLvl, skillId, skillLvl FROM pets_skills where templateId=? ORDER BY skillId, skillLvl");
-			while (petlist.next())
+			try (PreparedStatement ps2 = con.prepareStatement("SELECT minLvl, skillId, skillLvl FROM pets_skills where templateId=? ORDER BY skillId, skillLvl"))
 			{
-				map = new FastMap<>();
-				npcId = petlist.getInt("id");
-				statement2.setInt(1, npcId);
-				ResultSet skilltree = statement2.executeQuery();
-				statement2.clearParameters();
-				
-				while (skilltree.next())
+				while (rs.next())
 				{
-					int id = skilltree.getInt("skillId");
-					int lvl = skilltree.getInt("skillLvl");
-					int minLvl = skilltree.getInt("minLvl");
-					
-					skillLearn = new L2PetSkillLearn(id, lvl, minLvl);
-					map.put(SkillTable.getSkillHashCode(id, lvl + 1), skillLearn);
+					map = new HashMap<>();
+					npcId = rs.getInt("id");
+					ps2.setInt(1, npcId);
+					try (ResultSet skilltree = ps2.executeQuery())
+					{
+						while (skilltree.next())
+						{
+							int id = skilltree.getInt("skillId");
+							int lvl = skilltree.getInt("skillLvl");
+							map.put(SkillTable.getSkillHashCode(id, lvl + 1), new L2PetSkillLearn(id, lvl, skilltree.getInt("minLvl")));
+						}
+						_skillTrees.put(npcId, map);
+					}
+					ps2.clearParameters();
+					count += map.size();
+					_log.fine(getClass().getSimpleName() + ": skill tree for pet " + npcId + " has " + map.size() + " skills");
 				}
-				_skillTrees.put(npcId, map);
-				skilltree.close();
-				
-				count += map.size();
-				_log.fine("PetSkillsTable: skill tree for pet " + npcId + " has " + map.size() + " skills");
 			}
-			statement2.close();
-			petlist.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error while creating pet skill tree (Pet ID " + npcId + "): " + e.getMessage(), e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while creating pet skill tree (Pet ID " + npcId + "): " + e.getMessage(), e);
 		}
-		_log.info("PetSkillsTable: Loaded " + count + " skills.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + count + " skills.");
 	}
 	
 	public int getAvailableLevel(L2Summon cha, int skillId)
@@ -101,53 +88,65 @@ public class SummonSkillsTable
 		int lvl = 0;
 		if (!_skillTrees.containsKey(cha.getNpcId()))
 		{
-			_log.warning("Pet id " + cha.getNpcId() + " does not have any skills assigned.");
+			_log.warning(getClass().getSimpleName() + ": Pet id " + cha.getNpcId() + " does not have any skills assigned.");
 			return lvl;
 		}
 		Collection<L2PetSkillLearn> skills = _skillTrees.get(cha.getNpcId()).values();
 		for (L2PetSkillLearn temp : skills)
 		{
 			if (temp.getId() != skillId)
+			{
 				continue;
+			}
 			if (temp.getLevel() == 0)
 			{
 				if (cha.getLevel() < 70)
 				{
 					lvl = (cha.getLevel() / 10);
 					if (lvl <= 0)
+					{
 						lvl = 1;
+					}
 				}
 				else
+				{
 					lvl = (7 + ((cha.getLevel() - 70) / 5));
+				}
 				
 				// formula usable for skill that have 10 or more skill levels
 				int maxLvl = SkillTable.getInstance().getMaxLevel(temp.getId());
 				if (lvl > maxLvl)
+				{
 					lvl = maxLvl;
+				}
 				break;
 			}
 			else if (temp.getMinLevel() <= cha.getLevel())
 			{
 				if (temp.getLevel() > lvl)
+				{
 					lvl = temp.getLevel();
+				}
 			}
 		}
 		return lvl;
 	}
 	
-	public FastList<Integer> getAvailableSkills(L2Summon cha)
+	public List<Integer> getAvailableSkills(L2Summon cha)
 	{
-		FastList<Integer> skillIds = new FastList<>();
+		List<Integer> skillIds = new ArrayList<>();
 		if (!_skillTrees.containsKey(cha.getNpcId()))
 		{
-			_log.warning("Pet id " + cha.getNpcId() + " does not have any skills assigned.");
+			_log.warning(getClass().getSimpleName() + ": Pet id " + cha.getNpcId() + " does not have any skills assigned.");
 			return skillIds;
 		}
 		Collection<L2PetSkillLearn> skills = _skillTrees.get(cha.getNpcId()).values();
 		for (L2PetSkillLearn temp : skills)
 		{
 			if (skillIds.contains(temp.getId()))
+			{
 				continue;
+			}
 			skillIds.add(temp.getId());
 		}
 		return skillIds;
@@ -180,6 +179,11 @@ public class SummonSkillsTable
 		{
 			return _minLevel;
 		}
+	}
+	
+	public static SummonSkillsTable getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

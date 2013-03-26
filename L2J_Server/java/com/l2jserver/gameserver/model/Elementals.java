@@ -1,25 +1,29 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model;
-
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.funcs.FuncAdd;
 import com.l2jserver.gameserver.model.skills.funcs.LambdaConst;
 import com.l2jserver.gameserver.model.stats.Stats;
+
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 public final class Elementals
 {
@@ -28,7 +32,9 @@ public final class Elementals
 	static
 	{
 		for (ElementalItems item : ElementalItems.values())
+		{
 			TABLE.put(item._itemId, item);
+		}
 	}
 	
 	public static final byte NONE = -1;
@@ -45,9 +51,9 @@ public final class Elementals
 	
 	public static final int[] WEAPON_VALUES =
 	{
-		0,   // Level 1
-		25,  // Level 2
-		75,  // Level 3
+		0, // Level 1
+		25, // Level 2
+		75, // Level 3
 		150, // Level 4
 		175, // Level 5
 		225, // Level 6
@@ -58,12 +64,13 @@ public final class Elementals
 		475, // Level 11
 		525, // Level 12
 		600, // Level 13
-		Integer.MAX_VALUE  // TODO: Higher stones
+		Integer.MAX_VALUE
+	// TODO: Higher stones
 	};
 	
 	public static final int[] ARMOR_VALUES =
 	{
-		0,  // Level 1
+		0, // Level 1
 		12, // Level 2
 		30, // Level 3
 		60, // Level 4
@@ -76,12 +83,17 @@ public final class Elementals
 		192, // Level 11
 		210, // Level 12
 		240, // Level 13
-		Integer.MAX_VALUE  // TODO: Higher stones
+		Integer.MAX_VALUE
+	// TODO: Higher stones
 	};
 	
 	public static enum ElementalItemType
 	{
-		Stone(3), Roughore(3), Crystal(6), Jewel(9), Energy(12);
+		Stone(3),
+		Roughore(3),
+		Crystal(6),
+		Jewel(9),
+		Energy(12);
 		
 		public int _maxLevel;
 		
@@ -145,7 +157,9 @@ public final class Elementals
 	{
 		ElementalItems item = TABLE.get(itemId);
 		if (item != null)
+		{
 			return item._element;
+		}
 		return NONE;
 	}
 	
@@ -158,13 +172,15 @@ public final class Elementals
 	{
 		ElementalItems item = TABLE.get(itemId);
 		if (item != null)
+		{
 			return item._type._maxLevel;
+		}
 		return -1;
 	}
 	
 	public static String getElementName(byte element)
 	{
-		switch(element)
+		switch (element)
 		{
 			case FIRE:
 				return "Fire";
@@ -186,23 +202,35 @@ public final class Elementals
 	{
 		String tmp = name.toLowerCase();
 		if (tmp.equals("fire"))
+		{
 			return FIRE;
+		}
 		if (tmp.equals("water"))
+		{
 			return WATER;
+		}
 		if (tmp.equals("wind"))
+		{
 			return WIND;
+		}
 		if (tmp.equals("earth"))
+		{
 			return EARTH;
+		}
 		if (tmp.equals("dark"))
+		{
 			return DARK;
+		}
 		if (tmp.equals("holy"))
+		{
 			return HOLY;
+		}
 		return NONE;
 	}
 	
 	public static byte getOppositeElement(byte element)
 	{
-		return (byte)((element % 2 == 0) ? (element + 1) : (element - 1));
+		return (byte) (((element % 2) == 0) ? (element + 1) : (element - 1));
 	}
 	
 	public static class ElementalStatBoni
@@ -222,7 +250,9 @@ public final class Elementals
 		{
 			// make sure the bonuses are not applied twice..
 			if (_active)
+			{
 				return;
+			}
 			
 			switch (_elementalType)
 			{
@@ -253,7 +283,9 @@ public final class Elementals
 		{
 			// make sure the bonuses are not removed twice
 			if (!_active)
+			{
 				return;
+			}
 			
 			player.removeStatsOwner(this);
 			

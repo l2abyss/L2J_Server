@@ -1,26 +1,30 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.instancemanager;
-
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,14 +47,9 @@ public class AirShipManager
 	private static final String UPDATE_DB = "UPDATE airships SET fuel=? WHERE owner_id=?";
 	
 	private L2CharTemplate _airShipTemplate = null;
-	private TIntObjectHashMap<StatsSet> _airShipsInfo = new TIntObjectHashMap<>();
-	private TIntObjectHashMap<L2AirShipInstance> _airShips = new TIntObjectHashMap<>();
-	private TIntObjectHashMap<AirShipTeleportList> _teleports = new TIntObjectHashMap<>();
-	
-	public static final AirShipManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	private final Map<Integer, StatsSet> _airShipsInfo = new HashMap<>();
+	private final Map<Integer, L2AirShipInstance> _airShips = new HashMap<>();
+	private final Map<Integer, AirShipTeleportList> _teleports = new HashMap<>();
 	
 	protected AirShipManager()
 	{
@@ -104,7 +103,7 @@ public class AirShipManager
 	
 	public L2AirShipInstance getNewAirShip(int x, int y, int z, int heading)
 	{
-		final L2AirShipInstance	airShip = new L2AirShipInstance(IdFactory.getInstance().getNextId(), _airShipTemplate);
+		final L2AirShipInstance airShip = new L2AirShipInstance(IdFactory.getInstance().getNextId(), _airShipTemplate);
 		
 		airShip.setHeading(heading);
 		airShip.setXYZInvisible(x, y, z);
@@ -118,7 +117,9 @@ public class AirShipManager
 	{
 		final StatsSet info = _airShipsInfo.get(ownerId);
 		if (info == null)
+		{
 			return null;
+		}
 		
 		final L2AirShipInstance airShip;
 		if (_airShips.containsKey(ownerId))
@@ -150,18 +151,20 @@ public class AirShipManager
 			storeInDb(ship.getOwnerId());
 			final StatsSet info = _airShipsInfo.get(ship.getOwnerId());
 			if (info != null)
+			{
 				info.set("fuel", ship.getFuel());
+			}
 		}
 	}
 	
 	public boolean hasAirShipLicense(int ownerId)
 	{
-		return _airShipsInfo.contains(ownerId);
+		return _airShipsInfo.containsKey(ownerId);
 	}
 	
 	public void registerLicense(int ownerId)
 	{
-		if (!_airShipsInfo.contains(ownerId))
+		if (!_airShipsInfo.containsKey(ownerId))
 		{
 			final StatsSet info = new StatsSet();
 			info.set("fuel", 600);
@@ -177,11 +180,11 @@ public class AirShipManager
 			}
 			catch (SQLException e)
 			{
-				_log.log(Level.WARNING, getClass().getSimpleName()+": Could not add new airship license: " + e.getMessage(), e);
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not add new airship license: " + e.getMessage(), e);
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.WARNING, getClass().getSimpleName()+": Error while initializing: " + e.getMessage(), e);
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while initializing: " + e.getMessage(), e);
 			}
 		}
 	}
@@ -189,8 +192,10 @@ public class AirShipManager
 	public boolean hasAirShip(int ownerId)
 	{
 		final L2AirShipInstance ship = _airShips.get(ownerId);
-		if (ship == null || !(ship.isVisible() || ship.isTeleporting()))
+		if ((ship == null) || !(ship.isVisible() || ship.isTeleporting()))
+		{
 			return false;
+		}
 		
 		return true;
 	}
@@ -198,23 +203,31 @@ public class AirShipManager
 	public void registerAirShipTeleportList(int dockId, int locationId, VehiclePathPoint[][] tp, int[] fuelConsumption)
 	{
 		if (tp.length != fuelConsumption.length)
+		{
 			return;
+		}
 		
 		_teleports.put(dockId, new AirShipTeleportList(locationId, fuelConsumption, tp));
 	}
 	
 	public void sendAirShipTeleportList(L2PcInstance player)
 	{
-		if (player == null || !player.isInAirShip())
+		if ((player == null) || !player.isInAirShip())
+		{
 			return;
+		}
 		
 		final L2AirShipInstance ship = player.getAirShip();
 		if (!ship.isCaptain(player) || !ship.isInDock() || ship.isMoving())
+		{
 			return;
+		}
 		
 		int dockId = ship.getDockId();
-		if (!_teleports.contains(dockId))
+		if (!_teleports.containsKey(dockId))
+		{
 			return;
+		}
 		
 		final AirShipTeleportList all = _teleports.get(dockId);
 		player.sendPacket(new ExAirShipTeleportList(all.location, all.routes, all.fuel));
@@ -224,10 +237,14 @@ public class AirShipManager
 	{
 		final AirShipTeleportList all = _teleports.get(dockId);
 		if (all == null)
+		{
 			return null;
+		}
 		
-		if (index < -1 || index >= all.routes.length)
+		if ((index < -1) || (index >= all.routes.length))
+		{
 			return null;
+		}
 		
 		return all.routes[index + 1];
 	}
@@ -236,10 +253,14 @@ public class AirShipManager
 	{
 		final AirShipTeleportList all = _teleports.get(dockId);
 		if (all == null)
+		{
 			return 0;
+		}
 		
-		if (index < -1 || index >= all.fuel.length)
+		if ((index < -1) || (index >= all.fuel.length))
+		{
 			return 0;
+		}
 		
 		return all.fuel[index + 1];
 	}
@@ -260,20 +281,22 @@ public class AirShipManager
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, getClass().getSimpleName()+": Could not load airships table: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not load airships table: " + e.getMessage(), e);
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, getClass().getSimpleName()+": Error while initializing: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while initializing: " + e.getMessage(), e);
 		}
-		_log.info(getClass().getSimpleName()+": Loaded " + _airShipsInfo.size() + " private airships");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _airShipsInfo.size() + " private airships");
 	}
 	
 	private void storeInDb(int ownerId)
 	{
 		StatsSet info = _airShipsInfo.get(ownerId);
 		if (info == null)
+		{
 			return;
+		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement(UPDATE_DB))
@@ -284,11 +307,11 @@ public class AirShipManager
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, getClass().getSimpleName()+": Could not update airships table: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not update airships table: " + e.getMessage(), e);
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, getClass().getSimpleName()+": Error while save: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while save: " + e.getMessage(), e);
 		}
 	}
 	
@@ -304,6 +327,11 @@ public class AirShipManager
 			fuel = f;
 			routes = r;
 		}
+	}
+	
+	public static final AirShipManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

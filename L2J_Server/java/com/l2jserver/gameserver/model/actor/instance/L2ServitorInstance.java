@@ -1,20 +1,22 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.instance;
-
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -44,6 +46,7 @@ import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.network.serverpackets.SetSummonRemainTime;
 
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 public class L2ServitorInstance extends L2Summon
 {
@@ -52,7 +55,7 @@ public class L2ServitorInstance extends L2Summon
 	private static final String ADD_SKILL_SAVE = "INSERT INTO character_summon_skills_save (ownerId,ownerClassIndex,summonSkillId,skill_id,skill_level,effect_count,effect_cur_time,buff_index) VALUES (?,?,?,?,?,?,?,?)";
 	private static final String RESTORE_SKILL_SAVE = "SELECT skill_id,skill_level,effect_count,effect_cur_time,buff_index FROM character_summon_skills_save WHERE ownerId=? AND ownerClassIndex=? AND summonSkillId=? ORDER BY buff_index ASC";
 	private static final String DELETE_SKILL_SAVE = "DELETE FROM character_summon_skills_save WHERE ownerId=? AND ownerClassIndex=? AND summonSkillId=?";
-
+	
 	private float _expPenalty = 0; // exp decrease multiplier (i.e. 0.3 (= 30%) for shadow)
 	private int _itemConsumeId;
 	private int _itemConsumeCount;
@@ -64,7 +67,7 @@ public class L2ServitorInstance extends L2Summon
 	private int _nextItemConsumeTime;
 	public int lastShowntimeRemaining; // Following FbiAgent's example to avoid sending useless packets
 	
-	private Future<?> _summonLifeTask;
+	protected Future<?> _summonLifeTask;
 	
 	private int _referenceSkill;
 	
@@ -79,7 +82,7 @@ public class L2ServitorInstance extends L2Summon
 		
 		if (skill != null)
 		{
-			final L2SkillSummon summonSkill = (L2SkillSummon)skill;
+			final L2SkillSummon summonSkill = (L2SkillSummon) skill;
 			_itemConsumeId = summonSkill.getItemConsumeIdOT();
 			_itemConsumeCount = summonSkill.getItemConsumeOT();
 			_itemConsumeSteps = summonSkill.getItemConsumeSteps();
@@ -102,20 +105,30 @@ public class L2ServitorInstance extends L2Summon
 		lastShowntimeRemaining = _totalLifeTime;
 		
 		if (_itemConsumeId == 0)
+		{
 			_nextItemConsumeTime = -1; // do not consume
+		}
 		else if (_itemConsumeSteps == 0)
+		{
 			_nextItemConsumeTime = -1; // do not consume
+		}
 		else
-			_nextItemConsumeTime = _totalLifeTime - _totalLifeTime / (_itemConsumeSteps + 1);
+		{
+			_nextItemConsumeTime = _totalLifeTime - (_totalLifeTime / (_itemConsumeSteps + 1));
+		}
 		
 		// When no item consume is defined task only need to check when summon life time has ended.
 		// Otherwise have to destroy items from owner's inventory in order to let summon live.
 		int delay = 1000;
 		
 		if (Config.DEBUG && (_itemConsumeCount != 0))
+		{
 			_log.warning(getClass().getSimpleName() + ": Item Consume ID: " + _itemConsumeId + ", Count: " + _itemConsumeCount + ", Rate: " + _itemConsumeSteps + " times.");
+		}
 		if (Config.DEBUG)
+		{
 			_log.warning(getClass().getSimpleName() + ": Task Delay " + (delay / 1000) + " seconds.");
+		}
 		
 		_summonLifeTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new SummonLifetime(getOwner(), this), delay, delay);
 	}
@@ -226,10 +239,14 @@ public class L2ServitorInstance extends L2Summon
 	public boolean doDie(L2Character killer)
 	{
 		if (!super.doDie(killer))
+		{
 			return false;
+		}
 		
 		if (Config.DEBUG)
+		{
 			_log.warning(getClass().getSimpleName() + ": " + getTemplate().getName() + " (" + getOwner().getName() + ") has been killed.");
+		}
 		
 		if (_summonLifeTask != null)
 		{
@@ -244,31 +261,37 @@ public class L2ServitorInstance extends L2Summon
 	}
 	
 	/**
-	 * Servitors' skills automatically change their level based on the servitor's level.
-	 * Until level 70, the servitor gets 1 lv of skill per 10 levels. After that, it is 1
-	 * skill level per 5 servitor levels.  If the resulting skill level doesn't exist use
-	 * the max that does exist!
-	 *
-	 * @see com.l2jserver.gameserver.model.actor.L2Character#doCast(com.l2jserver.gameserver.model.skills.L2Skill)
+	 * Servitors' skills automatically change their level based on the servitor's level.<br>
+	 * Until level 70, the servitor gets 1 lv of skill per 10 levels.<br>
+	 * After that, it is 1 skill level per 5 servitor levels.<br>
+	 * If the resulting skill level doesn't exist use the max that does exist!
 	 */
 	@Override
 	public void doCast(L2Skill skill)
 	{
 		final int petLevel = getLevel();
-		int skillLevel = petLevel/10;
-		if(petLevel >= 70)
-			skillLevel += (petLevel-65)/10;
+		int skillLevel = petLevel / 10;
+		if (petLevel >= 70)
+		{
+			skillLevel += (petLevel - 65) / 10;
+		}
 		
 		// Adjust the level for servitors less than level 1.
 		if (skillLevel < 1)
+		{
 			skillLevel = 1;
+		}
 		
-		final L2Skill skillToCast = SkillTable.getInstance().getInfo(skill.getId(),skillLevel);
+		final L2Skill skillToCast = SkillTable.getInstance().getInfo(skill.getId(), skillLevel);
 		
 		if (skillToCast != null)
+		{
 			super.doCast(skillToCast);
+		}
 		else
+		{
 			super.doCast(skill);
+		}
 	}
 	
 	@Override
@@ -302,29 +325,35 @@ public class L2ServitorInstance extends L2Summon
 	@Override
 	public void store()
 	{
-		if (_referenceSkill == 0 || isDead())
+		if ((_referenceSkill == 0) || isDead())
+		{
 			return;
+		}
 		
 		if (Config.RESTORE_SERVITOR_ON_RECONNECT)
+		{
 			CharSummonTable.getInstance().saveSummon(this);
+		}
 	}
 	
 	@Override
 	public void storeEffect(boolean storeEffects)
 	{
 		if (!Config.SUMMON_STORE_SKILL_COOLTIME)
+		{
 			return;
+		}
 		
 		if (getOwner().isInOlympiadMode())
+		{
 			return;
+		}
 		
 		// Clear list for overwrite
-		if (
-				SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId()) &&
-				SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex()) &&
-				SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill())
-			)
+		if (SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId()) && SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex()) && SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill()))
+		{
 			SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).clear();
+		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(DELETE_SKILL_SAVE))
@@ -339,7 +368,7 @@ public class L2ServitorInstance extends L2Summon
 			
 			final List<Integer> storedSkills = new FastList<>();
 			
-			//Store all effect data along with calculated remaining
+			// Store all effect data along with calculated remaining
 			if (storeEffects)
 			{
 				try (PreparedStatement ps2 = con.prepareStatement(ADD_SKILL_SAVE))
@@ -347,7 +376,9 @@ public class L2ServitorInstance extends L2Summon
 					for (L2Effect effect : getAllEffects())
 					{
 						if (effect == null)
+						{
 							continue;
+						}
 						
 						switch (effect.getEffectType())
 						{
@@ -360,11 +391,13 @@ public class L2ServitorInstance extends L2Summon
 						
 						L2Skill skill = effect.getSkill();
 						if (storedSkills.contains(skill.getReuseHashCode()))
+						{
 							continue;
+						}
 						
 						storedSkills.add(skill.getReuseHashCode());
 						
-						if (!effect.isHerbEffect() && effect.getInUse() && !skill.isToggle())
+						if (effect.getInUse() && !skill.isToggle())
 						{
 							ps2.setInt(1, getOwner().getObjectId());
 							ps2.setInt(2, getOwner().getClassIndex());
@@ -376,13 +409,19 @@ public class L2ServitorInstance extends L2Summon
 							ps2.setInt(8, ++buff_index);
 							ps2.execute();
 							
-							if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId())) // Check if charId exists in map
+							if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId()))
+							{
 								SummonEffectsTable.getInstance().getServitorEffectsOwner().put(getOwner().getObjectId(), new TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>());
-							if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex())) // Check if classIndex exists in charId map
+							}
+							if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex()))
+							{
 								SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).put(getOwner().getClassIndex(), new TIntObjectHashMap<List<SummonEffect>>());
-							if (!SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill())) // Check is summonSkillId exists in charId+classIndex map
+							}
+							if (!SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill()))
+							{
 								SummonEffectsTable.getInstance().getServitorEffects(getOwner()).put(getReferenceSkill(), new FastList<SummonEffect>());
-	
+							}
+							
 							SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effect.getCount(), effect.getTime()));
 						}
 					}
@@ -399,15 +438,13 @@ public class L2ServitorInstance extends L2Summon
 	public void restoreEffects()
 	{
 		if (getOwner().isInOlympiadMode())
+		{
 			return;
+		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			if (
-					!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId()) ||
-					!SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex()) ||
-					!SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill())
-				)
+			if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId()) || !SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex()) || !SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill()))
 			{
 				try (PreparedStatement statement = con.prepareStatement(RESTORE_SKILL_SAVE))
 				{
@@ -423,16 +460,24 @@ public class L2ServitorInstance extends L2Summon
 							
 							final L2Skill skill = SkillTable.getInstance().getInfo(rset.getInt("skill_id"), rset.getInt("skill_level"));
 							if (skill == null)
+							{
 								continue;
+							}
 							
 							if (skill.hasEffects())
 							{
-								if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId())) // Check if charId exists in map
+								if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId()))
+								{
 									SummonEffectsTable.getInstance().getServitorEffectsOwner().put(getOwner().getObjectId(), new TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>());
-								if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex())) // Check if classIndex exists in charId map
+								}
+								if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex()))
+								{
 									SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).put(getOwner().getClassIndex(), new TIntObjectHashMap<List<SummonEffect>>());
-								if (!SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill())) // Check is summonSkillId exists in charId+classIndex map
+								}
+								if (!SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill()))
+								{
 									SummonEffectsTable.getInstance().getServitorEffects(getOwner()).put(getReferenceSkill(), new FastList<SummonEffect>());
+								}
 								
 								SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effectCount, effectCurTime));
 							}
@@ -455,17 +500,17 @@ public class L2ServitorInstance extends L2Summon
 		}
 		finally
 		{
-			if (
-					!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId()) ||
-					!SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex()) ||
-					!SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill())
-				)
+			if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId()) || !SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex()) || !SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill()))
+			{
 				return;
-
+			}
+			
 			for (SummonEffect se : SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()))
 			{
 				if (se == null)
+				{
 					continue;
+				}
 				Env env = new Env();
 				env.setCharacter(this);
 				env.setTarget(this);
@@ -500,7 +545,9 @@ public class L2ServitorInstance extends L2Summon
 		public void run()
 		{
 			if (Config.DEBUG)
+			{
 				log.warning(getClass().getSimpleName() + ": " + _summon.getTemplate().getName() + " (" + _activeChar.getName() + ") run task.");
+			}
 			
 			try
 			{
@@ -528,15 +575,15 @@ public class L2ServitorInstance extends L2Summon
 				{
 					_summon.decNextItemConsumeTime(maxTime / (_summon.getItemConsumeSteps() + 1));
 					
-					// check if owner has enought itemConsume, if requested
-					if (_summon.getItemConsumeCount() > 0 && _summon.getItemConsumeId() != 0 && !_summon.isDead() && !_summon.destroyItemByItemId("Consume", _summon.getItemConsumeId(), _summon.getItemConsumeCount(), _activeChar, true))
+					// check if owner has enough itemConsume, if requested
+					if ((_summon.getItemConsumeCount() > 0) && (_summon.getItemConsumeId() != 0) && !_summon.isDead() && !_summon.destroyItemByItemId("Consume", _summon.getItemConsumeId(), _summon.getItemConsumeCount(), _activeChar, true))
 					{
 						_summon.unSummon(_activeChar);
 					}
 				}
 				
 				// prevent useless packet-sending when the difference isn't visible.
-				if ((_summon.lastShowntimeRemaining - newTimeRemaining) > maxTime / 352)
+				if ((_summon.lastShowntimeRemaining - newTimeRemaining) > (maxTime / 352))
 				{
 					_summon.sendPacket(new SetSummonRemainTime(maxTime, (int) newTimeRemaining));
 					_summon.lastShowntimeRemaining = (int) newTimeRemaining;
@@ -554,7 +601,9 @@ public class L2ServitorInstance extends L2Summon
 	public void unSummon(L2PcInstance owner)
 	{
 		if (Config.DEBUG)
-			_log.warning(getClass().getSimpleName() + ": " + getTemplate().getName() + " (" + owner.getName() + ") unsummoned.");
+		{
+			_log.info(getClass().getSimpleName() + ": " + getTemplate().getName() + " (" + owner.getName() + ") unsummoned.");
+		}
 		
 		if (_summonLifeTask != null)
 		{
@@ -565,7 +614,9 @@ public class L2ServitorInstance extends L2Summon
 		super.unSummon(owner);
 		
 		if (!_restoreSummon)
+		{
 			CharSummonTable.getInstance().removeServitor(owner);
+		}
 	}
 	
 	@Override
@@ -578,7 +629,9 @@ public class L2ServitorInstance extends L2Summon
 	public boolean destroyItemByItemId(String process, int itemId, long count, L2Object reference, boolean sendMessage)
 	{
 		if (Config.DEBUG)
+		{
 			_log.warning(getClass().getSimpleName() + ": " + getTemplate().getName() + " (" + getOwner().getName() + ") consume.");
+		}
 		
 		return getOwner().destroyItemByItemId(process, itemId, count, reference, sendMessage);
 	}
@@ -596,24 +649,30 @@ public class L2ServitorInstance extends L2Summon
 	@Override
 	public byte getAttackElement()
 	{
-		if(isSharingElementals() && getOwner() != null)
+		if (isSharingElementals() && (getOwner() != null))
+		{
 			return getOwner().getAttackElement();
+		}
 		return super.getAttackElement();
 	}
 	
 	@Override
 	public int getAttackElementValue(byte attackAttribute)
 	{
-		if(isSharingElementals() && getOwner() != null)
-			return (int)(getOwner().getAttackElementValue(attackAttribute) * sharedElementalsPercent());
+		if (isSharingElementals() && (getOwner() != null))
+		{
+			return (int) (getOwner().getAttackElementValue(attackAttribute) * sharedElementalsPercent());
+		}
 		return super.getAttackElementValue(attackAttribute);
 	}
 	
 	@Override
 	public int getDefenseElementValue(byte defenseAttribute)
 	{
-		if(isSharingElementals() && getOwner() != null)
-			return (int)(getOwner().getDefenseElementValue(defenseAttribute) * sharedElementalsPercent());
+		if (isSharingElementals() && (getOwner() != null))
+		{
+			return (int) (getOwner().getDefenseElementValue(defenseAttribute) * sharedElementalsPercent());
+		}
 		return super.getDefenseElementValue(defenseAttribute);
 	}
 	

@@ -1,43 +1,40 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.cache;
 
-import javolution.util.FastMap;
+import java.util.Map;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.util.L2FastMap;
 
 /**
- *
  * @author -Nemesiss-
  */
 public class WarehouseCacheManager
 {
-	protected final FastMap<L2PcInstance, Long> _cachedWh;
-	protected final long _cacheTime;
-	
-	public static WarehouseCacheManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	protected final Map<L2PcInstance, Long> _cachedWh = new L2FastMap<>(true);
+	protected final long _cacheTime = Config.WAREHOUSE_CACHE_TIME * 60000L;
 	
 	protected WarehouseCacheManager()
 	{
-		_cacheTime = Config.WAREHOUSE_CACHE_TIME * 60000L; // 60*1000 = 60000
-		_cachedWh = new FastMap<L2PcInstance, Long>().shared();
 		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new CacheScheduler(), 120000, 60000);
 	}
 	
@@ -59,13 +56,18 @@ public class WarehouseCacheManager
 			long cTime = System.currentTimeMillis();
 			for (L2PcInstance pc : _cachedWh.keySet())
 			{
-				if (cTime - _cachedWh.get(pc) > _cacheTime)
+				if ((cTime - _cachedWh.get(pc)) > _cacheTime)
 				{
 					pc.clearWarehouse();
 					_cachedWh.remove(pc);
 				}
 			}
 		}
+	}
+	
+	public static WarehouseCacheManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

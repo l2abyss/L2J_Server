@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
@@ -46,9 +50,13 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		
 		if (activeChar == null)
+		{
 			return;
+		}
 		else if (_itemCount <= 0)
+		{
 			return;
+		}
 		else if (activeChar.getObjectId() != _charId)
 		{
 			Util.handleIllegalPlayerAction(activeChar, "[RequestWithDrawPremiumItem] Incorrect owner, Player: " + activeChar.getName(), Config.DEFAULT_PUNISH);
@@ -59,7 +67,7 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 			Util.handleIllegalPlayerAction(activeChar, "[RequestWithDrawPremiumItem] Player: " + activeChar.getName() + " try to get item with empty list!", Config.DEFAULT_PUNISH);
 			return;
 		}
-		else if (activeChar.getWeightPenalty() >= 3 || !activeChar.isInventoryUnder80(false))
+		else if ((activeChar.getWeightPenalty() >= 3) || !activeChar.isInventoryUnder90(false))
 		{
 			activeChar.sendPacket(SystemMessageId.YOU_CANNOT_RECEIVE_THE_VITAMIN_ITEM);
 			return;
@@ -72,9 +80,13 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 		
 		L2PremiumItem _item = activeChar.getPremiumItemList().get(_itemNum);
 		if (_item == null)
+		{
 			return;
+		}
 		else if (_item.getCount() < _itemCount)
+		{
 			return;
+		}
 		
 		long itemsLeft = (_item.getCount() - _itemCount);
 		
@@ -92,9 +104,13 @@ public final class RequestWithDrawPremiumItem extends L2GameClientPacket
 		}
 		
 		if (activeChar.getPremiumItemList().isEmpty())
+		{
 			activeChar.sendPacket(SystemMessageId.THERE_ARE_NO_MORE_VITAMIN_ITEMS_TO_BE_FOUND);
+		}
 		else
+		{
 			activeChar.sendPacket(new ExGetPremiumItemList(activeChar));
+		}
 	}
 	
 	@Override

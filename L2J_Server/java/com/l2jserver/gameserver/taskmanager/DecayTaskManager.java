@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.taskmanager;
 
@@ -61,13 +65,8 @@ public class DecayTaskManager
 		_decayTasks.remove(actor);
 	}
 	
-	private class DecayScheduler implements Runnable
+	protected class DecayScheduler implements Runnable
 	{
-		protected DecayScheduler()
-		{
-			// Do nothing
-		}
-		
 		@Override
 		public void run()
 		{
@@ -119,11 +118,13 @@ public class DecayTaskManager
 	public String toString()
 	{
 		StringBuilder ret = new StringBuilder();
-		ret.append("============= DecayTask Manager Report ============\r\n");
+		ret.append("============= DecayTask Manager Report ============");
+		ret.append(Config.EOL);
 		ret.append("Tasks count: ");
 		ret.append(_decayTasks.size());
-		ret.append("\r\n");
-		ret.append("Tasks dump:\r\n");
+		ret.append(Config.EOL);
+		ret.append("Tasks dump:");
+		ret.append(Config.EOL);
 		
 		Long current = System.currentTimeMillis();
 		for (L2Character actor : _decayTasks.keySet())
@@ -134,7 +135,7 @@ public class DecayTaskManager
 			ret.append(actor.getName());
 			ret.append(" decay timer: ");
 			ret.append(current - _decayTasks.get(actor));
-			ret.append("\r\n");
+			ret.append(Config.EOL);
 		}
 		
 		return ret.toString();

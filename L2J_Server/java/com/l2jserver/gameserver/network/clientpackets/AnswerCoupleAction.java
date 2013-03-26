@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
@@ -46,20 +50,24 @@ public class AnswerCoupleAction extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getActiveChar();
 		L2PcInstance target = L2World.getInstance().getPlayer(_charObjId);
-		if(activeChar == null || target == null)
+		if ((activeChar == null) || (target == null))
+		{
 			return;
-		if (target.getMultiSocialTarget() != activeChar.getObjectId() || target.getMultiSociaAction() != _actionId)
+		}
+		if ((target.getMultiSocialTarget() != activeChar.getObjectId()) || (target.getMultiSociaAction() != _actionId))
+		{
 			return;
+		}
 		if (_answer == 0) // cancel
 		{
 			target.sendPacket(SystemMessageId.COUPLE_ACTION_DENIED);
 		}
 		else if (_answer == 1) // approve
 		{
-			double distance = activeChar.getPlanDistanceSq(target);
-			if (distance > 2000 || distance < 70)
+			final int distance = (int) Math.sqrt(activeChar.getPlanDistanceSq(target));
+			if ((distance > 900) || (distance < 40) || (activeChar.getObjectId() == target.getObjectId()))
 			{
-				activeChar.sendPacket(SystemMessageId.TARGET_DO_NOT_MEET_LOC_REQUIREMENTS);
+				sendPacket(SystemMessageId.TARGET_DO_NOT_MEET_LOC_REQUIREMENTS);
 				target.sendPacket(SystemMessageId.TARGET_DO_NOT_MEET_LOC_REQUIREMENTS);
 				return;
 			}

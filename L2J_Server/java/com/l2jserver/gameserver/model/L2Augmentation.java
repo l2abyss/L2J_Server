@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.l2jserver.gameserver.model;
@@ -28,8 +32,7 @@ import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 
 /**
  * Used to store an augmentation and its boni
- *
- * @author  durgus
+ * @author durgus
  */
 public final class L2Augmentation
 {
@@ -51,19 +54,19 @@ public final class L2Augmentation
 	
 	public static class AugmentationStatBoni
 	{
-		private Stats _stats[];
-		private float _values[];
+		private final Stats _stats[];
+		private final float _values[];
 		private boolean _active;
 		
 		public AugmentationStatBoni(int augmentationId)
 		{
 			_active = false;
-			FastList <AugmentationData.AugStat> as = AugmentationData.getInstance().getAugStatsById(augmentationId);
+			FastList<AugmentationData.AugStat> as = AugmentationData.getInstance().getAugStatsById(augmentationId);
 			
 			_stats = new Stats[as.size()];
 			_values = new float[as.size()];
 			
-			int i=0;
+			int i = 0;
 			for (AugmentationData.AugStat aStat : as)
 			{
 				_stats[i] = aStat.getStat();
@@ -75,10 +78,15 @@ public final class L2Augmentation
 		public void applyBonus(L2PcInstance player)
 		{
 			// make sure the bonuses are not applied twice..
-			if (_active) return;
+			if (_active)
+			{
+				return;
+			}
 			
-			for (int i=0; i < _stats.length; i++)
+			for (int i = 0; i < _stats.length; i++)
+			{
 				player.addStatFunc(new FuncAdd(_stats[i], 0x40, this, new LambdaConst(_values[i])));
+			}
 			
 			_active = true;
 		}
@@ -157,9 +165,13 @@ public final class L2Augmentation
 		if (_skill != null)
 		{
 			if (_skill.isPassive())
+			{
 				player.removeSkill(_skill, false, true);
+			}
 			else
+			{
 				player.removeSkill(_skill, false, false);
+			}
 			
 			player.sendSkillList();
 		}

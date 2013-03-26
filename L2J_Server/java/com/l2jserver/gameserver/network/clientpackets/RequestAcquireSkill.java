@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
@@ -178,7 +182,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 							if (!activeChar.destroyItemByItemId("Consume", item.getId(), item.getCount(), trainer, false))
 							{
 								// Doesn't have required item.
-								activeChar.sendPacket(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL);
+								activeChar.sendPacket(SystemMessageId.ITEM_OR_PREREQUISITES_MISSING_TO_LEARN_SKILL);
 								L2VillageMasterInstance.showPledgeSkillList(activeChar);
 								return;
 							}
@@ -245,7 +249,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 					{
 						if (!activeChar.destroyItemByItemId("SubSkills", item.getId(), item.getCount(), trainer, false))
 						{
-							activeChar.sendPacket(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL);
+							activeChar.sendPacket(SystemMessageId.ITEM_OR_PREREQUISITES_MISSING_TO_LEARN_SKILL);
 							return;
 						}
 						
@@ -345,7 +349,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				}
 				
 				// Player doesn't have required item.
-				activeChar.sendPacket(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL);
+				activeChar.sendPacket(SystemMessageId.ITEM_OR_PREREQUISITES_MISSING_TO_LEARN_SKILL);
 				showSkillList(trainer, activeChar);
 				break;
 			}
@@ -409,6 +413,14 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 					{
 						if (player.getSkillLevel(skill.getSkillId()) != skill.getSkillLvl())
 						{
+							if (skill.getSkillId() == L2Skill.SKILL_ONYX_BEAST_TRANSFORMATION)
+							{
+								player.sendPacket(SystemMessageId.YOU_MUST_LEARN_ONYX_BEAST_SKILL);
+							}
+							else
+							{
+								player.sendPacket(SystemMessageId.ITEM_OR_PREREQUISITES_MISSING_TO_LEARN_SKILL);
+							}
 							return false;
 						}
 					}
@@ -425,7 +437,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 						if (reqItemCount < item.getCount())
 						{
 							// Player doesn't have required item.
-							player.sendPacket(SystemMessageId.ITEM_MISSING_TO_LEARN_SKILL);
+							player.sendPacket(SystemMessageId.ITEM_OR_PREREQUISITES_MISSING_TO_LEARN_SKILL);
 							showSkillList(trainer, player);
 							return false;
 						}

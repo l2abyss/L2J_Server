@@ -1,21 +1,28 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
+
+import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
@@ -32,12 +39,15 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Hero;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.RequestShowCommunityBoard;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ConfirmDlg;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
+import com.l2jserver.gameserver.scripting.scriptengine.events.RequestBypassToServerEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.RequestBypassToServerListener;
 import com.l2jserver.gameserver.util.GMAudit;
 import com.l2jserver.gameserver.util.Util;
 
@@ -48,6 +58,7 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestBypassToServer extends L2GameClientPacket
 {
 	private static final String _C__23_REQUESTBYPASSTOSERVER = "[C] 23 RequestBypassToServer";
+	private static final List<RequestBypassToServerListener> _listeners = new FastList<RequestBypassToServerListener>().shared();
 	
 	// S
 	private String _command;
@@ -63,10 +74,14 @@ public final class RequestBypassToServer extends L2GameClientPacket
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		if (!getClient().getFloodProtectors().getServerBypass().tryPerformAction(_command))
+		{
 			return;
+		}
 		
 		if (_command.isEmpty())
 		{
@@ -124,7 +139,9 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			else if (_command.startsWith("npc_"))
 			{
 				if (!activeChar.validateBypass(_command))
+				{
 					return;
+				}
 				
 				int endOfId = _command.indexOf('_', 5);
 				String id;
@@ -140,7 +157,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				{
 					L2Object object = L2World.getInstance().findObject(Integer.parseInt(id));
 					
-					if (object != null && object.isNpc() && endOfId > 0 && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
+					if ((object != null) && object.isNpc() && (endOfId > 0) && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
 					{
 						((L2Npc) object).onBypassFeedback(activeChar, _command.substring(endOfId + 1));
 					}
@@ -148,10 +165,45 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				
 				activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			}
+			else if (_command.startsWith("item_"))
+			{
+				if (!activeChar.validateBypass(_command))
+				{
+					return;
+				}
+				
+				int endOfId = _command.indexOf('_', 5);
+				String id;
+				if (endOfId > 0)
+				{
+					id = _command.substring(5, endOfId);
+				}
+				else
+				{
+					id = _command.substring(5);
+				}
+				try
+				{
+					L2ItemInstance item = activeChar.getInventory().getItemByObjectId(Integer.parseInt(id));
+					
+					if ((item != null) && (endOfId > 0))
+					{
+						item.onBypassFeedback(activeChar, _command.substring(endOfId + 1));
+					}
+					
+					activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+				}
+				catch (NumberFormatException nfe)
+				{
+					_log.log(Level.WARNING, "NFE for command [" + _command + "]", nfe);
+				}
+			}
 			else if (_command.startsWith("summon_"))
 			{
 				if (!activeChar.validateBypass(_command))
+				{
 					return;
+				}
 				
 				int endOfId = _command.indexOf('_', 8);
 				String id;
@@ -169,7 +221,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				{
 					L2Object object = L2World.getInstance().findObject(Integer.parseInt(id));
 					
-					if (object instanceof L2MerchantSummonInstance && endOfId > 0 && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
+					if ((object instanceof L2MerchantSummonInstance) && (endOfId > 0) && activeChar.isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
 					{
 						((L2MerchantSummonInstance) object).onBypassFeedback(activeChar, _command.substring(endOfId + 1));
 					}
@@ -190,7 +242,9 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				if (Config.ENABLE_COMMUNITY_BOARD)
 				{
 					if (!CommunityServerThread.getInstance().sendPacket(new RequestShowCommunityBoard(activeChar.getObjectId(), _command)))
+					{
 						activeChar.sendPacket(SystemMessageId.CB_OFFLINE);
+					}
 				}
 				else
 				{
@@ -228,7 +282,9 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			else if (_command.startsWith("Quest "))
 			{
 				if (!activeChar.validateBypass(_command))
+				{
 					return;
+				}
 				
 				String p = _command.substring(6).trim();
 				int idx = p.indexOf(' ');
@@ -265,6 +321,15 @@ public final class RequestBypassToServer extends L2GameClientPacket
 					Hero.getInstance().showHeroDiary(activeChar, heroclass, heroid, heropage);
 				}
 			}
+			else if (_command.startsWith("_olympiad?command"))
+			{
+				int arenaId = Integer.parseInt(_command.split("=")[2]);
+				final IBypassHandler handler = BypassHandler.getInstance().getHandler("arenachange");
+				if (handler != null)
+				{
+					handler.useBypass("arenachange " + (arenaId - 1), activeChar, null);
+				}
+			}
 			else
 			{
 				final IBypassHandler handler = BypassHandler.getInstance().getHandler(_command);
@@ -289,7 +354,9 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				sb.append("Bypass command: " + _command + "<br1>");
 				sb.append("StackTrace:<br1>");
 				for (StackTraceElement ste : e.getStackTrace())
+				{
 					sb.append(ste.toString() + "<br1>");
+				}
 				sb.append("</body></html>");
 				// item html
 				NpcHtmlMessage msg = new NpcHtmlMessage(0, 12807);
@@ -298,6 +365,8 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				activeChar.sendPacket(msg);
 			}
 		}
+		
+		fireBypassListeners();
 	}
 	
 	/**
@@ -307,12 +376,51 @@ public final class RequestBypassToServer extends L2GameClientPacket
 	{
 		L2Object obj = activeChar.getTarget();
 		if (obj == null)
+		{
 			return;
+		}
 		if (obj instanceof L2Npc)
 		{
 			L2Npc temp = (L2Npc) obj;
 			temp.setTarget(activeChar);
 			temp.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(activeChar.getX(), activeChar.getY(), activeChar.getZ(), 0));
+		}
+	}
+	
+	/**
+	 * Fires the event when packet arrived.
+	 */
+	private void fireBypassListeners()
+	{
+		RequestBypassToServerEvent event = new RequestBypassToServerEvent();
+		event.setActiveChar(getActiveChar());
+		event.setCommand(_command);
+		
+		for (RequestBypassToServerListener listener : _listeners)
+		{
+			listener.onRequestBypassToServer(event);
+		}
+	}
+	
+	/**
+	 * @param listener
+	 */
+	public static void addBypassListener(RequestBypassToServerListener listener)
+	{
+		if (!_listeners.contains(listener))
+		{
+			_listeners.add(listener);
+		}
+	}
+	
+	/**
+	 * @param listener
+	 */
+	public static void removeBypassListener(RequestBypassToServerListener listener)
+	{
+		if (_listeners.contains(listener))
+		{
+			_listeners.remove(listener);
 		}
 	}
 	

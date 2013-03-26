@@ -1,19 +1,25 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.util;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.InetAddress;
@@ -22,12 +28,30 @@ import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
 /**
- * This class ...
- * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
+ * Useful utilities common to L2J Server.
  */
 public class Util
 {
 	private static final Logger _log = Logger.getLogger(Util.class.getName());
+	
+	private static final char[] ILLEGAL_CHARACTERS =
+	{
+		'/',
+		'\n',
+		'\r',
+		'\t',
+		'\0',
+		'\f',
+		'`',
+		'?',
+		'*',
+		'\\',
+		'<',
+		'>',
+		'|',
+		'\"',
+		':'
+	};
 	
 	/**
 	 * Checks if a host name is internal
@@ -58,80 +82,7 @@ public class Util
 	 */
 	public static String printData(byte[] data, int len)
 	{
-		final StringBuilder result = new StringBuilder(len * 4);
-		
-		int counter = 0;
-		
-		for (int i = 0; i < len; i++)
-		{
-			if ((counter % 16) == 0)
-			{
-				result.append(fillHex(i, 4) + ": ");
-			}
-			
-			result.append(fillHex(data[i] & 0xff, 2) + " ");
-			counter++;
-			if (counter == 16)
-			{
-				result.append("   ");
-				
-				int charpoint = i - 15;
-				for (int a = 0; a < 16; a++)
-				{
-					int t1 = 0xFF & data[charpoint++];
-					if ((t1 > 0x1f) && (t1 < 0x80))
-					{
-						result.append((char) t1);
-					}
-					else
-					{
-						result.append('.');
-					}
-				}
-				
-				result.append('\n');
-				counter = 0;
-			}
-		}
-		
-		int rest = data.length % 16;
-		if (rest > 0)
-		{
-			for (int i = 0; i < (17 - rest); i++)
-			{
-				result.append("   ");
-			}
-			
-			int charpoint = data.length - rest;
-			for (int a = 0; a < rest; a++)
-			{
-				int t1 = 0xFF & data[charpoint++];
-				if ((t1 > 0x1f) && (t1 < 0x80))
-				{
-					result.append((char) t1);
-				}
-				else
-				{
-					result.append('.');
-				}
-			}
-			
-			result.append('\n');
-		}
-		
-		return result.toString();
-	}
-	
-	private static String fillHex(int data, int digits)
-	{
-		String number = Integer.toHexString(data);
-		
-		for (int i = number.length(); i < digits; i++)
-		{
-			number = "0" + number;
-		}
-		
-		return number;
+		return new String(HexUtils.bArr2HexEdChars(data, len));
 	}
 	
 	/**
@@ -181,5 +132,39 @@ public class Util
 		StringWriter sw = new StringWriter();
 		t.printStackTrace(new PrintWriter(sw));
 		return sw.toString();
+	}
+	
+	/**
+	 * Replaces most invalid characters for the given string with an underscore.
+	 * @param str the string that may contain invalid characters
+	 * @return the string with invalid character replaced by underscores
+	 */
+	public static String replaceIllegalCharacters(String str)
+	{
+		String valid = str;
+		for (char c : ILLEGAL_CHARACTERS)
+		{
+			valid = valid.replace(c, '_');
+		}
+		return valid;
+	}
+	
+	/**
+	 * Verify if a file name is valid.
+	 * @param name the name of the file
+	 * @return {@code true} if the file name is valid, {@code false} otherwise
+	 */
+	public static boolean isValidFileName(String name)
+	{
+		final File f = new File(name);
+		try
+		{
+			f.getCanonicalPath();
+			return true;
+		}
+		catch (IOException e)
+		{
+			return false;
+		}
 	}
 }

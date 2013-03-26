@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model;
 
@@ -30,15 +34,11 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * @author UnAfraid & mrTJO
- * TODO: System Messages:
- * 	ADD:
-		3223: The previous name is being registered. Please try again later.
- *	END OF ADD
- *	DEL
- * 		3219: $s1 was successfully deleted from your Contact List.
-		3217: The name is not currently registered.
-	END OF DEL
+ * TODO: System messages:<br>
+ * ADD: 3223: The previous name is being registered. Please try again later.<br>
+ * DEL 3219: $s1 was successfully deleted from your Contact List.<br>
+ * DEL 3217: The name is not currently registered.
+ * @author UnAfraid, mrTJO
  */
 public class L2ContactList
 {
@@ -49,7 +49,7 @@ public class L2ContactList
 	private final String QUERY_ADD = "INSERT INTO character_contacts (charId, contactId) VALUES (?, ?)";
 	private final String QUERY_REMOVE = "DELETE FROM character_contacts WHERE charId = ? and contactId = ?";
 	private final String QUERY_LOAD = "SELECT contactId FROM character_contacts WHERE charId = ?";
-		
+	
 	public L2ContactList(L2PcInstance player)
 	{
 		activeChar = player;
@@ -73,8 +73,10 @@ public class L2ContactList
 				{
 					contactId = rset.getInt(1);
 					contactName = CharNameTable.getInstance().getNameById(contactId);
-					if (contactName == null || contactName.equals(activeChar.getName()) || contactId == activeChar.getObjectId())
+					if ((contactName == null) || contactName.equals(activeChar.getName()) || (contactId == activeChar.getObjectId()))
+					{
 						continue;
+					}
 					
 					_contacts.add(contactName);
 				}
@@ -127,7 +129,7 @@ public class L2ContactList
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(QUERY_ADD))
-		{	
+		{
 			statement.setInt(1, activeChar.getObjectId());
 			statement.setInt(2, contactId);
 			statement.execute();
@@ -154,10 +156,9 @@ public class L2ContactList
 			activeChar.sendPacket(SystemMessageId.NAME_NOT_REGISTERED_ON_CONTACT_LIST);
 			return;
 		}
-		
 		else if (contactId < 1)
 		{
-			//TODO: Message?
+			// TODO: Message?
 			return;
 		}
 		

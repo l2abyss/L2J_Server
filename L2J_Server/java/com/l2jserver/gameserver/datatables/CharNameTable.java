@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.datatables;
 
@@ -25,30 +29,28 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastMap;
-
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.util.L2FastMap;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.3.2.2.2.1 $ $Date: 2005/03/27 15:29:18 $
  */
 public class CharNameTable
 {
 	private static Logger _log = Logger.getLogger(CharNameTable.class.getName());
 	
-	private final Map<Integer, String> _chars;
-	private final Map<Integer, Integer> _accessLevels;
+	private final Map<Integer, String> _chars = new L2FastMap<>();
+	private final Map<Integer, Integer> _accessLevels = new L2FastMap<>();
 	
 	protected CharNameTable()
 	{
-		_chars = new FastMap<>();
-		_accessLevels = new FastMap<>();
 		if (Config.CACHE_CHAR_NAMES)
+		{
 			loadAll();
+		}
 	}
 	
 	public static CharNameTable getInstance()
@@ -70,7 +72,9 @@ public class CharNameTable
 		if (name != null)
 		{
 			if (!name.equals(_chars.get(objectId)))
+			{
 				_chars.put(objectId, name);
+			}
 		}
 	}
 	
@@ -82,8 +86,10 @@ public class CharNameTable
 	
 	public final int getIdByName(String name)
 	{
-		if (name == null || name.isEmpty())
+		if ((name == null) || name.isEmpty())
+		{
 			return -1;
+		}
 		
 		Iterator<Entry<Integer, String>> it = _chars.entrySet().iterator();
 		
@@ -92,11 +98,15 @@ public class CharNameTable
 		{
 			pair = it.next();
 			if (pair.getValue().equalsIgnoreCase(name))
+			{
 				return pair.getKey();
+			}
 		}
 		
 		if (Config.CACHE_CHAR_NAMES)
+		{
 			return -1;
+		}
 		
 		int id = -1;
 		int accessLevel = 0;
@@ -116,7 +126,7 @@ public class CharNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "Could not check existing char name: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not check existing char name: " + e.getMessage(), e);
 		}
 		
 		if (id > 0)
@@ -132,14 +142,20 @@ public class CharNameTable
 	public final String getNameById(int id)
 	{
 		if (id <= 0)
+		{
 			return null;
+		}
 		
 		String name = _chars.get(id);
 		if (name != null)
+		{
 			return name;
+		}
 		
 		if (Config.CACHE_CHAR_NAMES)
+		{
 			return null;
+		}
 		
 		int accessLevel = 0;
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
@@ -157,23 +173,25 @@ public class CharNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "Could not check existing char id: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not check existing char id: " + e.getMessage(), e);
 		}
 		
-		if (name != null && !name.isEmpty())
+		if ((name != null) && !name.isEmpty())
 		{
 			_chars.put(id, name);
 			_accessLevels.put(id, accessLevel);
 			return name;
 		}
 		
-		return null; //not found
+		return null; // not found
 	}
 	
 	public final int getAccessLevelById(int objectId)
 	{
 		if (getNameById(objectId) != null)
+		{
 			return _accessLevels.get(objectId);
+		}
 		
 		return 0;
 	}
@@ -192,7 +210,7 @@ public class CharNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "Could not check existing charname: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not check existing charname: " + e.getMessage(), e);
 		}
 		return result;
 	}
@@ -214,7 +232,7 @@ public class CharNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "Could not check existing char number: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not check existing char number: " + e.getMessage(), e);
 		}
 		return number;
 	}
@@ -239,9 +257,9 @@ public class CharNameTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, "Could not load char name: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not load char name: " + e.getMessage(), e);
 		}
-		_log.info(getClass().getSimpleName()+": Loaded "+_chars.size()+" char names.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _chars.size() + " char names.");
 	}
 	
 	private static class SingletonHolder

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.util;
 
@@ -23,11 +27,10 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.NpcTable;
-import com.l2jserver.gameserver.datatables.SummonItemsData;
-import com.l2jserver.gameserver.model.L2SummonItem;
+import com.l2jserver.gameserver.datatables.PetDataTable;
+import com.l2jserver.gameserver.model.L2PetData;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -50,15 +53,12 @@ public final class Evolve
 			return false;
 		}
 		
-		L2Summon summon = player.getPet();
-		
-		if ((summon == null) || !(summon instanceof L2PetInstance))
+		if (!player.hasSummon() || !player.getSummon().isPet())
 		{
 			return false;
 		}
 		
-		L2PetInstance currentPet = (L2PetInstance) summon;
-		
+		final L2PetInstance currentPet = (L2PetInstance) player.getSummon();
 		if (currentPet.isAlikeDead())
 		{
 			Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to use death pet exploit!", Config.DEFAULT_PUNISH);
@@ -72,28 +72,28 @@ public final class Evolve
 		int oldY = currentPet.getY();
 		int oldZ = currentPet.getZ();
 		
-		L2SummonItem olditem = SummonItemsData.getInstance().getSummonItem(itemIdtake);
+		L2PetData oldData = PetDataTable.getInstance().getPetDataByItemId(itemIdtake);
 		
-		if (olditem == null)
+		if (oldData == null)
 		{
 			return false;
 		}
 		
-		int oldnpcID = olditem.getNpcId();
+		int oldnpcID = oldData.getNpcId();
 		
 		if ((currentPet.getStat().getLevel() < petminlvl) || (currentPet.getNpcId() != oldnpcID))
 		{
 			return false;
 		}
 		
-		L2SummonItem sitem = SummonItemsData.getInstance().getSummonItem(itemIdgive);
+		L2PetData petData = PetDataTable.getInstance().getPetDataByItemId(itemIdgive);
 		
-		if (sitem == null)
+		if (petData == null)
 		{
 			return false;
 		}
 		
-		int npcID = sitem.getNpcId();
+		int npcID = petData.getNpcId();
 		
 		if (npcID == 0)
 		{
@@ -175,19 +175,19 @@ public final class Evolve
 			oldpetlvl = petminlvl;
 		}
 		
-		L2SummonItem oldItem = SummonItemsData.getInstance().getSummonItem(itemIdtake);
-		if (oldItem == null)
+		L2PetData oldData = PetDataTable.getInstance().getPetDataByItemId(itemIdtake);
+		if (oldData == null)
 		{
 			return false;
 		}
 		
-		L2SummonItem sItem = SummonItemsData.getInstance().getSummonItem(itemIdgive);
-		if (sItem == null)
+		L2PetData petData = PetDataTable.getInstance().getPetDataByItemId(itemIdgive);
+		if (petData == null)
 		{
 			return false;
 		}
 		
-		int npcId = sItem.getNpcId();
+		int npcId = petData.getNpcId();
 		if (npcId == 0)
 		{
 			return false;

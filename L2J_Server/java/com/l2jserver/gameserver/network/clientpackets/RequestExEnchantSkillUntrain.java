@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
@@ -36,11 +40,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 
 /**
- * Format (ch) dd
- * c: (id) 0xD0
- * h: (subid) 0x33
- * d: skill id
- * d: skill lvl
+ * Format (ch) dd c: (id) 0xD0 h: (subid) 0x33 d: skill id d: skill lvl
  * @author -Wooden-
  */
 public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
@@ -61,12 +61,16 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (_skillId <= 0 || _skillLvl <= 0) // minimal sanity check
+		if ((_skillId <= 0) || (_skillLvl <= 0))
+		{
 			return;
-
+		}
+		
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
+		{
 			return;
+		}
 		
 		if (player.getClassId().level() < 3) // requires to have 3rd class quest completed
 		{
@@ -88,22 +92,28 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 		
 		L2EnchantSkillLearn s = EnchantGroupsData.getInstance().getSkillEnchantmentBySkillId(_skillId);
 		if (s == null)
+		{
 			return;
+		}
 		
-		if (_skillLvl % 100 == 0)
+		if ((_skillLvl % 100) == 0)
 		{
 			_skillLvl = s.getBaseLevel();
 		}
 		
 		L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLvl);
 		if (skill == null)
+		{
 			return;
+		}
 		
 		int reqItemId = EnchantGroupsData.UNTRAIN_ENCHANT_BOOK;
 		
 		final int beforeUntrainSkillLevel = player.getSkillLevel(_skillId);
-		if (beforeUntrainSkillLevel - 1 != _skillLvl && (beforeUntrainSkillLevel % 100 != 1 || _skillLvl != s.getBaseLevel()))
+		if (((beforeUntrainSkillLevel - 1) != _skillLvl) && (((beforeUntrainSkillLevel % 100) != 1) || (_skillLvl != s.getBaseLevel())))
+		{
 			return;
+		}
 		
 		EnchantSkillHolder esd = s.getEnchantSkillHolder(beforeUntrainSkillLevel);
 		
@@ -134,19 +144,23 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 		
 		check &= player.destroyItemByItemId("Consume", PcInventory.ADENA_ID, requireditems, player, true);
 		
-		
 		if (!check)
 		{
 			player.sendPacket(SystemMessageId.YOU_DONT_HAVE_ALL_OF_THE_ITEMS_NEEDED_TO_ENCHANT_THAT_SKILL);
 			return;
 		}
 		
-		player.getStat().addSp((int)(requiredSp * 0.8));
+		player.getStat().addSp((int) (requiredSp * 0.8));
 		
 		if (Config.LOG_SKILL_ENCHANTS)
 		{
 			LogRecord record = new LogRecord(Level.INFO, "Untrain");
-			record.setParameters(new Object[]{player, skill, spb});
+			record.setParameters(new Object[]
+			{
+				player,
+				skill,
+				spb
+			});
 			record.setLoggerName("skill");
 			_logEnchant.log(record);
 		}

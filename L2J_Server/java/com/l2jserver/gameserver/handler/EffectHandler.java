@@ -1,51 +1,61 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.handler;
 
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javolution.util.FastMap;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.scripting.L2ScriptEngineManager;
 
 /**
- * @author BiggBoss
+ * @author BiggBoss, UnAfraid
  */
-public final class EffectHandler
+public final class EffectHandler implements IHandler<Class<? extends L2Effect>, String>
 {
-	private static final Logger _log = Logger.getLogger(EffectHandler.class.getName());
-	private final FastMap<Integer, Class<? extends L2Effect>> _handlers;
+	private final Map<String, Class<? extends L2Effect>> _handlers;
 	
 	protected EffectHandler()
 	{
-		_handlers = new FastMap<>();
+		_handlers = new HashMap<>();
 	}
 	
-	public void registerHandler(String name, Class<? extends L2Effect> func)
+	@Override
+	public void registerHandler(Class<? extends L2Effect> handler)
 	{
-		_handlers.put(name.hashCode(), func);
+		_handlers.put(handler.getSimpleName(), handler);
 	}
 	
+	@Override
+	public synchronized void removeHandler(Class<? extends L2Effect> handler)
+	{
+		_handlers.remove(handler.getSimpleName());
+	}
+	
+	@Override
 	public final Class<? extends L2Effect> getHandler(String name)
 	{
-		return _handlers.get(name.hashCode());
+		return _handlers.get(name);
 	}
 	
+	@Override
 	public int size()
 	{
 		return _handlers.size();
@@ -60,7 +70,7 @@ public final class EffectHandler
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "Problems while running EffectMansterHandler", e);
+			throw new Error("Problems while running EffectMansterHandler", e);
 		}
 	}
 	

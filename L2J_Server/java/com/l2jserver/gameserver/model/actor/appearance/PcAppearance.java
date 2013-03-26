@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.appearance;
 
@@ -53,8 +57,7 @@ public class PcAppearance
 	}
 	
 	/**
-	 * @param visibleName
-	 * The visibleName to set.
+	 * @param visibleName The visibleName to set.
 	 */
 	public final void setVisibleName(String visibleName)
 	{
@@ -68,14 +71,13 @@ public class PcAppearance
 	{
 		if (_visibleName == null)
 		{
-			_visibleName = getOwner().getName();
+			return getOwner().getName();
 		}
 		return _visibleName;
 	}
 	
 	/**
-	 * @param visibleTitle
-	 * The visibleTitle to set.
+	 * @param visibleTitle The visibleTitle to set.
 	 */
 	public final void setVisibleTitle(String visibleTitle)
 	{
@@ -89,7 +91,7 @@ public class PcAppearance
 	{
 		if (_visibleTitle == null)
 		{
-			_visibleTitle = getOwner().getTitle();
+			return getOwner().getTitle();
 		}
 		return _visibleTitle;
 	}
@@ -134,7 +136,6 @@ public class PcAppearance
 	}
 	
 	/**
-	 * 
 	 * @return true if char is female
 	 */
 	public final boolean getSex()
@@ -183,15 +184,16 @@ public class PcAppearance
 	public void setNameColor(int nameColor)
 	{
 		if (nameColor < 0)
+		{
 			return;
+		}
 		
 		_nameColor = nameColor;
 	}
 	
 	public void setNameColor(int red, int green, int blue)
 	{
-		_nameColor = (red & 0xFF) + ((green & 0xFF) << 8)
-		+ ((blue & 0xFF) << 16);
+		_nameColor = (red & 0xFF) + ((green & 0xFF) << 8) + ((blue & 0xFF) << 16);
 	}
 	
 	public int getTitleColor()
@@ -202,20 +204,20 @@ public class PcAppearance
 	public void setTitleColor(int titleColor)
 	{
 		if (titleColor < 0)
+		{
 			return;
+		}
 		
 		_titleColor = titleColor;
 	}
 	
 	public void setTitleColor(int red, int green, int blue)
 	{
-		_titleColor = (red & 0xFF) + ((green & 0xFF) << 8)
-		+ ((blue & 0xFF) << 16);
+		_titleColor = (red & 0xFF) + ((green & 0xFF) << 8) + ((blue & 0xFF) << 16);
 	}
 	
 	/**
-	 * @param owner
-	 *            The owner to set.
+	 * @param owner The owner to set.
 	 */
 	public void setOwner(L2PcInstance owner)
 	{

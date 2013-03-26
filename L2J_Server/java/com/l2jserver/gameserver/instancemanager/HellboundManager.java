@@ -1,27 +1,30 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * Copyright (C) 2004-2013 L2J Server
+ * 
+ * This file is part of L2J Server.
+ * 
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.instancemanager;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Logger;
-
-import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
@@ -31,7 +34,6 @@ import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.util.Rnd;
 
 /**
  * @author _DS_, GKR
@@ -40,9 +42,7 @@ public class HellboundManager
 {
 	private static final Logger _log = Logger.getLogger(HellboundManager.class.getName());
 	
-	private static final String LOAD_SPAWNS = "SELECT npc_templateid, locx, locy, locz, heading, " +
-		"respawn_delay, respawn_random, min_hellbound_level, " +
-		"max_hellbound_level FROM hellbound_spawnlist ORDER BY npc_templateid";
+	private static final String LOAD_SPAWNS = "SELECT npc_templateid, locx, locy, locz, heading, " + "respawn_delay, respawn_random, min_hellbound_level, " + "max_hellbound_level FROM hellbound_spawnlist ORDER BY npc_templateid";
 	
 	private int _level = 0;
 	private int _trust = 0;
@@ -50,12 +50,10 @@ public class HellboundManager
 	private int _minTrust = 0;
 	
 	private ScheduledFuture<?> _engine = null;
-	private final List<HellboundSpawn> _population;
+	private final List<HellboundSpawn> _population = new ArrayList<>();
 	
 	protected HellboundManager()
 	{
-		_population = new FastList<>();
-		
 		loadData();
 		loadSpawns();
 	}
@@ -218,11 +216,11 @@ public class HellboundManager
 		
 		if (added > 0)
 		{
-			_log.info("HellboundManager: Spawned " + added + " NPCs.");
+			_log.info(getClass().getSimpleName() + ": Spawned " + added + " NPCs.");
 		}
 		if (deleted > 0)
 		{
-			_log.info("HellboundManager: Removed " + deleted + " NPCs.");
+			_log.info(getClass().getSimpleName() + ": Removed " + deleted + " NPCs.");
 		}
 	}
 	
@@ -259,35 +257,26 @@ public class HellboundManager
 	
 	private final void loadSpawns()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery(LOAD_SPAWNS))
 		{
-			final PreparedStatement statement = con.prepareStatement(LOAD_SPAWNS);
-			final ResultSet rset = statement.executeQuery();
-			
 			HellboundSpawn spawnDat;
 			L2NpcTemplate template;
-			while (rset.next())
+			while (rs.next())
 			{
-				template = NpcTable.getInstance().getTemplate(rset.getInt("npc_templateid"));
+				template = NpcTable.getInstance().getTemplate(rs.getInt("npc_templateid"));
 				if (template != null)
 				{
 					spawnDat = new HellboundSpawn(template);
 					spawnDat.setAmount(1);
-					spawnDat.setLocx(rset.getInt("locx"));
-					spawnDat.setLocy(rset.getInt("locy"));
-					spawnDat.setLocz(rset.getInt("locz"));
-					spawnDat.setHeading(rset.getInt("heading"));
-					spawnDat.setRespawnDelay(rset.getInt("respawn_delay"));
-					spawnDat.setRespawnMinDelay(0);
-					spawnDat.setRespawnMaxDelay(0);
-					int respawnRandom = (rset.getInt("respawn_random"));
-					if (respawnRandom > 0) // Random respawn time, if needed
-					{
-						spawnDat.setRespawnMinDelay(Math.max(rset.getInt("respawn_delay") - respawnRandom, 1));
-						spawnDat.setRespawnMaxDelay(rset.getInt("respawn_delay") + respawnRandom);
-					}
-					spawnDat.setMinLvl(rset.getInt("min_hellbound_level"));
-					spawnDat.setMaxLvl(rset.getInt("max_hellbound_level"));
+					spawnDat.setLocx(rs.getInt("locx"));
+					spawnDat.setLocy(rs.getInt("locy"));
+					spawnDat.setLocz(rs.getInt("locz"));
+					spawnDat.setHeading(rs.getInt("heading"));
+					spawnDat.setRespawnDelay(rs.getInt("respawn_delay"), rs.getInt("respawn_random"));
+					spawnDat.setMinLvl(rs.getInt("min_hellbound_level"));
+					spawnDat.setMaxLvl(rs.getInt("max_hellbound_level"));
 					
 					// _population.put(spawnDat, null);
 					_population.add(spawnDat);
@@ -295,24 +284,21 @@ public class HellboundManager
 				}
 				else
 				{
-					_log.warning("HellboundManager: Data missing in NPC table for ID: " + rset.getInt("npc_templateid") + ".");
+					_log.warning(getClass().getSimpleName() + ": Data missing in NPC table for ID: " + rs.getInt("npc_templateid") + ".");
 				}
 			}
-			rset.close();
-			statement.close();
+			rs.close();
+			s.close();
 		}
 		catch (Exception e)
 		{
-			_log.warning("HellboundManager: problem while loading spawns: " + e);
+			_log.warning(getClass().getSimpleName() + ": problem while loading spawns: " + e);
 		}
-		_log.config("HellboundManager: Loaded " + _population.size() + " npc spawn locations.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _population.size() + " npc spawn locations.");
 	}
 	
 	public static final class HellboundSpawn extends L2Spawn
 	{
-		/** The delay between a L2NpcInstance remove and its re-spawn */
-		private int _respawnDelay;
-		
 		private int _minLvl;
 		private int _maxLvl;
 		
@@ -339,38 +325,6 @@ public class HellboundManager
 		public final void setMaxLvl(int lvl)
 		{
 			_maxLvl = lvl;
-		}
-		
-		@Override
-		public final void decreaseCount(L2Npc oldNpc)
-		{
-			if (getRespawnDelay() <= 0)
-			{
-				stopRespawn();
-			}
-			else if (getRespawnMaxDelay() > getRespawnMinDelay())
-			{
-				setRespawnDelay(Rnd.get(getRespawnMinDelay(), getRespawnMaxDelay()));
-			}
-			
-			super.decreaseCount(oldNpc);
-		}
-		
-		/**
-		 * @param i delay in seconds
-		 */
-		@Override
-		public void setRespawnDelay(int i)
-		{
-			_respawnDelay = i * 1000;
-			
-			super.setRespawnDelay(i);
-		}
-		
-		@Override
-		public int getRespawnDelay()
-		{
-			return _respawnDelay;
 		}
 	}
 	

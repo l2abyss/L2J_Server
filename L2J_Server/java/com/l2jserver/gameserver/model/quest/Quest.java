@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.quest;
 
@@ -20,24 +24,26 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastMap;
-
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.cache.HtmCache;
+import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
+import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2DropData;
@@ -48,19 +54,28 @@ import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Trap;
+import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TrapInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.entity.Instance;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
+import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.olympiad.CompetitionType;
+import com.l2jserver.gameserver.model.quest.AITasks.AggroRangeEnter;
+import com.l2jserver.gameserver.model.quest.AITasks.SeeCreature;
+import com.l2jserver.gameserver.model.quest.AITasks.SkillSee;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
+import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.network.serverpackets.ExShowScreenMessage;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.NpcQuestHtmlMessage;
@@ -70,26 +85,24 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.scripting.ManagedScript;
 import com.l2jserver.gameserver.scripting.ScriptManager;
 import com.l2jserver.gameserver.util.MinionList;
+import com.l2jserver.util.L2FastMap;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.Util;
 
 /**
+ * Quest main class.
  * @author Luis Arias
  */
 public class Quest extends ManagedScript
 {
-	protected static final Logger _log = Logger.getLogger(Quest.class.getName());
+	public static final Logger _log = Logger.getLogger(Quest.class.getName());
 	
-	/**
-	 * Map containing events from String value of the event.
-	 */
+	/** Map containing events from String value of the event. */
 	private static Map<String, Quest> _allEventsS = new HashMap<>();
 	
-	/**
-	 * Map containing lists of timers from the name of the timer.
-	 */
-	private final FastMap<String, List<QuestTimer>> _allEventTimers = new FastMap<>();
-	private final List<Integer> _questInvolvedNpcs = new ArrayList<>();
+	/** Map containing lists of timers from the name of the timer. */
+	private final Map<String, List<QuestTimer>> _allEventTimers = new L2FastMap<>(true);
+	private final Set<Integer> _questInvolvedNpcs = new HashSet<>();
 	
 	private final ReentrantReadWriteLock _rwLock = new ReentrantReadWriteLock();
 	private final WriteLock _writeLock = _rwLock.writeLock();
@@ -103,13 +116,6 @@ public class Quest extends ManagedScript
 	private boolean _isCustom = false;
 	private boolean _isOlympiadUse = false;
 	
-	/**
-	 * <b>Note: questItemIds will be overridden by child classes.</b><br>
-	 * Ideally, it should be protected instead of public.<br>
-	 * However, quest scripts written in Jython will have trouble with protected, as Jython only knows private and public...<br>
-	 * In fact, protected will typically be considered private thus breaking the scripts.<br>
-	 * Leave this as public as a workaround.
-	 */
 	public int[] questItemIds = null;
 	
 	private static final String DEFAULT_NO_QUEST_MSG = "<html><body>You are either not on a quest that involves this NPC, or you don't meet this NPC's minimum quest requirements.</body></html>";
@@ -120,6 +126,134 @@ public class Quest extends ManagedScript
 	
 	private static final int RESET_HOUR = 6;
 	private static final int RESET_MINUTES = 30;
+	
+	/**
+	 * This enum contains known sound effects used by quests.<br>
+	 * The idea is to have only a single object of each quest sound instead of constructing a new one every time a script calls the playSound method.<br>
+	 * This is pretty much just a memory and CPU cycle optimization; avoids constructing/deconstructing objects all the time if they're all the same.<br>
+	 * For datapack scripts written in Java and extending the Quest class, this does not need an extra import.
+	 * @author jurchiks
+	 */
+	public static enum QuestSound
+	{
+		ITEMSOUND_QUEST_ACCEPT(new PlaySound("ItemSound.quest_accept")),
+		ITEMSOUND_QUEST_MIDDLE(new PlaySound("ItemSound.quest_middle")),
+		ITEMSOUND_QUEST_FINISH(new PlaySound("ItemSound.quest_finish")),
+		ITEMSOUND_QUEST_ITEMGET(new PlaySound("ItemSound.quest_itemget")),
+		// Newbie Guide tutorial (incl. some quests), Mutated Kaneus quests, Quest 192
+		ITEMSOUND_QUEST_TUTORIAL(new PlaySound("ItemSound.quest_tutorial")),
+		// Quests 107, 363, 364
+		ITEMSOUND_QUEST_GIVEUP(new PlaySound("ItemSound.quest_giveup")),
+		// Quests 212, 217, 224, 226, 416
+		ITEMSOUND_QUEST_BEFORE_BATTLE(new PlaySound("ItemSound.quest_before_battle")),
+		// Quests 211, 258, 266, 330
+		ITEMSOUND_QUEST_JACKPOT(new PlaySound("ItemSound.quest_jackpot")),
+		// Quests 508, 509 and 510
+		ITEMSOUND_QUEST_FANFARE_1(new PlaySound("ItemSound.quest_fanfare_1")),
+		// Played only after class transfer via Test Server Helpers (Id 31756 and 31757)
+		ITEMSOUND_QUEST_FANFARE_2(new PlaySound("ItemSound.quest_fanfare_2")),
+		// Quests 336
+		ITEMSOUND_QUEST_FANFARE_MIDDLE(new PlaySound("ItemSound.quest_fanfare_middle")),
+		// Quest 114
+		ITEMSOUND_ARMOR_WOOD(new PlaySound("ItemSound.armor_wood_3")),
+		// Quest 21
+		ITEMSOUND_ARMOR_CLOTH(new PlaySound("ItemSound.item_drop_equip_armor_cloth")),
+		ITEMSOUND_ED_CHIMES(new PlaySound("AmdSound.ed_chimes_05")),
+		// Quest 22
+		ITEMSOUND_D_HORROR_03(new PlaySound("AmbSound.d_horror_03")),
+		ITEMSOUND_D_HORROR_15(new PlaySound("AmbSound.d_horror_15")),
+		ITEMSOUND_DD_HORROR_01(new PlaySound("AmbSound.dd_horror_01")),
+		// Quest 120
+		ITEMSOUND_ED_DRONE_02(new PlaySound("AmbSound.ed_drone_02")),
+		// Quest 23
+		ITEMSOUND_ARMOR_LEATHER(new PlaySound("ItemSound.itemdrop_armor_leather")),
+		ITEMSOUND_WEAPON_SPEAR(new PlaySound("ItemSound.itemdrop_weapon_spear")),
+		// Quest 24
+		AMDSOUND_D_WIND_LOOT_02(new PlaySound("AmdSound.d_wind_loot_02")),
+		INTERFACESOUND_CHARSTAT_OPEN_01(new PlaySound("InterfaceSound.charstat_open_01")),
+		// Quest 648 and treasure chests
+		ITEMSOUND_BROKEN_KEY(new PlaySound("ItemSound2.broken_key")),
+		// Quest 184
+		ITEMSOUND_SIREN(new PlaySound("ItemSound3.sys_siren")),
+		// Quest 648
+		ITEMSOUND_ENCHANT_SUCCESS(new PlaySound("ItemSound3.sys_enchant_success")),
+		ITEMSOUND_ENCHANT_FAILED(new PlaySound("ItemSound3.sys_enchant_failed")),
+		// Best farm mobs
+		ITEMSOUND_SOW_SUCCESS(new PlaySound("ItemSound3.sys_sow_success")),
+		// Quest 25
+		SKILLSOUND_HORROR_1(new PlaySound("SkillSound5.horror_01")),
+		// Quests 21 and 23
+		SKILLSOUND_HORROR_2(new PlaySound("SkillSound5.horror_02")),
+		// Quest 22
+		SKILLSOUND_ANTARAS_FEAR(new PlaySound("SkillSound3.antaras_fear")),
+		// Quest 505
+		SKILLSOUND_JEWEL_CELEBRATE(new PlaySound("SkillSound2.jewel.celebrate")),
+		// Quest 373
+		SKILLSOUND_LIQUID_MIX(new PlaySound("SkillSound5.liquid_mix_01")),
+		SKILLSOUND_LIQUID_SUCCESS(new PlaySound("SkillSound5.liquid_success_01")),
+		SKILLSOUND_LIQUID_FAIL(new PlaySound("SkillSound5.liquid_fail_01")),
+		// Elroki sounds - Quest 111
+		ETCSOUND_ELROKI_SOUND_FULL(new PlaySound("EtcSound.elcroki_song_full")),
+		ETCSOUND_ELROKI_SOUND_1ST(new PlaySound("EtcSound.elcroki_song_1st")),
+		ETCSOUND_ELROKI_SOUND_2ND(new PlaySound("EtcSound.elcroki_song_2nd")),
+		ETCSOUND_ELROKI_SOUND_3RD(new PlaySound("EtcSound.elcroki_song_3rd")),
+		// PailakaInjuredDragon
+		BS08_A(new PlaySound("BS08_A")),
+		// Quest 115
+		AMBSOUND_T_WINGFLAP_04(new PlaySound("AmbSound.t_wingflap_04")),
+		AMBSOUND_THUNDER_02(new PlaySound("AmbSound.thunder_02"));
+		
+		private final PlaySound _playSound;
+		
+		private static Map<String, PlaySound> soundPackets = new HashMap<>();
+		
+		private QuestSound(PlaySound playSound)
+		{
+			_playSound = playSound;
+		}
+		
+		/**
+		 * Get a {@link PlaySound} packet by its name.
+		 * @param soundName : the name of the sound to look for
+		 * @return the {@link PlaySound} packet with the specified sound or {@code null} if one was not found
+		 */
+		public static PlaySound getSound(String soundName)
+		{
+			if (soundPackets.containsKey(soundName))
+			{
+				return soundPackets.get(soundName);
+			}
+			
+			for (QuestSound qs : QuestSound.values())
+			{
+				if (qs._playSound.getSoundName().equals(soundName))
+				{
+					soundPackets.put(soundName, qs._playSound); // cache in map to avoid looping repeatedly
+					return qs._playSound;
+				}
+			}
+			
+			_log.info("Missing QuestSound enum for sound: " + soundName);
+			soundPackets.put(soundName, new PlaySound(soundName));
+			return soundPackets.get(soundName);
+		}
+		
+		/**
+		 * @return the name of the sound of this QuestSound object
+		 */
+		public String getSoundName()
+		{
+			return _playSound.getSoundName();
+		}
+		
+		/**
+		 * @return the {@link PlaySound} packet of this QuestSound object
+		 */
+		public PlaySound getPacket()
+		{
+			return _playSound;
+		}
+	}
 	
 	/**
 	 * @return the reset hour for a daily quest, could be overridden on a script.
@@ -148,7 +282,7 @@ public class Quest extends ManagedScript
 	/**
 	 * The Quest object constructor.<br>
 	 * Constructing a quest also calls the {@code init_LoadGlobalData} convenience method.
-	 * @param questId int pointing out the ID of the quest.
+	 * @param questId int pointing out the Id of the quest.
 	 * @param name String corresponding to the name of the quest.
 	 * @param descr String for the description of the quest.
 	 */
@@ -157,7 +291,6 @@ public class Quest extends ManagedScript
 		_questId = questId;
 		_name = name;
 		_descr = descr;
-		_allEventTimers.shared();
 		if (questId != 0)
 		{
 			QuestManager.getInstance().addQuest(this);
@@ -221,13 +354,18 @@ public class Quest extends ManagedScript
 		ON_ENTER_ZONE(true), // on zone enter
 		ON_EXIT_ZONE(true), // on zone exit
 		ON_TRAP_ACTION(true), // on zone exit
-		ON_ITEM_USE(true);
+		ON_ITEM_USE(true),
+		ON_EVENT_RECEIVED(true), // onEventReceived action, triggered when NPC receiving an event, sent by other NPC
+		ON_MOVE_FINISHED(true), // onMoveFinished action, triggered when NPC stops after moving
+		ON_NODE_ARRIVED(true), // onNodeArrived action, triggered when NPC, controlled by Walking Manager, arrives to next node
+		ON_SEE_CREATURE(true), // onSeeCreature action, triggered when NPC's known list include the character
+		ON_ROUTE_FINISHED(true); // onRouteFinished action, triggered when NPC, controlled by Walking Manager, arrives to last node
 		
 		// control whether this event type is allowed for the same npc template in multiple quests
 		// or if the npc must be registered in at most one quest for the specified event
 		private boolean _allowMultipleRegistration;
 		
-		QuestEventType(boolean allowMultipleRegistration)
+		private QuestEventType(boolean allowMultipleRegistration)
 		{
 			_allowMultipleRegistration = allowMultipleRegistration;
 		}
@@ -239,7 +377,7 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @return the ID of the quest
+	 * @return the Id of the quest
 	 */
 	public int getQuestIntId()
 	{
@@ -434,37 +572,41 @@ public class Quest extends ManagedScript
 		}
 	}
 	
+	public Map<String, List<QuestTimer>> getQuestTimers()
+	{
+		return _allEventTimers;
+	}
+	
 	// These are methods to call within the core to call the quest events.
 	
 	/**
 	 * @param npc the NPC that was attacked
 	 * @param attacker the attacking player
 	 * @param damage the damage dealt to the NPC by the player
-	 * @param isPet if {@code true}, the attack was actually made by the player's pet
+	 * @param isSummon if {@code true}, the attack was actually made by the player's summon
 	 * @param skill the skill used to attack the NPC (can be null)
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet, L2Skill skill)
+	public final void notifyAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isSummon, L2Skill skill)
 	{
 		String res = null;
 		try
 		{
-			res = onAttack(npc, attacker, damage, isPet, skill);
+			res = onAttack(npc, attacker, damage, isSummon, skill);
 		}
 		catch (Exception e)
 		{
-			return showError(attacker, e);
+			showError(attacker, e);
+			return;
 		}
-		return showResult(attacker, res);
+		showResult(attacker, res);
 	}
 	
 	/**
 	 * @param killer the character that killed the {@code victim}
 	 * @param victim the character that was killed by the {@code killer}
 	 * @param qs the quest state object of the player to be notified of this event
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyDeath(L2Character killer, L2Character victim, QuestState qs)
+	public final void notifyDeath(L2Character killer, L2Character victim, QuestState qs)
 	{
 		String res = null;
 		try
@@ -473,17 +615,16 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(qs.getPlayer(), e);
+			showError(qs.getPlayer(), e);
 		}
-		return showResult(qs.getPlayer(), res);
+		showResult(qs.getPlayer(), res);
 	}
 	
 	/**
 	 * @param item
 	 * @param player
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyItemUse(L2Item item, L2PcInstance player)
+	public final void notifyItemUse(L2Item item, L2PcInstance player)
 	{
 		String res = null;
 		try
@@ -492,18 +633,17 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(player, e);
+			showError(player, e);
 		}
-		return showResult(player, res);
+		showResult(player, res);
 	}
 	
 	/**
 	 * @param instance
 	 * @param player
 	 * @param skill
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifySpellFinished(L2Npc instance, L2PcInstance player, L2Skill skill)
+	public final void notifySpellFinished(L2Npc instance, L2PcInstance player, L2Skill skill)
 	{
 		String res = null;
 		try
@@ -512,9 +652,9 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(player, e);
+			showError(player, e);
 		}
-		return showResult(player, res);
+		showResult(player, res);
 	}
 	
 	/**
@@ -522,9 +662,8 @@ public class Quest extends ManagedScript
 	 * @param trap the trap instance which triggers the notification
 	 * @param trigger the character which makes effect on the trap
 	 * @param action 0: trap casting its skill. 1: trigger detects the trap. 2: trigger removes the trap
-	 * @return {@code false} if the event was triggered successfully, {@code true} otherwise
 	 */
-	public final boolean notifyTrapAction(L2Trap trap, L2Character trigger, TrapAction action)
+	public final void notifyTrapAction(L2Trap trap, L2Character trigger, TrapAction action)
 	{
 		String res = null;
 		try
@@ -535,23 +674,21 @@ public class Quest extends ManagedScript
 		{
 			if (trigger.getActingPlayer() != null)
 			{
-				return showError(trigger.getActingPlayer(), e);
+				showError(trigger.getActingPlayer(), e);
 			}
 			_log.log(Level.WARNING, "Exception on onTrapAction() in notifyTrapAction(): " + e.getMessage(), e);
-			return true;
+			return;
 		}
 		if (trigger.getActingPlayer() != null)
 		{
-			return showResult(trigger.getActingPlayer(), res);
+			showResult(trigger.getActingPlayer(), res);
 		}
-		return false;
 	}
 	
 	/**
-	 * @param npc
-	 * @return {@code true} if there was an error, {@code false} otherwise
+	 * @param npc the spawned NPC
 	 */
-	public final boolean notifySpawn(L2Npc npc)
+	public final void notifySpawn(L2Npc npc)
 	{
 		try
 		{
@@ -560,9 +697,7 @@ public class Quest extends ManagedScript
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception on onSpawn() in notifySpawn(): " + e.getMessage(), e);
-			return true;
 		}
-		return false;
 	}
 	
 	/**
@@ -586,10 +721,9 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @param player
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
+	 * @param player the player entering the world
 	 */
-	public final boolean notifyEnterWorld(L2PcInstance player)
+	public final void notifyEnterWorld(L2PcInstance player)
 	{
 		String res = null;
 		try
@@ -598,29 +732,28 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(player, e);
+			showError(player, e);
 		}
-		return showResult(player, res);
+		showResult(player, res);
 	}
 	
 	/**
 	 * @param npc
 	 * @param killer
-	 * @param isPet
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
+	 * @param isSummon
 	 */
-	public final boolean notifyKill(L2Npc npc, L2PcInstance killer, boolean isPet)
+	public final void notifyKill(L2Npc npc, L2PcInstance killer, boolean isSummon)
 	{
 		String res = null;
 		try
 		{
-			res = onKill(npc, killer, isPet);
+			res = onKill(npc, killer, isSummon);
 		}
 		catch (Exception e)
 		{
-			return showError(killer, e);
+			showError(killer, e);
 		}
-		return showResult(killer, res);
+		showResult(killer, res);
 	}
 	
 	/**
@@ -644,12 +777,12 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Override the default NPC dialogs when a quest defines this for the given NPC.
+	 * Override the default NPC dialogs when a quest defines this for the given NPC.<br>
+	 * Note: If the default html for this npc needs to be shown, onFirstTalk should call npc.showChatWindow(player) and then return null.
 	 * @param npc the NPC whose dialogs to override
 	 * @param player the player talking to the NPC
-	 * @return {@code true} if the event was triggered successfully, {@code false} otherwise
 	 */
-	public final boolean notifyFirstTalk(L2Npc npc, L2PcInstance player)
+	public final void notifyFirstTalk(L2Npc npc, L2PcInstance player)
 	{
 		String res = null;
 		try
@@ -658,27 +791,16 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(player, e);
+			showError(player, e);
 		}
-		// if the quest returns text to display, display it.
-		if ((res != null) && (res.length() > 0))
-		{
-			return showResult(player, res);
-		}
-		// else tell the player that
-		player.sendPacket(ActionFailed.STATIC_PACKET);
-		// note: if the default html for this npc needs to be shown, onFirstTalk should
-		// call npc.showChatWindow(player) and then return null.
-		return true;
+		showResult(player, res);
 	}
 	
 	/**
-	 * TODO: Remove and replace with listeners.
 	 * @param npc
 	 * @param player
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyAcquireSkillList(L2Npc npc, L2PcInstance player)
+	public final void notifyAcquireSkillList(L2Npc npc, L2PcInstance player)
 	{
 		String res = null;
 		try
@@ -687,19 +809,17 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(player, e);
+			showError(player, e);
 		}
-		return showResult(player, res);
+		showResult(player, res);
 	}
 	
 	/**
-	 * TODO: Remove and replace with listeners.
 	 * @param npc
 	 * @param player
 	 * @param skill
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyAcquireSkillInfo(L2Npc npc, L2PcInstance player, L2Skill skill)
+	public final void notifyAcquireSkillInfo(L2Npc npc, L2PcInstance player, L2Skill skill)
 	{
 		String res = null;
 		try
@@ -708,31 +828,48 @@ public class Quest extends ManagedScript
 		}
 		catch (Exception e)
 		{
-			return showError(player, e);
+			showError(player, e);
 		}
-		return showResult(player, res);
+		showResult(player, res);
 	}
 	
 	/**
-	 * TODO: Remove and replace with listeners.
 	 * @param npc
 	 * @param player
 	 * @param skill
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyAcquireSkill(L2Npc npc, L2PcInstance player, L2Skill skill)
+	public final void notifyAcquireSkill(L2Npc npc, L2PcInstance player, L2Skill skill)
 	{
 		String res = null;
 		try
 		{
 			res = onAcquireSkill(npc, player, skill);
+		}
+		catch (Exception e)
+		{
+			showError(player, e);
+		}
+		showResult(player, res);
+	}
+	
+	/**
+	 * @param item
+	 * @param player
+	 * @return
+	 */
+	public final boolean notifyItemTalk(L2ItemInstance item, L2PcInstance player)
+	{
+		String res = null;
+		try
+		{
+			res = onItemTalk(item, player);
 			if (res != null)
 			{
-				if (res.equals("true"))
+				if (res.equalsIgnoreCase("true"))
 				{
 					return true;
 				}
-				else if (res.equals("false"))
+				else if (res.equalsIgnoreCase("false"))
 				{
 					return false;
 				}
@@ -745,38 +882,45 @@ public class Quest extends ManagedScript
 		return showResult(player, res);
 	}
 	
-	public class TmpOnSkillSee implements Runnable
+	/**
+	 * @param item
+	 * @param player
+	 * @return
+	 */
+	public String onItemTalk(L2ItemInstance item, L2PcInstance player)
 	{
-		private final L2Npc _npc;
-		private final L2PcInstance _caster;
-		private final L2Skill _skill;
-		private final L2Object[] _targets;
-		private final boolean _isPet;
-		
-		public TmpOnSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
+		return null;
+	}
+	
+	/**
+	 * @param item
+	 * @param player
+	 * @param event
+	 * @return
+	 */
+	public final boolean notifyItemEvent(L2ItemInstance item, L2PcInstance player, String event)
+	{
+		String res = null;
+		try
 		{
-			_npc = npc;
-			_caster = caster;
-			_skill = skill;
-			_targets = targets;
-			_isPet = isPet;
+			res = onItemEvent(item, player, event);
+			if (res != null)
+			{
+				if (res.equalsIgnoreCase("true"))
+				{
+					return true;
+				}
+				else if (res.equalsIgnoreCase("false"))
+				{
+					return false;
+				}
+			}
 		}
-		
-		@Override
-		public void run()
+		catch (Exception e)
 		{
-			String res = null;
-			try
-			{
-				res = onSkillSee(_npc, _caster, _skill, _targets, _isPet);
-			}
-			catch (Exception e)
-			{
-				showError(_caster, e);
-			}
-			showResult(_caster, res);
-			
+			return showError(player, e);
 		}
+		return showResult(player, res);
 	}
 	
 	/**
@@ -784,84 +928,76 @@ public class Quest extends ManagedScript
 	 * @param caster
 	 * @param skill
 	 * @param targets
-	 * @param isPet
-	 * @return {@code true}
+	 * @param isSummon
 	 */
-	public final boolean notifySkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
+	public final void notifySkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isSummon)
 	{
-		ThreadPoolManager.getInstance().executeAi(new TmpOnSkillSee(npc, caster, skill, targets, isPet));
-		return true;
+		ThreadPoolManager.getInstance().executeAi(new SkillSee(this, npc, caster, skill, targets, isSummon));
 	}
 	
 	/**
 	 * @param npc
 	 * @param caller
 	 * @param attacker
-	 * @param isPet
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
+	 * @param isSummon
 	 */
-	public final boolean notifyFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isPet)
+	public final void notifyFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isSummon)
 	{
 		String res = null;
 		try
 		{
-			res = onFactionCall(npc, caller, attacker, isPet);
+			res = onFactionCall(npc, caller, attacker, isSummon);
 		}
 		catch (Exception e)
 		{
-			return showError(attacker, e);
+			showError(attacker, e);
 		}
-		return showResult(attacker, res);
-	}
-	
-	public class TmpOnAggroEnter implements Runnable
-	{
-		private final L2Npc _npc;
-		private final L2PcInstance _pc;
-		private final boolean _isPet;
-		
-		public TmpOnAggroEnter(L2Npc npc, L2PcInstance pc, boolean isPet)
-		{
-			_npc = npc;
-			_pc = pc;
-			_isPet = isPet;
-		}
-		
-		@Override
-		public void run()
-		{
-			String res = null;
-			try
-			{
-				res = onAggroRangeEnter(_npc, _pc, _isPet);
-			}
-			catch (Exception e)
-			{
-				showError(_pc, e);
-			}
-			showResult(_pc, res);
-			
-		}
+		showResult(attacker, res);
 	}
 	
 	/**
 	 * @param npc
 	 * @param player
-	 * @param isPet
-	 * @return {@code true}
+	 * @param isSummon
 	 */
-	public final boolean notifyAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isPet)
+	public final void notifyAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isSummon)
 	{
-		ThreadPoolManager.getInstance().executeAi(new TmpOnAggroEnter(npc, player, isPet));
-		return true;
+		ThreadPoolManager.getInstance().executeAi(new AggroRangeEnter(this, npc, player, isSummon));
+	}
+	
+	/**
+	 * @param npc the NPC that sees the creature
+	 * @param creature the creature seen by the NPC
+	 * @param isSummon
+	 */
+	public final void notifySeeCreature(L2Npc npc, L2Character creature, boolean isSummon)
+	{
+		ThreadPoolManager.getInstance().executeAi(new SeeCreature(this, npc, creature, isSummon));
+	}
+	
+	/**
+	 * @param eventName - name of event
+	 * @param sender - NPC, who sent event
+	 * @param receiver - NPC, who received event
+	 * @param reference - L2Object to pass, if needed
+	 */
+	public final void notifyEventReceived(String eventName, L2Npc sender, L2Npc receiver, L2Object reference)
+	{
+		try
+		{
+			onEventReceived(eventName, sender, receiver, reference);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Exception on onEventReceived() in notifyEventReceived(): " + e.getMessage(), e);
+		}
 	}
 	
 	/**
 	 * @param character
 	 * @param zone
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyEnterZone(L2Character character, L2ZoneType zone)
+	public final void notifyEnterZone(L2Character character, L2ZoneType zone)
 	{
 		L2PcInstance player = character.getActingPlayer();
 		String res = null;
@@ -873,22 +1009,20 @@ public class Quest extends ManagedScript
 		{
 			if (player != null)
 			{
-				return showError(player, e);
+				showError(player, e);
 			}
 		}
 		if (player != null)
 		{
-			return showResult(player, res);
+			showResult(player, res);
 		}
-		return true;
 	}
 	
 	/**
 	 * @param character
 	 * @param zone
-	 * @return {@code false} if there was an error or the message was sent, {@code true} otherwise
 	 */
-	public final boolean notifyExitZone(L2Character character, L2ZoneType zone)
+	public final void notifyExitZone(L2Character character, L2ZoneType zone)
 	{
 		L2PcInstance player = character.getActingPlayer();
 		String res = null;
@@ -900,14 +1034,13 @@ public class Quest extends ManagedScript
 		{
 			if (player != null)
 			{
-				return showError(player, e);
+				showError(player, e);
 			}
 		}
 		if (player != null)
 		{
-			return showResult(player, res);
+			showResult(player, res);
 		}
-		return true;
 	}
 	
 	/**
@@ -942,6 +1075,51 @@ public class Quest extends ManagedScript
 		}
 	}
 	
+	/**
+	 * @param npc
+	 */
+	public final void notifyMoveFinished(L2Npc npc)
+	{
+		try
+		{
+			onMoveFinished(npc);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Exception on onMoveFinished() in notifyMoveFinished(): " + e.getMessage(), e);
+		}
+	}
+	
+	/**
+	 * @param npc
+	 */
+	public final void notifyNodeArrived(L2Npc npc)
+	{
+		try
+		{
+			onNodeArrived(npc);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Exception on onNodeArrived() in notifyNodeArrived(): " + e.getMessage(), e);
+		}
+	}
+	
+	/**
+	 * @param npc
+	 */
+	public final void notifyRouteFinished(L2Npc npc)
+	{
+		try
+		{
+			onRouteFinished(npc);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Exception on onRouteFinished() in notifyRouteFinished(): " + e.getMessage(), e);
+		}
+	}
+	
 	// These are methods that java calls to invoke scripts.
 	
 	/**
@@ -950,10 +1128,10 @@ public class Quest extends ManagedScript
 	 * @param npc this parameter contains a reference to the exact instance of the NPC that got attacked the NPC.
 	 * @param attacker this parameter contains a reference to the exact instance of the player who attacked.
 	 * @param damage this parameter represents the total damage that this attack has inflicted to the NPC.
-	 * @param isPet this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the damage was actually dealt by the player's pet.
+	 * @param isSummon this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the damage was actually dealt by the player's pet.
 	 * @return
 	 */
-	public String onAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet)
+	public String onAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isSummon)
 	{
 		return null;
 	}
@@ -964,13 +1142,13 @@ public class Quest extends ManagedScript
 	 * @param npc this parameter contains a reference to the exact instance of the NPC that got attacked.
 	 * @param attacker this parameter contains a reference to the exact instance of the player who attacked the NPC.
 	 * @param damage this parameter represents the total damage that this attack has inflicted to the NPC.
-	 * @param isPet this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the damage was actually dealt by the player's pet.
+	 * @param isSummon this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the damage was actually dealt by the player's summon
 	 * @param skill parameter is the skill that player used to attack NPC.
 	 * @return
 	 */
-	public String onAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isPet, L2Skill skill)
+	public String onAttack(L2Npc npc, L2PcInstance attacker, int damage, boolean isSummon, L2Skill skill)
 	{
-		return onAttack(npc, attacker, damage, isPet);
+		return onAttack(npc, attacker, damage, isSummon);
 	}
 	
 	/**
@@ -983,11 +1161,7 @@ public class Quest extends ManagedScript
 	 */
 	public String onDeath(L2Character killer, L2Character victim, QuestState qs)
 	{
-		if (killer instanceof L2Npc)
-		{
-			return onAdvEvent("", (L2Npc) killer, qs.getPlayer());
-		}
-		return onAdvEvent("", null, qs.getPlayer());
+		return onAdvEvent("", ((killer instanceof L2Npc) ? ((L2Npc) killer) : null), qs.getPlayer());
 	}
 	
 	/**
@@ -1013,10 +1187,13 @@ public class Quest extends ManagedScript
 	 */
 	public String onAdvEvent(String event, L2Npc npc, L2PcInstance player)
 	{
-		final QuestState qs = player.getQuestState(getName());
-		if (qs != null)
+		if (player != null)
 		{
-			return onEvent(event, qs);
+			final QuestState qs = player.getQuestState(getName());
+			if (qs != null)
+			{
+				return onEvent(event, qs);
+			}
 		}
 		return null;
 	}
@@ -1045,10 +1222,10 @@ public class Quest extends ManagedScript
 	 * This function is called whenever a player kills a NPC that is registered for the quest.
 	 * @param npc this parameter contains a reference to the exact instance of the NPC that got killed.
 	 * @param killer this parameter contains a reference to the exact instance of the player who killed the NPC.
-	 * @param isPet this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the killer was the player's pet.
+	 * @param isSummon this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the killer was the player's pet.
 	 * @return the text returned by the event (may be {@code null}, a filename or just text)
 	 */
-	public String onKill(L2Npc npc, L2PcInstance killer, boolean isPet)
+	public String onKill(L2Npc npc, L2PcInstance killer, boolean isSummon)
 	{
 		return null;
 	}
@@ -1088,8 +1265,19 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * @param item
+	 * @param player
+	 * @param event
+	 * @return
+	 */
+	public String onItemEvent(L2ItemInstance item, L2PcInstance player, String event)
+	{
+		return null;
+	}
+	
+	/**
 	 * This function is called whenever a player request a skill list.<br>
-	 * TODO: Cleanup or re-implement, since Skill Trees rework it's support was removed.
+	 * TODO: Re-implement, since Skill Trees rework it's support was removed.
 	 * @param npc this parameter contains a reference to the exact instance of the NPC that the player requested the skill list.
 	 * @param player this parameter contains a reference to the exact instance of the player who requested the skill list.
 	 * @return
@@ -1101,7 +1289,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * This function is called whenever a player request a skill info.<br>
-	 * TODO: Cleanup or re-implement, since Skill Trees rework it's support was removed.
+	 * TODO: Re-implement, since Skill Trees rework it's support was removed.
 	 * @param npc this parameter contains a reference to the exact instance of the NPC that the player requested the skill info.
 	 * @param player this parameter contains a reference to the exact instance of the player who requested the skill info.
 	 * @param skill this parameter contains a reference to the skill that the player requested its info.
@@ -1114,7 +1302,7 @@ public class Quest extends ManagedScript
 	
 	/**
 	 * This function is called whenever a player acquire a skill.<br>
-	 * TODO: Cleanup or re-implement, since Skill Trees rework it's support was removed.
+	 * TODO: Re-implement, since Skill Trees rework it's support was removed.
 	 * @param npc this parameter contains a reference to the exact instance of the NPC that the player requested the skill.
 	 * @param player this parameter contains a reference to the exact instance of the player who requested the skill.
 	 * @param skill this parameter contains a reference to the skill that the player requested.
@@ -1126,7 +1314,7 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * This function is called whenever a player uses a quest item that has a quest events list<br>
+	 * This function is called whenever a player uses a quest item that has a quest events list.<br>
 	 * TODO: complete this documentation and unhardcode it to work with all item uses not with those listed.
 	 * @param item the quest item that the player used
 	 * @param player the player who used the item
@@ -1148,10 +1336,10 @@ public class Quest extends ManagedScript
 	 * @param caster the player who cast the skill
 	 * @param skill the actual skill that was used
 	 * @param targets an array of all objects (can be any type of object, including mobs and players) that were affected by the skill
-	 * @param isPet if {@code true}, the skill was actually cast by the player's pet, not the player himself
+	 * @param isSummon if {@code true}, the skill was actually cast by the player's summon, not the player himself
 	 * @return
 	 */
-	public String onSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isPet)
+	public String onSkillSee(L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isSummon)
 	{
 		return null;
 	}
@@ -1197,10 +1385,10 @@ public class Quest extends ManagedScript
 	 * @param npc this parameter contains a reference to the exact instance of the NPC who is being asked for help.
 	 * @param caller this parameter contains a reference to the exact instance of the NPC who is asking for help.<br>
 	 * @param attacker this parameter contains a reference to the exact instance of the player who attacked.
-	 * @param isPet this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the attacker was the player's pet.
+	 * @param isSummon this parameter if it's {@code false} it denotes that the attacker was indeed the player, else it specifies that the attacker was the player's summon.
 	 * @return
 	 */
-	public String onFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isPet)
+	public String onFactionCall(L2Npc npc, L2Npc caller, L2PcInstance attacker, boolean isSummon)
 	{
 		return null;
 	}
@@ -1209,10 +1397,22 @@ public class Quest extends ManagedScript
 	 * This function is called whenever a player enters an NPC aggression range.
 	 * @param npc this parameter contains a reference to the exact instance of the NPC whose aggression range is being transgressed.
 	 * @param player this parameter contains a reference to the exact instance of the player who is entering the NPC's aggression range.
-	 * @param isPet this parameter if it's {@code false} it denotes that the character that entered the aggression range was indeed the player, else it specifies that the character was the player's pet.
+	 * @param isSummon this parameter if it's {@code false} it denotes that the character that entered the aggression range was indeed the player, else it specifies that the character was the player's summon.
 	 * @return
 	 */
-	public String onAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isPet)
+	public String onAggroRangeEnter(L2Npc npc, L2PcInstance player, boolean isSummon)
+	{
+		return null;
+	}
+	
+	/**
+	 * This function is called whenever a NPC "sees" a creature.
+	 * @param npc the NPC who sees the creature
+	 * @param creature the creature seen by the NPC
+	 * @param isSummon this parameter if it's {@code false} it denotes that the character seen by the NPC was indeed the player, else it specifies that the character was the player's summon
+	 * @return
+	 */
+	public String onSeeCreature(L2Npc npc, L2Character creature, boolean isSummon)
 	{
 		return null;
 	}
@@ -1250,6 +1450,18 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * @param eventName - name of event
+	 * @param sender - NPC, who sent event
+	 * @param receiver - NPC, who received event
+	 * @param reference - L2Object to pass, if needed
+	 * @return
+	 */
+	public String onEventReceived(String eventName, L2Npc sender, L2Npc receiver, L2Object reference)
+	{
+		return null;
+	}
+	
+	/**
 	 * This function is called whenever a player wins an Olympiad Game.
 	 * @param winner this parameter contains a reference to the exact instance of the player who won the competition.
 	 * @param type this parameter contains a reference to the competition type.
@@ -1265,6 +1477,33 @@ public class Quest extends ManagedScript
 	 * @param type this parameter contains a reference to the competition type.
 	 */
 	public void onOlympiadLose(L2PcInstance loser, CompetitionType type)
+	{
+		
+	}
+	
+	/**
+	 * This function is called whenever a NPC finishes moving
+	 * @param npc registered NPC
+	 */
+	public void onMoveFinished(L2Npc npc)
+	{
+		
+	}
+	
+	/**
+	 * This function is called whenever a walker NPC (controlled by WalkingManager) arrive a walking node
+	 * @param npc registered NPC
+	 */
+	public void onNodeArrived(L2Npc npc)
+	{
+		
+	}
+	
+	/**
+	 * This function is called whenever a walker NPC (controlled by WalkingManager) arrive to last node
+	 * @param npc registered NPC
+	 */
+	public void onRouteFinished(L2Npc npc)
 	{
 		
 	}
@@ -1348,11 +1587,11 @@ public class Quest extends ManagedScript
 			{
 				while (rs.next())
 				{
-					// Get ID of the quest and ID of its state
+					// Get Id of the quest and Id of its state
 					String questId = rs.getString("name");
 					String statename = rs.getString("value");
 					
-					// Search quest associated with the ID
+					// Search quest associated with the Id
 					Quest q = QuestManager.getInstance().getQuest(questId);
 					if (q == null)
 					{
@@ -1611,16 +1850,15 @@ public class Quest extends ManagedScript
 	 * Update informations regarding quest in database.<br>
 	 * Actions:<br>
 	 * <ul>
-	 * <li>Get ID state of the quest recorded in object qs</li>
-	 * <li>Test if quest is completed. If true, add a star (*) before the ID state</li>
-	 * <li>Save in database the ID state (with or without the star) for the variable called "&lt;state&gt;" of the quest</li>
+	 * <li>Get Id state of the quest recorded in object qs</li>
+	 * <li>Test if quest is completed. If true, add a star (*) before the Id state</li>
+	 * <li>Save in database the Id state (with or without the star) for the variable called "&lt;state&gt;" of the quest</li>
 	 * </ul>
-	 * @param qs : QuestState
+	 * @param qs the quest state
 	 */
 	public static void updateQuestInDb(QuestState qs)
 	{
-		String val = State.getStateName(qs.getState());
-		updateQuestVarInDb(qs, "<state>", val);
+		updateQuestVarInDb(qs, "<state>", State.getStateName(qs.getState()));
 	}
 	
 	/**
@@ -1634,7 +1872,6 @@ public class Quest extends ManagedScript
 		{
 			return result;
 		}
-		
 		return DEFAULT_NO_QUEST_MSG;
 	}
 	
@@ -1649,332 +1886,184 @@ public class Quest extends ManagedScript
 		{
 			return result;
 		}
-		
 		return DEFAULT_ALREADY_COMPLETED_MSG;
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for the specified Event type.
-	 * @param npcId : id of the NPC to register
-	 * @param eventType : type of event being registered
-	 * @return L2NpcTemplate : Npc Template corresponding to the npcId, or null if the id is invalid
+	 * @param eventType type of event being registered
+	 * @param npcIds NPC Ids to register
 	 */
-	public L2NpcTemplate addEventId(int npcId, QuestEventType eventType)
+	public void addEventId(QuestEventType eventType, int... npcIds)
 	{
 		try
 		{
-			L2NpcTemplate t = NpcTable.getInstance().getTemplate(npcId);
-			if (t != null)
+			for (int npcId : npcIds)
 			{
-				t.addQuestEvent(eventType, this);
+				final L2NpcTemplate t = NpcTable.getInstance().getTemplate(npcId);
+				if (t != null)
+				{
+					t.addQuestEvent(eventType, this);
+					_questInvolvedNpcs.add(npcId);
+				}
 			}
-			
-			if (!_questInvolvedNpcs.contains(Integer.valueOf(npcId)))
-			{
-				_questInvolvedNpcs.add(npcId);
-			}
-			
-			return t;
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception on addEventId(): " + e.getMessage(), e);
-			return null;
 		}
+	}
+	
+	// TODO: Remove after all Jython scripts are replaced with Java versions.
+	public void addStartNpc(int npcId)
+	{
+		addEventId(QuestEventType.QUEST_START, npcId);
+	}
+	
+	public void addFirstTalkId(int npcId)
+	{
+		addEventId(QuestEventType.ON_FIRST_TALK, npcId);
+	}
+	
+	public void addTalkId(int npcId)
+	{
+		addEventId(QuestEventType.ON_TALK, npcId);
+	}
+	
+	public void addKillId(int killId)
+	{
+		addEventId(QuestEventType.ON_KILL, killId);
+	}
+	
+	public void addAttackId(int npcId)
+	{
+		addEventId(QuestEventType.ON_ATTACK, npcId);
 	}
 	
 	/**
 	 * Add the quest to the NPC's startQuest
 	 * @param npcIds
-	 * @return L2NpcTemplate : Start NPC
 	 */
-	public L2NpcTemplate[] addStartNpc(int... npcIds)
+	public void addStartNpc(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.QUEST_START);
-		}
-		return value;
-	}
-	
-	public L2NpcTemplate addStartNpc(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.QUEST_START);
+		addEventId(QuestEventType.QUEST_START, npcIds);
 	}
 	
 	/**
 	 * Add the quest to the NPC's first-talk (default action dialog)
 	 * @param npcIds
-	 * @return L2NpcTemplate : Start NPC
 	 */
-	public L2NpcTemplate[] addFirstTalkId(int... npcIds)
+	public void addFirstTalkId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_FIRST_TALK);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addFirstTalkId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_FIRST_TALK);
+		addEventId(QuestEventType.ON_FIRST_TALK, npcIds);
 	}
 	
 	/**
 	 * Add the NPC to the AcquireSkill dialog
 	 * @param npcIds
-	 * @return L2NpcTemplate : NPC
 	 */
-	public L2NpcTemplate[] addAcquireSkillId(int... npcIds)
+	public void addAcquireSkillId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_SKILL_LEARN);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addAcquireSkillId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_SKILL_LEARN);
+		addEventId(QuestEventType.ON_SKILL_LEARN, npcIds);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for Attack Events.
 	 * @param npcIds
-	 * @return int : attackId
 	 */
-	public L2NpcTemplate[] addAttackId(int... npcIds)
+	public void addAttackId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_ATTACK);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addAttackId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_ATTACK);
+		addEventId(QuestEventType.ON_ATTACK, npcIds);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for Kill Events.
 	 * @param killIds
-	 * @return int : killId
 	 */
-	public L2NpcTemplate[] addKillId(int... killIds)
+	public void addKillId(int... killIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[killIds.length];
-		int i = 0;
-		for (int killId : killIds)
-		{
-			value[i++] = addEventId(killId, QuestEventType.ON_KILL);
-		}
-		return value;
+		addEventId(QuestEventType.ON_KILL, killIds);
 	}
 	
 	/**
-	 * @param npcId
-	 * @return
+	 * Add this quest event to the collection of NPC Ids that will respond to for on kill events.
+	 * @param killIds the collection of NPC Ids
 	 */
-	public L2NpcTemplate addKillId(int npcId)
+	public void addKillId(Collection<Integer> killIds)
 	{
-		return addEventId(npcId, QuestEventType.ON_KILL);
+		for (int killId : killIds)
+		{
+			addEventId(QuestEventType.ON_KILL, killId);
+		}
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Talk Events.
-	 * @param talkIds : ID of the NPC
-	 * @return int : ID of the NPC
+	 * @param npcIds Id of the NPC
 	 */
-	public L2NpcTemplate[] addTalkId(int... talkIds)
+	public void addTalkId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[talkIds.length];
-		int i = 0;
-		for (int talkId : talkIds)
-		{
-			value[i++] = addEventId(talkId, QuestEventType.ON_TALK);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addTalkId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_TALK);
+		addEventId(QuestEventType.ON_TALK, npcIds);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Spawn Events.
-	 * @param npcIds : ID of the NPC
-	 * @return int : ID of the NPC
+	 * @param npcIds Id of the NPC
 	 */
-	public L2NpcTemplate[] addSpawnId(int... npcIds)
+	public void addSpawnId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_SPAWN);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addSpawnId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_SPAWN);
+		addEventId(QuestEventType.ON_SPAWN, npcIds);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Skill-See Events.
-	 * @param npcIds : ID of the NPC
-	 * @return int : ID of the NPC
+	 * @param npcIds Id of the NPC
 	 */
-	public L2NpcTemplate[] addSkillSeeId(int... npcIds)
+	public void addSkillSeeId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_SKILL_SEE);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addSkillSeeId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_SKILL_SEE);
+		addEventId(QuestEventType.ON_SKILL_SEE, npcIds);
 	}
 	
 	/**
 	 * @param npcIds
-	 * @return
 	 */
-	public L2NpcTemplate[] addSpellFinishedId(int... npcIds)
+	public void addSpellFinishedId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_SPELL_FINISHED);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addSpellFinishedId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_SPELL_FINISHED);
+		addEventId(QuestEventType.ON_SPELL_FINISHED, npcIds);
 	}
 	
 	/**
 	 * @param npcIds
-	 * @return
 	 */
-	public L2NpcTemplate[] addTrapActionId(int... npcIds)
+	public void addTrapActionId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_TRAP_ACTION);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addTrapActionId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_TRAP_ACTION);
+		addEventId(QuestEventType.ON_TRAP_ACTION, npcIds);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Faction Call Events.
-	 * @param npcIds : ID of the NPC
-	 * @return int : ID of the NPC
+	 * @param npcIds Id of the NPC
 	 */
-	public L2NpcTemplate[] addFactionCallId(int... npcIds)
+	public void addFactionCallId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_FACTION_CALL);
-		}
-		return value;
-	}
-	
-	/**
-	 * @param npcId
-	 * @return
-	 */
-	public L2NpcTemplate addFactionCallId(int npcId)
-	{
-		return addEventId(npcId, QuestEventType.ON_FACTION_CALL);
+		addEventId(QuestEventType.ON_FACTION_CALL, npcIds);
 	}
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Character See Events.
-	 * @param npcIds : ID of the NPC
-	 * @return int : ID of the NPC
+	 * @param npcIds Id of the NPC
 	 */
-	public L2NpcTemplate[] addAggroRangeEnterId(int... npcIds)
+	public void addAggroRangeEnterId(int... npcIds)
 	{
-		L2NpcTemplate[] value = new L2NpcTemplate[npcIds.length];
-		int i = 0;
-		for (int npcId : npcIds)
-		{
-			value[i++] = addEventId(npcId, QuestEventType.ON_AGGRO_RANGE_ENTER);
-		}
-		return value;
+		addEventId(QuestEventType.ON_AGGRO_RANGE_ENTER, npcIds);
 	}
 	
 	/**
-	 * @param npcId
-	 * @return
+	 * @param npcIds NPC Ids to register to on see creature event
 	 */
-	public L2NpcTemplate addAggroRangeEnterId(int npcId)
+	public void addSeeCreatureId(int... npcIds)
 	{
-		return addEventId(npcId, QuestEventType.ON_AGGRO_RANGE_ENTER);
+		addEventId(QuestEventType.ON_SEE_CREATURE, npcIds);
 	}
 	
 	/**
@@ -2002,30 +2091,7 @@ public class Quest extends ManagedScript
 				continue;
 			}
 		}
-		
 		return value;
-	}
-	
-	/**
-	 * @param zoneId
-	 * @return
-	 */
-	public L2ZoneType addEnterZoneId(int zoneId)
-	{
-		try
-		{
-			L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
-			if (zone != null)
-			{
-				zone.addQuestEvent(QuestEventType.ON_ENTER_ZONE, this);
-			}
-			return zone;
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, "Exception on addEnterZoneId(): " + e.getMessage(), e);
-			return null;
-		}
 	}
 	
 	/**
@@ -2053,7 +2119,6 @@ public class Quest extends ManagedScript
 				continue;
 			}
 		}
-		
 		return value;
 	}
 	
@@ -2080,6 +2145,42 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Register onEventReceived trigger for NPC
+	 * @param npcIds
+	 */
+	public void addEventReceivedId(int... npcIds)
+	{
+		addEventId(QuestEventType.ON_EVENT_RECEIVED, npcIds);
+	}
+	
+	/**
+	 * Register onMoveFinished trigger for NPC
+	 * @param npcIds
+	 */
+	public void addMoveFinishedId(int... npcIds)
+	{
+		addEventId(QuestEventType.ON_MOVE_FINISHED, npcIds);
+	}
+	
+	/**
+	 * Register onNodeArrived trigger for NPC
+	 * @param npcIds id of NPC to register
+	 */
+	public void addNodeArrivedId(int... npcIds)
+	{
+		addEventId(QuestEventType.ON_NODE_ARRIVED, npcIds);
+	}
+	
+	/**
+	 * Register onRouteFinished trigger for NPC
+	 * @param npcIds id of NPC to register
+	 */
+	public void addRouteFinishedId(int... npcIds)
+	{
+		addEventId(QuestEventType.ON_ROUTE_FINISHED, npcIds);
+	}
+	
+	/**
 	 * Use this method to get a random party member from a player's party.<br>
 	 * Useful when distributing rewards after killing an NPC.
 	 * @param player this parameter represents the player whom the party will taken.
@@ -2100,16 +2201,14 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Auxiliary function for party quests.<br>
-	 * Note: This function is only here because of how commonly it may be used by quest developers.<br>
-	 * For any variations on this function, the quest script can always handle things on its own.
+	 * Get a random party member with required cond value.
 	 * @param player the instance of a player whose party is to be searched
-	 * @param value the value of the "cond" variable that must be matched
-	 * @return L2PcInstance: L2PcInstance for a random party member that matches the specified condition, or {@code null} if no match was found
+	 * @param cond the value of the "cond" variable that must be matched
+	 * @return a random party member that matches the specified condition, or {@code null} if no match was found
 	 */
-	public L2PcInstance getRandomPartyMember(L2PcInstance player, String value)
+	public L2PcInstance getRandomPartyMember(L2PcInstance player, int cond)
 	{
-		return getRandomPartyMember(player, "cond", value);
+		return getRandomPartyMember(player, "cond", String.valueOf(cond));
 	}
 	
 	/**
@@ -2144,16 +2243,14 @@ public class Quest extends ManagedScript
 		if ((party == null) || (party.getMembers().isEmpty()))
 		{
 			temp = player.getQuestState(getName());
-			if ((temp != null) && (temp.get(var) != null) && (temp.get(var)).equalsIgnoreCase(value))
+			if ((temp != null) && temp.isSet(var) && temp.get(var).equalsIgnoreCase(value))
 			{
 				return player; // match
 			}
-			
 			return null; // no match
 		}
 		
-		// if the player is in a party, gather a list of all matching party members (possibly
-		// including this player)
+		// if the player is in a party, gather a list of all matching party members (possibly including this player)
 		List<L2PcInstance> candidates = new ArrayList<>();
 		// get the target for enforcing distance limitations.
 		L2Object target = player.getTarget();
@@ -2179,7 +2276,6 @@ public class Quest extends ManagedScript
 		{
 			return null;
 		}
-		// TODO where's the range check?
 		// if a match was found from the party, return one of them at random.
 		return candidates.get(Rnd.get(candidates.size()));
 	}
@@ -2249,40 +2345,74 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Show an on screen message to the player.
+	 * @param player the player to display the message
+	 * @param text the message
+	 * @param time the display time
+	 */
+	public static void showOnScreenMsg(L2PcInstance player, String text, int time)
+	{
+		player.sendPacket(new ExShowScreenMessage(text, time));
+	}
+	
+	/**
+	 * Show an on screen message to the player.
+	 * @param player the player to display the message
+	 * @param npcString the NPC String to display
+	 * @param position the position in the screen
+	 * @param time the display time
+	 * @param params parameters values to replace in the NPC String
+	 */
+	public static void showOnScreenMsg(L2PcInstance player, NpcStringId npcString, int position, int time, String... params)
+	{
+		player.sendPacket(new ExShowScreenMessage(npcString, position, time, params));
+	}
+	
+	/**
+	 * Show an on screen message to the player.
+	 * @param player the player to display the message
+	 * @param systemMsg the System Message to display
+	 * @param position the position in the screen
+	 * @param time the display time
+	 * @param params parameters values to replace in the System Message
+	 */
+	public static void showOnScreenMsg(L2PcInstance player, SystemMessageId systemMsg, int position, int time, String... params)
+	{
+		player.sendPacket(new ExShowScreenMessage(systemMsg, position, time, params));
+	}
+	
+	/**
 	 * Show HTML file to client
 	 * @param player
 	 * @param fileName
-	 * @return String : message sent to client
+	 * @return String message sent to client
 	 */
 	public String showHtmlFile(L2PcInstance player, String fileName)
 	{
-		boolean questwindow = true;
-		if (fileName.endsWith(".html"))
-		{
-			questwindow = false;
-		}
+		boolean questwindow = !fileName.endsWith(".html");
 		int questId = getQuestIntId();
+		
 		// Create handler to file linked to the quest
 		String content = getHtm(player.getHtmlPrefix(), fileName);
-		
-		if (player.getTarget() != null)
-		{
-			content = content.replaceAll("%objectId%", String.valueOf(player.getTarget().getObjectId()));
-		}
 		
 		// Send message to client if message not empty
 		if (content != null)
 		{
+			if (player.getTarget() != null)
+			{
+				content = content.replaceAll("%objectId%", Integer.toString(player.getTargetId()));
+			}
+			
 			if (questwindow && (questId > 0) && (questId < 20000) && (questId != 999))
 			{
-				NpcQuestHtmlMessage npcReply = new NpcQuestHtmlMessage(5, questId);
+				NpcQuestHtmlMessage npcReply = new NpcQuestHtmlMessage(player.getTargetId(), questId);
 				npcReply.setHtml(content);
 				npcReply.replace("%playername%", player.getName());
 				player.sendPacket(npcReply);
 			}
 			else
 			{
-				NpcHtmlMessage npcReply = new NpcHtmlMessage(5);
+				NpcHtmlMessage npcReply = new NpcHtmlMessage(player.getTargetId());
 				npcReply.setHtml(content);
 				npcReply.replace("%playername%", player.getName());
 				player.sendPacket(npcReply);
@@ -2294,24 +2424,22 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Return HTML file contents
 	 * @param prefix player's language prefix.
 	 * @param fileName the html file to be get.
-	 * @return
+	 * @return the HTML file contents
 	 */
 	public String getHtm(String prefix, String fileName)
 	{
-		String content = HtmCache.getInstance().getHtm(prefix, "data/scripts/" + getDescr().toLowerCase() + "/" + getName() + "/" + fileName);
-		
+		final HtmCache hc = HtmCache.getInstance();
+		String content = hc.getHtm(prefix, fileName.startsWith("data/") ? fileName : "data/scripts/" + getDescr().toLowerCase() + "/" + getName() + "/" + fileName);
 		if (content == null)
 		{
-			content = HtmCache.getInstance().getHtm(prefix, "data/scripts/quests/Q" + getName() + "/" + fileName);
+			content = hc.getHtm(prefix, "data/scripts/" + getDescr() + "/" + getName() + "/" + fileName);
 			if (content == null)
 			{
-				content = HtmCache.getInstance().getHtmForce(prefix, "data/scripts/quests/" + getName() + "/" + fileName);
+				content = hc.getHtmForce(prefix, "data/scripts/quests/" + getName() + "/" + fileName);
 			}
 		}
-		
 		return content;
 	}
 	
@@ -2323,7 +2451,7 @@ public class Quest extends ManagedScript
 	 */
 	public L2Npc addSpawn(int npcId, L2Character cha)
 	{
-		return addSpawn(npcId, cha.getX(), cha.getY(), cha.getZ(), cha.getHeading(), false, 0, false);
+		return addSpawn(npcId, cha.getX(), cha.getY(), cha.getZ(), cha.getHeading(), false, 0, false, 0);
 	}
 	
 	/**
@@ -2335,7 +2463,7 @@ public class Quest extends ManagedScript
 	 */
 	public L2Npc addSpawn(int npcId, L2Character cha, boolean isSummonSpawn)
 	{
-		return addSpawn(npcId, cha.getX(), cha.getY(), cha.getZ(), cha.getHeading(), false, 0, isSummonSpawn);
+		return addSpawn(npcId, cha.getX(), cha.getY(), cha.getZ(), cha.getHeading(), false, 0, isSummonSpawn, 0);
 	}
 	
 	/**
@@ -2350,7 +2478,7 @@ public class Quest extends ManagedScript
 	 */
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffSet, long despawnDelay)
 	{
-		return addSpawn(npcId, x, y, z, heading, randomOffSet, despawnDelay, false);
+		return addSpawn(npcId, x, y, z, heading, randomOffSet, despawnDelay, false, 0);
 	}
 	
 	/**
@@ -2362,7 +2490,7 @@ public class Quest extends ManagedScript
 	 */
 	public L2Npc addSpawn(int npcId, Location loc, boolean randomOffSet, long despawnDelay)
 	{
-		return addSpawn(npcId, loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), randomOffSet, despawnDelay, false);
+		return addSpawn(npcId, loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), randomOffSet, despawnDelay, false, 0);
 	}
 	
 	/**
@@ -2392,6 +2520,20 @@ public class Quest extends ManagedScript
 	public L2Npc addSpawn(int npcId, Location loc, boolean randomOffset, long despawnDelay, boolean isSummonSpawn)
 	{
 		return addSpawn(npcId, loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), randomOffset, despawnDelay, isSummonSpawn, 0);
+	}
+	
+	/**
+	 * @param npcId
+	 * @param loc
+	 * @param randomOffset
+	 * @param despawnDelay
+	 * @param isSummonSpawn
+	 * @param instanceId
+	 * @return
+	 */
+	public L2Npc addSpawn(int npcId, Location loc, boolean randomOffset, long despawnDelay, boolean isSummonSpawn, int instanceId)
+	{
+		return addSpawn(npcId, loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), randomOffset, despawnDelay, isSummonSpawn, instanceId);
 	}
 	
 	/**
@@ -2513,6 +2655,15 @@ public class Quest extends ManagedScript
 		return questItemIds;
 	}
 	
+	/**
+	 * Registers all items that have to be destroyed in case player abort the quest or finish it.
+	 * @param items
+	 */
+	public void registerQuestItems(int... items)
+	{
+		questItemIds = items;
+	}
+	
 	@Override
 	public String getScriptName()
 	{
@@ -2547,8 +2698,7 @@ public class Quest extends ManagedScript
 		saveGlobalData();
 		// cancel all pending timers before reloading.
 		// if timers ought to be restarted, the quest can take care of it
-		// with its code (example: save global data indicating what timer must
-		// be restarted).
+		// with its code (example: save global data indicating what timer must be restarted).
 		for (List<QuestTimer> timers : _allEventTimers.values())
 		{
 			_readLock.lock();
@@ -2582,6 +2732,11 @@ public class Quest extends ManagedScript
 			return QuestManager.getInstance().removeQuest(this);
 		}
 		return true;
+	}
+	
+	public Set<Integer> getQuestInvolvedNpcs()
+	{
+		return _questInvolvedNpcs;
 	}
 	
 	@Override
@@ -2641,26 +2796,51 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @param player this parameter contains a reference to the player to check.
-	 * @param itemId the item wanted to be count.
-	 * @return the quantity of one sort of item hold by the player.
+	 * Get the amount of an item in player's inventory.
+	 * @param player the player whose inventory to check
+	 * @param itemId the Id of the item whose amount to get
+	 * @return the amount of the specified item in player's inventory
 	 */
 	public long getQuestItemsCount(L2PcInstance player, int itemId)
+	{
+		return player.getInventory().getInventoryItemCount(itemId, -1);
+	}
+	
+	/**
+	 * Get the total amount of all specified items in player's inventory.
+	 * @param player the player whose inventory to check
+	 * @param itemIds a list of Ids of items whose amount to get
+	 * @return the summary amount of all listed items in player's inventory
+	 */
+	public long getQuestItemsCount(L2PcInstance player, int... itemIds)
 	{
 		long count = 0;
 		for (L2ItemInstance item : player.getInventory().getItems())
 		{
-			if ((item != null) && (item.getItemId() == itemId))
+			if (item == null)
 			{
-				count += item.getCount();
+				continue;
+			}
+			
+			for (int itemId : itemIds)
+			{
+				if (item.getItemId() == itemId)
+				{
+					if ((count + item.getCount()) > Long.MAX_VALUE)
+					{
+						return Long.MAX_VALUE;
+					}
+					count += item.getCount();
+				}
 			}
 		}
 		return count;
 	}
 	
 	/**
+	 * Check for an item in player's inventory.
 	 * @param player the player whose inventory to check for quest items
-	 * @param itemId the ID of the item to check for
+	 * @param itemId the Id of the item to check for
 	 * @return {@code true} if the item exists in player's inventory, {@code false} otherwise
 	 */
 	public boolean hasQuestItems(L2PcInstance player, int itemId)
@@ -2669,8 +2849,9 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Check for multiple items in player's inventory.
 	 * @param player the player whose inventory to check for quest items
-	 * @param itemIds a list or array of item IDs to check for
+	 * @param itemIds a list of item Ids to check for
 	 * @return {@code true} if all items exist in player's inventory, {@code false} otherwise
 	 */
 	public boolean hasQuestItems(L2PcInstance player, int... itemIds)
@@ -2687,37 +2868,62 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Check for multiple items in player's inventory.
+	 * @param player the player whose inventory to check for quest items
+	 * @param itemIds a list of item Ids to check for
+	 * @return {@code true} if at least one items exist in player's inventory, {@code false} otherwise
+	 */
+	public boolean hasAtLeastOneQuestItem(L2PcInstance player, int... itemIds)
+	{
+		final PcInventory inv = player.getInventory();
+		for (int itemId : itemIds)
+		{
+			if (inv.getItemByItemId(itemId) != null)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Get the enchantment level of an item in player's inventory.
 	 * @param player the player whose item to check
-	 * @param itemId the ID of the item whose enchantment to check
-	 * @return the enchantment level of the item or 0 if no item was found
+	 * @param itemId the Id of the item whose enchantment level to get
+	 * @return the enchantment level of the item or 0 if the item was not found
 	 */
 	public int getEnchantLevel(L2PcInstance player, int itemId)
 	{
-		L2ItemInstance enchanteditem = player.getInventory().getItemByItemId(itemId);
-		
-		if (enchanteditem == null)
+		L2ItemInstance enchantedItem = player.getInventory().getItemByItemId(itemId);
+		if (enchantedItem == null)
 		{
 			return 0;
 		}
-		
-		return enchanteditem.getEnchantLevel();
+		return enchantedItem.getEnchantLevel();
 	}
 	
 	/**
 	 * Give Adena to the player.
 	 * @param player the player to whom to give the Adena
 	 * @param count the amount of Adena to give
-	 * @param applyRates if {@code true}, quest rates will be applied
+	 * @param applyRates if {@code true} quest rates will be applied to the amount
 	 */
 	public void giveAdena(L2PcInstance player, long count, boolean applyRates)
 	{
-		giveItems(player, PcInventory.ADENA_ID, count, applyRates ? 0 : 1);
+		if (applyRates)
+		{
+			rewardItems(player, PcInventory.ADENA_ID, count);
+		}
+		else
+		{
+			giveItems(player, PcInventory.ADENA_ID, count);
+		}
 	}
 	
 	/**
-	 * Give reward to player using multipliers.
+	 * Give a reward to player using multipliers.
 	 * @param player the player to whom to give the item
-	 * @param itemId the ID of the item to give
+	 * @param itemId the Id of the item to give
 	 * @param count the amount of items to give
 	 */
 	public void rewardItems(L2PcInstance player, int itemId, long count)
@@ -2734,38 +2940,45 @@ public class Quest extends ManagedScript
 			return;
 		}
 		
-		if (itemId == PcInventory.ADENA_ID)
+		try
 		{
-			count = (long) (count * Config.RATE_QUEST_REWARD_ADENA);
-		}
-		else if (Config.RATE_QUEST_REWARD_USE_MULTIPLIERS)
-		{
-			if (_tmpItem.isEtcItem())
+			if (itemId == PcInventory.ADENA_ID)
 			{
-				switch (_tmpItem.getEtcItem().getItemType())
+				count *= Config.RATE_QUEST_REWARD_ADENA;
+			}
+			else if (Config.RATE_QUEST_REWARD_USE_MULTIPLIERS)
+			{
+				if (_tmpItem.isEtcItem())
 				{
-					case POTION:
-						count = (long) (count * Config.RATE_QUEST_REWARD_POTION);
-						break;
-					case SCRL_ENCHANT_WP:
-					case SCRL_ENCHANT_AM:
-					case SCROLL:
-						count = (long) (count * Config.RATE_QUEST_REWARD_SCROLL);
-						break;
-					case RECIPE:
-						count = (long) (count * Config.RATE_QUEST_REWARD_RECIPE);
-						break;
-					case MATERIAL:
-						count = (long) (count * Config.RATE_QUEST_REWARD_MATERIAL);
-						break;
-					default:
-						count = (long) (count * Config.RATE_QUEST_REWARD);
+					switch (_tmpItem.getEtcItem().getItemType())
+					{
+						case POTION:
+							count *= Config.RATE_QUEST_REWARD_POTION;
+							break;
+						case SCRL_ENCHANT_WP:
+						case SCRL_ENCHANT_AM:
+						case SCROLL:
+							count *= Config.RATE_QUEST_REWARD_SCROLL;
+							break;
+						case RECIPE:
+							count *= Config.RATE_QUEST_REWARD_RECIPE;
+							break;
+						case MATERIAL:
+							count *= Config.RATE_QUEST_REWARD_MATERIAL;
+							break;
+						default:
+							count *= Config.RATE_QUEST_REWARD;
+					}
 				}
 			}
+			else
+			{
+				count *= Config.RATE_QUEST_REWARD;
+			}
 		}
-		else
+		catch (Exception e)
 		{
-			count = (long) (count * Config.RATE_QUEST_REWARD);
+			count = Long.MAX_VALUE;
 		}
 		
 		// Add items to player's inventory
@@ -2828,6 +3041,16 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Give item/reward to the player
+	 * @param player
+	 * @param holder
+	 */
+	protected void giveItems(L2PcInstance player, ItemHolder holder)
+	{
+		giveItems(player, holder.getId(), holder.getCount());
+	}
+	
+	/**
 	 * @param player
 	 * @param itemId
 	 * @param count
@@ -2840,8 +3063,8 @@ public class Quest extends ManagedScript
 			return;
 		}
 		
-		// If item for reward is adena (ID=57), modify count with rate for quest reward if rates available
-		if ((itemId == PcInventory.ADENA_ID) && !(enchantlevel > 0))
+		// If item for reward is adena (Id=57), modify count with rate for quest reward if rates available
+		if ((itemId == PcInventory.ADENA_ID) && (enchantlevel == 0))
 		{
 			count = (long) (count * Config.RATE_QUEST_REWARD_ADENA);
 		}
@@ -2983,7 +3206,7 @@ public class Quest extends ManagedScript
 			
 			if (sound)
 			{
-				playSound(player, ((currentCount + itemCount) < neededCount) ? "Itemsound.quest_itemget" : "Itemsound.quest_middle");
+				playSound(player, ((currentCount + itemCount) < neededCount) ? QuestSound.ITEMSOUND_QUEST_ITEMGET : QuestSound.ITEMSOUND_QUEST_MIDDLE);
 			}
 		}
 		
@@ -2991,29 +3214,25 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Remove items from player's inventory when talking to NPC in order to have rewards.<br>
-	 * <u><i>Actions :</i></u>
-	 * <ul>
-	 * <li>Destroy quantity of items wanted</li>
-	 * <li>Send new inventory list to player</li>
-	 * </ul>
-	 * @param player
-	 * @param itemId : Identifier of the item
-	 * @param count : Quantity of items to destroy
+	 * Take an amount of a specified item from player's inventory.
+	 * @param player the player whose item to take
+	 * @param itemId the Id of the item to take
+	 * @param amount the amount to take
+	 * @return {@code true} if any items were taken, {@code false} otherwise
 	 */
-	public void takeItems(L2PcInstance player, int itemId, long count)
+	public boolean takeItems(L2PcInstance player, int itemId, long amount)
 	{
 		// Get object item from player's inventory list
 		L2ItemInstance item = player.getInventory().getItemByItemId(itemId);
 		if (item == null)
 		{
-			return;
+			return false;
 		}
 		
 		// Tests on count value in order not to have negative value
-		if ((count < 0) || (count > item.getCount()))
+		if ((amount < 0) || (amount > item.getCount()))
 		{
-			count = item.getCount();
+			amount = item.getCount();
 		}
 		
 		// Destroy the quantity of items wanted
@@ -3028,35 +3247,85 @@ public class Quest extends ManagedScript
 			player.sendPacket(iu);
 			player.broadcastUserInfo();
 		}
-		player.destroyItemByItemId("Quest", itemId, count, player, true);
+		return player.destroyItemByItemId("Quest", itemId, amount, player, true);
 	}
 	
 	/**
-	 * Send a packet in order to play sound at client terminal
+	 * Take an amount of a specified item from player's inventory.
 	 * @param player
-	 * @param sound
+	 * @param holder
+	 * @return {@code true} if any items were taken, {@code false} otherwise
+	 */
+	protected boolean takeItems(L2PcInstance player, ItemHolder holder)
+	{
+		return takeItems(player, holder.getId(), holder.getCount());
+	}
+	
+	/**
+	 * Take an amount of all specified items from player's inventory.
+	 * @param player the player whose items to take
+	 * @param amount the amount to take of each item
+	 * @param itemIds a list or an array of Ids of the items to take
+	 * @return {@code true} if all items were taken, {@code false} otherwise
+	 */
+	public boolean takeItems(L2PcInstance player, int amount, int... itemIds)
+	{
+		boolean check = true;
+		if (itemIds != null)
+		{
+			for (int item : itemIds)
+			{
+				check &= takeItems(player, item, amount);
+			}
+		}
+		return check;
+	}
+	
+	/**
+	 * Remove all quest items associated with this quest from the specified player's inventory.
+	 * @param player the player whose quest items to remove
+	 */
+	public void removeRegisteredQuestItems(L2PcInstance player)
+	{
+		takeItems(player, -1, questItemIds);
+	}
+	
+	/**
+	 * Send a packet in order to play a sound to the player.
+	 * @param player the player whom to send the packet
+	 * @param sound the name of the sound to play
 	 */
 	public void playSound(L2PcInstance player, String sound)
 	{
-		player.sendPacket(new PlaySound(sound));
+		player.sendPacket(QuestSound.getSound(sound));
 	}
 	
 	/**
-	 * Add XP and SP as quest reward
-	 * @param player
-	 * @param exp
-	 * @param sp
+	 * Send a packet in order to play a sound to the player.
+	 * @param player the player whom to send the packet
+	 * @param sound the {@link QuestSound} object of the sound to play
 	 */
-	public void addExpAndSp(L2PcInstance player, int exp, int sp)
+	public void playSound(L2PcInstance player, QuestSound sound)
 	{
-		player.addExpAndSp((int) player.calcStat(Stats.EXPSP_RATE, exp * Config.RATE_QUEST_REWARD_XP, null, null), (int) player.calcStat(Stats.EXPSP_RATE, sp * Config.RATE_QUEST_REWARD_SP, null, null));
+		player.sendPacket(sound.getPacket());
 	}
 	
 	/**
-	 * Gets a random integer number from 0 (inclusive) to {@code max} (exclusive).<br>
-	 * Use this method instead importing {@link com.l2jserver.util.Rnd} utility.
-	 * @param max this parameter represents the maximum value for randomization.
-	 * @return a random integer number from 0 to {@code max} - 1.
+	 * Add EXP and SP as quest reward.
+	 * @param player the player whom to reward with the EXP/SP
+	 * @param exp the amount of EXP to give to the player
+	 * @param sp the amount of SP to give to the player
+	 */
+	public void addExpAndSp(L2PcInstance player, long exp, int sp)
+	{
+		player.addExpAndSp((long) player.calcStat(Stats.EXPSP_RATE, exp * Config.RATE_QUEST_REWARD_XP, null, null), (int) player.calcStat(Stats.EXPSP_RATE, sp * Config.RATE_QUEST_REWARD_SP, null, null));
+	}
+	
+	/**
+	 * Get a random integer from 0 (inclusive) to {@code max} (exclusive).<br>
+	 * Use this method instead of importing {@link com.l2jserver.util.Rnd} utility.
+	 * @param max the maximum value for randomization
+	 * @return a random integer number from 0 to {@code max - 1}
 	 */
 	public static int getRandom(int max)
 	{
@@ -3064,11 +3333,11 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Gets a random integer number from {@code min} (inclusive) to {@code max} (inclusive).<br>
-	 * Use this method instead importing {@link com.l2jserver.util.Rnd} utility.
-	 * @param min this parameter represents the minimum value for randomization.
-	 * @param max this parameter represents the maximum value for randomization.
-	 * @return a random integer number from {@code min} to {@code max} .
+	 * Get a random integer from {@code min} (inclusive) to {@code max} (inclusive).<br>
+	 * Use this method instead of importing {@link com.l2jserver.util.Rnd} utility.
+	 * @param min the minimum value for randomization
+	 * @param max the maximum value for randomization
+	 * @return a random integer number from {@code min} to {@code max}
 	 */
 	public static int getRandom(int min, int max)
 	{
@@ -3076,9 +3345,10 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @param player this parameter is a reference to the player.
-	 * @param slot this parameter represents the location in the player's inventory.
-	 * @return the item Id of the item present in the inventory slot {@code slot} if it's not null, 0 otherwise.
+	 * Get the Id of the item equipped in the specified inventory slot of the player.
+	 * @param player the player whose inventory to check
+	 * @param slot the location in the player's inventory to check
+	 * @return the Id of the item equipped in the specified inventory slot or 0 if the slot is empty or item is {@code null}.
 	 */
 	public int getItemEquipped(L2PcInstance player, int slot)
 	{
@@ -3090,6 +3360,145 @@ public class Quest extends ManagedScript
 	 */
 	public int getGameTicks()
 	{
-		return GameTimeController.getGameTicks();
+		return GameTimeController.getInstance().getGameTicks();
+	}
+	
+	/**
+	 * Executes a procedure for each player, depending on the parameters.
+	 * @param player the player were the procedure will be executed
+	 * @param npc the related Npc
+	 * @param isSummon {@code true} if the event that call this method was originated by the player's summon
+	 * @param includeParty if {@code true} #actionForEachPlayer(L2PcInstance, L2Npc, boolean) will be called with the player's party members
+	 * @param includeCommandChannel if {@code true} {@link #actionForEachPlayer(L2PcInstance, L2Npc, boolean)} will be called with the player's command channel members
+	 * @see #actionForEachPlayer(L2PcInstance, L2Npc, boolean)
+	 */
+	public final void executeForEachPlayer(L2PcInstance player, final L2Npc npc, final boolean isSummon, boolean includeParty, boolean includeCommandChannel)
+	{
+		if ((includeParty || includeCommandChannel) && player.isInParty())
+		{
+			if (includeCommandChannel && player.getParty().isInCommandChannel())
+			{
+				player.getParty().getCommandChannel().forEachMember(new IL2Procedure<L2PcInstance>()
+				{
+					@Override
+					public boolean execute(L2PcInstance member)
+					{
+						actionForEachPlayer(member, npc, isSummon);
+						return true;
+					}
+				});
+			}
+			else if (includeParty)
+			{
+				player.getParty().forEachMember(new IL2Procedure<L2PcInstance>()
+				{
+					@Override
+					public boolean execute(L2PcInstance member)
+					{
+						actionForEachPlayer(member, npc, isSummon);
+						return true;
+					}
+				});
+			}
+		}
+		else
+		{
+			actionForEachPlayer(player, npc, isSummon);
+		}
+	}
+	
+	/**
+	 * Overridable method called from {@link #executeForEachPlayer(L2PcInstance, L2Npc, boolean, boolean, boolean)}
+	 * @param player the player where the action will be run
+	 * @param npc the Npc related to this action
+	 * @param isSummon {@code true} if the event that call this method was originated by the player's summon
+	 */
+	public void actionForEachPlayer(L2PcInstance player, L2Npc npc, boolean isSummon)
+	{
+		// To be overridden in quest scripts.
+	}
+	
+	/**
+	 * Opens the door if presents on the instance and its not open.
+	 * @param doorId
+	 * @param instanceId
+	 */
+	public void openDoor(int doorId, int instanceId)
+	{
+		final L2DoorInstance door = getDoor(doorId, instanceId);
+		if (door == null)
+		{
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": called openDoor(" + doorId + ", " + instanceId + "); but door wasnt found!", new NullPointerException());
+		}
+		else if (!door.getOpen())
+		{
+			door.openMe();
+		}
+	}
+	
+	/**
+	 * Closes the door if presents on the instance and its open
+	 * @param doorId
+	 * @param instanceId
+	 */
+	public void closeDoor(int doorId, int instanceId)
+	{
+		final L2DoorInstance door = getDoor(doorId, instanceId);
+		if (door == null)
+		{
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": called closeDoor(" + doorId + ", " + instanceId + "); but door wasnt found!", new NullPointerException());
+		}
+		else if (door.getOpen())
+		{
+			door.closeMe();
+		}
+	}
+	
+	/**
+	 * Retriving Door from instances or from the real world.
+	 * @param doorId
+	 * @param instanceId
+	 * @return {@link L2DoorInstance}
+	 */
+	public L2DoorInstance getDoor(int doorId, int instanceId)
+	{
+		L2DoorInstance door = null;
+		if (instanceId <= 0)
+		{
+			door = DoorTable.getInstance().getDoor(doorId);
+		}
+		else
+		{
+			final Instance inst = InstanceManager.getInstance().getInstance(instanceId);
+			if (inst != null)
+			{
+				door = inst.getDoor(doorId);
+			}
+		}
+		return door;
+	}
+	
+	/**
+	 * Teleport player to/from instance
+	 * @param player
+	 * @param loc
+	 * @param instanceId
+	 */
+	public void teleportPlayer(L2PcInstance player, Location loc, int instanceId)
+	{
+		teleportPlayer(player, loc, instanceId, true);
+	}
+	
+	/**
+	 * Teleport player to/from instance
+	 * @param player
+	 * @param loc
+	 * @param instanceId
+	 * @param allowRandomOffset
+	 */
+	public void teleportPlayer(L2PcInstance player, Location loc, int instanceId, boolean allowRandomOffset)
+	{
+		loc.setInstanceId(instanceId);
+		player.teleToLocation(loc, allowRandomOffset);
 	}
 }

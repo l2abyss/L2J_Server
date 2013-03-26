@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.stat;
 
@@ -20,14 +24,13 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.model.zone.type.L2SwampZone;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.WorldInfo;
-
 
 public class PlayableStat extends CharStat
 {
@@ -40,11 +43,15 @@ public class PlayableStat extends CharStat
 	
 	public boolean addExp(long value)
 	{
-		if ((getExp() + value) < 0 || (value > 0 && getExp() == (getExpForLevel(getMaxLevel()) - 1)))
+		if (((getExp() + value) < 0) || ((value > 0) && (getExp() == (getExpForLevel(getMaxLevel()) - 1))))
+		{
 			return true;
+		}
 		
-		if (getExp() + value >= getExpForLevel(getMaxLevel()))
+		if ((getExp() + value) >= getExpForLevel(getMaxLevel()))
+		{
 			value = getExpForLevel(getMaxLevel()) - 1 - getExp();
+		}
 		
 		setExp(getExp() + value);
 		
@@ -60,20 +67,26 @@ public class PlayableStat extends CharStat
 		for (byte tmp = level; tmp <= getMaxLevel(); tmp++)
 		{
 			if (getExp() >= getExpForLevel(tmp))
+			{
 				continue;
+			}
 			level = --tmp;
 			break;
 		}
-		if (level != getLevel() && level >= minimumLevel)
-			addLevel((byte)(level - getLevel()));
+		if ((level != getLevel()) && (level >= minimumLevel))
+		{
+			addLevel((byte) (level - getLevel()));
+		}
 		
 		return true;
 	}
 	
 	public boolean removeExp(long value)
 	{
-		if ((getExp() - value) < 0 )
-			value = getExp()-1;
+		if ((getExp() - value) < 0)
+		{
+			value = getExp() - 1;
+		}
 		
 		setExp(getExp() - value);
 		
@@ -88,12 +101,16 @@ public class PlayableStat extends CharStat
 		for (byte tmp = level; tmp <= getMaxLevel(); tmp++)
 		{
 			if (getExp() >= getExpForLevel(tmp))
+			{
 				continue;
+			}
 			level = --tmp;
 			break;
 		}
-		if (level != getLevel() && level >= minimumLevel)
-			addLevel((byte)(level - getLevel()));
+		if ((level != getLevel()) && (level >= minimumLevel))
+		{
+			addLevel((byte) (level - getLevel()));
+		}
 		return true;
 	}
 	
@@ -101,8 +118,14 @@ public class PlayableStat extends CharStat
 	{
 		boolean expAdded = false;
 		boolean spAdded = false;
-		if (addToExp >= 0) expAdded = addExp(addToExp);
-		if (addToSp >= 0) spAdded = addSp(addToSp);
+		if (addToExp >= 0)
+		{
+			expAdded = addExp(addToExp);
+		}
+		if (addToSp >= 0)
+		{
+			spAdded = addSp(addToSp);
+		}
 		
 		return expAdded || spAdded;
 	}
@@ -111,40 +134,58 @@ public class PlayableStat extends CharStat
 	{
 		boolean expRemoved = false;
 		boolean spRemoved = false;
-		if (removeExp > 0) expRemoved = removeExp(removeExp);
-		if (removeSp > 0) spRemoved = removeSp(removeSp);
+		if (removeExp > 0)
+		{
+			expRemoved = removeExp(removeExp);
+		}
+		if (removeSp > 0)
+		{
+			spRemoved = removeSp(removeSp);
+		}
 		
 		return expRemoved || spRemoved;
 	}
 	
 	public boolean addLevel(byte value)
 	{
-		if (getLevel() + value > getMaxLevel() - 1)
+		if ((getLevel() + value) > (getMaxLevel() - 1))
 		{
-			if (getLevel() < getMaxLevel() - 1)
-				value = (byte)(getMaxLevel() - 1 - getLevel());
+			if (getLevel() < (getMaxLevel() - 1))
+			{
+				value = (byte) (getMaxLevel() - 1 - getLevel());
+			}
 			else
+			{
 				return false;
+			}
 		}
 		
-		boolean levelIncreased = (getLevel() + value > getLevel());
+		boolean levelIncreased = ((getLevel() + value) > getLevel());
 		value += getLevel();
 		setLevel(value);
 		
 		// Sync up exp with current level
-		if (getExp() >= getExpForLevel(getLevel() + 1) || getExpForLevel(getLevel()) > getExp()) setExp(getExpForLevel(getLevel()));
-		
-		if (!levelIncreased && getActiveChar() instanceof L2PcInstance && !((L2PcInstance)(getActiveChar())).isGM() && Config.DECREASE_SKILL_LEVEL)
+		if ((getExp() >= getExpForLevel(getLevel() + 1)) || (getExpForLevel(getLevel()) > getExp()))
 		{
-			((L2PcInstance)(getActiveChar())).checkPlayerSkills();
+			setExp(getExpForLevel(getLevel()));
 		}
 		
-		if (!levelIncreased) return false;
+		if (!levelIncreased && (getActiveChar() instanceof L2PcInstance) && !((L2PcInstance) (getActiveChar())).isGM() && Config.DECREASE_SKILL_LEVEL)
+		{
+			((L2PcInstance) (getActiveChar())).checkPlayerSkills();
+		}
+		
+		if (!levelIncreased)
+		{
+			return false;
+		}
 		
 		getActiveChar().getStatus().setCurrentHp(getActiveChar().getStat().getMaxHp());
 		getActiveChar().getStatus().setCurrentMp(getActiveChar().getStat().getMaxMp());
 		if (getActiveChar() instanceof L2PcInstance)
+		{
 			CommunityServerThread.getInstance().sendPacket(new WorldInfo((L2PcInstance) getActiveChar(), null, WorldInfo.TYPE_UPDATE_PLAYER_DATA));
+		}
 		
 		return true;
 	}
@@ -158,10 +199,14 @@ public class PlayableStat extends CharStat
 		}
 		int currentSp = getSp();
 		if (currentSp == Integer.MAX_VALUE)
+		{
 			return false;
+		}
 		
-		if (currentSp > Integer.MAX_VALUE - value)
+		if (currentSp > (Integer.MAX_VALUE - value))
+		{
 			value = Integer.MAX_VALUE - currentSp;
+		}
 		
 		setSp(currentSp + value);
 		return true;
@@ -171,25 +216,32 @@ public class PlayableStat extends CharStat
 	{
 		int currentSp = getSp();
 		if (currentSp < value)
+		{
 			value = currentSp;
+		}
 		setSp(getSp() - value);
 		return true;
 	}
 	
-	public long getExpForLevel(int level) { return level; }
+	public long getExpForLevel(int level)
+	{
+		return level;
+	}
 	
 	@Override
 	public int getRunSpeed()
 	{
 		int val = super.getRunSpeed();
-		if (getActiveChar().isInsideZone(L2Character.ZONE_WATER))
+		if (getActiveChar().isInsideZone(ZoneId.WATER))
+		{
 			val /= 2;
+		}
 		
-		if (getActiveChar().isInsideZone(L2Character.ZONE_SWAMP))
+		if (getActiveChar().isInsideZone(ZoneId.SWAMP))
 		{
 			L2SwampZone zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
 			int bonus = zone == null ? 0 : zone.getMoveBonus();
-			double dbonus = bonus / 100.0; //%
+			double dbonus = bonus / 100.0; // %
 			val += val * dbonus;
 		}
 		
@@ -199,7 +251,7 @@ public class PlayableStat extends CharStat
 	@Override
 	public L2Playable getActiveChar()
 	{
-		return (L2Playable)super.getActiveChar();
+		return (L2Playable) super.getActiveChar();
 	}
 	
 	public int getMaxLevel()

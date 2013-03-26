@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
@@ -23,8 +27,10 @@ import org.mmocore.network.ReceivablePacket;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.L2GameClient;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
+import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * Packets received by the game server from clients
@@ -32,7 +38,7 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
  */
 public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 {
-	protected final Logger _log = Logger.getLogger(getClass().getName());
+	protected static final Logger _log = Logger.getLogger(L2GameClientPacket.class.getName());
 	
 	@Override
 	public boolean read()
@@ -46,8 +52,10 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 		{
 			_log.log(Level.SEVERE, "Client: " + getClient().toString() + " - Failed reading: " + getType() + " - L2J Server Version: " + Config.SERVER_VERSION + " - DP Revision: " + Config.DATAPACK_VERSION + " ; " + e.getMessage(), e);
 			
-			if (e instanceof BufferUnderflowException) // only one allowed per client per minute
+			if (e instanceof BufferUnderflowException)
+			{
 				getClient().onBufferUnderflow();
+			}
 		}
 		return false;
 	}
@@ -67,11 +75,13 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 			if (triggersOnActionRequest())
 			{
 				final L2PcInstance actor = getClient().getActiveChar();
-				if (actor != null && (actor.isSpawnProtected() || actor.isInvul()))
+				if ((actor != null) && (actor.isSpawnProtected() || actor.isInvul()))
 				{
 					actor.onActionRequest();
 					if (Config.DEBUG)
+					{
 						_log.info("Spawn protection for player " + actor.getName() + " removed by packet: " + getType());
+					}
 				}
 			}
 		}
@@ -80,15 +90,30 @@ public abstract class L2GameClientPacket extends ReceivablePacket<L2GameClient>
 			_log.log(Level.SEVERE, "Client: " + getClient().toString() + " - Failed running: " + getType() + " - L2J Server Version: " + Config.SERVER_VERSION + " - DP Revision: " + Config.DATAPACK_VERSION + " ; " + t.getMessage(), t);
 			// in case of EnterWorld error kick player from game
 			if (this instanceof EnterWorld)
+			{
 				getClient().closeNow();
+			}
 		}
 	}
 	
 	protected abstract void runImpl();
 	
+	/**
+	 * Sends a game server packet to the client.
+	 * @param gsp the game server packet
+	 */
 	protected final void sendPacket(L2GameServerPacket gsp)
 	{
 		getClient().sendPacket(gsp);
+	}
+	
+	/**
+	 * Sends a system message to the client.
+	 * @param id the system message Id
+	 */
+	public void sendPacket(SystemMessageId id)
+	{
+		sendPacket(SystemMessage.getSystemMessage(id));
 	}
 	
 	/**

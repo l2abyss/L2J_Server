@@ -1,34 +1,38 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.util.crypt;
 
 /**
  * Class to use a blowfish cipher with ECB processing.<br>
- * <br>
  * Static methods are present to append/check the checksum of<br>
  * packets exchanged between the following partners:<br>
  * Login Server <-> Game Client<br>
  * Login Server <-> Game Server<br>
- * <br>
- * Also a static method is provided for the initial xor encryption<br>
- * between Login Server <-> Game Client.
+ * Also a static method is provided for the initial xor encryption between Login Server <-> Game Client.
  */
 public final class NewCrypt
 {
 	private final BlowfishEngine _cipher;
 	
+	/**
+	 * @param blowfishKey
+	 */
 	public NewCrypt(byte[] blowfishKey)
 	{
 		_cipher = new BlowfishEngine();
@@ -41,11 +45,9 @@ public final class NewCrypt
 	}
 	
 	/**
-	 * Equivalent to calling {@link #verifyChecksum(byte[], int, int)}<br>
-	 * with parameters (raw, 0, raw.length)
+	 * Equivalent to calling {@link #verifyChecksum(byte[], int, int)} with parameters (raw, 0, raw.length)
 	 * @param raw data array to be verified
 	 * @return true when the checksum of the data is valid, false otherwise
-	 * @see #verifyChecksum(byte[], int, int)
 	 */
 	public static boolean verifyChecksum(final byte[] raw)
 	{
@@ -53,9 +55,7 @@ public final class NewCrypt
 	}
 	
 	/**
-	 * Method to verify the checksum of a packet received by<br>
-	 * login server from game client.<br>
-	 * <br>
+	 * Method to verify the checksum of a packet received by login server from game client.<br>
 	 * This is also used for game server <-> login server communication.
 	 * @param raw data array to be verified
 	 * @param offset at which offset to start verifying
@@ -94,8 +94,7 @@ public final class NewCrypt
 	}
 	
 	/**
-	 * Equivalent to calling {@link #appendChecksum(byte[], int, int)}<br>
-	 * with parameters (raw, 0, raw.length)
+	 * Equivalent to calling {@link #appendChecksum(byte[], int, int)} with parameters (raw, 0, raw.length)
 	 * @param raw data array to compute the checksum from
 	 */
 	public static void appendChecksum(final byte[] raw)
@@ -138,23 +137,25 @@ public final class NewCrypt
 	}
 	
 	/**
-	 * Packet is first XOR encoded with <code>key</code> Then, the last 4 bytes are overwritten with the the XOR "key". Thus this assume that there is enough room for the key to fit without overwriting data.
+	 * Packet is first XOR encoded with <code>key</code> then, the last 4 bytes are overwritten with the the XOR "key".<br>
+	 * Thus this assume that there is enough room for the key to fit without overwriting data.
 	 * @param raw The raw bytes to be encrypted
 	 * @param key The 4 bytes (int) XOR key
 	 */
-	public static void encXORPass(final byte[] raw, final int key)
+	public static void encXORPass(byte[] raw, int key)
 	{
 		NewCrypt.encXORPass(raw, 0, raw.length, key);
 	}
 	
 	/**
-	 * Packet is first XOR encoded with <code>key</code> Then, the last 4 bytes are overwritten with the the XOR "key". Thus this assume that there is enough room for the key to fit without overwriting data.
+	 * Packet is first XOR encoded with <code>key</code> then, the last 4 bytes are overwritten with the the XOR "key".<br>
+	 * Thus this assume that there is enough room for the key to fit without overwriting data.
 	 * @param raw The raw bytes to be encrypted
 	 * @param offset The beginning of the data to be encrypted
 	 * @param size Length of the data to be encrypted
 	 * @param key The 4 bytes (int) XOR key
 	 */
-	public static void encXORPass(final byte[] raw, final int offset, final int size, int key)
+	static void encXORPass(byte[] raw, final int offset, final int size, int key)
 	{
 		int stop = size - 8;
 		int pos = 4 + offset;
@@ -185,9 +186,8 @@ public final class NewCrypt
 	}
 	
 	/**
-	 * Method to decrypt using Blowfish-Blockcipher in ECB mode. The results<br>
-	 * will be directly placed inside {@code raw} array.<br>
-	 * <br>
+	 * Method to decrypt using Blowfish-Blockcipher in ECB mode.<br>
+	 * The results will be directly placed inside {@code raw} array.<br>
 	 * This method does not do any error checking, since the calling code<br>
 	 * should ensure sizes.
 	 * @param raw the data array to be decrypted
@@ -203,11 +203,9 @@ public final class NewCrypt
 	}
 	
 	/**
-	 * Method to encrypt using Blowfish-Blockcipher in ECB mode. The results<br>
-	 * will be directly placed inside {@code raw} array.<br>
-	 * <br>
-	 * This method does not do any error checking, since the calling code<br>
-	 * should ensure sizes.
+	 * Method to encrypt using Blowfish-Blockcipher in ECB mode.<br>
+	 * The results will be directly placed inside {@code raw} array.<br>
+	 * This method does not do any error checking, since the calling code should ensure sizes.
 	 * @param raw the data array to be decrypted
 	 * @param offset the offset at which to start decrypting
 	 * @param size the number of bytes to be decrypted

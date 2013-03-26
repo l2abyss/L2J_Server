@@ -1,24 +1,28 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,6 +37,7 @@ import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Augmentation;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.Stats;
@@ -46,11 +51,6 @@ import com.l2jserver.util.Rnd;
 public class AugmentationData
 {
 	private static final Logger _log = Logger.getLogger(AugmentationData.class.getName());
-	
-	public static final AugmentationData getInstance()
-	{
-		return SingletonHolder._instance;
-	}
 	
 	// stats
 	private static final int STAT_START = 1;
@@ -109,10 +109,10 @@ public class AugmentationData
 	private final List<List<Integer>> _redSkills = new ArrayList<>(10);
 	private final List<List<Integer>> _yellowSkills = new ArrayList<>(10);
 	
-	private final TIntObjectHashMap<AugmentationSkill> _allSkills = new TIntObjectHashMap<>();
+	private final Map<Integer, SkillHolder> _allSkills = new HashMap<>();
 	
 	protected AugmentationData()
-	{		
+	{
 		for (int i = 0; i < 10; i++)
 		{
 			if (i < STAT_NUMBEROF_BLOCKS)
@@ -181,28 +181,11 @@ public class AugmentationData
 		load();
 		
 		// Use size*4: since theres 4 blocks of stat-data with equivalent size
-		_log.info("AugmentationData: Loaded: " + (_augStats.get(0).size() * 4) + " augmentation stats.");
-		_log.info("AugmentationData: Loaded: " + (_augAccStats.get(0).size() * 4) + " accessory augmentation stats.");
+		_log.info(getClass().getSimpleName() + ": Loaded: " + (_augStats.get(0).size() * 4) + " augmentation stats.");
+		_log.info(getClass().getSimpleName() + ": Loaded: " + (_augAccStats.get(0).size() * 4) + " accessory augmentation stats.");
 		for (int i = 0; i < 10; i++)
 		{
-			_log.info("AugmentationData: Loaded: " + _blueSkills.get(i).size() + " blue, " + _purpleSkills.get(i).size() + " purple and " + _redSkills.get(i).size() + " red skills for lifeStoneLevel " + i);
-		}
-	}
-	
-	public static class AugmentationSkill
-	{
-		private final int _skillId;
-		private final int _skillLevel;
-		
-		public AugmentationSkill(int skillId, int skillLevel)
-		{
-			_skillId = skillId;
-			_skillLevel = skillLevel;
-		}
-		
-		public L2Skill getSkill()
-		{
-			return SkillTable.getInstance().getInfo(_skillId, _skillLevel);
+			_log.info(getClass().getSimpleName() + ": Loaded: " + _blueSkills.get(i).size() + " blue, " + _purpleSkills.get(i).size() + " purple and " + _redSkills.get(i).size() + " red skills for lifeStoneLevel " + i);
 		}
 	}
 	
@@ -346,19 +329,19 @@ public class AugmentationData
 								_redSkills.get(k).add(augmentationId);
 							}
 							
-							_allSkills.put(augmentationId, new AugmentationSkill(skillId, skillLvL));
+							_allSkills.put(augmentationId, new SkillHolder(skillId, skillLvL));
 						}
 					}
 				}
 			}
 			if (badAugmantData != 0)
 			{
-				_log.info("AugmentationData: " + badAugmantData + " bad skill(s) were skipped.");
+				_log.info(getClass().getSimpleName() + ": " + badAugmantData + " bad skill(s) were skipped.");
 			}
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error parsing augmentation_skillmap.xml.", e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error parsing augmentation_skillmap.xml.", e);
 			return;
 		}
 		
@@ -376,7 +359,7 @@ public class AugmentationData
 				{
 					if (Config.DEBUG)
 					{
-						_log.info("The augmentation stat data file " + i + " is missing.");
+						_log.info(getClass().getSimpleName() + ": The augmentation stat data file " + i + " is missing.");
 					}
 					return;
 				}
@@ -438,7 +421,7 @@ public class AugmentationData
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "Error parsing augmentation_stats" + i + ".xml.", e);
+				_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error parsing augmentation_stats" + i + ".xml.", e);
 				return;
 			}
 			
@@ -454,7 +437,7 @@ public class AugmentationData
 				{
 					if (Config.DEBUG)
 					{
-						_log.info("The jewel augmentation stat data file " + i + " is missing.");
+						_log.info(getClass().getSimpleName() + ": The jewel augmentation stat data file " + i + " is missing.");
 					}
 					return;
 				}
@@ -516,7 +499,7 @@ public class AugmentationData
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "Error parsing jewel augmentation_stats" + i + ".xml.", e);
+				_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error parsing jewel augmentation_stats" + i + ".xml.", e);
 				return;
 			}
 		}
@@ -761,7 +744,7 @@ public class AugmentationData
 		{
 			// second augmentation (skill)
 			stat34 = base + Rnd.get(skillsLength);
-			if (_allSkills.contains(stat34))
+			if (_allSkills.containsKey(stat34))
 			{
 				skill = _allSkills.get(stat34).getSkill();
 			}
@@ -932,18 +915,23 @@ public class AugmentationData
 	}
 	
 	/**
-	 * @param augmentationId 
+	 * @param augmentationId
 	 * @return skill by augmentation Id or null if not valid or not found.
 	 */
 	public L2Skill getAugSkillById(int augmentationId)
 	{
-		final AugmentationSkill temp = _allSkills.get(augmentationId);
+		final SkillHolder temp = _allSkills.get(augmentationId);
 		if (temp == null)
 		{
 			return null;
 		}
 		
 		return temp.getSkill();
+	}
+	
+	public static final AugmentationData getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

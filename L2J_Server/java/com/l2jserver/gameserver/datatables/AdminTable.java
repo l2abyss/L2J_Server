@@ -1,20 +1,23 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.datatables;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,9 +64,9 @@ public class AdminTable extends DocumentParser
 	{
 		_accessLevels.clear();
 		_adminCommandAccessRights.clear();
-		parseFile(new File(Config.DATAPACK_ROOT, "config/accessLevels.xml"));
+		parseDatapackFile("config/accessLevels.xml");
 		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _accessLevels.size() + " Access Levels");
-		parseFile(new File(Config.DATAPACK_ROOT, "config/adminCommands.xml"));
+		parseDatapackFile("config/adminCommands.xml");
 		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _adminCommandAccessRights.size() + " Access Commands");
 	}
 	
@@ -167,11 +170,11 @@ public class AdminTable extends DocumentParser
 			{
 				acar = new L2AdminCommandAccessRight(adminCommand, true, accessLevel.getLevel());
 				_adminCommandAccessRights.put(adminCommand, acar);
-				_log.info("AdminCommandAccessRights: No rights defined for admin command " + adminCommand + " auto setting accesslevel: " + accessLevel.getLevel() + " !");
+				_log.info(getClass().getSimpleName() + ": No rights defined for admin command " + adminCommand + " auto setting accesslevel: " + accessLevel.getLevel() + " !");
 			}
 			else
 			{
-				_log.info("AdminCommandAccessRights: No rights defined for admin command " + adminCommand + " !");
+				_log.info(getClass().getSimpleName() + ": No rights defined for admin command " + adminCommand + " !");
 				return false;
 			}
 		}
@@ -188,7 +191,7 @@ public class AdminTable extends DocumentParser
 		L2AdminCommandAccessRight acar = _adminCommandAccessRights.get(command);
 		if (acar == null)
 		{
-			_log.info("AdminCommandAccessRights: No rights defined for admin command " + command + ".");
+			_log.info(getClass().getSimpleName() + ": No rights defined for admin command " + command + ".");
 			return false;
 		}
 		return acar.getRequireConfirm();

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network;
 
@@ -34,7 +38,7 @@ import com.l2jserver.gameserver.model.clientstrings.Builder;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
- * @author Noctarius & Nille02 & crion ^ Forsaiken
+ * @author Noctarius, Nille02, crion, Forsaiken
  */
 public final class SystemMessageId
 {
@@ -241,7 +245,7 @@ public final class SystemMessageId
 	public static final SystemMessageId UNABLE_COMBAT_PLEASE_GO_RESTART;
 	
 	/**
-	 * ID: 32<br>
+	 * ID: 33<br>
 	 * Message: You cannot move while casting.
 	 */
 	public static final SystemMessageId CANT_MOVE_CASTING;
@@ -1273,6 +1277,26 @@ public final class SystemMessageId
 	public static final SystemMessageId S2_OF_THE_CLAN_S1_REQUESTS_WAR;
 	
 	/**
+	 * ID: 208<br>
+	 * Message: Please include file type when entering file path.
+	 */
+	
+	/**
+	 * ID: 209<br>
+	 * Message: The size of the image file is inappropriate. Please adjust to 16x12 pixels.
+	 */
+	
+	/**
+	 * ID: 210<br>
+	 * Message: Cannot find file. Please enter precise path.
+	 */
+	
+	/**
+	 * ID: 211<br>
+	 * Message: You can only register 16x12 pixel 256 color bmp files.
+	 */
+	
+	/**
 	 * ID: 212<br>
 	 * Message: You are not a clan member and cannot perform this action.
 	 */
@@ -1660,7 +1684,7 @@ public final class SystemMessageId
 	 * ID: 276<br>
 	 * Message: You do not have the necessary materials or prerequisites to learn this skill.
 	 */
-	public static final SystemMessageId ITEM_MISSING_TO_LEARN_SKILL;
+	public static final SystemMessageId ITEM_OR_PREREQUISITES_MISSING_TO_LEARN_SKILL;
 	
 	/**
 	 * ID: 277<br>
@@ -2635,7 +2659,7 @@ public final class SystemMessageId
 	public static final SystemMessageId ACCESS_FAILED;
 	
 	/**
-	 * ID: 461<br>
+	 * ID: 462<br>
 	 * Message: Please try again later.
 	 */
 	public static final SystemMessageId PLEASE_TRY_AGAIN_LATER;
@@ -3049,6 +3073,11 @@ public final class SystemMessageId
 	public static final SystemMessageId DISABLED_SPIRITSHOT;
 	
 	/**
+	 * ID: 535<br>
+	 * Message: Enter a name for your pet.
+	 */
+	
+	/**
 	 * ID: 536<br>
 	 * Message: How much adena do you wish to transfer to your Inventory?
 	 */
@@ -3245,6 +3274,17 @@ public final class SystemMessageId
 	 * Message: Cubic Summoning failed.
 	 */
 	public static final SystemMessageId CUBIC_SUMMONING_FAILED;
+	
+	/**
+	 * ID: 569<br>
+	 * Message: Caution -- this item's price greatly differs from non-player run shops. Do you wish to continue?
+	 */
+	
+	/**
+	 * ID: 570<br>
+	 * ID: 571<br>
+	 * Message: How many $s1(s) do you want to purchase?
+	 */
 	
 	/**
 	 * ID: 572<br>
@@ -3769,7 +3809,7 @@ public final class SystemMessageId
 	public static final SystemMessageId NOT_SIEGE_REGISTRATION_TIME1;
 	
 	/**
-	 * ID: 659<br>
+	 * ID: 660<br>
 	 * Message: This is not the time for siege registration and so registration and cancellation cannot be done.
 	 */
 	public static final SystemMessageId NOT_SIEGE_REGISTRATION_TIME2;
@@ -3880,7 +3920,7 @@ public final class SystemMessageId
 	 * ID: 678<br>
 	 * Message: You have submitted a bid for the auction of $s1.
 	 */
-	public static final SystemMessageId SUBMITTED_A_BID;
+	public static final SystemMessageId SUBMITTED_A_BID_OF_S1;
 	
 	/**
 	 * ID: 679<br>
@@ -8762,7 +8802,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1504<br>
-	 * Message: You have registered on the waiting list for the non-class-limited individual match event.
+	 * Message: You are currently registered for a 1v1 class irrelevant match.
 	 */
 	public static final SystemMessageId YOU_HAVE_BEEN_REGISTERED_IN_A_WAITING_LIST_OF_NO_CLASS_GAMES;
 	
@@ -9808,7 +9848,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1683<br>
-	 * Message: Only a party leader can choose the option to leave a channel.
+	 * Message: Only a party leader can leave a command channel.
 	 */
 	public static final SystemMessageId ONLY_PARTY_LEADER_CAN_LEAVE_CHANNEL;
 	
@@ -11517,7 +11557,7 @@ public final class SystemMessageId
 	public static final SystemMessageId S1_OWNER;
 	
 	/**
-	 * ID: 1968<br>
+	 * ID: 1969<br>
 	 * Message: Area where $s1 appears.
 	 */
 	public static final SystemMessageId AREA_S1_APPEARS;
@@ -11757,7 +11797,7 @@ public final class SystemMessageId
 	public static final SystemMessageId CANT_EXCEED_1500_CHARACTERS;
 	
 	/**
-	 * ID: 2009<br>
+	 * ID: 2010<br>
 	 * Message: $s2 $s1
 	 */
 	public static final SystemMessageId S2_S1;
@@ -13341,10 +13381,47 @@ public final class SystemMessageId
 	public static final SystemMessageId SKILL_NOT_FOR_SUBCLASS;
 	
 	/**
+	 * ID: 2274<br>
+	 * Message: You entered an area where you cannot throw away items.
+	 */
+	
+	/**
+	 * ID: 2275<br>
+	 * Message: You are in an area where you cannot cancel pet summoning.
+	 */
+	
+	/**
 	 * ID: 2276<br>
 	 * Message: The rebel army recaptured the fortress.
 	 */
 	public static final SystemMessageId NPCS_RECAPTURED_FORTRESS;
+	
+	/**
+	 * ID: 2277<br>
+	 * Message: Party of $s1
+	 */
+	
+	/**
+	 * ID: 2278<br>
+	 * Message: Remaining Time $s1:$s2
+	 */
+	
+	/**
+	 * ID: 2279<br>
+	 * Message: You can no longer add a quest to the Quest Alterts.
+	 */
+	
+	/**
+	 * ID: 2280 Message: Damage is decreased because $c1 resisted $c2's magic.
+	 */
+	
+	/**
+	 * ID: 2281 Message: $c1 hit you for $s3 damage and hit your servitor for $s4.
+	 */
+	
+	/**
+	 * ID: 2282 Message: Leave Fantasy Isle.
+	 */
 	
 	/**
 	 * ID: 2283<br>
@@ -13405,6 +13482,18 @@ public final class SystemMessageId
 	 * Message: Resurrection is possible because of the courage charm's effect. Would you like to resurrect now?
 	 */
 	public static final SystemMessageId RESURRECT_USING_CHARM_OF_COURAGE;
+	
+	/**
+	 * ID: 2311<br>
+	 * Message: You do not have a servitor.
+	 */
+	public static final SystemMessageId DONT_HAVE_SERVITOR;
+	
+	/**
+	 * ID: 2312<br>
+	 * Message: You do not have a pet.
+	 */
+	public static final SystemMessageId DONT_HAVE_PET;
 	
 	/**
 	 * ID: 2314<br>
@@ -13797,6 +13886,12 @@ public final class SystemMessageId
 	public static final SystemMessageId OLYMPIAD_3VS3_CONFIRM;
 	
 	/**
+	 * ID: 2466<br>
+	 * Message: A pet on auxiliary mode cannot use skills.
+	 */
+	public static final SystemMessageId PET_AUXILIARY_MODE_CANNOT_USE_SKILLS;
+	
+	/**
 	 * ID: 2491<br>
 	 * Message: Your ship cannot teleport because it does not have enough fuel for the trip.
 	 */
@@ -13915,6 +14010,12 @@ public final class SystemMessageId
 	 * Message: You cannot board because you do not meet the requirements.
 	 */
 	public static final SystemMessageId YOU_CANNOT_BOARD_NOT_MEET_REQUEIREMENTS;
+	
+	/**
+	 * ID: 2728<br>
+	 * Message: This action is prohibited while mounted or on an airship.
+	 */
+	public static final SystemMessageId ACTION_PROHIBITED_WHILE_MOUNTED_OR_ON_AN_AIRSHIP;
 	
 	/**
 	 * ID: 2729<br>
@@ -14444,6 +14545,24 @@ public final class SystemMessageId
 	public static final SystemMessageId YOU_CANT_CANCEL_RECEIVED_MAIL;
 	
 	/**
+	 * ID: 3033<br>
+	 * Message: By using the invisible skill, sneak into the Dawn's document storage!
+	 */
+	public static final SystemMessageId SNEAK_INTO_DAWNS_DOCUMENT_STORAGE;
+	
+	/**
+	 * ID: 3037<br>
+	 * Message: Male guards can detect the concealment but the female guards cannot.
+	 */
+	public static final SystemMessageId MALE_GUARDS_CAN_DETECT_FEMALES_DONT;
+	
+	/**
+	 * ID: 3038<br>
+	 * Message: Female guards notice the disguises from far away better than the male guards do, so beware.
+	 */
+	public static final SystemMessageId FEMALE_GUARDS_NOTICE_BETTER_THAN_MALE;
+	
+	/**
 	 * ID: 3059<br>
 	 * Message: $s1 did not receive it during the waiting time, so it was returned automatically.
 	 */
@@ -14690,6 +14809,12 @@ public final class SystemMessageId
 	public static final SystemMessageId THE_S2_ATTRIBUTE_WAS_SUCCESSFULLY_BESTOWED_ON_S1_RES_TO_S3_INCREASED;
 	
 	/**
+	 * ID: 3147<br>
+	 * Message: If you are not resurrected within $s1 minutes, you will be expelled from the instant zone.
+	 */
+	public static final SystemMessageId YOU_WILL_BE_EXPELLED_IN_S1;
+	
+	/**
 	 * ID: 3150<br>
 	 * Message: You have requested a couple action with $c1.
 	 */
@@ -14826,6 +14951,12 @@ public final class SystemMessageId
 	 * Message: MP became 0 and the Arcane Shield is disappearing.
 	 */
 	public static final SystemMessageId MP_BECAME_0_ARCANE_SHIELD_DISAPPEARING;
+	
+	/**
+	 * ID: 3260<br>
+	 * Message: You cannot use the skill because the servitor has not been summoned.
+	 */
+	public static final SystemMessageId CANNOT_USE_SKILL_WITHOUT_SERVITOR;
 	
 	/**
 	 * ID: 3261<br>
@@ -15140,7 +15271,7 @@ public final class SystemMessageId
 		CLAN_LVL_3_NEEDED_TO_DECLARE_WAR = new SystemMessageId(273);
 		CLAN_LEVEL_INCREASED = new SystemMessageId(274);
 		CLAN_LEVEL_INCREASE_FAILED = new SystemMessageId(275);
-		ITEM_MISSING_TO_LEARN_SKILL = new SystemMessageId(276);
+		ITEM_OR_PREREQUISITES_MISSING_TO_LEARN_SKILL = new SystemMessageId(276);
 		LEARNED_SKILL_S1 = new SystemMessageId(277);
 		NOT_ENOUGH_SP_TO_LEARN_SKILL = new SystemMessageId(278);
 		YOU_NOT_ENOUGH_ADENA = new SystemMessageId(279);
@@ -15510,7 +15641,7 @@ public final class SystemMessageId
 		NO_CLAN_HALLS_UP_FOR_AUCTION = new SystemMessageId(675);
 		ALREADY_SUBMITTED_BID = new SystemMessageId(676);
 		BID_PRICE_MUST_BE_HIGHER = new SystemMessageId(677);
-		SUBMITTED_A_BID = new SystemMessageId(678);
+		SUBMITTED_A_BID_OF_S1 = new SystemMessageId(678);
 		CANCELED_BID = new SystemMessageId(679);
 		CANNOT_PARTICIPATE_IN_AN_AUCTION = new SystemMessageId(680);
 		CLAN_HAS_NO_CLAN_HALL = new SystemMessageId(681);
@@ -17098,6 +17229,8 @@ public final class SystemMessageId
 		S2_MINUTES_S3_SECONDS_REMAINING_FOR_REUSE_S1 = new SystemMessageId(2304);
 		S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1 = new SystemMessageId(2305);
 		RESURRECT_USING_CHARM_OF_COURAGE = new SystemMessageId(2306);
+		DONT_HAVE_SERVITOR = new SystemMessageId(2311);
+		DONT_HAVE_PET = new SystemMessageId(2312);
 		VITALITY_IS_AT_MAXIMUM = new SystemMessageId(2314);
 		VITALITY_HAS_INCREASED = new SystemMessageId(2315);
 		VITALITY_HAS_DECREASED = new SystemMessageId(2316);
@@ -17163,6 +17296,7 @@ public final class SystemMessageId
 		THE_AIRSHIP_FUEL_SOON_RUN_OUT = new SystemMessageId(2463);
 		THE_AIRSHIP_FUEL_RUN_OUT = new SystemMessageId(2464);
 		OLYMPIAD_3VS3_CONFIRM = new SystemMessageId(2465);
+		PET_AUXILIARY_MODE_CANNOT_USE_SKILLS = new SystemMessageId(2466);
 		THE_AIRSHIP_CANNOT_TELEPORT = new SystemMessageId(2491);
 		THE_AIRSHIP_SUMMONED = new SystemMessageId(2492);
 		THE_COLLECTION_HAS_SUCCEEDED = new SystemMessageId(2500);
@@ -17183,6 +17317,7 @@ public final class SystemMessageId
 		BOARD_OR_CANCEL_NOT_POSSIBLE_HERE = new SystemMessageId(2721);
 		ANOTHER_AIRSHIP_ALREADY_SUMMONED = new SystemMessageId(2722);
 		YOU_CANNOT_BOARD_NOT_MEET_REQUEIREMENTS = new SystemMessageId(2727);
+		ACTION_PROHIBITED_WHILE_MOUNTED_OR_ON_AN_AIRSHIP = new SystemMessageId(2728);
 		YOU_CANNOT_CONTROL_THE_HELM_WHILE_TRANSFORMED = new SystemMessageId(2729);
 		YOU_CANNOT_CONTROL_THE_HELM_WHILE_YOU_ARE_PETRIFIED = new SystemMessageId(2730);
 		YOU_CANNOT_CONTROL_THE_HELM_WHEN_YOU_ARE_DEAD = new SystemMessageId(2731);
@@ -17271,6 +17406,9 @@ public final class SystemMessageId
 		YOU_CANNOT_USE_SKILL_ENCHANT_ATTACKING_TRANSFORMED_BOAT = new SystemMessageId(3028);
 		S1_RETURNED_MAIL = new SystemMessageId(3029);
 		YOU_CANT_CANCEL_RECEIVED_MAIL = new SystemMessageId(3030);
+		SNEAK_INTO_DAWNS_DOCUMENT_STORAGE = new SystemMessageId(3033);
+		MALE_GUARDS_CAN_DETECT_FEMALES_DONT = new SystemMessageId(3037);
+		FEMALE_GUARDS_NOTICE_BETTER_THAN_MALE = new SystemMessageId(3038);
 		S1_NOT_RECEIVE_DURING_WAITING_TIME_MAIL_RETURNED = new SystemMessageId(3059);
 		DO_YOU_WANT_TO_PAY_S1_ADENA = new SystemMessageId(3062);
 		DO_YOU_WANT_TO_FORWARD = new SystemMessageId(3063);
@@ -17312,6 +17450,7 @@ public final class SystemMessageId
 		PARTY_LOOT_CHANGED_S1 = new SystemMessageId(3138);
 		C1_IS_CURRENTLY_DEAD_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION = new SystemMessageId(3139);
 		THE_S2_ATTRIBUTE_WAS_SUCCESSFULLY_BESTOWED_ON_S1_RES_TO_S3_INCREASED = new SystemMessageId(3144);
+		YOU_WILL_BE_EXPELLED_IN_S1 = new SystemMessageId(3147);
 		YOU_HAVE_REQUESTED_COUPLE_ACTION_C1 = new SystemMessageId(3150);
 		S1_S2_ATTRIBUTE_REMOVED_RESISTANCE_S3_DECREASED = new SystemMessageId(3152);
 		YOU_DO_NOT_HAVE_ENOUGH_FUNDS_TO_CANCEL_ATTRIBUTE = new SystemMessageId(3156);
@@ -17335,6 +17474,7 @@ public final class SystemMessageId
 		ARCANE_SHIELD_DECREASED_YOUR_MP_BY_S1_INSTEAD_OF_HP = new SystemMessageId(3255);
 		YOU_EARNED_S1_EXP_BONUS_S2_AND_S3_SP_BONUS_S4 = new SystemMessageId(3259);
 		MP_BECAME_0_ARCANE_SHIELD_DISAPPEARING = new SystemMessageId(3256);
+		CANNOT_USE_SKILL_WITHOUT_SERVITOR = new SystemMessageId(3260);
 		YOU_HAVE_S1_MATCHES_REMAINING_THAT_YOU_CAN_PARTECIPATE_IN_THIS_WEEK_S2_CLASSED_S3_NON_CLASSED_S4_TEAM = new SystemMessageId(3261);
 		SAFE_ENCHANT_FAILED = new SystemMessageId(6004);
 		YOU_CANNOT_BOOKMARK_THIS_LOCATION_BECAUSE_YOU_DO_NOT_HAVE_A_MY_TELEPORT_FLAG = new SystemMessageId(6501);

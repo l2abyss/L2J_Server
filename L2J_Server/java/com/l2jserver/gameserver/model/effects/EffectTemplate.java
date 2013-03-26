@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.effects;
 
@@ -22,15 +26,12 @@ import java.util.logging.Logger;
 import com.l2jserver.gameserver.handler.EffectHandler;
 import com.l2jserver.gameserver.model.ChanceCondition;
 import com.l2jserver.gameserver.model.conditions.Condition;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.skills.funcs.Lambda;
 import com.l2jserver.gameserver.model.stats.Env;
 
-
 /**
  * @author mkizub
- * 
  */
 public class EffectTemplate
 {
@@ -52,17 +53,13 @@ public class EffectTemplate
 	public final byte abnormalLvl;
 	public final boolean icon;
 	public final String funcName;
-	public final double effectPower; // to thandle chance
-	public final L2SkillType effectType; // to handle resistences etc...
+	public final double effectPower; // to handle chance
 	
 	public final int triggeredId;
 	public final int triggeredLevel;
 	public final ChanceCondition chanceCondition;
 	
-	public EffectTemplate(Condition pAttachCond, Condition pApplayCond, String func, Lambda pLambda,
-			int pCounter, int pAbnormalTime, AbnormalEffect pAbnormalEffect, AbnormalEffect[] pSpecialEffect,
-			AbnormalEffect pEventEffect, String pAbnormalType, byte pAbnormalLvl, boolean showicon,
-			double ePower, L2SkillType eType, int trigId, int trigLvl, ChanceCondition chanceCond)
+	public EffectTemplate(Condition pAttachCond, Condition pApplayCond, String func, Lambda pLambda, int pCounter, int pAbnormalTime, AbnormalEffect pAbnormalEffect, AbnormalEffect[] pSpecialEffect, AbnormalEffect pEventEffect, String pAbnormalType, byte pAbnormalLvl, boolean showicon, double ePower, int trigId, int trigLvl, ChanceCondition chanceCond)
 	{
 		attachCond = pAttachCond;
 		applayCond = pApplayCond;
@@ -77,19 +74,18 @@ public class EffectTemplate
 		icon = showicon;
 		funcName = func;
 		effectPower = ePower;
-		effectType = eType;
 		
 		triggeredId = trigId;
 		triggeredLevel = trigLvl;
 		chanceCondition = chanceCond;
 		
 		_func = EffectHandler.getInstance().getHandler(func);
-		if(func == null)
+		if (_func == null)
 		{
-			_log.warning("EffectTemplate: Requested Unexistent effect: "+func);
+			_log.warning("EffectTemplate: Requested Unexistent effect: " + func);
 			throw new RuntimeException();
 		}
-
+		
 		try
 		{
 			_constructor = _func.getConstructor(Env.class, EffectTemplate.class);
@@ -102,8 +98,15 @@ public class EffectTemplate
 	
 	public L2Effect getEffect(Env env)
 	{
-		if (attachCond != null && !attachCond.test(env))
+		return getEffect(env, false);
+	}
+	
+	public L2Effect getEffect(Env env, boolean ignoreTest)
+	{
+		if (!ignoreTest && ((attachCond != null) && !attachCond.test(env)))
+		{
 			return null;
+		}
 		try
 		{
 			L2Effect effect = (L2Effect) _constructor.newInstance(env, this);
@@ -136,8 +139,10 @@ public class EffectTemplate
 	public L2Effect getStolenEffect(Env env, L2Effect stolen)
 	{
 		Class<?> func = EffectHandler.getInstance().getHandler(funcName);
-		if(func == null)
+		if (func == null)
+		{
 			throw new RuntimeException();
+		}
 		
 		Constructor<?> stolenCons;
 		try
@@ -176,7 +181,10 @@ public class EffectTemplate
 	{
 		if (funcTemplates == null)
 		{
-			funcTemplates = new FuncTemplate[] { f };
+			funcTemplates = new FuncTemplate[]
+			{
+				f
+			};
 		}
 		else
 		{

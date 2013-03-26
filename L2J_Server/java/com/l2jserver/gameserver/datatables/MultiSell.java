@@ -1,24 +1,28 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.datatables;
 
-import gnu.trove.iterator.TIntObjectIterator;
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,24 +50,18 @@ import com.l2jserver.util.file.filter.XMLFilter;
 
 public class MultiSell
 {
+	private static final Logger _log = Logger.getLogger(MultiSell.class.getName());
+	
 	public static final int PAGE_SIZE = 40;
 	
 	public static final int PC_BANG_POINTS = -100;
 	public static final int CLAN_REPUTATION = -200;
 	public static final int FAME = -300;
 	
-	private static final Logger _log = Logger.getLogger(MultiSell.class.getName());
-	
-	private final TIntObjectHashMap<ListContainer> _entries;
-	
-	public static MultiSell getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	private final Map<Integer, ListContainer> _entries = new HashMap<>();
 	
 	protected MultiSell()
 	{
-		_entries = new TIntObjectHashMap<>();
 		load();
 	}
 	
@@ -74,57 +72,58 @@ public class MultiSell
 	}
 	
 	/**
-	 * This will generate the multisell list for the items.  There exist various
-	 * parameters in multisells that affect the way they will appear:
-	 * 1) inventory only:
-	 * 		* if true, only show items of the multisell for which the
-	 * 		  "primary" ingredients are already in the player's inventory.  By "primary"
-	 * 		  ingredients we mean weapon and armor.
-	 * 		* if false, show the entire list.
-	 * 2) maintain enchantment: presumably, only lists with "inventory only" set to true
-	 * 		should sometimes have this as true.  This makes no sense otherwise...
-	 * 		* If true, then the product will match the enchantment level of the ingredient.
-	 * 		  if the player has multiple items that match the ingredient list but the enchantment
-	 * 		  levels differ, then the entries need to be duplicated to show the products and
-	 * 		  ingredients for each enchantment level.
-	 * 		  For example: If the player has a crystal staff +1 and a crystal staff +3 and goes
-	 * 		  to exchange it at the mammon, the list should have all exchange possibilities for
-	 * 		  the +1 staff, followed by all possibilities for the +3 staff.
-	 * 		* If false, then any level ingredient will be considered equal and product will always
-	 * 		  be at +0
-	 * 3) apply taxes: Uses the "taxIngredient" entry in order to add a certain amount of adena to the ingredients
-	 * 4) additional product and ingredient multipliers
-	 * @param listId 
-	 * @param player 
-	 * @param npc 
-	 * @param inventoryOnly 
-	 * @param productMultiplier 
-	 * @param ingredientMultiplier 
+	 * This will generate the multisell list for the items.<br>
+	 * There exist various parameters in multisells that affect the way they will appear:
+	 * <ol>
+	 * <li>Inventory only:
+	 * <ul>
+	 * <li>If true, only show items of the multisell for which the "primary" ingredients are already in the player's inventory. By "primary" ingredients we mean weapon and armor.</li>
+	 * <li>If false, show the entire list.</li>
+	 * </ul>
+	 * </li>
+	 * <li>Maintain enchantment: presumably, only lists with "inventory only" set to true should sometimes have this as true. This makes no sense otherwise...
+	 * <ul>
+	 * <li>If true, then the product will match the enchantment level of the ingredient.<br>
+	 * If the player has multiple items that match the ingredient list but the enchantment levels differ, then the entries need to be duplicated to show the products and ingredients for each enchantment level.<br>
+	 * For example: If the player has a crystal staff +1 and a crystal staff +3 and goes to exchange it at the mammon, the list should have all exchange possibilities for the +1 staff, followed by all possibilities for the +3 staff.</li>
+	 * <li>If false, then any level ingredient will be considered equal and product will always be at +0</li>
+	 * </ul>
+	 * </li>
+	 * <li>Apply taxes: Uses the "taxIngredient" entry in order to add a certain amount of adena to the ingredients.
+	 * <li>
+	 * <li>Additional product and ingredient multipliers.</li>
+	 * </ol>
+	 * @param listId
+	 * @param player
+	 * @param npc
+	 * @param inventoryOnly
+	 * @param productMultiplier
+	 * @param ingredientMultiplier
 	 */
 	public final void separateAndSend(int listId, L2PcInstance player, L2Npc npc, boolean inventoryOnly, double productMultiplier, double ingredientMultiplier)
 	{
 		ListContainer template = _entries.get(listId);
 		if (template == null)
 		{
-			_log.warning("[MultiSell] can't find list id: " + listId + " requested by player: " + player.getName() + ", npcId:" + (npc != null ? npc.getNpcId() : 0));
+			_log.warning(getClass().getSimpleName() + ": can't find list id: " + listId + " requested by player: " + player.getName() + ", npcId:" + (npc != null ? npc.getNpcId() : 0));
 			return;
 		}
 		
 		final PreparedListContainer list = new PreparedListContainer(template, inventoryOnly, player, npc);
 		
 		// Pass through this only when multipliers are different from 1
-		if (productMultiplier != 1 || ingredientMultiplier != 1)
+		if ((productMultiplier != 1) || (ingredientMultiplier != 1))
 		{
-			for(Entry entry : list.getEntries())
+			for (Entry entry : list.getEntries())
 			{
-				for(Ingredient product : entry.getProducts())
+				for (Ingredient product : entry.getProducts())
 				{
-					//Math.max used here to avoid dropping count to 0
-					product.setItemCount((long) Math.max(product.getItemCount() * productMultiplier,1));
+					// Math.max used here to avoid dropping count to 0
+					product.setItemCount((long) Math.max(product.getItemCount() * productMultiplier, 1));
 				}
-				for(Ingredient ingredient : entry.getIngredients())
+				for (Ingredient ingredient : entry.getIngredients())
 				{
-					//Math.max used here to avoid dropping count to 0
+					// Math.max used here to avoid dropping count to 0
 					ingredient.setItemCount((long) Math.max(ingredient.getItemCount() * ingredientMultiplier, 1));
 				}
 			}
@@ -140,9 +139,10 @@ public class MultiSell
 		
 		player.setMultiSell(list);
 	}
+	
 	public final void separateAndSend(int listId, L2PcInstance player, L2Npc npc, boolean inventoryOnly)
 	{
-		separateAndSend(listId,  player, npc, inventoryOnly, 1, 1);
+		separateAndSend(listId, player, npc, inventoryOnly, 1, 1);
 	}
 	
 	public static final boolean checkSpecialIngredient(int id, long amount, L2PcInstance player)
@@ -218,7 +218,9 @@ public class MultiSell
 		List<File> files = new FastList<>();
 		hashFiles("data/multisell", files);
 		if (Config.CUSTOM_MULTISELL_LOAD)
+		{
 			hashFiles("data/multisell/custom", files);
+		}
 		
 		for (File f : files)
 		{
@@ -232,7 +234,7 @@ public class MultiSell
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "Error loading file " + f, e);
+				_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error loading file " + f, e);
 				continue;
 			}
 			
@@ -244,11 +246,11 @@ public class MultiSell
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "Error in file " + f, e);
+				_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error in file " + f, e);
 			}
 		}
 		verify();
-		_log.log(Level.INFO, "MultiSell: Loaded " + _entries.size() + " lists.");
+		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded " + _entries.size() + " lists.");
 	}
 	
 	private final ListContainer parseDocument(Document doc)
@@ -263,9 +265,13 @@ public class MultiSell
 			{
 				attribute = n.getAttributes().getNamedItem("applyTaxes");
 				if (attribute == null)
+				{
 					list.setApplyTaxes(false);
+				}
 				else
+				{
 					list.setApplyTaxes(Boolean.parseBoolean(attribute.getNodeValue()));
+				}
 				
 				attribute = n.getAttributes().getNamedItem("useRate");
 				if (attribute != null)
@@ -274,12 +280,14 @@ public class MultiSell
 					{
 						
 						list.setUseRate(Double.valueOf(attribute.getNodeValue()));
-						if(list.getUseRate() == 0.0)
-							throw new NumberFormatException("The value cannot be 0"); //threat 0 as invalid value
+						if (list.getUseRate() <= 1e-6)
+						{
+							throw new NumberFormatException("The value cannot be 0"); // threat 0 as invalid value
+						}
 					}
 					catch (NumberFormatException e)
 					{
-
+						
 						try
 						{
 							list.setUseRate(Config.class.getField(attribute.getNodeValue()).getDouble(Config.class));
@@ -289,9 +297,9 @@ public class MultiSell
 							_log.warning(e.getMessage() + doc.getLocalName());
 							list.setUseRate(1.0);
 						}
-
+						
 					}
-					catch (DOMException e) 
+					catch (DOMException e)
 					{
 						_log.warning(e.getMessage() + doc.getLocalName());
 					}
@@ -299,9 +307,13 @@ public class MultiSell
 				
 				attribute = n.getAttributes().getNamedItem("maintainEnchantment");
 				if (attribute == null)
+				{
 					list.setMaintainEnchantment(false);
+				}
 				else
+				{
 					list.setMaintainEnchantment(Boolean.parseBoolean(attribute.getNodeValue()));
+				}
 				
 				for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 				{
@@ -338,15 +350,23 @@ public class MultiSell
 				
 				attribute = n.getAttributes().getNamedItem("isTaxIngredient");
 				if (attribute != null)
+				{
 					isTaxIngredient = Boolean.parseBoolean(attribute.getNodeValue());
+				}
 				else
+				{
 					isTaxIngredient = false;
+				}
 				
 				attribute = n.getAttributes().getNamedItem("maintainIngredient");
 				if (attribute != null)
+				{
 					mantainIngredient = Boolean.parseBoolean(attribute.getNodeValue());
+				}
 				else
+				{
 					mantainIngredient = false;
+				}
 				
 				entry.addIngredient(new Ingredient(id, count, isTaxIngredient, mantainIngredient));
 			}
@@ -367,35 +387,40 @@ public class MultiSell
 		File dir = new File(Config.DATAPACK_ROOT, dirname);
 		if (!dir.exists())
 		{
-			_log.log(Level.WARNING, "Dir " + dir.getAbsolutePath() + " not exists");
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Dir " + dir.getAbsolutePath() + " not exists");
 			return;
 		}
 		
 		File[] files = dir.listFiles(new XMLFilter());
 		for (File f : files)
+		{
 			hash.add(f);
+		}
 	}
 	
 	private final void verify()
 	{
 		ListContainer list;
-		final TIntObjectIterator<ListContainer> iter = _entries.iterator();
+		final Iterator<ListContainer> iter = _entries.values().iterator();
 		while (iter.hasNext())
 		{
-			iter.advance();
-			list = iter.value();
+			list = iter.next();
 			
 			for (Entry ent : list.getEntries())
 			{
 				for (Ingredient ing : ent.getIngredients())
 				{
 					if (!verifyIngredient(ing))
-						_log.warning("[MultiSell] can't find ingredient with itemId: " + ing.getItemId() + " in list: " + list.getListId());
+					{
+						_log.warning(getClass().getSimpleName() + ": can't find ingredient with itemId: " + ing.getItemId() + " in list: " + list.getListId());
+					}
 				}
 				for (Ingredient ing : ent.getProducts())
 				{
 					if (!verifyIngredient(ing))
-						_log.warning("[MultiSell] can't find product with itemId: " + ing.getItemId() + " in list: " + list.getListId());
+					{
+						_log.warning(getClass().getSimpleName() + ": can't find product with itemId: " + ing.getItemId() + " in list: " + list.getListId());
+					}
 				}
 			}
 		}
@@ -410,10 +435,17 @@ public class MultiSell
 				return true;
 			default:
 				if (ing.getTemplate() != null)
+				{
 					return true;
+				}
 		}
 		
 		return false;
+	}
+	
+	public static MultiSell getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

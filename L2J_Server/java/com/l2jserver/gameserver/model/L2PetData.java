@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model;
 
@@ -31,10 +35,35 @@ public class L2PetData
 	private final Map<Integer, L2PetLevelData> _levelStats = new HashMap<>();
 	private final List<L2PetSkillLearn> _skills = new ArrayList<>();
 	
+	private final int _npcId;
+	private final int _itemId;
 	private int _load = 20000;
 	private int _hungryLimit = 1;
 	private int _minlvl = Byte.MAX_VALUE;
+	private boolean _syncLevel = false;
 	private final List<Integer> _food = new ArrayList<>();
+	
+	public L2PetData(int npcId, int itemId)
+	{
+		_npcId = npcId;
+		_itemId = itemId;
+	}
+	
+	/**
+	 * @return the npc id representing this pet.
+	 */
+	public int getNpcId()
+	{
+		return _npcId;
+	}
+	
+	/**
+	 * @return the item id that could summon this pet.
+	 */
+	public int getItemId()
+	{
+		return _itemId;
+	}
 	
 	/**
 	 * @param level the pet's level.
@@ -75,6 +104,14 @@ public class L2PetData
 	}
 	
 	/**
+	 * @return {@code true} if pet synchronizes it's level with his master's
+	 */
+	public boolean isSynchLevel()
+	{
+		return _syncLevel;
+	}
+	
+	/**
 	 * @return the pet's minimum level.
 	 */
 	public int getMinLevel()
@@ -112,6 +149,14 @@ public class L2PetData
 	public void setHungryLimit(int limit)
 	{
 		_hungryLimit = limit;
+	}
+	
+	/**
+	 * @param val synchronizes level with master or not.
+	 */
+	public void setSyncLevel(boolean val)
+	{
+		_syncLevel = val;
 	}
 	
 	// SKILS

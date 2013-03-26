@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
@@ -40,14 +44,17 @@ public class PledgeShowMemberListAll extends L2GameServerPacket
 		// FIXME: That's wrong on retail sends this whole packet few times (depending how much sub pledges it has)
 		writePledge(0);
 		
-		for (SubPledge subPledge: _clan.getAllSubPledges())
+		for (SubPledge subPledge : _clan.getAllSubPledges())
 		{
 			_activeChar.sendPacket(new PledgeReceiveSubPledgeCreated(subPledge, _clan));
 		}
 		
 		for (L2ClanMember m : _members)
 		{
-			if (m.getPledgeType() == 0) continue;
+			if (m.getPledgeType() == 0)
+			{
+				continue;
+			}
 			_activeChar.sendPacket(new PledgeShowMemberListAdd(m));
 		}
 		
@@ -74,18 +81,21 @@ public class PledgeShowMemberListAll extends L2GameServerPacket
 		writeD(_clan.getFortId());
 		writeD(_clan.getRank());
 		writeD(_clan.getReputationScore());
-		writeD(0x00); //0
-		writeD(0x00); //0
+		writeD(0x00); // 0
+		writeD(0x00); // 0
 		writeD(_clan.getAllyId());
 		writeS(_clan.getAllyName());
 		writeD(_clan.getAllyCrestId());
-		writeD(_clan.isAtWar()? 1 : 0);// new c3
+		writeD(_clan.isAtWar() ? 1 : 0);// new c3
 		writeD(0x00); // Territory castle ID
 		writeD(_clan.getSubPledgeMembersCount(_pledgeType));
 		
 		for (L2ClanMember m : _members)
 		{
-			if(m.getPledgeType() != _pledgeType) continue;
+			if (m.getPledgeType() != _pledgeType)
+			{
+				continue;
+			}
 			writeS(m.getName());
 			writeD(m.getLevel());
 			writeD(m.getClassId());
@@ -93,14 +103,14 @@ public class PledgeShowMemberListAll extends L2GameServerPacket
 			if ((player = m.getPlayerInstance()) != null)
 			{
 				writeD(player.getAppearance().getSex() ? 1 : 0); // no visible effect
-				writeD(player.getRace().ordinal());//writeD(1);
+				writeD(player.getRace().ordinal());// writeD(1);
 			}
 			else
 			{
 				writeD(0x01); // no visible effect
-				writeD(0x01); //writeD(1);
+				writeD(0x01); // writeD(1);
 			}
-			writeD(m.isOnline() ? m.getObjectId() : 0);  // objectId = online 0 = offline
+			writeD(m.isOnline() ? m.getObjectId() : 0); // objectId = online 0 = offline
 			writeD(m.getSponsor() != 0 ? 1 : 0);
 		}
 	}

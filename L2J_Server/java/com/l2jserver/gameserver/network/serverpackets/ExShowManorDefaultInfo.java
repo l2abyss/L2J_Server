@@ -1,33 +1,37 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import javolution.util.FastList;
+import java.util.List;
 
-import com.l2jserver.gameserver.model.L2Manor;
+import com.l2jserver.gameserver.datatables.ManorData;
 
 /**
  * @author l3x
  */
 public class ExShowManorDefaultInfo extends L2GameServerPacket
 {
-	private FastList<Integer> _crops = null;
+	private List<Integer> _crops = null;
 	
 	public ExShowManorDefaultInfo()
 	{
-		_crops = L2Manor.getInstance().getAllCrops();
+		_crops = ManorData.getInstance().getAllCrops();
 	}
 	
 	@Override
@@ -40,17 +44,17 @@ public class ExShowManorDefaultInfo extends L2GameServerPacket
 		for (int cropId : _crops)
 		{
 			writeD(cropId); // crop Id
-			writeD(L2Manor.getInstance().getSeedLevelByCrop(cropId)); // level
-			writeD(L2Manor.getInstance().getSeedBasicPriceByCrop(cropId)); // seed
+			writeD(ManorData.getInstance().getSeedLevelByCrop(cropId)); // level
+			writeD(ManorData.getInstance().getSeedBasicPriceByCrop(cropId)); // seed
 			// price
-			writeD(L2Manor.getInstance().getCropBasicPrice(cropId)); // crop
+			writeD(ManorData.getInstance().getCropBasicPrice(cropId)); // crop
 			// price
 			writeC(1); // rewrad 1 Type
-			writeD(L2Manor.getInstance().getRewardItem(cropId, 1)); // Rewrad 1
+			writeD(ManorData.getInstance().getRewardItem(cropId, 1)); // Rewrad 1
 			// Type Item
 			// Id
 			writeC(1); // rewrad 2 Type
-			writeD(L2Manor.getInstance().getRewardItem(cropId, 2)); // Rewrad 2
+			writeD(ManorData.getInstance().getRewardItem(cropId, 2)); // Rewrad 2
 			// Type Item
 			// Id
 		}

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.entity;
 
@@ -53,27 +57,32 @@ public class TvTEventTeleporter implements Runnable
 	 * 2. Remove all effects<br>
 	 * 3. Revive and full heal the player<br>
 	 * 4. Teleport the player<br>
-	 * 5. Broadcast status and user info<br><br>
-	 *
-	 * @see java.lang.Runnable#run()
+	 * 5. Broadcast status and user info
 	 */
 	@Override
 	public void run()
 	{
 		if (_playerInstance == null)
+		{
 			return;
+		}
 		
-		L2Summon summon = _playerInstance.getPet();
+		L2Summon summon = _playerInstance.getSummon();
 		
 		if (summon != null)
+		{
 			summon.unSummon(_playerInstance);
+		}
 		
-		if (Config.TVT_EVENT_EFFECTS_REMOVAL == 0
-				|| (Config.TVT_EVENT_EFFECTS_REMOVAL == 1 && (_playerInstance.getTeam() == 0 || (_playerInstance.isInDuel() && _playerInstance.getDuelState() != Duel.DUELSTATE_INTERRUPTED))))
+		if ((Config.TVT_EVENT_EFFECTS_REMOVAL == 0) || ((Config.TVT_EVENT_EFFECTS_REMOVAL == 1) && ((_playerInstance.getTeam() == 0) || (_playerInstance.isInDuel() && (_playerInstance.getDuelState() != Duel.DUELSTATE_INTERRUPTED)))))
+		{
 			_playerInstance.stopAllEffectsExceptThoseThatLastThroughDeath();
+		}
 		
 		if (_playerInstance.isInDuel())
+		{
 			_playerInstance.setDuelState(Duel.DUELSTATE_INTERRUPTED);
+		}
 		
 		int TvTInstance = TvTEvent.getTvTEventInstance();
 		if (TvTInstance != 0)
@@ -94,12 +103,16 @@ public class TvTEventTeleporter implements Runnable
 		
 		_playerInstance.doRevive();
 		
-		_playerInstance.teleToLocation( _coordinates[ 0 ] + Rnd.get(101)-50, _coordinates[ 1 ] + Rnd.get(101)-50, _coordinates[ 2 ], false );
+		_playerInstance.teleToLocation((_coordinates[0] + Rnd.get(101)) - 50, (_coordinates[1] + Rnd.get(101)) - 50, _coordinates[2], false);
 		
 		if (TvTEvent.isStarted() && !_adminRemove)
+		{
 			_playerInstance.setTeam(TvTEvent.getParticipantTeamId(_playerInstance.getObjectId()) + 1);
+		}
 		else
+		{
 			_playerInstance.setTeam(0);
+		}
 		
 		_playerInstance.setCurrentCp(_playerInstance.getMaxCp());
 		_playerInstance.setCurrentHp(_playerInstance.getMaxHp());

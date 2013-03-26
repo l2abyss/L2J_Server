@@ -1,29 +1,32 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 public class PetItemList extends L2GameServerPacket
 {
-	private final L2PetInstance _activeChar;
+	private final L2ItemInstance[] _items;
 	
-	public PetItemList(L2PetInstance character)
+	public PetItemList(L2ItemInstance[] items)
 	{
-		_activeChar = character;
+		_items = items;
 	}
 	
 	@Override
@@ -31,11 +34,10 @@ public class PetItemList extends L2GameServerPacket
 	{
 		writeC(0xB3);
 		
-		L2ItemInstance[] items = _activeChar.getInventory().getItems();
-		int count = items.length;
+		int count = _items.length;
 		writeH(count);
 		
-		for (L2ItemInstance temp : items)
+		for (L2ItemInstance temp : _items)
 		{
 			writeD(temp.getObjectId());
 			writeD(temp.getDisplayId());
@@ -48,9 +50,13 @@ public class PetItemList extends L2GameServerPacket
 			writeH(temp.getEnchantLevel());
 			writeH(temp.getCustomType2());
 			if (temp.isAugmented())
+			{
 				writeD(temp.getAugmentation().getAugmentationId());
+			}
 			else
+			{
 				writeD(0x00);
+			}
 			writeD(temp.getMana());
 			writeD(temp.isTimeLimitedItem() ? (int) (temp.getRemainingTime() / 1000) : -9999);
 			writeH(temp.getAttackElementType());
@@ -60,9 +66,10 @@ public class PetItemList extends L2GameServerPacket
 				writeH(temp.getElementDefAttr(i));
 			}
 			// Enchant Effects
-			writeH(0x00);
-			writeH(0x00);
-			writeH(0x00);
+			for (int op : temp.getEnchantOptions())
+			{
+				writeH(op);
+			}
 		}
 	}
 }

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.tools.configurator;
 
@@ -71,6 +75,8 @@ import com.l2jserver.tools.images.ImagesTable;
 public class ConfigUserInterface extends JFrame implements ActionListener
 {
 	private static final long serialVersionUID = 2609592249095305857L;
+	
+	public static final String EOL = System.getProperty("line.separator");
 	
 	private final JTabbedPane _tabPane = new JTabbedPane();
 	
@@ -202,7 +208,7 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 				
 				JLabel keyLabel = new JLabel(cp.getDisplayName() + ':', ImagesTable.getImage("help.png"), SwingConstants.LEFT);
 				String comments = "<b>" + cp.getName() + ":</b><br>" + cp.getComments();
-				comments = comments.replace("\r\n", "<br>");
+				comments = comments.replace(EOL, "<br>");
 				comments = "<html>" + comments + "</html>";
 				keyLabel.setToolTipText(comments);
 				cons.weightx = 0;
@@ -259,16 +265,7 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 			while ((line = lnr.readLine()) != null)
 			{
 				line = line.trim();
-				
-				if (line.startsWith("#"))
-				{
-					if (commentBuffer.length() > 0)
-					{
-						commentBuffer.append("\r\n");
-					}
-					commentBuffer.append(line.substring(1));
-				}
-				else if (line.length() == 0)
+				if (line.isEmpty())
 				{
 					// blank line, reset comments
 					if (commentBuffer.length() > 0)
@@ -276,6 +273,14 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 						cf.addConfigComment(commentBuffer.toString());
 					}
 					commentBuffer.setLength(0);
+				}
+				else if (line.charAt(0) == '#')
+				{
+					if (commentBuffer.length() > 0)
+					{
+						commentBuffer.append(EOL);
+					}
+					commentBuffer.append(line.substring(1));
 				}
 				else if (line.indexOf('=') >= 0)
 				{
@@ -291,9 +296,9 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 					{
 						while (((line = lnr.readLine()) != null) && (line.indexOf('\\') >= 0))
 						{
-							value.append("\r\n" + line);
+							value.append(EOL + line);
 						}
-						value.append("\r\n" + line);
+						value.append(EOL + line);
 					}
 					
 					String comments = commentBuffer.toString();
@@ -459,8 +464,8 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 			{
 				StringBuilder sb = new StringBuilder();
 				sb.append('#');
-				sb.append(getComments().replace("\r\n", "\r\n#"));
-				sb.append("\r\n\r\n");
+				sb.append(getComments().replace(EOL, EOL + "#"));
+				sb.append(EOL + EOL);
 				writer.write(sb.toString());
 			}
 		}
@@ -611,13 +616,13 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 				
 				StringBuilder sb = new StringBuilder();
 				sb.append('#');
-				sb.append(getComments().replace("\r\n", "\r\n#"));
-				sb.append("\r\n");
+				sb.append(getComments().replace(EOL, EOL + "#"));
+				sb.append(EOL);
 				sb.append(getName());
 				sb.append(" = ");
 				sb.append(value);
-				sb.append("\r\n");
-				sb.append("\r\n");
+				sb.append(EOL);
+				sb.append(EOL);
 				writer.write(sb.toString());
 			}
 		}
@@ -677,7 +682,7 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 				catch (Exception e1)
 				{
 					e1.printStackTrace();
-					errors.append(getBundle().getString("errorSaving") + cf.getName() + ".properties. " + getBundle().getString("reason") + e1.getLocalizedMessage() + "\r\n");
+					errors.append(getBundle().getString("errorSaving") + cf.getName() + ".properties. " + getBundle().getString("reason") + e1.getLocalizedMessage() + EOL);
 				}
 			}
 			if (errors.length() == 0)
@@ -696,7 +701,7 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 		}
 		else if (cmd.equals("about"))
 		{
-			JOptionPane.showMessageDialog(ConfigUserInterface.this, getBundle().getString("credits") + "\nhttp://www.l2jserver.com\n\n" + getBundle().getString("icons") + "\n\n" + getBundle().getString("langText") + '\n' + getBundle().getString("translation"), getBundle().getString("aboutItem"), JOptionPane.INFORMATION_MESSAGE, ImagesTable.getImage("l2jserverlogo.png"));
+			JOptionPane.showMessageDialog(ConfigUserInterface.this, getBundle().getString("credits") + EOL + "http://www.l2jserver.com" + EOL + EOL + getBundle().getString("icons") + EOL + EOL + getBundle().getString("langText") + EOL + getBundle().getString("translation"), getBundle().getString("aboutItem"), JOptionPane.INFORMATION_MESSAGE, ImagesTable.getImage("l2jserverlogo.png"));
 		}
 	}
 	

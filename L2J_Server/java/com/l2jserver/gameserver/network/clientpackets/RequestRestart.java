@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
@@ -36,7 +40,6 @@ import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.11.2.1.2.4 $ $Date: 2005/03/27 15:29:30 $
  */
 public final class RequestRestart extends L2GameClientPacket
@@ -57,9 +60,11 @@ public final class RequestRestart extends L2GameClientPacket
 		final L2PcInstance player = getClient().getActiveChar();
 		
 		if (player == null)
+		{
 			return;
+		}
 		
-		if(player.getActiveEnchantItem() != null || player.getActiveEnchantAttrItem() != null)
+		if ((player.getActiveEnchantItem() != null) || (player.getActiveEnchantAttrItem() != null))
 		{
 			sendPacket(RestartResponse.valueOf(false));
 			return;
@@ -72,17 +77,19 @@ public final class RequestRestart extends L2GameClientPacket
 			return;
 		}
 		
-		if (player.getPrivateStoreType() != 0)
+		if (player.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
 		{
 			player.sendMessage("Cannot restart while trading");
 			sendPacket(RestartResponse.valueOf(false));
 			return;
 		}
 		
-		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player) && !(player.isGM() && Config.GM_RESTART_FIGHTING))
+		if (AttackStanceTaskManager.getInstance().hasAttackStanceTask(player) && !(player.isGM() && Config.GM_RESTART_FIGHTING))
 		{
 			if (Config.DEBUG)
+			{
 				_log.fine("Player " + player.getName() + " tried to logout while fighting.");
+			}
 			
 			player.sendPacket(SystemMessageId.CANT_RESTART_WHILE_FIGHTING);
 			sendPacket(RestartResponse.valueOf(false));
@@ -104,21 +111,26 @@ public final class RequestRestart extends L2GameClientPacket
 			final L2Party playerParty = player.getParty();
 			
 			if (playerParty != null)
+			{
 				player.getParty().broadcastString(player.getName() + " has been removed from the upcoming festival.");
+			}
 		}
-
+		
 		for (PlayerDespawnListener listener : despawnListeners)
 		{
 			listener.onDespawn(player);
 		}
-
+		
 		// Remove player from Boss Zone
 		player.removeFromBossZone();
 		
 		final L2GameClient client = getClient();
 		
 		LogRecord record = new LogRecord(Level.INFO, "Logged out");
-		record.setParameters(new Object[]{client});
+		record.setParameters(new Object[]
+		{
+			client
+		});
 		_logAccounting.log(record);
 		
 		// detach the client from the char so that the connection isnt closed in the deleteMe

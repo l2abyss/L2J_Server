@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.itemcontainer;
 
@@ -135,7 +139,7 @@ public final class ClanWarehouse extends Warehouse
 	 */
 	private boolean fireClanWarehouseAddItemListeners(String process, L2ItemInstance item, L2PcInstance actor, long count)
 	{
-		if (!clanWarehouseListeners.isEmpty() && actor != null && item != null)
+		if (!clanWarehouseListeners.isEmpty() && (actor != null) && (item != null))
 		{
 			ClanWarehouseAddItemEvent event = new ClanWarehouseAddItemEvent();
 			event.setActor(actor);
@@ -164,7 +168,7 @@ public final class ClanWarehouse extends Warehouse
 	 */
 	private boolean fireClanWarehouseDeleteItemListeners(String process, L2ItemInstance item, L2PcInstance actor, long count)
 	{
-		if (!clanWarehouseListeners.isEmpty() && actor != null && item != null)
+		if (!clanWarehouseListeners.isEmpty() && (actor != null) && (item != null))
 		{
 			ClanWarehouseDeleteItemEvent event = new ClanWarehouseDeleteItemEvent();
 			event.setActor(actor);
@@ -194,7 +198,7 @@ public final class ClanWarehouse extends Warehouse
 	 */
 	private boolean fireClanWarehouseTransferListeners(String process, L2ItemInstance item, long count, ItemContainer target, L2PcInstance actor)
 	{
-		if (!clanWarehouseListeners.isEmpty() && actor != null && item != null && target != null)
+		if (!clanWarehouseListeners.isEmpty() && (actor != null) && (item != null) && (target != null))
 		{
 			ClanWarehouseTransferEvent event = new ClanWarehouseTransferEvent();
 			event.setActor(actor);

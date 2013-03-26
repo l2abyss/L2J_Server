@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.instancemanager;
 
@@ -18,11 +22,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Map;
 import java.util.logging.Logger;
 
-import javolution.util.FastMap;
-
 import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.util.L2FastMap;
 
 /**
  * @author Gigiikun
@@ -34,11 +38,10 @@ public class GlobalVariablesManager
 	private static final String LOAD_VAR = "SELECT var,value FROM global_variables";
 	private static final String SAVE_VAR = "INSERT INTO global_variables (var,value) VALUES (?,?) ON DUPLICATE KEY UPDATE value=?";
 	
-	private final FastMap<String, String> _variablesMap = new FastMap<>();
+	private final Map<String, String> _variablesMap = new L2FastMap<>(true);
 	
 	protected GlobalVariablesManager()
 	{
-		_variablesMap.shared();
 		loadVars();
 	}
 	
@@ -59,7 +62,7 @@ public class GlobalVariablesManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("GlobalVariablesManager: problem while loading variables: " + e);
+			_log.warning(getClass().getSimpleName() + ": problem while loading variables: " + e);
 		}
 	}
 	
@@ -69,7 +72,7 @@ public class GlobalVariablesManager
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(SAVE_VAR))
 		{
-			for(String var : _variablesMap.keySet())
+			for (String var : _variablesMap.keySet())
 			{
 				statement.setString(1, var);
 				statement.setString(2, _variablesMap.get(var));
@@ -80,7 +83,7 @@ public class GlobalVariablesManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("GlobalVariablesManager: problem while saving variables: " + e);
+			_log.warning(getClass().getSimpleName() + ": problem while saving variables: " + e);
 		}
 	}
 	

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
@@ -23,11 +27,12 @@ import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2SquadTrainer;
-import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.AcquireSkillType;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -42,7 +47,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 	protected static final int COND_ALL_FALSE = 0;
 	protected static final int COND_BUSY_BECAUSE_OF_SIEGE = 1;
 	protected static final int COND_OWNER = 2;
-
+	
 	/**
 	 * @param objectId
 	 * @param template
@@ -303,7 +308,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 					case 39: // White Talisman - Water
 						item = 10420;
 						break;
-					case 40: // White Talisman -  Earth
+					case 40: // White Talisman - Earth
 						item = 10519;
 						break;
 					case 41: // White Talisman - Light
@@ -393,7 +398,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 	
 	protected int validateCondition(L2PcInstance player)
 	{
-		if (player.isGM())
+		if (player.canOverrideCond(PcCondOverride.CASTLE_CONDITIONS))
 		{
 			return COND_OWNER;
 		}
@@ -418,49 +423,49 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 	{
 		if (clanLeader.isAlikeDead())
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}
 		
 		if (clanLeader.isInStoreMode())
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}
 		
 		if (clanLeader.isRooted() || clanLeader.isInCombat())
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}
 		
 		if (clanLeader.isInOlympiadMode())
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}
 		
 		if (clanLeader.isFestivalParticipant())
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}
 		
 		if (clanLeader.inObserverMode())
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}
 		
-		if (clanLeader.isInsideZone(L2Character.ZONE_NOSUMMONFRIEND))
+		if (clanLeader.isInsideZone(ZoneId.NO_SUMMON_FRIEND))
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}
@@ -469,7 +474,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 		{
 			if (!Config.ALLOW_SUMMON_TO_INSTANCE || InstanceManager.getInstance().getInstance(player.getInstanceId()).isSummonAllowed())
 			{
-				//TODO: Need retail message if there's one.
+				// TODO: Need retail message if there's one.
 				player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 				return false;
 			}
@@ -482,7 +487,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 			{
 				if (targetCabal != SevenSigns.getInstance().getCabalHighestScore())
 				{
-					//TODO: Need retail message if there's one.
+					// TODO: Need retail message if there's one.
 					player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 					return false;
 				}
@@ -491,7 +496,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 			{
 				if (targetCabal == SevenSigns.CABAL_NULL)
 				{
-					//TODO: Need retail message if there's one.
+					// TODO: Need retail message if there's one.
 					player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 					return false;
 				}
@@ -506,7 +511,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 		
 		if (!TvTEvent.onEscapeUse(clanLeader.getObjectId()))
 		{
-			//TODO: Need retail message if there's one.
+			// TODO: Need retail message if there's one.
 			player.sendMessage("Couldn't teleport to clan leader. The requirements was not meet.");
 			return false;
 		}

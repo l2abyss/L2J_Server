@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
@@ -26,6 +30,7 @@ import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.Quest.TrapAction;
 import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
@@ -40,11 +45,10 @@ public class L2TrapInstance extends L2Trap
 	 * @param objectId
 	 * @param template
 	 * @param owner
-	 * @param lifeTime 
-	 * @param skill 
+	 * @param lifeTime
+	 * @param skill
 	 */
-	public L2TrapInstance(int objectId, L2NpcTemplate template,
-			L2PcInstance owner, int lifeTime, L2Skill skill)
+	public L2TrapInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, int lifeTime, L2Skill skill)
 	{
 		super(objectId, template, lifeTime, skill);
 		setInstanceType(InstanceType.L2TrapInstance);
@@ -55,8 +59,7 @@ public class L2TrapInstance extends L2Trap
 		_level = owner.getLevel();
 	}
 	
-	public L2TrapInstance(int objectId, L2NpcTemplate template,
-			int instanceId, int lifeTime, L2Skill skill)
+	public L2TrapInstance(int objectId, L2NpcTemplate template, int instanceId, int lifeTime, L2Skill skill)
 	{
 		super(objectId, template, lifeTime, skill);
 		setInstanceType(InstanceType.L2TrapInstance);
@@ -65,9 +68,13 @@ public class L2TrapInstance extends L2Trap
 		
 		_owner = null;
 		if (skill != null)
+		{
 			_level = skill.getLevel();
+		}
 		else
+		{
 			_level = 1;
+		}
 	}
 	
 	@Override
@@ -92,7 +99,7 @@ public class L2TrapInstance extends L2Trap
 	public void onSpawn()
 	{
 		super.onSpawn();
-		_isInArena = isInsideZone(ZONE_PVP) && !isInsideZone(ZONE_SIEGE);
+		_isInArena = isInsideZone(ZoneId.PVP) && !isInsideZone(ZoneId.SIEGE);
 		_playersWhoDetectedMe.clear();
 	}
 	
@@ -133,13 +140,12 @@ public class L2TrapInstance extends L2Trap
 	@Override
 	public void sendDamageMessage(L2Character target, int damage, boolean mcrit, boolean pcrit, boolean miss)
 	{
-		if (miss || _owner == null)
+		if (miss || (_owner == null))
+		{
 			return;
+		}
 		
-		if (_owner.isInOlympiadMode() &&
-				target instanceof L2PcInstance &&
-				((L2PcInstance)target).isInOlympiadMode() &&
-				((L2PcInstance)target).getOlympiadGameId() == _owner.getOlympiadGameId())
+		if (_owner.isInOlympiadMode() && (target instanceof L2PcInstance) && ((L2PcInstance) target).isInOlympiadMode() && (((L2PcInstance) target).getOlympiadGameId() == _owner.getOlympiadGameId()))
 		{
 			OlympiadGameManager.getInstance().notifyCompetitorDamage(getOwner(), damage);
 		}
@@ -147,7 +153,9 @@ public class L2TrapInstance extends L2Trap
 		final SystemMessage sm;
 		
 		if (target.isInvul() && !(target instanceof L2NpcInstance))
+		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.ATTACK_WAS_BLOCKED);
+		}
 		else
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_GAVE_C2_DAMAGE_OF_S3);
@@ -162,34 +170,44 @@ public class L2TrapInstance extends L2Trap
 	@Override
 	public boolean canSee(L2Character cha)
 	{
-		if (cha != null && _playersWhoDetectedMe.contains(cha.getObjectId()))
+		if ((cha != null) && _playersWhoDetectedMe.contains(cha.getObjectId()))
+		{
 			return true;
+		}
 		
-		if (_owner == null || cha == null)
+		if ((_owner == null) || (cha == null))
+		{
 			return false;
+		}
 		if (cha == _owner)
+		{
 			return true;
-
+		}
+		
 		if (cha instanceof L2PcInstance)
 		{
 			// observers can't see trap
-			if (((L2PcInstance)cha).inObserverMode())
+			if (((L2PcInstance) cha).inObserverMode())
+			{
 				return false;
-
+			}
+			
 			// olympiad competitors can't see trap
-			if (_owner.isInOlympiadMode()
-					&& ((L2PcInstance)cha).isInOlympiadMode()
-					&& ((L2PcInstance)cha).getOlympiadSide() != _owner.getOlympiadSide())
+			if (_owner.isInOlympiadMode() && ((L2PcInstance) cha).isInOlympiadMode() && (((L2PcInstance) cha).getOlympiadSide() != _owner.getOlympiadSide()))
+			{
 				return false;
+			}
 		}
-
-		if (_isInArena)
-			return true;
 		
-		if (_owner.isInParty()
-				&& cha.isInParty()
-				&& _owner.getParty().getLeaderObjectId() == cha.getParty().getLeaderObjectId())
+		if (_isInArena)
+		{
 			return true;
+		}
+		
+		if (_owner.isInParty() && cha.isInParty() && (_owner.getParty().getLeaderObjectId() == cha.getParty().getLeaderObjectId()))
+		{
+			return true;
+		}
 		
 		return false;
 	}
@@ -202,13 +220,19 @@ public class L2TrapInstance extends L2Trap
 			super.setDetected(detector);
 			return;
 		}
-		if (_owner != null && _owner.getPvpFlag() == 0 && _owner.getKarma() == 0)
+		if ((_owner != null) && (_owner.getPvpFlag() == 0) && (_owner.getKarma() == 0))
+		{
 			return;
+		}
 		
 		_playersWhoDetectedMe.add(detector.getObjectId());
 		if (getTemplate().getEventQuests(Quest.QuestEventType.ON_TRAP_ACTION) != null)
+		{
 			for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_TRAP_ACTION))
+			{
 				quest.notifyTrapAction(this, detector, TrapAction.TRAP_DETECTED);
+			}
+		}
 		super.setDetected(detector);
 	}
 	
@@ -216,33 +240,43 @@ public class L2TrapInstance extends L2Trap
 	protected boolean checkTarget(L2Character target)
 	{
 		if (!L2Skill.checkForAreaOffensiveSkills(this, target, getSkill(), _isInArena))
+		{
 			return false;
-
+		}
+		
 		// observers
-		if (target instanceof L2PcInstance && ((L2PcInstance)target).inObserverMode())
+		if ((target instanceof L2PcInstance) && ((L2PcInstance) target).inObserverMode())
+		{
 			return false;
-
+		}
+		
 		// olympiad own team and their summons not attacked
-		if (_owner != null && _owner.isInOlympiadMode())
+		if ((_owner != null) && _owner.isInOlympiadMode())
 		{
 			final L2PcInstance player = target.getActingPlayer();
-			if (player != null
-					&& player.isInOlympiadMode()
-					&& player.getOlympiadSide() == _owner.getOlympiadSide())
+			if ((player != null) && player.isInOlympiadMode() && (player.getOlympiadSide() == _owner.getOlympiadSide()))
+			{
 				return false;
+			}
 		}
-
+		
 		if (_isInArena)
+		{
 			return true;
+		}
 		
 		// trap owned by players not attack non-flagged players
 		if (_owner != null)
-		{	
+		{
 			final L2PcInstance player = target.getActingPlayer();
 			if (target instanceof L2Attackable)
+			{
 				return true;
-			else if (player == null || (player.getPvpFlag() == 0 && player.getKarma() == 0))
+			}
+			else if ((player == null) || ((player.getPvpFlag() == 0) && (player.getKarma() == 0)))
+			{
 				return false;
+			}
 		}
 		
 		return true;

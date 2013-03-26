@@ -1,24 +1,28 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.datatables;
-
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,19 +32,13 @@ import com.l2jserver.gameserver.model.L2TeleportLocation;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.3.2.2.2.3 $ $Date: 2005/03/27 15:29:18 $
  */
 public class TeleportLocationTable
 {
 	private static Logger _log = Logger.getLogger(TeleportLocationTable.class.getName());
 	
-	private TIntObjectHashMap<L2TeleportLocation> _teleports;
-	
-	public static TeleportLocationTable getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	private final Map<Integer, L2TeleportLocation> _teleports = new HashMap<>();
 	
 	protected TeleportLocationTable()
 	{
@@ -49,7 +47,7 @@ public class TeleportLocationTable
 	
 	public void reloadAll()
 	{
-		_teleports = new TIntObjectHashMap<>();
+		_teleports.clear();
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			Statement s = con.createStatement();
 			ResultSet rs = s.executeQuery("SELECT id, loc_x, loc_y, loc_z, price, fornoble, itemId FROM teleport"))
@@ -69,11 +67,11 @@ public class TeleportLocationTable
 				
 				_teleports.put(teleport.getTeleId(), teleport);
 			}
-			_log.info("TeleportLocationTable: Loaded " + _teleports.size() + " Teleport Location Templates.");
+			_log.info(getClass().getSimpleName() + ": Loaded " + _teleports.size() + " Teleport Location Templates.");
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error loading Teleport Table.", e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error loading Teleport Table.", e);
 		}
 		
 		if (Config.CUSTOM_TELEPORT_TABLE)
@@ -100,12 +98,12 @@ public class TeleportLocationTable
 				_cTeleCount = _teleports.size() - _cTeleCount;
 				if (_cTeleCount > 0)
 				{
-					_log.info("TeleportLocationTable: Loaded " + _cTeleCount + " Custom Teleport Location Templates.");
+					_log.info(getClass().getSimpleName() + ": Loaded " + _cTeleCount + " Custom Teleport Location Templates.");
 				}
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.WARNING, "Error while creating custom teleport table " + e.getMessage(), e);
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while creating custom teleport table " + e.getMessage(), e);
 			}
 		}
 	}
@@ -117,6 +115,11 @@ public class TeleportLocationTable
 	public L2TeleportLocation getTemplate(int id)
 	{
 		return _teleports.get(id);
+	}
+	
+	public static TeleportLocationTable getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

@@ -1,22 +1,27 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Decoy;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -51,16 +56,20 @@ public class CharInfo extends L2GameServerPacket
 		_activeChar = cha;
 		_objId = cha.getObjectId();
 		_inv = cha.getInventory();
-		if (_activeChar.getVehicle() != null && _activeChar.getInVehiclePosition() != null)
+		if ((_activeChar.getVehicle() != null) && (_activeChar.getInVehiclePosition() != null))
 		{
 			_x = _activeChar.getInVehiclePosition().getX();
 			_y = _activeChar.getInVehiclePosition().getY();
 			_z = _activeChar.getInVehiclePosition().getZ();
 			_vehicleId = _activeChar.getVehicle().getObjectId();
 			if (_activeChar.isInAirShip() && _activeChar.getAirShip().isCaptain(_activeChar))
+			{
 				_airShipHelm = _activeChar.getAirShip().getHelmItemId();
+			}
 			else
+			{
 				_airShipHelm = 0;
+			}
 		}
 		else
 		{
@@ -100,8 +109,10 @@ public class CharInfo extends L2GameServerPacket
 		if (_invisible)
 		{
 			L2PcInstance tmp = getClient().getActiveChar();
-			if (tmp != null && tmp.isGM())
+			if ((tmp != null) && tmp.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
+			{
 				gmSeeInvis = true;
+			}
 		}
 		
 		if (_activeChar.getPoly().isMorphed())
@@ -170,8 +181,8 @@ public class CharInfo extends L2GameServerPacket
 				writeD(0x00);
 				
 				writeD(0x00); // CT1.5 Pet form and skills, Color effect
-				writeC(template.getAIDataStatic().showName() ? 0x01 : 0x00); // show name
 				writeC(template.getAIDataStatic().isTargetable() ? 0x01 : 0x00); // targetable
+				writeC(template.getAIDataStatic().showName() ? 0x01 : 0x00); // show name
 				writeC(_activeChar.getSpecialEffect());
 				writeD(0x00);
 			}
@@ -224,7 +235,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_UNDER));
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_HEAD));
 			
-			writeD(_airShipHelm == 0 ? _inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_RHAND) : 0);
+			writeD(_airShipHelm == 0 ? _inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_RHAND) : _airShipHelm);
 			writeD(_airShipHelm == 0 ? _inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_LHAND) : 0);
 			
 			writeD(_inv.getPaperdollAugmentationId(Inventory.PAPERDOLL_GLOVES));
@@ -320,7 +331,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_activeChar.getMountNpcId() + 1000000);
 			writeD(_activeChar.getClassId().getId());
 			writeD(0x00); // ?
-			writeC(_activeChar.isMounted() || _airShipHelm != 0 ? 0 : _activeChar.getEnchantEffect());
+			writeC(_activeChar.isMounted() || (_airShipHelm != 0) ? 0 : _activeChar.getEnchantEffect());
 			
 			writeC(_activeChar.getTeam()); // team circle around feet 1= Blue, 2 = red
 			

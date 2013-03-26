@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.datatables;
 
@@ -46,7 +50,7 @@ public final class PetDataTable extends DocumentParser
 	public void load()
 	{
 		_pets.clear();
-		parseDatapackFile("data/stats/npc/PetData.xml");
+		parseDirectory("data/stats/pets/");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _pets.size() + " Pets.");
 	}
 	
@@ -60,8 +64,9 @@ public final class PetDataTable extends DocumentParser
 			if (d.getNodeName().equals("pet"))
 			{
 				int npcId = parseInt(d.getAttributes(), "id");
+				int itemId = parseInt(d.getAttributes(), "itemId");
 				// index ignored for now
-				L2PetData data = new L2PetData();
+				L2PetData data = new L2PetData(npcId, itemId);
 				for (Node p = d.getFirstChild(); p != null; p = p.getNextSibling())
 				{
 					if (p.getNodeName().equals("set"))
@@ -83,7 +88,11 @@ public final class PetDataTable extends DocumentParser
 						{
 							data.setHungryLimit(parseInt(attrs, "val"));
 						}
-						// sync_level and evolve ignored
+						else if ("sync_level".equals(type))
+						{
+							data.setSyncLevel(parseInt(attrs, "val") == 1);
+						}
+						// evolve ignored
 					}
 					else if (p.getNodeName().equals("skills"))
 					{
@@ -123,6 +132,22 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
+	 * @param itemId
+	 * @return
+	 */
+	public L2PetData getPetDataByItemId(int itemId)
+	{
+		for (L2PetData data : _pets.values())
+		{
+			if (data.getItemId() == itemId)
+			{
+				return data;
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Gets the pet level data.
 	 * @param petId the pet Id.
 	 * @param petLevel the pet level.
@@ -147,7 +172,7 @@ public final class PetDataTable extends DocumentParser
 	{
 		if (!_pets.containsKey(petId))
 		{
-			_log.info("Missing pet data for npcid: " + petId);
+			_log.info(getClass().getSimpleName() + ": Missing pet data for npcid: " + petId);
 		}
 		return _pets.get(petId);
 	}

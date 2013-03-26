@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.items;
 
@@ -19,7 +23,12 @@ import com.l2jserver.gameserver.model.items.type.L2ItemType;
 
 /**
  * This class contains L2ItemInstance<BR>
- * Use to sort L2ItemInstance of : <LI>L2Armor</LI> <LI>L2EtcItem</LI> <LI>L2Weapon</LI>
+ * Use to sort L2ItemInstance of :
+ * <ul>
+ * <li>L2Armor</li>
+ * <li>L2EtcItem</li>
+ * <li>L2Weapon</li>
+ * </ul>
  * @version $Revision: 1.7.2.2.2.5 $ $Date: 2005/04/06 18:25:18 $
  */
 public class L2WarehouseItem
@@ -39,10 +48,19 @@ public class L2WarehouseItem
 	
 	private int _elemAtkType = -2;
 	private int _elemAtkPower = 0;
+	
 	private final int[] _elemDefAttr =
 	{
-		0, 0, 0, 0, 0, 0
+		0,
+		0,
+		0,
+		0,
+		0,
+		0
 	};
+	
+	private final int[] _enchantOptions;
+	
 	private final int _time;
 	
 	public L2WarehouseItem(L2ItemInstance item)
@@ -74,6 +92,7 @@ public class L2WarehouseItem
 		{
 			_elemDefAttr[i] = item.getElementDefAttr(i);
 		}
+		_enchantOptions = item.getEnchantOptions();
 	}
 	
 	/**
@@ -222,9 +241,7 @@ public class L2WarehouseItem
 	
 	/**
 	 * @return the name of the item
-	 * @deprecated beware to use getItemName() instead because getName() is final in L2Object and could not be overridden! Allover L2Object.getName() may return null!
 	 */
-	@Deprecated
 	public String getName()
 	{
 		return _item.getName();
@@ -258,6 +275,11 @@ public class L2WarehouseItem
 	public int getElementDefAttr(byte i)
 	{
 		return _elemDefAttr[i];
+	}
+	
+	public int[] getEnchantOptions()
+	{
+		return _enchantOptions;
 	}
 	
 	public int getTime()

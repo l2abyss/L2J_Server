@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
@@ -58,12 +62,16 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (_skillId <= 0 || _skillLvl <= 0) // minimal sanity check
+		if ((_skillId <= 0) || (_skillLvl <= 0))
+		{
 			return;
-
+		}
+		
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
+		{
 			return;
+		}
 		
 		if (player.getClassId().level() < 3) // requires to have 3rd class quest completed
 		{
@@ -106,7 +114,7 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 		
 		int currentEnchantLevel = beforeEnchantSkillLevel % 100;
 		// is the requested level valid?
-		if (currentEnchantLevel != _skillLvl % 100)
+		if (currentEnchantLevel != (_skillLvl % 100))
 		{
 			return;
 		}
@@ -151,7 +159,7 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 			
 			int levelPenalty = Rnd.get(Math.min(4, currentEnchantLevel));
 			_skillLvl -= levelPenalty;
-			if (_skillLvl % 100 == 0)
+			if ((_skillLvl % 100) == 0)
 			{
 				_skillLvl = s.getBaseLevel();
 			}
@@ -164,9 +172,11 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 				{
 					LogRecord record = new LogRecord(Level.INFO, "Route Change");
 					record.setParameters(new Object[]
-					                                {
-							player, skill, spb
-					                                });
+					{
+						player,
+						skill,
+						spb
+					});
 					record.setLoggerName("skill");
 					_logEnchant.log(record);
 				}

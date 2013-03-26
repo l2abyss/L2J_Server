@@ -1,22 +1,23 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.olympiad;
 
-import gnu.trove.map.hash.TIntIntHashMap;
-
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -47,6 +48,8 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.L2FastList;
 
+import gnu.trove.map.hash.TIntIntHashMap;
+
 /**
  * @author godson
  */
@@ -59,7 +62,6 @@ public class Olympiad
 	protected static L2FastList<StatsSet> _heroesToBe;
 	private static final TIntIntHashMap _noblesRank = new TIntIntHashMap();
 	
-	private static final String OLYMPIAD_DATA_FILE = "config/olympiad.properties";
 	public static final String OLYMPIAD_HTML_PATH = "data/html/olympiad/";
 	private static final String OLYMPIAD_LOAD_DATA = "SELECT current_cycle, period, olympiad_end, validation_end, " + "next_weekly_change FROM olympiad_data WHERE id = 0";
 	private static final String OLYMPIAD_SAVE_DATA = "INSERT INTO olympiad_data (id, current_cycle, " + "period, olympiad_end, validation_end, next_weekly_change) VALUES (0,?,?,?,?,?) " + "ON DUPLICATE KEY UPDATE current_cycle=?, period=?, olympiad_end=?, " + "validation_end=?, next_weekly_change=?";
@@ -160,11 +162,6 @@ public class Olympiad
 	protected ScheduledFuture<?> _gameManager = null;
 	protected ScheduledFuture<?> _gameAnnouncer = null;
 	
-	public static Olympiad getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	protected Olympiad()
 	{
 		load();
@@ -204,7 +201,7 @@ public class Olympiad
 			_log.log(Level.INFO, "Olympiad System: failed to load data from database, trying to load from file.");
 			
 			Properties OlympiadProperties = new Properties();
-			try (InputStream is = new FileInputStream(new File("./" + OLYMPIAD_DATA_FILE)))
+			try (InputStream is = new FileInputStream(Config.OLYMPIAD_CONFIG_FILE))
 			{
 				
 				OlympiadProperties.load(is);
@@ -894,9 +891,9 @@ public class Olympiad
 		
 		_heroesToBe = new L2FastList<>();
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(OLYMPIAD_GET_HEROS))
 		{
-			PreparedStatement statement = con.prepareStatement(OLYMPIAD_GET_HEROS);
 			ResultSet rset;
 			StatsSet hero;
 			L2FastList<StatsSet> soulHounds = new L2FastList<>();
@@ -933,7 +930,6 @@ public class Olympiad
 				}
 				rset.close();
 			}
-			statement.close();
 			
 			switch (soulHounds.size())
 			{
@@ -1158,7 +1154,6 @@ public class Olympiad
 	 * Gets how many matches a noble character did in the week
 	 * @param objId id of a noble character
 	 * @return number of weekly competitions done
-	 * @see #getRemainingWeeklyMatches(int)
 	 */
 	public int getCompetitionDoneWeek(int objId)
 	{
@@ -1173,7 +1168,6 @@ public class Olympiad
 	 * Gets how many classed matches a noble character did in the week
 	 * @param objId id of a noble character
 	 * @return number of weekly <i>classed</i> competitions done
-	 * @see #getRemainingWeeklyMatchesClassed(int)
 	 */
 	public int getCompetitionDoneWeekClassed(int objId)
 	{
@@ -1188,7 +1182,6 @@ public class Olympiad
 	 * Gets how many non classed matches a noble character did in the week
 	 * @param objId id of a noble character
 	 * @return number of weekly <i>non classed</i> competitions done
-	 * @see #getRemainingWeeklyMatchesNonClassed(int)
 	 */
 	public int getCompetitionDoneWeekNonClassed(int objId)
 	{
@@ -1203,7 +1196,6 @@ public class Olympiad
 	 * Gets how many team matches a noble character did in the week
 	 * @param objId id of a noble character
 	 * @return number of weekly <i>team</i> competitions done
-	 * @see #getRemainingWeeklyMatchesTeam(int)
 	 */
 	public int getCompetitionDoneWeekTeam(int objId)
 	{
@@ -1218,8 +1210,6 @@ public class Olympiad
 	 * Number of remaining matches a noble character can join in the week
 	 * @param objId id of a noble character
 	 * @return difference between maximum allowed weekly matches and currently done weekly matches.
-	 * @see #getCompetitionDoneWeek(int)
-	 * @see Config#ALT_OLY_MAX_WEEKLY_MATCHES
 	 */
 	public int getRemainingWeeklyMatches(int objId)
 	{
@@ -1230,8 +1220,6 @@ public class Olympiad
 	 * Number of remaining <i>classed</i> matches a noble character can join in the week
 	 * @param objId id of a noble character
 	 * @return difference between maximum allowed weekly classed matches and currently done weekly classed matches.
-	 * @see #getCompetitionDoneWeekClassed(int)
-	 * @see Config#ALT_OLY_MAX_WEEKLY_MATCHES_CLASSED
 	 */
 	public int getRemainingWeeklyMatchesClassed(int objId)
 	{
@@ -1242,8 +1230,6 @@ public class Olympiad
 	 * Number of remaining <i>non classed</i> matches a noble character can join in the week
 	 * @param objId id of a noble character
 	 * @return difference between maximum allowed weekly non classed matches and currently done weekly non classed matches.
-	 * @see #getCompetitionDoneWeekNonClassed(int)
-	 * @see Config#ALT_OLY_MAX_WEEKLY_MATCHES_NON_CLASSED
 	 */
 	public int getRemainingWeeklyMatchesNonClassed(int objId)
 	{
@@ -1254,8 +1240,6 @@ public class Olympiad
 	 * Number of remaining <i>team</i> matches a noble character can join in the week
 	 * @param objId id of a noble character
 	 * @return difference between maximum allowed weekly team matches and currently done weekly team matches.
-	 * @see #getCompetitionDoneWeekTeam(int)
-	 * @see Config#ALT_OLY_MAX_WEEKLY_MATCHES_TEAM
 	 */
 	public int getRemainingWeeklyMatchesTeam(int objId)
 	{
@@ -1284,6 +1268,11 @@ public class Olympiad
 	protected static StatsSet addNobleStats(int charId, StatsSet data)
 	{
 		return _nobles.put(Integer.valueOf(charId), data);
+	}
+	
+	public static Olympiad getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

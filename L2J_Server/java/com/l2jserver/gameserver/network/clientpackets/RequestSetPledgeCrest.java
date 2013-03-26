@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
@@ -37,7 +41,9 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 	{
 		_length = readD();
 		if (_length > 256)
+		{
 			return;
+		}
 		
 		_data = new byte[_length];
 		readB(_data);
@@ -48,11 +54,15 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		L2Clan clan = activeChar.getClan();
 		if (clan == null)
+		{
 			return;
+		}
 		
 		if (clan.getDissolvingExpiryTime() > System.currentTimeMillis())
 		{
@@ -74,10 +84,12 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 		int crestId = -1;
 		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_REGISTER_CREST) == L2Clan.CP_CL_REGISTER_CREST)
 		{
-			if (_length == 0 || _data.length == 0)
+			if ((_length == 0) || (_data.length == 0))
 			{
 				if (clan.getCrestId() == 0)
+				{
 					return;
+				}
 				
 				crestId = 0;
 				activeChar.sendPacket(SystemMessageId.CLAN_CREST_HAS_BEEN_DELETED);
@@ -100,7 +112,7 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 				updated = true;
 			}
 		}
-		if (updated && crestId != -1)
+		if (updated && (crestId != -1))
 		{
 			clan.changeClanCrest(crestId);
 		}

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.loginserver.network;
 
@@ -44,7 +48,7 @@ import com.l2jserver.util.crypt.ScrambledKeyPair;
  */
 public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 {
-	private static Logger _log = Logger.getLogger(L2LoginClient.class.getName());
+	private static final Logger _log = Logger.getLogger(L2LoginClient.class.getName());
 	
 	public static enum LoginClientState
 	{
@@ -86,9 +90,6 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 		_loginCrypt.setKey(_blowfishKey);
 	}
 	
-	/**
-	 * @see org.mmocore.network.MMOClient#decrypt(java.nio.ByteBuffer, int)
-	 */
 	@Override
 	public boolean decrypt(ByteBuffer buf, int size)
 	{
@@ -112,9 +113,6 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 		}
 	}
 	
-	/**
-	 * @see org.mmocore.network.MMOClient#encrypt(java.nio.ByteBuffer, int)
-	 */
 	@Override
 	public boolean encrypt(ByteBuffer buf, int size)
 	{
@@ -128,7 +126,6 @@ public final class L2LoginClient extends MMOClient<MMOConnection<L2LoginClient>>
 			_log.warning(getClass().getSimpleName() + ": " + e.getMessage());
 			return false;
 		}
-		
 		buf.position(offset + size);
 		return true;
 	}

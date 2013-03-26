@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.entity;
 
@@ -38,7 +42,6 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
-
 public class Auction
 {
 	protected static final Logger _log = Logger.getLogger(Auction.class.getName());
@@ -50,7 +53,7 @@ public class Auction
 	private int _itemId = 0;
 	private String _itemName = "";
 	private int _itemObjectId = 0;
-	private long _itemQuantity = 0;
+	private final long _itemQuantity = 0;
 	private String _itemType = "";
 	private int _sellerId = 0;
 	private String _sellerClanName = "";
@@ -58,7 +61,7 @@ public class Auction
 	private long _currentBid = 0;
 	private long _startingBid = 0;
 	
-	private Map<Integer, Bidder> _bidders = new FastMap<>();
+	private final Map<Integer, Bidder> _bidders = new FastMap<>();
 	
 	private static final String[] ItemTypeName =
 	{
@@ -72,10 +75,10 @@ public class Auction
 	
 	public static class Bidder
 	{
-		private String _name;  //TODO replace with objid
-		private String _clanName;
+		private final String _name; // TODO replace with objid
+		private final String _clanName;
 		private long _bid;
-		private Calendar _timeBid;
+		private final Calendar _timeBid;
 		
 		public Bidder(String name, String clanName, long bid, long timeBid)
 		{
@@ -139,7 +142,7 @@ public class Auction
 	}
 	
 	/**
-	 * Constructor 
+	 * Constructor
 	 * @param auctionId
 	 */
 	public Auction(int auctionId)
@@ -231,11 +234,13 @@ public class Auction
 		long taskDelay = 0;
 		if (_endDate <= currentTime)
 		{
-			_endDate = currentTime + 7 * 24 * 60 * 60 * 1000;
+			_endDate = currentTime + (7 * 24 * 3600000);
 			saveAuctionDate();
 		}
 		else
+		{
 			taskDelay = _endDate - currentTime;
+		}
 		ThreadPoolManager.getInstance().scheduleGeneral(new AutoEndTask(), taskDelay);
 	}
 	
@@ -261,16 +266,18 @@ public class Auction
 	}
 	
 	/**
-	 * Set a bid 
-	 * @param bidder 
+	 * Set a bid
+	 * @param bidder
 	 * @param bid
 	 */
 	public synchronized void setBid(L2PcInstance bidder, long bid)
 	{
 		long requiredAdena = bid;
 		if (getHighestBidderName().equals(bidder.getClan().getLeaderName()))
+		{
 			requiredAdena = bid - getHighestBidderMaxBid();
-		if ((getHighestBidderId() > 0 && bid > getHighestBidderMaxBid()) || (getHighestBidderId() == 0 && bid >= getStartingBid()))
+		}
+		if (((getHighestBidderId() > 0) && (bid > getHighestBidderMaxBid())) || ((getHighestBidderId() == 0) && (bid >= getStartingBid())))
 		{
 			if (takeItem(bidder, requiredAdena))
 			{
@@ -280,19 +287,23 @@ public class Auction
 			}
 		}
 		if ((bid < getStartingBid()) || (bid <= getHighestBidderMaxBid()))
+		{
 			bidder.sendPacket(SystemMessageId.BID_PRICE_MUST_BE_HIGHER);
+		}
 	}
 	
 	/**
-	 * Return Item in WHC 
-	 * @param Clan 
-	 * @param quantity 
+	 * Return Item in WHC
+	 * @param Clan
+	 * @param quantity
 	 * @param penalty
 	 */
 	private void returnItem(String Clan, long quantity, boolean penalty)
 	{
 		if (penalty)
-			quantity *= 0.9; //take 10% tax fee if needed
+		{
+			quantity *= 0.9; // take 10% tax fee if needed
+		}
 		
 		// avoid overflow on return
 		final long limit = MAX_ADENA - ClanTable.getInstance().getClanByName(Clan).getWarehouse().getAdena();
@@ -302,14 +313,14 @@ public class Auction
 	}
 	
 	/**
-	 * Take Item in WHC 
-	 * @param bidder 
-	 * @param quantity 
+	 * Take Item in WHC
+	 * @param bidder
+	 * @param quantity
 	 * @return
 	 */
 	private boolean takeItem(L2PcInstance bidder, long quantity)
 	{
-		if (bidder.getClan() != null && bidder.getClan().getWarehouse().getAdena() >= quantity)
+		if ((bidder.getClan() != null) && (bidder.getClan().getWarehouse().getAdena() >= quantity))
 		{
 			bidder.getClan().getWarehouse().destroyItemByItemId("Buy", ADENA_ID, quantity, bidder, bidder);
 			return true;
@@ -319,8 +330,8 @@ public class Auction
 	}
 	
 	/**
-	 * Update auction in DB 
-	 * @param bidder 
+	 * Update auction in DB
+	 * @param bidder
 	 * @param bid
 	 */
 	private void updateInDB(L2PcInstance bidder, long bid)
@@ -354,14 +365,18 @@ public class Auction
 					statement.execute();
 				}
 				if (L2World.getInstance().getPlayer(_highestBidderName) != null)
+				{
 					L2World.getInstance().getPlayer(_highestBidderName).sendMessage("You have been out bidded");
+				}
 			}
 			
 			_highestBidderId = bidder.getClanId();
 			_highestBidderMaxBid = bid;
 			_highestBidderName = bidder.getClan().getLeaderName();
 			if (_bidders.get(_highestBidderId) == null)
+			{
 				_bidders.put(_highestBidderId, new Bidder(_highestBidderName, bidder.getClan().getName(), bid, Calendar.getInstance().getTimeInMillis()));
+			}
 			else
 			{
 				_bidders.get(_highestBidderId).setBid(bid);
@@ -392,11 +407,15 @@ public class Auction
 		for (Bidder b : _bidders.values())
 		{
 			if (ClanTable.getInstance().getClanByName(b.getClanName()).getHideoutId() == 0)
+			{
 				returnItem(b.getClanName(), b.getBid(), true); // 10 % tax
+			}
 			else
 			{
 				if (L2World.getInstance().getPlayer(b.getName()) != null)
+				{
 					L2World.getInstance().getPlayer(b.getName()).sendMessage("Congratulation you have won ClanHall!");
+				}
 			}
 			ClanTable.getInstance().getClanByName(b.getClanName()).setAuctionBiddedAt(0, true);
 		}
@@ -424,15 +443,16 @@ public class Auction
 	{
 		if (ClanHallManager.getInstance().loaded())
 		{
-			if (_highestBidderId == 0 && _sellerId == 0)
+			if ((_highestBidderId == 0) && (_sellerId == 0))
 			{
 				startAutoTask();
 				return;
 			}
-			if (_highestBidderId == 0 && _sellerId > 0)
+			if ((_highestBidderId == 0) && (_sellerId > 0))
 			{
-				/** If seller haven't sell ClanHall, auction removed,
-				 *  THIS MUST BE CONFIRMED */
+				/**
+				 * If seller haven't sell ClanHall, auction removed, THIS MUST BE CONFIRMED
+				 */
 				int aucId = AuctionManager.getInstance().getAuctionIndex(_id);
 				AuctionManager.getInstance().getAuctions().remove(aucId);
 				return;
@@ -457,7 +477,7 @@ public class Auction
 	}
 	
 	/**
-	 * Cancel bid 
+	 * Cancel bid
 	 * @param bidder
 	 */
 	public synchronized void cancelBid(int bidder)
@@ -516,7 +536,7 @@ public class Auction
 	}
 	
 	/**
-	 * Get var auction 
+	 * Get var auction
 	 * @return
 	 */
 	public final int getId()

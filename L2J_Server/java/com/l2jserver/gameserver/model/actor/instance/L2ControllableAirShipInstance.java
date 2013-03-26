@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
@@ -34,7 +38,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	private int _fuel = 0;
 	private int _maxFuel = 0;
 	
-	private int _ownerId;
+	private final int _ownerId;
 	private int _helmId;
 	private L2PcInstance _captain = null;
 	
@@ -52,7 +56,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	@Override
 	public ControllableAirShipStat getStat()
 	{
-		return (ControllableAirShipStat)super.getStat();
+		return (ControllableAirShipStat) super.getStat();
 	}
 	
 	@Override
@@ -71,9 +75,11 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	public boolean isOwner(L2PcInstance player)
 	{
 		if (_ownerId == 0)
+		{
 			return false;
+		}
 		
-		return player.getClanId() == _ownerId || player.getObjectId() == _ownerId;
+		return (player.getClanId() == _ownerId) || (player.getObjectId() == _ownerId);
 	}
 	
 	@Override
@@ -85,7 +91,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	@Override
 	public boolean isCaptain(L2PcInstance player)
 	{
-		return _captain != null && player == _captain;
+		return (_captain != null) && (player == _captain);
 	}
 	
 	@Override
@@ -110,20 +116,22 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	public boolean setCaptain(L2PcInstance player)
 	{
 		if (player == null)
+		{
 			_captain = null;
+		}
 		else
 		{
-			if (_captain == null && player.getAirShip() == this)
+			if ((_captain == null) && (player.getAirShip() == this))
 			{
 				final int x = player.getInVehiclePosition().getX() - 0x16e;
 				final int y = player.getInVehiclePosition().getY();
 				final int z = player.getInVehiclePosition().getZ() - 0x6b;
-				if (x * x + y * y + z * z > 2500)
+				if (((x * x) + (y * y) + (z * z)) > 2500)
 				{
 					player.sendPacket(SystemMessageId.CANT_CONTROL_TOO_FAR);
 					return false;
 				}
-				//TODO: Missing message ID: 2739  Message: You cannot control the helm because you do not meet the requirements.
+				// TODO: Missing message ID: 2739 Message: You cannot control the helm because you do not meet the requirements.
 				else if (player.isInCombat())
 				{
 					player.sendPacket(SystemMessageId.YOU_CANNOT_CONTROL_THE_HELM_WHILE_IN_A_BATTLE);
@@ -178,7 +186,9 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 				player.broadcastUserInfo();
 			}
 			else
+			{
 				return false;
+			}
 		}
 		updateAbnormalEffect();
 		return true;
@@ -196,16 +206,26 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 		
 		final int old = _fuel;
 		if (f < 0)
+		{
 			_fuel = 0;
+		}
 		else if (f > _maxFuel)
+		{
 			_fuel = _maxFuel;
+		}
 		else
+		{
 			_fuel = f;
+		}
 		
-		if (_fuel == 0 && old > 0)
+		if ((_fuel == 0) && (old > 0))
+		{
 			broadcastToPassengers(SystemMessage.getSystemMessage(SystemMessageId.THE_AIRSHIP_FUEL_RUN_OUT));
+		}
 		else if (_fuel < LOW_FUEL)
+		{
 			broadcastToPassengers(SystemMessage.getSystemMessage(SystemMessageId.THE_AIRSHIP_FUEL_SOON_RUN_OUT));
+		}
 	}
 	
 	@Override
@@ -224,7 +244,9 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	public void oustPlayer(L2PcInstance player)
 	{
 		if (player == _captain)
+		{
 			setCaptain(null); // no need to broadcast userinfo here
+		}
 		
 		super.oustPlayer(player);
 	}
@@ -266,7 +288,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Failed decayMe():"+e.getMessage());
+			_log.log(Level.SEVERE, "Failed decayMe():" + e.getMessage());
 		}
 	}
 	
@@ -283,7 +305,9 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	{
 		super.sendInfo(activeChar);
 		if (_captain != null)
+		{
 			_captain.sendInfo(activeChar);
+		}
 	}
 	
 	protected final class ConsumeFuelTask implements Runnable
@@ -296,7 +320,9 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 			{
 				fuel -= 10;
 				if (fuel < 0)
+				{
 					fuel = 0;
+				}
 				
 				setFuel(fuel);
 				updateAbnormalEffect();
@@ -309,11 +335,11 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 		@Override
 		public void run()
 		{
-			if (isVisible()
-					&& isEmpty()
-					&& !isInDock())
+			if (isVisible() && isEmpty() && !isInDock())
+			{
 				// deleteMe() can't be called from CheckTask because task should not cancel itself
 				ThreadPoolManager.getInstance().executeTask(new DecayTask());
+			}
 		}
 	}
 	

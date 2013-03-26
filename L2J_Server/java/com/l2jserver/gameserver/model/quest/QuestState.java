@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.quest;
 
@@ -30,7 +34,9 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.quest.Quest.QuestSound;
 import com.l2jserver.gameserver.network.serverpackets.ExShowQuestMark;
 import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.QuestList;
@@ -41,6 +47,7 @@ import com.l2jserver.gameserver.network.serverpackets.TutorialShowQuestionMark;
 import com.l2jserver.gameserver.util.Util;
 
 /**
+ * Quest state class.
  * @author Luis Arias
  */
 public final class QuestState
@@ -115,7 +122,6 @@ public final class QuestState
 	
 	/**
 	 * @return the current State of this QuestState
-	 * @see com.l2jserver.gameserver.model.quest.State
 	 */
 	public byte getState()
 	{
@@ -124,7 +130,6 @@ public final class QuestState
 	
 	/**
 	 * @return {@code true} if the State of this QuestState is CREATED, {@code false} otherwise
-	 * @see com.l2jserver.gameserver.model.quest.State
 	 */
 	public boolean isCreated()
 	{
@@ -133,7 +138,6 @@ public final class QuestState
 	
 	/**
 	 * @return {@code true} if the State of this QuestState is STARTED, {@code false} otherwise
-	 * @see com.l2jserver.gameserver.model.quest.State
 	 */
 	public boolean isStarted()
 	{
@@ -142,7 +146,6 @@ public final class QuestState
 	
 	/**
 	 * @return {@code true} if the State of this QuestState is COMPLETED, {@code false} otherwise
-	 * @see com.l2jserver.gameserver.model.quest.State
 	 */
 	public boolean isCompleted()
 	{
@@ -153,7 +156,6 @@ public final class QuestState
 	 * @param state the new state of the quest to set
 	 * @return {@code true} if state was changed, {@code false} otherwise
 	 * @see #setState(byte state, boolean saveInDb)
-	 * @see com.l2jserver.gameserver.model.quest.State
 	 */
 	public boolean setState(byte state)
 	{
@@ -165,7 +167,6 @@ public final class QuestState
 	 * @param state the new state of the quest to set
 	 * @param saveInDb if {@code true}, will save the state change in the database
 	 * @return {@code true} if state was changed, {@code false} otherwise
-	 * @see com.l2jserver.gameserver.model.quest.State
 	 */
 	public boolean setState(byte state, boolean saveInDb)
 	{
@@ -173,7 +174,7 @@ public final class QuestState
 		{
 			return false;
 		}
-		final boolean newQuest = isCreated(); 
+		final boolean newQuest = isCreated();
 		_state = state;
 		if (saveInDb)
 		{
@@ -193,8 +194,8 @@ public final class QuestState
 	
 	/**
 	 * Add parameter used in quests.
-	 * @param var : String pointing out the name of the variable for quest
-	 * @param val : String pointing out the value of the variable for quest
+	 * @param var String pointing out the name of the variable for quest
+	 * @param val String pointing out the value of the variable for quest
 	 * @return String (equal to parameter "val")
 	 */
 	public String setInternal(String var, String val)
@@ -213,6 +214,11 @@ public final class QuestState
 		return val;
 	}
 	
+	public String set(String var, int val)
+	{
+		return set(var, String.valueOf(val));
+	}
+	
 	/**
 	 * Return value of parameter "val" after adding the couple (var,val) in class variable "vars".<br>
 	 * Actions:<br>
@@ -224,8 +230,8 @@ public final class QuestState
 	 * The key is known as existing if the preceding value of the key (given as result of function put()) is not null.<br>
 	 * If the key doesn't exist, the couple is added/created in the database</li>
 	 * <ul>
-	 * @param var : String indicating the name of the variable for quest
-	 * @param val : String indicating the value of the variable for quest
+	 * @param var String indicating the name of the variable for quest
+	 * @param val String indicating the value of the variable for quest
 	 * @return String (equal to parameter "val")
 	 */
 	public String set(String var, String val)
@@ -240,9 +246,7 @@ public final class QuestState
 			val = "";
 		}
 		
-		// FastMap.put() returns previous value associated with specified key, or null if there was no mapping for key.
 		String old = _vars.put(var, val);
-		
 		if (old != null)
 		{
 			Quest.updateQuestVarInDb(this, var, val);
@@ -493,7 +497,7 @@ public final class QuestState
 		}
 		
 		final String variable = _vars.get(var);
-		if ((variable == null) || (variable.length() == 0))
+		if ((variable == null) || variable.isEmpty())
 		{
 			return 0;
 		}
@@ -505,7 +509,7 @@ public final class QuestState
 		}
 		catch (NumberFormatException nfe)
 		{
-			_log.log(Level.INFO, "Quest " + getQuestName() + ", method getInt(" + var + "), tried to parse a non-integer value (" + variable + "). Char ID: " + _player.getObjectId(), nfe);
+			_log.log(Level.INFO, "Quest " + getQuestName() + ", method getInt(" + var + "), tried to parse a non-integer value (" + variable + "). Char Id: " + _player.getObjectId(), nfe);
 		}
 		
 		return varint;
@@ -527,6 +531,7 @@ public final class QuestState
 	 * @param value the new value of the quest state progress
 	 * @return this {@link QuestState} object
 	 * @see #set(String var, String val)
+	 * @see #setCond(int, boolean)
 	 */
 	public QuestState setCond(int value)
 	{
@@ -538,12 +543,37 @@ public final class QuestState
 	}
 	
 	/**
+	 * @return the current quest progress ({@code cond})
+	 */
+	public int getCond()
+	{
+		if (isStarted())
+		{
+			return getInt("cond");
+		}
+		return 0;
+	}
+	
+	/**
+	 * Check if a given variable is set for this quest.
+	 * @param variable the variable to check
+	 * @return {@code true} if the variable is set, {@code false} otherwise
+	 * @see #get(String)
+	 * @see #getInt(String)
+	 * @see #getCond()
+	 */
+	public boolean isSet(String variable)
+	{
+		return (get(variable) != null);
+	}
+	
+	/**
 	 * Sets the quest state progress ({@code cond}) to the specified step.
 	 * @param value the new value of the quest state progress
 	 * @param playQuestMiddle if {@code true}, plays "ItemSound.quest_middle"
 	 * @return this {@link QuestState} object
-	 * @see #set(String var, String val)
 	 * @see #setCond(int value)
+	 * @see #set(String var, String val)
 	 */
 	public QuestState setCond(int value, boolean playQuestMiddle)
 	{
@@ -555,7 +585,7 @@ public final class QuestState
 		
 		if (playQuestMiddle)
 		{
-			playSound("ItemSound.quest_middle");
+			playSound(QuestSound.ITEMSOUND_QUEST_MIDDLE);
 		}
 		return this;
 	}
@@ -566,7 +596,7 @@ public final class QuestState
 	 */
 	public void addNotifyOfDeath(L2Character character)
 	{
-		if ((character == null) || !(character instanceof L2PcInstance))
+		if (!(character instanceof L2PcInstance))
 		{
 			return;
 		}
@@ -578,7 +608,7 @@ public final class QuestState
 	
 	/**
 	 * Return the quantity of one sort of item hold by the player
-	 * @param itemId the ID of the item wanted to be count
+	 * @param itemId the Id of the item wanted to be count
 	 * @return long
 	 */
 	public long getQuestItemsCount(int itemId)
@@ -587,7 +617,7 @@ public final class QuestState
 	}
 	
 	/**
-	 * @param itemId the ID of the item required
+	 * @param itemId the Id of the item required
 	 * @return true if item exists in player's inventory, false - if not
 	 */
 	public boolean hasQuestItems(int itemId)
@@ -596,8 +626,17 @@ public final class QuestState
 	}
 	
 	/**
+	 * @param itemIds list of items that are required
+	 * @return true if all items exists in player's inventory, false - if not
+	 */
+	public boolean hasQuestItems(int... itemIds)
+	{
+		return getQuest().hasQuestItems(getPlayer(), itemIds);
+	}
+	
+	/**
 	 * Return the level of enchantment on the weapon of the player(Done specifically for weapon SA's)
-	 * @param itemId : ID of the item to check enchantment
+	 * @param itemId Id of the item to check enchantment
 	 * @return int
 	 */
 	public int getEnchantLevel(int itemId)
@@ -633,6 +672,11 @@ public final class QuestState
 	public void giveItems(int itemId, long count)
 	{
 		giveItems(itemId, count, 0);
+	}
+	
+	public void giveItems(ItemHolder holder)
+	{
+		giveItems(holder.getId(), holder.getCount(), 0);
 	}
 	
 	public void giveItems(int itemId, long count, int enchantlevel)
@@ -690,8 +734,8 @@ public final class QuestState
 	 * <li>Destroy quantity of items wanted</li>
 	 * <li>Send new inventory list to player</li>
 	 * </ul>
-	 * @param itemId : Identifier of the item
-	 * @param count : Quantity of items to destroy
+	 * @param itemId Identifier of the item
+	 * @param count Quantity of items to destroy
 	 */
 	public void takeItems(int itemId, long count)
 	{
@@ -699,10 +743,19 @@ public final class QuestState
 	}
 	
 	/**
-	 * Send a packet in order to play sound at client terminal
-	 * @param sound
+	 * Send a packet in order to play a sound to the player.
+	 * @param sound the name of the sound to play
 	 */
 	public void playSound(String sound)
+	{
+		getQuest().playSound(getPlayer(), sound);
+	}
+	
+	/**
+	 * Send a packet in order to play a sound to the player.
+	 * @param sound the {@link QuestSound} object of the sound to play
+	 */
+	public void playSound(QuestSound sound)
 	{
 		getQuest().playSound(getPlayer(), sound);
 	}
@@ -810,7 +863,7 @@ public final class QuestState
 	/**
 	 * Add a temporary spawn of the specified npc.<br>
 	 * Player's coordinates will be used for the spawn.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @return the {@link L2Npc} object of the newly spawned npc or {@code null} if the npc doesn't exist
 	 * @see #addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn)
 	 */
@@ -822,7 +875,7 @@ public final class QuestState
 	/**
 	 * Add a temporary spawn of the specified npc.<br>
 	 * Player's coordinates will be used for the spawn.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param despawnDelay time in milliseconds till the npc is despawned (default: 0)
 	 * @return the {@link L2Npc} object of the newly spawned npc or {@code null} if the npc doesn't exist
 	 * @see #addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn)
@@ -834,7 +887,7 @@ public final class QuestState
 	
 	/**
 	 * Add a temporary spawn of the specified npc.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param x the X coordinate of the npc spawn location
 	 * @param y the Y coordinate of the npc spawn location
 	 * @param z the Z coordinate (height) of the npc spawn location
@@ -848,7 +901,7 @@ public final class QuestState
 	
 	/**
 	 * Add a temporary spawn of the specified npc.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param x the X coordinate of the npc spawn location
 	 * @param y the Y coordinate of the npc spawn location
 	 * @param z the Z coordinate (height) of the npc spawn location
@@ -863,7 +916,7 @@ public final class QuestState
 	
 	/**
 	 * Add a temporary spawn of the specified npc.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param cha the character whose coordinates will be used for the npc spawn
 	 * @return the {@link L2Npc} object of the newly spawned npc or {@code null} if the npc doesn't exist
 	 * @see #addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn)
@@ -875,7 +928,7 @@ public final class QuestState
 	
 	/**
 	 * Add a temporary spawn of the specified npc.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param cha the character whose coordinates will be used for the npc spawn
 	 * @param despawnDelay time in milliseconds till the npc is despawned (default: 0)
 	 * @return the {@link L2Npc} object of the newly spawned npc or {@code null} if the npc doesn't exist
@@ -888,7 +941,7 @@ public final class QuestState
 	
 	/**
 	 * Add a temporary spawn of the specified npc.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param cha the character whose coordinates will be used for the npc spawn
 	 * @param randomOffset if {@code true}, adds +/- 50~100 to X/Y coordinates of the spawn location
 	 * @param despawnDelay time in milliseconds till the npc is despawned (default: 0)
@@ -902,7 +955,7 @@ public final class QuestState
 	
 	/**
 	 * Add a temporary spawn of the specified npc.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param x the X coordinate of the npc spawn location
 	 * @param y the Y coordinate of the npc spawn location
 	 * @param z the Z coordinate (height) of the npc spawn location
@@ -919,7 +972,7 @@ public final class QuestState
 	
 	/**
 	 * Add a temporary spawn of the specified npc.
-	 * @param npcId the ID of the npc to spawn
+	 * @param npcId the Id of the npc to spawn
 	 * @param x the X coordinate of the npc spawn location
 	 * @param y the Y coordinate of the npc spawn location
 	 * @param z the Z coordinate (height) of the npc spawn location
@@ -963,7 +1016,7 @@ public final class QuestState
 		{
 			set("cond", "1");
 			setState(State.STARTED);
-			playSound("ItemSound.quest_accept");
+			playSound(QuestSound.ITEMSOUND_QUEST_ACCEPT);
 		}
 		return this;
 	}
@@ -1013,7 +1066,7 @@ public final class QuestState
 		exitQuest(type);
 		if (playExitQuest)
 		{
-			playSound("ItemSound.quest_finish");
+			playSound(QuestSound.ITEMSOUND_QUEST_FINISH);
 		}
 		return this;
 	}
@@ -1036,26 +1089,18 @@ public final class QuestState
 			return this;
 		}
 		
-		setState(State.COMPLETED);
-		
 		// Clean registered quest items
-		int[] itemIdList = getQuest().getRegisteredItemIds();
-		if (itemIdList != null)
-		{
-			for (int element : itemIdList)
-			{
-				takeItems(element, -1);
-			}
-		}
+		getQuest().removeRegisteredQuestItems(_player);
 		
 		Quest.deleteQuestInDb(this, repeatable);
 		if (repeatable)
 		{
 			_player.delQuestState(getQuestName());
+			_player.sendPacket(new QuestList());
 		}
 		else
 		{
-			Quest.updateQuestInDb(this);
+			setState(State.COMPLETED);
 		}
 		_vars = null;
 		return this;
@@ -1076,7 +1121,7 @@ public final class QuestState
 		exitQuest(repeatable);
 		if (playExitQuest)
 		{
-			playSound("ItemSound.quest_finish");
+			playSound(QuestSound.ITEMSOUND_QUEST_FINISH);
 		}
 		return this;
 	}
@@ -1086,6 +1131,7 @@ public final class QuestState
 		_player.sendPacket(new TutorialShowQuestionMark(number));
 	}
 	
+	// TODO make tutorial voices the same as quest sounds
 	public void playTutorialVoice(String voice)
 	{
 		_player.sendPacket(new PlaySound(2, voice, 0, 0, _player.getX(), _player.getY(), _player.getZ()));

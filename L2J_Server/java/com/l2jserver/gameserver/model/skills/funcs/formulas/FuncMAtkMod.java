@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.skills.funcs.formulas;
 
@@ -39,17 +43,9 @@ public class FuncMAtkMod extends Func
 	@Override
 	public void calc(Env env)
 	{
-		if (env.getCharacter().isPlayer())
-		{
-			double intb = BaseStats.INT.calcBonus(env.getPlayer());
-			double lvlb = env.getPlayer().getLevelMod();
-			env.mulValue((lvlb * lvlb) * (intb * intb));
-		}
-		else
-		{
-			double intb = BaseStats.INT.calcBonus(env.getCharacter());
-			double lvlb = env.getCharacter().getLevelMod();
-			env.mulValue((lvlb * lvlb) * (intb * intb));
-		}
+		// Level Modifier^2 * INT Modifier^2
+		double lvlMod = env.getCharacter().isPlayer() ? BaseStats.INT.calcBonus(env.getPlayer()) : BaseStats.INT.calcBonus(env.getCharacter());
+		double intMod = env.getCharacter().isPlayer() ? env.getPlayer().getLevelMod() : env.getCharacter().getLevelMod();
+		env.mulValue(Math.pow(lvlMod, 2) * Math.pow(intMod, 2));
 	}
 }

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
@@ -25,7 +29,7 @@ import com.l2jserver.gameserver.util.Util;
 
 /**
  * Format(ch) d
- * @author  -Wooden-
+ * @author -Wooden-
  */
 public final class RequestRefineCancel extends L2GameClientPacket
 {
@@ -43,7 +47,9 @@ public final class RequestRefineCancel extends L2GameClientPacket
 	{
 		L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		L2ItemInstance targetItem = activeChar.getInventory().getItemByObjectId(_targetItemObjId);
 		if (targetItem == null)
@@ -53,7 +59,7 @@ public final class RequestRefineCancel extends L2GameClientPacket
 		}
 		if (targetItem.getOwnerId() != activeChar.getObjectId())
 		{
-			Util.handleIllegalPlayerAction(getClient().getActiveChar(),"Warning!! Character "+getClient().getActiveChar().getName()+" of account "+getClient().getActiveChar().getAccountName()+" tryied to augment item that doesn't own.",Config.DEFAULT_PUNISH);
+			Util.handleIllegalPlayerAction(getClient().getActiveChar(), "Warning!! Character " + getClient().getActiveChar().getName() + " of account " + getClient().getActiveChar().getAccountName() + " tryied to augment item that doesn't own.", Config.DEFAULT_PUNISH);
 			return;
 		}
 		// cannot remove augmentation from a not augmented item
@@ -70,25 +76,41 @@ public final class RequestRefineCancel extends L2GameClientPacket
 		{
 			case L2Item.CRYSTAL_C:
 				if (targetItem.getCrystalCount() < 1720)
+				{
 					price = 95000;
+				}
 				else if (targetItem.getCrystalCount() < 2452)
+				{
 					price = 150000;
+				}
 				else
+				{
 					price = 210000;
+				}
 				break;
 			case L2Item.CRYSTAL_B:
 				if (targetItem.getCrystalCount() < 1746)
+				{
 					price = 240000;
+				}
 				else
+				{
 					price = 270000;
+				}
 				break;
 			case L2Item.CRYSTAL_A:
 				if (targetItem.getCrystalCount() < 2160)
+				{
 					price = 330000;
+				}
 				else if (targetItem.getCrystalCount() < 2824)
+				{
 					price = 390000;
+				}
 				else
+				{
 					price = 420000;
+				}
 				break;
 			case L2Item.CRYSTAL_S:
 				price = 480000;
@@ -97,7 +119,7 @@ public final class RequestRefineCancel extends L2GameClientPacket
 			case L2Item.CRYSTAL_S84:
 				price = 920000;
 				break;
-				// any other item type is not augmentable
+			// any other item type is not augmentable
 			default:
 				activeChar.sendPacket(new ExVariationCancelResult(0));
 				return;
@@ -113,7 +135,9 @@ public final class RequestRefineCancel extends L2GameClientPacket
 		
 		// unequip item
 		if (targetItem.isEquipped())
+		{
 			activeChar.disarmWeapons();
+		}
 		
 		// remove the augmentation
 		targetItem.removeAugmentation();

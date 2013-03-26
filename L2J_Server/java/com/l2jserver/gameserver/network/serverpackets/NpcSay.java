@@ -1,22 +1,27 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.network.NpcStringId;
 
 /**
@@ -46,6 +51,15 @@ public final class NpcSay extends L2GameServerPacket
 		_text = text;
 	}
 	
+	public NpcSay(L2Npc npc, int messageType, String text)
+	{
+		_objectId = npc.getObjectId();
+		_textType = messageType;
+		_npcId = 1000000 + npc.getNpcId();
+		_npcString = -1;
+		_text = text;
+	}
+	
 	public NpcSay(int objectId, int messageType, int npcId, NpcStringId npcString)
 	{
 		_objectId = objectId;
@@ -54,15 +68,49 @@ public final class NpcSay extends L2GameServerPacket
 		_npcString = npcString.getId();
 	}
 	
+	public NpcSay(L2Npc npc, int messageType, NpcStringId npcString)
+	{
+		_objectId = npc.getObjectId();
+		_textType = messageType;
+		_npcId = 1000000 + npc.getNpcId();
+		_npcString = npcString.getId();
+	}
+	
 	/**
-	 * @param text - parameter for argument S1,S2 etc of an npcstring
+	 * @param text the text to add as a parameter for this packet's message (replaces S1, S2 etc.)
 	 * @return this NpcSay packet object
 	 */
 	public NpcSay addStringParameter(String text)
 	{
 		if (_parameters == null)
+		{
 			_parameters = new ArrayList<>();
+		}
 		_parameters.add(text);
+		return this;
+	}
+	
+	/**
+	 * @param params a list of strings to add as parameters for this packet's message (replaces S1, S2 etc.)
+	 * @return this NpcSay packet object
+	 */
+	public NpcSay addStringParameters(String... params)
+	{
+		if ((params != null) && (params.length > 0))
+		{
+			if (_parameters == null)
+			{
+				_parameters = new ArrayList<>();
+			}
+			
+			for (String item : params)
+			{
+				if ((item != null) && (item.length() > 0))
+				{
+					_parameters.add(item);
+				}
+			}
+		}
 		return this;
 	}
 	

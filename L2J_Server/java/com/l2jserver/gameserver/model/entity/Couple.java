@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.entity;
 
@@ -43,28 +47,25 @@ public class Couple
 	{
 		_Id = coupleId;
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM mods_wedding WHERE id = ?"))
 		{
-			PreparedStatement statement;
-			ResultSet rs;
-			statement = con.prepareStatement("SELECT * FROM mods_wedding WHERE id = ?");
-			statement.setInt(1, _Id);
-			rs = statement.executeQuery();
-			
-			while (rs.next())
+			ps.setInt(1, _Id);
+			try (ResultSet rs = ps.executeQuery())
 			{
-				_player1Id = rs.getInt("player1Id");
-				_player2Id = rs.getInt("player2Id");
-				_maried = rs.getBoolean("married");
-				
-				_affiancedDate = Calendar.getInstance();
-				_affiancedDate.setTimeInMillis(rs.getLong("affianceDate"));
-				
-				_weddingDate = Calendar.getInstance();
-				_weddingDate.setTimeInMillis(rs.getLong("weddingDate"));
+				while (rs.next())
+				{
+					_player1Id = rs.getInt("player1Id");
+					_player2Id = rs.getInt("player2Id");
+					_maried = rs.getBoolean("married");
+					
+					_affiancedDate = Calendar.getInstance();
+					_affiancedDate.setTimeInMillis(rs.getLong("affianceDate"));
+					
+					_weddingDate = Calendar.getInstance();
+					_weddingDate.setTimeInMillis(rs.getLong("weddingDate"));
+				}
 			}
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -86,19 +87,17 @@ public class Couple
 		_weddingDate = Calendar.getInstance();
 		_weddingDate.setTimeInMillis(Calendar.getInstance().getTimeInMillis());
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("INSERT INTO mods_wedding (id, player1Id, player2Id, married, affianceDate, weddingDate) VALUES (?, ?, ?, ?, ?, ?)"))
 		{
-			PreparedStatement statement;
 			_Id = IdFactory.getInstance().getNextId();
-			statement = con.prepareStatement("INSERT INTO mods_wedding (id, player1Id, player2Id, married, affianceDate, weddingDate) VALUES (?, ?, ?, ?, ?, ?)");
-			statement.setInt(1, _Id);
-			statement.setInt(2, _player1Id);
-			statement.setInt(3, _player2Id);
-			statement.setBoolean(4, false);
-			statement.setLong(5, _affiancedDate.getTimeInMillis());
-			statement.setLong(6, _weddingDate.getTimeInMillis());
-			statement.execute();
-			statement.close();
+			ps.setInt(1, _Id);
+			ps.setInt(2, _player1Id);
+			ps.setInt(3, _player2Id);
+			ps.setBoolean(4, false);
+			ps.setLong(5, _affiancedDate.getTimeInMillis());
+			ps.setLong(6, _weddingDate.getTimeInMillis());
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -108,15 +107,14 @@ public class Couple
 	
 	public void marry()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("UPDATE mods_wedding set married = ?, weddingDate = ? where id = ?"))
 		{
-			PreparedStatement statement = con.prepareStatement("UPDATE mods_wedding set married = ?, weddingDate = ? where id = ?");
-			statement.setBoolean(1, true);
+			ps.setBoolean(1, true);
 			_weddingDate = Calendar.getInstance();
-			statement.setLong(2, _weddingDate.getTimeInMillis());
-			statement.setInt(3, _Id);
-			statement.execute();
-			statement.close();
+			ps.setLong(2, _weddingDate.getTimeInMillis());
+			ps.setInt(3, _Id);
+			ps.execute();
 			_maried = true;
 		}
 		catch (Exception e)
@@ -127,12 +125,11 @@ public class Couple
 	
 	public void divorce()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM mods_wedding WHERE id=?"))
 		{
-			PreparedStatement statement = con.prepareStatement("DELETE FROM mods_wedding WHERE id=?");
-			statement.setInt(1, _Id);
-			statement.execute();
-			statement.close();
+			ps.setInt(1, _Id);
+			ps.execute();
 		}
 		catch (Exception e)
 		{

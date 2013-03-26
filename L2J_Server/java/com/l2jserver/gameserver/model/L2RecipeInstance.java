@@ -1,35 +1,38 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model;
 
 /**
- * This class describes a RecipeList component (1 line of the recipe : Item-Quantity needed).<BR><BR>
+ * This class describes a RecipeList component (1 line of the recipe : Item-Quantity needed).
  */
 public class L2RecipeInstance
 {
 	/** The Identifier of the item needed in the L2RecipeInstance */
-	private int _itemId;
+	private final int _itemId;
 	
 	/** The item quantity needed in the L2RecipeInstance */
-	private int _quantity;
-	
+	private final int _quantity;
 	
 	/**
-	 * Constructor of L2RecipeInstance (create a new line in a RecipeList).<BR><BR>
-	 * @param itemId 
-	 * @param quantity 
+	 * Constructor of L2RecipeInstance (create a new line in a RecipeList).
+	 * @param itemId
+	 * @param quantity
 	 */
 	public L2RecipeInstance(int itemId, int quantity)
 	{

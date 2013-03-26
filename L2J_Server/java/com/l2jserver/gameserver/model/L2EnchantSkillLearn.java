@@ -1,27 +1,30 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model;
-
-import gnu.trove.map.hash.TIntIntHashMap;
 
 import com.l2jserver.gameserver.datatables.EnchantGroupsData;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 
+import gnu.trove.map.hash.TIntIntHashMap;
+
 /**
  * This class ...
- *
  * @version $Revision: 1.2.4.2 $ $Date: 2005/03/27 15:29:33 $
  */
 public final class L2EnchantSkillLearn
@@ -40,6 +43,7 @@ public final class L2EnchantSkillLearn
 	{
 		_enchantRoutes.put(route, group);
 	}
+	
 	/**
 	 * @return Returns the id.
 	 */
@@ -83,15 +87,17 @@ public final class L2EnchantSkillLearn
 	
 	public int getMinSkillLevel(int level)
 	{
-		if (level % 100 == 1)
+		if ((level % 100) == 1)
+		{
 			return _baseLvl;
+		}
 		return level - 1;
 	}
 	
 	public boolean isMaxEnchant(int level)
 	{
 		int enchantType = L2EnchantSkillLearn.getEnchantRoute(level);
-		if (enchantType < 1 || !_enchantRoutes.contains(enchantType))
+		if ((enchantType < 1) || !_enchantRoutes.contains(enchantType))
 		{
 			return false;
 		}
@@ -107,7 +113,7 @@ public final class L2EnchantSkillLearn
 	public EnchantSkillHolder getEnchantSkillHolder(int level)
 	{
 		int enchantType = L2EnchantSkillLearn.getEnchantRoute(level);
-		if (enchantType < 1 || !_enchantRoutes.contains(enchantType))
+		if ((enchantType < 1) || !_enchantRoutes.contains(enchantType))
 		{
 			return null;
 		}

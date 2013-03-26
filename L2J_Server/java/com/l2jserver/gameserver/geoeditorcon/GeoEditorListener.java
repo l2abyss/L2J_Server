@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.geoeditorcon;
 
@@ -28,7 +32,7 @@ public class GeoEditorListener extends Thread
 	private static GeoEditorListener _instance;
 	private static final int PORT = 9011;
 	private static Logger _log = Logger.getLogger(GeoEditorListener.class.getName());
-	private ServerSocket _serverSocket;
+	private final ServerSocket _serverSocket;
 	private GeoEditorThread _geoEditor;
 	
 	public static GeoEditorListener getInstance()
@@ -65,7 +69,7 @@ public class GeoEditorListener extends Thread
 	
 	public String getStatus()
 	{
-		if (_geoEditor != null && _geoEditor.isWorking())
+		if ((_geoEditor != null) && _geoEditor.isWorking())
 		{
 			return "Geoeditor connected.";
 		}
@@ -79,7 +83,7 @@ public class GeoEditorListener extends Thread
 		{
 			while (!isInterrupted())
 			{
-				if (_geoEditor != null && _geoEditor.isWorking())
+				if ((_geoEditor != null) && _geoEditor.isWorking())
 				{
 					_log.warning("Geoeditor already connected!");
 					connection.close();

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
@@ -140,13 +144,17 @@ public final class NpcQuestHtmlMessage extends L2GameServerPacket
 	public void runImpl()
 	{
 		if (Config.BYPASS_VALIDATION)
+		{
 			buildBypassCache(getClient().getActiveChar());
+		}
 	}
 	
 	public void setHtml(String text)
 	{
 		if (!text.contains("<html>"))
+		{
 			text = "<html><body>" + text + "</body></html>";
+		}
 		
 		_html = text;
 	}
@@ -174,7 +182,9 @@ public final class NpcQuestHtmlMessage extends L2GameServerPacket
 	private final void buildBypassCache(L2PcInstance activeChar)
 	{
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		activeChar.clearBypass();
 		int len = _html.length();
@@ -183,16 +193,22 @@ public final class NpcQuestHtmlMessage extends L2GameServerPacket
 			int start = _html.indexOf("bypass -h", i);
 			int finish = _html.indexOf("\"", start);
 			
-			if (start < 0 || finish < 0)
+			if ((start < 0) || (finish < 0))
+			{
 				break;
+			}
 			
 			start += 10;
 			i = finish;
 			int finish2 = _html.indexOf("$", start);
-			if (finish2 < finish && finish2 > 0)
+			if ((finish2 < finish) && (finish2 > 0))
+			{
 				activeChar.addBypass2(_html.substring(start, finish2).trim());
+			}
 			else
+			{
 				activeChar.addBypass(_html.substring(start, finish).trim());
+			}
 		}
 	}
 	

@@ -1,71 +1,89 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.datatables;
-
-import gnu.trove.map.hash.TIntIntHashMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
 
 public class NpcBufferTable
 {
 	private static Logger _log = Logger.getLogger(NpcBufferTable.class.getName());
 	
-	private final TIntObjectHashMap<NpcBufferSkills> _buffers = new TIntObjectHashMap<>();
+	private final Map<Integer, NpcBufferSkills> _buffers = new HashMap<>();
+	
+	public static class NpcBufferData
+	{
+		private final SkillHolder _skill;
+		private final ItemHolder _fee;
+		
+		protected NpcBufferData(int skillId, int skillLevel, int feeId, int feeAmount)
+		{
+			_skill = new SkillHolder(skillId, skillLevel);
+			_fee = new ItemHolder(feeId, feeAmount);
+		}
+		
+		public SkillHolder getSkill()
+		{
+			return _skill;
+		}
+		
+		public ItemHolder getFee()
+		{
+			return _fee;
+		}
+	}
 	
 	private static class NpcBufferSkills
 	{
-		private final TIntIntHashMap _skillId = new TIntIntHashMap();
-		private final TIntIntHashMap _skillLevels = new TIntIntHashMap();
-		private final TIntIntHashMap _skillFeeIds = new TIntIntHashMap();
-		private final TIntIntHashMap _skillFeeAmounts = new TIntIntHashMap();
+		private final int _npcId;
+		private final Map<Integer, NpcBufferData> _skills = new HashMap<>();
 		
-		public NpcBufferSkills(int npcId)
+		protected NpcBufferSkills(int npcId)
 		{
-			//
+			_npcId = npcId;
 		}
 		
 		public void addSkill(int skillId, int skillLevel, int skillFeeId, int skillFeeAmount, int buffGroup)
 		{
-			_skillId.put(buffGroup, skillId);
-			_skillLevels.put(buffGroup, skillLevel);
-			_skillFeeIds.put(buffGroup, skillFeeId);
-			_skillFeeAmounts.put(buffGroup, skillFeeAmount);
+			_skills.put(buffGroup, new NpcBufferData(skillId, skillLevel, skillFeeId, skillFeeAmount));
 		}
 		
-		public int[] getSkillGroupInfo(int buffGroup)
+		public NpcBufferData getSkillGroupInfo(int buffGroup)
 		{
-			if (_skillId.containsKey(buffGroup) && _skillLevels.containsKey(buffGroup) && _skillFeeIds.containsKey(buffGroup) && _skillFeeAmounts.containsKey(buffGroup))
-			{
-				return new int[]
-				{
-					_skillId.get(buffGroup),
-					_skillLevels.get(buffGroup),
-					_skillFeeIds.get(buffGroup),
-					_skillFeeAmounts.get(buffGroup)
-				};
-			}
-			return null;
+			return _skills.get(buffGroup);
+		}
+		
+		@SuppressWarnings("unused")
+		public int getNpcId()
+		{
+			return _npcId;
 		}
 	}
 	
@@ -114,7 +132,7 @@ public class NpcBufferTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.SEVERE, "NpcBufferTable: Error reading npc_buffer table: " + e.getMessage(), e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error reading npc_buffer table: " + e.getMessage(), e);
 		}
 		
 		if (Config.CUSTOM_NPCBUFFER_TABLES)
@@ -159,16 +177,23 @@ public class NpcBufferTable
 			}
 			catch (SQLException e)
 			{
-				_log.log(Level.SEVERE, "NpcBufferTable: Error reading custom_npc_buffer table: " + e.getMessage(), e);
+				_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error reading custom_npc_buffer table: " + e.getMessage(), e);
 			}
 		}
-		_log.info("NpcBufferSkillIdsTable: Loaded " + _buffers.size() + " buffers and " + skillCount + " skills.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _buffers.size() + " buffers and " + skillCount + " skills.");
 	}
 	
-	public int[] getSkillInfo(int npcId, int buffGroup)
+	public NpcBufferData getSkillInfo(int npcId, int buffGroup)
 	{
-		final NpcBufferSkills skills = _buffers.get(npcId);
-		return (skills == null) ? null : skills.getSkillGroupInfo(buffGroup);
+		if (_buffers.containsKey(npcId))
+		{
+			final NpcBufferSkills skills = _buffers.get(npcId);
+			if (skills != null)
+			{
+				return skills.getSkillGroupInfo(buffGroup);
+			}
+		}
+		return null;
 	}
 	
 	public static NpcBufferTable getInstance()

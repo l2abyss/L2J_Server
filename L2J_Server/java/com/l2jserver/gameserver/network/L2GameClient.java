@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network;
 
@@ -44,10 +48,11 @@ import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.model.CharSelectInfoPackage;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2World;
-import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.L2Event;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.ServerClose;
@@ -56,7 +61,7 @@ import com.l2jserver.gameserver.util.FloodProtectors;
 import com.l2jserver.gameserver.util.Util;
 
 /**
- * Represents a client connected on Game Server
+ * Represents a client connected on Game Server.
  * @author KenM
  */
 public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> implements Runnable
@@ -65,14 +70,16 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
 	
 	/**
-	 * CONNECTED	- client has just connected
-	 * AUTHED		- client has authed but doesn't has character attached to it yet
-	 * IN_GAME		- client has selected a char and is in game
 	 * @author KenM
 	 */
 	public static enum GameClientState
 	{
-		CONNECTED, AUTHED, IN_GAME
+		/** Client has just connected . */
+		CONNECTED,
+		/** Client has authed but doesn't has character attached to it yet. */
+		AUTHED,
+		/** Client has selected a char and is in game. */
+		IN_GAME
 	}
 	
 	private GameClientState _state;
@@ -204,11 +211,10 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	public void setActiveChar(L2PcInstance pActiveChar)
 	{
 		_activeChar = pActiveChar;
-		//JIV remove - done on spawn
-		/*if (_activeChar != null)
-		{
-			L2World.getInstance().storeObject(getActiveChar());
-		}*/
+		// JIV remove - done on spawn
+		/*
+		 * if (_activeChar != null) { L2World.getInstance().storeObject(getActiveChar()); }
+		 */
 	}
 	
 	public ReentrantLock getActiveCharLock()
@@ -258,13 +264,13 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	
 	public void sendPacket(L2GameServerPacket gsp)
 	{
-		if (_isDetached)
+		if (_isDetached || (gsp == null))
 		{
 			return;
 		}
 		
 		// Packets from invisible chars sends only to GMs
-		if (gsp.isInvisible() && (getActiveChar() != null) && !getActiveChar().isGM())
+		if (gsp.isInvisible() && (getActiveChar() != null) && !getActiveChar().canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
 		{
 			return;
 		}
@@ -285,12 +291,8 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	
 	/**
 	 * Method to handle character deletion
-	 * @param charslot 
-	 * @return a byte:
-	 * <li>-1: Error: No char was found for such charslot, caught exception, etc...
-	 * <li> 0: character is not member of any clan, proceed with deletion
-	 * <li> 1: character is member of a clan, but not clan leader
-	 * <li> 2: character is clan leader
+	 * @param charslot
+	 * @return a byte: <li>-1: Error: No char was found for such charslot, caught exception, etc... <li>0: character is not member of any clan, proceed with deletion <li>1: character is member of a clan, but not clan leader <li>2: character is clan leader
 	 */
 	public byte markToDeleteChar(int charslot)
 	{
@@ -345,7 +347,11 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 					}
 					
 					LogRecord record = new LogRecord(Level.WARNING, "Delete");
-					record.setParameters(new Object[] { objid, this });
+					record.setParameters(new Object[]
+					{
+						objid,
+						this
+					});
 					_logAccounting.log(record);
 				}
 			}
@@ -402,7 +408,11 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		}
 		
 		final LogRecord record = new LogRecord(Level.WARNING, "Restore");
-		record.setParameters(new Object[] { objid, this });
+		record.setParameters(new Object[]
+		{
+			objid,
+			this
+		});
 		_logAccounting.log(record);
 	}
 	
@@ -585,7 +595,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 			_log.severe("could not restore in slot: " + charslot);
 		}
 		
-		//setCharacter(character);
+		// setCharacter(character);
 		return character;
 	}
 	
@@ -619,7 +629,11 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		}
 		if (_aditionalClosePacket != null)
 		{
-			getConnection().close(new L2GameServerPacket[] { _aditionalClosePacket, gsp });
+			getConnection().close(new L2GameServerPacket[]
+			{
+				_aditionalClosePacket,
+				gsp
+			});
 		}
 		else
 		{
@@ -655,7 +669,10 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	protected void onForcedDisconnection()
 	{
 		LogRecord record = new LogRecord(Level.WARNING, "Disconnected abnormally");
-		record.setParameters(new Object[] { this });
+		record.setParameters(new Object[]
+		{
+			this
+		});
 		_logAccounting.log(record);
 	}
 	
@@ -686,7 +703,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 			{
 				cancelCleanup();
 			}
-			_cleanupTask = ThreadPoolManager.getInstance().scheduleGeneral(new CleanupTask(), 0); //instant
+			_cleanupTask = ThreadPoolManager.getInstance().scheduleGeneral(new CleanupTask(), 0); // instant
 		}
 	}
 	
@@ -734,15 +751,15 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 						getActiveChar().leaveParty();
 						
 						// If the L2PcInstance has Pet, unsummon it
-						if (getActiveChar().getPet() != null)
+						if (getActiveChar().hasSummon())
 						{
-							getActiveChar().getPet().setRestoreSummon(true);
+							getActiveChar().getSummon().setRestoreSummon(true);
 							
-							getActiveChar().getPet().unSummon(getActiveChar());
+							getActiveChar().getSummon().unSummon(getActiveChar());
 							// Dead pet wasn't unsummoned, broadcast npcinfo changes (pet will be without owner name - means owner offline)
-							if (getActiveChar().getPet() != null)
+							if (getActiveChar().getSummon() != null)
 							{
-								getActiveChar().getPet().broadcastNpcInfo(0);
+								getActiveChar().getSummon().broadcastNpcInfo(0);
 							}
 						}
 						
@@ -758,7 +775,10 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 						}
 						
 						final LogRecord record = new LogRecord(Level.INFO, "Entering offline mode");
-						record.setParameters(new Object[] { L2GameClient.this });
+						record.setParameters(new Object[]
+						{
+							L2GameClient.this
+						});
 						_logAccounting.log(record);
 						return;
 					}
@@ -794,7 +814,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 			canSetShop = true;
 		}
 		
-		if (Config.OFFLINE_MODE_IN_PEACE_ZONE && !player.isInsideZone(L2Character.ZONE_PEACE))
+		if (Config.OFFLINE_MODE_IN_PEACE_ZONE && !player.isInsideZone(ZoneId.PEACE))
 		{
 			canSetShop = false;
 		}
@@ -830,7 +850,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 				if (_autoSaveInDB != null)
 				{
 					_autoSaveInDB.cancel(true);
-					//ThreadPoolManager.getInstance().removeGeneral((Runnable) _autoSaveInDB);
+					// ThreadPoolManager.getInstance().removeGeneral((Runnable) _autoSaveInDB);
 				}
 				
 				if (getActiveChar() != null) // this should only happen on connection loss
@@ -879,9 +899,9 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 				if ((player != null) && player.isOnline()) // safety precaution
 				{
 					saveCharToDisk();
-					if (player.getPet() != null)
+					if (player.hasSummon())
 					{
-						player.getPet().store();
+						player.getSummon().store();
 					}
 				}
 			}
@@ -981,7 +1001,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	
 	/**
 	 * Add packet to the queue and start worker thread if needed
-	 * @param packet 
+	 * @param packet
 	 */
 	public void execute(ReceivablePacket<L2GameClient> packet)
 	{

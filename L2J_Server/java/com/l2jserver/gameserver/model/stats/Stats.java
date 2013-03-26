@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.stats;
 
@@ -38,7 +42,6 @@ public enum Stats
 	HEAL_EFFECTIVNESS("gainHp"),
 	HEAL_PROFICIENCY("giveHp"),
 	HEAL_STATIC_BONUS("bonusHp"),
-	LIMIT_HP("limitHp"), // non-displayed hp limit
 	
 	// ATTACK & DEFENCE
 	POWER_DEFENCE("pDef"),
@@ -53,7 +56,7 @@ public enum Stats
 	MAGIC_REUSE_RATE("mReuse"), // Magic Skill Reuse Rate
 	SHIELD_DEFENCE("sDef"),
 	CRITICAL_DAMAGE("cAtk"),
-	CRITICAL_DAMAGE_ADD("cAtkAdd"), // this is another type for special critical damage mods - vicious stance, crit power and crit damage SA
+	CRITICAL_DAMAGE_ADD("cAtkAdd"), // this is another type for special critical damage mods - vicious stance, critical power and critical damage SA
 	// it was totally bad since now...
 	MAGIC_CRIT_DMG("mCritPower"),
 	
@@ -112,10 +115,10 @@ public enum Stats
 	FALL("fall"),
 	AGGRESSION("aggression"), // locks a mob on tank caster
 	BLEED("bleed"), // by daggers, like poison
-	POISON("poison"), // by magic, hp dmg over time
+	POISON("poison"), // by magic, damage over time
 	STUN("stun"), // disable move/ATTACK for a period of time
 	ROOT("root"), // disable movement, but not ATTACK
-	MOVEMENT("movement"), // slowdown movement, debuff
+	MOVEMENT("movement"), // slow-down movement, de-buff
 	CONFUSION("confusion"), // mob changes target, opposite to aggression/hate
 	SLEEP("sleep"), // sleep (don't move/ATTACK) until attacked
 	
@@ -136,8 +139,8 @@ public enum Stats
 	DERANGEMENT_VULN("derangementVuln"),
 	DEBUFF_VULN("debuffVuln"),
 	BUFF_VULN("buffVuln"),
-	CRIT_VULN("critVuln"), // Resistence to Crit DMG in percent.
-	CRIT_ADD_VULN("critAddVuln"), // Resistence to Crit DMG in value (ex: +100 will be 100 more crit dmg, NOT 100% more).
+	CRIT_VULN("critVuln"), // Resistance to critical damage in percent.
+	CRIT_ADD_VULN("critAddVuln"), // Resistance to critical damage in value (Example: +100 will be 100 more critical damage, NOT 100% more).
 	MAGIC_DAMAGE_VULN("magicDamVul"),
 	VALAKAS_VULN("valakasVuln"),
 	

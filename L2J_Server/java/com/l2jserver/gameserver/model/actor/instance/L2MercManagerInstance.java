@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
@@ -37,10 +41,14 @@ public final class L2MercManagerInstance extends L2MerchantInstance
 	{
 		int condition = validateCondition(player);
 		if (condition <= COND_ALL_FALSE)
+		{
 			return;
+		}
 		
 		if (condition == COND_BUSY_BECAUSE_OF_SIEGE)
+		{
 			return;
+		}
 		else if (condition == COND_OWNER)
 		{
 			StringTokenizer st = new StringTokenizer(command, " ");
@@ -48,12 +56,16 @@ public final class L2MercManagerInstance extends L2MerchantInstance
 			
 			String val = "";
 			if (st.countTokens() >= 1)
+			{
 				val = st.nextToken();
+			}
 			
 			if (actualCommand.equalsIgnoreCase("hire"))
 			{
 				if (val.isEmpty())
+				{
 					return;
+				}
 				
 				showBuyWindow(player, Integer.parseInt(val));
 				return;
@@ -70,9 +82,13 @@ public final class L2MercManagerInstance extends L2MerchantInstance
 		
 		int condition = validateCondition(player);
 		if (condition == COND_BUSY_BECAUSE_OF_SIEGE)
+		{
 			filename = "data/html/mercmanager/mercmanager-busy.htm"; // Busy because of siege
-		else if (condition == COND_OWNER) // Clan owns castle
+		}
+		else if (condition == COND_OWNER)
+		{
 			filename = "data/html/mercmanager/mercmanager.htm"; // Owner message window
+		}
 		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
@@ -84,16 +100,20 @@ public final class L2MercManagerInstance extends L2MerchantInstance
 	
 	private int validateCondition(L2PcInstance player)
 	{
-		if (getCastle() != null && getCastle().getCastleId() > 0)
+		if ((getCastle() != null) && (getCastle().getCastleId() > 0))
 		{
 			if (player.getClan() != null)
 			{
 				if (getCastle().getSiege().getIsInProgress())
+				{
 					return COND_BUSY_BECAUSE_OF_SIEGE; // Busy because of siege
+				}
 				else if (getCastle().getOwnerId() == player.getClanId()) // Clan owns castle
 				{
 					if ((player.getClanPrivileges() & L2Clan.CP_CS_MERCENARIES) == L2Clan.CP_CS_MERCENARIES)
+					{
 						return COND_OWNER;
+					}
 				}
 			}
 		}

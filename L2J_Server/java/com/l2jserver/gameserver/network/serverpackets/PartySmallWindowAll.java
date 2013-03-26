@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
@@ -50,7 +54,7 @@ public final class PartySmallWindowAll extends L2GameServerPacket
 				writeD(member.getMaxCp()); // c4
 				
 				writeD((int) member.getCurrentHp());
-				writeD(member.getMaxVisibleHp());
+				writeD(member.getMaxHp());
 				writeD((int) member.getCurrentMp());
 				writeD(member.getMaxMp());
 				writeD(member.getLevel());
@@ -59,17 +63,17 @@ public final class PartySmallWindowAll extends L2GameServerPacket
 				writeD(member.getRace().ordinal());
 				writeD(0x00); // T2.3
 				writeD(0x00); // T2.3
-				if (member.getPet() != null)
+				if (member.hasSummon())
 				{
-					writeD(member.getPet().getObjectId());
-					writeD(member.getPet().getNpcId() + 1000000);
-					writeD(member.getPet().getSummonType());
-					writeS(member.getPet().getName());
-					writeD((int) member.getPet().getCurrentHp());
-					writeD(member.getPet().getMaxHp());
-					writeD((int) member.getPet().getCurrentMp());
-					writeD(member.getPet().getMaxMp());
-					writeD(member.getPet().getLevel());
+					writeD(member.getSummon().getObjectId());
+					writeD(member.getSummon().getNpcId() + 1000000);
+					writeD(member.getSummon().getSummonType());
+					writeS(member.getSummon().getName());
+					writeD((int) member.getSummon().getCurrentHp());
+					writeD(member.getSummon().getMaxHp());
+					writeD((int) member.getSummon().getCurrentMp());
+					writeD(member.getSummon().getMaxMp());
+					writeD(member.getSummon().getLevel());
 				}
 				else
 				{

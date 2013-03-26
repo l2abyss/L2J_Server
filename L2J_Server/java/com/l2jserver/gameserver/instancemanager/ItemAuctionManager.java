@@ -1,20 +1,22 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.instancemanager;
-
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.io.File;
 import java.sql.Connection;
@@ -36,17 +38,14 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.itemauction.ItemAuctionInstance;
 
+import gnu.trove.map.hash.TIntObjectHashMap;
+
 /**
  * @author Forsaiken
  */
 public final class ItemAuctionManager
 {
 	private static final Logger _log = Logger.getLogger(ItemAuctionManager.class.getName());
-	
-	public static final ItemAuctionManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
 	
 	private final TIntObjectHashMap<ItemAuctionInstance> _managerInstances;
 	private final AtomicInteger _auctionIds;
@@ -58,7 +57,7 @@ public final class ItemAuctionManager
 		
 		if (!Config.ALT_ITEM_AUCTION_ENABLED)
 		{
-			_log.log(Level.INFO, "ItemAuctionManager: Disabled by config.");
+			_log.log(Level.INFO, getClass().getSimpleName() + ": Disabled by config.");
 			return;
 		}
 		
@@ -67,17 +66,19 @@ public final class ItemAuctionManager
 			ResultSet rset = statement.executeQuery("SELECT auctionId FROM item_auction ORDER BY auctionId DESC LIMIT 0, 1"))
 		{
 			if (rset.next())
+			{
 				_auctionIds.set(rset.getInt(1) + 1);
+			}
 		}
 		catch (final SQLException e)
 		{
-			_log.log(Level.SEVERE, "ItemAuctionManager: Failed loading auctions.", e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Failed loading auctions.", e);
 		}
 		
 		final File file = new File(Config.DATAPACK_ROOT + "/data/ItemAuctions.xml");
 		if (!file.exists())
 		{
-			_log.log(Level.WARNING, "ItemAuctionManager: Missing ItemAuctions.xml!");
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Missing ItemAuctions.xml!");
 			return;
 		}
 		
@@ -100,7 +101,9 @@ public final class ItemAuctionManager
 							final int instanceId = Integer.parseInt(nab.getNamedItem("id").getNodeValue());
 							
 							if (_managerInstances.containsKey(instanceId))
+							{
 								throw new Exception("Dublicated instanceId " + instanceId);
+							}
 							
 							final ItemAuctionInstance instance = new ItemAuctionInstance(instanceId, _auctionIds, nb);
 							_managerInstances.put(instanceId, instance);
@@ -108,11 +111,11 @@ public final class ItemAuctionManager
 					}
 				}
 			}
-			_log.log(Level.INFO, "ItemAuctionManager: Loaded " + _managerInstances.size() + " instance(s).");
+			_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded " + _managerInstances.size() + " instance(s).");
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "ItemAuctionManager: Failed loading auctions from xml.", e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Failed loading auctions from xml.", e);
 		}
 	}
 	
@@ -155,6 +158,11 @@ public final class ItemAuctionManager
 		{
 			_log.log(Level.SEVERE, "L2ItemAuctionManagerInstance: Failed deleting auction: " + auctionId, e);
 		}
+	}
+	
+	public static final ItemAuctionManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

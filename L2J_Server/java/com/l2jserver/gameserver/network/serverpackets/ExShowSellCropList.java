@@ -1,26 +1,29 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
 
-import javolution.util.FastList;
 import javolution.util.FastMap;
 
+import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
-import com.l2jserver.gameserver.model.L2Manor;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
@@ -40,7 +43,7 @@ public class ExShowSellCropList extends L2GameServerPacket
 		_castleCrops = new FastMap<>();
 		_cropsItems = new FastMap<>();
 		
-		FastList<Integer> allCrops = L2Manor.getInstance().getAllCrops();
+		List<Integer> allCrops = ManorData.getInstance().getAllCrops();
 		for (int cropId : allCrops)
 		{
 			L2ItemInstance item = player.getInventory().getItemByItemId(cropId);
@@ -52,7 +55,7 @@ public class ExShowSellCropList extends L2GameServerPacket
 		
 		for (CropProcure crop : crops)
 		{
-			if (_cropsItems.containsKey(crop.getId()) && crop.getAmount() > 0)
+			if (_cropsItems.containsKey(crop.getId()) && (crop.getAmount() > 0))
 			{
 				_castleCrops.put(crop.getId(), crop);
 			}
@@ -72,11 +75,11 @@ public class ExShowSellCropList extends L2GameServerPacket
 		{
 			writeD(item.getObjectId()); // Object id
 			writeD(item.getDisplayId()); // crop id
-			writeD(L2Manor.getInstance().getSeedLevelByCrop(item.getItemId())); // seed level
+			writeD(ManorData.getInstance().getSeedLevelByCrop(item.getItemId())); // seed level
 			writeC(0x01);
-			writeD(L2Manor.getInstance().getRewardItem(item.getItemId(), 1)); // reward 1 id
+			writeD(ManorData.getInstance().getRewardItem(item.getItemId(), 1)); // reward 1 id
 			writeC(0x01);
-			writeD(L2Manor.getInstance().getRewardItem(item.getItemId(), 2)); // reward 2 id
+			writeD(ManorData.getInstance().getRewardItem(item.getItemId(), 2)); // reward 2 id
 			
 			if (_castleCrops.containsKey(item.getItemId()))
 			{

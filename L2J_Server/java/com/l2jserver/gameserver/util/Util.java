@@ -1,31 +1,43 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.util;
 
 import java.io.File;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import javolution.text.TextBuilder;
+import javolution.util.FastList;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
+import com.l2jserver.gameserver.network.serverpackets.ShowBoard;
 import com.l2jserver.util.file.filter.ExtFilter;
 
 /**
@@ -33,6 +45,8 @@ import com.l2jserver.util.file.filter.ExtFilter;
  */
 public final class Util
 {
+	private static final NumberFormat ADENA_FORMATTER = NumberFormat.getIntegerInstance(Locale.ENGLISH);
+	
 	public static void handleIllegalPlayerAction(L2PcInstance actor, String message, int punishment)
 	{
 		ThreadPoolManager.getInstance().scheduleGeneral(new IllegalPlayerAction(actor, message, punishment), 5000);
@@ -248,15 +262,13 @@ public final class Util
 		
 		double dx = obj1.getX() - obj2.getX();
 		double dy = obj1.getY() - obj2.getY();
+		double d = (dx * dx) + (dy * dy);
 		
 		if (includeZAxis)
 		{
 			double dz = obj1.getZ() - obj2.getZ();
-			double d = (dx * dx) + (dy * dy) + (dz * dz);
-			
-			return d <= ((range * range) + (2 * range * rad) + (rad * rad));
+			d += (dz * dz);
 		}
-		double d = (dx * dx) + (dy * dy);
 		return d <= ((range * range) + (2 * range * rad) + (rad * rad));
 	}
 	
@@ -385,25 +397,10 @@ public final class Util
 	 */
 	public static String formatAdena(long amount)
 	{
-		String s = "";
-		long rem = amount % 1000;
-		s = Long.toString(rem);
-		amount = (amount - rem) / 1000;
-		while (amount > 0)
+		synchronized (ADENA_FORMATTER)
 		{
-			if (rem < 99)
-			{
-				s = '0' + s;
-			}
-			if (rem < 9)
-			{
-				s = '0' + s;
-			}
-			rem = amount % 1000;
-			s = Long.toString(rem) + "," + s;
-			amount = (amount - rem) / 1000;
+			return ADENA_FORMATTER.format(amount);
 		}
-		return s;
 	}
 	
 	/**
@@ -471,5 +468,154 @@ public final class Util
 	{
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		return dateFormat.format(date.getTime());
+	}
+	
+	/**
+	 * Sends the given html to the player.
+	 * @param activeChar
+	 * @param html
+	 */
+	public static void sendHtml(L2PcInstance activeChar, String html)
+	{
+		NpcHtmlMessage npcHtml = new NpcHtmlMessage(0);
+		npcHtml.setHtml(html);
+		activeChar.sendPacket(npcHtml);
+	}
+	
+	/**
+	 * Sends the html using the community board window.
+	 * @param activeChar
+	 * @param html
+	 */
+	public static void sendCBHtml(L2PcInstance activeChar, String html)
+	{
+		sendCBHtml(activeChar, html, "");
+	}
+	
+	/**
+	 * Sends the html using the community board window.
+	 * @param activeChar
+	 * @param html
+	 * @param fillMultiEdit fills the multiedit window (if any) inside the community board.
+	 */
+	public static void sendCBHtml(L2PcInstance activeChar, String html, String fillMultiEdit)
+	{
+		if (activeChar == null)
+		{
+			return;
+		}
+		
+		if (html != null)
+		{
+			activeChar.clearBypass();
+			int len = html.length();
+			for (int i = 0; i < len; i++)
+			{
+				int start = html.indexOf("\"bypass ", i);
+				int finish = html.indexOf("\"", start + 1);
+				if ((start < 0) || (finish < 0))
+				{
+					break;
+				}
+				
+				if (html.substring(start + 8, start + 10).equals("-h"))
+				{
+					start += 11;
+				}
+				else
+				{
+					start += 8;
+				}
+				
+				i = finish;
+				int finish2 = html.indexOf("$", start);
+				if ((finish2 < finish) && (finish2 > 0))
+				{
+					activeChar.addBypass2(html.substring(start, finish2).trim());
+				}
+				else
+				{
+					activeChar.addBypass(html.substring(start, finish).trim());
+				}
+			}
+		}
+		
+		if (fillMultiEdit != null)
+		{
+			activeChar.sendPacket(new ShowBoard(html, "1001"));
+			fillMultiEditContent(activeChar, fillMultiEdit);
+		}
+		else
+		{
+			activeChar.sendPacket(new ShowBoard(null, "101"));
+			activeChar.sendPacket(new ShowBoard(html, "101"));
+			activeChar.sendPacket(new ShowBoard(null, "102"));
+			activeChar.sendPacket(new ShowBoard(null, "103"));
+		}
+	}
+	
+	/**
+	 * Fills the community board's multiedit window with text. Must send after sendCBHtml
+	 * @param activeChar
+	 * @param text
+	 */
+	public static void fillMultiEditContent(L2PcInstance activeChar, String text)
+	{
+		text = text.replaceAll("<br>", Config.EOL);
+		List<String> arg = new FastList<>();
+		arg.add("0");
+		arg.add("0");
+		arg.add("0");
+		arg.add("0");
+		arg.add("0");
+		arg.add("0");
+		arg.add(activeChar.getName());
+		arg.add(Integer.toString(activeChar.getObjectId()));
+		arg.add(activeChar.getAccountName());
+		arg.add("9");
+		arg.add(" ");
+		arg.add(" ");
+		arg.add(text);
+		arg.add("0");
+		arg.add("0");
+		arg.add("0");
+		arg.add("0");
+		activeChar.sendPacket(new ShowBoard(arg));
+	}
+	
+	/**
+	 * Return the number of playable characters in a defined radius around the specified object.
+	 * @param range : the radius in which to look for players
+	 * @param npc : the object whose knownlist to check
+	 * @param playable : if {@code true}, count summons and pets aswell
+	 * @param invisible : if {@code true}, count invisible characters aswell
+	 * @return the number of targets found
+	 */
+	public static int getPlayersCountInRadius(int range, L2Object npc, boolean playable, boolean invisible)
+	{
+		int count = 0;
+		final Collection<L2Object> objs = npc.getKnownList().getKnownObjects().values();
+		for (L2Object obj : objs)
+		{
+			if ((obj != null) && ((obj.isPlayable() && playable) || obj.isPet()))
+			{
+				if (obj.isPlayer() && !invisible && obj.getActingPlayer().getAppearance().getInvisible())
+				{
+					continue;
+				}
+				
+				final L2Character cha = (L2Character) obj;
+				if (((cha.getZ() < (npc.getZ() - 100)) && (cha.getZ() > (npc.getZ() + 100))) || !(GeoData.getInstance().canSeeTarget(cha.getX(), cha.getY(), cha.getZ(), npc.getX(), npc.getY(), npc.getZ())))
+				{
+					continue;
+				}
+				
+				if (Util.checkIfInRange(range, npc, obj, true) && !cha.isDead())
+				{
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 }

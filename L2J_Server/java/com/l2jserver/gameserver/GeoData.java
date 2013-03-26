@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver;
 
@@ -45,15 +49,6 @@ public class GeoData
 		{
 			_log.info("Geodata Engine: Disabled.");
 		}
-	}
-	
-	/**
-	 * Gets the single instance of GeoData.
-	 * @return single instance of GeoData
-	 */
-	public static GeoData getInstance()
-	{
-		return SingletonHolder._instance;
 	}
 	
 	/**
@@ -112,8 +107,8 @@ public class GeoData
 	 */
 	public boolean canSeeTarget(L2Object cha, L2Object target)
 	{
-		//If geodata is off do simple check :]
-		//Don't allow casting on players on different dungeon levels etc
+		// If geodata is off do simple check :]
+		// Don't allow casting on players on different dungeon levels etc
 		return (Math.abs(target.getZ() - cha.getZ()) < 1000);
 	}
 	
@@ -179,7 +174,7 @@ public class GeoData
 	 */
 	public short getHeightAndNSWE(int x, int y, int z)
 	{
-		return (short)((z << 1) | 15);
+		return (short) ((z << 1) | 15);
 	}
 	
 	/**
@@ -221,7 +216,7 @@ public class GeoData
 	 */
 	public void addGeoDataBug(L2PcInstance gm, String comment)
 	{
-		//Do Nothing
+		// Do Nothing
 	}
 	
 	/**
@@ -254,6 +249,15 @@ public class GeoData
 	public boolean hasGeo(int x, int y)
 	{
 		return false;
+	}
+	
+	/**
+	 * Gets the single instance of GeoData.
+	 * @return single instance of GeoData
+	 */
+	public static GeoData getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.status;
 
@@ -38,39 +42,42 @@ public class SummonStatus extends PlayableStatus
 	@Override
 	public void reduceHp(double value, L2Character attacker, boolean awake, boolean isDOT, boolean isHPConsumption)
 	{
-		if (attacker == null || getActiveChar().isDead())
+		if ((attacker == null) || getActiveChar().isDead())
+		{
 			return;
+		}
 		
 		final L2PcInstance attackerPlayer = attacker.getActingPlayer();
-		if (attackerPlayer != null && (getActiveChar().getOwner() == null || getActiveChar().getOwner().getDuelId() != attackerPlayer.getDuelId()))
+		if ((attackerPlayer != null) && ((getActiveChar().getOwner() == null) || (getActiveChar().getOwner().getDuelId() != attackerPlayer.getDuelId())))
+		{
 			attackerPlayer.setDuelState(Duel.DUELSTATE_INTERRUPTED);
+		}
 		
 		if (getActiveChar().getOwner().getParty() != null)
 		{
 			final L2PcInstance caster = getActiveChar().getTransferingDamageTo();
-			if (caster != null
-					&& getActiveChar().getParty() != null
-					&& Util.checkIfInRange(1000, getActiveChar(), caster, true)
-					&& !caster.isDead() 
-					&& getActiveChar().getOwner() != caster
-					&& getActiveChar().getParty().getMembers().contains(caster))
+			if ((caster != null) && (getActiveChar().getParty() != null) && Util.checkIfInRange(1000, getActiveChar(), caster, true) && !caster.isDead() && (getActiveChar().getOwner() != caster) && getActiveChar().getParty().getMembers().contains(caster))
 			{
 				int transferDmg = 0;
-
-				transferDmg = (int) value * (int) getActiveChar().getStat().calcStat(Stats.TRANSFER_DAMAGE_TO_PLAYER, 0, null, null) / 100;
+				
+				transferDmg = ((int) value * (int) getActiveChar().getStat().calcStat(Stats.TRANSFER_DAMAGE_TO_PLAYER, 0, null, null)) / 100;
 				transferDmg = Math.min((int) caster.getCurrentHp() - 1, transferDmg);
-				if (transferDmg > 0 && attacker instanceof L2Playable)
+				if ((transferDmg > 0) && (attacker instanceof L2Playable))
 				{
 					int membersInRange = 0;
 					for (L2PcInstance member : caster.getParty().getMembers())
 					{
-						if (Util.checkIfInRange(1000, member, caster, false) && member != caster)
+						if (Util.checkIfInRange(1000, member, caster, false) && (member != caster))
+						{
 							membersInRange++;
+						}
 					}
 					if (caster.getCurrentCp() > 0)
 					{
 						if (caster.getCurrentCp() > transferDmg)
+						{
 							reduceCp(transferDmg);
+						}
 						else
 						{
 							transferDmg = (int) (transferDmg - caster.getCurrentCp());
@@ -89,6 +96,6 @@ public class SummonStatus extends PlayableStatus
 	@Override
 	public L2Summon getActiveChar()
 	{
-		return (L2Summon)super.getActiveChar();
+		return (L2Summon) super.getActiveChar();
 	}
 }

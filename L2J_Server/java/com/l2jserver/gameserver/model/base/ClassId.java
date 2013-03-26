@@ -1,28 +1,32 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.base;
 
 /**
- * This class defines all classes (ex : human fighter, darkFighter...) that a player can chose.<BR><BR>
- *
- * Data :<BR><BR>
+ * This class defines all classes (ex : human fighter, darkFighter...) that a player can chose.<br>
+ * Data:
+ * <ul>
  * <li>id : The Identifier of the class</li>
  * <li>isMage : True if the class is a mage class</li>
  * <li>race : The race of this class</li>
- * <li>parent : The parent ClassId or null if this class is the root</li><BR><BR>
- *
+ * <li>parent : The parent ClassId or null if this class is the root</li>
+ * </ul>
  * @version $Revision: 1.4.4.4 $ $Date: 2005/03/27 15:29:33 $
  */
 public enum ClassId
@@ -96,10 +100,7 @@ public enum ClassId
 	warsmith(0x39, false, Race.Dwarf, artisan),
 	
 	/*
-	 * Dummy Entries (id's already in decimal format)
-	 * btw FU NCSoft for the amount of work you put me
-	 * through to do this!!
-	 * <START>
+	 * Dummy Entries (id's already in decimal format) btw FU NCSoft for the amount of work you put me through to do this!! <START>
 	 */
 	dummyEntry1(58, false, null, null),
 	dummyEntry2(59, false, null, null),
@@ -132,8 +133,7 @@ public enum ClassId
 	dummyEntry29(86, false, null, null),
 	dummyEntry30(87, false, null, null),
 	/*
-	 * <END>
-	 * Of Dummy entries
+	 * <END> Of Dummy entries
 	 */
 	
 	/*
@@ -192,7 +192,7 @@ public enum ClassId
 	maleSoulhound(0x84, false, Race.Kamael, maleSoulbreaker),
 	femaleSoulhound(0x85, false, Race.Kamael, femaleSoulbreaker),
 	trickster(0x86, false, Race.Kamael, arbalester),
-	inspector(0x87, false, Race.Kamael, warder), //DS: yes, both male/female inspectors use skills from warder
+	inspector(0x87, false, Race.Kamael, warder), // DS: yes, both male/female inspectors use skills from warder
 	judicator(0x88, false, Race.Kamael, inspector);
 	
 	/** The Identifier of the Class */
@@ -282,10 +282,14 @@ public enum ClassId
 	public final boolean childOf(ClassId cid)
 	{
 		if (_parent == null)
+		{
 			return false;
+		}
 		
 		if (_parent == cid)
+		{
 			return true;
+		}
 		
 		return _parent.childOf(cid);
 		
@@ -297,7 +301,7 @@ public enum ClassId
 	 */
 	public final boolean equalsOrChildOf(ClassId cid)
 	{
-		return this == cid || childOf(cid);
+		return (this == cid) || childOf(cid);
 	}
 	
 	/**
@@ -306,7 +310,9 @@ public enum ClassId
 	public final int level()
 	{
 		if (_parent == null)
+		{
 			return 0;
+		}
 		
 		return 1 + _parent.level();
 	}

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
@@ -18,8 +22,8 @@ import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.TradeList;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExPrivateStoreSetWholeMsg;
@@ -30,7 +34,6 @@ import com.l2jserver.gameserver.util.Util;
 
 /**
  * This class ...
- *
  * @version $Revision: 1.2.2.1.2.5 $ $Date: 2005/03/27 15:29:30 $
  */
 public class SetPrivateStoreListSell extends L2GameClientPacket
@@ -47,7 +50,7 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 	{
 		_packageSale = (readD() == 1);
 		int count = readD();
-		if (count < 1 || count > Config.MAX_ITEM_IN_PACKET || count * BATCH_LENGTH != _buf.remaining())
+		if ((count < 1) || (count > Config.MAX_ITEM_IN_PACKET) || ((count * BATCH_LENGTH) != _buf.remaining()))
 		{
 			return;
 		}
@@ -59,7 +62,7 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 			long cnt = readQ();
 			long price = readQ();
 			
-			if (itemId < 1 || cnt < 1 || price < 0)
+			if ((itemId < 1) || (cnt < 1) || (price < 0))
 			{
 				_items = null;
 				return;
@@ -73,7 +76,9 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 	{
 		L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
+		{
 			return;
+		}
 		
 		if (_items == null)
 		{
@@ -89,7 +94,7 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 			return;
 		}
 		
-		if (AttackStanceTaskManager.getInstance().getAttackStanceTask(player) || player.isInDuel())
+		if (AttackStanceTaskManager.getInstance().hasAttackStanceTask(player) || player.isInDuel())
 		{
 			player.sendPacket(SystemMessageId.CANT_OPERATE_PRIVATE_STORE_DURING_COMBAT);
 			player.sendPacket(new PrivateStoreManageListSell(player, _packageSale));
@@ -97,7 +102,7 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 			return;
 		}
 		
-		if (player.isInsideZone(L2Character.ZONE_NOSTORE))
+		if (player.isInsideZone(ZoneId.NO_STORE))
 		{
 			player.sendPacket(new PrivateStoreManageListSell(player, _packageSale));
 			player.sendPacket(SystemMessageId.NO_PRIVATE_STORE_HERE);
@@ -136,16 +141,24 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 		
 		player.sitDown();
 		if (_packageSale)
+		{
 			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_PACKAGE_SELL);
+		}
 		else
+		{
 			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_SELL);
+		}
 		
 		player.broadcastUserInfo();
 		
 		if (_packageSale)
+		{
 			player.broadcastPacket(new ExPrivateStoreSetWholeMsg(player));
+		}
 		else
+		{
 			player.broadcastPacket(new PrivateStoreMsgSell(player));
+		}
 	}
 	
 	private static class Item
@@ -164,7 +177,9 @@ public class SetPrivateStoreListSell extends L2GameClientPacket
 		public boolean addToTradeList(TradeList list)
 		{
 			if ((MAX_ADENA / _count) < _price)
+			{
 				return false;
+			}
 			
 			list.addItem(_itemId, _count, _price);
 			return true;

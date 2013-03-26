@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.conditions;
 
@@ -46,27 +50,27 @@ public class ConditionPetType extends Condition
 		
 		int npcid = ((L2Summon) env.getCharacter()).getNpcId();
 		
-		if (PetDataTable.isHatchling(npcid) && ((petType & L2Item.HATCHLING) == L2Item.HATCHLING))
+		if (PetDataTable.isHatchling(npcid) && (petType == L2Item.HATCHLING))
 		{
 			return true;
 		}
-		else if (PetDataTable.isWolf(npcid) && ((petType & L2Item.WOLF) == L2Item.WOLF))
+		else if (PetDataTable.isWolf(npcid) && (petType == L2Item.WOLF))
 		{
 			return true;
 		}
-		else if (PetDataTable.isEvolvedWolf(npcid) && ((petType & L2Item.GROWN_WOLF) == L2Item.GROWN_WOLF))
+		else if (PetDataTable.isEvolvedWolf(npcid) && (petType == L2Item.GROWN_WOLF))
 		{
 			return true;
 		}
-		else if (PetDataTable.isStrider(npcid) && ((petType & L2Item.STRIDER) == L2Item.STRIDER))
+		else if (PetDataTable.isStrider(npcid) && (petType == L2Item.STRIDER))
 		{
 			return true;
 		}
-		else if (PetDataTable.isBaby(npcid) && ((petType & L2Item.BABY) == L2Item.BABY))
+		else if (PetDataTable.isBaby(npcid) && (petType == L2Item.BABY))
 		{
 			return true;
 		}
-		else if (PetDataTable.isImprovedBaby(npcid) && ((petType & L2Item.IMPROVED_BABY) == L2Item.IMPROVED_BABY))
+		else if (PetDataTable.isImprovedBaby(npcid) && (petType == L2Item.IMPROVED_BABY))
 		{
 			return true;
 		}

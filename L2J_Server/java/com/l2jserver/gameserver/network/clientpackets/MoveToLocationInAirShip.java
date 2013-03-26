@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
@@ -24,9 +28,8 @@ import com.l2jserver.gameserver.network.serverpackets.StopMoveInVehicle;
 import com.l2jserver.gameserver.util.Point3D;
 
 /**
- * format: ddddddd
- * X:%d Y:%d Z:%d OriginX:%d OriginY:%d OriginZ:%d
- * @author  GodKratos
+ * format: ddddddd X:%d Y:%d Z:%d OriginX:%d OriginY:%d OriginZ:%d
+ * @author GodKratos
  */
 public class MoveToLocationInAirShip extends L2GameClientPacket
 {
@@ -40,7 +43,10 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 	private int _originY;
 	private int _originZ;
 	
-	public TaskPriority getPriority() { return TaskPriority.PR_HIGH; }
+	public TaskPriority getPriority()
+	{
+		return TaskPriority.PR_HIGH;
+	}
 	
 	@Override
 	protected void readImpl()
@@ -54,23 +60,22 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 		_originZ = readD();
 	}
 	
-	
 	@Override
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
-		if (_targetX == _originX && _targetY == _originY && _targetZ == _originZ)
+		if ((_targetX == _originX) && (_targetY == _originY) && (_targetZ == _originZ))
 		{
 			activeChar.sendPacket(new StopMoveInVehicle(activeChar, _shipId));
 			return;
 		}
-
-		if (activeChar.isAttackingNow()
-				&& activeChar.getActiveWeaponItem() != null
-				&& (activeChar.getActiveWeaponItem().getItemType() == L2WeaponType.BOW))
+		
+		if (activeChar.isAttackingNow() && (activeChar.getActiveWeaponItem() != null) && (activeChar.getActiveWeaponItem().getItemType() == L2WeaponType.BOW))
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;

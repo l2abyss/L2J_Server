@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.communityserver.readpackets;
 
@@ -33,13 +37,13 @@ import com.l2jserver.gameserver.network.communityserver.writepackets.InitWorldIn
 import com.l2jserver.gameserver.network.communityserver.writepackets.WorldInfo;
 
 /**
- * @authors  Forsaiken, Gigiikun
+ * @authors Forsaiken, Gigiikun
  */
 public final class RequestWorldInfo extends BaseReadPacket
 {
-	public static final byte SERVER_LOAD						= 0;
-	public static final byte PLAYER_DATA_UPDATE					= 1;
-	public static final byte CLAN_DATA_UPDATE					= 2;
+	public static final byte SERVER_LOAD = 0;
+	public static final byte PLAYER_DATA_UPDATE = 1;
+	public static final byte CLAN_DATA_UPDATE = 2;
 	private static Logger _log = Logger.getLogger(WorldInfo.class.getName());
 	private final CommunityServerThread _cst;
 	private static final int MAX_ARRAY = 10; // set this with caution, 8192 is the max packet size!!!
@@ -55,7 +59,7 @@ public final class RequestWorldInfo extends BaseReadPacket
 	@Override
 	public final void run()
 	{
-		switch(_type)
+		switch (_type)
 		{
 			case SERVER_LOAD:
 				// clans data
@@ -129,13 +133,17 @@ public final class RequestWorldInfo extends BaseReadPacket
 				int playerObjId = super.readD();
 				L2PcInstance player = L2World.getInstance().getPlayer(playerObjId);
 				if (player != null)
+				{
 					_cst.sendPacket(new WorldInfo(player, null, WorldInfo.TYPE_UPDATE_PLAYER_DATA));
+				}
 				break;
 			case CLAN_DATA_UPDATE:
 				int clanObjId = super.readD();
 				L2Clan clan = ClanTable.getInstance().getClan(clanObjId);
 				if (clan != null)
+				{
 					_cst.sendPacket(new WorldInfo(null, clan, WorldInfo.TYPE_UPDATE_CLAN_DATA));
+				}
 				break;
 		}
 	}

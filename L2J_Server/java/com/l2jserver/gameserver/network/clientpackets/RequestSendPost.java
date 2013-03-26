@@ -1,20 +1,23 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import static com.l2jserver.gameserver.model.actor.L2Character.ZONE_PEACE;
 import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
 import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
 
@@ -28,6 +31,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Message;
 import com.l2jserver.gameserver.model.itemcontainer.Mail;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExNoticePostSent;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
@@ -62,7 +66,6 @@ public final class RequestSendPost extends L2GameClientPacket
 	private AttachmentItem _items[] = null;
 	private long _reqAdena;
 	
-	
 	public RequestSendPost()
 	{
 	}
@@ -76,10 +79,10 @@ public final class RequestSendPost extends L2GameClientPacket
 		_text = readS();
 		
 		int attachCount = readD();
-		if (attachCount < 0
-				|| attachCount > Config.MAX_ITEM_IN_PACKET
-				|| attachCount * BATCH_LENGTH + 8 != _buf.remaining())
+		if ((attachCount < 0) || (attachCount > Config.MAX_ITEM_IN_PACKET) || (((attachCount * BATCH_LENGTH) + 8) != _buf.remaining()))
+		{
 			return;
+		}
 		
 		if (attachCount > 0)
 		{
@@ -88,7 +91,7 @@ public final class RequestSendPost extends L2GameClientPacket
 			{
 				int objectId = readD();
 				long count = readQ();
-				if (objectId < 1 || count < 0)
+				if ((objectId < 1) || (count < 0))
 				{
 					_items = null;
 					return;
@@ -104,11 +107,15 @@ public final class RequestSendPost extends L2GameClientPacket
 	public void runImpl()
 	{
 		if (!Config.ALLOW_MAIL)
+		{
 			return;
+		}
 		
 		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		if (!Config.ALLOW_ATTACHMENTS)
 		{
@@ -123,7 +130,7 @@ public final class RequestSendPost extends L2GameClientPacket
 			return;
 		}
 		
-		if (!activeChar.isInsideZone(ZONE_PEACE) && _items != null)
+		if (!activeChar.isInsideZone(ZoneId.PEACE) && (_items != null))
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_FORWARD_NOT_IN_PEACE_ZONE);
 			return;
@@ -141,7 +148,7 @@ public final class RequestSendPost extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.getPrivateStoreType() > 0)
+		if (activeChar.getPrivateStoreType() > L2PcInstance.STORE_PRIVATE_NONE)
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_FORWARD_PRIVATE_STORE);
 			return;
@@ -166,14 +173,16 @@ public final class RequestSendPost extends L2GameClientPacket
 			return;
 		}
 		
-		if (_items != null && _items.length > MAX_ATTACHMENTS)
+		if ((_items != null) && (_items.length > MAX_ATTACHMENTS))
 		{
 			activeChar.sendPacket(SystemMessageId.ITEM_SELECTION_POSSIBLE_UP_TO_8);
 			return;
 		}
 		
-		if (_reqAdena < 0 || _reqAdena > MAX_ADENA)
+		if ((_reqAdena < 0) || (_reqAdena > MAX_ADENA))
+		{
 			return;
+		}
 		
 		if (_isCod)
 		{
@@ -182,7 +191,7 @@ public final class RequestSendPost extends L2GameClientPacket
 				activeChar.sendPacket(SystemMessageId.PAYMENT_AMOUNT_NOT_ENTERED);
 				return;
 			}
-			if (_items == null || _items.length == 0)
+			if ((_items == null) || (_items.length == 0))
 			{
 				activeChar.sendPacket(SystemMessageId.PAYMENT_REQUEST_NO_ITEM);
 				return;
@@ -202,7 +211,6 @@ public final class RequestSendPost extends L2GameClientPacket
 			return;
 		}
 		
-		
 		final int level = CharNameTable.getInstance().getAccessLevelById(receiverId);
 		final L2AccessLevel accessLevel = AdminTable.getInstance().getAccessLevel(level);
 		
@@ -214,7 +222,7 @@ public final class RequestSendPost extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.isInJail() && ((Config.JAIL_DISABLE_TRANSACTION && _items != null) || Config.JAIL_DISABLE_CHAT))
+		if (activeChar.isInJail() && ((Config.JAIL_DISABLE_TRANSACTION && (_items != null)) || Config.JAIL_DISABLE_CHAT))
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_FORWARD_NOT_IN_PEACE_ZONE);
 			return;
@@ -266,7 +274,7 @@ public final class RequestSendPost extends L2GameClientPacket
 			{
 				// Check validity of requested item
 				L2ItemInstance item = player.checkItemManipulation(i.getObjectId(), i.getCount(), "attach");
-				if (item == null || !item.isTradeable() || item.isEquipped())
+				if ((item == null) || !item.isTradeable() || item.isEquipped())
 				{
 					player.sendPacket(SystemMessageId.CANT_FORWARD_BAD_ITEM);
 					return false;
@@ -275,31 +283,34 @@ public final class RequestSendPost extends L2GameClientPacket
 				fee += MESSAGE_FEE_PER_SLOT;
 				
 				if (item.getItemId() == ADENA_ID)
+				{
 					currentAdena -= i.getCount();
+				}
 			}
 		}
 		
 		// Check if enough adena and charge the fee
-		if (currentAdena < fee || !player.reduceAdena("MailFee", fee, null, false))
+		if ((currentAdena < fee) || !player.reduceAdena("MailFee", fee, null, false))
 		{
 			player.sendPacket(SystemMessageId.CANT_FORWARD_NO_ADENA);
 			return false;
 		}
 		
 		if (_items == null)
+		{
 			return true;
+		}
 		
 		Mail attachments = msg.createAttachments();
 		
 		// message already has attachments ? oO
 		if (attachments == null)
+		{
 			return false;
+		}
 		
 		final StringBuilder recv = new StringBuilder(32);
-		StringUtil.append(recv, msg.getReceiverName(),
-				"[",
-				String.valueOf(msg.getReceiverId()),
-		"]");
+		StringUtil.append(recv, msg.getReceiverName(), "[", String.valueOf(msg.getReceiverId()), "]");
 		final String receiver = recv.toString();
 		
 		// Proceed to the transfer
@@ -308,34 +319,42 @@ public final class RequestSendPost extends L2GameClientPacket
 		{
 			// Check validity of requested item
 			L2ItemInstance oldItem = player.checkItemManipulation(i.getObjectId(), i.getCount(), "attach");
-			if (oldItem == null || !oldItem.isTradeable() || oldItem.isEquipped())
+			if ((oldItem == null) || !oldItem.isTradeable() || oldItem.isEquipped())
 			{
-				_log.warning("Error adding attachment for char "+player.getName()+" (olditem == null)");
+				_log.warning("Error adding attachment for char " + player.getName() + " (olditem == null)");
 				return false;
 			}
 			
 			final L2ItemInstance newItem = player.getInventory().transferItem("SendMail", i.getObjectId(), i.getCount(), attachments, player, receiver);
 			if (newItem == null)
 			{
-				_log.warning("Error adding attachment for char "+player.getName()+" (newitem == null)");
+				_log.warning("Error adding attachment for char " + player.getName() + " (newitem == null)");
 				continue;
 			}
 			newItem.setLocation(newItem.getLocation(), msg.getId());
 			
 			if (playerIU != null)
 			{
-				if (oldItem.getCount() > 0 && oldItem != newItem)
+				if ((oldItem.getCount() > 0) && (oldItem != newItem))
+				{
 					playerIU.addModifiedItem(oldItem);
+				}
 				else
+				{
 					playerIU.addRemovedItem(oldItem);
+				}
 			}
 		}
 		
 		// Send updated item list to the player
 		if (playerIU != null)
+		{
 			player.sendPacket(playerIU);
+		}
 		else
+		{
 			player.sendPacket(new ItemList(player, false));
+		}
 		
 		// Update current load status on player
 		StatusUpdate su = new StatusUpdate(player);

@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.itemauction;
 
@@ -33,7 +37,7 @@ public final class AuctionDateGenerator
 	
 	private final Calendar _calendar;
 	
-	private int _interval;
+	private final int _interval;
 	private int _day_of_week;
 	private int _hour_of_day;
 	private int _minute_of_hour;
@@ -42,7 +46,7 @@ public final class AuctionDateGenerator
 	{
 		_calendar = Calendar.getInstance();
 		_interval = config.getInteger(FIELD_INTERVAL, -1);
-		//NC week start in Monday.
+		// NC week start in Monday.
 		final int fixedDayWeek = config.getInteger(FIELD_DAY_OF_WEEK, -1) + 1;
 		_day_of_week = (fixedDayWeek > 7) ? 1 : fixedDayWeek;
 		_hour_of_day = config.getInteger(FIELD_HOUR_OF_DAY, -1);
@@ -76,39 +80,49 @@ public final class AuctionDateGenerator
 		{
 			time += ((date - time) / add) * add;
 			if (time < date)
+			{
 				time += add;
+			}
 		}
 		return time;
 	}
 	
 	private final void checkDayOfWeek(final int defaultValue)
 	{
-		if (_day_of_week < 1 || _day_of_week > 7)
+		if ((_day_of_week < 1) || (_day_of_week > 7))
 		{
-			if (defaultValue == -1 && _interval < 1)
+			if ((defaultValue == -1) && (_interval < 1))
+			{
 				throw new IllegalArgumentException("Illegal params for '" + FIELD_DAY_OF_WEEK + "': " + (_day_of_week == -1 ? "not found" : _day_of_week));
+			}
 			_day_of_week = defaultValue;
 		}
 		else if (_interval > 1)
-			throw new IllegalArgumentException("Illegal params for '" + FIELD_INTERVAL +"' and '" + FIELD_DAY_OF_WEEK + "': you can use only one, not both");
+		{
+			throw new IllegalArgumentException("Illegal params for '" + FIELD_INTERVAL + "' and '" + FIELD_DAY_OF_WEEK + "': you can use only one, not both");
+		}
 	}
 	
 	private final void checkHourOfDay(final int defaultValue)
 	{
-		if (_hour_of_day < 0 || _hour_of_day > 23)
+		if ((_hour_of_day < 0) || (_hour_of_day > 23))
 		{
 			if (defaultValue == -1)
+			{
 				throw new IllegalArgumentException("Illegal params for '" + FIELD_HOUR_OF_DAY + "': " + (_hour_of_day == -1 ? "not found" : _hour_of_day));
+			}
 			_hour_of_day = defaultValue;
 		}
 	}
 	
 	private final void checkMinuteOfHour(final int defaultValue)
 	{
-		if (_minute_of_hour < 0 || _minute_of_hour > 59)
+		if ((_minute_of_hour < 0) || (_minute_of_hour > 59))
 		{
 			if (defaultValue == -1)
+			{
 				throw new IllegalArgumentException("Illegal params for '" + FIELD_MINUTE_OF_HOUR + "': " + (_minute_of_hour == -1 ? "not found" : _minute_of_hour));
+			}
 			_minute_of_hour = defaultValue;
 		}
 	}

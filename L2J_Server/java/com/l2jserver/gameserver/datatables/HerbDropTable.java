@@ -1,28 +1,32 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.datatables;
-
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javolution.util.FastList;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2DropCategory;
@@ -30,44 +34,45 @@ import com.l2jserver.gameserver.model.L2DropData;
 
 /**
  * This class ...
- *
  * @version $Revision$ $Date$
  */
 public class HerbDropTable
 {
-	private static Logger _log = Logger.getLogger(HerbDropTable.class.getName());
+	private static final Logger _log = Logger.getLogger(HerbDropTable.class.getName());
 	
-	private TIntObjectHashMap<FastList<L2DropCategory>> _herbGroups;
-	
-	public static HerbDropTable getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	private final Map<Integer, List<L2DropCategory>> _herbGroups = new HashMap<>();
 	
 	protected HerbDropTable()
 	{
-		_herbGroups = new TIntObjectHashMap<>();
 		restoreData();
 	}
 	
 	private void restoreData()
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT "
-				+ L2DatabaseFactory.getInstance().safetyString(new String[] { "groupId", "itemId", "min", "max", "category", "chance" })
-				+ " FROM herb_droplist_groups ORDER BY groupId, chance DESC");
+			PreparedStatement statement = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[]
+			{
+				"groupId",
+				"itemId",
+				"min",
+				"max",
+				"category",
+				"chance"
+			}) + " FROM herb_droplist_groups ORDER BY groupId, chance DESC");
 			ResultSet dropData = statement.executeQuery())
 		{
 			L2DropData dropDat = null;
 			while (dropData.next())
 			{
 				int groupId = dropData.getInt("groupId");
-				FastList<L2DropCategory> category;
-				if (_herbGroups.contains(groupId))
+				List<L2DropCategory> category;
+				if (_herbGroups.containsKey(groupId))
+				{
 					category = _herbGroups.get(groupId);
+				}
 				else
 				{
-					category = new FastList<>();
+					category = new ArrayList<>();
 					_herbGroups.put(groupId, category);
 				}
 				
@@ -82,12 +87,13 @@ public class HerbDropTable
 				
 				if (ItemTable.getInstance().getTemplate(dropDat.getItemId()) == null)
 				{
-					_log.warning("Herb Drop data for undefined item template! GroupId: " + groupId+" itemId: "+dropDat.getItemId());
+					_log.warning(getClass().getSimpleName() + ": Data for undefined item template! GroupId: " + groupId + " itemId: " + dropDat.getItemId());
 					continue;
 				}
 				
 				boolean catExists = false;
 				for (L2DropCategory cat : category)
+				{
 					// if the category exists, add the drop to this category.
 					if (cat.getCategoryType() == categoryType)
 					{
@@ -95,6 +101,7 @@ public class HerbDropTable
 						catExists = true;
 						break;
 					}
+				}
 				// if the category doesn't exit, create it and add the drop
 				if (!catExists)
 				{
@@ -106,13 +113,18 @@ public class HerbDropTable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "HerbDroplistGroupsTable: Error reading Herb dropdata. ", e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error reading Herb dropdata. ", e);
 		}
 	}
 	
-	public FastList<L2DropCategory> getHerbDroplist(int groupId)
+	public List<L2DropCategory> getHerbDroplist(int groupId)
 	{
 		return _herbGroups.get(groupId);
+	}
+	
+	public static HerbDropTable getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

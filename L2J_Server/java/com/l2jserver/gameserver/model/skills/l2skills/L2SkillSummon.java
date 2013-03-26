@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.skills.l2skills;
 
@@ -35,17 +39,20 @@ public class L2SkillSummon extends L2Skill
 {
 	public static final int SKILL_CUBIC_MASTERY = 143;
 	
-	private int     _npcId;
-	private float   _expPenalty;
+	private final float _expPenalty;
 	private final boolean _isCubic;
 	
 	// cubic AI
+	// Power for a cubic
+	private final int _cubicPower;
+	// Duration for a cubic
+	private final int _cubicDuration;
 	// Activation time for a cubic
-	private final int _activationtime;
-	// Activation chance for a cubic.
-	private final int _activationchance;
-	// Maximum casts made by the cubic until it goes idle.
-	private final int _maxcount;
+	private final int _cubicDelay;
+	// Maximum casts made by the cubic until it goes idle
+	private final int _cubicMaxCount;
+	// Activation chance for a cubic
+	private final int _cubicSkillChance;
 	
 	// What is the total lifetime of summons (in millisecs)
 	private final int _summonTotalLifeTime;
@@ -70,17 +77,18 @@ public class L2SkillSummon extends L2Skill
 	{
 		super(set);
 		
-		_npcId      = set.getInteger("npcId", 0); // default for undescribed skills
-		_expPenalty = set.getFloat ("expPenalty", 0.f);
-		_isCubic    = set.getBool("isCubic", false);
+		_expPenalty = set.getFloat("expPenalty", 0.f);
+		_isCubic = set.getBool("isCubic", false);
 		
-		_activationtime= set.getInteger("activationtime", 8);
-		_activationchance= set.getInteger("activationchance", 30);
-		_maxcount= set.getInteger("maxcount", -1);
+		_cubicPower = set.getInteger("cubicPower", 0);
+		_cubicDuration = set.getInteger("cubicDuration", 0);
+		_cubicDelay = set.getInteger("cubicDelay", 0);
+		_cubicMaxCount = set.getInteger("cubicMaxCount", -1);
+		_cubicSkillChance = set.getInteger("cubicSkillChance", 0);
 		
-		_summonTotalLifeTime= set.getInteger("summonTotalLifeTime", 1200000);  // 20 minutes default
-		_summonTimeLostIdle= set.getInteger("summonTimeLostIdle", 0);
-		_summonTimeLostActive= set.getInteger("summonTimeLostActive", 0);
+		_summonTotalLifeTime = set.getInteger("summonTotalLifeTime", 1200000); // 20 minutes default
+		_summonTimeLostIdle = set.getInteger("summonTimeLostIdle", 0);
+		_summonTimeLostActive = set.getInteger("summonTimeLostActive", 0);
 		
 		_itemConsumeOT = set.getInteger("itemConsumeCountOT", 0);
 		_itemConsumeIdOT = set.getInteger("itemConsumeIdOT", 0);
@@ -99,25 +107,29 @@ public class L2SkillSummon extends L2Skill
 			
 			if (isCubic())
 			{
-				if (getTargetType() != L2TargetType.TARGET_SELF)
+				if (getTargetType() != L2TargetType.SELF)
 				{
-					return true; //Player is always able to cast mass cubic skill
+					return true; // Player is always able to cast mass cubic skill
 				}
 				int mastery = player.getSkillLevel(SKILL_CUBIC_MASTERY);
 				if (mastery < 0)
+				{
 					mastery = 0;
+				}
 				int count = player.getCubics().size();
 				if (count > mastery)
 				{
-					activeChar.sendMessage("You already have "+count+" cubic(s).");
+					activeChar.sendMessage("You already have " + count + " cubic(s).");
 					return false;
 				}
 			}
 			else
 			{
 				if (player.inObserverMode())
+				{
 					return false;
-				if (player.getPet() != null)
+				}
+				if (player.hasSummon())
 				{
 					activeChar.sendPacket(SystemMessageId.YOU_ALREADY_HAVE_A_PET);
 					return false;
@@ -131,13 +143,15 @@ public class L2SkillSummon extends L2Skill
 	public void useSkill(L2Character caster, L2Object[] targets)
 	{
 		if (caster.isAlikeDead() || !caster.isPlayer())
+		{
 			return;
+		}
 		
 		L2PcInstance activeChar = caster.getActingPlayer();
 		
-		if (_npcId == 0)
+		if (getNpcId() == 0)
 		{
-			activeChar.sendMessage("Summon skill "+getId()+" not described yet");
+			activeChar.sendMessage("Summon skill " + getId() + " not described yet");
 			return;
 		}
 		
@@ -152,18 +166,23 @@ public class L2SkillSummon extends L2Skill
 			int _cubicSkillLevel = getLevel();
 			if (_cubicSkillLevel > 100)
 			{
-				_cubicSkillLevel = ((getLevel()-100) / 7) + 8;
+				_cubicSkillLevel = ((getLevel() - 100) / 7) + 8;
 			}
 			
 			if (targets.length > 1) // Mass cubic skill
 			{
-				for (L2Object obj: targets)
+				for (L2Object obj : targets)
 				{
-					if (!obj.isPlayer()) continue;
+					if (!obj.isPlayer())
+					{
+						continue;
+					}
 					L2PcInstance player = obj.getActingPlayer();
 					int mastery = player.getSkillLevel(SKILL_CUBIC_MASTERY);
 					if (mastery < 0)
+					{
 						mastery = 0;
+					}
 					if ((mastery == 0) && !player.getCubics().isEmpty())
 					{
 						// Player can have only 1 cubic - we should replace old cubic with new one
@@ -174,77 +193,99 @@ public class L2SkillSummon extends L2Skill
 						player.getCubics().clear();
 					}
 					// TODO: Should remove first cubic summoned and replace with new cubic
-					if (player.getCubics().containsKey(_npcId))
+					if (player.getCubics().containsKey(getNpcId()))
 					{
-						L2CubicInstance cubic = player.getCubic(_npcId);
+						L2CubicInstance cubic = player.getCubic(getNpcId());
 						cubic.stopAction();
 						cubic.cancelDisappear();
-						player.delCubic(_npcId);
+						player.delCubic(getNpcId());
 					}
-					if (player.getCubics().size() > mastery) continue;
+					if (player.getCubics().size() > mastery)
+					{
+						continue;
+					}
 					if (player == activeChar)
-						player.addCubic(_npcId, _cubicSkillLevel, getPower(), _activationtime, _activationchance, _maxcount, _summonTotalLifeTime, false);
-					else // given by other player
-						player.addCubic(_npcId, _cubicSkillLevel, getPower(), _activationtime, _activationchance, _maxcount, _summonTotalLifeTime, true);
+					{
+						player.addCubic(getNpcId(), _cubicSkillLevel, _cubicPower, _cubicDelay, _cubicSkillChance, _cubicMaxCount, _cubicDuration, false);
+					}
+					else
+					{
+						player.addCubic(getNpcId(), _cubicSkillLevel, _cubicPower, _cubicDelay, _cubicSkillChance, _cubicMaxCount, _cubicDuration, true);
+					}
 					player.broadcastUserInfo();
 				}
 			}
-			else // Normal cubic skill
+			else
+			// Normal cubic skill
 			{
 				int mastery = activeChar.getSkillLevel(SKILL_CUBIC_MASTERY);
 				if (mastery < 0)
-					mastery = 0;
-				if (activeChar.getCubics().containsKey(_npcId))
 				{
-					L2CubicInstance cubic = activeChar.getCubic(_npcId);
+					mastery = 0;
+				}
+				if (activeChar.getCubics().containsKey(getNpcId()))
+				{
+					L2CubicInstance cubic = activeChar.getCubic(getNpcId());
 					cubic.stopAction();
 					cubic.cancelDisappear();
-					activeChar.delCubic(_npcId);
+					activeChar.delCubic(getNpcId());
 				}
-				if (activeChar.getCubics().size() > mastery) {
+				if (activeChar.getCubics().size() > mastery)
+				{
 					if (Config.DEBUG)
+					{
 						_log.fine("player can't summon any more cubics. ignore summon skill");
+					}
 					activeChar.sendPacket(SystemMessageId.CUBIC_SUMMONING_FAILED);
 					return;
 				}
-				activeChar.addCubic(_npcId, _cubicSkillLevel, getPower(), _activationtime, _activationchance, _maxcount, _summonTotalLifeTime, false);
+				activeChar.addCubic(getNpcId(), _cubicSkillLevel, _cubicPower, _cubicDelay, _cubicSkillChance, _cubicMaxCount, _cubicDuration, false);
 				activeChar.broadcastUserInfo();
 			}
 			return;
 		}
 		
-		if (activeChar.getPet() != null || activeChar.isMounted()) {
+		if (activeChar.hasSummon() || activeChar.isMounted())
+		{
 			if (Config.DEBUG)
+			{
 				_log.fine("player has a pet already. ignore summon skill");
+			}
 			return;
 		}
 		
 		L2ServitorInstance summon;
-		L2NpcTemplate summonTemplate = NpcTable.getInstance().getTemplate(_npcId);
+		L2NpcTemplate summonTemplate = NpcTable.getInstance().getTemplate(getNpcId());
 		if (summonTemplate == null)
 		{
-			_log.warning("Summon attempt for nonexisting NPC ID:"+_npcId+", skill ID:"+this.getId());
+			_log.warning("Summon attempt for nonexisting NPC ID:" + getNpcId() + ", skill ID:" + getId());
 			return; // npcID doesn't exist
 		}
 		
 		final int id = IdFactory.getInstance().getNextId();
 		if (summonTemplate.isType("L2SiegeSummon"))
+		{
 			summon = new L2SiegeSummonInstance(id, summonTemplate, activeChar, this);
+		}
 		else if (summonTemplate.isType("L2MerchantSummon"))
+		{
 			summon = new L2MerchantSummonInstance(id, summonTemplate, activeChar, this);
+		}
 		else
+		{
 			summon = new L2ServitorInstance(id, summonTemplate, activeChar, this);
+		}
 		
 		summon.setName(summonTemplate.getName());
 		summon.setTitle(activeChar.getName());
 		summon.setExpPenalty(_expPenalty);
 		summon.setSharedElementals(_inheritElementals);
 		summon.setSharedElementalsValue(_elementalSharePercent);
-			
+		
 		if (summon.getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
 		{
-			summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(ExperienceTable.getInstance().getMaxPetLevel()-1));
-			_log.warning("Summon (" + summon.getName() + ") NpcID: " + summon.getNpcId() + " has a level above "+ExperienceTable.getInstance().getMaxPetLevel()+". Please rectify.");
+			summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(ExperienceTable.getInstance().getMaxPetLevel() - 1));
+			_log.warning("Summon (" + summon.getName() + ") NpcID: " + summon.getNpcId() + " has a level above " + ExperienceTable.getInstance().getMaxPetLevel() + ". Please rectify.");
 		}
 		else
 		{
@@ -256,10 +297,12 @@ public class L2SkillSummon extends L2Skill
 		summon.setHeading(activeChar.getHeading());
 		summon.setRunning();
 		if (!(summon instanceof L2MerchantSummonInstance))
+		{
 			activeChar.setPet(summon);
+		}
 		
-		//L2World.getInstance().storeObject(summon);
-		summon.spawnMe(activeChar.getX()+20, activeChar.getY()+20, activeChar.getZ());
+		// L2World.getInstance().storeObject(summon);
+		summon.spawnMe(activeChar.getX() + 20, activeChar.getY() + 20, activeChar.getZ());
 	}
 	
 	public final boolean isCubic()
@@ -309,11 +352,6 @@ public class L2SkillSummon extends L2Skill
 	public final int getItemConsumeTime()
 	{
 		return _itemConsumeTime;
-	}
-	
-	public final int getNpcId()
-	{
-		return _npcId;
 	}
 	
 	public final float getExpPenalty()

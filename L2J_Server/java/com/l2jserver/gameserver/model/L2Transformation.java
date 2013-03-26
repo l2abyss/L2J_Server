@@ -1,24 +1,27 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- *
- * @author  KenM
+ * @author KenM
  */
 public abstract class L2Transformation implements Cloneable, Runnable
 {
@@ -36,11 +39,10 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	private L2PcInstance _player;
 	
 	/**
-	 * 
 	 * @param id Internal id that server will use to associate this transformation
 	 * @param graphicalId Client visible transformation id
 	 * @param collisionRadius Collision Radius of the player while transformed
-	 * @param collisionHeight  Collision Height of the player while transformed
+	 * @param collisionHeight Collision Height of the player while transformed
 	 */
 	public L2Transformation(int id, int graphicalId, double collisionRadius, double collisionHeight)
 	{
@@ -52,10 +54,9 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	}
 	
 	/**
-	 * 
 	 * @param id Internal id(will be used also as client graphical id) that server will use to associate this transformation
 	 * @param collisionRadius Collision Radius of the player while transformed
-	 * @param collisionHeight  Collision Height of the player while transformed
+	 * @param collisionHeight Collision Height of the player while transformed
 	 */
 	public L2Transformation(int id, double collisionRadius, double collisionHeight)
 	{
@@ -63,9 +64,7 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	}
 	
 	/**
-	 * 
-	 * @param id Internal id(will be used also as client graphical id) that server will use to associate this transformation
-	 * Used for stances
+	 * @param id Internal id(will be used also as client graphical id) that server will use to associate this transformation Used for stances
 	 */
 	public L2Transformation(int id)
 	{
@@ -105,7 +104,9 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	public double getCollisionRadius()
 	{
 		if (isStance())
+		{
 			return _player.getCollisionRadius();
+		}
 		return _collisionRadius;
 	}
 	
@@ -115,7 +116,9 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	public double getCollisionHeight()
 	{
 		if (isStance())
+		{
 			return _player.getCollisionHeight();
+		}
 		return _collisionHeight;
 	}
 	
@@ -142,30 +145,30 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	
 	public void start()
 	{
-		this.resume();
+		resume();
 	}
 	
 	public void resume()
 	{
-		this.getPlayer().transform(this);
+		getPlayer().transform(this);
 	}
 	
 	@Override
 	public void run()
 	{
-		this.stop();
+		stop();
 	}
 	
 	public void stop()
 	{
-		this.getPlayer().untransform();
+		getPlayer().untransform();
 	}
 	
 	public L2Transformation createTransformationForPlayer(L2PcInstance player)
 	{
 		try
 		{
-			L2Transformation transformation = (L2Transformation) this.clone();
+			L2Transformation transformation = (L2Transformation) clone();
 			transformation.setPlayer(player);
 			return transformation;
 		}
@@ -197,10 +200,10 @@ public abstract class L2Transformation implements Cloneable, Runnable
 	{
 		return true;
 	}
-
+	
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName()+" [_id=" + _id + ", _graphicalId=" + _graphicalId + ", _collisionRadius=" + _collisionRadius + ", _collisionHeight=" + _collisionHeight + ", _isStance=" + _isStance + "]";
+		return getClass().getSimpleName() + " [_id=" + _id + ", _graphicalId=" + _graphicalId + ", _collisionRadius=" + _collisionRadius + ", _collisionHeight=" + _collisionHeight + ", _isStance=" + _isStance + "]";
 	}
 }

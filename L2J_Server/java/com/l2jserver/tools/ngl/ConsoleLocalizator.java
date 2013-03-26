@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.tools.ngl;
 
@@ -31,6 +35,8 @@ import com.sun.jna.ptr.IntByReference;
  */
 public class ConsoleLocalizator extends LocalizationParser
 {
+	public static final String EOL = System.getProperty("line.separator");
+	
 	private WinConsole _wcon;
 	private Pointer _stdout;
 	private static PrintStream _out;
@@ -115,7 +121,7 @@ public class ConsoleLocalizator extends LocalizationParser
 			{
 				// UTF-8 Not Supported
 				_out = new PrintStream(System.out, true);
-				directPrint("Your system doesn't support UTF-8 encoding\n");
+				directPrint("Your system doesn't support UTF-8 encoding" + EOL);
 			}
 		}
 	}
@@ -144,7 +150,7 @@ public class ConsoleLocalizator extends LocalizationParser
 	 */
 	public void println()
 	{
-		directPrint("\n");
+		directPrint(EOL);
 	}
 	
 	/**
@@ -157,11 +163,11 @@ public class ConsoleLocalizator extends LocalizationParser
 		String msg = getStringFromId(id);
 		if (msg == null)
 		{
-			msg = formatText("Untranslated id: %s\n", id);
+			msg = formatText("Untranslated id: %s" + EOL, id);
 		}
 		else
 		{
-			msg = formatText(msg + "\n", args);
+			msg = formatText(msg + EOL, args);
 		}
 		directPrint(msg);
 	}

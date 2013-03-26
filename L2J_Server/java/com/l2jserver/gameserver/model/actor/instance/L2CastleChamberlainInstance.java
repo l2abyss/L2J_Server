@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
@@ -42,8 +46,13 @@ import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.StringUtil;
 
 /**
- * Castle Chamberlains implementation used for: - tax rate control - regional<br>
- * manor system control - castle treasure control - ...
+ * Castle Chamberlains implementation used for:
+ * <ul>
+ * <li>Tax rate control regional</li>
+ * <li>Manor system control</li>
+ * <li>Castle treasure control</li>
+ * <li>Manor's agreement exchange</li>
+ * </ul>
  */
 public class L2CastleChamberlainInstance extends L2MerchantInstance
 {
@@ -91,7 +100,7 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 			String actualCommand = st.nextToken(); // Get actual command
 			
 			String val = "";
-			if (st.countTokens() >= 1)
+			if (st.hasMoreTokens())
 			{
 				val = st.nextToken();
 			}
@@ -1243,6 +1252,98 @@ public class L2CastleChamberlainInstance extends L2MerchantInstance
 				
 				player.sendPacket(html);
 				return;
+			}
+			else if (actualCommand.equalsIgnoreCase("manors_cert"))
+			{
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				// Zoey76: TODO: Check privileges and replace with enum/constants.
+				if (isMyLord(player) || (validatePrivileges(player, 5) && (validateCondition(player) == COND_OWNER)))
+				{
+					if (getCastle().getSiege().getIsInProgress())
+					{
+						html.setFile(player.getHtmlPrefix(), "data/html/chamberlain/chamberlain-busy.htm");
+						html.replace("%npcname%", String.valueOf(getName()));
+					}
+					else
+					{
+						final int cabal = SevenSigns.getInstance().getPlayerCabal(player.getObjectId());
+						if ((cabal == SevenSigns.CABAL_DAWN) && SevenSigns.getInstance().isCompetitionPeriod())
+						{
+							final int ticketCount = getCastle().getTicketBuyCount();
+							if (ticketCount < (Config.SSQ_DAWN_TICKET_QUANTITY / Config.SSQ_DAWN_TICKET_BUNDLE))
+							{
+								html.setFile(player.getHtmlPrefix(), "data/html/chamberlain/ssq_selldawnticket.htm");
+								html.replace("%DawnTicketLeft%", String.valueOf(Config.SSQ_DAWN_TICKET_QUANTITY - (ticketCount * Config.SSQ_DAWN_TICKET_BUNDLE)));
+								html.replace("%DawnTicketBundle%", String.valueOf(Config.SSQ_DAWN_TICKET_BUNDLE));
+								html.replace("%DawnTicketPrice%", String.valueOf(Config.SSQ_DAWN_TICKET_PRICE * Config.SSQ_DAWN_TICKET_BUNDLE));
+							}
+							else
+							{
+								html.setFile(player.getHtmlPrefix(), "data/html/chamberlain/ssq_notenoughticket.htm");
+							}
+						}
+						else
+						{
+							html.setFile(player.getHtmlPrefix(), "data/html/chamberlain/ssq_notdawnorevent.htm");
+						}
+					}
+				}
+				else
+				{
+					html.setFile(player.getHtmlPrefix(), "data/html/chamberlain/chamberlain-noprivs.htm");
+				}
+				html.replace("%objectId%", String.valueOf(getObjectId()));
+				player.sendPacket(html);
+			}
+			else if (actualCommand.equalsIgnoreCase("manors_cert_confirm"))
+			{
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				// Zoey76: TODO: Check privileges and replace with enum/constants.
+				if (isMyLord(player) || (validatePrivileges(player, 5) && (validateCondition(player) == COND_OWNER)))
+				{
+					if (getCastle().getSiege().getIsInProgress())
+					{
+						html.setFile(player.getHtmlPrefix(), "data/html/chamberlain/chamberlain-busy.htm");
+						html.replace("%npcname%", String.valueOf(getName()));
+					}
+					else
+					{
+						final int cabal = SevenSigns.getInstance().getPlayerCabal(player.getObjectId());
+						if ((cabal == SevenSigns.CABAL_DAWN) && SevenSigns.getInstance().isCompetitionPeriod())
+						{
+							final int ticketCount = getCastle().getTicketBuyCount();
+							if (ticketCount < (Config.SSQ_DAWN_TICKET_QUANTITY / Config.SSQ_DAWN_TICKET_BUNDLE))
+							{
+								final long totalCost = Config.SSQ_DAWN_TICKET_PRICE * Config.SSQ_DAWN_TICKET_BUNDLE;
+								if (player.getAdena() >= totalCost)
+								{
+									// Take the adena.
+									player.reduceAdena(actualCommand, totalCost, this, true);
+									// Give the certificate.
+									player.addItem(actualCommand, Config.SSQ_MANORS_AGREEMENT_ID, Config.SSQ_DAWN_TICKET_BUNDLE, this, true);
+									// Set the ticket count for the player's clan.
+									getCastle().setTicketBuyCount(ticketCount + 1);
+									return;
+								}
+								html.setFile(player.getHtmlPrefix(), "data/html/chamberlain/chamberlain_noadena.htm");
+							}
+							else
+							{
+								html.setFile(player.getHtmlPrefix(), "data/html/chamberlain/ssq_notenoughticket.htm");
+							}
+						}
+						else
+						{
+							html.setFile(player.getHtmlPrefix(), "data/html/chamberlain/ssq_notdawnorevent.htm");
+						}
+					}
+				}
+				else
+				{
+					html.setFile(player.getHtmlPrefix(), "data/html/chamberlain/chamberlain-noprivs.htm");
+				}
+				html.replace("%objectId%", String.valueOf(getObjectId()));
+				player.sendPacket(html);
 			}
 			else
 			{

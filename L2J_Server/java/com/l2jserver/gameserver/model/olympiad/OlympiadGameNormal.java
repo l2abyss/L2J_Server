@@ -1,22 +1,27 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.olympiad;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -29,6 +34,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.type.L2OlympiadStadiumZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMatchResult;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -310,6 +316,14 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 			return;
 		}
 		
+		ExOlympiadMatchResult result = null;
+		
+		boolean tie = false;
+		int winside = 0;
+		
+		List<OlympiadInfo> list1 = new ArrayList<>(1);
+		List<OlympiadInfo> list2 = new ArrayList<>(1);
+		
 		final boolean _pOneCrash = ((_playerOne.getPlayer() == null) || _playerOne.isDisconnected());
 		final boolean _pTwoCrash = ((_playerTwo.getPlayer() == null) || _playerTwo.isDisconnected());
 		
@@ -339,6 +353,9 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 					{
 						points = Math.min(playerOnePoints / 3, Config.ALT_OLY_MAX_POINTS);
 						removePointsFromParticipant(_playerOne, points);
+						list1.add(new OlympiadInfo(_playerOne.getName(), _playerOne.getClanName(), _playerOne.getClanId(), _playerOne.getBaseClass(), _damageP1, playerOnePoints - points, -points));
+						
+						winside = 2;
 						
 						if (Config.ALT_OLY_LOG_FIGHTS)
 						{
@@ -368,6 +385,16 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 					{
 						points = Math.min(playerTwoPoints / 3, Config.ALT_OLY_MAX_POINTS);
 						removePointsFromParticipant(_playerTwo, points);
+						list2.add(new OlympiadInfo(_playerTwo.getName(), _playerTwo.getClanName(), _playerTwo.getClanId(), _playerTwo.getBaseClass(), _damageP2, playerTwoPoints - points, -points));
+						
+						if (winside == 2)
+						{
+							tie = true;
+						}
+						else
+						{
+							winside = 1;
+						}
 						
 						if (Config.ALT_OLY_LOG_FIGHTS)
 						{
@@ -391,6 +418,15 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 						_log.log(Level.WARNING, "Exception on validateWinner(): " + e.getMessage(), e);
 					}
 				}
+				if (winside == 1)
+				{
+					result = new ExOlympiadMatchResult(tie, winside, list1, list2);
+				}
+				else
+				{
+					result = new ExOlympiadMatchResult(tie, winside, list2, list1);
+				}
+				stadium.broadcastPacket(result);
 				return;
 			}
 			catch (Exception e)
@@ -413,9 +449,13 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 					
 					_playerOne.updateStat(COMP_WON, 1);
 					addPointsToParticipant(_playerOne, pointDiff);
+					list1.add(new OlympiadInfo(_playerOne.getName(), _playerOne.getClanName(), _playerOne.getClanId(), _playerOne.getBaseClass(), _damageP1, playerOnePoints + pointDiff, pointDiff));
 					
 					_playerTwo.updateStat(COMP_LOST, 1);
 					removePointsFromParticipant(_playerTwo, pointDiff);
+					list2.add(new OlympiadInfo(_playerTwo.getName(), _playerTwo.getClanName(), _playerTwo.getClanId(), _playerTwo.getBaseClass(), _damageP2, playerTwoPoints - pointDiff, -pointDiff));
+					
+					winside = 1;
 					
 					rewardParticipant(_playerOne.getPlayer(), getReward());
 					
@@ -444,9 +484,13 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 					
 					_playerTwo.updateStat(COMP_WON, 1);
 					addPointsToParticipant(_playerTwo, pointDiff);
+					list2.add(new OlympiadInfo(_playerTwo.getName(), _playerTwo.getClanName(), _playerTwo.getClanId(), _playerTwo.getBaseClass(), _damageP2, playerTwoPoints + pointDiff, pointDiff));
 					
 					_playerOne.updateStat(COMP_LOST, 1);
 					removePointsFromParticipant(_playerOne, pointDiff);
+					list1.add(new OlympiadInfo(_playerOne.getName(), _playerOne.getClanName(), _playerOne.getClanId(), _playerOne.getBaseClass(), _damageP1, playerOnePoints - pointDiff, -pointDiff));
+					
+					winside = 2;
 					
 					rewardParticipant(_playerTwo.getPlayer(), getReward());
 					
@@ -473,9 +517,13 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 					
 					_playerOne.updateStat(COMP_LOST, 1);
 					removePointsFromParticipant(_playerOne, pointDiff);
+					list1.add(new OlympiadInfo(_playerOne.getName(), _playerOne.getClanName(), _playerOne.getClanId(), _playerOne.getBaseClass(), _damageP1, playerOnePoints - pointDiff, -pointDiff));
 					
 					_playerTwo.updateStat(COMP_LOST, 1);
 					removePointsFromParticipant(_playerTwo, pointDiff);
+					list2.add(new OlympiadInfo(_playerTwo.getName(), _playerTwo.getClanName(), _playerTwo.getClanId(), _playerTwo.getBaseClass(), _damageP2, playerTwoPoints - pointDiff, -pointDiff));
+					
+					tie = true;
 					
 					if (Config.ALT_OLY_LOG_FIGHTS)
 					{
@@ -501,6 +549,16 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 				_playerTwo.updateStat(COMP_DONE_WEEK, 1);
 				_playerOne.updateStat(getWeeklyMatchType(), 1);
 				_playerTwo.updateStat(getWeeklyMatchType(), 1);
+				
+				if (winside == 1)
+				{
+					result = new ExOlympiadMatchResult(tie, winside, list1, list2);
+				}
+				else
+				{
+					result = new ExOlympiadMatchResult(tie, winside, list2, list1);
+				}
+				stadium.broadcastPacket(result);
 				return;
 			}
 			catch (Exception e)
@@ -558,9 +616,13 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 				_playerTwo.updateStat(COMP_LOST, 1);
 				
 				addPointsToParticipant(_playerOne, pointDiff);
-				removePointsFromParticipant(_playerTwo, pointDiff);
+				list1.add(new OlympiadInfo(_playerOne.getName(), _playerOne.getClanName(), _playerOne.getClanId(), _playerOne.getBaseClass(), _damageP1, playerOnePoints + pointDiff, pointDiff));
 				
+				removePointsFromParticipant(_playerTwo, pointDiff);
+				list2.add(new OlympiadInfo(_playerTwo.getName(), _playerTwo.getClanName(), _playerTwo.getClanId(), _playerTwo.getBaseClass(), _damageP2, playerTwoPoints - pointDiff, -pointDiff));
 				winner = _playerOne.getName() + " won";
+				
+				winside = 1;
 				
 				// Save Fight Result
 				saveResults(_playerOne, _playerTwo, 1, _startTime, _fightTime, getType());
@@ -576,9 +638,13 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 				_playerOne.updateStat(COMP_LOST, 1);
 				
 				addPointsToParticipant(_playerTwo, pointDiff);
+				list2.add(new OlympiadInfo(_playerTwo.getName(), _playerTwo.getClanName(), _playerTwo.getClanId(), _playerTwo.getBaseClass(), _damageP2, playerTwoPoints + pointDiff, pointDiff));
+				
 				removePointsFromParticipant(_playerOne, pointDiff);
+				list1.add(new OlympiadInfo(_playerOne.getName(), _playerOne.getClanName(), _playerOne.getClanId(), _playerOne.getBaseClass(), _damageP1, playerOnePoints - pointDiff, -pointDiff));
 				
 				winner = _playerTwo.getName() + " won";
+				winside = 2;
 				
 				// Save Fight Result
 				saveResults(_playerOne, _playerTwo, 2, _startTime, _fightTime, getType());
@@ -592,8 +658,16 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 				sm = SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_ENDED_IN_A_TIE);
 				stadium.broadcastPacket(sm);
 				
-				removePointsFromParticipant(_playerOne, Math.min(playerOnePoints / getDivider(), Config.ALT_OLY_MAX_POINTS));
-				removePointsFromParticipant(_playerTwo, Math.min(playerTwoPoints / getDivider(), Config.ALT_OLY_MAX_POINTS));
+				int value = Math.min(playerOnePoints / getDivider(), Config.ALT_OLY_MAX_POINTS);
+				
+				removePointsFromParticipant(_playerOne, value);
+				list1.add(new OlympiadInfo(_playerOne.getName(), _playerOne.getClanName(), _playerOne.getClanId(), _playerOne.getBaseClass(), _damageP1, playerOnePoints - value, -value));
+				
+				value = Math.min(playerTwoPoints / getDivider(), Config.ALT_OLY_MAX_POINTS);
+				removePointsFromParticipant(_playerTwo, value);
+				list2.add(new OlympiadInfo(_playerTwo.getName(), _playerTwo.getClanName(), _playerTwo.getClanId(), _playerTwo.getBaseClass(), _damageP2, playerTwoPoints - value, -value));
+				
+				tie = true;
 			}
 			
 			_playerOne.updateStat(COMP_DONE, 1);
@@ -602,6 +676,16 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 			_playerTwo.updateStat(COMP_DONE_WEEK, 1);
 			_playerOne.updateStat(getWeeklyMatchType(), 1);
 			_playerTwo.updateStat(getWeeklyMatchType(), 1);
+			
+			if (winside == 1)
+			{
+				result = new ExOlympiadMatchResult(tie, winside, list1, list2);
+			}
+			else
+			{
+				result = new ExOlympiadMatchResult(tie, winside, list2, list1);
+			}
+			stadium.broadcastPacket(result);
 			
 			if (Config.ALT_OLY_LOG_FIGHTS)
 			{
@@ -619,7 +703,6 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 				});
 				_logResults.log(record);
 			}
-			
 		}
 		catch (Exception e)
 		{

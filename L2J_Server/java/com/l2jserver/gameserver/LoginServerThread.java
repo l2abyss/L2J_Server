@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver;
 
@@ -78,9 +82,7 @@ public class LoginServerThread extends Thread
 	protected static final Logger _log = Logger.getLogger(LoginServerThread.class.getName());
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
 	
-	/**
-	 * @see com.l2jserver.loginserver.L2LoginServer#PROTOCOL_REV
-	 */
+	/** @see com.l2jserver.loginserver.L2LoginServer#PROTOCOL_REV */
 	private static final int REVISION = 0x0106;
 	private RSAPublicKey _publicKey;
 	private final String _hostname;
@@ -111,8 +113,8 @@ public class LoginServerThread extends Thread
 	private final FastMap<String, L2GameClient> _accountsInGameServer = new FastMap<>();
 	private int _status;
 	private String _serverName;
-	private final String[] _subnets;
-	private final String[] _hosts;
+	private final List<String> _subnets;
+	private final List<String> _hosts;
 	
 	/**
 	 * Instantiates a new login server thread.
@@ -211,19 +213,11 @@ public class LoginServerThread extends Thread
 						break;
 					}
 					
-					if (Config.DEBUG)
-					{
-						_log.warning("[C]\n" + Util.printData(incoming));
-					}
 					int packetType = incoming[0] & 0xff;
 					switch (packetType)
 					{
 						case 0x00:
 							InitLS init = new InitLS(incoming);
-							if (Config.DEBUG)
-							{
-								_log.info("Init received");
-							}
 							if (init.getRevision() != REVISION)
 							{
 								// TODO: revision mismatch
@@ -236,10 +230,6 @@ public class LoginServerThread extends Thread
 								BigInteger modulus = new BigInteger(init.getRSAKey());
 								RSAPublicKeySpec kspec1 = new RSAPublicKeySpec(modulus, RSAKeyGenParameterSpec.F4);
 								_publicKey = (RSAPublicKey) kfac.generatePublic(kspec1);
-								if (Config.DEBUG)
-								{
-									_log.info("RSA key set up");
-								}
 							}
 							
 							catch (GeneralSecurityException e)
@@ -250,22 +240,10 @@ public class LoginServerThread extends Thread
 							// send the blowfish key through the rsa encryption
 							BlowFishKey bfk = new BlowFishKey(_blowfishKey, _publicKey);
 							sendPacket(bfk);
-							if (Config.DEBUG)
-							{
-								_log.info("Sent new blowfish key");
-							}
 							// now, only accept packet with the new encryption
 							_blowfish = new NewCrypt(_blowfishKey);
-							if (Config.DEBUG)
-							{
-								_log.info("Changed blowfish key");
-							}
 							AuthRequest ar = new AuthRequest(_requestID, _acceptAlternate, _hexID, _gamePort, _reserveHost, _maxPlayer, _subnets, _hosts);
 							sendPacket(ar);
-							if (Config.DEBUG)
-							{
-								_log.info("Sent AuthRequest to login");
-							}
 							break;
 						case 0x01:
 							LoginServerFail lsf = new LoginServerFail(incoming);
@@ -338,10 +316,6 @@ public class LoginServerThread extends Thread
 							{
 								if (par.isAuthed())
 								{
-									if (Config.DEBUG)
-									{
-										_log.info("Login accepted player " + wcToRemove.account + " waited(" + (GameTimeController.getGameTicks() - wcToRemove.timestamp) + "ms)");
-									}
 									PlayerInGame pig = new PlayerInGame(par.getAccount());
 									sendPacket(pig);
 									wcToRemove.gameClient.setState(GameClientState.AUTHED);
@@ -376,10 +350,7 @@ public class LoginServerThread extends Thread
 			}
 			catch (UnknownHostException e)
 			{
-				if (Config.DEBUG)
-				{
-					_log.log(Level.WARNING, "", e);
-				}
+				_log.log(Level.WARNING, "", e);
 			}
 			catch (SocketException e)
 			{
@@ -423,10 +394,6 @@ public class LoginServerThread extends Thread
 	 */
 	public void addWaitingClientAndSendRequest(String acc, L2GameClient client, SessionKey key)
 	{
-		if (Config.DEBUG)
-		{
-			_log.info(String.valueOf(key));
-		}
 		WaitingClient wc = new WaitingClient(acc, client, key);
 		synchronized (_waitingClients)
 		{
@@ -440,10 +407,6 @@ public class LoginServerThread extends Thread
 		catch (IOException e)
 		{
 			_log.warning("Error while sending player auth request");
-			if (Config.DEBUG)
-			{
-				_log.log(Level.WARNING, "", e);
-			}
 		}
 	}
 	
@@ -488,10 +451,6 @@ public class LoginServerThread extends Thread
 		catch (IOException e)
 		{
 			_log.warning("Error while sending logout packet to login");
-			if (Config.DEBUG)
-			{
-				_log.log(Level.WARNING, "", e);
-			}
 		}
 		finally
 		{
@@ -523,10 +482,6 @@ public class LoginServerThread extends Thread
 		}
 		catch (IOException e)
 		{
-			if (Config.DEBUG)
-			{
-				_log.log(Level.WARNING, "", e);
-			}
 		}
 	}
 	
@@ -544,10 +499,6 @@ public class LoginServerThread extends Thread
 		}
 		catch (IOException e)
 		{
-			if (Config.DEBUG)
-			{
-				_log.log(Level.WARNING, "", e);
-			}
 		}
 	}
 	
@@ -566,10 +517,6 @@ public class LoginServerThread extends Thread
 		}
 		catch (IOException e)
 		{
-			if (Config.DEBUG)
-			{
-				_log.log(Level.WARNING, "", e);
-			}
 		}
 	}
 	
@@ -588,10 +535,6 @@ public class LoginServerThread extends Thread
 		}
 		catch (IOException e)
 		{
-			if (Config.DEBUG)
-			{
-				_log.log(Level.WARNING, "", e);
-			}
 		}
 	}
 	
@@ -615,7 +558,10 @@ public class LoginServerThread extends Thread
 		if (client != null)
 		{
 			LogRecord record = new LogRecord(Level.WARNING, "Kicked by login");
-			record.setParameters(new Object[]{client});
+			record.setParameters(new Object[]
+			{
+				client
+			});
 			_logAccounting.log(record);
 			client.setAditionalClosePacket(SystemMessage.getSystemMessage(SystemMessageId.ANOTHER_LOGIN_WITH_ACCOUNT));
 			client.closeNow();
@@ -642,7 +588,9 @@ public class LoginServerThread extends Thread
 					chars++;
 					long delTime = rs.getLong("deletetime");
 					if (delTime != 0)
+					{
 						charToDel.add(delTime);
+					}
 				}
 			}
 		}
@@ -658,10 +606,6 @@ public class LoginServerThread extends Thread
 		}
 		catch (IOException e)
 		{
-			if (Config.DEBUG)
-			{
-				_log.log(Level.WARNING, "", e);
-			}
 		}
 	}
 	
@@ -674,10 +618,6 @@ public class LoginServerThread extends Thread
 	{
 		byte[] data = sl.getContent();
 		NewCrypt.appendChecksum(data);
-		if (Config.DEBUG)
-		{
-			_log.finest("[S]\n" + Util.printData(data));
-		}
 		_blowfish.crypt(data, 0, data.length);
 		
 		int len = data.length + 2;
@@ -724,10 +664,6 @@ public class LoginServerThread extends Thread
 		}
 		catch (IOException e)
 		{
-			if (Config.DEBUG)
-			{
-				_log.log(Level.WARNING, "", e);
-			}
 		}
 	}
 	
@@ -744,10 +680,6 @@ public class LoginServerThread extends Thread
 		}
 		catch (IOException e)
 		{
-			if (Config.DEBUG)
-			{
-				_log.log(Level.WARNING, "", e);
-			}
 		}
 	}
 	
@@ -767,10 +699,6 @@ public class LoginServerThread extends Thread
 		}
 		catch (IOException e)
 		{
-			if (Config.DEBUG)
-			{
-				_log.log(Level.WARNING, "", e);
-			}
 		}
 	}
 	
@@ -860,7 +788,6 @@ public class LoginServerThread extends Thread
 	
 	private static class WaitingClient
 	{
-		public int timestamp;
 		public String account;
 		public L2GameClient gameClient;
 		public SessionKey session;
@@ -874,7 +801,6 @@ public class LoginServerThread extends Thread
 		public WaitingClient(String acc, L2GameClient client, SessionKey key)
 		{
 			account = acc;
-			timestamp = GameTimeController.getGameTicks();
 			gameClient = client;
 			session = key;
 		}

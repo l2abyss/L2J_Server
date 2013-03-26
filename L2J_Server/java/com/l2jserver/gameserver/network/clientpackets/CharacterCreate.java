@@ -1,19 +1,24 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -21,16 +26,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
-import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.actor.appearance.PcAppearance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.stat.PcStat;
 import com.l2jserver.gameserver.model.actor.templates.L2PcTemplate;
@@ -43,6 +50,8 @@ import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.serverpackets.CharCreateFail;
 import com.l2jserver.gameserver.network.serverpackets.CharCreateOk;
 import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
+import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerEvent;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerListener;
 import com.l2jserver.gameserver.util.Util;
 
 @SuppressWarnings("unused")
@@ -50,6 +59,7 @@ public final class CharacterCreate extends L2GameClientPacket
 {
 	private static final String _C__0C_CHARACTERCREATE = "[C] 0C CharacterCreate";
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
+	private static final List<PlayerListener> _listeners = new FastList<PlayerListener>().shared();
 	
 	// cSdddddddddddd
 	private String _name;
@@ -177,7 +187,6 @@ public final class CharacterCreate extends L2GameClientPacket
 			}
 			
 			template = CharTemplateTable.getInstance().getTemplate(_classId);
-			
 			if ((template == null) || (template.getClassBaseLevel() > 1))
 			{
 				if (Config.DEBUG)
@@ -188,9 +197,8 @@ public final class CharacterCreate extends L2GameClientPacket
 				sendPacket(new CharCreateFail(CharCreateFail.REASON_CREATION_FAILED));
 				return;
 			}
-			
-			int objectId = IdFactory.getInstance().getNextId();
-			newChar = L2PcInstance.create(objectId, template, getClient().getAccountName(), _name, _hairStyle, _hairColor, _face, _sex != 0);
+			final PcAppearance app = new PcAppearance(_face, _hairColor, _hairStyle, _sex != 0);
+			newChar = L2PcInstance.create(template, getClient().getAccountName(), _name, app);
 		}
 		
 		newChar.setCurrentHp(template.getBaseHpMax());
@@ -217,6 +225,7 @@ public final class CharacterCreate extends L2GameClientPacket
 		boolean result = true;
 		String test = text;
 		Pattern pattern;
+		// UnAfraid: TODO: Move that into Config
 		try
 		{
 			pattern = Pattern.compile(Config.CNAME_TEMPLATE);
@@ -282,10 +291,10 @@ public final class CharacterCreate extends L2GameClientPacket
 			L2ItemInstance item;
 			for (PcItemTemplate ie : template.getInitialEquipment())
 			{
-				item = newChar.getInventory().addItem("Init", ie.getItemId(), ie.getCount(), newChar, null);
+				item = newChar.getInventory().addItem("Init", ie.getId(), ie.getCount(), newChar, null);
 				if (item == null)
 				{
-					_log.warning("Could not create item during char creation: itemId " + ie.getItemId() + ", amount " + ie.getCount() + ".");
+					_log.warning("Could not create item during char creation: itemId " + ie.getId() + ", amount " + ie.getCount() + ".");
 					continue;
 				}
 				
@@ -326,11 +335,17 @@ public final class CharacterCreate extends L2GameClientPacket
 		{
 			startTutorialQuest(newChar);
 		}
+		
+		PlayerEvent event = new PlayerEvent();
+		event.setObjectId(newChar.getObjectId());
+		event.setName(newChar.getName());
+		event.setClient(client);
+		firePlayerListener(event);
+		
 		newChar.setOnlineStatus(true, false);
 		newChar.deleteMe();
 		
 		final CharSelectionInfo cl = new CharSelectionInfo(client.getAccountName(), client.getSessionId().playOkID1);
-		client.getConnection().sendPacket(cl);
 		client.setCharSelection(cl.getCharInfo());
 		
 		if (Config.DEBUG)
@@ -339,6 +354,10 @@ public final class CharacterCreate extends L2GameClientPacket
 		}
 	}
 	
+	/**
+	 * TODO: Unhardcode it using the new listeners.
+	 * @param player
+	 */
 	public void startTutorialQuest(L2PcInstance player)
 	{
 		final QuestState qs = player.getQuestState("255_Tutorial");
@@ -351,6 +370,27 @@ public final class CharacterCreate extends L2GameClientPacket
 		{
 			q.newQuestState(player).setState(State.STARTED);
 		}
+	}
+	
+	private void firePlayerListener(PlayerEvent event)
+	{
+		for (PlayerListener listener : _listeners)
+		{
+			listener.onCharCreate(event);
+		}
+	}
+	
+	public static void addPlayerListener(PlayerListener listener)
+	{
+		if (!_listeners.contains(listener))
+		{
+			_listeners.add(listener);
+		}
+	}
+	
+	public static void removePlayerListener(PlayerListener listener)
+	{
+		_listeners.remove(listener);
 	}
 	
 	@Override

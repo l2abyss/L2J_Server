@@ -1,22 +1,24 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.olympiad;
 
-import java.util.List;
-
-import javolution.util.FastList;
+import java.util.Set;
 
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.model.L2Spawn;
@@ -26,26 +28,19 @@ import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 
 /**
- * 
  * @author DS
- *
  */
 public final class OlympiadAnnouncer implements Runnable
 {
 	private static final int OLY_MANAGER = 31688;
-
-	private List<L2Spawn> _managers = new FastList<>();
+	private final Set<L2Spawn> _managers;
 	private int _currentStadium = 0;
-
+	
 	public OlympiadAnnouncer()
 	{
-		for (L2Spawn spawn : SpawnTable.getInstance().getSpawnTable())
-		{
-			if (spawn != null && spawn.getNpcid() == OLY_MANAGER)
-				_managers.add(spawn);
-		}
+		_managers = SpawnTable.getInstance().getSpawns(OLY_MANAGER);
 	}
-
+	
 	@Override
 	public void run()
 	{
@@ -53,10 +48,12 @@ public final class OlympiadAnnouncer implements Runnable
 		for (int i = OlympiadGameManager.getInstance().getNumberOfStadiums(); --i >= 0; _currentStadium++)
 		{
 			if (_currentStadium >= OlympiadGameManager.getInstance().getNumberOfStadiums())
+			{
 				_currentStadium = 0;
-
+			}
+			
 			task = OlympiadGameManager.getInstance().getOlympiadTask(_currentStadium);
-			if (task != null && task.getGame() != null && task.needAnnounce())
+			if ((task != null) && (task.getGame() != null) && task.needAnnounce())
 			{
 				NpcStringId npcString;
 				final String arenaId = String.valueOf(task.getGame().getStadiumId() + 1);
@@ -74,7 +71,7 @@ public final class OlympiadAnnouncer implements Runnable
 					default:
 						continue;
 				}
-
+				
 				L2Npc manager;
 				NpcSay packet;
 				for (L2Spawn spawn : _managers)
@@ -82,7 +79,7 @@ public final class OlympiadAnnouncer implements Runnable
 					manager = spawn.getLastSpawn();
 					if (manager != null)
 					{
-						packet = new NpcSay(manager.getObjectId(), Say2.SHOUT, manager.getNpcId(), npcString);
+						packet = new NpcSay(manager.getObjectId(), Say2.NPC_SHOUT, manager.getNpcId(), npcString);
 						packet.addStringParameter(arenaId);
 						manager.broadcastPacket(packet);
 					}

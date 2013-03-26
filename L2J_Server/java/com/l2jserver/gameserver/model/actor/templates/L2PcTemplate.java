@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.templates;
 
@@ -19,7 +23,6 @@ import java.util.List;
 import com.l2jserver.gameserver.datatables.InitialEquipmentData;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.ClassId;
-import com.l2jserver.gameserver.model.base.ClassInfo;
 import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.items.PcItemTemplate;
 
@@ -30,7 +33,6 @@ public class L2PcTemplate extends L2CharTemplate
 {
 	private final ClassId _classId;
 	private final Race _race;
-	private final String _className;
 	
 	private final int _spawnX;
 	private final int _spawnY;
@@ -59,7 +61,6 @@ public class L2PcTemplate extends L2CharTemplate
 		super(set);
 		_classId = ClassId.getClassId(set.getInteger("classId"));
 		_race = Race.values()[set.getInteger("raceId")];
-		_className = set.getString("className");
 		
 		_spawnX = set.getInteger("spawnX");
 		_spawnY = set.getInteger("spawnY");
@@ -98,16 +99,6 @@ public class L2PcTemplate extends L2CharTemplate
 	public Race getRace()
 	{
 		return _race;
-	}
-	
-	/**
-	 * @return the template server side class name.
-	 * @deprecated replaced by {@link ClassInfo#getClassName()}
-	 */
-	@Deprecated
-	public String getClassName()
-	{
-		return _className;
 	}
 	
 	/**
@@ -237,7 +228,7 @@ public class L2PcTemplate extends L2CharTemplate
 	{
 		return _initialEquipment;
 	}
-
+	
 	/**
 	 * @return {@code true} if this Pc template has an initial equipment associated, {@code false} otherwise.
 	 */

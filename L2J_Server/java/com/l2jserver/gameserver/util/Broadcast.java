@@ -1,20 +1,22 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.util;
-
-import gnu.trove.procedure.TObjectProcedure;
 
 import java.util.Collection;
 import java.util.logging.Level;
@@ -28,6 +30,8 @@ import com.l2jserver.gameserver.network.serverpackets.CharInfo;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.RelationChanged;
+
+import gnu.trove.procedure.TObjectProcedure;
 
 /**
  * This class ...
@@ -89,9 +93,9 @@ public final class Broadcast
 					if ((oldrelation != null) && (oldrelation != relation))
 					{
 						player.sendPacket(new RelationChanged((L2PcInstance) character, relation, character.isAutoAttackable(player)));
-						if (((L2PcInstance) character).getPet() != null)
+						if (((L2PcInstance) character).hasSummon())
 						{
-							player.sendPacket(new RelationChanged(((L2PcInstance) character).getPet(), relation, character.isAutoAttackable(player)));
+							player.sendPacket(new RelationChanged(character.getSummon(), relation, character.isAutoAttackable(player)));
 						}
 					}
 				}
@@ -153,16 +157,22 @@ public final class Broadcast
 	public static void toSelfAndKnownPlayersInRadius(L2Character character, L2GameServerPacket mov, int radius)
 	{
 		if (radius < 0)
+		{
 			radius = 600;
+		}
 		
 		if (character instanceof L2PcInstance)
+		{
 			character.sendPacket(mov);
+		}
 		
 		Collection<L2PcInstance> plrs = character.getKnownList().getKnownPlayers().values();
 		for (L2PcInstance player : plrs)
 		{
-			if (player != null && Util.checkIfInRange(radius, character, player, false))
+			if ((player != null) && Util.checkIfInRange(radius, character, player, false))
+			{
 				player.sendPacket(mov);
+			}
 		}
 	}
 	

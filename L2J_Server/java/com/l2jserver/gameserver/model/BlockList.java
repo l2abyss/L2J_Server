@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model;
 
@@ -33,7 +37,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * This class ...
- * 
  * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
  */
 public class BlockList
@@ -49,7 +52,9 @@ public class BlockList
 		_owner = owner;
 		_blockList = _offlineList.get(owner.getObjectId());
 		if (_blockList == null)
+		{
 			_blockList = loadList(_owner.getObjectId());
+		}
 	}
 	
 	private void addToBlockList(int target)
@@ -83,8 +88,10 @@ public class BlockList
 			while (rset.next())
 			{
 				friendId = rset.getInt("friendId");
-				if (friendId ==  ObjId)
+				if (friendId == ObjId)
+				{
 					continue;
+				}
 				list.add(friendId);
 			}
 			
@@ -102,7 +109,7 @@ public class BlockList
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			if (state) //add
+			if (state) // add
 			{
 				try (PreparedStatement statement = con.prepareStatement("INSERT INTO character_friends (charId, friendId, relation) VALUES (?, ?, 1)"))
 				{
@@ -111,7 +118,8 @@ public class BlockList
 					statement.execute();
 				}
 			}
-			else //remove
+			else
+			// remove
 			{
 				try (PreparedStatement statement = con.prepareStatement("DELETE FROM character_friends WHERE charId=? AND friendId=? AND relation=1"))
 				{
@@ -167,7 +175,9 @@ public class BlockList
 	public static void addToBlockList(L2PcInstance listOwner, int targetId)
 	{
 		if (listOwner == null)
+		{
 			return;
+		}
 		
 		String charName = CharNameTable.getInstance().getNameById(targetId);
 		
@@ -204,7 +214,9 @@ public class BlockList
 	public static void removeFromBlockList(L2PcInstance listOwner, int targetId)
 	{
 		if (listOwner == null)
+		{
 			return;
+		}
 		
 		SystemMessage sm;
 		
@@ -245,13 +257,12 @@ public class BlockList
 		listOwner.sendPacket(SystemMessageId.BLOCK_LIST_HEADER);
 		for (int playerId : listOwner.getBlockList().getBlockList())
 		{
-			listOwner.sendMessage((i++)+". "+CharNameTable.getInstance().getNameById(playerId));
+			listOwner.sendMessage((i++) + ". " + CharNameTable.getInstance().getNameById(playerId));
 		}
 		listOwner.sendPacket(SystemMessageId.FRIEND_LIST_FOOTER);
 	}
 	
 	/**
-	 * 
 	 * @param ownerId object id of owner block list
 	 * @param targetId object id of potential blocked player
 	 * @return true if blocked

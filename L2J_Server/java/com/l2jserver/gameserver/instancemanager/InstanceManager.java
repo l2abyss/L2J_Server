@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.instancemanager;
 
@@ -20,7 +24,6 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import org.w3c.dom.NamedNodeMap;
@@ -30,20 +33,20 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Instance;
+import com.l2jserver.gameserver.model.instancezone.InstanceWorld;
 
 /**
  * @author evill33t, GodKratos
  */
 public class InstanceManager extends DocumentParser
 {
-	private static final FastMap<Integer, Instance> _instanceList = new FastMap<>();
-	private final FastMap<Integer, InstanceWorld> _instanceWorlds = new FastMap<>();
+	private static final Map<Integer, Instance> _instanceList = new FastMap<>();
+	private final Map<Integer, InstanceWorld> _instanceWorlds = new FastMap<>();
 	private int _dynamic = 300000;
-	
 	// InstanceId Names
 	private static final Map<Integer, String> _instanceIdNames = new HashMap<>();
 	private final Map<Integer, Map<Integer, Long>> _playerInstanceTimes = new FastMap<>();
-	
+	// SQL Queries
 	private static final String ADD_INSTANCE_TIME = "INSERT INTO character_instance_time (charId,instanceId,time) values (?,?,?) ON DUPLICATE KEY UPDATE time=?";
 	private static final String RESTORE_INSTANCE_TIMES = "SELECT instanceId,time FROM character_instance_time WHERE charId=?";
 	private static final String DELETE_INSTANCE_TIME = "DELETE FROM character_instance_time WHERE charId=? AND instanceId=?";
@@ -51,14 +54,10 @@ public class InstanceManager extends DocumentParser
 	protected InstanceManager()
 	{
 		// Creates the multiverse.
-		final Instance multiverse = new Instance(-1);
-		multiverse.setName("multiverse");
-		_instanceList.put(-1, multiverse);
+		_instanceList.put(-1, new Instance(-1, "multiverse"));
 		_log.info(getClass().getSimpleName() + ": Multiverse Instance created.");
 		// Creates the universe.
-		final Instance universe = new Instance(0);
-		universe.setName("universe");
-		_instanceList.put(0, universe);
+		_instanceList.put(0, new Instance(0, "universe"));
 		_log.info(getClass().getSimpleName() + ": Universe Instance created.");
 		load();
 	}
@@ -114,15 +113,14 @@ public class InstanceManager extends DocumentParser
 			restoreInstanceTimes(playerObjId);
 		}
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(ADD_INSTANCE_TIME))
 		{
-			PreparedStatement statement = con.prepareStatement(ADD_INSTANCE_TIME);
-			statement.setInt(1, playerObjId);
-			statement.setInt(2, id);
-			statement.setLong(3, time);
-			statement.setLong(4, time);
-			statement.execute();
-			statement.close();
+			ps.setInt(1, playerObjId);
+			ps.setInt(2, id);
+			ps.setLong(3, time);
+			ps.setLong(4, time);
+			ps.execute();
 			_playerInstanceTimes.get(playerObjId).put(id, time);
 		}
 		catch (Exception e)
@@ -137,13 +135,12 @@ public class InstanceManager extends DocumentParser
 	 */
 	public void deleteInstanceTime(int playerObjId, int id)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(DELETE_INSTANCE_TIME))
 		{
-			PreparedStatement statement = con.prepareStatement(DELETE_INSTANCE_TIME);
-			statement.setInt(1, playerObjId);
-			statement.setInt(2, id);
-			statement.execute();
-			statement.close();
+			ps.setInt(1, playerObjId);
+			ps.setInt(2, id);
+			ps.execute();
 			_playerInstanceTimes.get(playerObjId).remove(id);
 		}
 		catch (Exception e)
@@ -162,28 +159,26 @@ public class InstanceManager extends DocumentParser
 			return; // already restored
 		}
 		_playerInstanceTimes.put(playerObjId, new FastMap<Integer, Long>());
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(RESTORE_INSTANCE_TIMES))
 		{
-			PreparedStatement statement = con.prepareStatement(RESTORE_INSTANCE_TIMES);
-			statement.setInt(1, playerObjId);
-			ResultSet rset = statement.executeQuery();
-			
-			while (rset.next())
+			ps.setInt(1, playerObjId);
+			try (ResultSet rs = ps.executeQuery())
 			{
-				int id = rset.getInt("instanceId");
-				long time = rset.getLong("time");
-				if (time < System.currentTimeMillis())
+				while (rs.next())
 				{
-					deleteInstanceTime(playerObjId, id);
-				}
-				else
-				{
-					_playerInstanceTimes.get(playerObjId).put(id, time);
+					int id = rs.getInt("instanceId");
+					long time = rs.getLong("time");
+					if (time < System.currentTimeMillis())
+					{
+						deleteInstanceTime(playerObjId, id);
+					}
+					else
+					{
+						_playerInstanceTimes.get(playerObjId).put(id, time);
+					}
 				}
 			}
-			
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -224,20 +219,12 @@ public class InstanceManager extends DocumentParser
 		}
 	}
 	
-	public static class InstanceWorld
-	{
-		public int instanceId;
-		public int templateId = -1;
-		public FastList<Integer> allowed = new FastList<>();
-		public volatile int status;
-	}
-	
 	/**
 	 * @param world
 	 */
 	public void addWorld(InstanceWorld world)
 	{
-		_instanceWorlds.put(world.instanceId, world);
+		_instanceWorlds.put(world.getInstanceId(), world);
 	}
 	
 	/**
@@ -250,19 +237,15 @@ public class InstanceManager extends DocumentParser
 	}
 	
 	/**
-	 * @param player
-	 * @return
+	 * Check if the player have a World Instance where it's allowed to enter.
+	 * @param player the player to check
+	 * @return the instance world
 	 */
 	public InstanceWorld getPlayerWorld(L2PcInstance player)
 	{
 		for (InstanceWorld temp : _instanceWorlds.values())
 		{
-			if (temp == null)
-			{
-				continue;
-			}
-			// check if the player have a World Instance where he/she is allowed to enter
-			if (temp.allowed.contains(player.getObjectId()))
+			if ((temp != null) && (temp.isAllowed(player.getObjectId())))
 			{
 				return temp;
 			}
@@ -306,7 +289,7 @@ public class InstanceManager extends DocumentParser
 	/**
 	 * @return
 	 */
-	public FastMap<Integer, Instance> getInstances()
+	public Map<Integer, Instance> getInstances()
 	{
 		return _instanceList;
 	}

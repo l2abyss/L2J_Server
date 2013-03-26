@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
@@ -24,7 +28,6 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-
 
 public class L2DungeonGatekeeperInstance extends L2Npc
 {
@@ -54,25 +57,31 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 			boolean canPort = true;
 			if (isSealValidationPeriod)
 			{
-				if (compWinner == SevenSigns.CABAL_DAWN && (playerCabal != SevenSigns.CABAL_DAWN || sealAvariceOwner != SevenSigns.CABAL_DAWN))
+				if ((compWinner == SevenSigns.CABAL_DAWN) && ((playerCabal != SevenSigns.CABAL_DAWN) || (sealAvariceOwner != SevenSigns.CABAL_DAWN)))
 				{
 					player.sendPacket(SystemMessageId.CAN_BE_USED_BY_DAWN);
 					canPort = false;
 				}
-				else if (compWinner == SevenSigns.CABAL_DUSK && (playerCabal != SevenSigns.CABAL_DUSK || sealAvariceOwner != SevenSigns.CABAL_DUSK))
+				else if ((compWinner == SevenSigns.CABAL_DUSK) && ((playerCabal != SevenSigns.CABAL_DUSK) || (sealAvariceOwner != SevenSigns.CABAL_DUSK)))
 				{
 					player.sendPacket(SystemMessageId.CAN_BE_USED_BY_DUSK);
 					canPort = false;
 				}
-				else if (compWinner == SevenSigns.CABAL_NULL && playerCabal != SevenSigns.CABAL_NULL)
+				else if ((compWinner == SevenSigns.CABAL_NULL) && (playerCabal != SevenSigns.CABAL_NULL))
+				{
 					canPort = true;
+				}
 				else if (playerCabal == SevenSigns.CABAL_NULL)
+				{
 					canPort = false;
+				}
 			}
 			else
 			{
 				if (playerCabal == SevenSigns.CABAL_NULL)
+				{
 					canPort = false;
+				}
 			}
 			
 			if (!canPort)
@@ -93,25 +102,31 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 			boolean canPort = true;
 			if (isSealValidationPeriod)
 			{
-				if (compWinner == SevenSigns.CABAL_DAWN && (playerCabal != SevenSigns.CABAL_DAWN || sealGnosisOwner != SevenSigns.CABAL_DAWN))
+				if ((compWinner == SevenSigns.CABAL_DAWN) && ((playerCabal != SevenSigns.CABAL_DAWN) || (sealGnosisOwner != SevenSigns.CABAL_DAWN)))
 				{
 					player.sendPacket(SystemMessageId.CAN_BE_USED_BY_DAWN);
 					canPort = false;
 				}
-				else if (compWinner == SevenSigns.CABAL_DUSK && (playerCabal != SevenSigns.CABAL_DUSK || sealGnosisOwner != SevenSigns.CABAL_DUSK))
+				else if ((compWinner == SevenSigns.CABAL_DUSK) && ((playerCabal != SevenSigns.CABAL_DUSK) || (sealGnosisOwner != SevenSigns.CABAL_DUSK)))
 				{
 					player.sendPacket(SystemMessageId.CAN_BE_USED_BY_DUSK);
 					canPort = false;
 				}
-				else if (compWinner == SevenSigns.CABAL_NULL && playerCabal != SevenSigns.CABAL_NULL)
+				else if ((compWinner == SevenSigns.CABAL_NULL) && (playerCabal != SevenSigns.CABAL_NULL))
+				{
 					canPort = true;
+				}
 				else if (playerCabal == SevenSigns.CABAL_NULL)
+				{
 					canPort = false;
+				}
 			}
 			else
 			{
 				if (playerCabal == SevenSigns.CABAL_NULL)
+				{
 					canPort = false;
+				}
 			}
 			
 			if (!canPort)
@@ -137,7 +152,9 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 			doTeleport(player, Integer.parseInt(st.nextToken()));
 		}
 		else
+		{
 			super.onBypassFeedback(player, command);
+		}
 	}
 	
 	private void doTeleport(L2PcInstance player, int val)
@@ -146,12 +163,16 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 		if (list != null)
 		{
 			if (player.isAlikeDead())
+			{
 				return;
+			}
 			
 			player.teleToLocation(list.getLocX(), list.getLocY(), list.getLocZ(), true);
 		}
 		else
+		{
 			_log.warning("No teleport destination with id:" + val);
+		}
 		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
@@ -161,9 +182,13 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 	{
 		String pom = "";
 		if (val == 0)
+		{
 			pom = "" + npcId;
+		}
 		else
+		{
 			pom = npcId + "-" + val;
+		}
 		
 		return "data/html/teleporter/" + pom + ".htm";
 	}

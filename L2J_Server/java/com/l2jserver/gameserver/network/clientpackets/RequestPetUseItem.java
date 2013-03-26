@@ -1,20 +1,23 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -34,22 +37,16 @@ public final class RequestPetUseItem extends L2GameClientPacket
 	protected void readImpl()
 	{
 		_objectId = readD();
-		//TODO: implement me properly
-		//readQ();
-		//readD();
+		// TODO: implement me properly
+		// readQ();
+		// readD();
 	}
 	
 	@Override
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		if ((activeChar == null) || (activeChar.getPet() == null) || !(activeChar.getPet() instanceof L2PetInstance))
-		{
-			return;
-		}
-		
-		final L2PetInstance pet = (L2PetInstance) activeChar.getPet();
-		if (pet == null)
+		if ((activeChar == null) || !activeChar.hasSummon() || !activeChar.getSummon().isPet())
 		{
 			return;
 		}
@@ -59,9 +56,16 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			return;
 		}
 		
+		final L2PetInstance pet = (L2PetInstance) activeChar.getSummon();
 		final L2ItemInstance item = pet.getInventory().getItemByObjectId(_objectId);
 		if (item == null)
 		{
+			return;
+		}
+		
+		if (!item.getItem().isForNpc())
+		{
+			activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
 			return;
 		}
 		
@@ -73,48 +77,41 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			return;
 		}
 		
-		if (Config.DEBUG)
+		// If the item has reuse time and it has not passed.
+		// Message from reuse delay must come from item.
+		final int reuseDelay = item.getReuseDelay();
+		if (reuseDelay > 0)
 		{
-			_log.finest(activeChar.getObjectId() + ": pet use item " + _objectId);
-		}
-		
-		if (!item.isEquipped())
-		{
-			if (!item.getItem().checkCondition(pet, pet, true))
+			final long reuse = pet.getItemRemainingReuseTime(item.getObjectId());
+			if (reuse > 0)
 			{
 				return;
 			}
 		}
 		
-		//check if the item matches the pet
-		if (item.isEquipable())
+		if (activeChar.isDebug())
 		{
-			// all pet items have condition
-			if (!item.getItem().isConditionAttached())
-			{
-				activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
-				return;
-			}
-			useItem(pet, item, activeChar);
+			activeChar.sendDebugMessage("Pet tries to use item: " + item);
+		}
+		
+		if (!item.isEquipped() && !item.getItem().checkCondition(pet, pet, true))
+		{
 			return;
 		}
 		
-		final IItemHandler handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
-		if (handler != null)
-		{
-			useItem(pet, item, activeChar);
-		}
-		else
-		{
-			activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
-		}
-		return;
+		useItem(pet, item, activeChar);
 	}
 	
 	private void useItem(L2PetInstance pet, L2ItemInstance item, L2PcInstance activeChar)
 	{
 		if (item.isEquipable())
 		{
+			if (!item.getItem().isConditionAttached())
+			{
+				activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
+				return;
+			}
+			
 			if (item.isEquipped())
 			{
 				pet.getInventory().unEquipItemInSlot(item.getLocationSlot());
@@ -124,7 +121,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 				pet.getInventory().equipItem(item);
 			}
 			
-			activeChar.sendPacket(new PetItemList(pet));
+			activeChar.sendPacket(new PetItemList(pet.getInventory().getItems()));
 			pet.updateAndBroadcastStatus(1);
 		}
 		else
@@ -132,11 +129,19 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			final IItemHandler handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
 			if (handler != null)
 			{
-				handler.useItem(pet, item, false);
-				pet.updateAndBroadcastStatus(1);
+				if (handler.useItem(pet, item, false))
+				{
+					final int reuseDelay = item.getReuseDelay();
+					if (reuseDelay > 0)
+					{
+						activeChar.addTimeStampItem(item, reuseDelay);
+					}
+					pet.updateAndBroadcastStatus(1);
+				}
 			}
 			else
 			{
+				activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
 				_log.warning("No item handler registered for itemId: " + item.getItemId());
 			}
 		}

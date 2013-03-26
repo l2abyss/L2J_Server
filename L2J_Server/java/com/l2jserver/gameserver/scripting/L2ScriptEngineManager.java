@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.scripting;
 
@@ -68,18 +72,18 @@ public final class L2ScriptEngineManager
 	 * Informs(logs) the scripts being loaded.<BR>
 	 * Apply only when executing script from files.<BR>
 	 */
-	private final boolean VERBOSE_LOADING = false;
+	private static final boolean VERBOSE_LOADING = false;
 	
 	/**
 	 * If the script engine supports compilation the script is compiled before execution.<BR>
 	 */
-	private final boolean ATTEMPT_COMPILATION = true;
+	private static final boolean ATTEMPT_COMPILATION = true;
 	
 	/**
 	 * Clean an previous error log(if such exists) for the script being loaded before trying to load.<BR>
 	 * Apply only when executing script from files.<BR>
 	 */
-	private final boolean PURGE_ERROR_LOG = true;
+	private static final boolean PURGE_ERROR_LOG = true;
 	
 	protected L2ScriptEngineManager()
 	{
@@ -135,8 +139,6 @@ public final class L2ScriptEngineManager
 	
 	private void preConfigure()
 	{
-		// java class path
-		
 		// Jython sys.path
 		String dataPackDirForwardSlashes = SCRIPT_FOLDER.getPath().replaceAll("\\\\", "/");
 		String configScript = "import sys;sys.path.insert(0,'" + dataPackDirForwardSlashes + "');";
@@ -201,7 +203,7 @@ public final class L2ScriptEngineManager
 					
 					String[] parts = line.trim().split("#");
 					
-					if ((parts.length > 0) && !parts[0].startsWith("#") && (parts[0].length() > 0))
+					if ((parts.length > 0) && !parts[0].isEmpty() && (parts[0].charAt(0) != '#'))
 					{
 						line = parts[0];
 						
@@ -293,7 +295,6 @@ public final class L2ScriptEngineManager
 					catch (ScriptException e)
 					{
 						reportScriptFileError(file, e);
-						// _log.log(Level.WARNING, "", e);
 					}
 				}
 			}
@@ -353,6 +354,7 @@ public final class L2ScriptEngineManager
 			}
 		}
 		
+		final String relativeName = file.getAbsolutePath().substring(SCRIPT_FOLDER.getAbsolutePath().length() + 1).replace('\\', '/');
 		try (FileInputStream fis = new FileInputStream(file);
 			InputStreamReader isr = new InputStreamReader(fis);
 			BufferedReader reader = new BufferedReader(isr))
@@ -361,7 +363,7 @@ public final class L2ScriptEngineManager
 			{
 				ScriptContext context = new SimpleScriptContext();
 				context.setAttribute("mainClass", getClassForFile(file).replace('/', '.').replace('\\', '.'), ScriptContext.ENGINE_SCOPE);
-				context.setAttribute(ScriptEngine.FILENAME, file.getName(), ScriptContext.ENGINE_SCOPE);
+				context.setAttribute(ScriptEngine.FILENAME, relativeName, ScriptContext.ENGINE_SCOPE);
 				context.setAttribute("classpath", SCRIPT_FOLDER.getAbsolutePath(), ScriptContext.ENGINE_SCOPE);
 				context.setAttribute("sourcepath", SCRIPT_FOLDER.getAbsolutePath(), ScriptContext.ENGINE_SCOPE);
 				context.setAttribute(JythonScriptEngine.JYTHON_ENGINE_INSTANCE, engine, ScriptContext.ENGINE_SCOPE);
@@ -387,7 +389,7 @@ public final class L2ScriptEngineManager
 			{
 				ScriptContext context = new SimpleScriptContext();
 				context.setAttribute("mainClass", getClassForFile(file).replace('/', '.').replace('\\', '.'), ScriptContext.ENGINE_SCOPE);
-				context.setAttribute(ScriptEngine.FILENAME, file.getName(), ScriptContext.ENGINE_SCOPE);
+				context.setAttribute(ScriptEngine.FILENAME, relativeName, ScriptContext.ENGINE_SCOPE);
 				context.setAttribute("classpath", SCRIPT_FOLDER.getAbsolutePath(), ScriptContext.ENGINE_SCOPE);
 				context.setAttribute("sourcepath", SCRIPT_FOLDER.getAbsolutePath(), ScriptContext.ENGINE_SCOPE);
 				setCurrentLoadingScript(file);
@@ -477,19 +479,19 @@ public final class L2ScriptEngineManager
 			final File file = new File(dir + "/" + name);
 			try (FileOutputStream fos = new FileOutputStream(file))
 			{
-				String errorHeader = "Error on: " + file.getCanonicalPath() + "\r\nLine: " + e.getLineNumber() + " - Column: " + e.getColumnNumber() + "\r\n\r\n";
+				String errorHeader = "Error on: " + file.getCanonicalPath() + Config.EOL + "Line: " + e.getLineNumber() + " - Column: " + e.getColumnNumber() + Config.EOL + Config.EOL;
 				fos.write(errorHeader.getBytes());
 				fos.write(e.getMessage().getBytes());
 				_log.warning("Failed executing script: " + script.getAbsolutePath() + ". See " + file.getName() + " for details.");
 			}
 			catch (IOException ioe)
 			{
-				_log.log(Level.WARNING, "Failed executing script: " + script.getAbsolutePath() + "\r\n" + e.getMessage() + "Additionally failed when trying to write an error report on script directory. Reason: " + ioe.getMessage(), ioe);
+				_log.log(Level.WARNING, "Failed executing script: " + script.getAbsolutePath() + Config.EOL + e.getMessage() + "Additionally failed when trying to write an error report on script directory. Reason: " + ioe.getMessage(), ioe);
 			}
 		}
 		else
 		{
-			_log.log(Level.WARNING, "Failed executing script: " + script.getAbsolutePath() + "\r\n" + e.getMessage() + "Additionally failed when trying to write an error report on script directory.", e);
+			_log.log(Level.WARNING, "Failed executing script: " + script.getAbsolutePath() + Config.EOL + e.getMessage() + "Additionally failed when trying to write an error report on script directory.", e);
 		}
 	}
 	

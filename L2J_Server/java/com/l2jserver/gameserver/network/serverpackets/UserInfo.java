@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
@@ -20,6 +24,7 @@ import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.Elementals;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.effects.AbnormalEffect;
@@ -58,17 +63,27 @@ public final class UserInfo extends L2GameServerPacket
 		if (_activeChar.getSiegeState() == 1)
 		{
 			if (_territoryId == 0)
+			{
 				_relation |= 0x180;
+			}
 			else
+			{
 				_relation |= 0x1000;
+			}
 		}
 		if (_activeChar.getSiegeState() == 2)
+		{
 			_relation |= 0x80;
+		}
 		// _isDisguised = TerritoryWarManager.getInstance().isDisguised(character.getObjectId());
 		if (_activeChar.isInAirShip() && _activeChar.getAirShip().isCaptain(_activeChar))
+		{
 			_airShipHelm = _activeChar.getAirShip().getHelmItemId();
+		}
 		else
+		{
 			_airShipHelm = 0;
+		}
 	}
 	
 	@Override
@@ -97,7 +112,7 @@ public final class UserInfo extends L2GameServerPacket
 		writeD(_activeChar.getINT());
 		writeD(_activeChar.getWIT());
 		writeD(_activeChar.getMEN());
-		writeD(_activeChar.getMaxVisibleHp());
+		writeD(_activeChar.getMaxHp());
 		writeD((int) _activeChar.getCurrentHp());
 		writeD(_activeChar.getMaxMp());
 		writeD((int) _activeChar.getCurrentMp());
@@ -143,7 +158,7 @@ public final class UserInfo extends L2GameServerPacket
 		writeD(_activeChar.getInventory().getPaperdollItemDisplayId(Inventory.PAPERDOLL_LFINGER));
 		writeD(_activeChar.getInventory().getPaperdollItemDisplayId(Inventory.PAPERDOLL_HEAD));
 		
-		writeD(_airShipHelm == 0 ? _activeChar.getInventory().getPaperdollItemDisplayId(Inventory.PAPERDOLL_RHAND) : 0);
+		writeD(_airShipHelm == 0 ? _activeChar.getInventory().getPaperdollItemDisplayId(Inventory.PAPERDOLL_RHAND) : _airShipHelm);
 		writeD(_airShipHelm == 0 ? _activeChar.getInventory().getPaperdollItemDisplayId(Inventory.PAPERDOLL_LHAND) : 0);
 		
 		writeD(_activeChar.getInventory().getPaperdollItemDisplayId(Inventory.PAPERDOLL_GLOVES));
@@ -229,13 +244,17 @@ public final class UserInfo extends L2GameServerPacket
 		writeD(_activeChar.isGM() ? 1 : 0); // builder level
 		
 		String title = _activeChar.getTitle();
-		if (_activeChar.getAppearance().getInvisible() && _activeChar.isGM())
+		if (_activeChar.getAppearance().getInvisible() && _activeChar.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
+		{
 			title = "Invisible";
+		}
 		if (_activeChar.getPoly().isMorphed())
 		{
 			L2NpcTemplate polyObj = NpcTable.getInstance().getTemplate(_activeChar.getPoly().getPolyId());
 			if (polyObj != null)
+			{
 				title += " - " + polyObj.getName();
+			}
 		}
 		writeS(title);
 		
@@ -274,7 +293,7 @@ public final class UserInfo extends L2GameServerPacket
 		writeD(0x00); // special effects? circles around player...
 		writeD(_activeChar.getMaxCp());
 		writeD((int) _activeChar.getCurrentCp());
-		writeC(_activeChar.isMounted() || _airShipHelm != 0 ? 0 : _activeChar.getEnchantEffect());
+		writeC(_activeChar.isMounted() || (_airShipHelm != 0) ? 0 : _activeChar.getEnchantEffect());
 		
 		writeC(_activeChar.getTeam()); // team circle around feet 1= Blue, 2 = red
 		

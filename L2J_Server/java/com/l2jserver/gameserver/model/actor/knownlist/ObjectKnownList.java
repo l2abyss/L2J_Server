@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.actor.knownlist;
 
@@ -18,14 +22,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
-import javolution.util.FastMap;
-
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.util.Util;
+import com.l2jserver.util.L2FastMap;
 
 public class ObjectKnownList
 {
@@ -40,23 +42,33 @@ public class ObjectKnownList
 	public boolean addKnownObject(L2Object object)
 	{
 		if (object == null)
+		{
 			return false;
+		}
 		
 		// Instance -1 is for GMs that can see everything on all instances
-		if (getActiveObject().getInstanceId() != -1 && (object.getInstanceId() != getActiveObject().getInstanceId()))
+		if ((getActiveObject().getInstanceId() != -1) && (object.getInstanceId() != getActiveObject().getInstanceId()))
+		{
 			return false;
+		}
 		
 		// Check if the object is an L2PcInstance in ghost mode
-		if (object instanceof L2PcInstance && ((L2PcInstance) object).getAppearance().isGhost())
+		if (object.isPlayer() && object.getActingPlayer().getAppearance().isGhost())
+		{
 			return false;
+		}
 		
 		// Check if already know object
 		if (knowsObject(object))
+		{
 			return false;
+		}
 		
 		// Check if object is not inside distance to watch object
 		if (!Util.checkIfInShortRadius(getDistanceToWatchObject(object), getActiveObject(), object, true))
+		{
 			return false;
+		}
 		
 		return (getKnownObjects().put(object.getObjectId(), object) == null);
 	}
@@ -64,12 +76,16 @@ public class ObjectKnownList
 	public final boolean knowsObject(L2Object object)
 	{
 		if (object == null)
+		{
 			return false;
+		}
 		
-		return getActiveObject() == object || getKnownObjects().containsKey(object.getObjectId());
+		return (getActiveObject() == object) || getKnownObjects().containsKey(object.getObjectId());
 	}
 	
-	/** Remove all L2Object from _knownObjects */
+	/**
+	 * Remove all L2Object from _knownObjects
+	 */
 	public void removeAllKnownObjects()
 	{
 		getKnownObjects().clear();
@@ -83,34 +99,43 @@ public class ObjectKnownList
 	protected boolean removeKnownObject(L2Object object, boolean forget)
 	{
 		if (object == null)
+		{
 			return false;
+		}
 		
-		if (forget) // on forget objects removed from list by iterator
+		if (forget)
+		{
 			return true;
+		}
 		
 		return getKnownObjects().remove(object.getObjectId()) != null;
 	}
 	
-	// used only in Config.MOVE_BASED_KNOWNLIST and does not support guards seeing
-	// moving monsters
+	/**
+	 * Used only in Config.MOVE_BASED_KNOWNLIST and does not support guards seeing moving monsters
+	 */
 	public final void findObjects()
 	{
 		final L2WorldRegion region = getActiveObject().getWorldRegion();
 		if (region == null)
+		{
 			return;
+		}
 		
-		if (getActiveObject() instanceof L2Playable)
+		if (getActiveObject().isPlayable())
 		{
 			for (L2WorldRegion regi : region.getSurroundingRegions()) // offer members of this and surrounding regions
 			{
 				Collection<L2Object> vObj = regi.getVisibleObjects().values();
-				for (L2Object _object : vObj)
+				for (L2Object object : vObj)
 				{
-					if (_object != getActiveObject())
+					if (object != getActiveObject())
 					{
-						addKnownObject(_object);
-						if (_object instanceof L2Character)
-							_object.getKnownList().addKnownObject(getActiveObject());
+						addKnownObject(object);
+						if (object instanceof L2Character)
+						{
+							object.getKnownList().addKnownObject(getActiveObject());
+						}
 					}
 				}
 			}
@@ -122,11 +147,11 @@ public class ObjectKnownList
 				if (regi.isActive())
 				{
 					Collection<L2Playable> vPls = regi.getVisiblePlayable().values();
-					for (L2Object _object : vPls)
+					for (L2Object object : vPls)
 					{
-						if (_object != getActiveObject())
+						if (object != getActiveObject())
 						{
-							addKnownObject(_object);
+							addKnownObject(object);
 						}
 					}
 				}
@@ -134,7 +159,10 @@ public class ObjectKnownList
 		}
 	}
 	
-	// Remove invisible and too far L2Object from _knowObject and if necessary from _knownPlayers of the L2Character
+	/**
+	 * Remove invisible and too far L2Object from _knowObject and if necessary from _knownPlayers of the L2Character
+	 * @param fullCheck
+	 */
 	public void forgetObjects(boolean fullCheck)
 	{
 		// Go through knownObjects
@@ -150,8 +178,10 @@ public class ObjectKnownList
 				continue;
 			}
 			
-			if (!fullCheck && !(object instanceof L2Playable))
+			if (!fullCheck && !object.isPlayable())
+			{
 				continue;
+			}
 			
 			// Remove all objects invisible or too far
 			if (!object.isVisible() || !Util.checkIfInShortRadius(getDistanceToForgetObject(object), getActiveObject(), object, true))
@@ -183,7 +213,9 @@ public class ObjectKnownList
 	public final Map<Integer, L2Object> getKnownObjects()
 	{
 		if (_knownObjects == null)
-			_knownObjects = new FastMap<Integer, L2Object>().shared();
+		{
+			_knownObjects = new L2FastMap<>(true);
+		}
 		return _knownObjects;
 	}
 }

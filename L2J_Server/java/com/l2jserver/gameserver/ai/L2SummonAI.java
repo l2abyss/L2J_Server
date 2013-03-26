@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- *
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * Copyright (C) 2004-2013 L2J Server
+ * 
+ * This file is part of L2J Server.
+ * 
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.ai;
 
@@ -59,9 +63,13 @@ public class L2SummonAI extends L2PlayableAI implements Runnable
 	{
 		L2Summon summon = (L2Summon) _actor;
 		if (_startFollow)
+		{
 			setIntention(AI_INTENTION_FOLLOW, summon.getOwner());
+		}
 		else
+		{
 			super.onIntentionActive();
+		}
 	}
 	
 	@Override
@@ -88,7 +96,9 @@ public class L2SummonAI extends L2PlayableAI implements Runnable
 			return;
 		}
 		if (maybeMoveToPawn(getAttackTarget(), _actor.getPhysicalAttackRange()))
+		{
 			return;
+		}
 		clientStopMoving(null);
 		_accessor.doAttack(getAttackTarget());
 	}
@@ -103,7 +113,9 @@ public class L2SummonAI extends L2PlayableAI implements Runnable
 		}
 		boolean val = _startFollow;
 		if (maybeMoveToPawn(getCastTarget(), _actor.getMagicalAttackRange(_skill)))
+		{
 			return;
+		}
 		clientStopMoving(null);
 		summon.setFollowStatus(false);
 		setIntention(AI_INTENTION_IDLE);
@@ -114,9 +126,13 @@ public class L2SummonAI extends L2PlayableAI implements Runnable
 	private void thinkPickUp()
 	{
 		if (checkTargetLost(getTarget()))
+		{
 			return;
+		}
 		if (maybeMoveToPawn(getTarget(), 36))
+		{
 			return;
+		}
 		setIntention(AI_INTENTION_IDLE);
 		((L2Summon.AIAccessor) _accessor).doPickupItem(getTarget());
 	}
@@ -124,9 +140,13 @@ public class L2SummonAI extends L2PlayableAI implements Runnable
 	private void thinkInteract()
 	{
 		if (checkTargetLost(getTarget()))
+		{
 			return;
+		}
 		if (maybeMoveToPawn(getTarget(), 36))
+		{
 			return;
+		}
 		setIntention(AI_INTENTION_IDLE);
 	}
 	
@@ -134,7 +154,9 @@ public class L2SummonAI extends L2PlayableAI implements Runnable
 	protected void onEvtThink()
 	{
 		if (_thinking || _actor.isCastingNow() || _actor.isAllSkillsDisabled())
+		{
 			return;
+		}
 		_thinking = true;
 		try
 		{
@@ -164,7 +186,9 @@ public class L2SummonAI extends L2PlayableAI implements Runnable
 	protected void onEvtFinishCasting()
 	{
 		if (_lastAttack == null)
+		{
 			((L2Summon) _actor).setFollowStatus(_startFollow);
+		}
 		else
 		{
 			setIntention(CtrlIntention.AI_INTENTION_ATTACK, _lastAttack);
@@ -191,10 +215,10 @@ public class L2SummonAI extends L2PlayableAI implements Runnable
 	private void avoidAttack(L2Character attacker)
 	{
 		// trying to avoid if summon near owner
-		if (((L2Summon) _actor).getOwner() != null
-				&& ((L2Summon) _actor).getOwner() != attacker
-				&& ((L2Summon) _actor).getOwner().isInsideRadius(_actor, 2 * AVOID_RADIUS, true, false))
+		if ((((L2Summon) _actor).getOwner() != null) && (((L2Summon) _actor).getOwner() != attacker) && ((L2Summon) _actor).getOwner().isInsideRadius(_actor, 2 * AVOID_RADIUS, true, false))
+		{
 			_startAvoid = true;
+		}
 	}
 	
 	@Override
@@ -204,19 +228,18 @@ public class L2SummonAI extends L2PlayableAI implements Runnable
 		{
 			_startAvoid = false;
 			
-			if (!_clientMoving
-					&& !_actor.isDead()
-					&& !_actor.isMovementDisabled())
+			if (!_clientMoving && !_actor.isDead() && !_actor.isMovementDisabled())
 			{
 				final int ownerX = ((L2Summon) _actor).getOwner().getX();
 				final int ownerY = ((L2Summon) _actor).getOwner().getY();
 				final double angle = Math.toRadians(Rnd.get(-90, 90)) + Math.atan2(ownerY - _actor.getY(), ownerX - _actor.getX());
 				
-				final int targetX = ownerX + (int)(AVOID_RADIUS * Math.cos(angle));
-				final int targetY = ownerY + (int)(AVOID_RADIUS * Math.sin(angle));
-				if (Config.GEODATA == 0
-						|| GeoData.getInstance().canMoveFromToTarget(_actor.getX(), _actor.getY(), _actor.getZ(), targetX, targetY, _actor.getZ(), _actor.getInstanceId()))
+				final int targetX = ownerX + (int) (AVOID_RADIUS * Math.cos(angle));
+				final int targetY = ownerY + (int) (AVOID_RADIUS * Math.sin(angle));
+				if ((Config.GEODATA == 0) || GeoData.getInstance().canMoveFromToTarget(_actor.getX(), _actor.getY(), _actor.getZ(), targetX, targetY, _actor.getZ(), _actor.getInstanceId()))
+				{
 					moveTo(targetX, targetY, _actor.getZ());
+				}
 			}
 		}
 	}
@@ -244,16 +267,22 @@ public class L2SummonAI extends L2PlayableAI implements Runnable
 	protected void onIntentionCast(L2Skill skill, L2Object target)
 	{
 		if (getIntention() == AI_INTENTION_ATTACK)
+		{
 			_lastAttack = getAttackTarget();
+		}
 		else
+		{
 			_lastAttack = null;
+		}
 		super.onIntentionCast(skill, target);
 	}
 	
 	private void startAvoidTask()
 	{
 		if (_avoidTask == null)
+		{
 			_avoidTask = ThreadPoolManager.getInstance().scheduleAiAtFixedRate(this, 100, 100);
+		}
 	}
 	
 	private void stopAvoidTask()

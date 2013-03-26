@@ -1,16 +1,20 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model.skills.l2skills;
 
@@ -20,6 +24,8 @@ import com.l2jserver.gameserver.instancemanager.GrandBossManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.PcCondOverride;
+import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -43,17 +49,19 @@ public class L2SkillTeleport extends L2Skill
 		if (coords != null)
 		{
 			String[] valuesSplit = coords.split(",");
-			_loc = new Location(Integer.parseInt(valuesSplit[0]),
-					Integer.parseInt(valuesSplit[1]),
-					Integer.parseInt(valuesSplit[2]));
+			_loc = new Location(Integer.parseInt(valuesSplit[0]), Integer.parseInt(valuesSplit[1]), Integer.parseInt(valuesSplit[2]));
 		}
 		else
+		{
 			_loc = null;
+		}
 	}
 	
 	@Override
 	public void useSkill(L2Character activeChar, L2Object[] targets)
-	{	
+	{
+		boolean bss = isMagic() && activeChar.isChargedShot(ShotType.BLESSED_SPIRITSHOTS);
+		
 		if (activeChar.isPlayer())
 		{
 			// Thanks nbd
@@ -81,7 +89,7 @@ public class L2SkillTeleport extends L2Skill
 				return;
 			}
 			
-			if (GrandBossManager.getInstance().getZone(activeChar) != null && !activeChar.isGM())
+			if ((GrandBossManager.getInstance().getZone(activeChar) != null) && !activeChar.canOverrideCond(PcCondOverride.SKILL_CONDITIONS))
 			{
 				activeChar.sendPacket(SystemMessageId.YOU_MAY_NOT_SUMMON_FROM_YOUR_CURRENT_LOCATION);
 				return;
@@ -90,25 +98,11 @@ public class L2SkillTeleport extends L2Skill
 		
 		try
 		{
-			for (L2Character target: (L2Character[]) targets)
+			for (L2Character target : (L2Character[]) targets)
 			{
 				if (target.isPlayer())
 				{
 					L2PcInstance targetChar = target.getActingPlayer();
-					
-					// Check to see if the current player target is in a festival.
-					if (targetChar.isFestivalParticipant())
-					{
-						targetChar.sendMessage("You may not use an escape skill in a festival.");
-						continue;
-					}
-					
-					// Check to see if player is in jail
-					if (targetChar.isInJail())
-					{
-						targetChar.sendMessage("You can not escape from jail.");
-						continue;
-					}
 					
 					// Check to see if player is in a duel
 					if (targetChar.isInDuel())
@@ -120,16 +114,24 @@ public class L2SkillTeleport extends L2Skill
 					if (targetChar != activeChar)
 					{
 						if (!TvTEvent.onEscapeUse(targetChar.getObjectId()))
+						{
 							continue;
+						}
 						
 						if (targetChar.isInOlympiadMode())
+						{
 							continue;
+						}
 						
 						if (GrandBossManager.getInstance().getZone(targetChar) != null)
+						{
 							continue;
+						}
 						
 						if (targetChar.isCombatFlagEquipped())
+						{
 							continue;
+						}
 					}
 				}
 				Location loc = null;
@@ -139,32 +141,43 @@ public class L2SkillTeleport extends L2Skill
 					{
 						// target is not player OR player is not flying or flymounted
 						// TODO: add check for gracia continent coords
-						if (!(target.isPlayer())
-								|| !(target.isFlying() || (target.getActingPlayer().isFlyingMounted())))
+						if (!(target.isPlayer()) || !(target.isFlying() || (target.getActingPlayer().isFlyingMounted())))
+						{
 							loc = _loc;
+						}
 					}
 				}
 				else
 				{
 					if (_recallType.equalsIgnoreCase("Castle"))
+					{
 						loc = MapRegionManager.getInstance().getTeleToLocation(target, MapRegionManager.TeleportWhereType.Castle);
+					}
 					else if (_recallType.equalsIgnoreCase("ClanHall"))
+					{
 						loc = MapRegionManager.getInstance().getTeleToLocation(target, MapRegionManager.TeleportWhereType.ClanHall);
+					}
 					else if (_recallType.equalsIgnoreCase("Fortress"))
+					{
 						loc = MapRegionManager.getInstance().getTeleToLocation(target, MapRegionManager.TeleportWhereType.Fortress);
+					}
 					else
+					{
 						loc = MapRegionManager.getInstance().getTeleToLocation(target, MapRegionManager.TeleportWhereType.Town);
+					}
 				}
 				if (loc != null)
 				{
 					target.setInstanceId(0);
 					if (target.isPlayer())
+					{
 						target.getActingPlayer().setIsIn7sDungeon(false);
+					}
 					target.teleToLocation(loc, true);
 				}
 			}
 			
-			activeChar.spsUncharge(this);
+			activeChar.setChargedShot(bss ? ShotType.BLESSED_SPIRITSHOTS : ShotType.SPIRITSHOTS, false);
 		}
 		catch (Exception e)
 		{

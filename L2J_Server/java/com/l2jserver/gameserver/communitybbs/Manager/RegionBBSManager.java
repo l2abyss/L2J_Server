@@ -1,20 +1,22 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.communitybbs.Manager;
-
-import gnu.trove.iterator.TIntObjectIterator;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,11 +43,13 @@ import com.l2jserver.gameserver.network.serverpackets.ShowBoard;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.StringUtil;
 
+import gnu.trove.iterator.TIntObjectIterator;
+
 public class RegionBBSManager extends BaseBBSManager
 {
 	private static Logger _logChat = Logger.getLogger("chat");
 	
-	private static final Comparator<L2PcInstance> playerNameComparator = new Comparator<L2PcInstance>()
+	private static final Comparator<L2PcInstance> PLAYER_NAME_COMPARATOR = new Comparator<L2PcInstance>()
 	{
 		@Override
 		public int compare(L2PcInstance p1, L2PcInstance p2)
@@ -94,8 +98,7 @@ public class RegionBBSManager extends BaseBBSManager
 			}
 			else
 			{
-				ShowBoard sb = new ShowBoard("<html><body><br><br><center>the command: " + command
-						+ " is not implemented yet</center><br><br></body></html>", "101");
+				ShowBoard sb = new ShowBoard("<html><body><br><br><center>the command: " + command + " is not implemented yet</center><br><br></body></html>", "101");
 				activeChar.sendPacket(sb);
 				activeChar.sendPacket(new ShowBoard(null, "102"));
 				activeChar.sendPacket(new ShowBoard(null, "103"));
@@ -110,8 +113,7 @@ public class RegionBBSManager extends BaseBBSManager
 	 */
 	private void showOldCommunityPI(L2PcInstance activeChar, String name)
 	{
-		final StringBuilder htmlCode = StringUtil.startAppend(1000, "<html><body><br>"
-				+ "<table border=0><tr><td FIXWIDTH=15></td><td align=center>L2J Community Board<img src=\"sek.cbui355\" width=610 height=1></td></tr><tr><td FIXWIDTH=15></td><td>");
+		final StringBuilder htmlCode = StringUtil.startAppend(1000, "<html><body><br><table border=0><tr><td FIXWIDTH=15></td><td align=center>L2J Community Board<img src=\"sek.cbui355\" width=610 height=1></td></tr><tr><td FIXWIDTH=15></td><td>");
 		L2PcInstance player = L2World.getInstance().getPlayer(name);
 		
 		if (player != null)
@@ -123,17 +125,21 @@ public class RegionBBSManager extends BaseBBSManager
 			}
 			String levelApprox = "low";
 			if (player.getLevel() >= 60)
+			{
 				levelApprox = "very high";
+			}
 			else if (player.getLevel() >= 40)
+			{
 				levelApprox = "high";
+			}
 			else if (player.getLevel() >= 20)
+			{
 				levelApprox = "medium";
+			}
 			
-			StringUtil.append(htmlCode, "<table border=0><tr><td>", player.getName(), " (", sex, " ", ClassListData.getInstance().getClass(player.getClassId()).getClientCode(), "):</td></tr>"
-					+ "<tr><td>Level: ", levelApprox, "</td></tr>" + "<tr><td><br></td></tr>");
+			StringUtil.append(htmlCode, "<table border=0><tr><td>", player.getName(), " (", sex, " ", ClassListData.getInstance().getClass(player.getClassId()).getClientCode(), "):</td></tr><tr><td>Level: ", levelApprox, "</td></tr><tr><td><br></td></tr>");
 			
-			if (activeChar != null
-					&& (activeChar.isGM() || player.getObjectId() == activeChar.getObjectId() || Config.SHOW_LEVEL_COMMUNITYBOARD))
+			if ((activeChar != null) && (activeChar.isGM() || (player.getObjectId() == activeChar.getObjectId()) || Config.SHOW_LEVEL_COMMUNITYBOARD))
 			{
 				long nextLevelExp = 0;
 				long nextLevelExpNeeded = 0;
@@ -143,9 +149,7 @@ public class RegionBBSManager extends BaseBBSManager
 					nextLevelExpNeeded = nextLevelExp - player.getExp();
 				}
 				
-				StringUtil.append(htmlCode, "<tr><td>Level: ", String.valueOf(player.getLevel()), "</td></tr>" + "<tr><td>Experience: ", String.valueOf(player.getExp()), "/", String.valueOf(nextLevelExp), "</td></tr>"
-						+ "<tr><td>Experience needed for level up: ", String.valueOf(nextLevelExpNeeded), "</td></tr>"
-						+ "<tr><td><br></td></tr>");
+				StringUtil.append(htmlCode, "<tr><td>Level: ", String.valueOf(player.getLevel()), "</td></tr><tr><td>Experience: ", String.valueOf(player.getExp()), "/", String.valueOf(nextLevelExp), "</td></tr><tr><td>Experience needed for level up: ", String.valueOf(nextLevelExpNeeded), "</td></tr><tr><td><br></td></tr>");
 			}
 			
 			int uptime = (int) player.getUptime() / 1000;
@@ -153,16 +157,14 @@ public class RegionBBSManager extends BaseBBSManager
 			int m = (uptime - (h * 3600)) / 60;
 			int s = ((uptime - (h * 3600)) - (m * 60));
 			
-			StringUtil.append(htmlCode, "<tr><td>Uptime: ", String.valueOf(h), "h ", String.valueOf(m), "m ", String.valueOf(s), "s</td></tr>"
-					+ "<tr><td><br></td></tr>");
+			StringUtil.append(htmlCode, "<tr><td>Uptime: ", String.valueOf(h), "h ", String.valueOf(m), "m ", String.valueOf(s), "s</td></tr><tr><td><br></td></tr>");
 			
 			if (player.getClan() != null)
 			{
-				StringUtil.append(htmlCode, "<tr><td>Clan: ", player.getClan().getName(), "</td></tr>" + "<tr><td><br></td></tr>");
+				StringUtil.append(htmlCode, "<tr><td>Clan: ", player.getClan().getName(), "</td></tr><tr><td><br></td></tr>");
 			}
 			
-			StringUtil.append(htmlCode, "<tr><td><multiedit var=\"pm\" width=240 height=40><button value=\"Send PM\" action=\"Write Region PM ", player.getName(), " pm pm pm\" width=110 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr><tr><td><br><button value=\"Back\" action=\"bypass _bbsloc\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr></table>"
-					+ "</td></tr></table>" + "</body></html>");
+			StringUtil.append(htmlCode, "<tr><td><multiedit var=\"pm\" width=240 height=40><button value=\"Send PM\" action=\"Write Region PM ", player.getName(), " pm pm pm\" width=110 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr><tr><td><br><button value=\"Back\" action=\"bypass _bbsloc\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr></table></td></tr></table></body></html>");
 			separateAndSend(htmlCode.toString(), activeChar);
 		}
 		else
@@ -188,12 +190,13 @@ public class RegionBBSManager extends BaseBBSManager
 	public void parsewrite(String ar1, String ar2, String ar3, String ar4, String ar5, L2PcInstance activeChar)
 	{
 		if (activeChar == null)
+		{
 			return;
+		}
 		
 		if (ar1.equals("PM"))
 		{
-			final StringBuilder htmlCode = StringUtil.startAppend(500, "<html><body><br>"
-					+ "<table border=0><tr><td FIXWIDTH=15></td><td align=center>L2J Community Board<img src=\"sek.cbui355\" width=610 height=1></td></tr><tr><td FIXWIDTH=15></td><td>");
+			final StringBuilder htmlCode = StringUtil.startAppend(500, "<html><body><br><table border=0><tr><td FIXWIDTH=15></td><td align=center>L2J Community Board<img src=\"sek.cbui355\" width=610 height=1></td></tr><tr><td FIXWIDTH=15></td><td>");
 			
 			try
 			{
@@ -201,8 +204,7 @@ public class RegionBBSManager extends BaseBBSManager
 				L2PcInstance receiver = L2World.getInstance().getPlayer(ar2);
 				if (receiver == null)
 				{
-					StringUtil.append(htmlCode, "Player not found!<br><button value=\"Back\" action=\"bypass _bbsloc;playerinfo;", ar2, "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">"
-							+ "</td></tr></table></body></html>");
+					StringUtil.append(htmlCode, "Player not found!<br><button value=\"Back\" action=\"bypass _bbsloc;playerinfo;", ar2, "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr></table></body></html>");
 					separateAndSend(htmlCode.toString(), activeChar);
 					return;
 				}
@@ -231,16 +233,19 @@ public class RegionBBSManager extends BaseBBSManager
 				{
 					LogRecord record = new LogRecord(Level.INFO, ar3);
 					record.setLoggerName("chat");
-					record.setParameters(new Object[] { "TELL", "[" + activeChar.getName() + " to " + receiver.getName() + "]" });
+					record.setParameters(new Object[]
+					{
+						"TELL",
+						"[" + activeChar.getName() + " to " + receiver.getName() + "]"
+					});
 					_logChat.log(record);
 				}
 				CreatureSay cs = new CreatureSay(activeChar.getObjectId(), Say2.TELL, activeChar.getName(), ar3);
-				if (!receiver.isSilenceMode(activeChar.getObjectId()) && !BlockList.isBlocked(receiver, activeChar) )
+				if (!receiver.isSilenceMode(activeChar.getObjectId()) && !BlockList.isBlocked(receiver, activeChar))
 				{
 					receiver.sendPacket(cs);
 					activeChar.sendPacket(new CreatureSay(activeChar.getObjectId(), Say2.TELL, "->" + receiver.getName(), ar3));
-					StringUtil.append(htmlCode, "Message Sent<br><button value=\"Back\" action=\"bypass _bbsloc;playerinfo;", receiver.getName(), "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\">"
-							+ "</td></tr></table></body></html>");
+					StringUtil.append(htmlCode, "Message Sent<br><button value=\"Back\" action=\"bypass _bbsloc;playerinfo;", receiver.getName(), "\" width=40 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td></tr></table></body></html>");
 					separateAndSend(htmlCode.toString(), activeChar);
 				}
 				else
@@ -264,6 +269,7 @@ public class RegionBBSManager extends BaseBBSManager
 		}
 		
 	}
+	
 	private int _onlineCount = 0;
 	private int _onlineCountGm = 0;
 	private static FastMap<Integer, FastList<L2PcInstance>> _onlinePlayers = new FastMap<Integer, FastList<L2PcInstance>>().shared();
@@ -293,7 +299,7 @@ public class RegionBBSManager extends BaseBBSManager
 				sortedPlayers.add(it.value());
 			}
 		}
-		Collections.sort(sortedPlayers, playerNameComparator);
+		Collections.sort(sortedPlayers, PLAYER_NAME_COMPARATOR);
 		
 		_onlinePlayers.clear();
 		_onlineCount = 0;
@@ -307,7 +313,7 @@ public class RegionBBSManager extends BaseBBSManager
 		_communityPages.clear();
 		writeCommunityPages();
 	}
-
+	
 	/**
 	 * Adds the online player.
 	 * @param player the player
@@ -324,7 +330,9 @@ public class RegionBBSManager extends BaseBBSManager
 				{
 					page.add(player);
 					if (!player.getAppearance().getInvisible())
+					{
 						_onlineCount++;
+					}
 					_onlineCountGm++;
 				}
 				added = true;
@@ -345,7 +353,9 @@ public class RegionBBSManager extends BaseBBSManager
 			{
 				_onlinePlayers.put(page, temp);
 				if (!player.getAppearance().getInvisible())
+				{
 					_onlineCount++;
+				}
 				_onlineCountGm++;
 			}
 		}
@@ -367,22 +377,7 @@ public class RegionBBSManager extends BaseBBSManager
 		{
 			FastMap<String, String> communityPage = new FastMap<>();
 			htmlCode.setLength(0);
-			StringUtil.append(htmlCode, "<html><body><br>" + "<table>" + trOpen + "<td align=left valign=top>Server Restarted: ", String.valueOf(GameServer.dateTimeServerStarted.getTime()), tdClose
-					+ trClose + "</table>" + "<table>" + trOpen + tdOpen + "XP Rate: x", String.valueOf(Config.RATE_XP), tdClose
-					+ colSpacer + tdOpen + "Party XP Rate: x", String.valueOf(Config.RATE_XP * Config.RATE_PARTY_XP), tdClose + colSpacer
-					+ tdOpen + "XP Exponent: ", String.valueOf(Config.ALT_GAME_EXPONENT_XP), tdClose + trClose + trOpen + tdOpen
-					+ "SP Rate: x", String.valueOf(Config.RATE_SP), tdClose + colSpacer + tdOpen + "Party SP Rate: x", String.valueOf(Config.RATE_SP
-							* Config.RATE_PARTY_SP), tdClose + colSpacer + tdOpen + "SP Exponent: ", String.valueOf(Config.ALT_GAME_EXPONENT_SP), tdClose
-							+ trClose + trOpen + tdOpen + "Drop Rate: ", String.valueOf(Config.RATE_DROP_ITEMS), tdClose + colSpacer + tdOpen
-							+ "Spoil Rate: ", String.valueOf(Config.RATE_DROP_SPOIL), tdClose + colSpacer + tdOpen + "Adena Rate: ", String.valueOf(Config.RATE_DROP_ITEMS_ID.get(PcInventory.ADENA_ID)), tdClose
-							+ trClose
-							+ "</table>"
-							+ "<table>"
-							+ trOpen
-							+ "<td><img src=\"sek.cbui355\" width=600 height=1><br></td>"
-							+ trClose
-							+ trOpen + tdOpen, String.valueOf(L2World.getInstance().getAllVisibleObjectsCount()), " Object count</td>" + trClose
-							+ trOpen + tdOpen, String.valueOf(getOnlineCount("gm")), " Player(s) Online</td>" + trClose + "</table>");
+			StringUtil.append(htmlCode, "<html><body><br><table>" + trOpen + "<td align=left valign=top>Server Restarted: ", String.valueOf(GameServer.dateTimeServerStarted.getTime()), tdClose + trClose + "</table><table>" + trOpen + tdOpen + "XP Rate: x", String.valueOf(Config.RATE_XP), tdClose + colSpacer + tdOpen + "Party XP Rate: x", String.valueOf(Config.RATE_XP * Config.RATE_PARTY_XP), tdClose + colSpacer + tdOpen + "XP Exponent: ", String.valueOf(Config.ALT_GAME_EXPONENT_XP), tdClose + trClose + trOpen + tdOpen + "SP Rate: x", String.valueOf(Config.RATE_SP), tdClose + colSpacer + tdOpen + "Party SP Rate: x", String.valueOf(Config.RATE_SP * Config.RATE_PARTY_SP), tdClose + colSpacer + tdOpen + "SP Exponent: ", String.valueOf(Config.ALT_GAME_EXPONENT_SP), tdClose + trClose + trOpen + tdOpen + "Drop Rate: ", String.valueOf(Config.RATE_DROP_ITEMS), tdClose + colSpacer + tdOpen + "Spoil Rate: ", String.valueOf(Config.RATE_DROP_SPOIL), tdClose + colSpacer + tdOpen + "Adena Rate: ", String.valueOf(Config.RATE_DROP_ITEMS_ID.get(PcInventory.ADENA_ID)), tdClose + trClose + "</table><table>" + trOpen + "<td><img src=\"sek.cbui355\" width=600 height=1><br></td>" + trClose + trOpen + tdOpen, String.valueOf(L2World.getInstance().getAllVisibleObjectsCount()), " Object count</td>" + trClose + trOpen + tdOpen, String.valueOf(getOnlineCount("gm")), " Player(s) Online</td>" + trClose + "</table>");
 			
 			int cell = 0;
 			if (Config.BBS_SHOW_PLAYERLIST)
@@ -412,7 +407,9 @@ public class RegionBBSManager extends BaseBBSManager
 					htmlCode.append("</a></td>");
 					
 					if (cell < Config.NAME_PER_ROW_COMMUNITYBOARD)
+					{
 						htmlCode.append(colSpacer);
+					}
 					
 					if (cell == Config.NAME_PER_ROW_COMMUNITYBOARD)
 					{
@@ -420,13 +417,12 @@ public class RegionBBSManager extends BaseBBSManager
 						htmlCode.append(trClose);
 					}
 				}
-				if (cell > 0 && cell < Config.NAME_PER_ROW_COMMUNITYBOARD)
+				if ((cell > 0) && (cell < Config.NAME_PER_ROW_COMMUNITYBOARD))
 				{
 					htmlCode.append(trClose);
 				}
 				
-				htmlCode.append("</table><br></td></tr>" + trOpen + "<td><img src=\"sek.cbui355\" width=600 height=1><br></td>" + trClose
-						+ "</table>");
+				htmlCode.append("</table><br></td></tr>" + trOpen + "<td><img src=\"sek.cbui355\" width=600 height=1><br></td>" + trClose + "</table>");
 			}
 			
 			if (getOnlineCount("gm") > Config.NAME_PAGE_SIZE_COMMUNITYBOARD)
@@ -441,8 +437,7 @@ public class RegionBBSManager extends BaseBBSManager
 					StringUtil.append(htmlCode, "<td align=right width=190><button value=\"Prev\" action=\"bypass _bbsloc;page;", String.valueOf(page - 1), "\" width=50 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
 				}
 				
-				StringUtil.append(htmlCode, "<td FIXWIDTH=10></td>" + "<td align=center valign=top width=200>Displaying ", String.valueOf(((page - 1) * Config.NAME_PAGE_SIZE_COMMUNITYBOARD) + 1), " - ", String.valueOf(((page - 1) * Config.NAME_PAGE_SIZE_COMMUNITYBOARD)
-						+ getOnlinePlayers(page).size()), " player(s)</td>" + "<td FIXWIDTH=10></td>");
+				StringUtil.append(htmlCode, "<td FIXWIDTH=10></td><td align=center valign=top width=200>Displaying ", String.valueOf(((page - 1) * Config.NAME_PAGE_SIZE_COMMUNITYBOARD) + 1), " - ", String.valueOf(((page - 1) * Config.NAME_PAGE_SIZE_COMMUNITYBOARD) + getOnlinePlayers(page).size()), " player(s)</td><td FIXWIDTH=10></td>");
 				if (getOnlineCount("gm") <= (page * Config.NAME_PAGE_SIZE_COMMUNITYBOARD))
 				{
 					htmlCode.append("<td width=190><button value=\"Next\" width=50 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
@@ -459,20 +454,7 @@ public class RegionBBSManager extends BaseBBSManager
 			communityPage.put("gm", htmlCode.toString());
 			
 			htmlCode.setLength(0);
-			StringUtil.append(htmlCode, "<html><body><br>" + "<table>" + trOpen + "<td align=left valign=top>Server Restarted: ", String.valueOf(GameServer.dateTimeServerStarted.getTime()), tdClose
-					+ trClose + "</table>" + "<table>" + trOpen + tdOpen + "XP Rate: ", String.valueOf(Config.RATE_XP), tdClose + colSpacer
-					+ tdOpen + "Party XP Rate: ", String.valueOf(Config.RATE_PARTY_XP), tdClose + colSpacer + tdOpen + "XP Exponent: ", String.valueOf(Config.ALT_GAME_EXPONENT_XP), tdClose
-					+ trClose + trOpen + tdOpen + "SP Rate: ", String.valueOf(Config.RATE_SP), tdClose + colSpacer + tdOpen
-					+ "Party SP Rate: ", String.valueOf(Config.RATE_PARTY_SP), tdClose + colSpacer + tdOpen + "SP Exponent: ", String.valueOf(Config.ALT_GAME_EXPONENT_SP), tdClose
-					+ trClose + trOpen + tdOpen + "Drop Rate: ", String.valueOf(Config.RATE_DROP_ITEMS), tdClose + colSpacer + tdOpen
-					+ "Spoil Rate: ", String.valueOf(Config.RATE_DROP_SPOIL), tdClose + colSpacer + tdOpen + "Adena Rate: ", String.valueOf(Config.RATE_DROP_ITEMS_ID.get(PcInventory.ADENA_ID)), tdClose
-					+ trClose
-					+ "</table>"
-					+ "<table>"
-					+ trOpen
-					+ "<td><img src=\"sek.cbui355\" width=600 height=1><br></td>"
-					+ trClose
-					+ trOpen + tdOpen, String.valueOf(getOnlineCount("pl")), " Player(s) Online</td>" + trClose + "</table>");
+			StringUtil.append(htmlCode, "<html><body><br><table>" + trOpen + "<td align=left valign=top>Server Restarted: ", String.valueOf(GameServer.dateTimeServerStarted.getTime()), tdClose + trClose + "</table><table>" + trOpen + tdOpen + "XP Rate: ", String.valueOf(Config.RATE_XP), tdClose + colSpacer + tdOpen + "Party XP Rate: ", String.valueOf(Config.RATE_PARTY_XP), tdClose + colSpacer + tdOpen + "XP Exponent: ", String.valueOf(Config.ALT_GAME_EXPONENT_XP), tdClose + trClose + trOpen + tdOpen + "SP Rate: ", String.valueOf(Config.RATE_SP), tdClose + colSpacer + tdOpen + "Party SP Rate: ", String.valueOf(Config.RATE_PARTY_SP), tdClose + colSpacer + tdOpen + "SP Exponent: ", String.valueOf(Config.ALT_GAME_EXPONENT_SP), tdClose + trClose + trOpen + tdOpen + "Drop Rate: ", String.valueOf(Config.RATE_DROP_ITEMS), tdClose + colSpacer + tdOpen + "Spoil Rate: ", String.valueOf(Config.RATE_DROP_SPOIL), tdClose + colSpacer + tdOpen + "Adena Rate: ", String.valueOf(Config.RATE_DROP_ITEMS_ID.get(PcInventory.ADENA_ID)), tdClose + trClose + "</table><table>" + trOpen + "<td><img src=\"sek.cbui355\" width=600 height=1><br></td>" + trClose + trOpen + tdOpen, String.valueOf(getOnlineCount("pl")), " Player(s) Online</td>" + trClose + "</table>");
 			
 			if (Config.BBS_SHOW_PLAYERLIST)
 			{
@@ -482,7 +464,9 @@ public class RegionBBSManager extends BaseBBSManager
 				for (L2PcInstance player : getOnlinePlayers(page))
 				{
 					if ((player == null) || (player.getAppearance().getInvisible()))
+					{
 						continue; // Go to next
+					}
 					
 					cell++;
 					
@@ -505,7 +489,9 @@ public class RegionBBSManager extends BaseBBSManager
 					htmlCode.append("</a></td>");
 					
 					if (cell < Config.NAME_PER_ROW_COMMUNITYBOARD)
+					{
 						htmlCode.append(colSpacer);
+					}
 					
 					if (cell == Config.NAME_PER_ROW_COMMUNITYBOARD)
 					{
@@ -513,11 +499,12 @@ public class RegionBBSManager extends BaseBBSManager
 						htmlCode.append(trClose);
 					}
 				}
-				if (cell > 0 && cell < Config.NAME_PER_ROW_COMMUNITYBOARD)
+				if ((cell > 0) && (cell < Config.NAME_PER_ROW_COMMUNITYBOARD))
+				{
 					htmlCode.append(trClose);
+				}
 				
-				htmlCode.append("</table><br></td></tr>" + trOpen + "<td><img src=\"sek.cbui355\" width=600 height=1><br></td>" + trClose
-						+ "</table>");
+				htmlCode.append("</table><br></td></tr>" + trOpen + "<td><img src=\"sek.cbui355\" width=600 height=1><br></td>" + trClose + "</table>");
 			}
 			
 			if (getOnlineCount("pl") > Config.NAME_PAGE_SIZE_COMMUNITYBOARD)
@@ -533,8 +520,7 @@ public class RegionBBSManager extends BaseBBSManager
 					StringUtil.append(htmlCode, "<td align=right width=190><button value=\"Prev\" action=\"bypass _bbsloc;page;", String.valueOf(page - 1), "\" width=50 height=15 back=\"L2UI_ct1.button_df\" fore=\"L2UI_ct1.button_df\"></td>");
 				}
 				
-				StringUtil.append(htmlCode, "<td FIXWIDTH=10></td>" + "<td align=center valign=top width=200>Displaying ", String.valueOf(((page - 1) * Config.NAME_PAGE_SIZE_COMMUNITYBOARD) + 1), " - ", String.valueOf(((page - 1) * Config.NAME_PAGE_SIZE_COMMUNITYBOARD)
-						+ getOnlinePlayers(page).size()), " player(s)</td>" + "<td FIXWIDTH=10></td>");
+				StringUtil.append(htmlCode, "<td FIXWIDTH=10></td><td align=center valign=top width=200>Displaying ", String.valueOf(((page - 1) * Config.NAME_PAGE_SIZE_COMMUNITYBOARD) + 1), " - ", String.valueOf(((page - 1) * Config.NAME_PAGE_SIZE_COMMUNITYBOARD) + getOnlinePlayers(page).size()), " player(s)</td><td FIXWIDTH=10></td>");
 				
 				if (getOnlineCount("pl") <= (page * Config.NAME_PAGE_SIZE_COMMUNITYBOARD))
 				{
@@ -564,7 +550,9 @@ public class RegionBBSManager extends BaseBBSManager
 	private int getOnlineCount(String type)
 	{
 		if (type.equalsIgnoreCase("gm"))
+		{
 			return _onlineCountGm;
+		}
 		
 		return _onlineCount;
 	}
@@ -588,7 +576,9 @@ public class RegionBBSManager extends BaseBBSManager
 	public String getCommunityPage(int page, String type)
 	{
 		if (_communityPages.get(page) != null)
+		{
 			return _communityPages.get(page).get(type);
+		}
 		
 		return null;
 	}

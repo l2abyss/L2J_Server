@@ -1,76 +1,75 @@
 /*
- * This program is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version.
+ * Copyright (C) 2004-2013 L2J Server
  * 
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
+ * This file is part of L2J Server.
  * 
- * You should have received a copy of the GNU General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
+ * L2J Server is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * L2J Server is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.handler;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.l2jserver.Config;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * 
- * @author nBd
- *
+ * @author nBd, UnAfraid
  */
-public class BypassHandler
+public class BypassHandler implements IHandler<IBypassHandler, String>
 {
-	private static Logger _log = Logger.getLogger(BypassHandler.class.getName());
-	
-	private final TIntObjectHashMap<IBypassHandler> _datatable;
-	
-	public static BypassHandler getInstance()
-	{
-		return SingletonHolder._instance;
-	}
+	private final Map<String, IBypassHandler> _datatable;
 	
 	protected BypassHandler()
 	{
-		_datatable = new TIntObjectHashMap<>();
+		_datatable = new HashMap<>();
 	}
 	
+	@Override
 	public void registerHandler(IBypassHandler handler)
 	{
 		for (String element : handler.getBypassList())
 		{
-			if (Config.DEBUG)
-				_log.log(Level.FINE, "Adding handler for command " + element);
-			
-			_datatable.put(element.toLowerCase().hashCode(), handler);
+			_datatable.put(element.toLowerCase(), handler);
 		}
 	}
 	
-	public IBypassHandler getHandler(String BypassCommand)
+	@Override
+	public synchronized void removeHandler(IBypassHandler handler)
 	{
-		String command = BypassCommand;
-		
-		if (BypassCommand.indexOf(" ") != -1)
+		for (String element : handler.getBypassList())
 		{
-			command = BypassCommand.substring(0, BypassCommand.indexOf(" "));
+			_datatable.remove(element.toLowerCase());
 		}
-		
-		if (Config.DEBUG)
-			_log.log(Level.FINE, "getting handler for command: " + command + " -> " + (_datatable.get(command.hashCode()) != null));
-		
-		return _datatable.get(command.toLowerCase().hashCode());
 	}
 	
+	@Override
+	public IBypassHandler getHandler(String command)
+	{
+		if (command.contains(" "))
+		{
+			command = command.substring(0, command.indexOf(" "));
+		}
+		return _datatable.get(command.toLowerCase());
+	}
+	
+	@Override
 	public int size()
 	{
 		return _datatable.size();
+	}
+	
+	public static BypassHandler getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder
