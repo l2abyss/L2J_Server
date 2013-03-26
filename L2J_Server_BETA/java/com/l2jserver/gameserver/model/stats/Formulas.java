@@ -1238,91 +1238,57 @@ public final class Formulas
 	 */
 	public static final double calcLethal(L2Character activeChar, L2Character target, int baseLethal, int magiclvl)
 	{
-		double chance = 0;
-		if (magiclvl > 0)
-		{
-			float delta = ((magiclvl + activeChar.getLevel()) / 2) - 1 - target.getLevel();
-			
-			// delta [-3,infinite)
-			if (delta >= -3)
-			{
-				chance = (baseLethal * ((double) activeChar.getLevel() / target.getLevel()));
-			}
-			// delta [-9, -3[
-			else if ((delta < -3) && (delta >= -9))
-			{
-				// baseLethal
-				// chance = -1 * -----------
-				// (delta / 3)
-				chance = (-3) * (baseLethal / delta);
-			}
-			// delta [-infinite,-9[
-			else
-			{
-				chance = baseLethal / 15.0;
-			}
-		}
-		else
-		{
-			chance = (baseLethal * ((double) activeChar.getLevel() / target.getLevel()));
-		}
-		return 10 * activeChar.calcStat(Stats.LETHAL_RATE, chance, target, null);
+		// Lvl Bonus Modifier.
+		int attackerLvl = magiclvl > 0 ? magiclvl : activeChar.getLevel();
+		double lvlMod = 1 + ((attackerLvl - target.getLevel()) / 100.);
+		double chance = baseLethal * lvlMod;
+		
+		return activeChar.calcStat(Stats.LETHAL_RATE, chance, target, null);
 	}
 	
 	public static final boolean calcLethalHit(L2Character activeChar, L2Character target, L2Skill skill)
 	{
-		if (target.isLethalable() && !target.isInvul())
+		if ((((skill.getLethalStrikeRate() > 0) || (skill.getHalfKillRate() > 0)) && (target.isLethalable() && !target.isInvul())) || (activeChar.isPlayer() && activeChar.getAccessLevel().canGiveDamage()))
 		{
-			// 2nd lethal effect activate (cp,hp to 1 or if target is npc then hp to 1)
-			if ((skill.getLethalChance2() > 0) && (Rnd.get(1000) < calcLethal(activeChar, target, skill.getLethalChance2(), skill.getMagicLevel())))
+			// Lethal Strike
+			if (Rnd.get(100) < calcLethal(activeChar, target, skill.getLethalStrikeRate(), skill.getMagicLevel()))
 			{
-				if (target.isNpc())
+				// for Players CP and HP is set to 1.
+				if (target.isPlayer())
 				{
-					target.reduceCurrentHp(target.getCurrentHp() - 1, activeChar, skill);
+					target.setCurrentCp(1);
+					target.setCurrentHp(1);
+					target.sendPacket(SystemMessageId.LETHAL_STRIKE);
 				}
-				else if (target.isPlayer()) // If is a active player set his HP and CP to 1
+				// for Monsters HP is set to 1.
+				else if (target.isMonster() || target.isSummon())
 				{
-					L2PcInstance player = target.getActingPlayer();
-					if (!player.isInvul())
-					{
-						if (!(activeChar.isPlayer() && (activeChar.isGM() && !activeChar.getAccessLevel().canGiveDamage())))
-						{
-							player.setCurrentHp(1);
-							player.setCurrentCp(1);
-							player.sendPacket(SystemMessageId.LETHAL_STRIKE_SUCCESSFUL);
-						}
-					}
+					target.setCurrentHp(1);
 				}
-				activeChar.sendPacket(SystemMessageId.LETHAL_STRIKE);
+				activeChar.sendPacket(SystemMessageId.LETHAL_STRIKE_SUCCESSFUL);
 			}
-			else if ((skill.getLethalChance1() > 0) && (Rnd.get(1000) < calcLethal(activeChar, target, skill.getLethalChance1(), skill.getMagicLevel())))
+			// Half-Kill
+			else if (Rnd.get(100) < calcLethal(activeChar, target, skill.getHalfKillRate(), skill.getMagicLevel()))
 			{
-				if (target.isMonster())
+				// for Players CP is set to 1.
+				if (target.isPlayer())
 				{
-					target.reduceCurrentHp(target.getCurrentHp() / 2, activeChar, skill);
-					activeChar.sendPacket(SystemMessageId.HALF_KILL);
+					target.setCurrentCp(1);
+					target.sendPacket(SystemMessageId.HALF_KILL);
+					target.sendPacket(SystemMessageId.CP_DISAPPEARS_WHEN_HIT_WITH_A_HALF_KILL_SKILL);
 				}
-				else if (target.isPlayer())
+				// for Monsters HP is set to 50%.
+				else if (target.isMonster() || target.isSummon())
 				{
-					L2PcInstance player = target.getActingPlayer();
-					if (!((activeChar.isPlayer()) && (activeChar.isGM() && !activeChar.getAccessLevel().canGiveDamage())))
-					{
-						player.setCurrentCp(1); // Set CP to 1
-						player.sendPacket(SystemMessageId.CP_DISAPPEARS_WHEN_HIT_WITH_A_HALF_KILL_SKILL);
-						activeChar.sendPacket(SystemMessageId.HALF_KILL);
-					}
+					target.setCurrentHp(target.getCurrentHp() * 0.5);
 				}
-			}
-			else
-			{
-				return false;
+				activeChar.sendPacket(SystemMessageId.HALF_KILL);
 			}
 		}
 		else
 		{
 			return false;
 		}
-		
 		return true;
 	}
 	

@@ -217,8 +217,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final boolean _isSevenSigns;
 	
 	private final int _baseCritRate; // percent of success for skill critical hit (especially for PDAM & BLOW - they're not affected by rCrit values or buffs). Default loads -1 for all other skills but 0 to PDAM & BLOW
-	private final int _lethalEffect1; // percent of success for lethal 1st effect (hit cp to 1 or if mob hp to 50%) (only for PDAM skills)
-	private final int _lethalEffect2; // percent of success for lethal 2nd effect (hit cp,hp to 1 or if mob hp to 1) (only for PDAM skills)
+	private final int _halfKillRate;
+	private final int _lethalStrikeRate;
 	private final boolean _directHpDmg; // If true then dmg is being make directly
 	private final boolean _isTriggeredSkill; // If true the skill will take activation buff slot instead of a normal buff slot
 	private final float _sSBoost; // If true skill will have SoulShot boost (power*2)
@@ -477,8 +477,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_isClanSkill = SkillTreesData.getInstance().isClanSkill(_id, _level);
 		
 		_baseCritRate = set.getInteger("baseCritRate", ((_skillType == L2SkillType.PDAM) || (_skillType == L2SkillType.BLOW)) ? 0 : -1);
-		_lethalEffect1 = set.getInteger("lethal1", 0);
-		_lethalEffect2 = set.getInteger("lethal2", 0);
+		_halfKillRate = set.getInteger("halfKillRate", 0);
+		_lethalStrikeRate = set.getInteger("lethalStrikeRate", 0);
 		
 		_directHpDmg = set.getBool("dmgDirectlyToHp", false);
 		_isTriggeredSkill = set.getBool("isTriggeredSkill", false);
@@ -1115,14 +1115,14 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _baseCritRate;
 	}
 	
-	public final int getLethalChance1()
+	public final int getHalfKillRate()
 	{
-		return _lethalEffect1;
+		return _halfKillRate;
 	}
 	
-	public final int getLethalChance2()
+	public final int getLethalStrikeRate()
 	{
-		return _lethalEffect2;
+		return _lethalStrikeRate;
 	}
 	
 	public final boolean getDmgDirectlyToHP()
