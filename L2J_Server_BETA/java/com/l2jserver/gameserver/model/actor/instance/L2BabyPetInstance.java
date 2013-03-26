@@ -256,7 +256,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 					 * If the owner's HP is more than 80% for Baby Pets and 70% for Improved Baby pets, do nothing. If the owner's HP is very low, under 15% for Baby pets and under 30% for Improved Baby Pets, have 75% chances of using a strong heal. Otherwise, have 25% chances for weak heal.
 					 */
 					final double hpPercent = owner.getCurrentHp() / owner.getMaxHp();
-					final boolean isImprovedBaby = PetDataTable.isImprovedBaby(getNpcId());
+					final boolean isImprovedBaby = PetDataTable.isUpgradeBabyPetGroup(getNpcId());
 					if ((isImprovedBaby && (hpPercent < 0.3)) || (!isImprovedBaby && (hpPercent < 0.15)))
 					{
 						skill = _majorHeal.getSkill();

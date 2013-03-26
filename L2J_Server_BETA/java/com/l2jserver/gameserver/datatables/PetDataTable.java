@@ -188,83 +188,73 @@ public final class PetDataTable extends DocumentParser
 	}
 	
 	/**
-	 * Checks if is wolf.
-	 * @param npcId the NPC Id to verify.
-	 * @return {@code true} if the given Id is from a wolf, {@code false} otherwise.
-	 */
-	public static boolean isWolf(int npcId)
-	{
-		return npcId == 12077;
-	}
-	
-	/**
-	 * Checks if is evolved wolf.
-	 * @param npcId the NPC Id to verify.
-	 * @return {@code true} if the given Id is from an evolved wolf, {@code false} otherwise.
-	 */
-	public static boolean isEvolvedWolf(int npcId)
-	{
-		return (npcId == 16030) || (npcId == 16037) || (npcId == 16025) || (npcId == 16041) || (npcId == 16042);
-	}
-	
-	/**
-	 * Checks if is sin eater.
-	 * @param npcId the NPC Id to verify.
-	 * @return {@code true} if the given Id is from a Sin Eater, {@code false} otherwise.
-	 */
-	public static boolean isSinEater(int npcId)
-	{
-		return npcId == 12564;
-	}
-	
-	/**
-	 * Checks if is hatchling.
-	 * @param npcId the NPC Id to verify.
-	 * @return {@code true} if the given Id is from a hatchling, {@code false} otherwise.
-	 */
-	public static boolean isHatchling(int npcId)
-	{
-		return (npcId > 12310) && (npcId < 12314);
-	}
-	
-	/**
 	 * Checks if is strider.
 	 * @param npcId the NPC Id to verify.
 	 * @return {@code true} if the given Id is from a strider, {@code false} otherwise.
 	 */
 	public static boolean isStrider(int npcId)
 	{
-		return ((npcId > 12525) && (npcId < 12529)) || ((npcId > 16037) && (npcId < 16041)) || (npcId == 16068);
+		return ((npcId >= 12526) && (npcId <= 12528)) || ((npcId >= 16038) && (npcId <= 16040)) || (npcId == 16068);
 	}
 	
 	/**
-	 * Checks if is wyvern.
+	 * Checks if is grow up wolf group.
 	 * @param npcId the NPC Id to verify.
-	 * @return {@code true} if the given Id is from a wyvern, {@code false} otherwise.
+	 * @return {@code true} if the given Id is from a grow up wolf group, {@code false} otherwise.
 	 */
-	public static boolean isWyvern(int npcId)
+	public static boolean isGrowUpWolfGroup(int npcId)
 	{
-		return npcId == 12621;
+		return (npcId == 16025) || (npcId == 16030) || (npcId == 16037) || (npcId == 16041) || (npcId == 16042);
 	}
 	
 	/**
-	 * Checks if is baby.
+	 * Checks if is hatchling group.
 	 * @param npcId the NPC Id to verify.
-	 * @return {@code true} if the given Id is from a baby pet, {@code false} otherwise.
+	 * @return {@code true} if the given Id is from a hatchling group, {@code false} otherwise.
 	 */
-	public static boolean isBaby(int npcId)
+	public static boolean isHatchlingGroup(int npcId)
 	{
-		return (npcId > 12779) && (npcId < 12783);
+		return (npcId >= 12311) && (npcId <= 12313);
 	}
 	
 	/**
-	 * Checks if is improved baby.
+	 * Checks if is all wolf group.
 	 * @param npcId the NPC Id to verify.
-	 * @return {@code true} if the given Id is from an improved baby pet, {@code false} otherwise.
+	 * @return {@code true} if the given Id is from all wolf group, {@code false} otherwise.
 	 */
-	public static boolean isImprovedBaby(int npcId)
+	public static boolean isAllWolfGroup(int npcId)
 	{
-		return (npcId > 16033) && (npcId < 16037);
+		return (npcId == 12077) || (npcId == 16025) || (npcId == 16030) || (npcId == 16037) || (npcId == 16041) || (npcId == 16042);
+	}
+	
+	/**
+	 * Checks if is baby pet group.
+	 * @param npcId the NPC Id to verify.
+	 * @return {@code true} if the given Id is from a baby pet group, {@code false} otherwise.
+	 */
+	public static boolean isBabyPetGroup(int npcId)
+	{
+		return (npcId >= 12780) && (npcId <= 12782);
+	}
+	
+	/**
+	 * Checks if is upgrade baby pet group.
+	 * @param npcId the NPC Id to verify.
+	 * @return {@code true} if the given Id is from an upgrade baby pet group, {@code false} otherwise.
+	 */
+	public static boolean isUpgradeBabyPetGroup(int npcId)
+	{
+		return (npcId >= 16034) && (npcId <= 16036);
+	}
+	
+	/**
+	 * Checks if is item equip pet group.
+	 * @param npcId the NPC Id to verify.
+	 * @return {@code true} if the given Id is from an item equip pet group, {@code false} otherwise.
+	 */
+	public static boolean isItemEquipPetGroup(int npcId)
+	{
+		return (npcId == 12077) || ((npcId >= 12311) && (npcId <= 12313)) || ((npcId >= 12526) && (npcId <= 12528)) || ((npcId >= 12780) && (npcId <= 12782)) || (npcId == 16025) || (npcId == 16030) || ((npcId >= 16034) && (npcId <= 16036)) || (npcId == 16037) || ((npcId >= 16038) && (npcId <= 16042)) || (npcId == 16068) || (npcId == 16067) || (npcId == 16071) || (npcId == 16072) || (npcId == 1561);
 	}
 	
 	/**
