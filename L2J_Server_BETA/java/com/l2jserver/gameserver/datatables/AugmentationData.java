@@ -20,7 +20,9 @@ package com.l2jserver.gameserver.datatables;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,15 +34,13 @@ import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Augmentation;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.options.Options;
-import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.clientpackets.AbstractRefinePacket;
 import com.l2jserver.util.Rnd;
-
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
  * This class manages the augmentation data and can also create new augmentations.
@@ -52,15 +52,11 @@ public class AugmentationData
 	
 	// stats
 	private static final int STAT_BLOCKSIZE = 3640;
-	// private static final int STAT_NUMBEROF_BLOCKS = 4;
 	private static final int STAT_SUBBLOCKSIZE = 91;
-	// private static final int STAT_NUMBEROF_SUBBLOCKS = 40;
 	public static final int MIN_SKILL_ID = STAT_BLOCKSIZE * 4;
 	
 	// skills
 	private static final int BLUE_START = 14561;
-	// private static final int PURPLE_START = 14578;
-	// private static final int RED_START = 14685;
 	private static final int SKILLS_BLOCKSIZE = 178;
 	
 	// basestats
@@ -86,58 +82,42 @@ public class AugmentationData
 	private static final int ACC_NECK_SKILLS = 24;
 	private static final int ACC_NECK_BLOCKSIZE = ACC_NECK_SKILLS + (4 * ACC_STAT_SUBBLOCKSIZE);
 	
-	private final ArrayList<?>[] _blueSkills = new ArrayList[10];
-	private final ArrayList<?>[] _purpleSkills = new ArrayList[10];
-	private final ArrayList<?>[] _redSkills = new ArrayList[10];
-	private final ArrayList<?>[] _yellowSkills = new ArrayList[10];
+	private final List<List<Integer>> _blueSkills = new ArrayList<>(10);
+	private final List<List<Integer>> _purpleSkills = new ArrayList<>(10);
+	private final List<List<Integer>> _redSkills = new ArrayList<>(10);
+	private final List<List<Integer>> _yellowSkills = new ArrayList<>(10);
 	
-	private final List<augmentationChance> _augmentationChances = new ArrayList<>();
+	private final List<AugmentationChance> _augmentationChances = new ArrayList<>();
 	private final List<augmentationChanceAcc> _augmentationChancesAcc = new ArrayList<>();
 	
-	private final TIntObjectHashMap<AugmentationSkill> _allSkills = new TIntObjectHashMap<>();
+	private final Map<Integer, SkillHolder> _allSkills = new HashMap<>();
 	
 	protected AugmentationData()
 	{
 		for (int i = 0; i < 10; i++)
 		{
-			_blueSkills[i] = new ArrayList<Integer>();
-			_purpleSkills[i] = new ArrayList<Integer>();
-			_redSkills[i] = new ArrayList<Integer>();
-			_yellowSkills[i] = new ArrayList<Integer>();
+			_blueSkills.add(new ArrayList<Integer>());
+			_purpleSkills.add(new ArrayList<Integer>());
+			_redSkills.add(new ArrayList<Integer>());
+			_yellowSkills.add(new ArrayList<Integer>());
 		}
 		
 		load();
-		// These are 0 when retail aug is on, no point in writing info!
 		if (!Config.RETAIL_LIKE_AUGMENTATION)
 		{
 			for (int i = 0; i < 10; i++)
 			{
-				_log.info("AugmentationData: Loaded: " + _blueSkills[i].size() + " blue, " + _purpleSkills[i].size() + " purple and " + _redSkills[i].size() + " red skills for lifeStoneLevel " + i);
+				_log.info(getClass().getSimpleName() + ": Loaded: " + _blueSkills.get(i).size() + " blue, " + _purpleSkills.get(i).size() + " purple and " + _redSkills.get(i).size() + " red skills for lifeStoneLevel " + i);
 			}
 		}
-	}
-	
-	// =========================================================
-	// Nested Class
-	
-	public static class AugmentationSkill
-	{
-		private final int _skillId;
-		private final int _skillLevel;
-		
-		public AugmentationSkill(int skillId, int skillLevel)
+		else
 		{
-			_skillId = skillId;
-			_skillLevel = skillLevel;
-		}
-		
-		public L2Skill getSkill()
-		{
-			return SkillTable.getInstance().getInfo(_skillId, _skillLevel);
+			_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _augmentationChances.size() + " augmentations.");
+			_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _augmentationChancesAcc.size() + " accessory augmentations.");
 		}
 	}
 	
-	public class augmentationChance
+	public class AugmentationChance
 	{
 		private final String _WeaponType;
 		private final int _StoneId;
@@ -146,7 +126,7 @@ public class AugmentationData
 		private final int _AugmentId;
 		private final float _AugmentChance;
 		
-		public augmentationChance(String WeaponType, int StoneId, int VariationId, int CategoryChance, int AugmentId, float AugmentChance)
+		public AugmentationChance(String WeaponType, int StoneId, int VariationId, int CategoryChance, int AugmentId, float AugmentChance)
 		{
 			_WeaponType = WeaponType;
 			_StoneId = StoneId;
@@ -237,7 +217,6 @@ public class AugmentationData
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	private final void load()
 	{
 		// Load stats
@@ -261,7 +240,7 @@ public class AugmentationData
 				File file = new File(Config.DATAPACK_ROOT + "/data/stats/augmentation/augmentation_skillmap.xml");
 				if (!file.exists())
 				{
-					_log.log(Level.SEVERE, "ERROR The augmentation skillmap file is missing.");
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": ERROR The augmentation skillmap file is missing.");
 					return;
 				}
 				
@@ -300,19 +279,11 @@ public class AugmentationData
 								}
 								if (skillId == 0)
 								{
-									if (Config.DEBUG)
-									{
-										_log.log(Level.SEVERE, "Bad skillId in augmentation_skillmap.xml in the augmentationId:" + augmentationId);
-									}
 									badAugmantData++;
 									continue;
 								}
 								else if (skillLvL == 0)
 								{
-									if (Config.DEBUG)
-									{
-										_log.log(Level.SEVERE, "Bad skillLevel in augmentation_skillmap.xml in the augmentationId:" + augmentationId);
-									}
 									badAugmantData++;
 									continue;
 								}
@@ -320,30 +291,30 @@ public class AugmentationData
 								
 								if (type.equalsIgnoreCase("blue"))
 								{
-									((ArrayList<Integer>) _blueSkills[k]).add(augmentationId);
+									_blueSkills.get(k).add(augmentationId);
 								}
 								else if (type.equalsIgnoreCase("purple"))
 								{
-									((ArrayList<Integer>) _purpleSkills[k]).add(augmentationId);
+									_purpleSkills.get(k).add(augmentationId);
 								}
 								else
 								{
-									((ArrayList<Integer>) _redSkills[k]).add(augmentationId);
+									_redSkills.get(k).add(augmentationId);
 								}
 								
-								_allSkills.put(augmentationId, new AugmentationSkill(skillId, skillLvL));
+								_allSkills.put(augmentationId, new SkillHolder(skillId, skillLvL));
 							}
 						}
 					}
 				}
 				if (badAugmantData != 0)
 				{
-					_log.info("AugmentationData: " + badAugmantData + " bad skill(s) were skipped.");
+					_log.info(getClass().getSimpleName() + ": " + badAugmantData + " bad skill(s) were skipped.");
 				}
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "ERROR parsing augmentation_skillmap.xml.", e);
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": ERROR parsing augmentation_skillmap.xml.", e);
 				return;
 			}
 		}
@@ -424,7 +395,7 @@ public class AugmentationData
 																aAugmentId = Integer.parseInt(aNodeAttributes.getNamedItem("id").getNodeValue());
 																aAugmentChance = Float.parseFloat(aNodeAttributes.getNamedItem("chance").getNodeValue());
 																
-																_augmentationChances.add(new augmentationChance(aWeaponType, aStoneId, aVariationId, aCategoryChance, aAugmentId, aAugmentChance));
+																_augmentationChances.add(new AugmentationChance(aWeaponType, aStoneId, aVariationId, aCategoryChance, aAugmentId, aAugmentChance));
 															}
 														}
 													}
@@ -440,7 +411,7 @@ public class AugmentationData
 			}
 			else
 			{
-				_log.log(Level.SEVERE, "ERROR The retailchances.xml data file is missing.");
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": ERROR The retailchances.xml data file is missing.");
 				return;
 			}
 		}
@@ -533,7 +504,7 @@ public class AugmentationData
 			}
 			else
 			{
-				_log.log(Level.SEVERE, "ERROR The retailchances_accessory.xml data file is missing.");
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": ERROR The retailchances_accessory.xml data file is missing.");
 				return;
 			}
 		}
@@ -569,9 +540,9 @@ public class AugmentationData
 		{
 			if (((L2Weapon) item.getItem()).isMagicWeapon())
 			{
-				List<augmentationChance> _selectedChances12 = new ArrayList<>();
-				List<augmentationChance> _selectedChances34 = new ArrayList<>();
-				for (augmentationChance ac : _augmentationChances)
+				List<AugmentationChance> _selectedChances12 = new ArrayList<>();
+				List<AugmentationChance> _selectedChances34 = new ArrayList<>();
+				for (AugmentationChance ac : _augmentationChances)
 				{
 					if (ac.getWeaponType().equals("mage") && (ac.getStoneId() == lifeStoneId))
 					{
@@ -587,7 +558,7 @@ public class AugmentationData
 				}
 				int r = Rnd.get(10000);
 				float s = 10000;
-				for (augmentationChance ac : _selectedChances12)
+				for (AugmentationChance ac : _selectedChances12)
 				{
 					if (s > r)
 					{
@@ -631,8 +602,8 @@ public class AugmentationData
 				{
 					c = 3;
 				}
-				List<augmentationChance> _selectedChances34final = new ArrayList<>();
-				for (augmentationChance ac : _selectedChances34)
+				List<AugmentationChance> _selectedChances34final = new ArrayList<>();
+				for (AugmentationChance ac : _selectedChances34)
 				{
 					if (ac.getCategoryChance() == c)
 					{
@@ -643,7 +614,7 @@ public class AugmentationData
 				r = Rnd.get(10000);
 				s = 10000;
 				
-				for (augmentationChance ac : _selectedChances34final)
+				for (AugmentationChance ac : _selectedChances34final)
 				{
 					if (s > r)
 					{
@@ -654,9 +625,9 @@ public class AugmentationData
 			}
 			else
 			{
-				List<augmentationChance> _selectedChances12 = new ArrayList<>();
-				List<augmentationChance> _selectedChances34 = new ArrayList<>();
-				for (augmentationChance ac : _augmentationChances)
+				List<AugmentationChance> _selectedChances12 = new ArrayList<>();
+				List<AugmentationChance> _selectedChances34 = new ArrayList<>();
+				for (AugmentationChance ac : _augmentationChances)
 				{
 					if (ac.getWeaponType().equals("warrior") && (ac.getStoneId() == lifeStoneId))
 					{
@@ -672,7 +643,7 @@ public class AugmentationData
 				}
 				int r = Rnd.get(10000);
 				float s = 10000;
-				for (augmentationChance ac : _selectedChances12)
+				for (AugmentationChance ac : _selectedChances12)
 				{
 					if (s > r)
 					{
@@ -716,8 +687,8 @@ public class AugmentationData
 				{
 					c = 3;
 				}
-				List<augmentationChance> _selectedChances34final = new ArrayList<>();
-				for (augmentationChance ac : _selectedChances34)
+				List<AugmentationChance> _selectedChances34final = new ArrayList<>();
+				for (AugmentationChance ac : _selectedChances34)
 				{
 					if (ac.getCategoryChance() == c)
 					{
@@ -726,7 +697,7 @@ public class AugmentationData
 				}
 				r = Rnd.get(10000);
 				s = 10000;
-				for (augmentationChance ac : _selectedChances34final)
+				for (AugmentationChance ac : _selectedChances34final)
 				{
 					if (s > r)
 					{
@@ -740,7 +711,7 @@ public class AugmentationData
 		boolean generateSkill = false;
 		boolean generateGlow = false;
 		
-		// lifestonelevel is used for stat Id and skill level, but here the max level is 9
+		// life stone level is used for stat Id and skill level, but here the max level is 9
 		lifeStoneLevel = Math.min(lifeStoneLevel, 9);
 		
 		switch (lifeStoneGrade)
@@ -800,7 +771,7 @@ public class AugmentationData
 		// Second: decide which grade the augmentation result is going to have:
 		// 0:yellow, 1:blue, 2:purple, 3:red
 		// The chances used here are most likely custom,
-		// whats known is: you cant have yellow with skill(or baseStatModifier)
+		// what's known is: you can't have yellow with skill(or baseStatModifier)
 		// noGrade stone can not have glow, mid only with skill, high has a chance(custom), top allways glow
 		int resultColor = Rnd.get(0, 100);
 		if ((stat34 == 0) && !generateSkill)
@@ -830,24 +801,24 @@ public class AugmentationData
 			}
 		}
 		
-		// generate a skill if neccessary
+		// generate a skill if necessary
 		if (generateSkill)
 		{
 			switch (resultColor)
 			{
 				case 1: // blue skill
-					stat34 = ((Integer) _blueSkills[lifeStoneLevel].get(Rnd.get(0, _blueSkills[lifeStoneLevel].size() - 1)));
+					stat34 = _blueSkills.get(lifeStoneLevel).get(Rnd.get(0, _blueSkills.get(lifeStoneLevel).size() - 1));
 					break;
 				case 2: // purple skill
-					stat34 = ((Integer) _purpleSkills[lifeStoneLevel].get(Rnd.get(0, _purpleSkills[lifeStoneLevel].size() - 1)));
+					stat34 = _purpleSkills.get(lifeStoneLevel).get(Rnd.get(0, _purpleSkills.get(lifeStoneLevel).size() - 1));
 					break;
 				case 3: // red skill
-					stat34 = ((Integer) _redSkills[lifeStoneLevel].get(Rnd.get(0, _redSkills[lifeStoneLevel].size() - 1)));
+					stat34 = _redSkills.get(lifeStoneLevel).get(Rnd.get(0, _redSkills.get(lifeStoneLevel).size() - 1));
 					break;
 			}
 		}
 		
-		// Third: Calculate the subblock offset for the choosen color,
+		// Third: Calculate the subblock offset for the chosen color,
 		// and the level of the lifeStone
 		// from large number of retail augmentations:
 		// no skill part
@@ -900,7 +871,7 @@ public class AugmentationData
 		
 		if (Config.DEBUG)
 		{
-			_log.info("Augmentation success: stat12=" + stat12 + "; stat34=" + stat34 + "; resultColor=" + resultColor + "; level=" + lifeStoneLevel + "; grade=" + lifeStoneGrade);
+			_log.info(getClass().getSimpleName() + ": Augmentation success: stat12=" + stat12 + "; stat34=" + stat34 + "; resultColor=" + resultColor + "; level=" + lifeStoneLevel + "; grade=" + lifeStoneGrade);
 		}
 		return new L2Augmentation(((stat34 << 16) + stat12));
 	}
@@ -1024,7 +995,7 @@ public class AugmentationData
 		
 		if (Config.DEBUG)
 		{
-			_log.info("Accessory augmentation success: stat12=" + stat12 + "; stat34=" + stat34 + "; level=" + lifeStoneLevel);
+			_log.info(getClass().getSimpleName() + ": Accessory augmentation success: stat12=" + stat12 + "; stat34=" + stat34 + "; level=" + lifeStoneLevel);
 		}
 		return new L2Augmentation(((stat34 << 16) + stat12));
 	}
