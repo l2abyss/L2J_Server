@@ -3192,6 +3192,7 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * @return the Clan Identifier of the L2PcInstance.
 	 */
+	@Override
 	public int getClanId()
 	{
 		return _clanId;
@@ -4884,6 +4885,7 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * @return the Alliance Identifier of the L2PcInstance.
 	 */
+	@Override
 	public int getAllyId()
 	{
 		if (_clan == null)
@@ -9390,7 +9392,6 @@ public final class L2PcInstance extends L2Playable
 			case FRONT_AURA:
 			case BEHIND_AURA:
 			case PARTY:
-			case ALLY:
 			case CLAN:
 			case PARTY_CLAN:
 			case GROUND:
@@ -9570,8 +9571,6 @@ public final class L2PcInstance extends L2Playable
 					case BEHIND_AURA:
 					case AURA_CORPSE_MOB:
 					case CLAN:
-					case PARTY_CLAN:
-					case ALLY:
 					case PARTY:
 					case SELF:
 					case GROUND:
@@ -9655,7 +9654,6 @@ public final class L2PcInstance extends L2Playable
 				case PARTY_CLAN:
 				case SELF:
 				case PARTY:
-				case ALLY:
 				case CORPSE_MOB:
 				case AREA_CORPSE_MOB:
 				case GROUND:
@@ -9681,7 +9679,6 @@ public final class L2PcInstance extends L2Playable
 		switch (sklTargetType)
 		{
 			case PARTY:
-			case ALLY: // For such skills, checkPvpSkill() is called from L2Skill.getTargetList()
 			case CLAN: // For such skills, checkPvpSkill() is called from L2Skill.getTargetList()
 			case PARTY_CLAN: // For such skills, checkPvpSkill() is called from L2Skill.getTargetList()
 			case AURA:
