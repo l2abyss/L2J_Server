@@ -1038,6 +1038,7 @@ public class PcInventory extends Inventory
 		for (L2ItemInstance item : _items)
 		{
 			item.giveSkillsToOwner();
+			item.applyEnchantStats();
 		}
 	}
 	

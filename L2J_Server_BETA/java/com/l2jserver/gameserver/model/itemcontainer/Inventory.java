@@ -39,9 +39,7 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
-import com.l2jserver.gameserver.model.items.L2Armor;
 import com.l2jserver.gameserver.model.items.L2Item;
-import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
@@ -249,18 +247,12 @@ public abstract class Inventory extends ItemContainer
 		@Override
 		public void notifyUnequiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
-			/*
-			 * if (slot == PAPERDOLL_RHAND) return;
-			 */
 			inventory.getOwner().removeStatsOwner(item);
 		}
 		
 		@Override
 		public void notifyEquiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
-			/*
-			 * if (slot == PAPERDOLL_RHAND) return;
-			 */
 			inventory.getOwner().addStatFuncs(item.getStatFuncs(inventory.getOwner()));
 		}
 	}
@@ -277,65 +269,38 @@ public abstract class Inventory extends ItemContainer
 		@Override
 		public void notifyUnequiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
-			L2PcInstance player;
-			
-			if (inventory.getOwner() instanceof L2PcInstance)
-			{
-				player = (L2PcInstance) inventory.getOwner();
-			}
-			else
+			if (!(inventory.getOwner() instanceof L2PcInstance))
 			{
 				return;
 			}
+			final L2PcInstance player = (L2PcInstance) inventory.getOwner();
 			
 			L2Skill enchant4Skill, itemSkill;
 			L2Item it = item.getItem();
 			boolean update = false;
 			boolean updateTimeStamp = false;
 			
-			if (it instanceof L2Weapon)
+			// Remove augmentation bonuses on unequip
+			if (item.isAugmented())
 			{
-				// Remove augmentation bonuses on unequip
-				if (item.isAugmented())
-				{
-					item.getAugmentation().removeBonus(player);
-				}
+				item.getAugmentation().removeBonus(player);
+			}
+			
+			item.removeElementAttrBonus(player);
+			
+			// Remove skills bestowed from +4 armor
+			if (item.getEnchantLevel() >= 4)
+			{
+				enchant4Skill = it.getEnchant4Skill();
 				
-				item.removeElementAttrBonus(player);
-				// Remove skills bestowed from +4 Rapiers/Duals
-				if (item.getEnchantLevel() >= 4)
+				if (enchant4Skill != null)
 				{
-					enchant4Skill = ((L2Weapon) it).getEnchant4Skill();
-					
-					if (enchant4Skill != null)
-					{
-						player.removeSkill(enchant4Skill, false, enchant4Skill.isPassive());
-						update = true;
-					}
+					player.removeSkill(enchant4Skill, false, enchant4Skill.isPassive());
+					update = true;
 				}
 			}
-			else if (it instanceof L2Armor)
-			{
-				// Remove augmentation bonuses on unequip
-				if (item.isAugmented())
-				{
-					item.getAugmentation().removeBonus(player);
-				}
-				
-				item.removeElementAttrBonus(player);
-				
-				// Remove skills bestowed from +4 armor
-				if (item.getEnchantLevel() >= 4)
-				{
-					enchant4Skill = ((L2Armor) it).getEnchant4Skill();
-					
-					if (enchant4Skill != null)
-					{
-						player.removeSkill(enchant4Skill, false, enchant4Skill.isPassive());
-						update = true;
-					}
-				}
-			}
+			
+			item.clearEnchantStats();
 			
 			final SkillHolder[] skills = it.getSkills();
 			
@@ -436,66 +401,39 @@ public abstract class Inventory extends ItemContainer
 		@Override
 		public void notifyEquiped(int slot, L2ItemInstance item, Inventory inventory)
 		{
-			L2PcInstance player;
-			
-			if (inventory.getOwner() instanceof L2PcInstance)
-			{
-				player = (L2PcInstance) inventory.getOwner();
-			}
-			else
+			if (!(inventory.getOwner() instanceof L2PcInstance))
 			{
 				return;
 			}
+			
+			final L2PcInstance player = (L2PcInstance) inventory.getOwner();
 			
 			L2Skill enchant4Skill, itemSkill;
 			L2Item it = item.getItem();
 			boolean update = false;
 			boolean updateTimeStamp = false;
 			
-			if (it instanceof L2Weapon)
+			// Apply augmentation bonuses on equip
+			if (item.isAugmented())
 			{
-				// Apply augmentation bonuses on equip
-				if (item.isAugmented())
-				{
-					item.getAugmentation().applyBonus(player);
-				}
+				item.getAugmentation().applyBonus(player);
+			}
+			
+			item.updateElementAttrBonus(player);
+			
+			// Add skills bestowed from +4 armor
+			if (item.getEnchantLevel() >= 4)
+			{
+				enchant4Skill = it.getEnchant4Skill();
 				
-				item.updateElementAttrBonus(player);
-				
-				// Add skills bestowed from +4 Rapiers/Duals
-				if (item.getEnchantLevel() >= 4)
+				if (enchant4Skill != null)
 				{
-					enchant4Skill = ((L2Weapon) it).getEnchant4Skill();
-					
-					if (enchant4Skill != null)
-					{
-						player.addSkill(enchant4Skill, false);
-						update = true;
-					}
+					player.addSkill(enchant4Skill, false);
+					update = true;
 				}
 			}
-			else if (it instanceof L2Armor)
-			{
-				// Apply augmentation bonuses on equip
-				if (item.isAugmented())
-				{
-					item.getAugmentation().applyBonus(player);
-				}
-				
-				item.updateElementAttrBonus(player);
-				
-				// Add skills bestowed from +4 armor
-				if (item.getEnchantLevel() >= 4)
-				{
-					enchant4Skill = ((L2Armor) it).getEnchant4Skill();
-					
-					if (enchant4Skill != null)
-					{
-						player.addSkill(enchant4Skill, false);
-						update = true;
-					}
-				}
-			}
+			
+			item.applyEnchantStats();
 			
 			final SkillHolder[] skills = it.getSkills();
 			
@@ -565,10 +503,10 @@ public abstract class Inventory extends ItemContainer
 				return;
 			}
 			
-			L2PcInstance player = (L2PcInstance) inventory.getOwner();
+			final L2PcInstance player = (L2PcInstance) inventory.getOwner();
 			
 			// Checks if player is wearing a chest item
-			L2ItemInstance chestItem = inventory.getPaperdollItem(PAPERDOLL_CHEST);
+			final L2ItemInstance chestItem = inventory.getPaperdollItem(PAPERDOLL_CHEST);
 			
 			if (chestItem == null)
 			{
@@ -691,7 +629,7 @@ public abstract class Inventory extends ItemContainer
 				return;
 			}
 			
-			L2PcInstance player = (L2PcInstance) inventory.getOwner();
+			final L2PcInstance player = (L2PcInstance) inventory.getOwner();
 			
 			boolean remove = false;
 			L2Skill itemSkill;

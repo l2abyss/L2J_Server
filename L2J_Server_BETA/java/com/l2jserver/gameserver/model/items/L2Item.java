@@ -796,7 +796,7 @@ public abstract class L2Item
 	 * @param player : L2Character pointing out the player
 	 * @return Func[] : array of functions
 	 */
-	public Func[] getStatFuncs(L2ItemInstance item, L2Character player)
+	public final Func[] getStatFuncs(L2ItemInstance item, L2Character player)
 	{
 		if ((_funcTemplates == null) || (_funcTemplates.length == 0))
 		{
@@ -813,7 +813,7 @@ public abstract class L2Item
 		Func f;
 		for (FuncTemplate t : _funcTemplates)
 		{
-			f = t.getFunc(env, this); // skill is owner
+			f = t.getFunc(env, item);
 			if (f != null)
 			{
 				funcs.add(f);
@@ -1160,5 +1160,10 @@ public abstract class L2Item
 	public boolean isPetItem()
 	{
 		return getItemType() == L2EtcItemType.PET_COLLAR;
+	}
+	
+	public L2Skill getEnchant4Skill()
+	{
+		return null;
 	}
 }

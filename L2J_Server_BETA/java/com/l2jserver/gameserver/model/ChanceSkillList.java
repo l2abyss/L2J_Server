@@ -143,75 +143,13 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			{
 				if (e.getKey() instanceof L2Skill)
 				{
-					makeCast((L2Skill) e.getKey(), target);
+					_owner.makeTriggerCast((L2Skill) e.getKey(), target);
 				}
 				else
 				{
 					makeCast((L2Effect) e.getKey(), target);
 				}
 			}
-		}
-	}
-	
-	private void makeCast(L2Skill skill, L2Character target)
-	{
-		try
-		{
-			if (skill.getWeaponDependancy(_owner, true) && skill.checkCondition(_owner, target, false))
-			{
-				if (skill.triggersChanceSkill()) // skill will trigger another skill, but only if its not chance skill
-				{
-					skill = SkillTable.getInstance().getInfo(skill.getTriggeredChanceId(), skill.getTriggeredChanceLevel());
-					if ((skill == null) || (skill.getSkillType() == L2SkillType.NOTDONE))
-					{
-						return;
-					}
-					// We change skill to new one, we should verify conditions and dependancy for new one
-					if (!skill.getWeaponDependancy(_owner, true) || !skill.checkCondition(_owner, target, false))
-					{
-						return;
-					}
-				}
-				
-				if (_owner.isSkillDisabled(skill))
-				{
-					return;
-				}
-				
-				if (skill.getReuseDelay() > 0)
-				{
-					_owner.disableSkill(skill, skill.getReuseDelay());
-				}
-				
-				L2Object[] targets = skill.getTargetList(_owner, false, target);
-				
-				if (targets.length == 0)
-				{
-					return;
-				}
-				
-				L2Character firstTarget = (L2Character) targets[0];
-				
-				ISkillHandler handler = SkillHandler.getInstance().getHandler(skill.getSkillType());
-				
-				_owner.broadcastPacket(new MagicSkillLaunched(_owner, skill.getDisplayId(), skill.getDisplayLevel(), targets));
-				_owner.broadcastPacket(new MagicSkillUse(_owner, firstTarget, skill.getDisplayId(), skill.getDisplayLevel(), 0, 0));
-				
-				// Launch the magic skill and calculate its effects
-				// TODO: once core will support all possible effects, use effects (not handler)
-				if (handler != null)
-				{
-					handler.useSkill(_owner, skill, targets);
-				}
-				else
-				{
-					skill.useSkill(_owner, targets);
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, "", e);
 		}
 	}
 	

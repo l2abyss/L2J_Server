@@ -18,17 +18,10 @@
  */
 package com.l2jserver.gameserver.model.items;
 
-import java.util.ArrayList;
-
 import com.l2jserver.gameserver.model.StatsSet;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2ArmorType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.funcs.Func;
-import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
-import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.util.StringUtil;
 
 /**
@@ -115,6 +108,7 @@ public final class L2Armor extends L2Item
 	/**
 	 * @return skill that player get when has equipped armor +4 or more
 	 */
+	@Override
 	public L2Skill getEnchant4Skill()
 	{
 		if (_enchant4Skill == null)
@@ -122,37 +116,5 @@ public final class L2Armor extends L2Item
 			return null;
 		}
 		return _enchant4Skill.getSkill();
-	}
-	
-	/**
-	 * @param item : L2ItemInstance pointing out the armor
-	 * @param player : L2Character pointing out the player
-	 * @return array of Func objects containing the list of functions used by the armor
-	 */
-	@Override
-	public Func[] getStatFuncs(L2ItemInstance item, L2Character player)
-	{
-		if ((_funcTemplates == null) || (_funcTemplates.length == 0))
-		{
-			return _emptyFunctionSet;
-		}
-		
-		ArrayList<Func> funcs = new ArrayList<>(_funcTemplates.length);
-		
-		Env env = new Env();
-		env.setCharacter(player);
-		env.setItem(item);
-		
-		Func f;
-		for (FuncTemplate t : _funcTemplates)
-		{
-			
-			f = t.getFunc(env, item);
-			if (f != null)
-			{
-				funcs.add(f);
-			}
-		}
-		return funcs.toArray(new Func[funcs.size()]);
 	}
 }

@@ -91,6 +91,8 @@ import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.model.options.OptionsSkillHolder;
+import com.l2jserver.gameserver.model.options.OptionsSkillType;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
@@ -223,6 +225,8 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	private boolean _lethalable = true;
 	
 	protected final String COND_EXCEPTIONS = "COND_EX_" + getObjectId();
+	
+	private volatile Map<Integer, OptionsSkillHolder> _triggerSkills;
 	
 	/**
 	 * @return True if debugging is enabled for this L2Character
@@ -5698,6 +5702,20 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 					}
 				}
 				
+				if (_triggerSkills != null)
+				{
+					for (OptionsSkillHolder holder : _triggerSkills.values())
+					{
+						if ((!crit && (holder.getSkillType() == OptionsSkillType.ATTACK)) || ((holder.getSkillType() == OptionsSkillType.CRITICAL) && crit))
+						{
+							if (Rnd.get(100) < holder.getChance())
+							{
+								makeTriggerCast(holder.getSkill(), target);
+							}
+						}
+					}
+				}
+				
 				// Maybe launch chance skills on target
 				if (target.getChanceSkills() != null)
 				{
@@ -6858,6 +6876,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 						case DWARVEN_CRAFT:
 							break;
 						default:
+						{
 							// Launch weapon Special ability skill effect if available
 							if ((activeWeapon != null) && !target.isDead())
 							{
@@ -6879,6 +6898,21 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 							{
 								target.getChanceSkills().onSkillHit(this, skill, true);
 							}
+							
+							if (_triggerSkills != null)
+							{
+								for (OptionsSkillHolder holder : _triggerSkills.values())
+								{
+									if ((skill.isMagic() && (holder.getSkillType() == OptionsSkillType.MAGIC)) || (skill.isPhysical() && (holder.getSkillType() == OptionsSkillType.ATTACK)))
+									{
+										if (Rnd.get(100) < holder.getChance())
+										{
+											makeTriggerCast(holder.getSkill(), target);
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -7731,6 +7765,101 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	public boolean isLethalable()
 	{
 		return _lethalable;
+	}
+	
+	public Map<Integer, OptionsSkillHolder> getTriggerSkills()
+	{
+		if (_triggerSkills == null)
+		{
+			synchronized (this)
+			{
+				if (_triggerSkills == null)
+				{
+					_triggerSkills = new FastMap<Integer, OptionsSkillHolder>().shared();
+				}
+			}
+		}
+		return _triggerSkills;
+	}
+	
+	public void addTriggerSkill(OptionsSkillHolder holder)
+	{
+		getTriggerSkills().put(holder.getSkillId(), holder);
+	}
+	
+	public void removeTriggerSkill(OptionsSkillHolder holder)
+	{
+		getTriggerSkills().remove(holder.getSkillId());
+	}
+	
+	public void makeTriggerCast(L2Skill skill, L2Character target)
+	{
+		try
+		{
+			if (skill.getWeaponDependancy(this, true) && skill.checkCondition(this, target, false))
+			{
+				if (skill.triggersChanceSkill()) // skill will trigger another skill, but only if its not chance skill
+				{
+					skill = SkillTable.getInstance().getInfo(skill.getTriggeredChanceId(), skill.getTriggeredChanceLevel());
+					if ((skill == null) || (skill.getSkillType() == L2SkillType.NOTDONE))
+					{
+						return;
+					}
+					// We change skill to new one, we should verify conditions and dependancy for new one
+					if (!skill.getWeaponDependancy(this, true) || !skill.checkCondition(this, target, false))
+					{
+						return;
+					}
+				}
+				
+				if (isSkillDisabled(skill))
+				{
+					return;
+				}
+				
+				if (skill.getReuseDelay() > 0)
+				{
+					disableSkill(skill, skill.getReuseDelay());
+				}
+				
+				final L2Object[] targets = skill.getTargetList(this, false, target);
+				
+				if (targets.length == 0)
+				{
+					return;
+				}
+				
+				final L2Character firstTarget = (L2Character) targets[0];
+				
+				if (Config.ALT_VALIDATE_TRIGGER_SKILLS && isPlayable() && (firstTarget != null) && firstTarget.isPlayable())
+				{
+					final L2PcInstance player = getActingPlayer();
+					if (!player.checkPvpSkill(firstTarget, skill, isSummon()))
+					{
+						return;
+					}
+				}
+				
+				final ISkillHandler handler = SkillHandler.getInstance().getHandler(skill.getSkillType());
+				
+				broadcastPacket(new MagicSkillLaunched(this, skill.getDisplayId(), skill.getLevel(), targets));
+				broadcastPacket(new MagicSkillUse(this, firstTarget, skill.getDisplayId(), skill.getLevel(), 0, 0));
+				// Launch the magic skill and calculate its effects
+				// TODO: once core will support all possible effects, use effects (not handler)
+				if (handler != null)
+				{
+					handler.useSkill(this, skill, targets);
+				}
+				else
+				{
+					skill.useSkill(this, targets);
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "", e);
+		}
 	}
 	
 	// LISTENERS
