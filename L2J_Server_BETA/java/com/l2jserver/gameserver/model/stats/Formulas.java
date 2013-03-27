@@ -1248,7 +1248,11 @@ public final class Formulas
 	
 	public static final boolean calcLethalHit(L2Character activeChar, L2Character target, L2Skill skill)
 	{
-		if ((((skill.getLethalStrikeRate() > 0) || (skill.getHalfKillRate() > 0)) && (target.isLethalable() && !target.isInvul())) || (activeChar.isPlayer() && activeChar.getAccessLevel().canGiveDamage()))
+		if (activeChar.isPlayer() && !activeChar.getAccessLevel().canGiveDamage())
+		{
+			return false;
+		}
+		if (((skill.getLethalStrikeRate() > 0) || (skill.getHalfKillRate() > 0)) && target.isLethalable() && !target.isInvul())
 		{
 			// Lethal Strike
 			if (Rnd.get(100) < calcLethal(activeChar, target, skill.getLethalStrikeRate(), skill.getMagicLevel()))
