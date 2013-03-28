@@ -1217,18 +1217,6 @@ public final class Formulas
 	}
 	
 	/**
-	 * Calculate value of blow success
-	 * @param activeChar
-	 * @param target
-	 * @param chance
-	 * @return
-	 */
-	public static final boolean calcBlow(L2Character activeChar, L2Character target, int chance)
-	{
-		return activeChar.calcStat(Stats.BLOW_RATE, chance * (1.0 + ((activeChar.getDEX() - 20) / 100)), target, null) > Rnd.get(100);
-	}
-	
-	/**
 	 * Calculate value of lethal chance
 	 * @param activeChar
 	 * @param target
