@@ -2080,8 +2080,9 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * @return True if a Dwarf use Sweep on the L2Attackable and if item can be spoiled.
+	 * @return {@code true} if there is a loot to sweep, {@code false} otherwise.
 	 */
+	@Override
 	public boolean isSweepActive()
 	{
 		return _sweepItems != null;

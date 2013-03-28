@@ -26,45 +26,36 @@ import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2SiegeClan;
-import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
-import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 
 public class Die extends L2GameServerPacket
 {
 	private final int _charObjId;
 	private final boolean _canTeleport;
-	private boolean _sweepable;
+	private final boolean _sweepable;
 	private L2AccessLevel _access = AdminTable.getInstance().getAccessLevel(0);
 	private L2Clan _clan;
 	private final L2Character _activeChar;
 	private boolean _isJailed;
 	
-	/**
-	 * @param cha
-	 */
 	public Die(L2Character cha)
 	{
+		_charObjId = cha.getObjectId();
 		_activeChar = cha;
 		if (cha.isPlayer())
 		{
-			L2PcInstance player = (L2PcInstance) cha;
+			final L2PcInstance player = cha.getActingPlayer();
 			_access = player.getAccessLevel();
 			_clan = player.getClan();
 			_isJailed = player.isInJail();
-			
-		}
-		_charObjId = cha.getObjectId();
-		_canTeleport = !((cha.isPlayer() && TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(_charObjId)) || cha.isPendingRevive());
-		if (cha.isL2Attackable())
-		{
-			_sweepable = ((L2Attackable) cha).isSweepActive();
 		}
 		
+		_canTeleport = cha.canRevive() && !cha.isPendingRevive();
+		_sweepable = cha.isL2Attackable() && cha.isSweepActive();
 	}
 	
 	@Override

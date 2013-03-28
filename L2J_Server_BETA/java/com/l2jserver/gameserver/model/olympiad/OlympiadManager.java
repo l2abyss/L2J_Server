@@ -32,7 +32,6 @@ import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -491,7 +490,7 @@ public class OlympiadManager
 		}
 		
 		final int charId = noble.getObjectId();
-		if (TvTEvent.isPlayerParticipant(charId))
+		if (noble.isOnEvent())
 		{
 			player.sendMessage("You can't join olympiad while participating on TvT Event.");
 			return false;

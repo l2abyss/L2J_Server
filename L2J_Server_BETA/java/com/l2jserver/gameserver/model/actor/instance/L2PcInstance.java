@@ -289,6 +289,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.HennaEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ProfessionChangeEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.TransformEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.EquipmentListener;
+import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.EventListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.HennaListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerDespawnListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.ProfessionChangeListener;
@@ -368,13 +369,15 @@ public final class L2PcInstance extends L2Playable
 	public static final int STORE_PRIVATE_MANUFACTURE = 5;
 	public static final int STORE_PRIVATE_PACKAGE_SELL = 8;
 	
-	public static final FastList<PlayerDespawnListener> despawnListeners = new FastList<PlayerDespawnListener>().shared();
-	public static final FastList<HennaListener> hennaListeners = new FastList<HennaListener>().shared();
-	public final FastList<EquipmentListener> equipmentListeners = new FastList<EquipmentListener>().shared();
-	public static final FastList<EquipmentListener> globalEquipmentListeners = new FastList<EquipmentListener>().shared();
-	public final FastList<TransformListener> transformListeners = new FastList<TransformListener>().shared();
-	public final FastList<ProfessionChangeListener> professionChangeListeners = new FastList<ProfessionChangeListener>().shared();
-	public static final FastList<ProfessionChangeListener> globalProfessionChangeListeners = new FastList<ProfessionChangeListener>().shared();
+	private static final List<PlayerDespawnListener> DESPAWN_LISTENERS = new FastList<PlayerDespawnListener>().shared();
+	private static final List<HennaListener> HENNA_LISTENERS = new FastList<HennaListener>().shared();
+	private static final List<EquipmentListener> GLOBAL_EQUIPMENT_LISTENERS = new FastList<EquipmentListener>().shared();
+	private static final List<ProfessionChangeListener> GLOBAL_PROFESSION_CHANGE_LISTENERS = new FastList<ProfessionChangeListener>().shared();
+	
+	private final List<EquipmentListener> _equipmentListeners = new FastList<EquipmentListener>().shared();
+	private final List<TransformListener> _transformListeners = new FastList<TransformListener>().shared();
+	private final List<ProfessionChangeListener> _professionChangeListeners = new FastList<ProfessionChangeListener>().shared();
+	private final List<EventListener> _eventListeners = new FastList<EventListener>().shared();
 	
 	public class AIAccessor extends L2Character.AIAccessor
 	{
@@ -855,6 +858,8 @@ public final class L2PcInstance extends L2Playable
 	
 	/** Map containing all custom skills of this player. */
 	private Map<Integer, L2Skill> _customSkills = null;
+	
+	private boolean _canRevive = true;
 	
 	public void setPvpFlagLasts(long time)
 	{
@@ -1469,7 +1474,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void logout()
 	{
-		for (PlayerDespawnListener listener : despawnListeners)
+		for (PlayerDespawnListener listener : DESPAWN_LISTENERS)
 		{
 			listener.onDespawn(this);
 		}
@@ -9126,7 +9131,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		// Check if the attacker is in TvT and TvT is started
-		if (TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(getObjectId()))
+		if (isOnEvent())
 		{
 			return true;
 		}
@@ -13872,7 +13877,7 @@ public final class L2PcInstance extends L2Playable
 	
 	public void calculateDeathPenaltyBuffLevel(L2Character killer)
 	{
-		if (((getKarma() > 0) || (Rnd.get(1, 100) <= Config.DEATH_PENALTY_CHANCE)) && !(killer instanceof L2PcInstance) && !(canOverrideCond(PcCondOverride.DEATH_PENALTY)) && !(getCharmOfLuck() && killer.isRaid()) && !isPhoenixBlessed() && !isLucky() && !(TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(getObjectId())) && !(isInsideZone(ZoneId.PVP) || isInsideZone(ZoneId.SIEGE)))
+		if (((getKarma() > 0) || (Rnd.get(1, 100) <= Config.DEATH_PENALTY_CHANCE)) && !(killer instanceof L2PcInstance) && !(canOverrideCond(PcCondOverride.DEATH_PENALTY)) && !(getCharmOfLuck() && killer.isRaid()) && !isPhoenixBlessed() && !isLucky() && !isBlockedFromDeathPenalty() && !(isInsideZone(ZoneId.PVP) || isInsideZone(ZoneId.SIEGE)))
 		{
 			increaseDeathPenaltyBuffLevel();
 		}
@@ -16130,6 +16135,25 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
+	/**
+	 * @return {@code true} if current player can revive and shows 'To Village' button upon death, {@code false} otherwise.
+	 */
+	@Override
+	public boolean canRevive()
+	{
+		return _canRevive;
+	}
+	
+	/**
+	 * This method can prevent from displaying 'To Village' button upon death.
+	 * @param val
+	 */
+	@Override
+	public void setCanRevive(boolean val)
+	{
+		_canRevive = val;
+	}
+	
 	// LISTENERS
 	/**
 	 * Fires all the equipment listeners, if any.<br>
@@ -16145,14 +16169,14 @@ public final class L2PcInstance extends L2Playable
 			EquipmentEvent event = new EquipmentEvent();
 			event.setEquipped(!isEquiped);
 			event.setItem(item);
-			for (EquipmentListener listener : equipmentListeners)
+			for (EquipmentListener listener : _equipmentListeners)
 			{
 				if (!listener.onEquip(event))
 				{
 					return false;
 				}
 			}
-			for (EquipmentListener listener : globalEquipmentListeners)
+			for (EquipmentListener listener : GLOBAL_EQUIPMENT_LISTENERS)
 			{
 				if (!listener.onEquip(event))
 				{
@@ -16172,12 +16196,12 @@ public final class L2PcInstance extends L2Playable
 	 */
 	private boolean fireTransformListeners(L2Transformation transformation, boolean isTransforming)
 	{
-		if ((transformation != null) && !transformListeners.isEmpty())
+		if ((transformation != null) && !_transformListeners.isEmpty())
 		{
 			TransformEvent event = new TransformEvent();
 			event.setTransformation(transformation);
 			event.setTransforming(isTransforming);
-			for (TransformListener listener : transformListeners)
+			for (TransformListener listener : _transformListeners)
 			{
 				if (!listener.onTransform(event))
 				{
@@ -16197,13 +16221,13 @@ public final class L2PcInstance extends L2Playable
 	 */
 	private boolean fireHennaListeners(L2Henna henna, boolean isAdding)
 	{
-		if ((henna != null) && !hennaListeners.isEmpty())
+		if ((henna != null) && !HENNA_LISTENERS.isEmpty())
 		{
 			HennaEvent event = new HennaEvent();
 			event.setAdd(isAdding);
 			event.setHenna(henna);
 			event.setPlayer(this);
-			for (HennaListener listener : hennaListeners)
+			for (HennaListener listener : HENNA_LISTENERS)
 			{
 				if (!listener.onRemoveHenna(event))
 				{
@@ -16220,22 +16244,62 @@ public final class L2PcInstance extends L2Playable
 	 */
 	private void fireProfessionChangeListeners(L2PcTemplate t)
 	{
-		if (!professionChangeListeners.isEmpty() || !globalProfessionChangeListeners.isEmpty())
+		if (!_professionChangeListeners.isEmpty() || !GLOBAL_PROFESSION_CHANGE_LISTENERS.isEmpty())
 		{
 			ProfessionChangeEvent event = null;
 			event = new ProfessionChangeEvent();
 			event.setPlayer(this);
 			event.setSubClass(isSubClassActive());
 			event.setTemplate(t);
-			for (ProfessionChangeListener listener : professionChangeListeners)
+			for (ProfessionChangeListener listener : _professionChangeListeners)
 			{
 				listener.professionChanged(event);
 			}
-			for (ProfessionChangeListener listener : globalProfessionChangeListeners)
+			for (ProfessionChangeListener listener : GLOBAL_PROFESSION_CHANGE_LISTENERS)
 			{
 				listener.professionChanged(event);
 			}
 		}
+	}
+	
+	/**
+	 * @return {@code true} if player is on event, {@code false} otherwise.
+	 */
+	@Override
+	public boolean isOnEvent()
+	{
+		for (EventListener listener : _eventListeners)
+		{
+			if (listener.isOnEvent())
+			{
+				return true;
+			}
+		}
+		return super.isOnEvent();
+	}
+	
+	public boolean isBlockedFromExit()
+	{
+		for (EventListener listener : _eventListeners)
+		{
+			if (listener.isOnEvent() && listener.isBlockingExit())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean isBlockedFromDeathPenalty()
+	{
+		for (EventListener listener : _eventListeners)
+		{
+			if (listener.isOnEvent() && listener.isBlockingDeathPenalty())
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -16244,9 +16308,9 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public static void addDespawnListener(PlayerDespawnListener listener)
 	{
-		if (!despawnListeners.contains(listener))
+		if (!DESPAWN_LISTENERS.contains(listener))
 		{
-			despawnListeners.add(listener);
+			DESPAWN_LISTENERS.add(listener);
 		}
 	}
 	
@@ -16256,7 +16320,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public static void removeDespawnListener(PlayerDespawnListener listener)
 	{
-		despawnListeners.remove(listener);
+		DESPAWN_LISTENERS.remove(listener);
 	}
 	
 	/**
@@ -16265,9 +16329,9 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public static void addHennaListener(HennaListener listener)
 	{
-		if (!hennaListeners.contains(listener))
+		if (!HENNA_LISTENERS.contains(listener))
 		{
-			hennaListeners.add(listener);
+			HENNA_LISTENERS.add(listener);
 		}
 	}
 	
@@ -16277,7 +16341,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public static void removeHennaListener(HennaListener listener)
 	{
-		hennaListeners.remove(listener);
+		HENNA_LISTENERS.remove(listener);
 	}
 	
 	/**
@@ -16286,9 +16350,9 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void addEquipmentListener(EquipmentListener listener)
 	{
-		if (!equipmentListeners.contains(listener))
+		if (!_equipmentListeners.contains(listener))
 		{
-			equipmentListeners.add(listener);
+			_equipmentListeners.add(listener);
 		}
 	}
 	
@@ -16298,7 +16362,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void removeEquipmentListener(EquipmentListener listener)
 	{
-		equipmentListeners.remove(listener);
+		_equipmentListeners.remove(listener);
 	}
 	
 	/**
@@ -16307,9 +16371,9 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public static void addGlobalEquipmentListener(EquipmentListener listener)
 	{
-		if (!globalEquipmentListeners.contains(listener))
+		if (!GLOBAL_EQUIPMENT_LISTENERS.contains(listener))
 		{
-			globalEquipmentListeners.add(listener);
+			GLOBAL_EQUIPMENT_LISTENERS.add(listener);
 		}
 	}
 	
@@ -16319,7 +16383,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public static void removeGlobalEquipmentListener(EquipmentListener listener)
 	{
-		globalEquipmentListeners.remove(listener);
+		GLOBAL_EQUIPMENT_LISTENERS.remove(listener);
 	}
 	
 	/**
@@ -16328,9 +16392,9 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void addTransformListener(TransformListener listener)
 	{
-		if (!transformListeners.contains(listener))
+		if (!_transformListeners.contains(listener))
 		{
-			transformListeners.add(listener);
+			_transformListeners.add(listener);
 		}
 	}
 	
@@ -16340,7 +16404,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void removeTransformListener(TransformListener listener)
 	{
-		transformListeners.remove(listener);
+		_transformListeners.remove(listener);
 	}
 	
 	/**
@@ -16349,9 +16413,9 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void addProfessionChangeListener(ProfessionChangeListener listener)
 	{
-		if (!professionChangeListeners.contains(listener))
+		if (!_professionChangeListeners.contains(listener))
 		{
-			professionChangeListeners.add(listener);
+			_professionChangeListeners.add(listener);
 		}
 	}
 	
@@ -16361,7 +16425,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void removeProfessionChangeListener(ProfessionChangeListener listener)
 	{
-		professionChangeListeners.remove(listener);
+		_professionChangeListeners.remove(listener);
 	}
 	
 	/**
@@ -16370,9 +16434,9 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public static void addGlobalProfessionChangeListener(ProfessionChangeListener listener)
 	{
-		if (!globalProfessionChangeListeners.contains(listener))
+		if (!GLOBAL_PROFESSION_CHANGE_LISTENERS.contains(listener))
 		{
-			globalProfessionChangeListeners.add(listener);
+			GLOBAL_PROFESSION_CHANGE_LISTENERS.add(listener);
 		}
 	}
 	
@@ -16382,6 +16446,43 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public static void removeGlobalProfessionChangeListener(ProfessionChangeListener listener)
 	{
-		globalProfessionChangeListeners.remove(listener);
+		GLOBAL_PROFESSION_CHANGE_LISTENERS.remove(listener);
+	}
+	
+	/**
+	 * Adds a event listener.
+	 * @param listener
+	 */
+	public void addEventListener(EventListener listener)
+	{
+		_eventListeners.add(listener);
+	}
+	
+	/**
+	 * Removes event listener
+	 * @param listener
+	 */
+	public void removeEventListener(EventListener listener)
+	{
+		_eventListeners.remove(listener);
+	}
+	
+	public void removeEventListener(Class<? extends EventListener> clazz)
+	{
+		final Iterator<EventListener> it = _eventListeners.iterator();
+		EventListener event;
+		while (it.hasNext())
+		{
+			event = it.next();
+			if (event.getClass() == clazz)
+			{
+				it.remove();
+			}
+		}
+	}
+	
+	public Collection<EventListener> getEventListeners()
+	{
+		return _eventListeners;
 	}
 }
