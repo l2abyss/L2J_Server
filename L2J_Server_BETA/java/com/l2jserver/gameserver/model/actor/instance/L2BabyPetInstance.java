@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.model.L2PetData.L2PetSkillLearn;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -118,8 +119,11 @@ public final class L2BabyPetInstance extends L2PetInstance
 						}
 						_buffs.add(new SkillHolder(skill));
 						break;
-					case MANAHEAL_BY_LEVEL:
-						_recharge = new SkillHolder(skill);
+					case DUMMY:
+						if (skill.hasEffectType(L2EffectType.MANAHEAL_BY_LEVEL))
+						{
+							_recharge = new SkillHolder(skill);
+						}
 						break;
 				}
 			}

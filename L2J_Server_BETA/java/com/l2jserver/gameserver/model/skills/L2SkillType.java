@@ -68,7 +68,6 @@ public enum L2SkillType
 	// hp, mp, cp
 	HEAL,
 	HEAL_PERCENT,
-	MANAHEAL_BY_LEVEL,
 	MANAHEAL_PERCENT,
 	// reco
 	GIVE_RECO,
