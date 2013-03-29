@@ -20,7 +20,6 @@ package com.l2jserver.gameserver.model.stats;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -2355,33 +2354,22 @@ public final class Formulas
 	{
 		int blowChance = skill.getBlowChance();
 		
-		// Skill is blow and it has 0% to make dmg... thats just wrong
-		if (blowChance == 0)
-		{
-			_log.log(Level.WARNING, "Skill " + skill.getId() + " - " + skill.getName() + " has 0 blow land chance, yet its a blow skill!");
-			// TODO: return false;
-			// lets add 20 for now, till all skills are corrected
-			blowChance = 20;
-		}
-		
 		if (isBehind(target, activeChar))
 		{
 			blowChance *= 2; // double chance from behind
 		}
 		else if (isInFrontOf(target, activeChar))
 		{
+			// base chance from front
 			if ((skill.getCondition() & L2Skill.COND_BEHIND) != 0)
 			{
 				return false;
 			}
-			
-			// base chance from front
 		}
 		else
 		{
 			blowChance *= 1.5; // 50% better chance from side
 		}
-		
 		return activeChar.calcStat(Stats.BLOW_RATE, blowChance * (1.0 + ((activeChar.getDEX()) / 100.)), target, null) > Rnd.get(100);
 	}
 	

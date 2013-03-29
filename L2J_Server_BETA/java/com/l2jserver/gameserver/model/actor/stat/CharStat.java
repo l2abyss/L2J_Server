@@ -181,12 +181,7 @@ public class CharStat
 		
 		int criticalHit = (int) calcStat(Stats.CRITICAL_RATE, _activeChar.getTemplate().getBaseCritRate(), target, skill);
 		// Set a cap of Critical Hit at 500
-		if (criticalHit > Config.MAX_PCRIT_RATE)
-		{
-			criticalHit = Config.MAX_PCRIT_RATE;
-		}
-		
-		return criticalHit;
+		return Math.min(criticalHit, Config.MAX_PCRIT_RATE);
 	}
 	
 	/**
@@ -198,7 +193,6 @@ public class CharStat
 		{
 			return 1;
 		}
-		
 		return (int) calcStat(Stats.STAT_DEX, _activeChar.getTemplate().getBaseDEX());
 	}
 	
@@ -431,11 +425,7 @@ public class CharStat
 		
 		double mrate = calcStat(Stats.MCRITICAL_RATE, 1, target, skill) * 10;
 		// Set a cap of Magical Critical Hit at 200
-		if (mrate > Config.MAX_MCRIT_RATE)
-		{
-			mrate = Config.MAX_MCRIT_RATE;
-		}
-		return (int) mrate;
+		return (int) Math.min(mrate, Config.MAX_MCRIT_RATE);
 	}
 	
 	/**
