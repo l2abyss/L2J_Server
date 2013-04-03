@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.model.stats.Env;
  */
 public class ConditionPlayerSouls extends Condition
 {
-	
 	private final int _souls;
 	
 	/**
@@ -40,10 +39,6 @@ public class ConditionPlayerSouls extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (env.getPlayer() == null)
-		{
-			return false;
-		}
-		return env.getPlayer().getSouls() >= _souls;
+		return (env.getPlayer() != null) && (env.getPlayer().getChargedSouls() >= _souls);
 	}
 }

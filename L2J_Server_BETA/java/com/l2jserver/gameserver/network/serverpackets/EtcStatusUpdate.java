@@ -46,6 +46,6 @@ public class EtcStatusUpdate extends L2GameServerPacket
 		writeD(_activeChar.getExpertiseArmorPenalty()); // Armor Grade Penalty [1-4]
 		writeD(_activeChar.isAffected(EffectFlag.CHARM_OF_COURAGE) ? 1 : 0); // 1 = charm of courage (allows resurrection on the same spot upon death on the siege battlefield)
 		writeD(_activeChar.getDeathPenaltyBuffLevel()); // 1-15 death penalty, lvl (combat ability decreased due to death)
-		writeD(_activeChar.getSouls());
+		writeD(_activeChar.getChargedSouls());
 	}
 }

@@ -328,7 +328,7 @@ public class CharStat
 	}
 	
 	/**
-	 * Return the MAtk (base+modifier) of the L2Character for a skill used in function of abnormal effects in progress.<br>
+	 * Return the MAtk (base+modifier) of the L2Character.<br>
 	 * <B><U>Example of use</U>: Calculate Magic damage
 	 * @param target The L2Character targeted by the skill
 	 * @param skill The L2Skill used against the target
@@ -340,6 +340,7 @@ public class CharStat
 		{
 			return 1;
 		}
+		
 		float bonusAtk = 1;
 		if (Config.L2JMOD_CHAMPION_ENABLE && _activeChar.isChampion())
 		{
@@ -349,44 +350,9 @@ public class CharStat
 		{
 			bonusAtk *= Config.RAID_MATTACK_MULTIPLIER;
 		}
-		double attack = _activeChar.getTemplate().getBaseMAtk() * bonusAtk;
-		// Get the skill type to calculate its effect in function of base stats
-		// of the L2Character target
-		Stats stat = skill == null ? null : skill.getStat();
-		
-		if (stat != null)
-		{
-			switch (stat)
-			{
-				case AGGRESSION:
-					attack += _activeChar.getTemplate().getBaseAggression();
-					break;
-				case BLEED:
-					attack += _activeChar.getTemplate().getBaseBleed();
-					break;
-				case POISON:
-					attack += _activeChar.getTemplate().getBasePoison();
-					break;
-				case STUN:
-					attack += _activeChar.getTemplate().getBaseStun();
-					break;
-				case ROOT:
-					attack += _activeChar.getTemplate().getBaseRoot();
-					break;
-				case MOVEMENT:
-					attack += _activeChar.getTemplate().getBaseMovement();
-					break;
-				case CONFUSION:
-					attack += _activeChar.getTemplate().getBaseConfusion();
-					break;
-				case SLEEP:
-					attack += _activeChar.getTemplate().getBaseSleep();
-					break;
-			}
-		}
 		
 		// Calculate modifiers Magic Attack
-		return (int) calcStat(Stats.MAGIC_ATTACK, attack, target, skill);
+		return (int) calcStat(Stats.MAGIC_ATTACK, _activeChar.getTemplate().getBaseMAtk() * bonusAtk, target, skill);
 	}
 	
 	/**

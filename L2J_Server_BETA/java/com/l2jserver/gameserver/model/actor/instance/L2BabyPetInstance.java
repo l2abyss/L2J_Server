@@ -91,27 +91,6 @@ public final class L2BabyPetInstance extends L2PetInstance
 				
 				switch (skill.getSkillType())
 				{
-					case HEAL:
-						if (healPower == 0)
-						{
-							// set both heal types to the same skill
-							_majorHeal = new SkillHolder(skill);
-							_minorHeal = _majorHeal;
-							healPower = skill.getPower();
-						}
-						else
-						{
-							// another heal skill found - search for most powerful
-							if (skill.getPower() > healPower)
-							{
-								_majorHeal = new SkillHolder(skill);
-							}
-							else
-							{
-								_minorHeal = new SkillHolder(skill);
-							}
-						}
-						break;
 					case BUFF:
 						if (_buffs == null)
 						{
@@ -123,6 +102,28 @@ public final class L2BabyPetInstance extends L2PetInstance
 						if (skill.hasEffectType(L2EffectType.MANAHEAL_BY_LEVEL))
 						{
 							_recharge = new SkillHolder(skill);
+						}
+						else if (skill.hasEffectType(L2EffectType.HEAL))
+						{
+							if (healPower == 0)
+							{
+								// set both heal types to the same skill
+								_majorHeal = new SkillHolder(skill);
+								_minorHeal = _majorHeal;
+								healPower = skill.getPower();
+							}
+							else
+							{
+								// another heal skill found - search for most powerful
+								if (skill.getPower() > healPower)
+								{
+									_majorHeal = new SkillHolder(skill);
+								}
+								else
+								{
+									_minorHeal = new SkillHolder(skill);
+								}
+							}
 						}
 						break;
 				}

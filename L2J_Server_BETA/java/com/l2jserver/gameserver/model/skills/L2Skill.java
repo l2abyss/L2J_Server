@@ -64,7 +64,6 @@ import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.stats.BaseStats;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Formulas;
-import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -186,7 +185,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final byte _element;
 	private final int _elementPower;
 	
-	private final Stats _stat;
 	private final BaseStats _saveVs;
 	
 	private final int _condition;
@@ -394,7 +392,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_lvlBonusRate = set.getInteger("lvlBonusRate", 0);
 		_minChance = set.getInteger("minChance", Config.MIN_ABNORMAL_STATE_SUCCESS_RATE);
 		_maxChance = set.getInteger("maxChance", Config.MAX_ABNORMAL_STATE_SUCCESS_RATE);
-		_stat = set.getEnum("stat", Stats.class, null);
 		_ignoreShield = set.getBool("ignoreShld", false);
 		_skillType = set.getEnum("skillType", L2SkillType.class, L2SkillType.DUMMY);
 		_effectType = set.getEnum("effectType", L2SkillType.class, null);
@@ -808,15 +805,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public boolean triggerAnotherSkill()
 	{
 		return _triggeredId > 1;
-	}
-	
-	/**
-	 * Return the skill type (ex : BLEED, SLEEP, WATER...).
-	 * @return
-	 */
-	public final Stats getStat()
-	{
-		return _stat;
 	}
 	
 	/**

@@ -91,7 +91,6 @@ import com.l2jserver.gameserver.model.conditions.ConditionPlayerTvTEvent;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerVehicleMounted;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerWeight;
 import com.l2jserver.gameserver.model.conditions.ConditionSiegeZone;
-import com.l2jserver.gameserver.model.conditions.ConditionSkillStats;
 import com.l2jserver.gameserver.model.conditions.ConditionSlotItemId;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetAbnormal;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetActiveEffectId;
@@ -508,10 +507,6 @@ public abstract class DocumentBase
 		if ("target".equalsIgnoreCase(n.getNodeName()))
 		{
 			return parseTargetCondition(n, template);
-		}
-		if ("skill".equalsIgnoreCase(n.getNodeName()))
-		{
-			return parseSkillCondition(n);
 		}
 		if ("using".equalsIgnoreCase(n.getNodeName()))
 		{
@@ -1087,13 +1082,6 @@ public abstract class DocumentBase
 			_log.severe("Unrecognized <target> condition in " + _file);
 		}
 		return cond;
-	}
-	
-	protected Condition parseSkillCondition(Node n)
-	{
-		NamedNodeMap attrs = n.getAttributes();
-		Stats stat = Stats.valueOfXml(attrs.getNamedItem("stat").getNodeValue());
-		return new ConditionSkillStats(stat);
 	}
 	
 	protected Condition parseUsingCondition(Node n)

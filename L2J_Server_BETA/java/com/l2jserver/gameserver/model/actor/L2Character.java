@@ -1666,11 +1666,10 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				switch (skill.getSkillType())
 				{
 					case BUFF:
-					case HEAL:
 						doit = true;
 						break;
 					case DUMMY:
-						if (skill.hasEffectType(L2EffectType.CPHEAL))
+						if (skill.hasEffectType(L2EffectType.CPHEAL, L2EffectType.HEAL))
 						{
 							doit = true;
 						}
@@ -6500,12 +6499,13 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			// Consume HP if necessary and Send the Server->Client packet StatusUpdate with current HP and MP to all other L2PcInstance to inform
 			if (skill.getHpConsume() > 0)
 			{
-				double consumeHp;
+				double consumeHp = skill.getHpConsume();
 				
-				consumeHp = calcStat(Stats.HP_CONSUME_RATE, skill.getHpConsume(), null, null);
-				if ((consumeHp + 1) >= getCurrentHp())
+				if (consumeHp >= getCurrentHp())
 				{
-					consumeHp = getCurrentHp() - 1.0;
+					sendPacket(SystemMessageId.NOT_ENOUGH_HP);
+					abortCast();
+					return;
 				}
 				
 				getStatus().reduceHp(consumeHp, this, true);

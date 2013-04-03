@@ -13708,7 +13708,7 @@ public final class L2PcInstance extends L2Playable
 	 * Returns the Number of Souls this L2PcInstance got.
 	 * @return
 	 */
-	public int getSouls()
+	public int getChargedSouls()
 	{
 		return _souls;
 	}
@@ -13722,7 +13722,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		if (_souls >= skill.getNumSouls())
 		{
-			sendPacket(SystemMessageId.SOUL_CANNOT_BE_INCREASED_ANYMORE);
+			sendPacket(SystemMessageId.SOUL_CANNOT_BE_ABSORBED_ANYMORE);
 			return;
 		}
 		
@@ -13740,25 +13740,13 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void increaseSouls(int count)
 	{
-		if ((count < 0) || (count > 45))
-		{
-			return;
-		}
-		
 		_souls += count;
-		
-		if (getSouls() > 45)
-		{
-			_souls = 45;
-		}
-		
+		// TODO: Fix double message if skill have a self effect.
 		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOUR_SOUL_HAS_INCREASED_BY_S1_SO_IT_IS_NOW_AT_S2);
 		sm.addNumber(count);
 		sm.addNumber(_souls);
 		sendPacket(sm);
-		
 		restartSoulTask();
-		
 		sendPacket(new EtcStatusUpdate(this));
 	}
 	
@@ -13772,12 +13760,12 @@ public final class L2PcInstance extends L2Playable
 	{
 		_souls -= count;
 		
-		if (getSouls() < 0)
+		if (getChargedSouls() < 0)
 		{
 			_souls = 0;
 		}
 		
-		if (getSouls() == 0)
+		if (getChargedSouls() == 0)
 		{
 			stopSoulTask();
 		}

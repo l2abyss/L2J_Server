@@ -292,7 +292,7 @@ public final class Formulas
 			}
 			else
 			{
-				double siegeModifier = calcSiegeRegenModifer(player);
+				double siegeModifier = calcSiegeRegenModifier(player);
 				if (siegeModifier > 0)
 				{
 					hpRegenMultiplier *= siegeModifier;
@@ -582,7 +582,7 @@ public final class Formulas
 		return 1.0 - (distToCenter * 0.0005); // Maximum Decreased Regen of ~ -65%;
 	}
 	
-	public static final double calcSiegeRegenModifer(L2PcInstance activeChar)
+	public static final double calcSiegeRegenModifier(L2PcInstance activeChar)
 	{
 		if ((activeChar == null) || (activeChar.getClan() == null))
 		{
@@ -1509,36 +1509,6 @@ public final class Formulas
 		// of the L2Character target
 		if (skill != null)
 		{
-			// first, get the natural template vulnerability values for the target
-			Stats stat = skill.getStat();
-			if (stat != null)
-			{
-				switch (stat)
-				{
-					case AGGRESSION:
-						multiplier = target.getTemplate().getBaseAggressionVuln();
-						break;
-					case BLEED:
-						multiplier = target.getTemplate().getBaseBleedVuln();
-						break;
-					case POISON:
-						multiplier = target.getTemplate().getBasePoisonVuln();
-						break;
-					case STUN:
-						multiplier = target.getTemplate().getBaseStunVuln();
-						break;
-					case ROOT:
-						multiplier = target.getTemplate().getBaseRootVuln();
-						break;
-					case MOVEMENT:
-						multiplier = target.getTemplate().getBaseMovementVuln();
-						break;
-					case SLEEP:
-						multiplier = target.getTemplate().getBaseSleepVuln();
-						break;
-				}
-			}
-			
 			// Finally, calculate skill type vulnerabilities
 			multiplier = calcSkillTraitVulnerability(multiplier, target, skill);
 		}
@@ -2290,13 +2260,6 @@ public final class Formulas
 		// Check for non-reflected skilltypes, need additional retail check
 		switch (skill.getSkillType())
 		{
-			case BUFF:
-			case HEAL_PERCENT:
-			case MANAHEAL_PERCENT:
-			case AGGDEBUFF:
-			case CONT:
-				return SKILL_REFLECT_FAILED;
-				// these skill types can deal damage
 			case PDAM:
 			case MDAM:
 			case BLOW:
@@ -2313,6 +2276,8 @@ public final class Formulas
 					reflect |= SKILL_REFLECT_VENGEANCE;
 				}
 				break;
+			default:
+				return SKILL_REFLECT_FAILED;
 		}
 		
 		final double reflectChance = target.calcStat(skill.isMagic() ? Stats.REFLECT_SKILL_MAGIC : Stats.REFLECT_SKILL_PHYSIC, 0, null, skill);

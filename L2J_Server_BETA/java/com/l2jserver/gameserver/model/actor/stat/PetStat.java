@@ -171,47 +171,13 @@ public class PetStat extends SummonStat
 	@Override
 	public int getMAtk(L2Character target, L2Skill skill)
 	{
-		double attack = getActiveChar().getPetLevelData().getPetMAtk();
-		Stats stat = skill == null ? null : skill.getStat();
-		if (stat != null)
-		{
-			switch (stat)
-			{
-				case AGGRESSION:
-					attack += getActiveChar().getTemplate().getBaseAggression();
-					break;
-				case BLEED:
-					attack += getActiveChar().getTemplate().getBaseBleed();
-					break;
-				case POISON:
-					attack += getActiveChar().getTemplate().getBasePoison();
-					break;
-				case STUN:
-					attack += getActiveChar().getTemplate().getBaseStun();
-					break;
-				case ROOT:
-					attack += getActiveChar().getTemplate().getBaseRoot();
-					break;
-				case MOVEMENT:
-					attack += getActiveChar().getTemplate().getBaseMovement();
-					break;
-				case CONFUSION:
-					attack += getActiveChar().getTemplate().getBaseConfusion();
-					break;
-				case SLEEP:
-					attack += getActiveChar().getTemplate().getBaseSleep();
-					break;
-			}
-		}
-		
-		return (int) calcStat(Stats.MAGIC_ATTACK, attack, target, skill);
+		return (int) calcStat(Stats.MAGIC_ATTACK, getActiveChar().getPetLevelData().getPetMAtk(), target, skill);
 	}
 	
 	@Override
 	public int getMDef(L2Character target, L2Skill skill)
 	{
-		double defence = getActiveChar().getPetLevelData().getPetMDef();
-		return (int) calcStat(Stats.MAGIC_DEFENCE, defence, target, skill);
+		return (int) calcStat(Stats.MAGIC_DEFENCE, getActiveChar().getPetLevelData().getPetMDef(), target, skill);
 	}
 	
 	@Override

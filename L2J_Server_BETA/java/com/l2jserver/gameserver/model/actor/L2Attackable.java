@@ -901,10 +901,7 @@ public class L2Attackable extends L2Npc
 						}
 						
 						// Avoid "over damage"
-						if (partyDmg > getMaxHp())
-						{
-							partyDmg = getMaxHp();
-						}
+						partyDmg = Math.min(partyDmg, getMaxHp());
 						
 						// Calculate the level difference between Party and L2Attackable
 						levelDiff = partyLvl - getLevel();
