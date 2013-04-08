@@ -1661,6 +1661,16 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
+	 * Verify if the player has the quest state.
+	 * @param quest the quest state to check
+	 * @return {@code true} if the player has the quest state, {@code false} otherwise
+	 */
+	public boolean hasQuestState(String quest)
+	{
+		return _quests.containsKey(quest);
+	}
+	
+	/**
 	 * Remove a QuestState from the table _quest containing all quests began by the L2PcInstance.
 	 * @param quest The name of the quest
 	 */

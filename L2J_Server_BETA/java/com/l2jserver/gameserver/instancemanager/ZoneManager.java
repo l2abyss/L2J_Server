@@ -172,7 +172,7 @@ public class ZoneManager extends DocumentParser
 						// Create the zone
 						Class<?> newZone = null;
 						Constructor<?> zoneConstructor = null;
-						L2ZoneType temp = null;
+						L2ZoneType temp;
 						try
 						{
 							newZone = Class.forName("com.l2jserver.gameserver.model.zone.type.L2" + zoneType);

@@ -3366,6 +3366,15 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Get a random boolean.
+	 * @return {@code true} or {@code false} randomly
+	 */
+	public static boolean getRandomBoolean()
+	{
+		return Rnd.nextBoolean();
+	}
+	
+	/**
 	 * Get the Id of the item equipped in the specified inventory slot of the player.
 	 * @param player the player whose inventory to check
 	 * @param slot the location in the player's inventory to check
