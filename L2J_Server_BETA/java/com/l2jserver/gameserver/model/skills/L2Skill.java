@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +29,6 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
-import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.handler.ITargetTypeHandler;
@@ -56,8 +54,6 @@ import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
-import com.l2jserver.gameserver.model.items.L2Armor;
-import com.l2jserver.gameserver.model.items.type.L2ArmorType;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
@@ -190,8 +186,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _condition;
 	private final int _conditionValue;
 	private final boolean _overhit;
-	private final int _weaponsAllowed;
-	private final int _armorsAllowed;
 	
 	private final int _minPledgeClass;
 	private final boolean _isOffensive;
@@ -413,39 +407,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_overhit = set.getBool("overHit", false);
 		_isSuicideAttack = set.getBool("isSuicideAttack", false);
 		
-		String weaponsAllowedString = set.getString("weaponsAllowed", null);
-		if ((weaponsAllowedString != null) && !weaponsAllowedString.trim().isEmpty())
-		{
-			int mask = 0;
-			StringTokenizer st = new StringTokenizer(weaponsAllowedString, ",");
-			while (st.hasMoreTokens())
-			{
-				int old = mask;
-				String item = st.nextToken().trim();
-				if (ItemTable._weaponTypes.containsKey(item))
-				{
-					mask |= ItemTable._weaponTypes.get(item).mask();
-				}
-				
-				if (ItemTable._armorTypes.containsKey(item))
-				{
-					mask |= ItemTable._armorTypes.get(item).mask();
-				}
-				
-				if (old == mask)
-				{
-					_log.info("[weaponsAllowed] Unknown item type name: " + item);
-				}
-			}
-			_weaponsAllowed = mask;
-		}
-		else
-		{
-			_weaponsAllowed = 0;
-		}
-		
-		_armorsAllowed = set.getInteger("armorsAllowed", 0);
-		
 		_minPledgeClass = set.getInteger("minPledgeClass", 0);
 		_isOffensive = set.getBool("offensive", false);
 		_isPVP = set.getBool("pvp", false);
@@ -506,11 +467,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	}
 	
 	public abstract void useSkill(L2Character caster, L2Object[] targets);
-	
-	public final int getArmorsAllowed()
-	{
-		return _armorsAllowed;
-	}
 	
 	public final int getConditionValue()
 	{
@@ -1026,11 +982,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return ((getSkillType() == L2SkillType.PUMPING) || (getSkillType() == L2SkillType.REELING));
 	}
 	
-	public final int getWeaponsAllowed()
-	{
-		return _weaponsAllowed;
-	}
-	
 	public int getMinPledgeClass()
 	{
 		return _minPledgeClass;
@@ -1139,47 +1090,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final boolean isStayOnSubclassChange()
 	{
 		return _stayOnSubclassChange;
-	}
-	
-	public final boolean getWeaponDependancy(L2Character activeChar)
-	{
-		if (getWeaponDependancy(activeChar, false))
-		{
-			return true;
-		}
-		
-		final SystemMessage message = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-		message.addSkillName(this);
-		activeChar.sendPacket(message);
-		return false;
-	}
-	
-	public final boolean getWeaponDependancy(L2Character activeChar, boolean chance)
-	{
-		int weaponsAllowed = getWeaponsAllowed();
-		// check to see if skill has a weapon dependency.
-		if (weaponsAllowed == 0)
-		{
-			return true;
-		}
-		
-		int mask = 0;
-		
-		if (activeChar.getActiveWeaponItem() != null)
-		{
-			mask |= activeChar.getActiveWeaponItem().getItemType().mask();
-		}
-		if ((activeChar.getSecondaryWeaponItem() != null) && (activeChar.getSecondaryWeaponItem() instanceof L2Armor))
-		{
-			mask |= ((L2ArmorType) activeChar.getSecondaryWeaponItem().getItemType()).mask();
-		}
-		
-		if ((mask & weaponsAllowed) != 0)
-		{
-			return true;
-		}
-		
-		return false;
 	}
 	
 	public boolean checkCondition(L2Character activeChar, L2Object target, boolean itemOrWeapon)

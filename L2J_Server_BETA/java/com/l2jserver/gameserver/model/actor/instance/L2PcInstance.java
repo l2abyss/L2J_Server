@@ -2556,42 +2556,6 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	public void checkIfWeaponIsAllowed()
-	{
-		// Override for Gamemasters
-		if (canOverrideCond(PcCondOverride.ITEM_CONDITIONS))
-		{
-			return;
-		}
-		
-		// Iterate through all effects currently on the character.
-		for (L2Effect currenteffect : getAllEffects())
-		{
-			L2Skill effectSkill = currenteffect.getSkill();
-			
-			// Ignore all buff skills that are party related (ie. songs, dances) while still remaining weapon dependent on cast though.
-			if (!effectSkill.isOffensive() && !((effectSkill.getTargetType() == L2TargetType.PARTY) && (effectSkill.getSkillType() == L2SkillType.BUFF)))
-			{
-				// Check to rest to assure current effect meets weapon requirements.
-				if (!effectSkill.getWeaponDependancy(this))
-				{
-					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-					sm.addSkillName(effectSkill);
-					sendPacket(sm);
-					
-					if (Config.DEBUG)
-					{
-						_log.info("   | Skill " + effectSkill.getName() + " has been disabled for (" + getName() + "); Reason: Incompatible Weapon Type.");
-					}
-					
-					currenteffect.exit();
-				}
-			}
-			
-			continue;
-		}
-	}
-	
 	public void useEquippableItem(L2ItemInstance item, boolean abortAttack)
 	{
 		// Equip or unEquip

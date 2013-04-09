@@ -2116,14 +2116,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			}
 		}
 		
-		// Check if the caster owns the weapon needed
-		if (!skill.getWeaponDependancy(this))
-		{
-			// Send a Server->Client packet ActionFailed to the L2PcInstance
-			sendPacket(ActionFailed.STATIC_PACKET);
-			return false;
-		}
-		
 		// Check if the caster's weapon is limited to use only its own skills
 		if (getActiveWeaponItem() != null)
 		{
@@ -7795,7 +7787,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	{
 		try
 		{
-			if (skill.getWeaponDependancy(this, true) && skill.checkCondition(this, target, false))
+			if (skill.checkCondition(this, target, false))
 			{
 				if (skill.triggersChanceSkill()) // skill will trigger another skill, but only if its not chance skill
 				{
@@ -7804,8 +7796,8 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 					{
 						return;
 					}
-					// We change skill to new one, we should verify conditions and dependancy for new one
-					if (!skill.getWeaponDependancy(this, true) || !skill.checkCondition(this, target, false))
+					// We change skill to new one, we should verify conditions for new one
+					if (!skill.checkCondition(this, target, false))
 					{
 						return;
 					}
