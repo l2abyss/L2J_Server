@@ -634,14 +634,8 @@ public final class Formulas
 			defence *= target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);
 		}
 		
-		if (isBehind(attacker, target))
-		{
-			proximityBonus = 1.2; // +20% crit dmg when back stabbed
-		}
-		else if (isInFrontOf(attacker, target))
-		{
-			proximityBonus = 1.1; // +10% crit dmg when side stabbed
-		}
+		// Behind: 20% - Front: 10% (TODO: values are unconfirmed, possibly custom, remove or update when confirmed)
+		proximityBonus = attacker.isBehindTarget() ? 1.2 : attacker.isInFrontOfTarget() ? 1.1 : 1;
 		
 		damage *= calcValakasTrait(attacker, target, skill);
 		
@@ -2305,102 +2299,33 @@ public final class Formulas
 		return damage;
 	}
 	
-	private static double FRONT_MAX_ANGLE = 100;
-	private static double BACK_MAX_ANGLE = 40;
-	
-	/**
-	 * Calculates blow success depending on base chance and relative position of attacker and target
-	 * @param activeChar Target that is performing skill
-	 * @param target Target of this skill
-	 * @param skill Skill which will be used to get base value of blowChance and crit condition
-	 * @return Success of blow
-	 */
 	public static boolean calcBlowSuccess(L2Character activeChar, L2Character target, L2Skill skill)
 	{
-		int blowChance = skill.getBlowChance();
+		// Apply DEX Mod.
+		double blowChance = skill.getBlowChance() * BaseStats.DEX.calcBonus(activeChar);
 		
-		if (isBehind(target, activeChar))
+		// Apply Position Bonus (TODO: values are unconfirmed, possibly custom, remove or update when confirmed).
+		if (activeChar.isInFrontOfTarget())
 		{
-			blowChance *= 2; // double chance from behind
-		}
-		else if (isInFrontOf(target, activeChar))
-		{
-			// base chance from front
 			if ((skill.getCondition() & L2Skill.COND_BEHIND) != 0)
 			{
 				return false;
 			}
 		}
+		else if (activeChar.isBehindTarget())
+		{
+			blowChance *= 2;
+		}
 		else
 		{
-			blowChance *= 1.5; // 50% better chance from side
-		}
-		return activeChar.calcStat(Stats.BLOW_RATE, blowChance * (1.0 + ((activeChar.getDEX()) / 100.)), target, null) > Rnd.get(100);
-	}
-	
-	/**
-	 * Those are altered formulas for blow lands
-	 * @param target
-	 * @param attacker
-	 * @return True if the target is IN FRONT of the L2Character.<
-	 */
-	public static boolean isInFrontOf(L2Character target, L2Character attacker)
-	{
-		if (target == null)
-		{
-			return false;
+			if ((skill.getCondition() & L2Skill.COND_BEHIND) != 0)
+			{
+				return false;
+			}
+			blowChance *= 1.5;
 		}
 		
-		double angleChar, angleTarget, angleDiff;
-		angleTarget = Util.calculateAngleFrom(target, attacker);
-		angleChar = Util.convertHeadingToDegree(target.getHeading());
-		angleDiff = angleChar - angleTarget;
-		if (angleDiff <= (-360 + FRONT_MAX_ANGLE))
-		{
-			angleDiff += 360;
-		}
-		if (angleDiff >= (360 - FRONT_MAX_ANGLE))
-		{
-			angleDiff -= 360;
-		}
-		if (Math.abs(angleDiff) <= FRONT_MAX_ANGLE)
-		{
-			return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * Those are altered formulas for blow lands
-	 * @param target
-	 * @param attacker
-	 * @return True if the L2Character is behind the target and can't be seen.
-	 */
-	public static boolean isBehind(L2Character target, L2Character attacker)
-	{
-		if (target == null)
-		{
-			return false;
-		}
-		
-		double angleChar, angleTarget, angleDiff;
-		L2Character target1 = target;
-		angleChar = Util.calculateAngleFrom(attacker, target1);
-		angleTarget = Util.convertHeadingToDegree(target1.getHeading());
-		angleDiff = angleChar - angleTarget;
-		if (angleDiff <= (-360 + BACK_MAX_ANGLE))
-		{
-			angleDiff += 360;
-		}
-		if (angleDiff >= (360 - BACK_MAX_ANGLE))
-		{
-			angleDiff -= 360;
-		}
-		if (Math.abs(angleDiff) <= BACK_MAX_ANGLE)
-		{
-			return true;
-		}
-		return false;
+		return Rnd.get(100) < activeChar.calcStat(Stats.BLOW_RATE, blowChance, target, null);
 	}
 	
 	public static List<L2Effect> calcCancelStealEffects(L2Character activeChar, L2Character target, L2Skill skill, double power)
