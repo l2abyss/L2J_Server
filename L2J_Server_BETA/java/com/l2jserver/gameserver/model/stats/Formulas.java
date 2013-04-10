@@ -1209,34 +1209,20 @@ public final class Formulas
 		return success;
 	}
 	
-	/**
-	 * Calculate value of lethal chance
-	 * @param activeChar
-	 * @param target
-	 * @param baseLethal
-	 * @param magiclvl
-	 * @return
-	 */
-	public static final double calcLethal(L2Character activeChar, L2Character target, int baseLethal, int magiclvl)
-	{
-		// Lvl Bonus Modifier.
-		int attackerLvl = magiclvl > 0 ? magiclvl : activeChar.getLevel();
-		double lvlMod = 1 + ((attackerLvl - target.getLevel()) / 100.);
-		double chance = baseLethal * lvlMod;
-		
-		return activeChar.calcStat(Stats.LETHAL_RATE, chance, target, null);
-	}
-	
 	public static final boolean calcLethalHit(L2Character activeChar, L2Character target, L2Skill skill)
 	{
-		if (activeChar.isPlayer() && !activeChar.getAccessLevel().canGiveDamage())
+		if ((activeChar.isPlayer() && !activeChar.getAccessLevel().canGiveDamage()) || (((skill.getCondition() & L2Skill.COND_BEHIND) != 0) && !activeChar.isBehindTarget()))
 		{
 			return false;
 		}
-		if (((skill.getLethalStrikeRate() > 0) || (skill.getHalfKillRate() > 0)) && target.isLethalable() && !target.isInvul())
+		if (target.isLethalable() && !target.isInvul())
 		{
+			// Lvl Bonus Modifier.
+			double lethalStrikeRate = skill.getLethalStrikeRate() * calcLvlBonusMod(activeChar, target, skill);
+			double halfKillRate = skill.getHalfKillRate() * calcLvlBonusMod(activeChar, target, skill);
+			
 			// Lethal Strike
-			if (Rnd.get(100) < calcLethal(activeChar, target, skill.getLethalStrikeRate(), skill.getMagicLevel()))
+			if (Rnd.get(100) < activeChar.calcStat(Stats.LETHAL_RATE, lethalStrikeRate, target, null))
 			{
 				// for Players CP and HP is set to 1.
 				if (target.isPlayer())
@@ -1253,7 +1239,7 @@ public final class Formulas
 				activeChar.sendPacket(SystemMessageId.LETHAL_STRIKE_SUCCESSFUL);
 			}
 			// Half-Kill
-			else if (Rnd.get(100) < calcLethal(activeChar, target, skill.getHalfKillRate(), skill.getMagicLevel()))
+			else if (Rnd.get(100) < activeChar.calcStat(Stats.LETHAL_RATE, halfKillRate, target, null))
 			{
 				// for Players CP is set to 1.
 				if (target.isPlayer())
@@ -2301,16 +2287,18 @@ public final class Formulas
 	
 	public static boolean calcBlowSuccess(L2Character activeChar, L2Character target, L2Skill skill)
 	{
+		if (((skill.getCondition() & L2Skill.COND_BEHIND) != 0) && !activeChar.isBehindTarget())
+		{
+			return false;
+		}
+		
 		// Apply DEX Mod.
 		double blowChance = skill.getBlowChance() * BaseStats.DEX.calcBonus(activeChar);
 		
 		// Apply Position Bonus (TODO: values are unconfirmed, possibly custom, remove or update when confirmed).
 		if (activeChar.isInFrontOfTarget())
 		{
-			if ((skill.getCondition() & L2Skill.COND_BEHIND) != 0)
-			{
-				return false;
-			}
+			blowChance *= 1;
 		}
 		else if (activeChar.isBehindTarget())
 		{
@@ -2318,10 +2306,6 @@ public final class Formulas
 		}
 		else
 		{
-			if ((skill.getCondition() & L2Skill.COND_BEHIND) != 0)
-			{
-				return false;
-			}
 			blowChance *= 1.5;
 		}
 		
