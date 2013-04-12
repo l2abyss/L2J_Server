@@ -322,27 +322,32 @@ public final class Config
 	public static long CS_MPREG_FEE_RATIO;
 	public static int CS_MPREG1_FEE;
 	public static int CS_MPREG2_FEE;
-	public static int CS_MPREG3_FEE;
-	public static int CS_MPREG4_FEE;
 	public static long CS_HPREG_FEE_RATIO;
 	public static int CS_HPREG1_FEE;
 	public static int CS_HPREG2_FEE;
-	public static int CS_HPREG3_FEE;
-	public static int CS_HPREG4_FEE;
-	public static int CS_HPREG5_FEE;
 	public static long CS_EXPREG_FEE_RATIO;
 	public static int CS_EXPREG1_FEE;
 	public static int CS_EXPREG2_FEE;
-	public static int CS_EXPREG3_FEE;
-	public static int CS_EXPREG4_FEE;
 	public static long CS_SUPPORT_FEE_RATIO;
 	public static int CS_SUPPORT1_FEE;
 	public static int CS_SUPPORT2_FEE;
-	public static int CS_SUPPORT3_FEE;
-	public static int CS_SUPPORT4_FEE;
 	public static List<String> CL_SET_SIEGE_TIME_LIST;
 	public static List<Integer> SIEGE_HOUR_LIST_MORNING;
 	public static List<Integer> SIEGE_HOUR_LIST_AFTERNOON;
+	public static int OUTER_DOOR_UPGRADE_PRICE2;
+	public static int OUTER_DOOR_UPGRADE_PRICE3;
+	public static int OUTER_DOOR_UPGRADE_PRICE5;
+	public static int INNER_DOOR_UPGRADE_PRICE2;
+	public static int INNER_DOOR_UPGRADE_PRICE3;
+	public static int INNER_DOOR_UPGRADE_PRICE5;
+	public static int WALL_UPGRADE_PRICE2;
+	public static int WALL_UPGRADE_PRICE3;
+	public static int WALL_UPGRADE_PRICE5;
+	public static int TRAP_UPGRADE_PRICE1;
+	public static int TRAP_UPGRADE_PRICE2;
+	public static int TRAP_UPGRADE_PRICE3;
+	public static int TRAP_UPGRADE_PRICE4;
+	
 	// --------------------------------------------------
 	// Fortress Settings
 	// --------------------------------------------------
@@ -1344,29 +1349,34 @@ public final class Config
 				}
 			}
 			CS_TELE_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleTeleportFunctionFeeRatio", "604800000"));
-			CS_TELE1_FEE = Integer.parseInt(Feature.getProperty("CastleTeleportFunctionFeeLvl1", "7000"));
-			CS_TELE2_FEE = Integer.parseInt(Feature.getProperty("CastleTeleportFunctionFeeLvl2", "14000"));
-			CS_SUPPORT_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleSupportFunctionFeeRatio", "86400000"));
-			CS_SUPPORT1_FEE = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl1", "7000"));
-			CS_SUPPORT2_FEE = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl2", "21000"));
-			CS_SUPPORT3_FEE = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl3", "37000"));
-			CS_SUPPORT4_FEE = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl4", "52000"));
-			CS_MPREG_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleMpRegenerationFunctionFeeRatio", "86400000"));
-			CS_MPREG1_FEE = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl1", "2000"));
-			CS_MPREG2_FEE = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl2", "6500"));
-			CS_MPREG3_FEE = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl3", "13750"));
-			CS_MPREG4_FEE = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl4", "20000"));
-			CS_HPREG_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleHpRegenerationFunctionFeeRatio", "86400000"));
-			CS_HPREG1_FEE = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl1", "1000"));
-			CS_HPREG2_FEE = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl2", "1500"));
-			CS_HPREG3_FEE = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl3", "2250"));
-			CS_HPREG4_FEE = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl4", "3270"));
-			CS_HPREG5_FEE = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl5", "5166"));
-			CS_EXPREG_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleExpRegenerationFunctionFeeRatio", "86400000"));
-			CS_EXPREG1_FEE = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl1", "9000"));
-			CS_EXPREG2_FEE = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl2", "15000"));
-			CS_EXPREG3_FEE = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl3", "21000"));
-			CS_EXPREG4_FEE = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl4", "30000"));
+			CS_TELE1_FEE = Integer.parseInt(Feature.getProperty("CastleTeleportFunctionFeeLvl1", "1000"));
+			CS_TELE2_FEE = Integer.parseInt(Feature.getProperty("CastleTeleportFunctionFeeLvl2", "10000"));
+			CS_SUPPORT_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleSupportFunctionFeeRatio", "604800000"));
+			CS_SUPPORT1_FEE = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl1", "49000"));
+			CS_SUPPORT2_FEE = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl2", "120000"));
+			CS_MPREG_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleMpRegenerationFunctionFeeRatio", "604800000"));
+			CS_MPREG1_FEE = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl1", "45000"));
+			CS_MPREG2_FEE = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl2", "65000"));
+			CS_HPREG_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleHpRegenerationFunctionFeeRatio", "604800000"));
+			CS_HPREG1_FEE = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl1", "12000"));
+			CS_HPREG2_FEE = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl2", "20000"));
+			CS_EXPREG_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleExpRegenerationFunctionFeeRatio", "604800000"));
+			CS_EXPREG1_FEE = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl1", "63000"));
+			CS_EXPREG2_FEE = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl2", "70000"));
+			
+			OUTER_DOOR_UPGRADE_PRICE2 = Integer.parseInt(Feature.getProperty("OuterDoorUpgradePriceLvl2", "3000000"));
+			OUTER_DOOR_UPGRADE_PRICE3 = Integer.parseInt(Feature.getProperty("OuterDoorUpgradePriceLvl3", "4000000"));
+			OUTER_DOOR_UPGRADE_PRICE5 = Integer.parseInt(Feature.getProperty("OuterDoorUpgradePriceLvl5", "5000000"));
+			INNER_DOOR_UPGRADE_PRICE2 = Integer.parseInt(Feature.getProperty("InnerDoorUpgradePriceLvl2", "750000"));
+			INNER_DOOR_UPGRADE_PRICE3 = Integer.parseInt(Feature.getProperty("InnerDoorUpgradePriceLvl3", "900000"));
+			INNER_DOOR_UPGRADE_PRICE5 = Integer.parseInt(Feature.getProperty("InnerDoorUpgradePriceLvl5", "1000000"));
+			WALL_UPGRADE_PRICE2 = Integer.parseInt(Feature.getProperty("WallUpgradePriceLvl2", "1600000"));
+			WALL_UPGRADE_PRICE3 = Integer.parseInt(Feature.getProperty("WallUpgradePriceLvl3", "1800000"));
+			WALL_UPGRADE_PRICE5 = Integer.parseInt(Feature.getProperty("WallUpgradePriceLvl5", "2000000"));
+			TRAP_UPGRADE_PRICE1 = Integer.parseInt(Feature.getProperty("TrapUpgradePriceLvl1", "3000000"));
+			TRAP_UPGRADE_PRICE2 = Integer.parseInt(Feature.getProperty("TrapUpgradePriceLvl2", "4000000"));
+			TRAP_UPGRADE_PRICE3 = Integer.parseInt(Feature.getProperty("TrapUpgradePriceLvl3", "5000000"));
+			TRAP_UPGRADE_PRICE4 = Integer.parseInt(Feature.getProperty("TrapUpgradePriceLvl4", "6000000"));
 			
 			FS_TELE_FEE_RATIO = Long.parseLong(Feature.getProperty("FortressTeleportFunctionFeeRatio", "604800000"));
 			FS_TELE1_FEE = Integer.parseInt(Feature.getProperty("FortressTeleportFunctionFeeLvl1", "1000"));

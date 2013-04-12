@@ -134,7 +134,6 @@ public abstract class L2Object
 		L2FortBallistaInstance(L2Npc),
 		L2FortCommanderInstance(L2DefenderInstance),
 		// Castle NPCs
-		L2CastleChamberlainInstance(L2MerchantInstance),
 		L2CastleMagicianInstance(L2NpcInstance),
 		L2MercManagerInstance(L2MerchantInstance),
 		// Fort NPCs

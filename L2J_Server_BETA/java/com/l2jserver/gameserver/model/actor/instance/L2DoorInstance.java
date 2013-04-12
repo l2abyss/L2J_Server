@@ -40,6 +40,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.knownlist.DoorKnownList;
+import com.l2jserver.gameserver.model.actor.stat.DoorStat;
 import com.l2jserver.gameserver.model.actor.status.DoorStatus;
 import com.l2jserver.gameserver.model.actor.templates.L2DoorTemplate;
 import com.l2jserver.gameserver.model.entity.Castle;
@@ -205,6 +206,18 @@ public class L2DoorInstance extends L2Character
 	public void initCharStatus()
 	{
 		setStatus(new DoorStatus(this));
+	}
+	
+	@Override
+	public void initCharStat()
+	{
+		setStat(new DoorStat(this));
+	}
+	
+	@Override
+	public DoorStat getStat()
+	{
+		return (DoorStat) super.getStat();
 	}
 	
 	/**

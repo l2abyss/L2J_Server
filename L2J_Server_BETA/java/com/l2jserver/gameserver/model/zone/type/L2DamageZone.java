@@ -45,8 +45,6 @@ public class L2DamageZone extends L2ZoneType
 	private int _startTask;
 	private int _reuseTask;
 	
-	protected boolean _enabled;
-	
 	public L2DamageZone(int id)
 	{
 		super(id);
@@ -62,9 +60,6 @@ public class L2DamageZone extends L2ZoneType
 		// no castle by default
 		_castleId = 0;
 		_castle = null;
-		
-		// enabled by default
-		_enabled = true;
 		
 		setTargetType(InstanceType.L2Playable); // default only playabale
 		AbstractZoneSettings settings = ZoneManager.getSettings(getName());
@@ -104,10 +99,6 @@ public class L2DamageZone extends L2ZoneType
 		{
 			_reuseTask = Integer.parseInt(value);
 		}
-		else if (name.equalsIgnoreCase("default_enabled"))
-		{
-			_enabled = Boolean.parseBoolean(value);
-		}
 		else
 		{
 			super.setParameter(name, value);
@@ -143,7 +134,7 @@ public class L2DamageZone extends L2ZoneType
 	{
 		if (_characterList.isEmpty() && (getSettings().getTask() != null))
 		{
-			stopTask();
+			getSettings().clear();
 		}
 	}
 	
@@ -155,14 +146,6 @@ public class L2DamageZone extends L2ZoneType
 	protected int getMPDamagePerSecond()
 	{
 		return _damageMPPerSec;
-	}
-	
-	protected void stopTask()
-	{
-		if (getSettings().getTask() != null)
-		{
-			getSettings().getTask().cancel(false);
-		}
 	}
 	
 	protected Castle getCastle()
@@ -189,7 +172,7 @@ public class L2DamageZone extends L2ZoneType
 		@Override
 		public void run()
 		{
-			if (!_enabled)
+			if (!isEnabled())
 			{
 				return;
 			}
@@ -202,7 +185,7 @@ public class L2DamageZone extends L2ZoneType
 				// castle zones active only during siege
 				if (!siege)
 				{
-					_dmgZone.stopTask();
+					_dmgZone.getSettings().clear();
 					return;
 				}
 			}
@@ -234,11 +217,6 @@ public class L2DamageZone extends L2ZoneType
 				}
 			}
 		}
-	}
-	
-	public void setEnabled(boolean state)
-	{
-		_enabled = state;
 	}
 	
 	@Override

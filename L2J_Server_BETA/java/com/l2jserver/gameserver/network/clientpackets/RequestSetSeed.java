@@ -29,8 +29,6 @@ import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.SeedProduction;
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.actor.instance.L2CastleChamberlainInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.util.Util;
@@ -95,24 +93,7 @@ public class RequestSetSeed extends L2GameClientPacket
 			return;
 		}
 		
-		L2Object manager = player.getTarget();
-		
-		if (!(manager instanceof L2CastleChamberlainInstance))
-		{
-			manager = player.getLastFolkNPC();
-		}
-		
-		if (!(manager instanceof L2CastleChamberlainInstance))
-		{
-			return;
-		}
-		
-		if (((L2CastleChamberlainInstance) manager).getCastle() != currentCastle)
-		{
-			return;
-		}
-		
-		if (!player.isInsideRadius(manager, INTERACTION_DISTANCE, true, false))
+		if (!player.isInsideRadius(player.getLastFolkNPC(), INTERACTION_DISTANCE, true, false))
 		{
 			return;
 		}
