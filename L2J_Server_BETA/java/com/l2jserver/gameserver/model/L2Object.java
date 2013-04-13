@@ -151,7 +151,6 @@ public abstract class L2Object
 		L2AdventurerInstance(L2NpcInstance),
 		L2AuctioneerInstance(L2Npc),
 		L2ClanHallManagerInstance(L2MerchantInstance),
-		L2ClanTraderInstance(L2Npc),
 		L2FameManagerInstance(L2Npc),
 		L2FishermanInstance(L2MerchantInstance),
 		L2ManorManagerInstance(L2MerchantInstance),
