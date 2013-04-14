@@ -1728,35 +1728,7 @@ public final class Formulas
 		int elementModifier = calcElementModifier(attacker, target, skill);
 		rate += elementModifier;
 		
-		// Add Matk/Mdef Bonus
-		double mAtkModifier = 0;
-		int ssModifier = 0;
-		if (skill.isMagic())
-		{
-			mAtkModifier = target.getMDef(target, skill);
-			if (shld == SHIELD_DEFENSE_SUCCEED)
-			{
-				mAtkModifier += target.getShldDef();
-			}
-			
-			// Add Bonus for Sps/SS
-			if (bss)
-			{
-				ssModifier = 4;
-			}
-			else if (sps)
-			{
-				ssModifier = 2;
-			}
-			else
-			{
-				ssModifier = 1;
-			}
-			
-			mAtkModifier = (14 * Math.sqrt(ssModifier * attacker.getMAtk(target, skill))) / mAtkModifier;
-			
-			rate = (int) (rate * mAtkModifier);
-		}
+		// Add Matk/Mdef Bonus (TODO: Pending)
 		
 		// Check the Rate Limits.
 		rate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
@@ -1764,7 +1736,7 @@ public final class Formulas
 		if (attacker.isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, skill.getName(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.valueOf(elementModifier), " mAtk:", String.format("%1.2f", mAtkModifier), " ss:", String.valueOf(ssModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
+			StringUtil.append(stat, skill.getName(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.valueOf(elementModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
 			final String result = stat.toString();
 			if (attacker.isDebug())
 			{
@@ -1828,35 +1800,7 @@ public final class Formulas
 		int elementModifier = calcElementModifier(attacker, target, skill);
 		rate += elementModifier;
 		
-		// Add Matk/Mdef Bonus
-		double mAtkModifier = 0;
-		int ssModifier = 0;
-		if (skill.isMagic())
-		{
-			mAtkModifier = target.getMDef(target, skill);
-			if (shld == SHIELD_DEFENSE_SUCCEED)
-			{
-				mAtkModifier += target.getShldDef();
-			}
-			
-			// Add Bonus for Sps/SS
-			if (bss)
-			{
-				ssModifier = 4;
-			}
-			else if (sps)
-			{
-				ssModifier = 2;
-			}
-			else
-			{
-				ssModifier = 1;
-			}
-			
-			mAtkModifier = (14 * Math.sqrt(ssModifier * attacker.getMAtk(target, skill))) / mAtkModifier;
-			
-			rate = (int) (rate * mAtkModifier);
-		}
+		// Add Matk/Mdef Bonus (TODO: Pending)
 		
 		// Check the Rate Limits.
 		rate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
@@ -1864,7 +1808,7 @@ public final class Formulas
 		if (attacker.isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, skill.getName(), " type:", skill.getSkillType().toString(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.valueOf(elementModifier), " mAtk:", String.format("%1.2f", mAtkModifier), " ss:", String.valueOf(ssModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
+			StringUtil.append(stat, skill.getName(), " type:", skill.getSkillType().toString(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.valueOf(elementModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
 			final String result = stat.toString();
 			if (attacker.isDebug())
 			{
