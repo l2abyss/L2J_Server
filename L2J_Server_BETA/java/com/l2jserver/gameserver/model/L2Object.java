@@ -154,7 +154,6 @@ public abstract class L2Object
 		L2FameManagerInstance(L2Npc),
 		L2FishermanInstance(L2MerchantInstance),
 		L2ManorManagerInstance(L2MerchantInstance),
-		L2MercenaryManagerInstance(L2Npc),
 		L2ObservationInstance(L2Npc),
 		L2OlympiadManagerInstance(L2Npc),
 		L2PetManagerInstance(L2MerchantInstance),
