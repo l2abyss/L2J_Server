@@ -655,6 +655,7 @@ public final class Config
 	public static boolean ENABLE_BLOCK_CHECKER_EVENT;
 	public static int MIN_BLOCK_CHECKER_TEAM_MEMBERS;
 	public static boolean HBCE_FAIR_PLAY;
+	public static boolean HELLBOUND_WITHOUT_QUEST;
 	public static int PLAYER_MOVEMENT_BLOCK_TIME;
 	public static boolean CLEAR_CREST_CACHE;
 	public static int NORMAL_ENCHANT_COST_MULTIPLIER;
@@ -2165,6 +2166,7 @@ public final class Config
 				MIN_BLOCK_CHECKER_TEAM_MEMBERS = 6;
 			}
 			HBCE_FAIR_PLAY = Boolean.parseBoolean(General.getProperty("HBCEFairPlay", "false"));
+			HELLBOUND_WITHOUT_QUEST = Boolean.parseBoolean(General.getProperty("HellboundWithoutQuest", "false"));
 			CLEAR_CREST_CACHE = Boolean.parseBoolean(General.getProperty("ClearClanCache", "false"));
 			
 			NORMAL_ENCHANT_COST_MULTIPLIER = Integer.parseInt(General.getProperty("NormalEnchantCostMultipiler", "1"));
