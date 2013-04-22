@@ -1198,4 +1198,16 @@ public abstract class L2Summon extends L2Playable
 			}
 		}
 	}
+	
+	@Override
+	public int getClanId()
+	{
+		return (getOwner() != null) ? getOwner().getClanId() : 0;
+	}
+	
+	@Override
+	public int getAllyId()
+	{
+		return (getOwner() != null) ? getOwner().getAllyId() : 0;
+	}
 }
