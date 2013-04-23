@@ -20,6 +20,12 @@ package com.l2jserver.gameserver.model.entity;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,7 +52,6 @@ import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.util.PlayerEventStatus;
-import com.l2jserver.util.ValueSortMap;
 
 /**
  * @since $Revision: 1.3.4.1 $ $Date: 2005/03/27 15:29:32 $ This ancient thingie got reworked by Nik at $Date: 2011/05/17 21:51:39 $ Yeah, for 6 years no one bothered reworking this buggy event engine.
@@ -61,7 +66,7 @@ public class L2Event
 	public static int _teamsNumber = 0;
 	public static final Map<Integer, String> _teamNames = new FastMap<>();
 	public static final List<L2PcInstance> _registeredPlayers = new FastList<>();
-	public static final Map<Integer, FastList<L2PcInstance>> _teams = new FastMap<>();
+	public static final Map<Integer, List<L2PcInstance>> _teams = new FastMap<>();
 	public static int _npcId = 0;
 	// public static final List<L2Npc> _npcs = new FastList<L2Npc>();
 	private static final Map<L2PcInstance, PlayerEventStatus> _connectionLossData = new FastMap<>();
@@ -84,7 +89,7 @@ public class L2Event
 			return -1;
 		}
 		
-		for (Entry<Integer, FastList<L2PcInstance>> team : _teams.entrySet())
+		for (Entry<Integer, List<L2PcInstance>> team : _teams.entrySet())
 		{
 			if (team.getValue().contains(player))
 			{
@@ -97,9 +102,8 @@ public class L2Event
 	
 	public static List<L2PcInstance> getTopNKillers(int n)
 	{
-		Map<L2PcInstance, Integer> tmp = new FastMap<>();
-		
-		for (FastList<L2PcInstance> teamList : _teams.values())
+		final Map<L2PcInstance, Integer> tmp = new HashMap<>();
+		for (List<L2PcInstance> teamList : _teams.values())
 		{
 			for (L2PcInstance player : teamList)
 			{
@@ -107,29 +111,25 @@ public class L2Event
 				{
 					continue;
 				}
-				
 				tmp.put(player, player.getEventStatus().kills.size());
 			}
 		}
 		
-		ValueSortMap.sortMapByValue(tmp, false);
+		sortByValue(tmp);
 		
 		// If the map size is less than "n", n will be as much as the map size
 		if (tmp.size() <= n)
 		{
-			List<L2PcInstance> toReturn = new FastList<>();
-			toReturn.addAll(tmp.keySet());
-			return toReturn;
+			return new ArrayList<>(tmp.keySet());
 		}
 		
-		List<L2PcInstance> toReturn = new FastList<>();
-		toReturn.addAll(tmp.keySet());
+		final List<L2PcInstance> toReturn = new ArrayList<>(tmp.keySet());
 		return toReturn.subList(1, n);
 	}
 	
 	public static void showEventHtml(L2PcInstance player, String objectid)
-	{// TODO: work on this
-	
+	{
+		// TODO: work on this
 		if (eventState == EventState.STANDBY)
 		{
 			try
@@ -244,7 +244,7 @@ public class L2Event
 			case STANDBY:
 				return _registeredPlayers.contains(player);
 			case ON:
-				for (FastList<L2PcInstance> teamList : _teams.values())
+				for (List<L2PcInstance> teamList : _teams.values())
 				{
 					if (teamList.contains(player))
 					{
@@ -521,7 +521,7 @@ public class L2Event
 				eventState = EventState.OFF;
 				return "The event has been stopped at STANDBY mode, all players unregistered and all event npcs unspawned.";
 			case ON:
-				for (FastList<L2PcInstance> teamList : _teams.values())
+				for (List<L2PcInstance> teamList : _teams.values())
 				{
 					for (L2PcInstance player : teamList)
 					{
@@ -545,5 +545,25 @@ public class L2Event
 		}
 		
 		return "The event has been successfully finished.";
+	}
+	
+	private static final Map<L2PcInstance, Integer> sortByValue(Map<L2PcInstance, Integer> unsortMap)
+	{
+		final List<Entry<L2PcInstance, Integer>> list = new LinkedList<>(unsortMap.entrySet());
+		Collections.sort(list, new Comparator<Entry<L2PcInstance, Integer>>()
+		{
+			@Override
+			public int compare(Entry<L2PcInstance, Integer> e1, Entry<L2PcInstance, Integer> e2)
+			{
+				return e1.getValue().compareTo(e2.getValue());
+			}
+		});
+		
+		final Map<L2PcInstance, Integer> sortedMap = new LinkedHashMap<>();
+		for (Entry<L2PcInstance, Integer> entry : list)
+		{
+			sortedMap.put(entry.getKey(), entry.getValue());
+		}
+		return sortedMap;
 	}
 }
