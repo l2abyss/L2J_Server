@@ -1,77 +1,68 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  * 
- * This file is part of L2J Server.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
  * 
- * L2J Server is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * L2J Server is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.l2jserver.gameserver.model;
 
-import javolution.util.FastList;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.l2jserver.gameserver.datatables.AugmentationData;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.OptionsData;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.funcs.FuncAdd;
-import com.l2jserver.gameserver.model.skills.funcs.LambdaConst;
-import com.l2jserver.gameserver.model.stats.Stats;
-import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
+import com.l2jserver.gameserver.model.options.Options;
 
 /**
  * Used to store an augmentation and its boni
- * @author durgus
+ * @author durgus, UnAfraid
  */
 public final class L2Augmentation
 {
 	private int _effectsId = 0;
 	private AugmentationStatBoni _boni = null;
-	private L2Skill _skill = null;
 	
-	public L2Augmentation(int effects, L2Skill skill)
+	public L2Augmentation(int effects)
 	{
 		_effectsId = effects;
 		_boni = new AugmentationStatBoni(_effectsId);
-		_skill = skill;
-	}
-	
-	public L2Augmentation(int effects, int skill, int skillLevel)
-	{
-		this(effects, skill != 0 ? SkillTable.getInstance().getInfo(skill, skillLevel) : null);
 	}
 	
 	public static class AugmentationStatBoni
 	{
-		private final Stats _stats[];
-		private final float _values[];
+		private static final Logger _log = Logger.getLogger(AugmentationStatBoni.class.getName());
+		private final List<Options> _options = new ArrayList<>();
 		private boolean _active;
 		
 		public AugmentationStatBoni(int augmentationId)
 		{
 			_active = false;
-			FastList<AugmentationData.AugStat> as = AugmentationData.getInstance().getAugStatsById(augmentationId);
+			int[] stats = new int[2];
+			stats[0] = 0x0000FFFF & augmentationId;
+			stats[1] = (augmentationId >> 16);
 			
-			_stats = new Stats[as.size()];
-			_values = new float[as.size()];
-			
-			int i = 0;
-			for (AugmentationData.AugStat aStat : as)
+			for (int stat : stats)
 			{
-				_stats[i] = aStat.getStat();
-				_values[i] = aStat.getValue();
-				i++;
+				Options op = OptionsData.getInstance().getOptions(stat);
+				if (op != null)
+				{
+					_options.add(op);
+				}
+				else
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't find option: " + stat);
+				}
 			}
 		}
 		
@@ -83,9 +74,9 @@ public final class L2Augmentation
 				return;
 			}
 			
-			for (int i = 0; i < _stats.length; i++)
+			for (Options op : _options)
 			{
-				player.addStatFunc(new FuncAdd(_stats[i], 0x40, this, new LambdaConst(_values[i])));
+				op.apply(player);
 			}
 			
 			_active = true;
@@ -98,7 +89,11 @@ public final class L2Augmentation
 			{
 				return;
 			}
-			player.removeStatsOwner(this);
+			
+			for (Options op : _options)
+			{
+				op.remove(player);
+			}
 			
 			_active = false;
 		}
@@ -118,39 +113,13 @@ public final class L2Augmentation
 		return _effectsId;
 	}
 	
-	public L2Skill getSkill()
-	{
-		return _skill;
-	}
-	
 	/**
 	 * Applies the bonuses to the player.
 	 * @param player
 	 */
 	public void applyBonus(L2PcInstance player)
 	{
-		boolean updateTimeStamp = false;
 		_boni.applyBonus(player);
-		
-		// add the skill if any
-		if (_skill != null)
-		{
-			player.addSkill(_skill);
-			if (_skill.isActive())
-			{
-				final long delay = player.getSkillRemainingReuseTime(_skill.getReuseHashCode());
-				if (delay > 0)
-				{
-					player.disableSkill(_skill, delay);
-					updateTimeStamp = true;
-				}
-			}
-			player.sendSkillList();
-			if (updateTimeStamp)
-			{
-				player.sendPacket(new SkillCoolTime(player));
-			}
-		}
 	}
 	
 	/**
@@ -160,20 +129,5 @@ public final class L2Augmentation
 	public void removeBonus(L2PcInstance player)
 	{
 		_boni.removeBonus(player);
-		
-		// remove the skill if any
-		if (_skill != null)
-		{
-			if (_skill.isPassive())
-			{
-				player.removeSkill(_skill, false, true);
-			}
-			else
-			{
-				player.removeSkill(_skill, false, false);
-			}
-			
-			player.sendSkillList();
-		}
 	}
 }

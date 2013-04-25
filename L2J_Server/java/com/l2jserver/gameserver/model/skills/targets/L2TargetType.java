@@ -23,7 +23,6 @@ package com.l2jserver.gameserver.model.skills.targets;
  */
 public enum L2TargetType
 {
-	ALLY,
 	AREA,
 	AREA_CORPSE_MOB,
 	AREA_FRIENDLY,
@@ -36,7 +35,6 @@ public enum L2TargetType
 	CLAN,
 	CLAN_MEMBER,
 	CORPSE,
-	CORPSE_ALLY,
 	CORPSE_CLAN,
 	CORPSE_MOB,
 	CORPSE_PET,

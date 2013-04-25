@@ -16,29 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.conditions;
-
-import com.l2jserver.gameserver.model.stats.Env;
+package com.l2jserver.gameserver.model.options;
 
 /**
- * The Class ConditionPlayerSouls.
+ * @author UnAfraid
  */
-public class ConditionPlayerSouls extends Condition
+public enum OptionsSkillType
 {
-	private final int _souls;
-	
-	/**
-	 * Instantiates a new condition player souls.
-	 * @param souls the souls
-	 */
-	public ConditionPlayerSouls(int souls)
-	{
-		_souls = souls;
-	}
-	
-	@Override
-	public boolean testImpl(Env env)
-	{
-		return (env.getPlayer() != null) && (env.getPlayer().getChargedSouls() >= _souls);
-	}
+	ATTACK,
+	MAGIC,
+	CRITICAL
 }

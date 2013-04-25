@@ -25,6 +25,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -40,12 +42,12 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.EnchantOptionsData;
 import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.datatables.OptionsData;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.instancemanager.MercTicketManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.DropProtection;
 import com.l2jserver.gameserver.model.Elementals;
-import com.l2jserver.gameserver.model.EnchantOptions;
 import com.l2jserver.gameserver.model.L2Augmentation;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
@@ -63,6 +65,8 @@ import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.model.items.type.L2ItemType;
+import com.l2jserver.gameserver.model.options.EnchantOptions;
+import com.l2jserver.gameserver.model.options.Options;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.quest.State;
@@ -185,6 +189,8 @@ public final class L2ItemInstance extends L2Object
 	private final DropProtection _dropProtection = new DropProtection();
 	
 	private int _shotsMask = 0;
+	
+	private final List<Options> _enchantOptions = new ArrayList<>();
 	
 	/**
 	 * Constructor of the L2ItemInstance from the objectId and the itemId.
@@ -898,7 +904,9 @@ public final class L2ItemInstance extends L2Object
 		{
 			return;
 		}
+		clearEnchantStats();
 		_enchantLevel = enchantLevel;
+		applyEnchantStats();
 		_storedInDb = false;
 	}
 	
@@ -908,7 +916,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public boolean isAugmented()
 	{
-		return _augmentation == null ? false : true;
+		return _augmentation != null;
 	}
 	
 	/**
@@ -930,6 +938,7 @@ public final class L2ItemInstance extends L2Object
 		// there shall be no previous augmentation..
 		if (_augmentation != null)
 		{
+			_log.info("Warning: Augment set for (" + getObjectId() + ") " + getName() + " owner: " + getOwnerId());
 			return false;
 		}
 		if (!fireAugmentListeners(true, augmentation))
@@ -978,7 +987,7 @@ public final class L2ItemInstance extends L2Object
 	public void restoreAttributes()
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement ps1 = con.prepareStatement("SELECT augAttributes,augSkillId,augSkillLevel FROM item_attributes WHERE itemId=?");
+			PreparedStatement ps1 = con.prepareStatement("SELECT augAttributes FROM item_attributes WHERE itemId=?");
 			PreparedStatement ps2 = con.prepareStatement("SELECT elemType,elemValue FROM item_elementals WHERE itemId=?"))
 		{
 			ps1.setInt(1, getObjectId());
@@ -987,11 +996,9 @@ public final class L2ItemInstance extends L2Object
 				if (rs.next())
 				{
 					int aug_attributes = rs.getInt(1);
-					int aug_skillId = rs.getInt(2);
-					int aug_skillLevel = rs.getInt(3);
-					if ((aug_attributes != -1) && (aug_skillId != -1) && (aug_skillLevel != -1))
+					if (aug_attributes != -1)
 					{
-						_augmentation = new L2Augmentation(rs.getInt("augAttributes"), rs.getInt("augSkillId"), rs.getInt("augSkillLevel"));
+						_augmentation = new L2Augmentation(rs.getInt("augAttributes"));
 					}
 				}
 			}
@@ -1018,29 +1025,10 @@ public final class L2ItemInstance extends L2Object
 	
 	private void updateItemAttributes(Connection con)
 	{
-		try (PreparedStatement ps = con.prepareStatement("REPLACE INTO item_attributes VALUES(?,?,?,?)"))
+		try (PreparedStatement ps = con.prepareStatement("REPLACE INTO item_attributes VALUES(?,?)"))
 		{
 			ps.setInt(1, getObjectId());
-			if (_augmentation == null)
-			{
-				ps.setInt(2, -1);
-				ps.setInt(3, -1);
-				ps.setInt(4, -1);
-			}
-			else
-			{
-				ps.setInt(2, _augmentation.getAttributes());
-				if (_augmentation.getSkill() == null)
-				{
-					ps.setInt(3, 0);
-					ps.setInt(4, 0);
-				}
-				else
-				{
-					ps.setInt(3, _augmentation.getSkill().getId());
-					ps.setInt(4, _augmentation.getSkill().getLevel());
-				}
-			}
+			ps.setInt(2, _augmentation != null ? _augmentation.getAttributes() : -1);
 			ps.executeUpdate();
 		}
 		catch (SQLException e)
@@ -2241,6 +2229,10 @@ public final class L2ItemInstance extends L2Object
 		_shotsMask = 0;
 	}
 	
+	/**
+	 * Returns enchant effect object for this item
+	 * @return enchanteffect
+	 */
 	public int[] getEnchantOptions()
 	{
 		EnchantOptions op = EnchantOptionsData.getInstance().getOptions(this);
@@ -2249,6 +2241,51 @@ public final class L2ItemInstance extends L2Object
 			return op.getOptions();
 		}
 		return DEFAULT_ENCHANT_OPTIONS;
+	}
+	
+	/**
+	 * Clears all the enchant bonuses if item is enchanted and containing bonuses for enchant value.
+	 */
+	public void clearEnchantStats()
+	{
+		final L2PcInstance player = getActingPlayer();
+		if (player == null)
+		{
+			_enchantOptions.clear();
+			return;
+		}
+		
+		for (Options op : _enchantOptions)
+		{
+			op.remove(player);
+		}
+		_enchantOptions.clear();
+	}
+	
+	/**
+	 * Clears and applies all the enchant bonuses if item is enchanted and containing bonuses for enchant value.
+	 */
+	public void applyEnchantStats()
+	{
+		final L2PcInstance player = getActingPlayer();
+		if (!isEquipped() || (player == null) || (getEnchantOptions() == DEFAULT_ENCHANT_OPTIONS))
+		{
+			return;
+		}
+		
+		for (int id : getEnchantOptions())
+		{
+			final Options options = OptionsData.getInstance().getOptions(id);
+			if (options != null)
+			{
+				options.apply(player);
+				_enchantOptions.add(options);
+			}
+			else if (id != 0)
+			{
+				_log.log(Level.INFO, "applyEnchantStats: Couldn't find option: " + id);
+			}
+		}
 	}
 	
 	// LISTENERS

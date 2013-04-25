@@ -38,6 +38,7 @@ import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.L2Spawn;
+import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Summon;
@@ -490,7 +491,7 @@ public class TvTEvent
 		{
 			teamId = (byte) (_teams[0].getParticipatedPlayerCount() > _teams[1].getParticipatedPlayerCount() ? 1 : 0);
 		}
-		
+		playerInstance.addEventListener(new TvTEventListener(playerInstance));
 		return _teams[teamId].addPlayer(playerInstance);
 	}
 	
@@ -512,6 +513,13 @@ public class TvTEvent
 		{
 			// Remove the player from team
 			_teams[teamId].removePlayer(playerObjectId);
+			
+			final L2PcInstance player = L2World.getInstance().getPlayer(playerObjectId);
+			if (player != null)
+			{
+				player.removeEventListener(TvTEventListener.class);
+			}
+			
 			return true;
 		}
 		

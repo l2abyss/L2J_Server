@@ -44,33 +44,33 @@ public class ConditionPetType extends Condition
 			return false;
 		}
 		
-		/*
-		 * if ((petType & L2Item.ANY_PET) == L2Item.ANY_PET) return true;
-		 */
-		
 		int npcid = ((L2Summon) env.getCharacter()).getNpcId();
 		
-		if (PetDataTable.isHatchling(npcid) && (petType == L2Item.HATCHLING))
+		if (PetDataTable.isStrider(npcid) && (petType == L2Item.STRIDER))
 		{
 			return true;
 		}
-		else if (PetDataTable.isWolf(npcid) && (petType == L2Item.WOLF))
+		else if (PetDataTable.isGrowUpWolfGroup(npcid) && (petType == L2Item.GROWN_UP_WOLF_GROUP))
 		{
 			return true;
 		}
-		else if (PetDataTable.isEvolvedWolf(npcid) && (petType == L2Item.GROWN_WOLF))
+		else if (PetDataTable.isHatchlingGroup(npcid) && (petType == L2Item.HATCHLING_GROUP))
 		{
 			return true;
 		}
-		else if (PetDataTable.isStrider(npcid) && (petType == L2Item.STRIDER))
+		else if (PetDataTable.isAllWolfGroup(npcid) && (petType == L2Item.ALL_WOLF_GROUP))
 		{
 			return true;
 		}
-		else if (PetDataTable.isBaby(npcid) && (petType == L2Item.BABY))
+		else if (PetDataTable.isBabyPetGroup(npcid) && (petType == L2Item.BABY_PET_GROUP))
 		{
 			return true;
 		}
-		else if (PetDataTable.isImprovedBaby(npcid) && (petType == L2Item.IMPROVED_BABY))
+		else if (PetDataTable.isUpgradeBabyPetGroup(npcid) && (petType == L2Item.UPGRADE_BABY_PET_GROUP))
+		{
+			return true;
+		}
+		else if (PetDataTable.isItemEquipPetGroup(npcid) && (petType == L2Item.ITEM_EQUIP_PET_GROUP))
 		{
 			return true;
 		}

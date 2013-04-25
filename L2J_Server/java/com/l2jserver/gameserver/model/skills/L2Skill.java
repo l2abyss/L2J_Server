@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +29,6 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
-import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.handler.ITargetTypeHandler;
@@ -56,19 +54,17 @@ import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
-import com.l2jserver.gameserver.model.items.L2Armor;
-import com.l2jserver.gameserver.model.items.type.L2ArmorType;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.stats.BaseStats;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Formulas;
-import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
+import com.l2jserver.util.Rnd;
 
 public abstract class L2Skill implements IChanceSkillTrigger
 {
@@ -185,14 +181,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final byte _element;
 	private final int _elementPower;
 	
-	private final Stats _stat;
 	private final BaseStats _saveVs;
 	
 	private final int _condition;
 	private final int _conditionValue;
 	private final boolean _overhit;
-	private final int _weaponsAllowed;
-	private final int _armorsAllowed;
 	
 	private final int _minPledgeClass;
 	private final boolean _isOffensive;
@@ -217,8 +210,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final boolean _isSevenSigns;
 	
 	private final int _baseCritRate; // percent of success for skill critical hit (especially for PDAM & BLOW - they're not affected by rCrit values or buffs). Default loads -1 for all other skills but 0 to PDAM & BLOW
-	private final int _lethalEffect1; // percent of success for lethal 1st effect (hit cp to 1 or if mob hp to 50%) (only for PDAM skills)
-	private final int _lethalEffect2; // percent of success for lethal 2nd effect (hit cp,hp to 1 or if mob hp to 1) (only for PDAM skills)
+	private final int _halfKillRate;
+	private final int _lethalStrikeRate;
 	private final boolean _directHpDmg; // If true then dmg is being make directly
 	private final boolean _isTriggeredSkill; // If true the skill will take activation buff slot instead of a normal buff slot
 	private final float _sSBoost; // If true skill will have SoulShot boost (power*2)
@@ -253,8 +246,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final boolean _simultaneousCast;
 	
 	private L2ExtractableSkill _extractableItems = null;
-	
-	private final int _maxTargets;
 	
 	private int _npcId = 0;
 	
@@ -395,7 +386,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_lvlBonusRate = set.getInteger("lvlBonusRate", 0);
 		_minChance = set.getInteger("minChance", Config.MIN_ABNORMAL_STATE_SUCCESS_RATE);
 		_maxChance = set.getInteger("maxChance", Config.MAX_ABNORMAL_STATE_SUCCESS_RATE);
-		_stat = set.getEnum("stat", Stats.class, null);
 		_ignoreShield = set.getBool("ignoreShld", false);
 		_skillType = set.getEnum("skillType", L2SkillType.class, L2SkillType.DUMMY);
 		_effectType = set.getEnum("effectType", L2SkillType.class, null);
@@ -416,39 +406,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_conditionValue = set.getInteger("conditionValue", 0);
 		_overhit = set.getBool("overHit", false);
 		_isSuicideAttack = set.getBool("isSuicideAttack", false);
-		
-		String weaponsAllowedString = set.getString("weaponsAllowed", null);
-		if ((weaponsAllowedString != null) && !weaponsAllowedString.trim().isEmpty())
-		{
-			int mask = 0;
-			StringTokenizer st = new StringTokenizer(weaponsAllowedString, ",");
-			while (st.hasMoreTokens())
-			{
-				int old = mask;
-				String item = st.nextToken().trim();
-				if (ItemTable._weaponTypes.containsKey(item))
-				{
-					mask |= ItemTable._weaponTypes.get(item).mask();
-				}
-				
-				if (ItemTable._armorTypes.containsKey(item))
-				{
-					mask |= ItemTable._armorTypes.get(item).mask();
-				}
-				
-				if (old == mask)
-				{
-					_log.info("[weaponsAllowed] Unknown item type name: " + item);
-				}
-			}
-			_weaponsAllowed = mask;
-		}
-		else
-		{
-			_weaponsAllowed = 0;
-		}
-		
-		_armorsAllowed = set.getInteger("armorsAllowed", 0);
 		
 		_minPledgeClass = set.getInteger("minPledgeClass", 0);
 		_isOffensive = set.getBool("offensive", false);
@@ -477,8 +434,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_isClanSkill = SkillTreesData.getInstance().isClanSkill(_id, _level);
 		
 		_baseCritRate = set.getInteger("baseCritRate", ((_skillType == L2SkillType.PDAM) || (_skillType == L2SkillType.BLOW)) ? 0 : -1);
-		_lethalEffect1 = set.getInteger("lethal1", 0);
-		_lethalEffect2 = set.getInteger("lethal2", 0);
+		_halfKillRate = set.getInteger("halfKillRate", 0);
+		_lethalStrikeRate = set.getInteger("lethalStrikeRate", 0);
 		
 		_directHpDmg = set.getBool("dmgDirectlyToHp", false);
 		_isTriggeredSkill = set.getBool("isTriggeredSkill", false);
@@ -506,16 +463,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			
 			_extractableItems = parseExtractableSkill(_id, _level, capsuled_items);
 		}
-		_maxTargets = set.getInteger("maxTargets", -1);
 		_npcId = set.getInteger("npcId", 0);
 	}
 	
 	public abstract void useSkill(L2Character caster, L2Object[] targets);
-	
-	public final int getArmorsAllowed()
-	{
-		return _armorsAllowed;
-	}
 	
 	public final int getConditionValue()
 	{
@@ -813,15 +764,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	}
 	
 	/**
-	 * Return the skill type (ex : BLEED, SLEEP, WATER...).
-	 * @return
-	 */
-	public final Stats getStat()
-	{
-		return _stat;
-	}
-	
-	/**
 	 * Return skill saveVs base stat (STR, INT ...).
 	 * @return
 	 */
@@ -977,9 +919,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _affectRange;
 	}
 	
-	public final int[] getAffectLimit()
+	public final int getAffectLimit()
 	{
-		return _affectLimit;
+		return (_affectLimit[0] + Rnd.get(_affectLimit[1]));
 	}
 	
 	public final boolean isActive()
@@ -1038,11 +980,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final boolean useFishShot()
 	{
 		return ((getSkillType() == L2SkillType.PUMPING) || (getSkillType() == L2SkillType.REELING));
-	}
-	
-	public final int getWeaponsAllowed()
-	{
-		return _weaponsAllowed;
 	}
 	
 	public int getMinPledgeClass()
@@ -1115,14 +1052,14 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _baseCritRate;
 	}
 	
-	public final int getLethalChance1()
+	public final int getHalfKillRate()
 	{
-		return _lethalEffect1;
+		return _halfKillRate;
 	}
 	
-	public final int getLethalChance2()
+	public final int getLethalStrikeRate()
 	{
-		return _lethalEffect2;
+		return _lethalStrikeRate;
 	}
 	
 	public final boolean getDmgDirectlyToHP()
@@ -1153,47 +1090,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final boolean isStayOnSubclassChange()
 	{
 		return _stayOnSubclassChange;
-	}
-	
-	public final boolean getWeaponDependancy(L2Character activeChar)
-	{
-		if (getWeaponDependancy(activeChar, false))
-		{
-			return true;
-		}
-		
-		final SystemMessage message = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-		message.addSkillName(this);
-		activeChar.sendPacket(message);
-		return false;
-	}
-	
-	public final boolean getWeaponDependancy(L2Character activeChar, boolean chance)
-	{
-		int weaponsAllowed = getWeaponsAllowed();
-		// check to see if skill has a weapon dependency.
-		if (weaponsAllowed == 0)
-		{
-			return true;
-		}
-		
-		int mask = 0;
-		
-		if (activeChar.getActiveWeaponItem() != null)
-		{
-			mask |= activeChar.getActiveWeaponItem().getItemType().mask();
-		}
-		if ((activeChar.getSecondaryWeaponItem() != null) && (activeChar.getSecondaryWeaponItem() instanceof L2Armor))
-		{
-			mask |= ((L2ArmorType) activeChar.getSecondaryWeaponItem().getItemType()).mask();
-		}
-		
-		if ((mask & weaponsAllowed) != 0)
-		{
-			return true;
-		}
-		
-		return false;
 	}
 	
 	public boolean checkCondition(L2Character activeChar, L2Object target, boolean itemOrWeapon)
@@ -2000,11 +1896,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public L2ExtractableSkill getExtractableSkill()
 	{
 		return _extractableItems;
-	}
-	
-	public int getMaxTargets()
-	{
-		return _maxTargets;
 	}
 	
 	/**

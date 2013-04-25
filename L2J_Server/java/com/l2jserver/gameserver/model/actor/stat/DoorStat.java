@@ -16,32 +16,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.conditions;
+package com.l2jserver.gameserver.model.actor.stat;
 
-import com.l2jserver.gameserver.model.stats.Env;
-import com.l2jserver.gameserver.model.stats.Stats;
+import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 
 /**
- * The Class ConditionSkillStats.
- * @author mkizub
+ * @author malyelfik
  */
-public class ConditionSkillStats extends Condition
+public class DoorStat extends CharStat
 {
-	private final Stats _stat;
+	private int _upgradeHpRatio = 1;
 	
-	/**
-	 * Instantiates a new condition skill stats.
-	 * @param stat the stat
-	 */
-	public ConditionSkillStats(Stats stat)
+	public DoorStat(L2DoorInstance activeChar)
 	{
-		super();
-		_stat = stat;
+		super(activeChar);
 	}
 	
 	@Override
-	public boolean testImpl(Env env)
+	public L2DoorInstance getActiveChar()
 	{
-		return (env.getSkill() != null) && (env.getSkill().getStat() == _stat);
+		return (L2DoorInstance) super.getActiveChar();
+	}
+	
+	@Override
+	public int getMaxHp()
+	{
+		return super.getMaxHp() * _upgradeHpRatio;
+	}
+	
+	public void setUpgradeHpRatio(int ratio)
+	{
+		_upgradeHpRatio = ratio;
+	}
+	
+	public int getUpgradeHpRatio()
+	{
+		return _upgradeHpRatio;
 	}
 }

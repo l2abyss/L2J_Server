@@ -27,7 +27,6 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.BlockCheckerEngine;
-import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.olympiad.OlympiadManager;
 import com.l2jserver.gameserver.model.zone.ZoneId;
@@ -165,7 +164,7 @@ public final class HandysBlockCheckerManager
 				return false;
 			}
 			
-			if (TvTEvent.isPlayerParticipant(player.getObjectId()) || player.isInOlympiadMode())
+			if (player.isOnEvent() || player.isInOlympiadMode())
 			{
 				player.sendMessage("Couldnt register you due other event participation");
 				return false;

@@ -78,14 +78,13 @@ public abstract class L2Item
 	public static final int TYPE2_MONEY = 4;
 	public static final int TYPE2_OTHER = 5;
 	
-	public static final int WOLF = 0x1;
-	public static final int HATCHLING = 0x2;
-	public static final int STRIDER = 0x4;
-	public static final int BABY = 0x8;
-	public static final int IMPROVED_BABY = 0x10;
-	public static final int GROWN_WOLF = 0x20;
-	public static final int ALL_WOLF = 0x21;
-	public static final int ALL_PET = 0x3F;
+	public static final int STRIDER = 0x1;
+	public static final int GROWN_UP_WOLF_GROUP = 0x2;
+	public static final int HATCHLING_GROUP = 0x4;
+	public static final int ALL_WOLF_GROUP = 0x8;
+	public static final int BABY_PET_GROUP = 0x16;
+	public static final int UPGRADE_BABY_PET_GROUP = 0x32;
+	public static final int ITEM_EQUIP_PET_GROUP = 0x64;
 	
 	public static final int SLOT_NONE = 0x0000;
 	public static final int SLOT_UNDERWEAR = 0x0001;
@@ -288,39 +287,39 @@ public abstract class L2Item
 		_reuseDelay = set.getInteger("reuse_delay", 0);
 		_sharedReuseGroup = set.getInteger("shared_reuse_group", 0);
 		
-		// TODO cleanup + finish
+		// TODO: This should be done with proper conditions and a categoryData.xml file.
 		String equip_condition = set.getString("equip_condition", null);
 		if (equip_condition != null)
 		{
 			// pet conditions
 			ConditionLogicOr cond = new ConditionLogicOr();
-			if (equip_condition.contains("all_wolf_group"))
-			{
-				cond.add(new ConditionPetType(ALL_WOLF));
-			}
-			if (equip_condition.contains("hatchling_group"))
-			{
-				cond.add(new ConditionPetType(HATCHLING));
-			}
 			if (equip_condition.contains("strider"))
 			{
 				cond.add(new ConditionPetType(STRIDER));
 			}
+			if (equip_condition.contains("grown_up_wolf_group"))
+			{
+				cond.add(new ConditionPetType(GROWN_UP_WOLF_GROUP));
+			}
+			if (equip_condition.contains("hatchling_group"))
+			{
+				cond.add(new ConditionPetType(HATCHLING_GROUP));
+			}
+			if (equip_condition.contains("all_wolf_group"))
+			{
+				cond.add(new ConditionPetType(ALL_WOLF_GROUP));
+			}
 			if (equip_condition.contains("baby_pet_group"))
 			{
-				cond.add(new ConditionPetType(BABY));
+				cond.add(new ConditionPetType(BABY_PET_GROUP));
 			}
 			if (equip_condition.contains("upgrade_baby_pet_group"))
 			{
-				cond.add(new ConditionPetType(IMPROVED_BABY));
-			}
-			if (equip_condition.contains("grown_up_wolf_group"))
-			{
-				cond.add(new ConditionPetType(GROWN_WOLF));
+				cond.add(new ConditionPetType(UPGRADE_BABY_PET_GROUP));
 			}
 			if (equip_condition.contains("item_equip_pet_group"))
 			{
-				cond.add(new ConditionPetType(ALL_PET));
+				cond.add(new ConditionPetType(ITEM_EQUIP_PET_GROUP));
 			}
 			
 			if (cond.conditions.length > 0)
@@ -797,7 +796,7 @@ public abstract class L2Item
 	 * @param player : L2Character pointing out the player
 	 * @return Func[] : array of functions
 	 */
-	public Func[] getStatFuncs(L2ItemInstance item, L2Character player)
+	public final Func[] getStatFuncs(L2ItemInstance item, L2Character player)
 	{
 		if ((_funcTemplates == null) || (_funcTemplates.length == 0))
 		{
@@ -814,7 +813,7 @@ public abstract class L2Item
 		Func f;
 		for (FuncTemplate t : _funcTemplates)
 		{
-			f = t.getFunc(env, this); // skill is owner
+			f = t.getFunc(env, item);
 			if (f != null)
 			{
 				funcs.add(f);
@@ -1161,5 +1160,10 @@ public abstract class L2Item
 	public boolean isPetItem()
 	{
 		return getItemType() == L2EtcItemType.PET_COLLAR;
+	}
+	
+	public L2Skill getEnchant4Skill()
+	{
+		return null;
 	}
 }

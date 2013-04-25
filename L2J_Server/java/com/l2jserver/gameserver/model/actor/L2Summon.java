@@ -728,7 +728,7 @@ public abstract class L2Summon extends L2Playable
 				}
 				
 				// Check if a Forced attack is in progress on non-attackable target
-				if (!target.isAutoAttackable(this) && !forceUse && !target.isNpc() && (skill.getTargetType() != L2TargetType.AURA) && (skill.getTargetType() != L2TargetType.FRONT_AURA) && (skill.getTargetType() != L2TargetType.BEHIND_AURA) && (skill.getTargetType() != L2TargetType.CLAN) && (skill.getTargetType() != L2TargetType.ALLY) && (skill.getTargetType() != L2TargetType.PARTY) && (skill.getTargetType() != L2TargetType.SELF))
+				if (!target.isAutoAttackable(this) && !forceUse && !target.isNpc() && (skill.getTargetType() != L2TargetType.AURA) && (skill.getTargetType() != L2TargetType.FRONT_AURA) && (skill.getTargetType() != L2TargetType.BEHIND_AURA) && (skill.getTargetType() != L2TargetType.CLAN) && (skill.getTargetType() != L2TargetType.PARTY) && (skill.getTargetType() != L2TargetType.SELF))
 				{
 					return false;
 				}
@@ -1197,5 +1197,17 @@ public abstract class L2Summon extends L2Playable
 				getOwner().removeAutoSoulShot(itemId);
 			}
 		}
+	}
+	
+	@Override
+	public int getClanId()
+	{
+		return (getOwner() != null) ? getOwner().getClanId() : 0;
+	}
+	
+	@Override
+	public int getAllyId()
+	{
+		return (getOwner() != null) ? getOwner().getAllyId() : 0;
 	}
 }

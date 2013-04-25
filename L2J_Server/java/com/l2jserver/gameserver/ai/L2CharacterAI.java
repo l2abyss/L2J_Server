@@ -1289,11 +1289,6 @@ public class L2CharacterAI extends AbstractAI
 				boolean hasLongRangeDamageSkill = false;
 				switch (sk.getSkillType())
 				{
-					case HEAL:
-					case HEAL_PERCENT:
-						healSkills.add(sk);
-						hasHealOrResurrect = true;
-						continue; // won't be considered something for fighting
 					case BUFF:
 						buffSkills.add(sk);
 						continue; // won't be considered something for fighting
@@ -1342,6 +1337,11 @@ public class L2CharacterAI extends AbstractAI
 						if (sk.hasEffectType(L2EffectType.CANCEL, L2EffectType.CANCEL_ALL, L2EffectType.NEGATE))
 						{
 							cancelSkills.add(sk);
+						}
+						else if (sk.hasEffectType(L2EffectType.HEAL, L2EffectType.HEAL_PERCENT))
+						{
+							healSkills.add(sk);
+							hasHealOrResurrect = true;
 						}
 						else
 						{

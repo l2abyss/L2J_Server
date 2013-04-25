@@ -65,11 +65,6 @@ public enum L2SkillType
 	MUTE,
 	PARALYZE,
 	DISARM,
-	// hp, mp, cp
-	HEAL,
-	HEAL_PERCENT,
-	MANAHEAL_BY_LEVEL,
-	MANAHEAL_PERCENT,
 	// reco
 	GIVE_RECO,
 	// vitality
@@ -130,7 +125,6 @@ public enum L2SkillType
 	BEAST_RELEASE_ALL,
 	BEAST_SKILL,
 	BEAST_ACCOMPANY,
-	CHARGESOUL,
 	TRANSFORMDISPEL,
 	SUMMON_TRAP(L2SkillTrap.class),
 	DETECT_TRAP,

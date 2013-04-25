@@ -152,25 +152,39 @@ public class Quest extends ManagedScript
 		ITEMSOUND_QUEST_FANFARE_1(new PlaySound("ItemSound.quest_fanfare_1")),
 		// Played only after class transfer via Test Server Helpers (Id 31756 and 31757)
 		ITEMSOUND_QUEST_FANFARE_2(new PlaySound("ItemSound.quest_fanfare_2")),
-		// Quests 336
+		// Quest 336
 		ITEMSOUND_QUEST_FANFARE_MIDDLE(new PlaySound("ItemSound.quest_fanfare_middle")),
 		// Quest 114
 		ITEMSOUND_ARMOR_WOOD(new PlaySound("ItemSound.armor_wood_3")),
 		// Quest 21
 		ITEMSOUND_ARMOR_CLOTH(new PlaySound("ItemSound.item_drop_equip_armor_cloth")),
-		ITEMSOUND_ED_CHIMES(new PlaySound("AmdSound.ed_chimes_05")),
+		AMDSOUND_ED_CHIMES(new PlaySound("AmdSound.ed_chimes_05")),
+		HORROR_01(new PlaySound("horror_01")), // played when spawned monster sees player
 		// Quest 22
-		ITEMSOUND_D_HORROR_03(new PlaySound("AmbSound.d_horror_03")),
-		ITEMSOUND_D_HORROR_15(new PlaySound("AmbSound.d_horror_15")),
-		ITEMSOUND_DD_HORROR_01(new PlaySound("AmbSound.dd_horror_01")),
-		// Quest 120
-		ITEMSOUND_ED_DRONE_02(new PlaySound("AmbSound.ed_drone_02")),
+		AMBSOUND_HORROR_01(new PlaySound("AmbSound.dd_horror_01")),
+		AMBSOUND_HORROR_03(new PlaySound("AmbSound.d_horror_03")),
+		AMBSOUND_HORROR_15(new PlaySound("AmbSound.d_horror_15")),
 		// Quest 23
 		ITEMSOUND_ARMOR_LEATHER(new PlaySound("ItemSound.itemdrop_armor_leather")),
 		ITEMSOUND_WEAPON_SPEAR(new PlaySound("ItemSound.itemdrop_weapon_spear")),
+		AMBSOUND_MT_CREAK(new PlaySound("AmbSound.mt_creak01")),
+		AMBSOUND_EG_DRON(new PlaySound("AmbSound.eg_dron_02")),
+		SKILLSOUND_HORROR_02(new PlaySound("SkillSound5.horror_02")),
+		CHRSOUND_MHFIGHTER_CRY(new PlaySound("ChrSound.MHFighter_cry")),
 		// Quest 24
-		AMDSOUND_D_WIND_LOOT_02(new PlaySound("AmdSound.d_wind_loot_02")),
-		INTERFACESOUND_CHARSTAT_OPEN_01(new PlaySound("InterfaceSound.charstat_open_01")),
+		AMDSOUND_WIND_LOOT(new PlaySound("AmdSound.d_wind_loot_02")),
+		INTERFACESOUND_CHARSTAT_OPEN(new PlaySound("InterfaceSound.charstat_open_01")),
+		// Quest 25
+		AMDSOUND_HORROR_02(new PlaySound("AmdSound.dd_horror_02")),
+		CHRSOUND_FDELF_CRY(new PlaySound("ChrSound.FDElf_Cry")),
+		// Quest 115
+		AMBSOUND_WINGFLAP(new PlaySound("AmbSound.t_wingflap_04")),
+		AMBSOUND_THUNDER(new PlaySound("AmbSound.thunder_02")),
+		// Quest 120
+		AMBSOUND_DRONE(new PlaySound("AmbSound.ed_drone_02")),
+		AMBSOUND_CRYSTAL_LOOP(new PlaySound("AmbSound.cd_crystal_loop")),
+		AMBSOUND_PERCUSSION_01(new PlaySound("AmbSound.dt_percussion_01")),
+		AMBSOUND_PERCUSSION_02(new PlaySound("AmbSound.ac_percussion_02")),
 		// Quest 648 and treasure chests
 		ITEMSOUND_BROKEN_KEY(new PlaySound("ItemSound2.broken_key")),
 		// Quest 184
@@ -192,16 +206,23 @@ public class Quest extends ManagedScript
 		SKILLSOUND_LIQUID_MIX(new PlaySound("SkillSound5.liquid_mix_01")),
 		SKILLSOUND_LIQUID_SUCCESS(new PlaySound("SkillSound5.liquid_success_01")),
 		SKILLSOUND_LIQUID_FAIL(new PlaySound("SkillSound5.liquid_fail_01")),
-		// Elroki sounds - Quest 111
-		ETCSOUND_ELROKI_SOUND_FULL(new PlaySound("EtcSound.elcroki_song_full")),
-		ETCSOUND_ELROKI_SOUND_1ST(new PlaySound("EtcSound.elcroki_song_1st")),
-		ETCSOUND_ELROKI_SOUND_2ND(new PlaySound("EtcSound.elcroki_song_2nd")),
-		ETCSOUND_ELROKI_SOUND_3RD(new PlaySound("EtcSound.elcroki_song_3rd")),
-		// PailakaInjuredDragon
+		// Quest 111
+		ETCSOUND_ELROKI_SONG_FULL(new PlaySound("EtcSound.elcroki_song_full")),
+		ETCSOUND_ELROKI_SONG_1ST(new PlaySound("EtcSound.elcroki_song_1st")),
+		ETCSOUND_ELROKI_SONG_2ND(new PlaySound("EtcSound.elcroki_song_2nd")),
+		ETCSOUND_ELROKI_SONG_3RD(new PlaySound("EtcSound.elcroki_song_3rd")),
+		// Long duration AI sounds
+		BS01_A(new PlaySound("BS01_A")),
+		BS02_A(new PlaySound("BS02_A")),
+		BS03_A(new PlaySound("BS03_A")),
+		BS04_A(new PlaySound("BS04_A")),
+		BS06_A(new PlaySound("BS06_A")),
+		BS07_A(new PlaySound("BS07_A")),
 		BS08_A(new PlaySound("BS08_A")),
-		// Quest 115
-		AMBSOUND_T_WINGFLAP_04(new PlaySound("AmbSound.t_wingflap_04")),
-		AMBSOUND_THUNDER_02(new PlaySound("AmbSound.thunder_02"));
+		BS01_D(new PlaySound("BS01_D")),
+		BS02_D(new PlaySound("BS02_D")),
+		BS05_D(new PlaySound("BS05_D")),
+		BS07_D(new PlaySound("BS07_D"));
 		
 		private final PlaySound _playSound;
 		
@@ -1892,25 +1913,48 @@ public class Quest extends ManagedScript
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for the specified Event type.
 	 * @param eventType type of event being registered
-	 * @param npcIds NPC Ids to register
+	 * @param npcId NPC Id to register
 	 */
-	public void addEventId(QuestEventType eventType, int... npcIds)
+	public void addEventId(QuestEventType eventType, int npcId)
 	{
 		try
 		{
-			for (int npcId : npcIds)
+			final L2NpcTemplate t = NpcTable.getInstance().getTemplate(npcId);
+			if (t != null)
 			{
-				final L2NpcTemplate t = NpcTable.getInstance().getTemplate(npcId);
-				if (t != null)
-				{
-					t.addQuestEvent(eventType, this);
-					_questInvolvedNpcs.add(npcId);
-				}
+				t.addQuestEvent(eventType, this);
+				_questInvolvedNpcs.add(npcId);
 			}
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Exception on addEventId(): " + e.getMessage(), e);
+		}
+	}
+	
+	/**
+	 * Add this quest to the list of quests that the passed mob will respond to for the specified Event type.
+	 * @param eventType type of event being registered
+	 * @param npcIds NPC Ids to register
+	 */
+	public void addEventId(QuestEventType eventType, int... npcIds)
+	{
+		for (int npcId : npcIds)
+		{
+			addEventId(eventType, npcId);
+		}
+	}
+	
+	/**
+	 * Add this quest to the list of quests that the passed mob will respond to for the specified Event type.
+	 * @param eventType type of event being registered
+	 * @param npcIds NPC Ids to register
+	 */
+	public void addEventId(QuestEventType eventType, Collection<Integer> npcIds)
+	{
+		for (int npcId : npcIds)
+		{
+			addEventId(eventType, npcId);
 		}
 	}
 	
@@ -1950,10 +1994,28 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Add the quest to the NPC's startQuest
+	 * @param npcIds
+	 */
+	public void addStartNpc(Collection<Integer> npcIds)
+	{
+		addEventId(QuestEventType.QUEST_START, npcIds);
+	}
+	
+	/**
 	 * Add the quest to the NPC's first-talk (default action dialog)
 	 * @param npcIds
 	 */
 	public void addFirstTalkId(int... npcIds)
+	{
+		addEventId(QuestEventType.ON_FIRST_TALK, npcIds);
+	}
+	
+	/**
+	 * Add the quest to the NPC's first-talk (default action dialog)
+	 * @param npcIds
+	 */
+	public void addFirstTalkId(Collection<Integer> npcIds)
 	{
 		addEventId(QuestEventType.ON_FIRST_TALK, npcIds);
 	}
@@ -1968,10 +2030,28 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Add the NPC to the AcquireSkill dialog
+	 * @param npcIds
+	 */
+	public void addAcquireSkillId(Collection<Integer> npcIds)
+	{
+		addEventId(QuestEventType.ON_SKILL_LEARN, npcIds);
+	}
+	
+	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for Attack Events.
 	 * @param npcIds
 	 */
 	public void addAttackId(int... npcIds)
+	{
+		addEventId(QuestEventType.ON_ATTACK, npcIds);
+	}
+	
+	/**
+	 * Add this quest to the list of quests that the passed mob will respond to for Attack Events.
+	 * @param npcIds
+	 */
+	public void addAttackId(Collection<Integer> npcIds)
 	{
 		addEventId(QuestEventType.ON_ATTACK, npcIds);
 	}
@@ -1991,10 +2071,7 @@ public class Quest extends ManagedScript
 	 */
 	public void addKillId(Collection<Integer> killIds)
 	{
-		for (int killId : killIds)
-		{
-			addEventId(QuestEventType.ON_KILL, killId);
-		}
+		addEventId(QuestEventType.ON_KILL, killIds);
 	}
 	
 	/**
@@ -2002,6 +2079,11 @@ public class Quest extends ManagedScript
 	 * @param npcIds Id of the NPC
 	 */
 	public void addTalkId(int... npcIds)
+	{
+		addEventId(QuestEventType.ON_TALK, npcIds);
+	}
+	
+	public void addTalkId(Collection<Integer> npcIds)
 	{
 		addEventId(QuestEventType.ON_TALK, npcIds);
 	}
@@ -2016,10 +2098,28 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Add this quest to the list of quests that the passed npc will respond to for Spawn Events.
+	 * @param npcIds Id of the NPC
+	 */
+	public void addSpawnId(Collection<Integer> npcIds)
+	{
+		addEventId(QuestEventType.ON_SPAWN, npcIds);
+	}
+	
+	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Skill-See Events.
 	 * @param npcIds Id of the NPC
 	 */
 	public void addSkillSeeId(int... npcIds)
+	{
+		addEventId(QuestEventType.ON_SKILL_SEE, npcIds);
+	}
+	
+	/**
+	 * Add this quest to the list of quests that the passed npc will respond to for Skill-See Events.
+	 * @param npcIds Id of the NPC
+	 */
+	public void addSkillSeeId(Collection<Integer> npcIds)
 	{
 		addEventId(QuestEventType.ON_SKILL_SEE, npcIds);
 	}
@@ -2035,7 +2135,23 @@ public class Quest extends ManagedScript
 	/**
 	 * @param npcIds
 	 */
+	public void addSpellFinishedId(Collection<Integer> npcIds)
+	{
+		addEventId(QuestEventType.ON_SPELL_FINISHED, npcIds);
+	}
+	
+	/**
+	 * @param npcIds
+	 */
 	public void addTrapActionId(int... npcIds)
+	{
+		addEventId(QuestEventType.ON_TRAP_ACTION, npcIds);
+	}
+	
+	/**
+	 * @param npcIds
+	 */
+	public void addTrapActionId(Collection<Integer> npcIds)
 	{
 		addEventId(QuestEventType.ON_TRAP_ACTION, npcIds);
 	}
@@ -2050,10 +2166,28 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Add this quest to the list of quests that the passed npc will respond to for Faction Call Events.
+	 * @param npcIds Id of the NPC
+	 */
+	public void addFactionCallId(Collection<Integer> npcIds)
+	{
+		addEventId(QuestEventType.ON_FACTION_CALL, npcIds);
+	}
+	
+	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Character See Events.
 	 * @param npcIds Id of the NPC
 	 */
 	public void addAggroRangeEnterId(int... npcIds)
+	{
+		addEventId(QuestEventType.ON_AGGRO_RANGE_ENTER, npcIds);
+	}
+	
+	/**
+	 * Add this quest to the list of quests that the passed npc will respond to for Character See Events.
+	 * @param npcIds Id of the NPC
+	 */
+	public void addAggroRangeEnterId(Collection<Integer> npcIds)
 	{
 		addEventId(QuestEventType.ON_AGGRO_RANGE_ENTER, npcIds);
 	}
@@ -2067,80 +2201,84 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @param zoneIds
-	 * @return
+	 * @param npcIds NPC Ids to register to on see creature event
 	 */
-	public L2ZoneType[] addEnterZoneId(int... zoneIds)
+	public void addSeeCreatureId(Collection<Integer> npcIds)
 	{
-		L2ZoneType[] value = new L2ZoneType[zoneIds.length];
-		int i = 0;
-		for (int zoneId : zoneIds)
-		{
-			try
-			{
-				L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
-				if (zone != null)
-				{
-					zone.addQuestEvent(QuestEventType.ON_ENTER_ZONE, this);
-				}
-				value[i++] = zone;
-			}
-			catch (Exception e)
-			{
-				_log.log(Level.WARNING, "Exception on addEnterZoneId(): " + e.getMessage(), e);
-				continue;
-			}
-		}
-		return value;
+		addEventId(QuestEventType.ON_SEE_CREATURE, npcIds);
 	}
 	
 	/**
-	 * @param zoneIds
-	 * @return
-	 */
-	public L2ZoneType[] addExitZoneId(int... zoneIds)
-	{
-		L2ZoneType[] value = new L2ZoneType[zoneIds.length];
-		int i = 0;
-		for (int zoneId : zoneIds)
-		{
-			try
-			{
-				L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
-				if (zone != null)
-				{
-					zone.addQuestEvent(QuestEventType.ON_EXIT_ZONE, this);
-				}
-				value[i++] = zone;
-			}
-			catch (Exception e)
-			{
-				_log.log(Level.WARNING, "Exception on addEnterZoneId(): " + e.getMessage(), e);
-				continue;
-			}
-		}
-		return value;
-	}
-	
-	/**
+	 * Register onEnterZone trigger for Zone
 	 * @param zoneId
-	 * @return
 	 */
-	public L2ZoneType addExitZoneId(int zoneId)
+	public void addEnterZoneId(int zoneId)
 	{
-		try
+		final L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
+		if (zone != null)
 		{
-			L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
-			if (zone != null)
-			{
-				zone.addQuestEvent(QuestEventType.ON_EXIT_ZONE, this);
-			}
-			return zone;
+			zone.addQuestEvent(QuestEventType.ON_ENTER_ZONE, this);
 		}
-		catch (Exception e)
+	}
+	
+	/**
+	 * Register onEnterZone trigger for Zones
+	 * @param zoneIds
+	 */
+	public void addEnterZoneId(int... zoneIds)
+	{
+		for (int zoneId : zoneIds)
 		{
-			_log.log(Level.WARNING, "Exception on addExitZoneId(): " + e.getMessage(), e);
-			return null;
+			addEnterZoneId(zoneId);
+		}
+	}
+	
+	/**
+	 * Register onEnterZone trigger for Zones
+	 * @param zoneIds
+	 */
+	public void addEnterZoneId(Collection<Integer> zoneIds)
+	{
+		for (int zoneId : zoneIds)
+		{
+			addEnterZoneId(zoneId);
+		}
+	}
+	
+	/**
+	 * Register onExitZone trigger for Zone
+	 * @param zoneId
+	 */
+	public void addExitZoneId(int zoneId)
+	{
+		L2ZoneType zone = ZoneManager.getInstance().getZoneById(zoneId);
+		if (zone != null)
+		{
+			zone.addQuestEvent(QuestEventType.ON_EXIT_ZONE, this);
+		}
+	}
+	
+	/**
+	 * Register onExitZone trigger for Zones
+	 * @param zoneIds
+	 */
+	public void addExitZoneId(int... zoneIds)
+	{
+		for (int zoneId : zoneIds)
+		{
+			addExitZoneId(zoneId);
+		}
+	}
+	
+	/**
+	 * Register onExitZone trigger for Zones
+	 * @param zoneIds
+	 */
+	public void addExitZoneId(Collection<Integer> zoneIds)
+	{
+		for (int zoneId : zoneIds)
+		{
+			addExitZoneId(zoneId);
 		}
 	}
 	
@@ -2149,6 +2287,15 @@ public class Quest extends ManagedScript
 	 * @param npcIds
 	 */
 	public void addEventReceivedId(int... npcIds)
+	{
+		addEventId(QuestEventType.ON_EVENT_RECEIVED, npcIds);
+	}
+	
+	/**
+	 * Register onEventReceived trigger for NPC
+	 * @param npcIds
+	 */
+	public void addEventReceivedId(Collection<Integer> npcIds)
 	{
 		addEventId(QuestEventType.ON_EVENT_RECEIVED, npcIds);
 	}
@@ -2163,6 +2310,15 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Register onMoveFinished trigger for NPC
+	 * @param npcIds
+	 */
+	public void addMoveFinishedId(Collection<Integer> npcIds)
+	{
+		addEventId(QuestEventType.ON_MOVE_FINISHED, npcIds);
+	}
+	
+	/**
 	 * Register onNodeArrived trigger for NPC
 	 * @param npcIds id of NPC to register
 	 */
@@ -2172,10 +2328,28 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
+	 * Register onNodeArrived trigger for NPC
+	 * @param npcIds id of NPC to register
+	 */
+	public void addNodeArrivedId(Collection<Integer> npcIds)
+	{
+		addEventId(QuestEventType.ON_NODE_ARRIVED, npcIds);
+	}
+	
+	/**
 	 * Register onRouteFinished trigger for NPC
 	 * @param npcIds id of NPC to register
 	 */
 	public void addRouteFinishedId(int... npcIds)
+	{
+		addEventId(QuestEventType.ON_ROUTE_FINISHED, npcIds);
+	}
+	
+	/**
+	 * Register onRouteFinished trigger for NPC
+	 * @param npcIds id of NPC to register
+	 */
+	public void addRouteFinishedId(Collection<Integer> npcIds)
 	{
 		addEventId(QuestEventType.ON_ROUTE_FINISHED, npcIds);
 	}
@@ -3342,6 +3516,15 @@ public class Quest extends ManagedScript
 	public static int getRandom(int min, int max)
 	{
 		return Rnd.get(min, max);
+	}
+	
+	/**
+	 * Get a random boolean.
+	 * @return {@code true} or {@code false} randomly
+	 */
+	public static boolean getRandomBoolean()
+	{
+		return Rnd.nextBoolean();
 	}
 	
 	/**

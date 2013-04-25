@@ -42,6 +42,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2FortCommanderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.util.Util;
@@ -610,10 +611,10 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 				{
 					
 					L2Object OldTarget = _actor.getTarget();
-					if ((sk.getSkillType() == L2SkillType.BUFF) || (sk.getSkillType() == L2SkillType.HEAL))
+					if ((sk.getSkillType() == L2SkillType.BUFF) || (sk.hasEffectType(L2EffectType.HEAL)))
 					{
 						boolean useSkillSelf = true;
-						if ((sk.getSkillType() == L2SkillType.HEAL) && (_actor.getCurrentHp() > (int) (_actor.getMaxHp() / 1.5)))
+						if ((sk.hasEffectType(L2EffectType.HEAL)) && (_actor.getCurrentHp() > (int) (_actor.getMaxHp() / 1.5)))
 						{
 							useSkillSelf = false;
 							break;
@@ -762,10 +763,10 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 					if (((castRange * castRange) >= dist_2) && !sk.isPassive() && (_actor.getCurrentMp() >= _actor.getStat().getMpConsume(sk)) && !_actor.isSkillDisabled(sk))
 					{
 						L2Object OldTarget = _actor.getTarget();
-						if ((sk.getSkillType() == L2SkillType.BUFF) || (sk.getSkillType() == L2SkillType.HEAL))
+						if ((sk.getSkillType() == L2SkillType.BUFF) || (sk.hasEffectType(L2EffectType.HEAL)))
 						{
 							boolean useSkillSelf = true;
-							if ((sk.getSkillType() == L2SkillType.HEAL) && (_actor.getCurrentHp() > (int) (_actor.getMaxHp() / 1.5)))
+							if ((sk.hasEffectType(L2EffectType.HEAL)) && (_actor.getCurrentHp() > (int) (_actor.getMaxHp() / 1.5)))
 							{
 								useSkillSelf = false;
 								break;

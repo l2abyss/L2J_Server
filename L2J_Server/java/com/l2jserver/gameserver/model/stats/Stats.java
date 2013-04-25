@@ -28,7 +28,7 @@ public enum Stats
 {
 	// Base stats, for each in Calculator a slot is allocated
 	
-	// HP & MP
+	// HP, MP & CP
 	MAX_HP("maxHp"),
 	MAX_MP("maxMp"),
 	MAX_CP("maxCp"),
@@ -38,10 +38,8 @@ public enum Stats
 	REGENERATE_HP_RATE("regHp"),
 	REGENERATE_CP_RATE("regCp"),
 	REGENERATE_MP_RATE("regMp"),
-	RECHARGE_MP_RATE("gainMp"),
-	HEAL_EFFECTIVNESS("gainHp"),
-	HEAL_PROFICIENCY("giveHp"),
-	HEAL_STATIC_BONUS("bonusHp"),
+	MANA_CHARGE("manaCharge"),
+	HEAL_EFFECT("healEffect"),
 	
 	// ATTACK & DEFENCE
 	POWER_DEFENCE("pDef"),
@@ -57,7 +55,6 @@ public enum Stats
 	SHIELD_DEFENCE("sDef"),
 	CRITICAL_DAMAGE("cAtk"),
 	CRITICAL_DAMAGE_ADD("cAtkAdd"), // this is another type for special critical damage mods - vicious stance, critical power and critical damage SA
-	// it was totally bad since now...
 	MAGIC_CRIT_DMG("mCritPower"),
 	
 	// PVP BONUS
@@ -114,13 +111,6 @@ public enum Stats
 	BREATH("breath"),
 	FALL("fall"),
 	AGGRESSION("aggression"), // locks a mob on tank caster
-	BLEED("bleed"), // by daggers, like poison
-	POISON("poison"), // by magic, damage over time
-	STUN("stun"), // disable move/ATTACK for a period of time
-	ROOT("root"), // disable movement, but not ATTACK
-	MOVEMENT("movement"), // slow-down movement, de-buff
-	CONFUSION("confusion"), // mob changes target, opposite to aggression/hate
-	SLEEP("sleep"), // sleep (don't move/ATTACK) until attacked
 	
 	// VULNERABILITIES
 	AGGRESSION_VULN("aggressionVuln"),
@@ -241,7 +231,6 @@ public enum Stats
 	MAGICAL_MP_CONSUME_RATE("MagicalMpConsumeRate"),
 	DANCE_MP_CONSUME_RATE("DanceMpConsumeRate"),
 	BOW_MP_CONSUME_RATE("BowMpConsumeRate"),
-	HP_CONSUME_RATE("HpConsumeRate"),
 	MP_CONSUME("MpConsume"),
 	
 	// T1 stats

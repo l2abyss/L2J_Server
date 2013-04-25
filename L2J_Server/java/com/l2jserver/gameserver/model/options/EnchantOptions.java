@@ -16,29 +16,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.conditions;
-
-import com.l2jserver.gameserver.model.stats.Env;
+package com.l2jserver.gameserver.model.options;
 
 /**
- * The Class ConditionPlayerSouls.
+ * @author UnAfraid
  */
-public class ConditionPlayerSouls extends Condition
+public class EnchantOptions
 {
-	private final int _souls;
+	private final int _level;
+	private final int[] _options;
 	
-	/**
-	 * Instantiates a new condition player souls.
-	 * @param souls the souls
-	 */
-	public ConditionPlayerSouls(int souls)
+	public EnchantOptions(int level)
 	{
-		_souls = souls;
+		_level = level;
+		_options = new int[3];
 	}
 	
-	@Override
-	public boolean testImpl(Env env)
+	public int getLevel()
 	{
-		return (env.getPlayer() != null) && (env.getPlayer().getChargedSouls() >= _souls);
+		return _level;
+	}
+	
+	public int[] getOptions()
+	{
+		return _options;
+	}
+	
+	public void setOption(byte index, int option)
+	{
+		if (_options.length > index)
+		{
+			_options[index] = option;
+		}
 	}
 }

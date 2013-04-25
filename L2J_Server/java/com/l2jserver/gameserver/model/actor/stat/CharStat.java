@@ -181,12 +181,7 @@ public class CharStat
 		
 		int criticalHit = (int) calcStat(Stats.CRITICAL_RATE, _activeChar.getTemplate().getBaseCritRate(), target, skill);
 		// Set a cap of Critical Hit at 500
-		if (criticalHit > Config.MAX_PCRIT_RATE)
-		{
-			criticalHit = Config.MAX_PCRIT_RATE;
-		}
-		
-		return criticalHit;
+		return Math.min(criticalHit, Config.MAX_PCRIT_RATE);
 	}
 	
 	/**
@@ -198,7 +193,6 @@ public class CharStat
 		{
 			return 1;
 		}
-		
 		return (int) calcStat(Stats.STAT_DEX, _activeChar.getTemplate().getBaseDEX());
 	}
 	
@@ -334,7 +328,7 @@ public class CharStat
 	}
 	
 	/**
-	 * Return the MAtk (base+modifier) of the L2Character for a skill used in function of abnormal effects in progress.<br>
+	 * Return the MAtk (base+modifier) of the L2Character.<br>
 	 * <B><U>Example of use</U>: Calculate Magic damage
 	 * @param target The L2Character targeted by the skill
 	 * @param skill The L2Skill used against the target
@@ -346,6 +340,7 @@ public class CharStat
 		{
 			return 1;
 		}
+		
 		float bonusAtk = 1;
 		if (Config.L2JMOD_CHAMPION_ENABLE && _activeChar.isChampion())
 		{
@@ -355,44 +350,9 @@ public class CharStat
 		{
 			bonusAtk *= Config.RAID_MATTACK_MULTIPLIER;
 		}
-		double attack = _activeChar.getTemplate().getBaseMAtk() * bonusAtk;
-		// Get the skill type to calculate its effect in function of base stats
-		// of the L2Character target
-		Stats stat = skill == null ? null : skill.getStat();
-		
-		if (stat != null)
-		{
-			switch (stat)
-			{
-				case AGGRESSION:
-					attack += _activeChar.getTemplate().getBaseAggression();
-					break;
-				case BLEED:
-					attack += _activeChar.getTemplate().getBaseBleed();
-					break;
-				case POISON:
-					attack += _activeChar.getTemplate().getBasePoison();
-					break;
-				case STUN:
-					attack += _activeChar.getTemplate().getBaseStun();
-					break;
-				case ROOT:
-					attack += _activeChar.getTemplate().getBaseRoot();
-					break;
-				case MOVEMENT:
-					attack += _activeChar.getTemplate().getBaseMovement();
-					break;
-				case CONFUSION:
-					attack += _activeChar.getTemplate().getBaseConfusion();
-					break;
-				case SLEEP:
-					attack += _activeChar.getTemplate().getBaseSleep();
-					break;
-			}
-		}
 		
 		// Calculate modifiers Magic Attack
-		return (int) calcStat(Stats.MAGIC_ATTACK, attack, target, skill);
+		return (int) calcStat(Stats.MAGIC_ATTACK, _activeChar.getTemplate().getBaseMAtk() * bonusAtk, target, skill);
 	}
 	
 	/**
@@ -431,11 +391,7 @@ public class CharStat
 		
 		double mrate = calcStat(Stats.MCRITICAL_RATE, 1, target, skill) * 10;
 		// Set a cap of Magical Critical Hit at 200
-		if (mrate > Config.MAX_MCRIT_RATE)
-		{
-			mrate = Config.MAX_MCRIT_RATE;
-		}
-		return (int) mrate;
+		return (int) Math.min(mrate, Config.MAX_MCRIT_RATE);
 	}
 	
 	/**

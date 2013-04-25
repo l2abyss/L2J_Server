@@ -116,6 +116,12 @@ public final class RequestRestart extends L2GameClientPacket
 			}
 		}
 		
+		if (player.isBlockedFromExit())
+		{
+			sendPacket(RestartResponse.valueOf(false));
+			return;
+		}
+		
 		for (PlayerDespawnListener listener : despawnListeners)
 		{
 			listener.onDespawn(player);

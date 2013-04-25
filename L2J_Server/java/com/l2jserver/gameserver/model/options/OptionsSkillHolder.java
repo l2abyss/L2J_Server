@@ -16,37 +16,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model;
+package com.l2jserver.gameserver.model.options;
+
+import com.l2jserver.gameserver.model.holders.SkillHolder;
 
 /**
  * @author UnAfraid
  */
-public class EnchantOptions
+public class OptionsSkillHolder extends SkillHolder
 {
-	private final int _level;
-	private final int[] _options;
+	private final OptionsSkillType _type;
+	private final double _chance;
 	
-	public EnchantOptions(int level)
+	/**
+	 * @param skillId
+	 * @param skillLvl
+	 * @param type
+	 * @param chance
+	 */
+	public OptionsSkillHolder(int skillId, int skillLvl, double chance, OptionsSkillType type)
 	{
-		_level = level;
-		_options = new int[3];
+		super(skillId, skillLvl);
+		_chance = chance;
+		_type = type;
 	}
 	
-	public int getLevel()
+	public OptionsSkillType getSkillType()
 	{
-		return _level;
+		return _type;
 	}
 	
-	public int[] getOptions()
+	public double getChance()
 	{
-		return _options;
-	}
-	
-	public void setOption(byte index, int option)
-	{
-		if (_options.length > index)
-		{
-			_options[index] = option;
-		}
+		return _chance;
 	}
 }

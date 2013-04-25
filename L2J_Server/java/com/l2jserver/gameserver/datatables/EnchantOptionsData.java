@@ -25,8 +25,8 @@ import java.util.logging.Level;
 import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.engines.DocumentParser;
-import com.l2jserver.gameserver.model.EnchantOptions;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.options.EnchantOptions;
 import com.l2jserver.gameserver.util.Util;
 
 /**

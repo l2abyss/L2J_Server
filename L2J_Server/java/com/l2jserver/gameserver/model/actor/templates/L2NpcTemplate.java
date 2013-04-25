@@ -431,10 +431,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 					case BUFF:
 						addBuffSkill(skill);
 						break;
-					case HEAL:
-					case HEAL_PERCENT:
-						addHealSkill(skill);
-						break;
 					case RESURRECT:
 						addResSkill(skill);
 						break;
@@ -492,6 +488,10 @@ public final class L2NpcTemplate extends L2CharTemplate
 						{
 							addNegativeSkill(skill);
 							addRangeSkill(skill);
+						}
+						else if (skill.hasEffectType(L2EffectType.HEAL, L2EffectType.HEAL_PERCENT))
+						{
+							addHealSkill(skill);
 						}
 						else
 						{

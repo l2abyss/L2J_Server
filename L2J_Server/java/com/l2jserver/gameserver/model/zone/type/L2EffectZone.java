@@ -45,7 +45,6 @@ public class L2EffectZone extends L2ZoneType
 	private int _chance;
 	private int _initialDelay;
 	private int _reuse;
-	private boolean _enabled;
 	protected boolean _bypassConditions;
 	private boolean _isShowDangerIcon;
 	protected FastMap<Integer, Integer> _skills;
@@ -56,7 +55,6 @@ public class L2EffectZone extends L2ZoneType
 		_chance = 100;
 		_initialDelay = 0;
 		_reuse = 30000;
-		_enabled = true;
 		setTargetType(InstanceType.L2Playable); // default only playabale
 		_bypassConditions = false;
 		_isShowDangerIcon = true;
@@ -84,10 +82,6 @@ public class L2EffectZone extends L2ZoneType
 		else if (name.equals("initialDelay"))
 		{
 			_initialDelay = Integer.parseInt(value);
-		}
-		else if (name.equals("default_enabled"))
-		{
-			_enabled = Boolean.parseBoolean(value);
 		}
 		else if (name.equals("reuse"))
 		{
@@ -191,11 +185,6 @@ public class L2EffectZone extends L2ZoneType
 		return SkillTable.getInstance().getInfo(skillId, skillLvl);
 	}
 	
-	public boolean isEnabled()
-	{
-		return _enabled;
-	}
-	
 	public int getChance()
 	{
 		return _chance;
@@ -235,11 +224,6 @@ public class L2EffectZone extends L2ZoneType
 		{
 			_skills.clear();
 		}
-	}
-	
-	public void setZoneEnabled(boolean val)
-	{
-		_enabled = val;
 	}
 	
 	public int getSkillLevel(int skillId)

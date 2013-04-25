@@ -21,7 +21,6 @@ package com.l2jserver.gameserver.model.entity;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -34,7 +33,6 @@ import javolution.util.FastMap;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.CastleUpdater;
-import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.DoorTable;
@@ -46,12 +44,14 @@ import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager.SeedProduction;
 import com.l2jserver.gameserver.instancemanager.FortManager;
+import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager.Territory;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2SkillLearn;
+import com.l2jserver.gameserver.model.TowerSpawn;
 import com.l2jserver.gameserver.model.actor.instance.L2ArtefactInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -278,6 +278,7 @@ public class Castle
 		if (getOwnerId() != 0)
 		{
 			loadFunctions();
+			loadDoorUpgrade();
 		}
 	}
 	
@@ -525,6 +526,7 @@ public class Castle
 	public void removeUpgrade()
 	{
 		removeDoorUpgrade();
+		removeTrapUpgrade();
 		for (Integer fc : _function.keySet())
 		{
 			removeFunction(fc);
@@ -630,32 +632,6 @@ public class Castle
 		_function.clear();
 	}
 	
-	// This method updates the castle tax rate
-	public void setTaxPercent(L2PcInstance activeChar, int taxPercent)
-	{
-		int maxTax;
-		switch (SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE))
-		{
-			case SevenSigns.CABAL_DAWN:
-				maxTax = 25;
-				break;
-			case SevenSigns.CABAL_DUSK:
-				maxTax = 5;
-				break;
-			default: // no owner
-				maxTax = 15;
-		}
-		
-		if ((taxPercent < 0) || (taxPercent > maxTax))
-		{
-			activeChar.sendMessage("Tax value must be between 0 and " + maxTax + ".");
-			return;
-		}
-		
-		setTaxPercent(taxPercent);
-		activeChar.sendMessage(getName() + " castle tax changed to " + taxPercent + "%.");
-	}
-	
 	public void setTaxPercent(int taxPercent)
 	{
 		_taxPercent = taxPercent;
@@ -694,14 +670,7 @@ public class Castle
 			if (door.isDead())
 			{
 				door.doRevive();
-				if (isDoorWeak)
-				{
-					door.setCurrentHp(door.getMaxHp() / 2);
-				}
-				else
-				{
-					door.setCurrentHp(door.getMaxHp());
-				}
+				door.setCurrentHp((isDoorWeak) ? (door.getMaxHp() / 2) : (door.getMaxHp()));
 			}
 			
 			if (door.getOpen())
@@ -709,21 +678,6 @@ public class Castle
 				door.closeMe();
 			}
 		}
-		loadDoorUpgrade(); // Check for any upgrade the doors may have
-	}
-	
-	// This method upgrade door
-	public void upgradeDoor(int doorId, int hp, int pDef, int mDef)
-	{
-		L2DoorInstance door = getDoor(doorId);
-		if (door == null)
-		{
-			return;
-		}
-		
-		door.setCurrentHp(door.getMaxHp() + hp);
-		
-		saveDoorUpgrade(doorId, hp, pDef, mDef);
 	}
 	
 	// This method loads castle
@@ -881,20 +835,16 @@ public class Castle
 	// This method loads castle door upgrade data from database
 	private void loadDoorUpgrade()
 	{
-		StringBuilder doorIds = new StringBuilder(100);
-		for (L2DoorInstance door : getDoors())
-		{
-			doorIds.append(door.getDoorId()).append(',');
-		}
-		doorIds.deleteCharAt(doorIds.length() - 1);
-		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			Statement s = con.createStatement();
-			ResultSet rs = s.executeQuery("SELECT * FROM castle_doorupgrade WHERE doorId IN (" + doorIds.toString() + ")"))
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM castle_doorupgrade WHERE castleId=?"))
 		{
-			while (rs.next())
+			ps.setInt(1, getCastleId());
+			try (ResultSet rs = ps.executeQuery())
 			{
-				upgradeDoor(rs.getInt("id"), rs.getInt("hp"), rs.getInt("pDef"), rs.getInt("mDef"));
+				while (rs.next())
+				{
+					setDoorUpgrade(rs.getInt("doorId"), rs.getInt("ratio"), false);
+				}
 			}
 		}
 		catch (Exception e)
@@ -905,17 +855,17 @@ public class Castle
 	
 	private void removeDoorUpgrade()
 	{
-		StringBuilder doorIds = new StringBuilder(100);
-		for (L2DoorInstance door : getDoors())
+		for (L2DoorInstance door : _doors)
 		{
-			doorIds.append(door.getDoorId()).append(',');
+			door.getStat().setUpgradeHpRatio(1);
+			door.setCurrentHp(door.getCurrentHp());
 		}
-		doorIds.deleteCharAt(doorIds.length() - 1);
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			Statement s = con.createStatement())
+			PreparedStatement ps = con.prepareStatement("DELETE FROM castle_doorupgrade WHERE castleId=?"))
 		{
-			s.executeQuery("DELETE FROM castle_doorupgrade WHERE doorId IN (" + doorIds.toString() + ")");
+			ps.setInt(1, getCastleId());
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -923,20 +873,31 @@ public class Castle
 		}
 	}
 	
-	private void saveDoorUpgrade(int doorId, int hp, int pDef, int mDef)
+	public void setDoorUpgrade(int doorId, int ratio, boolean save)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement ps = con.prepareStatement("INSERT INTO castle_doorupgrade (doorId, hp, pDef, mDef) values (?,?,?,?)"))
+		final L2DoorInstance door = (getDoors().isEmpty()) ? DoorTable.getInstance().getDoor(doorId) : getDoor(doorId);
+		if (door == null)
 		{
-			ps.setInt(1, doorId);
-			ps.setInt(2, hp);
-			ps.setInt(3, pDef);
-			ps.setInt(4, mDef);
-			ps.execute();
+			return;
 		}
-		catch (Exception e)
+		
+		door.getStat().setUpgradeHpRatio(ratio);
+		door.setCurrentHp(door.getMaxHp());
+		
+		if (save)
 		{
-			_log.log(Level.WARNING, "Exception: saveDoorUpgrade(int doorId, int hp, int pDef, int mDef): " + e.getMessage(), e);
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement ps = con.prepareStatement("REPLACE INTO castle_doorupgrade (doorId, ratio, castleId) values (?,?,?)"))
+			{
+				ps.setInt(1, doorId);
+				ps.setInt(2, ratio);
+				ps.setInt(3, getCastleId());
+				ps.execute();
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.WARNING, "Exception: setDoorUpgrade(int doorId, int ratio, int castleId): " + e.getMessage(), e);
+			}
 		}
 	}
 	
@@ -1023,10 +984,7 @@ public class Castle
 	{
 		if (_siege == null)
 		{
-			_siege = new Siege(new Castle[]
-			{
-				this
-			});
+			_siege = new Siege(this);
 		}
 		return _siege;
 	}
@@ -1595,6 +1553,55 @@ public class Castle
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, e.getMessage(), e);
+		}
+	}
+	
+	public int getTrapUpgradeLevel(int towerIndex)
+	{
+		final TowerSpawn spawn = SiegeManager.getInstance().getFlameTowers(_castleId).get(towerIndex);
+		return (spawn != null) ? spawn.getUpgradeLevel() : 0;
+	}
+	
+	public void setTrapUpgrade(int towerIndex, int level, boolean save)
+	{
+		if (save)
+		{
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement ps = con.prepareStatement("REPLACE INTO castle_trapupgrade (castleId, towerIndex, level) values (?,?,?)"))
+			{
+				ps.setInt(1, getCastleId());
+				ps.setInt(2, towerIndex);
+				ps.setInt(3, level);
+				ps.execute();
+			}
+			catch (Exception e)
+			{
+				_log.log(Level.WARNING, "Exception: setTrapUpgradeLevel(int towerIndex, int level, int castleId): " + e.getMessage(), e);
+			}
+		}
+		final TowerSpawn spawn = SiegeManager.getInstance().getFlameTowers(_castleId).get(towerIndex);
+		if (spawn != null)
+		{
+			spawn.setUpgradeLevel(level);
+		}
+	}
+	
+	private void removeTrapUpgrade()
+	{
+		for (TowerSpawn ts : SiegeManager.getInstance().getFlameTowers(_castleId))
+		{
+			ts.setUpgradeLevel(0);
+		}
+		
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("DELETE FROM castle_trapupgrade WHERE castleId=?"))
+		{
+			ps.setInt(1, getCastleId());
+			ps.execute();
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Exception: removeDoorUpgrade(): " + e.getMessage(), e);
 		}
 	}
 	

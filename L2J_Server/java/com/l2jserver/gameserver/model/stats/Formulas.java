@@ -20,7 +20,6 @@ package com.l2jserver.gameserver.model.stats;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -293,7 +292,7 @@ public final class Formulas
 			}
 			else
 			{
-				double siegeModifier = calcSiegeRegenModifer(player);
+				double siegeModifier = calcSiegeRegenModifier(player);
 				if (siegeModifier > 0)
 				{
 					hpRegenMultiplier *= siegeModifier;
@@ -583,7 +582,7 @@ public final class Formulas
 		return 1.0 - (distToCenter * 0.0005); // Maximum Decreased Regen of ~ -65%;
 	}
 	
-	public static final double calcSiegeRegenModifer(L2PcInstance activeChar)
+	public static final double calcSiegeRegenModifier(L2PcInstance activeChar)
 	{
 		if ((activeChar == null) || (activeChar.getClan() == null))
 		{
@@ -635,14 +634,8 @@ public final class Formulas
 			defence *= target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);
 		}
 		
-		if (isBehind(attacker, target))
-		{
-			proximityBonus = 1.2; // +20% crit dmg when back stabbed
-		}
-		else if (isInFrontOf(attacker, target))
-		{
-			proximityBonus = 1.1; // +10% crit dmg when side stabbed
-		}
+		// Behind: 20% - Front: 10% (TODO: values are unconfirmed, possibly custom, remove or update when confirmed)
+		proximityBonus = attacker.isBehindTarget() ? 1.2 : attacker.isInFrontOfTarget() ? 1.1 : 1;
 		
 		damage *= calcValakasTrait(attacker, target, skill);
 		
@@ -1216,113 +1209,57 @@ public final class Formulas
 		return success;
 	}
 	
-	/**
-	 * Calculate value of blow success
-	 * @param activeChar
-	 * @param target
-	 * @param chance
-	 * @return
-	 */
-	public static final boolean calcBlow(L2Character activeChar, L2Character target, int chance)
-	{
-		return activeChar.calcStat(Stats.BLOW_RATE, chance * (1.0 + ((activeChar.getDEX() - 20) / 100)), target, null) > Rnd.get(100);
-	}
-	
-	/**
-	 * Calculate value of lethal chance
-	 * @param activeChar
-	 * @param target
-	 * @param baseLethal
-	 * @param magiclvl
-	 * @return
-	 */
-	public static final double calcLethal(L2Character activeChar, L2Character target, int baseLethal, int magiclvl)
-	{
-		double chance = 0;
-		if (magiclvl > 0)
-		{
-			float delta = ((magiclvl + activeChar.getLevel()) / 2) - 1 - target.getLevel();
-			
-			// delta [-3,infinite)
-			if (delta >= -3)
-			{
-				chance = (baseLethal * ((double) activeChar.getLevel() / target.getLevel()));
-			}
-			// delta [-9, -3[
-			else if ((delta < -3) && (delta >= -9))
-			{
-				// baseLethal
-				// chance = -1 * -----------
-				// (delta / 3)
-				chance = (-3) * (baseLethal / delta);
-			}
-			// delta [-infinite,-9[
-			else
-			{
-				chance = baseLethal / 15.0;
-			}
-		}
-		else
-		{
-			chance = (baseLethal * ((double) activeChar.getLevel() / target.getLevel()));
-		}
-		return 10 * activeChar.calcStat(Stats.LETHAL_RATE, chance, target, null);
-	}
-	
 	public static final boolean calcLethalHit(L2Character activeChar, L2Character target, L2Skill skill)
 	{
+		if ((activeChar.isPlayer() && !activeChar.getAccessLevel().canGiveDamage()) || (((skill.getCondition() & L2Skill.COND_BEHIND) != 0) && !activeChar.isBehindTarget()))
+		{
+			return false;
+		}
 		if (target.isLethalable() && !target.isInvul())
 		{
-			// 2nd lethal effect activate (cp,hp to 1 or if target is npc then hp to 1)
-			if ((skill.getLethalChance2() > 0) && (Rnd.get(1000) < calcLethal(activeChar, target, skill.getLethalChance2(), skill.getMagicLevel())))
+			// Lvl Bonus Modifier.
+			double lethalStrikeRate = skill.getLethalStrikeRate() * calcLvlBonusMod(activeChar, target, skill);
+			double halfKillRate = skill.getHalfKillRate() * calcLvlBonusMod(activeChar, target, skill);
+			
+			// Lethal Strike
+			if (Rnd.get(100) < activeChar.calcStat(Stats.LETHAL_RATE, lethalStrikeRate, target, null))
 			{
-				if (target.isNpc())
+				// for Players CP and HP is set to 1.
+				if (target.isPlayer())
 				{
-					target.reduceCurrentHp(target.getCurrentHp() - 1, activeChar, skill);
+					target.setCurrentCp(1);
+					target.setCurrentHp(1);
+					target.sendPacket(SystemMessageId.LETHAL_STRIKE);
 				}
-				else if (target.isPlayer()) // If is a active player set his HP and CP to 1
+				// for Monsters HP is set to 1.
+				else if (target.isMonster() || target.isSummon())
 				{
-					L2PcInstance player = target.getActingPlayer();
-					if (!player.isInvul())
-					{
-						if (!(activeChar.isPlayer() && (activeChar.isGM() && !activeChar.getAccessLevel().canGiveDamage())))
-						{
-							player.setCurrentHp(1);
-							player.setCurrentCp(1);
-							player.sendPacket(SystemMessageId.LETHAL_STRIKE_SUCCESSFUL);
-						}
-					}
+					target.setCurrentHp(1);
 				}
-				activeChar.sendPacket(SystemMessageId.LETHAL_STRIKE);
+				activeChar.sendPacket(SystemMessageId.LETHAL_STRIKE_SUCCESSFUL);
 			}
-			else if ((skill.getLethalChance1() > 0) && (Rnd.get(1000) < calcLethal(activeChar, target, skill.getLethalChance1(), skill.getMagicLevel())))
+			// Half-Kill
+			else if (Rnd.get(100) < activeChar.calcStat(Stats.LETHAL_RATE, halfKillRate, target, null))
 			{
-				if (target.isMonster())
+				// for Players CP is set to 1.
+				if (target.isPlayer())
 				{
-					target.reduceCurrentHp(target.getCurrentHp() / 2, activeChar, skill);
-					activeChar.sendPacket(SystemMessageId.HALF_KILL);
+					target.setCurrentCp(1);
+					target.sendPacket(SystemMessageId.HALF_KILL);
+					target.sendPacket(SystemMessageId.CP_DISAPPEARS_WHEN_HIT_WITH_A_HALF_KILL_SKILL);
 				}
-				else if (target.isPlayer())
+				// for Monsters HP is set to 50%.
+				else if (target.isMonster() || target.isSummon())
 				{
-					L2PcInstance player = target.getActingPlayer();
-					if (!((activeChar.isPlayer()) && (activeChar.isGM() && !activeChar.getAccessLevel().canGiveDamage())))
-					{
-						player.setCurrentCp(1); // Set CP to 1
-						player.sendPacket(SystemMessageId.CP_DISAPPEARS_WHEN_HIT_WITH_A_HALF_KILL_SKILL);
-						activeChar.sendPacket(SystemMessageId.HALF_KILL);
-					}
+					target.setCurrentHp(target.getCurrentHp() * 0.5);
 				}
-			}
-			else
-			{
-				return false;
+				activeChar.sendPacket(SystemMessageId.HALF_KILL);
 			}
 		}
 		else
 		{
 			return false;
 		}
-		
 		return true;
 	}
 	
@@ -1552,36 +1489,6 @@ public final class Formulas
 		// of the L2Character target
 		if (skill != null)
 		{
-			// first, get the natural template vulnerability values for the target
-			Stats stat = skill.getStat();
-			if (stat != null)
-			{
-				switch (stat)
-				{
-					case AGGRESSION:
-						multiplier = target.getTemplate().getBaseAggressionVuln();
-						break;
-					case BLEED:
-						multiplier = target.getTemplate().getBaseBleedVuln();
-						break;
-					case POISON:
-						multiplier = target.getTemplate().getBasePoisonVuln();
-						break;
-					case STUN:
-						multiplier = target.getTemplate().getBaseStunVuln();
-						break;
-					case ROOT:
-						multiplier = target.getTemplate().getBaseRootVuln();
-						break;
-					case MOVEMENT:
-						multiplier = target.getTemplate().getBaseMovementVuln();
-						break;
-					case SLEEP:
-						multiplier = target.getTemplate().getBaseSleepVuln();
-						break;
-				}
-			}
-			
 			// Finally, calculate skill type vulnerabilities
 			multiplier = calcSkillTraitVulnerability(multiplier, target, skill);
 		}
@@ -1821,35 +1728,7 @@ public final class Formulas
 		int elementModifier = calcElementModifier(attacker, target, skill);
 		rate += elementModifier;
 		
-		// Add Matk/Mdef Bonus
-		double mAtkModifier = 0;
-		int ssModifier = 0;
-		if (skill.isMagic())
-		{
-			mAtkModifier = target.getMDef(target, skill);
-			if (shld == SHIELD_DEFENSE_SUCCEED)
-			{
-				mAtkModifier += target.getShldDef();
-			}
-			
-			// Add Bonus for Sps/SS
-			if (bss)
-			{
-				ssModifier = 4;
-			}
-			else if (sps)
-			{
-				ssModifier = 2;
-			}
-			else
-			{
-				ssModifier = 1;
-			}
-			
-			mAtkModifier = (14 * Math.sqrt(ssModifier * attacker.getMAtk(target, skill))) / mAtkModifier;
-			
-			rate = (int) (rate * mAtkModifier);
-		}
+		// Add Matk/Mdef Bonus (TODO: Pending)
 		
 		// Check the Rate Limits.
 		rate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
@@ -1857,7 +1736,7 @@ public final class Formulas
 		if (attacker.isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, skill.getName(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.valueOf(elementModifier), " mAtk:", String.format("%1.2f", mAtkModifier), " ss:", String.valueOf(ssModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
+			StringUtil.append(stat, skill.getName(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.valueOf(elementModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
 			final String result = stat.toString();
 			if (attacker.isDebug())
 			{
@@ -1921,35 +1800,7 @@ public final class Formulas
 		int elementModifier = calcElementModifier(attacker, target, skill);
 		rate += elementModifier;
 		
-		// Add Matk/Mdef Bonus
-		double mAtkModifier = 0;
-		int ssModifier = 0;
-		if (skill.isMagic())
-		{
-			mAtkModifier = target.getMDef(target, skill);
-			if (shld == SHIELD_DEFENSE_SUCCEED)
-			{
-				mAtkModifier += target.getShldDef();
-			}
-			
-			// Add Bonus for Sps/SS
-			if (bss)
-			{
-				ssModifier = 4;
-			}
-			else if (sps)
-			{
-				ssModifier = 2;
-			}
-			else
-			{
-				ssModifier = 1;
-			}
-			
-			mAtkModifier = (14 * Math.sqrt(ssModifier * attacker.getMAtk(target, skill))) / mAtkModifier;
-			
-			rate = (int) (rate * mAtkModifier);
-		}
+		// Add Matk/Mdef Bonus (TODO: Pending)
 		
 		// Check the Rate Limits.
 		rate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
@@ -1957,7 +1808,7 @@ public final class Formulas
 		if (attacker.isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, skill.getName(), " type:", skill.getSkillType().toString(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.valueOf(elementModifier), " mAtk:", String.format("%1.2f", mAtkModifier), " ss:", String.valueOf(ssModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
+			StringUtil.append(stat, skill.getName(), " type:", skill.getSkillType().toString(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.valueOf(elementModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
 			final String result = stat.toString();
 			if (attacker.isDebug())
 			{
@@ -2333,13 +2184,6 @@ public final class Formulas
 		// Check for non-reflected skilltypes, need additional retail check
 		switch (skill.getSkillType())
 		{
-			case BUFF:
-			case HEAL_PERCENT:
-			case MANAHEAL_PERCENT:
-			case AGGDEBUFF:
-			case CONT:
-				return SKILL_REFLECT_FAILED;
-				// these skill types can deal damage
 			case PDAM:
 			case MDAM:
 			case BLOW:
@@ -2356,6 +2200,8 @@ public final class Formulas
 					reflect |= SKILL_REFLECT_VENGEANCE;
 				}
 				break;
+			default:
+				return SKILL_REFLECT_FAILED;
 		}
 		
 		final double reflectChance = target.calcStat(skill.isMagic() ? Stats.REFLECT_SKILL_MAGIC : Stats.REFLECT_SKILL_PHYSIC, 0, null, skill);
@@ -2383,113 +2229,31 @@ public final class Formulas
 		return damage;
 	}
 	
-	private static double FRONT_MAX_ANGLE = 100;
-	private static double BACK_MAX_ANGLE = 40;
-	
-	/**
-	 * Calculates blow success depending on base chance and relative position of attacker and target
-	 * @param activeChar Target that is performing skill
-	 * @param target Target of this skill
-	 * @param skill Skill which will be used to get base value of blowChance and crit condition
-	 * @return Success of blow
-	 */
 	public static boolean calcBlowSuccess(L2Character activeChar, L2Character target, L2Skill skill)
 	{
-		int blowChance = skill.getBlowChance();
-		
-		// Skill is blow and it has 0% to make dmg... thats just wrong
-		if (blowChance == 0)
+		if (((skill.getCondition() & L2Skill.COND_BEHIND) != 0) && !activeChar.isBehindTarget())
 		{
-			_log.log(Level.WARNING, "Skill " + skill.getId() + " - " + skill.getName() + " has 0 blow land chance, yet its a blow skill!");
-			// TODO: return false;
-			// lets add 20 for now, till all skills are corrected
-			blowChance = 20;
+			return false;
 		}
 		
-		if (isBehind(target, activeChar))
+		// Apply DEX Mod.
+		double blowChance = skill.getBlowChance() * BaseStats.DEX.calcBonus(activeChar);
+		
+		// Apply Position Bonus (TODO: values are unconfirmed, possibly custom, remove or update when confirmed).
+		if (activeChar.isInFrontOfTarget())
 		{
-			blowChance *= 2; // double chance from behind
+			blowChance *= 1;
 		}
-		else if (isInFrontOf(target, activeChar))
+		else if (activeChar.isBehindTarget())
 		{
-			if ((skill.getCondition() & L2Skill.COND_BEHIND) != 0)
-			{
-				return false;
-			}
-			
-			// base chance from front
+			blowChance *= 2;
 		}
 		else
 		{
-			blowChance *= 1.5; // 50% better chance from side
+			blowChance *= 1.5;
 		}
 		
-		return activeChar.calcStat(Stats.BLOW_RATE, blowChance * (1.0 + ((activeChar.getDEX()) / 100.)), target, null) > Rnd.get(100);
-	}
-	
-	/**
-	 * Those are altered formulas for blow lands
-	 * @param target
-	 * @param attacker
-	 * @return True if the target is IN FRONT of the L2Character.<
-	 */
-	public static boolean isInFrontOf(L2Character target, L2Character attacker)
-	{
-		if (target == null)
-		{
-			return false;
-		}
-		
-		double angleChar, angleTarget, angleDiff;
-		angleTarget = Util.calculateAngleFrom(target, attacker);
-		angleChar = Util.convertHeadingToDegree(target.getHeading());
-		angleDiff = angleChar - angleTarget;
-		if (angleDiff <= (-360 + FRONT_MAX_ANGLE))
-		{
-			angleDiff += 360;
-		}
-		if (angleDiff >= (360 - FRONT_MAX_ANGLE))
-		{
-			angleDiff -= 360;
-		}
-		if (Math.abs(angleDiff) <= FRONT_MAX_ANGLE)
-		{
-			return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * Those are altered formulas for blow lands
-	 * @param target
-	 * @param attacker
-	 * @return True if the L2Character is behind the target and can't be seen.
-	 */
-	public static boolean isBehind(L2Character target, L2Character attacker)
-	{
-		if (target == null)
-		{
-			return false;
-		}
-		
-		double angleChar, angleTarget, angleDiff;
-		L2Character target1 = target;
-		angleChar = Util.calculateAngleFrom(attacker, target1);
-		angleTarget = Util.convertHeadingToDegree(target1.getHeading());
-		angleDiff = angleChar - angleTarget;
-		if (angleDiff <= (-360 + BACK_MAX_ANGLE))
-		{
-			angleDiff += 360;
-		}
-		if (angleDiff >= (360 - BACK_MAX_ANGLE))
-		{
-			angleDiff -= 360;
-		}
-		if (Math.abs(angleDiff) <= BACK_MAX_ANGLE)
-		{
-			return true;
-		}
-		return false;
+		return Rnd.get(100) < activeChar.calcStat(Stats.BLOW_RATE, blowChance, target, null);
 	}
 	
 	public static List<L2Effect> calcCancelStealEffects(L2Character activeChar, L2Character target, L2Skill skill, double power)

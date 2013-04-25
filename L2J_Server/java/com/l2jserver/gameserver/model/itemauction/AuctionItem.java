@@ -90,11 +90,9 @@ public final class AuctionItem
 		item.setEnchantLevel(item.getDefaultEnchantLevel());
 		
 		final int augmentationId = _itemExtra.getInteger("augmentation_id", 0);
-		if (augmentationId != 0)
+		if (augmentationId > 0)
 		{
-			final int augmentationSkillId = _itemExtra.getInteger("augmentation_skill_id", 0);
-			final int augmentationSkillLevel = _itemExtra.getInteger("augmentation_skill_lvl", 0);
-			item.setAugmentation(new L2Augmentation(augmentationId, augmentationSkillId, augmentationSkillLevel));
+			item.setAugmentation(new L2Augmentation(augmentationId));
 		}
 		
 		return item;

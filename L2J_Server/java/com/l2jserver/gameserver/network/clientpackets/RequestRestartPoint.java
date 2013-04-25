@@ -32,7 +32,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Fort;
-import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 
 /**
@@ -78,7 +77,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 			return;
 		}
 		
-		if (TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(activeChar.getObjectId()))
+		if (!activeChar.canRevive())
 		{
 			return;
 		}

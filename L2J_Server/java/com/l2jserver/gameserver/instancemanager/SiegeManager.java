@@ -18,14 +18,13 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,26 +37,24 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.TowerSpawn;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Siege;
 import com.l2jserver.gameserver.model.skills.L2Skill;
-
-import gnu.trove.map.hash.TIntObjectHashMap;
+import com.l2jserver.util.L2Properties;
 
 public class SiegeManager
 {
 	private static final Logger _log = Logger.getLogger(SiegeManager.class.getName());
 	
+	private final Map<Integer, List<TowerSpawn>> _controlTowers = new HashMap<>();
+	private final Map<Integer, List<TowerSpawn>> _flameTowers = new HashMap<>();
+	
 	private int _attackerMaxClans = 500; // Max number of clans
 	private int _attackerRespawnDelay = 0; // Time in ms. Changeable in siege.config
 	private int _defenderMaxClans = 500; // Max number of clans
-	
-	private TIntObjectHashMap<FastList<SiegeSpawn>> _artefactSpawnList;
-	private TIntObjectHashMap<FastList<SiegeSpawn>> _controlTowerSpawnList;
-	private TIntObjectHashMap<FastList<SiegeSpawn>> _flameTowerSpawnList;
-	
 	private int _flagMaxCount = 1; // Changeable in siege.config
 	private int _siegeClanMinLevel = 5; // Changeable in siege.config
 	private int _siegeLength = 120; // Time in minute. Changeable in siege.config
@@ -165,55 +162,43 @@ public class SiegeManager
 	
 	private final void load()
 	{
-		Properties siegeSettings = new Properties();
-		final File file = new File(Config.SIEGE_CONFIGURATION_FILE);
-		try (InputStream is = new FileInputStream(file))
+		final L2Properties siegeSettings = new L2Properties();
+		try
 		{
-			siegeSettings.load(is);
+			siegeSettings.load(Config.SIEGE_CONFIGURATION_FILE);
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while loading Territory War Manager settings!", e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while loading Siege settings!", e);
 		}
 		
 		// Siege setting
-		_attackerMaxClans = Integer.decode(siegeSettings.getProperty("AttackerMaxClans", "500"));
-		_attackerRespawnDelay = Integer.decode(siegeSettings.getProperty("AttackerRespawn", "0"));
-		_defenderMaxClans = Integer.decode(siegeSettings.getProperty("DefenderMaxClans", "500"));
-		_flagMaxCount = Integer.decode(siegeSettings.getProperty("MaxFlags", "1"));
-		_siegeClanMinLevel = Integer.decode(siegeSettings.getProperty("SiegeClanMinLevel", "5"));
-		_siegeLength = Integer.decode(siegeSettings.getProperty("SiegeLength", "120"));
-		_bloodAllianceReward = Integer.decode(siegeSettings.getProperty("BloodAllianceReward", "0"));
-		
-		// Siege spawns settings
-		_controlTowerSpawnList = new TIntObjectHashMap<>();
-		_artefactSpawnList = new TIntObjectHashMap<>();
-		_flameTowerSpawnList = new TIntObjectHashMap<>();
+		_attackerMaxClans = Integer.parseInt(siegeSettings.getProperty("AttackerMaxClans", "500"));
+		_attackerRespawnDelay = Integer.parseInt(siegeSettings.getProperty("AttackerRespawn", "0"));
+		_defenderMaxClans = Integer.parseInt(siegeSettings.getProperty("DefenderMaxClans", "500"));
+		_flagMaxCount = Integer.parseInt(siegeSettings.getProperty("MaxFlags", "1"));
+		_siegeClanMinLevel = Integer.parseInt(siegeSettings.getProperty("SiegeClanMinLevel", "5"));
+		_siegeLength = Integer.parseInt(siegeSettings.getProperty("SiegeLength", "120"));
+		_bloodAllianceReward = Integer.parseInt(siegeSettings.getProperty("BloodAllianceReward", "0"));
 		
 		for (Castle castle : CastleManager.getInstance().getCastles())
 		{
-			FastList<SiegeSpawn> _controlTowersSpawns = new FastList<>();
-			
+			final List<TowerSpawn> controlTowers = new ArrayList<>();
 			for (int i = 1; i < 0xFF; i++)
 			{
-				String _spawnParams = siegeSettings.getProperty(castle.getName() + "ControlTower" + i, "");
-				
-				if (_spawnParams.isEmpty())
+				if (!siegeSettings.containsKey(castle.getName() + "ControlTower" + i))
 				{
 					break;
 				}
-				
-				StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
-				
+				final StringTokenizer st = new StringTokenizer(siegeSettings.getProperty(castle.getName() + "ControlTower" + i).trim(), ",");
 				try
 				{
-					int x = Integer.parseInt(st.nextToken());
-					int y = Integer.parseInt(st.nextToken());
-					int z = Integer.parseInt(st.nextToken());
-					int npc_id = Integer.parseInt(st.nextToken());
-					int hp = Integer.parseInt(st.nextToken());
+					final int x = Integer.parseInt(st.nextToken());
+					final int y = Integer.parseInt(st.nextToken());
+					final int z = Integer.parseInt(st.nextToken());
+					final int npcId = Integer.parseInt(st.nextToken());
 					
-					_controlTowersSpawns.add(new SiegeSpawn(castle.getCastleId(), x, y, z, 0, npc_id, hp));
+					controlTowers.add(new TowerSpawn(npcId, new Location(x, y, z)));
 				}
 				catch (Exception e)
 				{
@@ -221,85 +206,53 @@ public class SiegeManager
 				}
 			}
 			
-			FastList<SiegeSpawn> _flameTowersSpawns = new FastList<>();
-			
+			final List<TowerSpawn> flameTowers = new ArrayList<>();
 			for (int i = 1; i < 0xFF; i++)
 			{
-				String _spawnParams = siegeSettings.getProperty(castle.getName() + "FlameTower" + i, "");
-				
-				if (_spawnParams.isEmpty())
+				if (!siegeSettings.containsKey(castle.getName() + "FlameTower" + i))
 				{
 					break;
 				}
-				
-				StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
-				
+				final StringTokenizer st = new StringTokenizer(siegeSettings.getProperty(castle.getName() + "FlameTower" + i).trim(), ",");
 				try
 				{
-					int x = Integer.parseInt(st.nextToken());
-					int y = Integer.parseInt(st.nextToken());
-					int z = Integer.parseInt(st.nextToken());
-					int npc_id = Integer.parseInt(st.nextToken());
-					int hp = Integer.parseInt(st.nextToken());
+					final int x = Integer.parseInt(st.nextToken());
+					final int y = Integer.parseInt(st.nextToken());
+					final int z = Integer.parseInt(st.nextToken());
+					final int npcId = Integer.parseInt(st.nextToken());
+					final List<Integer> zoneList = new ArrayList<>();
 					
-					_flameTowersSpawns.add(new SiegeSpawn(castle.getCastleId(), x, y, z, 0, npc_id, hp));
+					while (st.hasMoreTokens())
+					{
+						zoneList.add(Integer.parseInt(st.nextToken()));
+					}
+					
+					flameTowers.add(new TowerSpawn(npcId, new Location(x, y, z), zoneList));
 				}
 				catch (Exception e)
 				{
-					_log.warning(getClass().getSimpleName() + ": Error while loading artefact(s) for " + castle.getName() + " castle.");
+					_log.warning(getClass().getSimpleName() + ": Error while loading flame tower(s) for " + castle.getName() + " castle.");
 				}
 			}
-			
-			FastList<SiegeSpawn> _artefactSpawns = new FastList<>();
-			
-			for (int i = 1; i < 0xFF; i++)
-			{
-				String _spawnParams = siegeSettings.getProperty(castle.getName() + "Artefact" + i, "");
-				
-				if (_spawnParams.isEmpty())
-				{
-					break;
-				}
-				
-				StringTokenizer st = new StringTokenizer(_spawnParams.trim(), ",");
-				
-				try
-				{
-					int x = Integer.parseInt(st.nextToken());
-					int y = Integer.parseInt(st.nextToken());
-					int z = Integer.parseInt(st.nextToken());
-					int heading = Integer.parseInt(st.nextToken());
-					int npc_id = Integer.parseInt(st.nextToken());
-					
-					_artefactSpawns.add(new SiegeSpawn(castle.getCastleId(), x, y, z, heading, npc_id));
-				}
-				catch (Exception e)
-				{
-					_log.warning(getClass().getSimpleName() + ": Error while loading artefact(s) for " + castle.getName() + " castle.");
-				}
-			}
-			
+			_controlTowers.put(castle.getCastleId(), controlTowers);
+			_flameTowers.put(castle.getCastleId(), flameTowers);
 			MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getCastleId() - 1] = Integer.parseInt(siegeSettings.getProperty(castle.getName() + "MaxMercenaries", Integer.toString(MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getCastleId() - 1])).trim());
 			
-			_controlTowerSpawnList.put(castle.getCastleId(), _controlTowersSpawns);
-			_artefactSpawnList.put(castle.getCastleId(), _artefactSpawns);
-			_flameTowerSpawnList.put(castle.getCastleId(), _flameTowersSpawns);
+			if (castle.getOwnerId() != 0)
+			{
+				loadTrapUpgrade(castle.getCastleId());
+			}
 		}
 	}
 	
-	public final FastList<SiegeSpawn> getArtefactSpawnList(int _castleId)
+	public final List<TowerSpawn> getControlTowers(int castleId)
 	{
-		return _artefactSpawnList.get(_castleId);
+		return _controlTowers.get(castleId);
 	}
 	
-	public final FastList<SiegeSpawn> getControlTowerSpawnList(int _castleId)
+	public final List<TowerSpawn> getFlameTowers(int castleId)
 	{
-		return _controlTowerSpawnList.get(_castleId);
-	}
-	
-	public final FastList<SiegeSpawn> getFlameTowerSpawnList(int _castleId)
-	{
-		return _flameTowerSpawnList.get(_castleId);
+		return _flameTowers.get(castleId);
 	}
 	
 	public final int getAttackerMaxClans()
@@ -364,54 +317,23 @@ public class SiegeManager
 		return sieges;
 	}
 	
-	public static class SiegeSpawn
+	private final void loadTrapUpgrade(int castleId)
 	{
-		Location _location;
-		private final int _npcId;
-		private final int _heading;
-		private final int _castleId;
-		private int _hp;
-		
-		public SiegeSpawn(int castle_id, int x, int y, int z, int heading, int npc_id)
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM castle_trapupgrade WHERE castleId=?"))
 		{
-			_castleId = castle_id;
-			_location = new Location(x, y, z, heading);
-			_heading = heading;
-			_npcId = npc_id;
+			ps.setInt(1, castleId);
+			try (ResultSet rs = ps.executeQuery())
+			{
+				while (rs.next())
+				{
+					_flameTowers.get(castleId).get(rs.getInt("towerIndex")).setUpgradeLevel(rs.getInt("level"));
+				}
+			}
 		}
-		
-		public SiegeSpawn(int castle_id, int x, int y, int z, int heading, int npc_id, int hp)
+		catch (Exception e)
 		{
-			_castleId = castle_id;
-			_location = new Location(x, y, z, heading);
-			_heading = heading;
-			_npcId = npc_id;
-			_hp = hp;
-		}
-		
-		public int getCastleId()
-		{
-			return _castleId;
-		}
-		
-		public int getNpcId()
-		{
-			return _npcId;
-		}
-		
-		public int getHeading()
-		{
-			return _heading;
-		}
-		
-		public int getHp()
-		{
-			return _hp;
-		}
-		
-		public Location getLocation()
-		{
-			return _location;
+			_log.log(Level.WARNING, "Exception: loadTrapUpgrade(): " + e.getMessage(), e);
 		}
 	}
 	

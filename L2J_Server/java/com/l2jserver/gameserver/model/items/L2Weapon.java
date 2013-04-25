@@ -18,7 +18,6 @@
  */
 package com.l2jserver.gameserver.model.items;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,13 +34,10 @@ import com.l2jserver.gameserver.model.conditions.Condition;
 import com.l2jserver.gameserver.model.conditions.ConditionGameChance;
 import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.funcs.Func;
-import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.util.StringUtil;
@@ -282,6 +278,7 @@ public final class L2Weapon extends L2Item
 	/**
 	 * @return the skill that player get when has equipped weapon +4 or more (for duals SA).
 	 */
+	@Override
 	public L2Skill getEnchant4Skill()
 	{
 		if (_enchant4Skill == null)
@@ -321,37 +318,6 @@ public final class L2Weapon extends L2Item
 	public boolean useWeaponSkillsOnly()
 	{
 		return _useWeaponSkillsOnly;
-	}
-	
-	/**
-	 * @param item the L2ItemInstance pointing out the weapon.
-	 * @param player the L2Character pointing out the player.
-	 * @return an array of Func objects containing the list of functions used by the weapon.
-	 */
-	@Override
-	public Func[] getStatFuncs(L2ItemInstance item, L2Character player)
-	{
-		if ((_funcTemplates == null) || (_funcTemplates.length == 0))
-		{
-			return _emptyFunctionSet;
-		}
-		
-		ArrayList<Func> funcs = new ArrayList<>(_funcTemplates.length);
-		
-		Env env = new Env();
-		env.setCharacter(player);
-		env.setItem(item);
-		
-		Func f;
-		for (FuncTemplate t : _funcTemplates)
-		{
-			f = t.getFunc(env, item);
-			if (f != null)
-			{
-				funcs.add(f);
-			}
-		}
-		return funcs.toArray(new Func[funcs.size()]);
 	}
 	
 	/**

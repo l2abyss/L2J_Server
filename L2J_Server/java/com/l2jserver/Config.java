@@ -257,6 +257,8 @@ public final class Config
 	public static boolean STORE_UI_SETTINGS;
 	public static String[] FORBIDDEN_NAMES;
 	public static boolean SILENCE_MODE_EXCLUDE;
+	public static boolean ALT_VALIDATE_TRIGGER_SKILLS;
+	
 	// --------------------------------------------------
 	// ClanHall Settings
 	// --------------------------------------------------
@@ -320,27 +322,32 @@ public final class Config
 	public static long CS_MPREG_FEE_RATIO;
 	public static int CS_MPREG1_FEE;
 	public static int CS_MPREG2_FEE;
-	public static int CS_MPREG3_FEE;
-	public static int CS_MPREG4_FEE;
 	public static long CS_HPREG_FEE_RATIO;
 	public static int CS_HPREG1_FEE;
 	public static int CS_HPREG2_FEE;
-	public static int CS_HPREG3_FEE;
-	public static int CS_HPREG4_FEE;
-	public static int CS_HPREG5_FEE;
 	public static long CS_EXPREG_FEE_RATIO;
 	public static int CS_EXPREG1_FEE;
 	public static int CS_EXPREG2_FEE;
-	public static int CS_EXPREG3_FEE;
-	public static int CS_EXPREG4_FEE;
 	public static long CS_SUPPORT_FEE_RATIO;
 	public static int CS_SUPPORT1_FEE;
 	public static int CS_SUPPORT2_FEE;
-	public static int CS_SUPPORT3_FEE;
-	public static int CS_SUPPORT4_FEE;
 	public static List<String> CL_SET_SIEGE_TIME_LIST;
 	public static List<Integer> SIEGE_HOUR_LIST_MORNING;
 	public static List<Integer> SIEGE_HOUR_LIST_AFTERNOON;
+	public static int OUTER_DOOR_UPGRADE_PRICE2;
+	public static int OUTER_DOOR_UPGRADE_PRICE3;
+	public static int OUTER_DOOR_UPGRADE_PRICE5;
+	public static int INNER_DOOR_UPGRADE_PRICE2;
+	public static int INNER_DOOR_UPGRADE_PRICE3;
+	public static int INNER_DOOR_UPGRADE_PRICE5;
+	public static int WALL_UPGRADE_PRICE2;
+	public static int WALL_UPGRADE_PRICE3;
+	public static int WALL_UPGRADE_PRICE5;
+	public static int TRAP_UPGRADE_PRICE1;
+	public static int TRAP_UPGRADE_PRICE2;
+	public static int TRAP_UPGRADE_PRICE3;
+	public static int TRAP_UPGRADE_PRICE4;
+	
 	// --------------------------------------------------
 	// Fortress Settings
 	// --------------------------------------------------
@@ -648,6 +655,7 @@ public final class Config
 	public static boolean ENABLE_BLOCK_CHECKER_EVENT;
 	public static int MIN_BLOCK_CHECKER_TEAM_MEMBERS;
 	public static boolean HBCE_FAIR_PLAY;
+	public static boolean HELLBOUND_WITHOUT_QUEST;
 	public static int PLAYER_MOVEMENT_BLOCK_TIME;
 	public static boolean CLEAR_CREST_CACHE;
 	public static int NORMAL_ENCHANT_COST_MULTIPLIER;
@@ -1022,6 +1030,12 @@ public final class Config
 	public static int AUGMENTATION_TOP_GLOW_CHANCE;
 	public static int AUGMENTATION_BASESTAT_CHANCE;
 	public static int AUGMENTATION_ACC_SKILL_CHANCE;
+	public static boolean RETAIL_LIKE_AUGMENTATION;
+	public static int[] RETAIL_LIKE_AUGMENTATION_NG_CHANCE;
+	public static int[] RETAIL_LIKE_AUGMENTATION_MID_CHANCE;
+	public static int[] RETAIL_LIKE_AUGMENTATION_HIGH_CHANCE;
+	public static int[] RETAIL_LIKE_AUGMENTATION_TOP_CHANCE;
+	public static boolean RETAIL_LIKE_AUGMENTATION_ACCESSORY;
 	public static int[] AUGMENTATION_BLACKLIST;
 	public static boolean ALT_ALLOW_AUGMENT_PVP_ITEMS;
 	public static double HP_REGEN_MULTIPLIER;
@@ -1336,29 +1350,34 @@ public final class Config
 				}
 			}
 			CS_TELE_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleTeleportFunctionFeeRatio", "604800000"));
-			CS_TELE1_FEE = Integer.parseInt(Feature.getProperty("CastleTeleportFunctionFeeLvl1", "7000"));
-			CS_TELE2_FEE = Integer.parseInt(Feature.getProperty("CastleTeleportFunctionFeeLvl2", "14000"));
-			CS_SUPPORT_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleSupportFunctionFeeRatio", "86400000"));
-			CS_SUPPORT1_FEE = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl1", "7000"));
-			CS_SUPPORT2_FEE = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl2", "21000"));
-			CS_SUPPORT3_FEE = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl3", "37000"));
-			CS_SUPPORT4_FEE = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl4", "52000"));
-			CS_MPREG_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleMpRegenerationFunctionFeeRatio", "86400000"));
-			CS_MPREG1_FEE = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl1", "2000"));
-			CS_MPREG2_FEE = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl2", "6500"));
-			CS_MPREG3_FEE = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl3", "13750"));
-			CS_MPREG4_FEE = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl4", "20000"));
-			CS_HPREG_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleHpRegenerationFunctionFeeRatio", "86400000"));
-			CS_HPREG1_FEE = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl1", "1000"));
-			CS_HPREG2_FEE = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl2", "1500"));
-			CS_HPREG3_FEE = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl3", "2250"));
-			CS_HPREG4_FEE = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl4", "3270"));
-			CS_HPREG5_FEE = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl5", "5166"));
-			CS_EXPREG_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleExpRegenerationFunctionFeeRatio", "86400000"));
-			CS_EXPREG1_FEE = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl1", "9000"));
-			CS_EXPREG2_FEE = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl2", "15000"));
-			CS_EXPREG3_FEE = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl3", "21000"));
-			CS_EXPREG4_FEE = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl4", "30000"));
+			CS_TELE1_FEE = Integer.parseInt(Feature.getProperty("CastleTeleportFunctionFeeLvl1", "1000"));
+			CS_TELE2_FEE = Integer.parseInt(Feature.getProperty("CastleTeleportFunctionFeeLvl2", "10000"));
+			CS_SUPPORT_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleSupportFunctionFeeRatio", "604800000"));
+			CS_SUPPORT1_FEE = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl1", "49000"));
+			CS_SUPPORT2_FEE = Integer.parseInt(Feature.getProperty("CastleSupportFeeLvl2", "120000"));
+			CS_MPREG_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleMpRegenerationFunctionFeeRatio", "604800000"));
+			CS_MPREG1_FEE = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl1", "45000"));
+			CS_MPREG2_FEE = Integer.parseInt(Feature.getProperty("CastleMpRegenerationFeeLvl2", "65000"));
+			CS_HPREG_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleHpRegenerationFunctionFeeRatio", "604800000"));
+			CS_HPREG1_FEE = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl1", "12000"));
+			CS_HPREG2_FEE = Integer.parseInt(Feature.getProperty("CastleHpRegenerationFeeLvl2", "20000"));
+			CS_EXPREG_FEE_RATIO = Long.parseLong(Feature.getProperty("CastleExpRegenerationFunctionFeeRatio", "604800000"));
+			CS_EXPREG1_FEE = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl1", "63000"));
+			CS_EXPREG2_FEE = Integer.parseInt(Feature.getProperty("CastleExpRegenerationFeeLvl2", "70000"));
+			
+			OUTER_DOOR_UPGRADE_PRICE2 = Integer.parseInt(Feature.getProperty("OuterDoorUpgradePriceLvl2", "3000000"));
+			OUTER_DOOR_UPGRADE_PRICE3 = Integer.parseInt(Feature.getProperty("OuterDoorUpgradePriceLvl3", "4000000"));
+			OUTER_DOOR_UPGRADE_PRICE5 = Integer.parseInt(Feature.getProperty("OuterDoorUpgradePriceLvl5", "5000000"));
+			INNER_DOOR_UPGRADE_PRICE2 = Integer.parseInt(Feature.getProperty("InnerDoorUpgradePriceLvl2", "750000"));
+			INNER_DOOR_UPGRADE_PRICE3 = Integer.parseInt(Feature.getProperty("InnerDoorUpgradePriceLvl3", "900000"));
+			INNER_DOOR_UPGRADE_PRICE5 = Integer.parseInt(Feature.getProperty("InnerDoorUpgradePriceLvl5", "1000000"));
+			WALL_UPGRADE_PRICE2 = Integer.parseInt(Feature.getProperty("WallUpgradePriceLvl2", "1600000"));
+			WALL_UPGRADE_PRICE3 = Integer.parseInt(Feature.getProperty("WallUpgradePriceLvl3", "1800000"));
+			WALL_UPGRADE_PRICE5 = Integer.parseInt(Feature.getProperty("WallUpgradePriceLvl5", "2000000"));
+			TRAP_UPGRADE_PRICE1 = Integer.parseInt(Feature.getProperty("TrapUpgradePriceLvl1", "3000000"));
+			TRAP_UPGRADE_PRICE2 = Integer.parseInt(Feature.getProperty("TrapUpgradePriceLvl2", "4000000"));
+			TRAP_UPGRADE_PRICE3 = Integer.parseInt(Feature.getProperty("TrapUpgradePriceLvl3", "5000000"));
+			TRAP_UPGRADE_PRICE4 = Integer.parseInt(Feature.getProperty("TrapUpgradePriceLvl4", "6000000"));
 			
 			FS_TELE_FEE_RATIO = Long.parseLong(Feature.getProperty("FortressTeleportFunctionFeeRatio", "604800000"));
 			FS_TELE1_FEE = Integer.parseInt(Feature.getProperty("FortressTeleportFunctionFeeLvl1", "1000"));
@@ -1629,7 +1648,34 @@ public final class Config
 			AUGMENTATION_BASESTAT_CHANCE = Integer.parseInt(Character.getProperty("AugmentationBaseStatChance", "1"));
 			AUGMENTATION_ACC_SKILL_CHANCE = Integer.parseInt(Character.getProperty("AugmentationAccSkillChance", "0"));
 			
-			String[] array = Character.getProperty("AugmentationBlackList", "6656,6657,6658,6659,6660,6661,6662,8191,10170,10314,13740,13741,13742,13743,13744,13745,13746,13747,13748,14592,14593,14594,14595,14596,14597,14598,14599,14600,14664,14665,14666,14667,14668,14669,14670,14671,14672,14801,14802,14803,14804,14805,14806,14807,14808,14809,15282,15283,15284,15285,15286,15287,15288,15289,15290,15291,15292,15293,15294,15295,15296,15297,15298,15299,16025,16026,21712,22173,22174,22175").split(",");
+			RETAIL_LIKE_AUGMENTATION = Boolean.parseBoolean(Character.getProperty("RetailLikeAugmentation", "True"));
+			String[] array = Character.getProperty("RetailLikeAugmentationNoGradeChance", "55,35,7,3").split(",");
+			RETAIL_LIKE_AUGMENTATION_NG_CHANCE = new int[array.length];
+			for (int i = 0; i < 4; i++)
+			{
+				RETAIL_LIKE_AUGMENTATION_NG_CHANCE[i] = Integer.parseInt(array[i]);
+			}
+			array = Character.getProperty("RetailLikeAugmentationMidGradeChance", "55,35,7,3").split(",");
+			RETAIL_LIKE_AUGMENTATION_MID_CHANCE = new int[array.length];
+			for (int i = 0; i < 4; i++)
+			{
+				RETAIL_LIKE_AUGMENTATION_MID_CHANCE[i] = Integer.parseInt(array[i]);
+			}
+			array = Character.getProperty("RetailLikeAugmentationHighGradeChance", "55,35,7,3").split(",");
+			RETAIL_LIKE_AUGMENTATION_HIGH_CHANCE = new int[array.length];
+			for (int i = 0; i < 4; i++)
+			{
+				RETAIL_LIKE_AUGMENTATION_HIGH_CHANCE[i] = Integer.parseInt(array[i]);
+			}
+			array = Character.getProperty("RetailLikeAugmentationTopGradeChance", "55,35,7,3").split(",");
+			RETAIL_LIKE_AUGMENTATION_TOP_CHANCE = new int[array.length];
+			for (int i = 0; i < 4; i++)
+			{
+				RETAIL_LIKE_AUGMENTATION_TOP_CHANCE[i] = Integer.parseInt(array[i]);
+			}
+			RETAIL_LIKE_AUGMENTATION_ACCESSORY = Boolean.parseBoolean(Character.getProperty("RetailLikeAugmentationAccessory", "True"));
+			
+			array = Character.getProperty("AugmentationBlackList", "6656,6657,6658,6659,6660,6661,6662,8191,10170,10314,13740,13741,13742,13743,13744,13745,13746,13747,13748,14592,14593,14594,14595,14596,14597,14598,14599,14600,14664,14665,14666,14667,14668,14669,14670,14671,14672,14801,14802,14803,14804,14805,14806,14807,14808,14809,15282,15283,15284,15285,15286,15287,15288,15289,15290,15291,15292,15293,15294,15295,15296,15297,15298,15299,16025,16026,21712,22173,22174,22175").split(",");
 			AUGMENTATION_BLACKLIST = new int[array.length];
 			
 			for (int i = 0; i < array.length; i++)
@@ -1757,6 +1803,7 @@ public final class Config
 			STORE_UI_SETTINGS = Boolean.parseBoolean(Character.getProperty("StoreCharUiSettings", "False"));
 			FORBIDDEN_NAMES = Character.getProperty("ForbiddenNames", "").split(",");
 			SILENCE_MODE_EXCLUDE = Boolean.parseBoolean(Character.getProperty("SilenceModeExclude", "False"));
+			ALT_VALIDATE_TRIGGER_SKILLS = Boolean.parseBoolean(Character.getProperty("AltValidateTriggerSkills", "False"));
 			PLAYER_MOVEMENT_BLOCK_TIME = Integer.parseInt(Character.getProperty("NpcTalkBlockingTime", "0")) * 1000;
 			
 			// Load L2J Server Version L2Properties file (if exists)
@@ -2119,6 +2166,7 @@ public final class Config
 				MIN_BLOCK_CHECKER_TEAM_MEMBERS = 6;
 			}
 			HBCE_FAIR_PLAY = Boolean.parseBoolean(General.getProperty("HBCEFairPlay", "false"));
+			HELLBOUND_WITHOUT_QUEST = Boolean.parseBoolean(General.getProperty("HellboundWithoutQuest", "false"));
 			CLEAR_CREST_CACHE = Boolean.parseBoolean(General.getProperty("ClearClanCache", "false"));
 			
 			NORMAL_ENCHANT_COST_MULTIPLIER = Integer.parseInt(General.getProperty("NormalEnchantCostMultipiler", "1"));

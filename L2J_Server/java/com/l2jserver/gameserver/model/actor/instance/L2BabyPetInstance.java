@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.model.L2PetData.L2PetSkillLearn;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -90,27 +91,6 @@ public final class L2BabyPetInstance extends L2PetInstance
 				
 				switch (skill.getSkillType())
 				{
-					case HEAL:
-						if (healPower == 0)
-						{
-							// set both heal types to the same skill
-							_majorHeal = new SkillHolder(skill);
-							_minorHeal = _majorHeal;
-							healPower = skill.getPower();
-						}
-						else
-						{
-							// another heal skill found - search for most powerful
-							if (skill.getPower() > healPower)
-							{
-								_majorHeal = new SkillHolder(skill);
-							}
-							else
-							{
-								_minorHeal = new SkillHolder(skill);
-							}
-						}
-						break;
 					case BUFF:
 						if (_buffs == null)
 						{
@@ -118,8 +98,33 @@ public final class L2BabyPetInstance extends L2PetInstance
 						}
 						_buffs.add(new SkillHolder(skill));
 						break;
-					case MANAHEAL_BY_LEVEL:
-						_recharge = new SkillHolder(skill);
+					case DUMMY:
+						if (skill.hasEffectType(L2EffectType.MANAHEAL_BY_LEVEL))
+						{
+							_recharge = new SkillHolder(skill);
+						}
+						else if (skill.hasEffectType(L2EffectType.HEAL))
+						{
+							if (healPower == 0)
+							{
+								// set both heal types to the same skill
+								_majorHeal = new SkillHolder(skill);
+								_minorHeal = _majorHeal;
+								healPower = skill.getPower();
+							}
+							else
+							{
+								// another heal skill found - search for most powerful
+								if (skill.getPower() > healPower)
+								{
+									_majorHeal = new SkillHolder(skill);
+								}
+								else
+								{
+									_minorHeal = new SkillHolder(skill);
+								}
+							}
+						}
 						break;
 				}
 			}
@@ -256,7 +261,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 					 * If the owner's HP is more than 80% for Baby Pets and 70% for Improved Baby pets, do nothing. If the owner's HP is very low, under 15% for Baby pets and under 30% for Improved Baby Pets, have 75% chances of using a strong heal. Otherwise, have 25% chances for weak heal.
 					 */
 					final double hpPercent = owner.getCurrentHp() / owner.getMaxHp();
-					final boolean isImprovedBaby = PetDataTable.isImprovedBaby(getNpcId());
+					final boolean isImprovedBaby = PetDataTable.isUpgradeBabyPetGroup(getNpcId());
 					if ((isImprovedBaby && (hpPercent < 0.3)) || (!isImprovedBaby && (hpPercent < 0.15)))
 					{
 						skill = _majorHeal.getSkill();
