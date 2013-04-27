@@ -41,6 +41,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.effects.EffectTemplate;
 import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.Fort;
@@ -1649,36 +1650,25 @@ public final class Formulas
 		return skillLvlBonusRateMod * lvlMod;
 	}
 	
-	public static int calcElementModifier(L2Character attacker, L2Character target, L2Skill skill)
+	public static double calcElementMod(L2Character attacker, L2Character target, L2Skill skill)
 	{
-		final byte element = skill.getElement();
-		
-		if (element == Elementals.NONE)
+		final byte skillElement = skill.getElement();
+		if (skillElement == Elementals.NONE)
 		{
-			return 0;
+			return 1;
 		}
 		
-		int result = skill.getElementPower();
-		if (attacker.getAttackElement() == element)
-		{
-			result += attacker.getAttackElementValue(element);
-		}
-		
-		result -= target.getDefenseElementValue(element);
-		
-		if (result < 0)
-		{
-			return 0;
-		}
-		
-		return Math.round((float) result / 10);
+		int attackerElement = attacker.getAttackElement() == skillElement ? attacker.getAttackElementValue(skillElement) + skill.getElementPower() : attacker.getAttackElementValue(skillElement);
+		int targetElement = target.getDefenseElementValue(skillElement);
+		double elementMod = 1 + ((attackerElement - targetElement) / 1000.);
+		return elementMod;
 	}
 	
 	public static boolean calcEffectSuccess(L2Character attacker, L2Character target, EffectTemplate effect, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
 	{
 		// Effect base rate, if it's -1 (or less) always land.
 		final double baseRate = effect.getEffectPower();
-		if (baseRate < 0)
+		if ((baseRate < 0) || skill.hasEffectType(L2EffectType.CANCEL_DEBUFF, L2EffectType.CANCEL))
 		{
 			return true;
 		}
@@ -1726,9 +1716,9 @@ public final class Formulas
 		double lvlBonusMod = calcLvlBonusMod(attacker, target, skill);
 		rate *= lvlBonusMod;
 		
-		// Element Bonus.
-		int elementModifier = calcElementModifier(attacker, target, skill);
-		rate += elementModifier;
+		// Element Modifier.
+		double elementMod = calcElementMod(attacker, target, skill);
+		rate *= elementMod;
 		
 		// Add Matk/Mdef Bonus (TODO: Pending)
 		
@@ -1738,7 +1728,7 @@ public final class Formulas
 		if (attacker.isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, skill.getName(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.valueOf(elementModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
+			StringUtil.append(stat, skill.getName(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.format("%1.2f", elementMod), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
 			final String result = stat.toString();
 			if (attacker.isDebug())
 			{
@@ -1798,9 +1788,9 @@ public final class Formulas
 		double lvlBonusMod = calcLvlBonusMod(attacker, target, skill);
 		rate *= lvlBonusMod;
 		
-		// Element Bonus.
-		int elementModifier = calcElementModifier(attacker, target, skill);
-		rate += elementModifier;
+		// Element Modifier.
+		double elementMod = calcElementMod(attacker, target, skill);
+		rate *= elementMod;
 		
 		// Add Matk/Mdef Bonus (TODO: Pending)
 		
@@ -1810,7 +1800,7 @@ public final class Formulas
 		if (attacker.isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, skill.getName(), " type:", skill.getSkillType().toString(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.valueOf(elementModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
+			StringUtil.append(stat, skill.getName(), " type:", skill.getSkillType().toString(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.format("%1.2f", elementMod), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
 			final String result = stat.toString();
 			if (attacker.isDebug())
 			{
@@ -1867,24 +1857,11 @@ public final class Formulas
 		double lvlBonusMod = calcLvlBonusMod(attacker.getOwner(), target, skill);
 		rate *= lvlBonusMod;
 		
-		// Element Bonus.
-		int elementModifier = calcElementModifier(attacker.getOwner(), target, skill);
-		rate += elementModifier;
+		// Element Modifier.
+		double elementMod = calcElementMod(attacker.getOwner(), target, skill);
+		rate *= elementMod;
 		
-		// Add Matk/Mdef Bonus
-		double mAtkModifier = 0;
-		if (skill.isMagic())
-		{
-			mAtkModifier = target.getMDef(attacker.getOwner(), skill);
-			if (shld == SHIELD_DEFENSE_SUCCEED)
-			{
-				mAtkModifier += target.getShldDef();
-			}
-			
-			mAtkModifier = Math.pow(attacker.getCubicPower() / mAtkModifier, 0.2);
-			
-			rate += (int) (mAtkModifier * 100) - 100;
-		}
+		// Add Matk/Mdef Bonus (TODO: Pending)
 		
 		// Check the Rate Limits.
 		rate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
@@ -1892,7 +1869,7 @@ public final class Formulas
 		if (attacker.getOwner().isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, skill.getName(), " type:", skill.getSkillType().toString(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.valueOf(elementModifier), " mAtk:", String.format("%1.2f", mAtkModifier), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
+			StringUtil.append(stat, skill.getName(), " type:", skill.getSkillType().toString(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") elem:", String.format("%1.2f", elementMod), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
 			final String result = stat.toString();
 			if (attacker.getOwner().isDebug())
 			{
