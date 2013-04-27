@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.model.effects;
 
 /**
+ * Effect state enum.
  * @author Zoey76
  */
 public enum EffectState

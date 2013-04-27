@@ -431,7 +431,6 @@ public final class Config
 	public static boolean GM_STARTUP_SILENCE;
 	public static boolean GM_STARTUP_AUTO_LIST;
 	public static boolean GM_STARTUP_DIET_MODE;
-	public static String GM_ADMIN_MENU_STYLE;
 	public static boolean GM_ITEM_RESTRICTION;
 	public static boolean GM_SKILL_RESTRICTION;
 	public static boolean GM_TRADE_RESTRICTED_ITEMS;
@@ -1906,7 +1905,6 @@ public final class Config
 			GM_STARTUP_SILENCE = Boolean.parseBoolean(General.getProperty("GMStartupSilence", "False"));
 			GM_STARTUP_AUTO_LIST = Boolean.parseBoolean(General.getProperty("GMStartupAutoList", "False"));
 			GM_STARTUP_DIET_MODE = Boolean.parseBoolean(General.getProperty("GMStartupDietMode", "False"));
-			GM_ADMIN_MENU_STYLE = General.getProperty("GMAdminMenuStyle", "modern");
 			GM_ITEM_RESTRICTION = Boolean.parseBoolean(General.getProperty("GMItemRestriction", "True"));
 			GM_SKILL_RESTRICTION = Boolean.parseBoolean(General.getProperty("GMSkillRestriction", "True"));
 			GM_TRADE_RESTRICTED_ITEMS = Boolean.parseBoolean(General.getProperty("GMTradeRestrictedItems", "False"));
@@ -3942,9 +3940,6 @@ public final class Config
 				break;
 			case "tradechat":
 				DEFAULT_TRADE_CHAT = pValue;
-				break;
-			case "gmadminmenustyle":
-				GM_ADMIN_MENU_STYLE = pValue;
 				break;
 			default:
 				try

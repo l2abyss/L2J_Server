@@ -311,10 +311,9 @@ public final class L2BabyPetInstance extends L2PetInstance
 					// buffs found, checking owner buffs
 					if (!_currentBuffs.isEmpty())
 					{
-						L2Effect[] effects = owner.getAllEffects();
 						Iterator<L2Skill> iter;
 						L2Skill currentSkill;
-						for (L2Effect e : effects)
+						for (L2Effect e : owner.getAllEffects())
 						{
 							if (e == null)
 							{
@@ -339,8 +338,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 								}
 								else
 								{
-									// effect with same stacktype and greater or equal stackorder
-									if (skill.hasEffects() && !"none".equals(skill.getEffectTemplates()[0].abnormalType) && e.getAbnormalType().equals(skill.getEffectTemplates()[0].abnormalType) && (e.getAbnormalLvl() >= skill.getEffectTemplates()[0].abnormalLvl))
+									if (!skill.getAbnormalType().isNone() && (currentSkill.getAbnormalType() == skill.getAbnormalType()) && (currentSkill.getAbnormalLvl() >= skill.getAbnormalLvl()))
 									{
 										iter.remove();
 									}

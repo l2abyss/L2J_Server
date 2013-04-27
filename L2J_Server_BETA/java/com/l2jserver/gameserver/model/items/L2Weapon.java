@@ -18,10 +18,10 @@
  */
 package com.l2jserver.gameserver.model.items;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-
-import javolution.util.FastList;
 
 import com.l2jserver.gameserver.handler.ISkillHandler;
 import com.l2jserver.gameserver.handler.SkillHandler;
@@ -326,14 +326,13 @@ public final class L2Weapon extends L2Item
 	 * @param crit the boolean tells whether the hit was critical
 	 * @return the effects of skills associated with the item to be triggered onHit.
 	 */
-	public L2Effect[] getSkillEffects(L2Character caster, L2Character target, boolean crit)
+	public List<L2Effect> getSkillEffects(L2Character caster, L2Character target, boolean crit)
 	{
 		if ((_skillsOnCrit == null) || !crit)
 		{
-			return _emptyEffectSet;
+			return Collections.<L2Effect> emptyList();
 		}
 		
-		final List<L2Effect> effects = new FastList<>();
 		final L2Skill onCritSkill = _skillsOnCrit.getSkill();
 		if (_skillsOnCritCondition != null)
 		{
@@ -344,35 +343,32 @@ public final class L2Weapon extends L2Item
 			if (!_skillsOnCritCondition.test(env))
 			{
 				// Chance not met
-				return _emptyEffectSet;
+				return Collections.<L2Effect> emptyList();
 			}
 		}
 		
 		if (!onCritSkill.checkCondition(caster, target, false))
 		{
 			// Skill condition not met
-			return _emptyEffectSet;
+			return Collections.<L2Effect> emptyList();
 		}
 		
 		final byte shld = Formulas.calcShldUse(caster, target, onCritSkill);
 		if (!Formulas.calcSkillSuccess(caster, target, onCritSkill, shld, false, false, false))
 		{
 			// These skills should not work on RaidBoss
-			return _emptyEffectSet;
+			return Collections.<L2Effect> emptyList();
 		}
 		if (target.getFirstEffect(onCritSkill.getId()) != null)
 		{
 			target.getFirstEffect(onCritSkill.getId()).exit();
 		}
+		final List<L2Effect> effects = new ArrayList<>();
 		for (L2Effect e : onCritSkill.getEffects(caster, target, new Env(shld, false, false, false)))
 		{
 			effects.add(e);
 		}
-		if (effects.isEmpty())
-		{
-			return _emptyEffectSet;
-		}
-		return effects.toArray(new L2Effect[effects.size()]);
+		return effects;
 	}
 	
 	/**
@@ -381,23 +377,23 @@ public final class L2Weapon extends L2Item
 	 * @param trigger the L2Skill pointing out the skill triggering this action
 	 * @return the effects of skills associated with the item to be triggered onMagic.
 	 */
-	public L2Effect[] getSkillEffects(L2Character caster, L2Character target, L2Skill trigger)
+	public boolean getSkillEffects(L2Character caster, L2Character target, L2Skill trigger)
 	{
 		if (_skillsOnMagic == null)
 		{
-			return _emptyEffectSet;
+			return false;
 		}
 		
 		final L2Skill onMagicSkill = _skillsOnMagic.getSkill();
 		// No Trigger if Offensive Skill
 		if (trigger.isOffensive() && onMagicSkill.isOffensive())
 		{
-			return _emptyEffectSet;
+			return false;
 		}
 		// No Trigger if not Magic Skill
 		if (!trigger.isMagic() && !onMagicSkill.isMagic())
 		{
-			return _emptyEffectSet;
+			return false;
 		}
 		
 		if (_skillsOnMagicCondition != null)
@@ -409,20 +405,20 @@ public final class L2Weapon extends L2Item
 			if (!_skillsOnMagicCondition.test(env))
 			{
 				// Chance not met
-				return _emptyEffectSet;
+				return false;
 			}
 		}
 		
 		if (!onMagicSkill.checkCondition(caster, target, false))
 		{
 			// Skill condition not met
-			return _emptyEffectSet;
+			return false;
 		}
 		
 		final byte shld = Formulas.calcShldUse(caster, target, onMagicSkill);
 		if (onMagicSkill.isOffensive() && !Formulas.calcSkillSuccess(caster, target, onMagicSkill, shld, false, false, false))
 		{
-			return _emptyEffectSet;
+			return false;
 		}
 		
 		L2Character[] targets =
@@ -462,6 +458,6 @@ public final class L2Weapon extends L2Item
 				}
 			}
 		}
-		return _emptyEffectSet;
+		return true;
 	}
 }

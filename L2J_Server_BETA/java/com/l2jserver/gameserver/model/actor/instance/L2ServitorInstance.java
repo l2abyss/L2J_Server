@@ -397,7 +397,7 @@ public class L2ServitorInstance extends L2Summon
 						
 						storedSkills.add(skill.getReuseHashCode());
 						
-						if (effect.getInUse() && !skill.isToggle())
+						if (effect.isInUse() && !skill.isToggle())
 						{
 							ps2.setInt(1, getOwner().getObjectId());
 							ps2.setInt(2, getOwner().getClassIndex());

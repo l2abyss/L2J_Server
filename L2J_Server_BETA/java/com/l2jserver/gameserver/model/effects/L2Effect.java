@@ -19,6 +19,8 @@
 package com.l2jserver.gameserver.model.effects;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -29,13 +31,13 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.ChanceCondition;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.skills.funcs.Lambda;
 import com.l2jserver.gameserver.model.stats.Env;
+import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AbnormalStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadSpelledInfo;
@@ -44,60 +46,41 @@ import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.PartySpelled;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
+/**
+ * Abstract effect implementation.
+ * @author Zoey76
+ */
 public abstract class L2Effect implements IChanceSkillTrigger
 {
 	protected static final Logger _log = Logger.getLogger(L2Effect.class.getName());
-	
-	private static final Func[] _emptyFunctionSet = new Func[0];
-	
-	// member _effector is the instance of L2Character that cast/used the spell/skill that is
-	// causing this effect. Do not confuse with the instance of L2Character that
-	// is being affected by this effect.
+	/** The character that creates this effect. */
 	private final L2Character _effector;
-	
-	// member _effected is the instance of L2Character that was affected
-	// by this effect. Do not confuse with the instance of L2Character that
-	// casted/used this effect.
+	/** The character that is affected by this effect. */
 	private final L2Character _effected;
-	
-	// the skill that was used.
+	/** The skill that launched this effect. */
 	private final L2Skill _skill;
-	
-	// the value of an update
+	/** The value on an update. */
 	private final Lambda _lambda;
-	
-	// the current state
+	/** The current state. */
 	private EffectState _state;
-	
-	// period, seconds
-	private final int _abnormalTime;
+	/** The game ticks at the start of this effect. */
 	protected int _periodStartTicks;
 	protected int _periodFirstTime;
-	
+	/** The effect template. */
 	private final EffectTemplate _template;
-	
-	// function templates
-	private final FuncTemplate[] _funcTemplates;
-	
-	// initial count
-	private final int _totalCount;
-	// counter
+	/** Effect count. */
 	private int _count;
-	
-	// abnormal effect mask
-	private final AbnormalEffect _abnormalEffect;
-	// special effect mask
-	private final AbnormalEffect[] _specialEffect;
-	// event effect mask
-	private final AbnormalEffect _eventEffect;
-	// show icon
-	private final boolean _icon;
-	// is self effect?
+	/** Effect's abnormal time. */
+	private final int _abnormalTime;
+	/** If {@code true} then it's a self-effect. */
 	private boolean _isSelfEffect = false;
-	// is passive effect?
-	private boolean _isPassiveEffect = false;
-	
-	public boolean preventExitUpdate;
+	/** If {@code true} then prevent exit update. */
+	private boolean _preventExitUpdate;
+	private ScheduledFuture<?> _currentFuture;
+	/** If {@code true} then this effect is in use. */
+	private boolean _inUse = false;
+	/** If {@code true} then this effect's start condition are meet. */
+	private boolean _startConditionsCorrect = true;
 	
 	protected final class EffectTask implements Runnable
 	{
@@ -117,27 +100,9 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		}
 	}
 	
-	private ScheduledFuture<?> _currentFuture;
-	
-	/** The Identifier of the stack group */
-	private final String _abnormalType;
-	
-	/** The position of the effect in the stack group */
-	private final byte _abnormalLvl;
-	
-	private boolean _inUse = false;
-	private boolean _startConditionsCorrect = true;
-	
 	/**
-	 * For special behavior. See Formulas.calcEffectSuccess
-	 */
-	private double _effectPower;
-	
-	/**
-	 * <font color="FF0000"><b>WARNING: scheduleEffect no longer inside constructor</b></font><br>
-	 * So you must call it explicitly
-	 * @param env
-	 * @param template
+	 * @param env DTO with required data
+	 * @param template the effect template
 	 */
 	protected L2Effect(Env env, EffectTemplate template)
 	{
@@ -146,45 +111,18 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		_template = template;
 		_effected = env.getTarget();
 		_effector = env.getCharacter();
-		_lambda = template.lambda;
-		_funcTemplates = template.funcTemplates;
-		_count = template.counter;
-		_totalCount = _count;
-		
-		// Support for retail herbs duration when _effected has a Summon
-		int temp = template.abnormalTime;
-		if ((_effected != null) && (((_skill.getId() > 2277) && (_skill.getId() < 2286)) || ((_skill.getId() >= 2512) && (_skill.getId() <= 2514))))
-		{
-			final L2Summon summon = _effected.getSummon();
-			if ((summon != null) && summon.isServitor())
-			{
-				temp /= 2;
-			}
-		}
-		
-		if (env.isSkillMastery())
-		{
-			temp *= 2;
-		}
-		
-		_abnormalTime = temp;
-		_abnormalEffect = template.abnormalEffect;
-		_specialEffect = template.specialEffect;
-		_eventEffect = template.eventEffect;
-		_abnormalType = template.abnormalType;
-		_abnormalLvl = template.abnormalLvl;
+		_lambda = template.getLambda();
+		_count = template.getTotalCount(); // Initial count is total count.
+		_abnormalTime = Formulas.calcEffectAbnormalTime(env, template);
 		_periodStartTicks = GameTimeController.getInstance().getGameTicks();
 		_periodFirstTime = 0;
-		_icon = template.icon;
-		_effectPower = template.effectPower;
 	}
 	
 	/**
-	 * Special constructor to "steal" buffs. Must be implemented on every child class that can be stolen.<br>
-	 * <font color="FF0000"><b>WARNING: scheduleEffect no longer inside constructor</b></font><br>
-	 * So you must call it explicitly.
-	 * @param env
-	 * @param effect
+	 * Special constructor to "steal" buffs.<br>
+	 * Must be implemented on every child class that can be stolen.
+	 * @param env DTO with required data
+	 * @param effect the stolen effect, used as "template"
 	 */
 	protected L2Effect(Env env, L2Effect effect)
 	{
@@ -193,23 +131,11 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		_skill = env.getSkill();
 		_effected = env.getTarget();
 		_effector = env.getCharacter();
-		_lambda = _template.lambda;
-		_funcTemplates = _template.funcTemplates;
+		_lambda = _template.getLambda();
 		_count = effect.getCount();
-		_totalCount = _template.counter;
-		_abnormalTime = _template.abnormalTime;
-		_abnormalEffect = _template.abnormalEffect;
-		_specialEffect = _template.specialEffect;
-		_eventEffect = _template.eventEffect;
-		_abnormalType = _template.abnormalType;
-		_abnormalLvl = _template.abnormalLvl;
+		_abnormalTime = effect.getAbnormalTime();
 		_periodStartTicks = effect.getPeriodStartTicks();
 		_periodFirstTime = effect.getTime();
-		_icon = _template.icon;
-		
-		// Commented out by DrHouse:
-		// scheduleEffect can call onStart before effect is completly initialized on constructor (child classes constructor)
-		// scheduleEffect();
 	}
 	
 	public int getCount()
@@ -219,12 +145,12 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	
 	public int getTotalCount()
 	{
-		return _totalCount;
+		return _template.getTotalCount();
 	}
 	
 	public void setCount(int newcount)
 	{
-		_count = Math.min(newcount, _totalCount); // sanity check
+		_count = Math.min(newcount, _template.getTotalCount());
 	}
 	
 	public void setFirstTime(int newFirstTime)
@@ -233,11 +159,17 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		_periodStartTicks -= _periodFirstTime * GameTimeController.TICKS_PER_SECOND;
 	}
 	
-	public boolean getShowIcon()
+	/**
+	 * @return {@code true} if this effect display an icon, {@code false} otherwise
+	 */
+	public boolean isIconDisplay()
 	{
-		return _icon;
+		return _template.isIconDisplay();
 	}
 	
+	/**
+	 * @return this effect's calculated abnormal time
+	 */
 	public int getAbnormalTime()
 	{
 		return _abnormalTime;
@@ -249,19 +181,22 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	}
 	
 	/**
-	 * Returns the elapsed time of the task.
-	 * @return Time in seconds.
+	 * Get the elapsed time.
+	 * @return the elapsed time of the task in seconds
 	 */
 	public int getTaskTime()
 	{
-		if (_count == _totalCount)
+		if (_count == _template.getTotalCount())
 		{
 			return 0;
 		}
-		return (Math.abs((_count - _totalCount) + 1) * _abnormalTime) + getTime() + 1;
+		return Math.abs(((_count - _template.getTotalCount()) + 1) * _abnormalTime) + getTime() + 1;
 	}
 	
-	public boolean getInUse()
+	/**
+	 * @return {@code true} if the effect is in use, {@code false} otherwise
+	 */
+	public boolean isInUse()
 	{
 		return _inUse;
 	}
@@ -277,30 +212,31 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		{
 			onExit();
 		}
-		
 		return _startConditionsCorrect;
 	}
 	
-	public String getAbnormalType()
-	{
-		return _abnormalType;
-	}
-	
-	public byte getAbnormalLvl()
-	{
-		return _abnormalLvl;
-	}
-	
+	/**
+	 * Get the skill that launched this effect.
+	 * @return the skill related to this effect
+	 */
 	public final L2Skill getSkill()
 	{
 		return _skill;
 	}
 	
+	/**
+	 * Get the character that evoked this effect.
+	 * @return the effector
+	 */
 	public final L2Character getEffector()
 	{
 		return _effector;
 	}
 	
+	/**
+	 * Get the character that received this effect.
+	 * @return the effected
+	 */
 	public final L2Character getEffected()
 	{
 		return _effected;
@@ -314,16 +250,6 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	public void setSelfEffect()
 	{
 		_isSelfEffect = true;
-	}
-	
-	public boolean isPassiveEffect()
-	{
-		return _isPassiveEffect;
-	}
-	
-	public void setPassiveEffect()
-	{
-		_isPassiveEffect = true;
 	}
 	
 	public final double calc()
@@ -350,17 +276,6 @@ public abstract class L2Effect implements IChanceSkillTrigger
 				_currentFuture = ThreadPoolManager.getInstance().scheduleEffect(new EffectTask(), initialDelay);
 			}
 		}
-		if (_state == EffectState.ACTING)
-		{
-			if (isSelfEffectType())
-			{
-				_effector.addEffect(this);
-			}
-			else
-			{
-				_effected.addEffect(this);
-			}
-		}
 	}
 	
 	/**
@@ -376,9 +291,9 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		exit(false);
 	}
 	
-	public final void exit(boolean preventUpdate)
+	public final void exit(boolean preventExitUpdate)
 	{
-		preventExitUpdate = preventUpdate;
+		_preventExitUpdate = preventExitUpdate;
 		_state = EffectState.FINISHING;
 		scheduleEffect();
 	}
@@ -397,23 +312,17 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		{
 			// Cancel the task
 			_currentFuture.cancel(false);
-			// ThreadPoolManager.getInstance().removeEffect(_currentTask);
-			
 			_currentFuture = null;
 			
-			if (isSelfEffectType() && (getEffector() != null))
+			if (getEffected() != null)
 			{
-				getEffector().removeEffect(this);
-			}
-			else if (getEffected() != null)
-			{
-				getEffected().removeEffect(this);
+				getEffected().getEffectList().remove(this);
 			}
 		}
 	}
 	
 	/**
-	 * @return effect type
+	 * @return the effect type
 	 */
 	public abstract L2EffectType getEffectType();
 	
@@ -423,17 +332,17 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	 */
 	public boolean onStart()
 	{
-		if (_abnormalEffect != AbnormalEffect.NULL)
+		if (_template.getAbnormalEffect() != AbnormalEffect.NULL)
 		{
-			getEffected().startAbnormalEffect(_abnormalEffect);
+			getEffected().startAbnormalEffect(_template.getAbnormalEffect());
 		}
-		if (_specialEffect != null)
+		if (_template.getSpecialEffect() != null)
 		{
-			getEffected().startSpecialEffect(_specialEffect);
+			getEffected().startSpecialEffect(_template.getSpecialEffect());
 		}
-		if ((_eventEffect != AbnormalEffect.NULL) && getEffected().isPlayer())
+		if ((_template.getEventEffect() != AbnormalEffect.NULL) && getEffected().isPlayer())
 		{
-			getEffected().getActingPlayer().startEventEffect(_eventEffect);
+			getEffected().getActingPlayer().startEventEffect(_template.getEventEffect());
 		}
 		return true;
 	}
@@ -443,17 +352,17 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	 */
 	public void onExit()
 	{
-		if (_abnormalEffect != AbnormalEffect.NULL)
+		if (_template.getAbnormalEffect() != AbnormalEffect.NULL)
 		{
-			getEffected().stopAbnormalEffect(_abnormalEffect);
+			getEffected().stopAbnormalEffect(_template.getAbnormalEffect());
 		}
-		if (_specialEffect != null)
+		if (_template.getSpecialEffect() != null)
 		{
-			getEffected().stopSpecialEffect(_specialEffect);
+			getEffected().stopSpecialEffect(_template.getSpecialEffect());
 		}
-		if ((_eventEffect != AbnormalEffect.NULL) && getEffected().isPlayer())
+		if ((_template.getEventEffect() != AbnormalEffect.NULL) && getEffected().isPlayer())
 		{
-			getEffected().getActingPlayer().stopEventEffect(_eventEffect);
+			getEffected().getActingPlayer().stopEventEffect(_template.getEventEffect());
 		}
 	}
 	
@@ -470,11 +379,11 @@ public abstract class L2Effect implements IChanceSkillTrigger
 			{
 				_state = EffectState.ACTING;
 				
-				if (_skill.isPVP() && _icon && getEffected().isPlayer())
+				if (_skill.isPVP() && isIconDisplay() && getEffected().isPlayer())
 				{
-					SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
-					smsg.addSkillName(_skill);
-					getEffected().sendPacket(smsg);
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
+					sm.addSkillName(_skill);
+					getEffected().sendPacket(sm);
 				}
 				
 				if (_abnormalTime != 0)
@@ -490,7 +399,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 				if (_count > 0)
 				{
 					_count--;
-					if (getInUse())
+					if (isInUse())
 					{
 						// effect has to be in use
 						if (onActionTime() && _startConditionsCorrect && (_count >= 0))
@@ -509,22 +418,24 @@ public abstract class L2Effect implements IChanceSkillTrigger
 			case FINISHING:
 			{
 				// If the time left is equal to zero, send the message
-				if ((_count == 0) && _icon && getEffected().isPlayer())
+				if ((_count == 0) && isIconDisplay() && getEffected().isPlayer())
 				{
-					SystemMessage smsg3 = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_WORN_OFF);
-					smsg3.addSkillName(_skill);
-					getEffected().sendPacket(smsg3);
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_WORN_OFF);
+					sm.addSkillName(_skill);
+					getEffected().sendPacket(sm);
 				}
+				
 				// if task is null - stopEffectTask does not remove effect
 				if ((_currentFuture == null) && (getEffected() != null))
 				{
-					getEffected().removeEffect(this);
+					getEffected().getEffectList().remove(this);
 				}
+				
 				// Stop the task of the L2Effect, remove it and update client magic icon
 				stopEffectTask();
 				
 				// Cancel the effect in the the abnormal effect map of the L2Character
-				if (getInUse() || !((_count > 1) || (_abnormalTime > 0)))
+				if (isInUse() || !((_count > 1) || (_abnormalTime > 0)))
 				{
 					if (_startConditionsCorrect)
 					{
@@ -546,35 +457,27 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		}
 	}
 	
-	public Func[] getStatFuncs()
+	public List<Func> getStatFuncs()
 	{
-		if (_funcTemplates == null)
+		if (_template.getFuncTemplates() == null)
 		{
-			return _emptyFunctionSet;
+			return Collections.<Func> emptyList();
 		}
 		
-		final ArrayList<Func> funcs = new ArrayList<>(_funcTemplates.length);
-		
-		Env env = new Env();
+		final List<Func> funcs = new ArrayList<>(_template.getFuncTemplates().size());
+		final Env env = new Env();
 		env.setCharacter(_effector);
 		env.setTarget(_effected);
 		env.setSkill(_skill);
-		
-		Func f;
-		for (FuncTemplate t : _funcTemplates)
+		for (FuncTemplate t : _template.getFuncTemplates())
 		{
-			f = t.getFunc(env, this); // effect is owner
+			Func f = t.getFunc(env, this); // effect is owner
 			if (f != null)
 			{
 				funcs.add(f);
 			}
 		}
-		
-		if (funcs.isEmpty())
-		{
-			return _emptyFunctionSet;
-		}
-		return funcs.toArray(new Func[funcs.size()]);
+		return funcs;
 	}
 	
 	public final void addIcon(AbnormalStatusUpdate mi)
@@ -586,11 +489,11 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		
 		final ScheduledFuture<?> future = _currentFuture;
 		final L2Skill sk = getSkill();
-		if (_totalCount > 1)
+		if (_template.getTotalCount() > 1)
 		{
 			if (sk.isStatic())
 			{
-				mi.addEffect(sk.getDisplayId(), sk.getDisplayLevel(), sk.getBuffDuration() - (getTaskTime() * 1000));
+				mi.addEffect(sk.getDisplayId(), sk.getDisplayLevel(), (_abnormalTime - getTaskTime()) * 1000);
 			}
 			else
 			{
@@ -662,26 +565,20 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	
 	public double getEffectPower()
 	{
-		return _effectPower;
-	}
-	
-	public boolean canBeStolen()
-	{
-		// TODO: Unhardcode skillId
-		return (!effectCanBeStolen() || (getEffectType() == L2EffectType.TRANSFORMATION) || getSkill().isPassive() || getSkill().isToggle() || getSkill().isDebuff() || getSkill().isHeroSkill() || getSkill().isGMSkill() || (getSkill().isStatic() && ((getSkill().getId() != 2274) && (getSkill().getId() != 2341))) || !getSkill().canBeDispeled()) ? false : true;
+		return _template.getEffectPower();
 	}
 	
 	/**
+	 * TODO: Unhardcode skill Id.
 	 * @return {@code true} if effect itself can be stolen, {@code false} otherwise
 	 */
-	protected boolean effectCanBeStolen()
+	public boolean canBeStolen()
 	{
-		return false;
+		return (getEffectType() != L2EffectType.TRANSFORMATION) && !getSkill().isPassive() && !getSkill().isToggle() && !getSkill().isDebuff() && !getSkill().isHeroSkill() && !getSkill().isGMSkill() && !(getSkill().isStatic() && ((getSkill().getId() != 2274) && (getSkill().getId() != 2341))) && getSkill().canBeDispeled();
 	}
 	
 	/**
-	 * Return bit flag for current effect
-	 * @return int flag
+	 * @return bit flag for current effect
 	 */
 	public int getEffectFlags()
 	{
@@ -691,35 +588,22 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	@Override
 	public String toString()
 	{
-		return "L2Effect [_skill=" + _skill + ", _state=" + _state + ", _period=" + _abnormalTime + "]";
-	}
-	
-	public boolean isSelfEffectType()
-	{
-		return false;
+		return "Effect " + getClass().getSimpleName() + ", " + _skill + ", State: " + _state + ", Abnormal time: " + _abnormalTime;
 	}
 	
 	public void decreaseForce()
 	{
+		
 	}
 	
 	public void increaseEffect()
 	{
+		
 	}
 	
 	public int getForceEffect()
 	{
 		return 0;
-	}
-	
-	public boolean isBuffEffect()
-	{
-		return false;
-	}
-	
-	public boolean isDebuffEffect()
-	{
-		return false;
 	}
 	
 	@Override
@@ -744,5 +628,15 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	public ChanceCondition getTriggeredChanceCondition()
 	{
 		return null;
+	}
+	
+	public boolean isPreventExitUpdate()
+	{
+		return _preventExitUpdate;
+	}
+	
+	public void setPreventExitUpdate(boolean val)
+	{
+		_preventExitUpdate = val;
 	}
 }

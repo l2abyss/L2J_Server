@@ -30,7 +30,8 @@ import com.l2jserver.util.Rnd;
  */
 public final class ChanceCondition
 {
-	protected static final Logger _log = Logger.getLogger(ChanceCondition.class.getName());
+	private static final Logger _log = Logger.getLogger(ChanceCondition.class.getName());
+	
 	public static final int EVT_HIT = 1;
 	public static final int EVT_CRIT = 2;
 	public static final int EVT_CAST = 4;

@@ -94,6 +94,7 @@ import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.options.OptionsSkillHolder;
 import com.l2jserver.gameserver.model.options.OptionsSkillType;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
@@ -227,6 +228,13 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	protected final String COND_EXCEPTIONS = "COND_EX_" + getObjectId();
 	
 	private volatile Map<Integer, OptionsSkillHolder> _triggerSkills;
+	
+	private final CharEffectList _effectList = new CharEffectList(this);
+	
+	public final CharEffectList getEffectList()
+	{
+		return _effectList;
+	}
 	
 	/**
 	 * @return True if debugging is enabled for this L2Character
@@ -3112,60 +3120,11 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		}
 	}
 	
-	// Abnormal Effect - NEED TO REMOVE ONCE L2CHARABNORMALEFFECT IS COMPLETE
+	// TODO: Abnormal Effect - NEED TO REMOVE ONCE L2CHARABNORMALEFFECT IS COMPLETE
 	/** Map 32 bits (0x0000) containing all abnormal effect in progress */
 	private int _AbnormalEffects;
 	
-	protected CharEffectList _effects = new CharEffectList(this);
-	
 	private int _SpecialEffects;
-	
-	/**
-	 * Launch and add L2Effect (including Stack Group management) to L2Character and update client magic icon.<br>
-	 * <B><U>Concept</U>:</B><br>
-	 * All active skills effects in progress on the L2Character are identified in ConcurrentHashMap(Integer,L2Effect) <B>_effects</B>.<br>
-	 * The Integer key of _effects is the L2Skill Identifier that has created the L2Effect.<br>
-	 * Several same effect can't be used on a L2Character at the same time.<br>
-	 * Indeed, effects are not stackable and the last cast will replace the previous in progress.<br>
-	 * More, some effects belong to the same Stack Group (ex WindWald and Haste Potion).<br>
-	 * If 2 effects of a same group are used at the same time on a L2Character, only the more efficient (identified by its priority order) will be preserve.<br>
-	 * <B><U>Actions</U>:</B>
-	 * <ul>
-	 * <li>Add the L2Effect to the L2Character _effects</li>
-	 * <li>If this effect doesn't belong to a Stack Group, add its Funcs to the Calculator set of the L2Character (remove the old one if necessary)</li>
-	 * <li>If this effect has higher priority in its Stack Group, add its Funcs to the Calculator set of the L2Character (remove previous stacked effect Funcs if necessary)</li>
-	 * <li>If this effect has NOT higher priority in its Stack Group, set the effect to Not In Use</li>
-	 * <li>Update active skills in progress icons on player client</li>
-	 * </ul>
-	 * @param newEffect
-	 */
-	public void addEffect(L2Effect newEffect)
-	{
-		_effects.queueEffect(newEffect, false);
-	}
-	
-	/**
-	 * Stop and remove L2Effect (including Stack Group management) from L2Character and update client magic icon.<br>
-	 * <B><U>Concept</U>:</B><br>
-	 * All active skills effects in progress on the L2Character are identified in ConcurrentHashMap(Integer,L2Effect) <B>_effects</B>.<br>
-	 * The Integer key of _effects is the L2Skill Identifier that has created the L2Effect.<br>
-	 * Several same effect can't be used on a L2Character at the same time.<br>
-	 * Indeed, effects are not stackable and the last cast will replace the previous in progress.<br>
-	 * More, some effects belong to the same Stack Group (ex Wind Walk and Haste Potion).<br>
-	 * If 2 effects of a same group are used at the same time on a L2Character, only the more efficient (identified by its priority order) will be preserve.<br>
-	 * <B><U>Actions</U>:</B>
-	 * <ul>
-	 * <li>Remove Func added by this effect from the L2Character Calculator (Stop L2Effect)</li>
-	 * <li>If the L2Effect belongs to a not empty Stack Group, replace theses Funcs by next stacked effect Funcs</li>
-	 * <li>Remove the L2Effect from _effects of the L2Character</li>
-	 * <li>Update active skills in progress icons on player client</li>
-	 * </ul>
-	 * @param effect
-	 */
-	public final void removeEffect(L2Effect effect)
-	{
-		_effects.queueEffect(effect, true);
-	}
 	
 	/**
 	 * Active abnormal effects flags in the binary mask and send Server->Client UserInfo/CharInfo packet.
@@ -3354,12 +3313,12 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 */
 	public void stopAllEffects()
 	{
-		_effects.stopAllEffects();
+		_effectList.stopAllEffects();
 	}
 	
 	public void stopAllEffectsExceptThoseThatLastThroughDeath()
 	{
-		_effects.stopAllEffectsExceptThoseThatLastThroughDeath();
+		_effectList.stopAllEffectsExceptThoseThatLastThroughDeath();
 	}
 	
 	/**
@@ -3381,7 +3340,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		}
 		else
 		{
-			removeEffect(effect);
+			_effectList.remove(effect);
 		}
 		if (!isPlayer())
 		{
@@ -3399,25 +3358,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 */
 	public void stopSkillEffects(int skillId)
 	{
-		_effects.stopSkillEffects(skillId);
-	}
-	
-	/**
-	 * Stop and remove the L2Effects corresponding to the L2SkillType and update client magic icon.<br>
-	 * <B><U>Concept</U>:</B><br>
-	 * All active skills effects in progress on the L2Character are identified in ConcurrentHashMap(Integer,L2Effect) <B>_effects</B>.<br>
-	 * The Integer key of _effects is the L2Skill Identifier that has created the L2Effect.
-	 * @param skillType The L2SkillType of the L2Effect to remove from _effects
-	 * @param negateLvl
-	 */
-	public final void stopSkillEffects(L2SkillType skillType, int negateLvl)
-	{
-		_effects.stopSkillEffects(skillType, negateLvl);
-	}
-	
-	public final void stopSkillEffects(L2SkillType skillType)
-	{
-		_effects.stopSkillEffects(skillType, -1);
+		_effectList.stopSkillEffects(skillId);
 	}
 	
 	/**
@@ -3435,7 +3376,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 */
 	public final void stopEffects(L2EffectType type)
 	{
-		_effects.stopEffects(type);
+		_effectList.stopEffects(type);
 	}
 	
 	/**
@@ -3444,7 +3385,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 */
 	public final void stopEffectsOnAction()
 	{
-		_effects.stopEffectsOnAction();
+		_effectList.stopEffectsOnAction();
 	}
 	
 	/**
@@ -3454,7 +3395,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 */
 	public final void stopEffectsOnDamage(boolean awake)
 	{
-		_effects.stopEffectsOnDamage(awake);
+		_effectList.stopEffectsOnDamage(awake);
 	}
 	
 	/**
@@ -3748,16 +3689,9 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		return se;
 	}
 	
-	/**
-	 * Return all active skills effects in progress on the L2Character.<br>
-	 * <B><U>Concept</U>:</B><br>
-	 * All active skills effects in progress on the L2Character are identified in <B>_effects</B>.<br>
-	 * The Integer key of _effects is the L2Skill Identifier that has created the effect.
-	 * @return A table containing all active skills effect in progress on the L2Character
-	 */
-	public final L2Effect[] getAllEffects()
+	public final List<L2Effect> getAllEffects()
 	{
-		return _effects.getAllEffects();
+		return _effectList.getAllEffects();
 	}
 	
 	/**
@@ -3769,7 +3703,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 */
 	public final L2Effect getFirstEffect(int skillId)
 	{
-		return _effects.getFirstEffect(skillId);
+		return _effectList.getFirstEffect(skillId);
 	}
 	
 	/**
@@ -3781,7 +3715,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 */
 	public final L2Effect getFirstEffect(L2Skill skill)
 	{
-		return _effects.getFirstEffect(skill);
+		return _effectList.getFirstEffect(skill);
 	}
 	
 	/**
@@ -3793,22 +3727,45 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 */
 	public final L2Effect getFirstEffect(L2EffectType tp)
 	{
-		return _effects.getFirstEffect(tp);
+		return _effectList.getFirstEffect(tp);
 	}
 	
 	public final L2Effect getFirstPassiveEffect(L2EffectType type)
 	{
-		return _effects.getFirstPassiveEffect(type);
+		return _effectList.getFirstPassiveEffect(type);
+	}
+	
+	/**
+	 * Add abnormal types to the blocked buff slot set.
+	 * @param blockedBuffSlots the blocked buff slot set to add
+	 */
+	public final void addBlockedBuffSlots(Set<AbnormalType> blockedBuffSlots)
+	{
+		_effectList.addBlockedBuffSlots(blockedBuffSlots);
+	}
+	
+	/**
+	 * Remove abnormal types from the blocked buff slot set.
+	 * @param blockedBuffSlots the blocked buff slot set to remove
+	 */
+	public final void removeBlockedBuffSlots(Set<AbnormalType> blockedBuffSlots)
+	{
+		_effectList.removeBlockedBuffSlots(blockedBuffSlots);
+	}
+	
+	/**
+	 * Get all the blocked abnormal types for this character.
+	 * @return the current blocked buff slots set
+	 */
+	public final Set<AbnormalType> getAllBlockedBuffSlots()
+	{
+		return _effectList.getAllBlockedBuffSlots();
 	}
 	
 	// TODO: NEED TO ORGANIZE AND MOVE TO PROPER PLACE
 	/** This class permit to the L2Character AI to obtain informations and uses L2Character method */
 	public class AIAccessor
 	{
-		public AIAccessor()
-		{
-		}
-		
 		/**
 		 * @return the L2Character managed by this Accessor AI.
 		 */
@@ -3964,9 +3921,17 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	protected Future<?> _skillCast2;
 	
 	/**
-	 * Add a Func to the Calculator set of the L2Character. <B><U> Concept</U> :</B> A L2Character owns a table of Calculators called <B>_calculators</B>. Each Calculator (a calculator per state) own a table of Func object. A Func object is a mathematic function that permit to calculate the modifier
-	 * of a state (ex : REGENERATE_HP_RATE...). To reduce cache memory use, L2NPCInstances who don't have skills share the same Calculator set called <B>NPC_STD_CALCULATOR</B>. That's why, if a L2NPCInstance is under a skill/spell effect that modify one of its state, a copy of the NPC_STD_CALCULATOR
-	 * must be create in its _calculators before addind new Func object. <B><U> Actions</U> :</B> <li>If _calculators is linked to NPC_STD_CALCULATOR, create a copy of NPC_STD_CALCULATOR in _calculators</li> <li>Add the Func object to _calculators</li>
+	 * Add a Func to the Calculator set of the L2Character.<br>
+	 * <b><u>Concept</u>:</b> A L2Character owns a table of Calculators called <b>_calculators</b>.<br>
+	 * Each Calculator (a calculator per state) own a table of Func object.<br>
+	 * A Func object is a mathematical function that permit to calculate the modifier of a state (ex : REGENERATE_HP_RATE...).<br>
+	 * To reduce cache memory use, L2NPCInstances who don't have skills share the same Calculator set called <b>NPC_STD_CALCULATOR</b>.<br>
+	 * That's why, if a L2NPCInstance is under a skill/spell effect that modify one of its state, a copy of the NPC_STD_CALCULATOR must be create in its _calculators before adding new Func object.<br>
+	 * <b><u>Actions</u>:</b>
+	 * <ul>
+	 * <li>If _calculators is linked to NPC_STD_CALCULATOR, create a copy of NPC_STD_CALCULATOR in _calculators</li>
+	 * <li>Add the Func object to _calculators</li>
+	 * </ul>
 	 * @param f The Func object to add to the Calculator corresponding to the state affected
 	 */
 	public final void addStatFunc(Func f)
@@ -4021,11 +3986,9 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 * </ul>
 	 * @param funcs The list of Func objects to add to the Calculator corresponding to the state affected
 	 */
-	public final void addStatFuncs(Func[] funcs)
+	public final void addStatFuncs(List<Func> funcs)
 	{
-		
 		List<Stats> modifiedStats = new ArrayList<>();
-		
 		for (Func f : funcs)
 		{
 			modifiedStats.add(f.stat);
@@ -4189,7 +4152,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			
 			if (owner instanceof L2Effect)
 			{
-				if (!((L2Effect) owner).preventExitUpdate)
+				if (!((L2Effect) owner).isPreventExitUpdate())
 				{
 					broadcastModifiedStats(modifiedStats);
 				}
@@ -6039,7 +6002,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			}
 			
 			// Add passive effects if there are any.
-			newSkill.getEffectsPassive(this);
+			_effectList.add(newSkill.getPassiveEffects(this));
 		}
 		return oldSkill;
 	}
@@ -6088,7 +6051,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			}
 			
 			// Remove passive effects.
-			_effects.removePassiveEffects(skillId);
+			_effectList.removePassiveEffects(skillId);
 			
 			if (cancelEffect || oldSkill.isToggle())
 			{
@@ -6247,12 +6210,12 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 */
 	public int getBuffCount()
 	{
-		return _effects.getBuffCount();
+		return _effectList.getBuffCount();
 	}
 	
 	public int getDanceCount()
 	{
-		return _effects.getDanceCount();
+		return _effectList.getDanceCount();
 	}
 	
 	/**
@@ -6871,7 +6834,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 							// Launch weapon Special ability skill effect if available
 							if ((activeWeapon != null) && !target.isDead())
 							{
-								if ((activeWeapon.getSkillEffects(this, target, skill).length > 0) && isPlayer())
+								if (activeWeapon.getSkillEffects(this, target, skill) && isPlayer())
 								{
 									SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_BEEN_ACTIVATED);
 									sm.addSkillName(skill);
@@ -7648,7 +7611,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		}
 		else
 		{
-			removeEffect(effect);
+			_effectList.remove(effect);
 		}
 	}
 	
@@ -7704,7 +7667,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 */
 	public boolean isAffected(EffectFlag flag)
 	{
-		return _effects.isAffected(flag);
+		return _effectList.isAffected(flag);
 	}
 	
 	public void broadcastSocialAction(int id)

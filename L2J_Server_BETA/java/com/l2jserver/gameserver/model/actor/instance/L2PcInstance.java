@@ -3388,7 +3388,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		else if (_waitTypeSitting && !isInStoreMode() && !isAlikeDead())
 		{
-			if (_effects.isAffected(EffectFlag.RELAXING))
+			if (getEffectList().isAffected(EffectFlag.RELAXING))
 			{
 				stopEffects(L2EffectType.RELAXING);
 			}
@@ -8305,7 +8305,7 @@ public final class L2PcInstance extends L2Playable
 					
 					storedSkills.add(skill.getReuseHashCode());
 					
-					if (effect.getInUse() && !skill.isToggle())
+					if (effect.isInUse() && !skill.isToggle())
 					{
 						
 						statement.setInt(1, getObjectId());
@@ -10048,7 +10048,7 @@ public final class L2PcInstance extends L2Playable
 	
 	public final void stopAllEffectsNotStayOnSubclassChange()
 	{
-		for (L2Effect effect : _effects.getAllEffects())
+		for (L2Effect effect : getEffectList().getAllEffects())
 		{
 			if ((effect != null) && !effect.getSkill().isStayOnSubclassChange())
 			{
@@ -10063,7 +10063,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public final void stopAllToggles()
 	{
-		_effects.stopAllToggles();
+		getEffectList().stopAllToggles();
 	}
 	
 	public final void stopCubics()

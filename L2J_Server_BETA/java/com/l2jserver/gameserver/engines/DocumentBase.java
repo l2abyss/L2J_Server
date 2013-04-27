@@ -149,19 +149,11 @@ public abstract class DocumentBase
 			factory.setValidating(false);
 			factory.setIgnoringComments(true);
 			doc = factory.newDocumentBuilder().parse(_file);
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "Error loading file " + _file, e);
-			return null;
-		}
-		try
-		{
 			parseDocument(doc);
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, "Error in file " + _file, e);
+			_log.log(Level.SEVERE, "Error loading file " + _file, e);
 			return null;
 		}
 		return doc;
@@ -297,20 +289,16 @@ public abstract class DocumentBase
 	
 	protected void attachEffect(Node n, Object template, Condition attachCond)
 	{
-		NamedNodeMap attrs = n.getAttributes();
-		String name = getValue(attrs.getNamedItem("name").getNodeValue().intern(), template);
+		final NamedNodeMap attrs = n.getAttributes();
+		final String name = getValue(attrs.getNamedItem("name").getNodeValue().intern(), template);
 		
-		/**
-		 * Keep this values as default ones, DP needs it
-		 */
-		int abnormalTime = 1;
 		int count = 1;
-		
 		if (attrs.getNamedItem("count") != null)
 		{
 			count = Integer.decode(getValue(attrs.getNamedItem("count").getNodeValue(), template));
 		}
 		
+		int abnormalTime = 0;
 		if (attrs.getNamedItem("abnormalTime") != null)
 		{
 			abnormalTime = Integer.decode(getValue(attrs.getNamedItem("abnormalTime").getNodeValue(), template));
@@ -346,6 +334,7 @@ public abstract class DocumentBase
 				self = true;
 			}
 		}
+		
 		boolean icon = true;
 		if (attrs.getNamedItem("noicon") != null)
 		{
@@ -354,6 +343,7 @@ public abstract class DocumentBase
 				icon = false;
 			}
 		}
+		
 		Lambda lambda = getLambda(n, template);
 		Condition applayCond = parseCondition(n.getFirstChild(), template);
 		AbnormalEffect abnormalVisualEffect = AbnormalEffect.NULL;
@@ -377,16 +367,6 @@ public abstract class DocumentBase
 		{
 			String spc = attrs.getNamedItem("event").getNodeValue();
 			event = AbnormalEffect.getByName(spc);
-		}
-		byte abnormalLvl = 0;
-		String abnormalType = "none";
-		if (attrs.getNamedItem("abnormalType") != null)
-		{
-			abnormalType = attrs.getNamedItem("abnormalType").getNodeValue();
-		}
-		if (attrs.getNamedItem("abnormalLvl") != null)
-		{
-			abnormalLvl = Byte.parseByte(getValue(attrs.getNamedItem("abnormalLvl").getNodeValue(), template));
 		}
 		
 		double effectPower = -1;
@@ -449,13 +429,12 @@ public abstract class DocumentBase
 		}
 		
 		ChanceCondition chance = ChanceCondition.parse(chanceCond, activationChance, activationMinDamage, activationElements, activationSkills, pvpOnly);
-		
 		if ((chance == null) && isChanceSkillTrigger)
 		{
 			throw new NoSuchElementException("Invalid chance condition: " + chanceCond + " " + activationChance);
 		}
 		
-		final EffectTemplate lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, abnormalTime, abnormalVisualEffect, special, event, abnormalType, abnormalLvl, icon, effectPower, trigId, trigLvl, chance);
+		final EffectTemplate lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, abnormalTime, abnormalVisualEffect, special, event, icon, effectPower, trigId, trigLvl, chance);
 		parseTemplate(n, lt);
 		if (template instanceof L2Item)
 		{
@@ -484,39 +463,50 @@ public abstract class DocumentBase
 		{
 			n = n.getNextSibling();
 		}
-		if (n == null)
+		
+		Condition condition = null;
+		if (n != null)
 		{
-			return null;
+			switch (n.getNodeName())
+			{
+				case "and":
+				{
+					condition = parseLogicAnd(n, template);
+					break;
+				}
+				case "or":
+				{
+					condition = parseLogicOr(n, template);
+					break;
+				}
+				case "not":
+				{
+					condition = parseLogicNot(n, template);
+					break;
+				}
+				case "player":
+				{
+					condition = parsePlayerCondition(n, template);
+					break;
+				}
+				case "target":
+				{
+					condition = parseTargetCondition(n, template);
+					break;
+				}
+				case "using":
+				{
+					condition = parseUsingCondition(n);
+					break;
+				}
+				case "game":
+				{
+					condition = parseGameCondition(n);
+					break;
+				}
+			}
 		}
-		if ("and".equalsIgnoreCase(n.getNodeName()))
-		{
-			return parseLogicAnd(n, template);
-		}
-		if ("or".equalsIgnoreCase(n.getNodeName()))
-		{
-			return parseLogicOr(n, template);
-		}
-		if ("not".equalsIgnoreCase(n.getNodeName()))
-		{
-			return parseLogicNot(n, template);
-		}
-		if ("player".equalsIgnoreCase(n.getNodeName()))
-		{
-			return parsePlayerCondition(n, template);
-		}
-		if ("target".equalsIgnoreCase(n.getNodeName()))
-		{
-			return parseTargetCondition(n, template);
-		}
-		if ("using".equalsIgnoreCase(n.getNodeName()))
-		{
-			return parseUsingCondition(n);
-		}
-		if ("game".equalsIgnoreCase(n.getNodeName()))
-		{
-			return parseGameCondition(n);
-		}
-		return null;
+		return condition;
 	}
 	
 	protected Condition parseLogicAnd(Node n, Object template)

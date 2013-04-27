@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.model.options;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -37,7 +38,6 @@ import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 public class Options
 {
 	private final int _id;
-	private static final Func[] _emptyFunctionSet = new Func[0];
 	private final List<FuncTemplate> _funcs = new ArrayList<>();
 	
 	private SkillHolder _activeSkill = null;
@@ -63,36 +63,28 @@ public class Options
 		return !_funcs.isEmpty();
 	}
 	
-	public Func[] getStatFuncs(L2ItemInstance item, L2Character player)
+	public List<Func> getStatFuncs(L2ItemInstance item, L2Character player)
 	{
 		if (_funcs.isEmpty())
 		{
-			return _emptyFunctionSet;
+			return Collections.<Func> emptyList();
 		}
 		
-		List<Func> funcs = new ArrayList<>(_funcs.size());
-		
-		Env env = new Env();
+		final List<Func> funcs = new ArrayList<>(_funcs.size());
+		final Env env = new Env();
 		env.setCharacter(player);
 		env.setTarget(player);
 		env.setItem(item);
-		
-		Func f;
 		for (FuncTemplate t : _funcs)
 		{
-			f = t.getFunc(env, this);
+			Func f = t.getFunc(env, this);
 			if (f != null)
 			{
 				funcs.add(f);
 			}
 			player.sendDebugMessage("Adding stats: " + t.stat + " val: " + t.lambda.calc(env));
 		}
-		
-		if (funcs.isEmpty())
-		{
-			return _emptyFunctionSet;
-		}
-		return funcs.toArray(new Func[funcs.size()]);
+		return funcs;
 	}
 	
 	public void addFunc(FuncTemplate template)

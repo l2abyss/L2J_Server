@@ -21,6 +21,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
@@ -63,7 +64,7 @@ public class RequestDispel extends L2GameClientPacket
 		{
 			return;
 		}
-		if (skill.getTransformId() > 0)
+		if (skill.getAbnormalType() == AbnormalType.TRANSFORM)
 		{
 			return;
 		}

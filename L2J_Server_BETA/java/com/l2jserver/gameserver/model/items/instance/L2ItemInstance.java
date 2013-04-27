@@ -1431,11 +1431,11 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * This function basically returns a set of functions from L2Item/L2Armor/L2Weapon, but may add additional functions, if this particular item instance is enhanched for a particular player.
-	 * @param player : L2Character designating the player
-	 * @return Func[]
+	 * This function basically returns a set of functions from L2Item/L2Armor/L2Weapon, but may add additional functions, if this particular item instance is enhanced for a particular player.
+	 * @param player the player
+	 * @return the functions list
 	 */
-	public Func[] getStatFuncs(L2Character player)
+	public List<Func> getStatFuncs(L2Character player)
 	{
 		return getItem().getStatFuncs(this, player);
 	}

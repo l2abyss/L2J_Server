@@ -43,6 +43,7 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 public abstract class L2Playable extends L2Character
 {
 	private L2Character _lockedTarget = null;
+	private L2PcInstance transferDmgTo = null;
 	
 	/**
 	 * Constructor of L2Playable.<br>
@@ -270,11 +271,10 @@ public abstract class L2Playable extends L2Character
 		return true;
 	}
 	
-	// Support for Noblesse Blessing skill, where buffs are retained
-	// after resurrect
+	// Support for Noblesse Blessing skill, where buffs are retained after resurrect
 	public final boolean isNoblesseBlessed()
 	{
-		return _effects.isAffected(EffectFlag.NOBLESS_BLESSING);
+		return isAffected(EffectFlag.NOBLESS_BLESSING);
 	}
 	
 	public final void stopNoblesseBlessing(L2Effect effect)
@@ -285,7 +285,7 @@ public abstract class L2Playable extends L2Character
 		}
 		else
 		{
-			removeEffect(effect);
+			getEffectList().remove(effect);
 		}
 		updateAbnormalEffect();
 	}
@@ -293,7 +293,7 @@ public abstract class L2Playable extends L2Character
 	// Support for Soul of the Phoenix and Salvation skills
 	public final boolean isPhoenixBlessed()
 	{
-		return _effects.isAffected(EffectFlag.PHOENIX_BLESSING);
+		return isAffected(EffectFlag.PHOENIX_BLESSING);
 	}
 	
 	public final void stopPhoenixBlessing(L2Effect effect)
@@ -304,9 +304,8 @@ public abstract class L2Playable extends L2Character
 		}
 		else
 		{
-			removeEffect(effect);
+			getEffectList().remove(effect);
 		}
-		
 		updateAbnormalEffect();
 	}
 	
@@ -315,13 +314,13 @@ public abstract class L2Playable extends L2Character
 	 */
 	public boolean isSilentMoving()
 	{
-		return _effects.isAffected(EffectFlag.SILENT_MOVE);
+		return isAffected(EffectFlag.SILENT_MOVE);
 	}
 	
 	// for Newbie Protection Blessing skill, keeps you safe from an attack by a chaotic character >= 10 levels apart from you
 	public final boolean getProtectionBlessing()
 	{
-		return _effects.isAffected(EffectFlag.PROTECTION_BLESSING);
+		return isAffected(EffectFlag.PROTECTION_BLESSING);
 	}
 	
 	/**
@@ -335,16 +334,15 @@ public abstract class L2Playable extends L2Character
 		}
 		else
 		{
-			removeEffect(effect);
+			getEffectList().remove(effect);
 		}
-		
 		updateAbnormalEffect();
 	}
 	
 	// Charm of Luck - During a Raid/Boss war, decreased chance for death penalty
 	public final boolean getCharmOfLuck()
 	{
-		return _effects.isAffected(EffectFlag.CHARM_OF_LUCK);
+		return isAffected(EffectFlag.CHARM_OF_LUCK);
 	}
 	
 	public final void stopCharmOfLuck(L2Effect effect)
@@ -355,16 +353,15 @@ public abstract class L2Playable extends L2Character
 		}
 		else
 		{
-			removeEffect(effect);
+			getEffectList().remove(effect);
 		}
-		
 		updateAbnormalEffect();
 	}
 	
 	@Override
 	public void updateEffectIcons(boolean partyOnly)
 	{
-		_effects.updateEffectIcons(partyOnly);
+		getEffectList().updateEffectIcons(partyOnly);
 	}
 	
 	public boolean isLockedTarget()
@@ -381,8 +378,6 @@ public abstract class L2Playable extends L2Character
 	{
 		_lockedTarget = cha;
 	}
-	
-	L2PcInstance transferDmgTo;
 	
 	public void setTransferDamageTo(L2PcInstance val)
 	{

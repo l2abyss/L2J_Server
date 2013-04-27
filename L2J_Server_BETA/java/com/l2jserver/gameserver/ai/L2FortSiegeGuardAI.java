@@ -621,10 +621,8 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 						}
 						if (sk.getSkillType() == L2SkillType.BUFF)
 						{
-							L2Effect[] effects = _actor.getAllEffects();
-							for (int i = 0; (effects != null) && (i < effects.length); i++)
+							for (L2Effect effect : _actor.getAllEffects())
 							{
-								L2Effect effect = effects[i];
 								if (effect.getSkill() == sk)
 								{
 									useSkillSelf = false;
@@ -773,10 +771,8 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 							}
 							if (sk.getSkillType() == L2SkillType.BUFF)
 							{
-								L2Effect[] effects = _actor.getAllEffects();
-								for (int i = 0; (effects != null) && (i < effects.length); i++)
+								for (L2Effect effect : _actor.getAllEffects())
 								{
-									L2Effect effect = effects[i];
 									if (effect.getSkill() == sk)
 									{
 										useSkillSelf = false;

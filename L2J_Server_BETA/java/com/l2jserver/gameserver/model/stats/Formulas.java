@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.model.stats;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -49,6 +50,7 @@ import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.type.L2ArmorType;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.L2TraitType;
@@ -93,7 +95,7 @@ public final class Formulas
 {
 	private static final Logger _log = Logger.getLogger(Formulas.class.getName());
 	
-	/** Regen Task period. */
+	/** Regeneration Task period. */
 	private static final int HP_REGENERATE_PERIOD = 3000; // 3 secs
 	
 	public static final byte SHIELD_DEFENSE_FAILED = 0; // no shield defense
@@ -1675,7 +1677,7 @@ public final class Formulas
 	public static boolean calcEffectSuccess(L2Character attacker, L2Character target, EffectTemplate effect, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
 	{
 		// Effect base rate, if it's -1 (or less) always land.
-		final double baseRate = effect.effectPower;
+		final double baseRate = effect.getEffectPower();
 		if (baseRate < 0)
 		{
 			return true;
@@ -2282,9 +2284,9 @@ public final class Formulas
 		}
 		
 		// Cancel for Abnormals.
-		final L2Effect[] effects = target.getAllEffects();
+		final List<L2Effect> effects = target.getAllEffects();
 		List<L2Effect> canceled = new ArrayList<>(count);
-		if (skill.getNegateAbnormals() != null)
+		if (!skill.getNegateAbnormals().isEmpty())
 		{
 			for (L2Effect eff : effects)
 			{
@@ -2293,9 +2295,9 @@ public final class Formulas
 					continue;
 				}
 				
-				for (String negateAbnormalType : skill.getNegateAbnormals().keySet())
+				for (Entry<AbnormalType, Byte> negate : skill.getNegateAbnormals().entrySet())
 				{
-					if (negateAbnormalType.equalsIgnoreCase(eff.getAbnormalType()) && (skill.getNegateAbnormals().get(negateAbnormalType) >= eff.getAbnormalLvl()))
+					if ((eff.getSkill().getAbnormalType() == negate.getKey()) && (negate.getValue() >= eff.getSkill().getAbnormalLvl()))
 					{
 						if (calcCancelSuccess(eff, cancelMagicLvl, (int) rate, skill))
 						{
@@ -2311,9 +2313,9 @@ public final class Formulas
 			// First Pass.
 			int lastCanceledSkillId = 0;
 			L2Effect effect;
-			for (int i = effects.length; --i >= 0;) // reverse order
+			for (int i = effects.size(); --i >= 0;) // reverse order
 			{
-				effect = effects[i];
+				effect = effects.get(i);
 				if (effect == null)
 				{
 					continue;
@@ -2322,15 +2324,7 @@ public final class Formulas
 				// remove effect if can't be stolen
 				if (!effect.canBeStolen())
 				{
-					effects[i] = null;
-					continue;
-				}
-				
-				// if effect time is smaller than 5 seconds, will not be stolen, just to save CPU,
-				// avoid synchronization(?) problems and NPEs
-				if ((effect.getAbnormalTime() - effect.getTime()) < 5)
-				{
-					effects[i] = null;
+					effects.remove(i);
 					continue;
 				}
 				
@@ -2361,9 +2355,9 @@ public final class Formulas
 			if (count > 0)
 			{
 				lastCanceledSkillId = 0;
-				for (int i = effects.length; --i >= 0;)
+				for (int i = effects.size(); --i >= 0;)
 				{
-					effect = effects[i];
+					effect = effects.get(i);
 					if (effect == null)
 					{
 						continue;
@@ -2406,5 +2400,36 @@ public final class Formulas
 		rate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
 		
 		return Rnd.get(100) < rate;
+	}
+	
+	/**
+	 * Calculates the abnormal time for an effect.<br>
+	 * The abnormal time is taken from the skill definition, and it's global for all effects present in the skills.<br>
+	 * However there is the possibility to define an abnormal time for each effect.<br>
+	 * If the effected is a servitor and the skill comes from an herb, the effect will last half of the default time.<br>
+	 * If the skill is a mastery skill, the effect will last twice the default time.
+	 * @param template the effect template
+	 * @param env the data transfer object with required information
+	 * @return the time that the effect will last
+	 */
+	public static int calcEffectAbnormalTime(Env env, EffectTemplate template)
+	{
+		final L2Skill skill = env.getSkill();
+		final L2Character effected = env.getTarget();
+		int time = (template.getCustomAbnormalTime() != 0) || (skill == null) ? template.getCustomAbnormalTime() : !skill.isPassive() ? skill.getAbnormalTime() : -1;
+		// Support for retail herbs duration when effected has a servitor.
+		if (effected != null)
+		{
+			if (effected.isServitor() && (skill != null) && (((skill.getId() > 2277) && (skill.getId() < 2286)) || ((skill.getId() >= 2512) && (skill.getId() <= 2514))))
+			{
+				time /= 2;
+			}
+		}
+		
+		if (env.isSkillMastery())
+		{
+			time *= 2;
+		}
+		return time;
 	}
 }
