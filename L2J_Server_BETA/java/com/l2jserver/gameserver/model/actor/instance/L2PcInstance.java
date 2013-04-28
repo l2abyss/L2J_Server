@@ -8267,7 +8267,7 @@ public final class L2PcInstance extends L2Playable
 			
 			int buff_index = 0;
 			
-			final List<Integer> storedSkills = new FastList<>();
+			final List<Integer> storedSkills = new ArrayList<>();
 			
 			// Store all effect data along with calulated remaining
 			// reuse delays for matching skills. 'restore_type'= 0.
@@ -8286,7 +8286,6 @@ public final class L2PcInstance extends L2Playable
 					{
 						case HEAL_OVER_TIME:
 						case CPHEAL_OVER_TIME:
-							// TODO: Fix me.
 						case HIDE:
 							continue;
 					}
@@ -8307,7 +8306,6 @@ public final class L2PcInstance extends L2Playable
 					
 					if (effect.isInUse() && !skill.isToggle())
 					{
-						
 						statement.setInt(1, getObjectId());
 						statement.setInt(2, skill.getId());
 						statement.setInt(3, skill.getLevel());
@@ -8612,77 +8610,76 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	public void restoreEffects()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(RESTORE_SKILL_SAVE))
 		{
-			PreparedStatement statement;
-			ResultSet rset;
-			
-			statement = con.prepareStatement(RESTORE_SKILL_SAVE);
 			statement.setInt(1, getObjectId());
 			statement.setInt(2, getClassIndex());
-			rset = statement.executeQuery();
-			
-			while (rset.next())
+			try (ResultSet rset = statement.executeQuery())
 			{
-				int effectCount = rset.getInt("effect_count");
-				int effectCurTime = rset.getInt("effect_cur_time");
-				long reuseDelay = rset.getLong("reuse_delay");
-				long systime = rset.getLong("systime");
-				int restoreType = rset.getInt("restore_type");
-				
-				final L2Skill skill = SkillTable.getInstance().getInfo(rset.getInt("skill_id"), rset.getInt("skill_level"));
-				if (skill == null)
+				while (rset.next())
 				{
-					continue;
-				}
-				
-				final long remainingTime = systime - System.currentTimeMillis();
-				if (remainingTime > 10)
-				{
-					disableSkill(skill, remainingTime);
-					addTimeStamp(skill, reuseDelay, systime);
-				}
-				
-				/**
-				 * Restore Type 1 The remaning skills lost effect upon logout but were still under a high reuse delay.
-				 */
-				if (restoreType > 0)
-				{
-					continue;
-				}
-				
-				/**
-				 * Restore Type 0 These skill were still in effect on the character upon logout. Some of which were self casted and might still have had a long reuse delay which also is restored.
-				 */
-				if (skill.hasEffects())
-				{
-					Env env = new Env();
-					env.setCharacter(this);
-					env.setTarget(this);
-					env.setSkill(skill);
+					int effectCount = rset.getInt("effect_count");
+					int effectCurTime = rset.getInt("effect_cur_time");
+					long reuseDelay = rset.getLong("reuse_delay");
+					long systime = rset.getLong("systime");
+					int restoreType = rset.getInt("restore_type");
 					
-					L2Effect ef;
-					for (EffectTemplate et : skill.getEffectTemplates())
+					final L2Skill skill = SkillTable.getInstance().getInfo(rset.getInt("skill_id"), rset.getInt("skill_level"));
+					if (skill == null)
 					{
-						ef = et.getEffect(env);
-						if (ef != null)
+						continue;
+					}
+					
+					final long remainingTime = systime - System.currentTimeMillis();
+					if (remainingTime > 10)
+					{
+						disableSkill(skill, remainingTime);
+						addTimeStamp(skill, reuseDelay, systime);
+					}
+					
+					/**
+					 * Restore Type 1 The remaning skills lost effect upon logout but were still under a high reuse delay.
+					 */
+					if (restoreType > 0)
+					{
+						continue;
+					}
+					
+					/**
+					 * Restore Type 0 These skill were still in effect on the character upon logout.<br>
+					 * Some of which were self casted and might still have had a long reuse delay which also is restored.
+					 */
+					if (skill.hasEffects())
+					{
+						final Env env = new Env();
+						env.setCharacter(this);
+						env.setTarget(this);
+						env.setSkill(skill);
+						final L2Effect[] effects = new L2Effect[skill.getEffectTemplates().size()];
+						int index = 0;
+						for (EffectTemplate et : skill.getEffectTemplates())
 						{
-							ef.setCount(effectCount);
-							ef.setFirstTime(effectCurTime);
-							ef.scheduleEffect();
+							L2Effect effect = et.getEffect(env);
+							if (effect != null)
+							{
+								effect.setCount(effectCount);
+								effect.setFirstTime(effectCurTime);
+								effect.scheduleEffect();
+								effects[index++] = effect;
+							}
 						}
+						getEffectList().add(effects);
 					}
 				}
 			}
-			
-			rset.close();
-			statement.close();
-			
-			statement = con.prepareStatement(DELETE_SKILL_SAVE);
-			statement.setInt(1, getObjectId());
-			statement.setInt(2, getClassIndex());
-			statement.executeUpdate();
-			statement.close();
+			// Remove previously restored skills
+			try (PreparedStatement del = con.prepareStatement(DELETE_SKILL_SAVE))
+			{
+				del.setInt(1, getObjectId());
+				del.setInt(2, getClassIndex());
+				del.executeUpdate();
+			}
 		}
 		catch (Exception e)
 		{

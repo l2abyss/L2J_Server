@@ -191,7 +191,7 @@ public class TradeList
 	 * @param count : int
 	 * @return
 	 */
-	public synchronized TradeItem addItem(int objectId, long count)
+	public TradeItem addItem(int objectId, long count)
 	{
 		return addItem(objectId, count, 0);
 	}
@@ -214,24 +214,26 @@ public class TradeList
 		L2Object o = L2World.getInstance().findObject(objectId);
 		if (!(o instanceof L2ItemInstance))
 		{
-			_log.warning(_owner.getName() + ": Attempt to add invalid item to TradeList!");
+			_log.warning(_owner.getName() + ": Trying to add something other than an item!");
 			return null;
 		}
 		
 		L2ItemInstance item = (L2ItemInstance) o;
-		
 		if (!(item.isTradeable() || (getOwner().isGM() && Config.GM_TRADE_RESTRICTED_ITEMS)) || item.isQuestItem())
 		{
+			_log.warning(_owner.getName() + ": Attempt to add a restricted item!");
 			return null;
 		}
 		
 		if (!getOwner().getInventory().canManipulateWithItemId(item.getItemId()))
 		{
+			_log.warning(_owner.getName() + ": Attempt to add an item that can't manipualte!");
 			return null;
 		}
 		
 		if ((count <= 0) || (count > item.getCount()))
 		{
+			_log.warning(_owner.getName() + ": Attempt to add an item with invalid item count!");
 			return null;
 		}
 		
@@ -251,6 +253,7 @@ public class TradeList
 		{
 			if (checkitem.getObjectId() == objectId)
 			{
+				_log.warning(_owner.getName() + ": Attempt to add an item that is already present!");
 				return null;
 			}
 		}

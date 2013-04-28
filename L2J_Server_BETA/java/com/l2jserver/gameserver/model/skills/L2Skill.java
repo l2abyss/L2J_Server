@@ -1563,7 +1563,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			return EMPTY_EFFECT_SET;
 		}
 		
-		List<L2Effect> effects = new ArrayList<>(_effectTemplatesSelf.size());
+		final List<L2Effect> effects = new ArrayList<>(_effectTemplatesSelf.size());
 		for (EffectTemplate et : _effectTemplatesSelf)
 		{
 			Env env = new Env();

@@ -1181,19 +1181,28 @@ public class L2PetInstance extends L2Summon
 			
 			for (SummonEffect se : SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()))
 			{
-				Env env = new Env();
-				env.setCharacter(this);
-				env.setTarget(this);
-				env.setSkill(se.getSkill());
-				L2Effect ef;
-				for (EffectTemplate et : se.getSkill().getEffectTemplates())
+				if ((se != null) && se.getSkill().hasEffects())
 				{
-					ef = et.getEffect(env);
-					if (ef != null)
+					if (se.getSkill().hasEffects())
 					{
-						ef.setCount(se.getEffectCount());
-						ef.setFirstTime(se.getEffectCurTime());
-						ef.scheduleEffect();
+						final Env env = new Env();
+						env.setCharacter(this);
+						env.setTarget(this);
+						env.setSkill(se.getSkill());
+						final L2Effect[] effects = new L2Effect[se.getSkill().getEffectTemplates().size()];
+						int index = 0;
+						for (EffectTemplate et : se.getSkill().getEffectTemplates())
+						{
+							L2Effect effect = et.getEffect(env);
+							if (effect != null)
+							{
+								effect.setCount(se.getEffectCount());
+								effect.setFirstTime(se.getEffectCurTime());
+								effect.scheduleEffect();
+								effects[index++] = effect;
+							}
+						}
+						getEffectList().add(effects);
 					}
 				}
 			}
