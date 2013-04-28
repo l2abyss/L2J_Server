@@ -18,13 +18,17 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import javolution.util.FastList;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.l2jserver.gameserver.model.base.AcquireSkillType;
 
+/**
+ * Acquire Skill List server packet implementation.
+ */
 public final class AcquireSkillList extends L2GameServerPacket
 {
-	private final FastList<Skill> _skills;
+	private final List<Skill> _skills;
 	private final AcquireSkillType _skillType;
 	
 	/**
@@ -51,7 +55,7 @@ public final class AcquireSkillList extends L2GameServerPacket
 	public AcquireSkillList(AcquireSkillType type)
 	{
 		_skillType = type;
-		_skills = new FastList<>();
+		_skills = new ArrayList<>();
 	}
 	
 	public void addSkill(int id, int nextLevel, int maxLevel, int spCost, int requirements)
@@ -62,7 +66,7 @@ public final class AcquireSkillList extends L2GameServerPacket
 	@Override
 	protected void writeImpl()
 	{
-		if (_skills == null)
+		if (_skills.isEmpty())
 		{
 			return;
 		}
@@ -78,7 +82,7 @@ public final class AcquireSkillList extends L2GameServerPacket
 			writeD(temp.maxLevel);
 			writeD(temp.spCost);
 			writeD(temp.requirements);
-			if (_skillType == AcquireSkillType.SubPledge)
+			if (_skillType == AcquireSkillType.SUBPLEDGE)
 			{
 				writeD(0); // TODO: ?
 			}

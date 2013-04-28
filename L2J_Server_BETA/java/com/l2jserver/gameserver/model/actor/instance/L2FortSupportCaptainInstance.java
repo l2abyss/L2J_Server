@@ -150,7 +150,7 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance implements 
 			if (player.isClanLeader())
 			{
 				final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSubPledgeSkills(player.getClan());
-				final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.SubPledge);
+				final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.SUBPLEDGE);
 				int count = 0;
 				
 				for (L2SkillLearn s : skills)

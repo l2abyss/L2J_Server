@@ -143,7 +143,7 @@ public final class L2TrainerHealersInstance extends L2TrainerInstance
 	public static void showTransferSkillList(L2PcInstance player)
 	{
 		final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableTransferSkills(player);
-		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Transfer);
+		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.TRANSFER);
 		int count = 0;
 		
 		for (L2SkillLearn s : skills)

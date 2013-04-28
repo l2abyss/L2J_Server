@@ -30,13 +30,13 @@ import com.l2jserver.gameserver.model.actor.instance.L2FishermanInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TrainerHealersInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2TransformManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2VillageMasterInstance;
 import com.l2jserver.gameserver.model.base.AcquireSkillType;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -48,15 +48,23 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
 /**
+ * Request Acquire Skill client packet implementation.
  * @author Zoey76
  */
 public final class RequestAcquireSkill extends L2GameClientPacket
 {
 	private static final String _C__7C_REQUESTACQUIRESKILL = "[C] 7C RequestAcquireSkill";
+	private static final String[] QUEST_VAR_NAMES =
+	{
+		"EmergentAbility65-",
+		"EmergentAbility70-",
+		"ClassAbility75-",
+		"ClassAbility80-"
+	};
 	
 	private int _id;
 	private int _level;
-	private int _skillType;
+	private AcquireSkillType _skillType;
 	private int _subType;
 	
 	@Override
@@ -64,8 +72,8 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 	{
 		_id = readD();
 		_level = readD();
-		_skillType = readD();
-		if (_skillType == AcquireSkillType.SubPledge.ordinal())
+		_skillType = AcquireSkillType.getAcquireSkillType(readD());
+		if (_skillType == AcquireSkillType.SUBPLEDGE)
 		{
 			_subType = readD();
 		}
@@ -107,8 +115,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 		
 		// Hack check. Doesn't apply to all Skill Types
 		final int prevSkillLevel = activeChar.getSkillLevel(_id);
-		final AcquireSkillType skillType = AcquireSkillType.values()[_skillType];
-		if ((prevSkillLevel > 0) && !((skillType == AcquireSkillType.Transfer) || (skillType == AcquireSkillType.SubPledge)))
+		if ((prevSkillLevel > 0) && !((_skillType == AcquireSkillType.TRANSFER) || (_skillType == AcquireSkillType.SUBPLEDGE)))
 		{
 			if (prevSkillLevel == _level)
 			{
@@ -124,15 +131,15 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 			}
 		}
 		
-		final L2SkillLearn s = SkillTreesData.getInstance().getSkillLearn(skillType, _id, _level, activeChar);
+		final L2SkillLearn s = SkillTreesData.getInstance().getSkillLearn(_skillType, _id, _level, activeChar);
 		if (s == null)
 		{
 			return;
 		}
 		
-		switch (skillType)
+		switch (_skillType)
 		{
-			case Class:
+			case CLASS:
 			{
 				if (checkPlayerSkill(activeChar, trainer, s))
 				{
@@ -140,10 +147,10 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				}
 				break;
 			}
-			case Transform:
+			case TRANSFORM:
 			{
 				// Hack check.
-				if (!L2TransformManagerInstance.canTransform(activeChar))
+				if (!canTransform(activeChar))
 				{
 					activeChar.sendPacket(SystemMessageId.NOT_COMPLETED_QUEST_FOR_SKILL_ACQUISITION);
 					Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " is requesting skill Id: " + _id + " level " + _level + " without required quests!", 0);
@@ -156,7 +163,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				}
 				break;
 			}
-			case Fishing:
+			case FISHING:
 			{
 				if (checkPlayerSkill(activeChar, trainer, s))
 				{
@@ -164,7 +171,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				}
 				break;
 			}
-			case Pledge:
+			case PLEDGE:
 			{
 				if (!activeChar.isClanLeader())
 				{
@@ -215,7 +222,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				}
 				break;
 			}
-			case SubPledge:
+			case SUBPLEDGE:
 			{
 				if (!activeChar.isClanLeader())
 				{
@@ -275,7 +282,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				}
 				break;
 			}
-			case Transfer:
+			case TRANSFER:
 			{
 				if (checkPlayerSkill(activeChar, trainer, s))
 				{
@@ -283,7 +290,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				}
 				break;
 			}
-			case SubClass:
+			case SUBCLASS:
 			{
 				// Hack check.
 				if (activeChar.isSubClassActive())
@@ -308,7 +315,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 					}
 				}
 				
-				for (String varName : L2TransformManagerInstance._questVarNames)
+				for (String varName : QUEST_VAR_NAMES)
 				{
 					for (int i = 1; i <= Config.MAX_SUBCLASS; i++)
 					{
@@ -353,7 +360,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				showSkillList(trainer, activeChar);
 				break;
 			}
-			case Collect:
+			case COLLECT:
 			{
 				if (checkPlayerSkill(activeChar, trainer, s))
 				{
@@ -491,16 +498,26 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 		{
 			player.sendPacket(new ExStorageMaxCount(player));
 		}
+		// Notify scripts of the skill learn.
+		for (Quest quest : trainer.getTemplate().getEventQuests(QuestEventType.ON_SKILL_LEARN))
+		{
+			quest.notifyAcquireSkill(trainer, player, skill, _skillType);
+		}
 	}
 	
 	/**
 	 * Wrapper for returning the skill list to the player after it's done with current skill.
-	 * @param trainer the Npc which the {@code player} is interacting.
-	 * @param player the active character.
+	 * @param trainer the Npc which the {@code player} is interacting
+	 * @param player the active character
 	 */
 	private void showSkillList(L2Npc trainer, L2PcInstance player)
 	{
-		if ((trainer instanceof L2TrainerHealersInstance) && (_skillType == AcquireSkillType.Transfer.ordinal()))
+		if ((_skillType == AcquireSkillType.TRANSFORM) || (_skillType == AcquireSkillType.SUBCLASS))
+		{
+			// Managed in Datapack.
+			return;
+		}
+		if ((trainer instanceof L2TrainerHealersInstance) && (_skillType == AcquireSkillType.TRANSFER))
 		{
 			L2TrainerHealersInstance.showTransferSkillList(player);
 		}
@@ -508,18 +525,25 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 		{
 			L2FishermanInstance.showFishSkillList(player);
 		}
-		else if ((trainer instanceof L2TransformManagerInstance) && (_skillType == AcquireSkillType.Transform.ordinal()))
-		{
-			L2TransformManagerInstance.showTransformSkillList(player);
-		}
-		else if ((trainer instanceof L2TransformManagerInstance) && (_skillType == AcquireSkillType.SubClass.ordinal()))
-		{
-			L2TransformManagerInstance.showSubClassSkillList(player);
-		}
 		else
 		{
 			L2NpcInstance.showSkillList(player, trainer, player.getLearningClass());
 		}
+	}
+	
+	/**
+	 * Verify if the player can transform.
+	 * @param player the player to verify
+	 * @return {@code true} if the player meets the required conditions to learn a transformation, {@code false} otherwise
+	 */
+	public static boolean canTransform(L2PcInstance player)
+	{
+		if (Config.ALLOW_TRANSFORM_WITHOUT_QUEST)
+		{
+			return true;
+		}
+		final QuestState st = player.getQuestState("Q00136_MoreThanMeetsTheEye");
+		return (st != null) && st.isCompleted();
 	}
 	
 	@Override

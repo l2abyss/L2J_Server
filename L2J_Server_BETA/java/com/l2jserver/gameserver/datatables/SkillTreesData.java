@@ -840,28 +840,28 @@ public final class SkillTreesData extends DocumentParser
 		L2SkillLearn sl = null;
 		switch (skillType)
 		{
-			case Class:
+			case CLASS:
 				sl = getClassSkill(id, lvl, player.getLearningClass());
 				break;
-			case Transform:
+			case TRANSFORM:
 				sl = getTransformSkill(id, lvl);
 				break;
-			case Fishing:
+			case FISHING:
 				sl = getFishingSkill(id, lvl);
 				break;
-			case Pledge:
+			case PLEDGE:
 				sl = getPledgeSkill(id, lvl);
 				break;
-			case SubPledge:
+			case SUBPLEDGE:
 				sl = getSubPledgeSkill(id, lvl);
 				break;
-			case Transfer:
+			case TRANSFER:
 				sl = getTransferSkill(id, lvl, player.getClassId());
 				break;
-			case SubClass:
+			case SUBCLASS:
 				sl = getSubClassSkill(id, lvl);
 				break;
-			case Collect:
+			case COLLECT:
 				sl = getCollectSkill(id, lvl);
 				break;
 		}

@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
+ * Acquire Skill Info server packet implementation.
  * @author Zoey76
  */
 public class AcquireSkillInfo extends L2GameServerPacket
@@ -75,7 +76,7 @@ public class AcquireSkillInfo extends L2GameServerPacket
 		_spCost = skillLearn.getLevelUpSp();
 		_type = skillType;
 		_reqs = new ArrayList<>();
-		if ((skillType != AcquireSkillType.Pledge) || Config.LIFE_CRYSTAL_NEEDED)
+		if ((skillType != AcquireSkillType.PLEDGE) || Config.LIFE_CRYSTAL_NEEDED)
 		{
 			for (ItemHolder item : skillLearn.getRequiredItems())
 			{

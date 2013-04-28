@@ -1182,7 +1182,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		}
 		
 		final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailablePledgeSkills(player.getClan());
-		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Pledge);
+		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.PLEDGE);
 		int counts = 0;
 		
 		for (L2SkillLearn s : skills)

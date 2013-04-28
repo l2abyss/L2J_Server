@@ -364,7 +364,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 			if (player.isClanLeader())
 			{
 				final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSubPledgeSkills(player.getClan());
-				final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.SubPledge);
+				final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.SUBPLEDGE);
 				int count = 0;
 				
 				for (L2SkillLearn s : skills)

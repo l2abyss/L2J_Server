@@ -80,7 +80,7 @@ public class L2NpcInstance extends L2Npc
 		if (npcId == 32611) // Tolonis (Officer)
 		{
 			final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableCollectSkills(player);
-			final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Collect);
+			final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.COLLECT);
 			
 			int counts = 0;
 			for (L2SkillLearn s : skills)
@@ -132,7 +132,7 @@ public class L2NpcInstance extends L2Npc
 		
 		// Normal skills, No LearnedByFS, no AutoGet skills.
 		final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSkills(player, classId, false, false);
-		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Class);
+		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.CLASS);
 		int count = 0;
 		player.setLearningClass(classId);
 		for (L2SkillLearn s : skills)
