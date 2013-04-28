@@ -925,9 +925,14 @@ public final class CharEffectList
 							// Add Funcs of this effect to the Calculator set of the L2Character
 							_owner.addStatFuncs(effect.getStatFuncs());
 						}
-						return;
 					}
 				}
+			}
+			
+			// Effects without abnormal shouldn't stack.
+			if (skill.getAbnormalType().isNone())
+			{
+				return;
 			}
 			
 			if (_stackedEffects == null)
