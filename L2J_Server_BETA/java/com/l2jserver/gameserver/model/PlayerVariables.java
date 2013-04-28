@@ -96,9 +96,10 @@ public class PlayerVariables extends StatsSet
 				for (Entry<String, Object> entry : getSet().entrySet())
 				{
 					st.setString(2, entry.getKey());
-					st.setObject(3, entry.getValue());
-					st.execute();
+					st.setString(3, String.valueOf(entry.getValue()));
+					st.addBatch();
 				}
+				st.executeBatch();
 			}
 		}
 		catch (SQLException e)
