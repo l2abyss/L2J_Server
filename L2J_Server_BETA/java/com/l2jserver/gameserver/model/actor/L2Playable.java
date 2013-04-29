@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.model.actor.stat.PlayableStat;
 import com.l2jserver.gameserver.model.actor.status.PlayableStatus;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.model.effects.EffectFlag;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.quest.QuestState;
@@ -133,23 +132,23 @@ public abstract class L2Playable extends L2Character
 		// if the Character isn't affected by Soul of The Phoenix or Salvation
 		if (isPhoenixBlessed())
 		{
-			if (getCharmOfLuck())
+			if (isCharmOfLuckAffected())
 			{
-				stopCharmOfLuck(null);
+				stopEffects(L2EffectType.CHARM_OF_LUCK);
 			}
 			if (isNoblesseBlessed())
 			{
-				stopNoblesseBlessing(null);
+				stopEffects(L2EffectType.NOBLESSE_BLESSING);
 			}
 		}
 		// Same thing if the Character isn't a Noblesse Blessed L2Playable
 		else if (isNoblesseBlessed())
 		{
-			stopNoblesseBlessing(null);
+			stopEffects(L2EffectType.NOBLESSE_BLESSING);
 			
-			if (getCharmOfLuck())
+			if (isCharmOfLuckAffected())
 			{
-				stopCharmOfLuck(null);
+				stopEffects(L2EffectType.CHARM_OF_LUCK);
 			}
 		}
 		else
@@ -277,85 +276,36 @@ public abstract class L2Playable extends L2Character
 		return isAffected(EffectFlag.NOBLESS_BLESSING);
 	}
 	
-	public final void stopNoblesseBlessing(L2Effect effect)
-	{
-		if (effect == null)
-		{
-			stopEffects(L2EffectType.NOBLESSE_BLESSING);
-		}
-		else
-		{
-			getEffectList().remove(effect);
-		}
-		updateAbnormalEffect();
-	}
-	
 	// Support for Soul of the Phoenix and Salvation skills
 	public final boolean isPhoenixBlessed()
 	{
 		return isAffected(EffectFlag.PHOENIX_BLESSING);
 	}
 	
-	public final void stopPhoenixBlessing(L2Effect effect)
-	{
-		if (effect == null)
-		{
-			stopEffects(L2EffectType.PHOENIX_BLESSING);
-		}
-		else
-		{
-			getEffectList().remove(effect);
-		}
-		updateAbnormalEffect();
-	}
-	
 	/**
-	 * @return True if the Silent Moving mode is active.
+	 * @return {@code true} if the Silent Moving mode is active, {@code false} otherwise
 	 */
 	public boolean isSilentMoving()
 	{
 		return isAffected(EffectFlag.SILENT_MOVE);
 	}
 	
-	// for Newbie Protection Blessing skill, keeps you safe from an attack by a chaotic character >= 10 levels apart from you
-	public final boolean getProtectionBlessing()
+	/**
+	 * For Newbie Protection Blessing skill, keeps you safe from an attack by a chaotic character >= 10 levels apart from you.
+	 * @return
+	 */
+	public final boolean isProtectionBlessingAffected()
 	{
 		return isAffected(EffectFlag.PROTECTION_BLESSING);
 	}
 	
 	/**
-	 * @param effect
+	 * Charm of Luck - During a Raid/Boss war, decreased chance for death penalty.
+	 * @return
 	 */
-	public void stopProtectionBlessing(L2Effect effect)
-	{
-		if (effect == null)
-		{
-			stopEffects(L2EffectType.PROTECTION_BLESSING);
-		}
-		else
-		{
-			getEffectList().remove(effect);
-		}
-		updateAbnormalEffect();
-	}
-	
-	// Charm of Luck - During a Raid/Boss war, decreased chance for death penalty
-	public final boolean getCharmOfLuck()
+	public final boolean isCharmOfLuckAffected()
 	{
 		return isAffected(EffectFlag.CHARM_OF_LUCK);
-	}
-	
-	public final void stopCharmOfLuck(L2Effect effect)
-	{
-		if (effect == null)
-		{
-			stopEffects(L2EffectType.CHARM_OF_LUCK);
-		}
-		else
-		{
-			getEffectList().remove(effect);
-		}
-		updateAbnormalEffect();
 	}
 	
 	@Override

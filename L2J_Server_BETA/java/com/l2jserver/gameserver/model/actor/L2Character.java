@@ -2274,23 +2274,23 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		// if the Character isn't affected by Soul of The Phoenix or Salvation
 		if (isPlayable() && ((L2Playable) this).isPhoenixBlessed())
 		{
-			if (((L2Playable) this).getCharmOfLuck())
+			if (((L2Playable) this).isCharmOfLuckAffected())
 			{
-				((L2Playable) this).stopCharmOfLuck(null);
+				stopEffects(L2EffectType.CHARM_OF_LUCK);
 			}
 			if (((L2Playable) this).isNoblesseBlessed())
 			{
-				((L2Playable) this).stopNoblesseBlessing(null);
+				stopEffects(L2EffectType.NOBLESSE_BLESSING);
 			}
 		}
 		// Same thing if the Character isn't a Noblesse Blessed L2Playable
 		else if (isPlayable() && ((L2Playable) this).isNoblesseBlessed())
 		{
-			((L2Playable) this).stopNoblesseBlessing(null);
+			stopEffects(L2EffectType.NOBLESSE_BLESSING);
 			
-			if (((L2Playable) this).getCharmOfLuck())
+			if (((L2Playable) this).isCharmOfLuckAffected())
 			{
-				((L2Playable) this).stopCharmOfLuck(null);
+				stopEffects(L2EffectType.CHARM_OF_LUCK);
 			}
 		}
 		else
@@ -2392,7 +2392,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			if (isPlayable() && ((L2Playable) this).isPhoenixBlessed())
 			{
 				restorefull = true;
-				((L2Playable) this).stopPhoenixBlessing(null);
+				stopEffects(L2EffectType.PHOENIX_BLESSING);
 			}
 			if (restorefull)
 			{
