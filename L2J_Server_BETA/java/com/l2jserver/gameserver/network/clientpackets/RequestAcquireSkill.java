@@ -499,9 +499,12 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 			player.sendPacket(new ExStorageMaxCount(player));
 		}
 		// Notify scripts of the skill learn.
-		for (Quest quest : trainer.getTemplate().getEventQuests(QuestEventType.ON_SKILL_LEARN))
+		if (trainer.getTemplate().getEventQuests().containsKey(QuestEventType.ON_SKILL_LEARN))
 		{
-			quest.notifyAcquireSkill(trainer, player, skill, _skillType);
+			for (Quest quest : trainer.getTemplate().getEventQuests(QuestEventType.ON_SKILL_LEARN))
+			{
+				quest.notifyAcquireSkill(trainer, player, skill, _skillType);
+			}
 		}
 	}
 	
