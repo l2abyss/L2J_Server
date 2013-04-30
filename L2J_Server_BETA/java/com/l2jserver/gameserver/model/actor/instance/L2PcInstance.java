@@ -10574,7 +10574,6 @@ public final class L2PcInstance extends L2Playable
 		getKnownList().removeAllKnownObjects(); // reinit knownlist
 		setXYZ(_lastX, _lastY, _lastZ);
 		setIsParalyzed(false);
-		stopParalyze(false);
 		if (!isGM())
 		{
 			getAppearance().setVisible();
