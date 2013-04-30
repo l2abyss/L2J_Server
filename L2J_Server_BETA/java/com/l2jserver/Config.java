@@ -415,7 +415,9 @@ public final class Config
 	public static int CLAN_LEVEL_9_REQUIREMENT;
 	public static int CLAN_LEVEL_10_REQUIREMENT;
 	public static int CLAN_LEVEL_11_REQUIREMENT;
+	public static boolean ALLOW_WYVERN_ALWAYS;
 	public static boolean ALLOW_WYVERN_DURING_SIEGE;
+	
 	// --------------------------------------------------
 	// General Settings
 	// --------------------------------------------------
@@ -1466,6 +1468,7 @@ public final class Config
 			CLAN_LEVEL_9_REQUIREMENT = Integer.parseInt(Feature.getProperty("ClanLevel9Requirement", "120"));
 			CLAN_LEVEL_10_REQUIREMENT = Integer.parseInt(Feature.getProperty("ClanLevel10Requirement", "140"));
 			CLAN_LEVEL_11_REQUIREMENT = Integer.parseInt(Feature.getProperty("ClanLevel11Requirement", "170"));
+			ALLOW_WYVERN_ALWAYS = Boolean.parseBoolean(Feature.getProperty("AllowRideWyvernAlways", "False"));
 			ALLOW_WYVERN_DURING_SIEGE = Boolean.parseBoolean(Feature.getProperty("AllowRideWyvernDuringSiege", "True"));
 			
 			// Load Character L2Properties file (if exists)

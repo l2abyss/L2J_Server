@@ -162,7 +162,6 @@ public abstract class L2Object
 		L2TrainerInstance(L2NpcInstance),
 		L2TrainerHealersInstance(L2TrainerInstance),
 		L2VillageMasterInstance(L2NpcInstance),
-		L2WyvernManagerInstance(L2NpcInstance),
 		// Doormens
 		L2DoormenInstance(L2NpcInstance),
 		L2CastleDoormenInstance(L2DoormenInstance),
