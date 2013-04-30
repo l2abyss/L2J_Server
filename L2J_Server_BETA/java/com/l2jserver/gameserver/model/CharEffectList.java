@@ -420,11 +420,24 @@ public final class CharEffectList
 	 */
 	public final void stopAllEffects()
 	{
-		for (L2Effect e : getAllEffects())
+		if (hasBuffs())
 		{
-			if (e != null)
+			for (L2Effect e : _buffs)
 			{
-				e.exit(true); // Exit them
+				if (e != null)
+				{
+					e.exit(true); // Exit them
+				}
+			}
+		}
+		if (hasDebuffs())
+		{
+			for (L2Effect e : _debuffs)
+			{
+				if (e != null)
+				{
+					e.exit(true); // Exit them
+				}
 			}
 		}
 	}
@@ -477,7 +490,6 @@ public final class CharEffectList
 				}
 			}
 		}
-		
 		if (hasDebuffs())
 		{
 			for (L2Effect e : _debuffs)
@@ -932,6 +944,9 @@ public final class CharEffectList
 			// Effects without abnormal shouldn't stack.
 			if (skill.getAbnormalType().isNone())
 			{
+				// Update effect flags and icons.
+				computeEffectFlags();
+				updateEffectIcons();
 				return;
 			}
 			
