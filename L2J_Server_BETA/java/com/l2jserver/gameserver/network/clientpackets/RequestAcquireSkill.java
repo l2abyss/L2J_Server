@@ -29,7 +29,6 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2FishermanInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2TrainerHealersInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2VillageMasterInstance;
 import com.l2jserver.gameserver.model.base.AcquireSkillType;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
@@ -515,16 +514,13 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 	 */
 	private void showSkillList(L2Npc trainer, L2PcInstance player)
 	{
-		if ((_skillType == AcquireSkillType.TRANSFORM) || (_skillType == AcquireSkillType.SUBCLASS))
+		if ((_skillType == AcquireSkillType.TRANSFORM) || (_skillType == AcquireSkillType.SUBCLASS) || (_skillType == AcquireSkillType.TRANSFER))
 		{
 			// Managed in Datapack.
 			return;
 		}
-		if ((trainer instanceof L2TrainerHealersInstance) && (_skillType == AcquireSkillType.TRANSFER))
-		{
-			L2TrainerHealersInstance.showTransferSkillList(player);
-		}
-		else if (trainer instanceof L2FishermanInstance)
+		
+		if (trainer instanceof L2FishermanInstance)
 		{
 			L2FishermanInstance.showFishSkillList(player);
 		}

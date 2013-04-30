@@ -52,7 +52,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TeleporterInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2TrainerHealersInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TrainerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2WarehouseInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.NpcKnownList;
@@ -83,54 +82,36 @@ import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.util.Rnd;
-import com.l2jserver.util.StringUtil;
 
 /**
  * This class represents a Non-Player-Character in the world.<br>
  * It can be a monster or a friendly character.<br>
- * It also uses a template to fetch some static values.<br>
- * The templates are hardcoded in the client, so we can rely on them.<br>
- * L2Npc:
- * <ul>
- * <li>L2Attackable</li>
- * <li>L2BoxInstance</li>
- * </ul>
+ * It uses a template to fetch some static values.
  */
 public class L2Npc extends L2Character
 {
 	/** The interaction distance of the L2NpcInstance(is used as offset in MovetoLocation method) */
 	public static final int INTERACTION_DISTANCE = 150;
-	
 	/** The L2Spawn object that manage this L2NpcInstance */
 	private L2Spawn _spawn;
-	
 	/** The flag to specify if this L2NpcInstance is busy */
 	private boolean _isBusy = false;
-	
 	/** The busy message for this L2NpcInstance */
 	private String _busyMessage = "";
-	
 	/** True if endDecayTask has already been called */
-	volatile boolean _isDecayed = false;
-	
+	private volatile boolean _isDecayed = false;
 	/** The castle index in the array of L2Castle this L2NpcInstance belongs to */
 	private int _castleIndex = -2;
-	
 	/** The fortress index in the array of L2Fort this L2NpcInstance belongs to */
 	private int _fortIndex = -2;
-	
 	private boolean _eventMob = false;
 	private boolean _isInTown = false;
-	
 	/** True if this L2Npc is autoattackable **/
 	private boolean _isAutoAttackable = false;
-	
 	/** Time of last social packet broadcast */
 	private long _lastSocialBroadcast = 0;
-	
 	/** Minimum interval between social packets */
 	private final int _minimalSocialInterval = 6000;
-	
 	/** Support for random animation switching */
 	private boolean _isRandomAnimationEnabled = true;
 	
@@ -145,7 +126,6 @@ public class L2Npc extends L2Character
 	private int _spiritshotamount = 0;
 	private int _displayEffect = 0;
 	private int _scriptVal = 0;
-	
 	/** The character that summons this NPC. */
 	private L2Character _summoner = null;
 	
@@ -184,7 +164,7 @@ public class L2Npc extends L2Character
 	}
 	
 	/**
-	 * @return the primary attack.
+	 * @return the primary attack skill Id
 	 */
 	public int getPrimarySkillId()
 	{
@@ -1700,10 +1680,6 @@ public class L2Npc extends L2Character
 		{
 			html = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), "data/html/warehouse/" + npcId + "-noteach.htm");
 		}
-		else if (this instanceof L2TrainerHealersInstance)
-		{
-			html = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), "data/html/trainer/skilltransfer/" + npcId + "-noteach.htm");
-		}
 		else if (this instanceof L2TrainerInstance)
 		{
 			html = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), "data/html/trainer/" + npcId + "-noteach.htm");
@@ -1713,8 +1689,7 @@ public class L2Npc extends L2Character
 		{
 			_log.warning("Npc " + npcId + " missing noTeach html!");
 			NpcHtmlMessage msg = new NpcHtmlMessage(getObjectId());
-			final String sb = StringUtil.concat("<html><body>" + "I cannot teach you any skills.<br>You must find your current class teachers.", "</body></html>");
-			msg.setHtml(sb);
+			msg.setHtml("<html><body>I cannot teach you any skills.<br>You must find your current class teachers.</body></html>");
 			player.sendPacket(msg);
 			return;
 		}
