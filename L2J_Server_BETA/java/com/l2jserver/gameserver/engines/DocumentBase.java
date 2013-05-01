@@ -35,7 +35,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.ChanceCondition;
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
@@ -302,28 +301,6 @@ public abstract class DocumentBase
 		if (attrs.getNamedItem("abnormalTime") != null)
 		{
 			abnormalTime = Integer.decode(getValue(attrs.getNamedItem("abnormalTime").getNodeValue(), template));
-			if (Config.ENABLE_MODIFY_SKILL_DURATION)
-			{
-				if (Config.SKILL_DURATION_LIST.containsKey(((L2Skill) template).getId()))
-				{
-					if (((L2Skill) template).getLevel() < 100)
-					{
-						abnormalTime = Config.SKILL_DURATION_LIST.get(((L2Skill) template).getId());
-					}
-					else if ((((L2Skill) template).getLevel() >= 100) && (((L2Skill) template).getLevel() < 140))
-					{
-						abnormalTime += Config.SKILL_DURATION_LIST.get(((L2Skill) template).getId());
-					}
-					else if (((L2Skill) template).getLevel() > 140)
-					{
-						abnormalTime = Config.SKILL_DURATION_LIST.get(((L2Skill) template).getId());
-					}
-					if (Config.DEBUG)
-					{
-						_log.info("*** Skill " + ((L2Skill) template).getName() + " (" + ((L2Skill) template).getLevel() + ") changed duration to " + abnormalTime + " seconds.");
-					}
-				}
-			}
 		}
 		
 		boolean self = false;

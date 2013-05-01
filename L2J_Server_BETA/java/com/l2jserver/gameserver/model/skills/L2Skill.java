@@ -289,8 +289,21 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_effectRange = set.getInteger("effectRange", -1);
 		_abnormalLvl = set.getInteger("abnormalLvl", 0);
 		_abnormalType = set.getEnum("abnormalType", AbnormalType.class, AbnormalType.NONE);
-		_abnormalTime = set.getInteger("abnormalTime", 1); // TODO: Should be 0, but instant effects need it until implementation is done.
 		
+		int abnormalTime = set.getInteger("abnormalTime", 1); // TODO: Should be 0, but instant effects need it until implementation is done.
+		if (Config.ENABLE_MODIFY_SKILL_DURATION && Config.SKILL_DURATION_LIST.containsKey(getId()))
+		{
+			if ((getLevel() < 100) || (getLevel() > 140))
+			{
+				abnormalTime = Config.SKILL_DURATION_LIST.get(getId());
+			}
+			else if ((getLevel() >= 100) && (getLevel() < 140))
+			{
+				abnormalTime += Config.SKILL_DURATION_LIST.get(getId());
+			}
+		}
+		
+		_abnormalTime = abnormalTime;
 		_attribute = set.getString("attribute", "");
 		String negateAbnormals = set.getString("negateAbnormals", null);
 		if ((negateAbnormals != null) && !negateAbnormals.isEmpty())
