@@ -108,7 +108,7 @@ public class L2NpcAIData
 	
 	public void setLongRangeChance(int longrangechance)
 	{
-		_shortRangeChance = longrangechance;
+		_longRangeChance = longrangechance;
 	}
 	
 	public void setSwitchRangeChance(int switchrangechance)
