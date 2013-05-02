@@ -76,7 +76,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	private boolean _isSelfEffect = false;
 	/** If {@code true} then prevent exit update. */
 	private boolean _preventExitUpdate;
-	private ScheduledFuture<?> _currentFuture;
+	private volatile ScheduledFuture<?> _currentFuture;
 	/** If {@code true} then this effect is in use. */
 	private boolean _inUse = false;
 	/** If {@code true} then this effect's start condition are meet. */
@@ -261,7 +261,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		return _lambda.calc(env);
 	}
 	
-	private final synchronized void startEffectTask()
+	private final void startEffectTask()
 	{
 		if (_abnormalTime > 0)
 		{
@@ -306,7 +306,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	 * <li>Stop and remove L2Effect from L2Character and update client magic icon</li>
 	 * </ul>
 	 */
-	public final synchronized void stopEffectTask()
+	public final void stopEffectTask()
 	{
 		if (_currentFuture != null)
 		{
