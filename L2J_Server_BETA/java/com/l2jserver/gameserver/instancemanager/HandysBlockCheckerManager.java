@@ -110,6 +110,12 @@ public final class HandysBlockCheckerManager
 		_arenaStatus.put(1, false);
 		_arenaStatus.put(2, false);
 		_arenaStatus.put(3, false);
+		
+		// Initialize arena votes
+		_arenaVotes.put(0, 0);
+		_arenaVotes.put(1, 0);
+		_arenaVotes.put(2, 0);
+		_arenaVotes.put(3, 0);
 	}
 	
 	/**

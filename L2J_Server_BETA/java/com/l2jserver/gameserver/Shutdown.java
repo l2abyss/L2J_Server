@@ -309,6 +309,9 @@ public class Shutdown extends Thread
 					getInstance().setMode(GM_RESTART);
 					System.exit(2);
 					break;
+				case ABORT:
+					LoginServerThread.getInstance().setServerStatus(ServerStatus.STATUS_AUTO);
+					break;
 			}
 		}
 	}
