@@ -7,12 +7,12 @@
 	<classpathentry kind="lib" path="dist/libs/jna-3.5.1.jar" />
 	<classpathentry kind="lib" path="dist/libs/jython.jar" />
 	<classpathentry kind="lib" path="dist/libs/jython-engine-2.2.1.jar" />
-	<classpathentry kind="lib" path="dist/libs/mmocore.jar" />
 	<classpathentry kind="lib" path="dist/libs/mail-1.4.6.jar" />
 	<classpathentry kind="lib" path="dist/libs/mailapi-1.4.6.jar" />
+	<classpathentry kind="lib" path="dist/libs/mmocore.jar" />
 	<classpathentry kind="lib" path="dist/libs/netcon-1.7.jar" />
-	<classpathentry kind="lib" path="dist/libs/trove-3.0.3.jar" />
 	<classpathentry kind="lib" path="dist/libs/smtp-1.4.6.jar" />
 	<classpathentry kind="lib" path="dist/libs/Subnet-1.0.jar" />
+	<classpathentry kind="lib" path="dist/libs/trove-3.0.3.jar" />
 	<classpathentry kind="output" path="bin" />
 </classpath>
