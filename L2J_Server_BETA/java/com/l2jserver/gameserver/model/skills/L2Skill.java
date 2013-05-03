@@ -1561,12 +1561,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			}
 		}
 		
-		if (effects.isEmpty())
-		{
-			return EMPTY_EFFECT_SET;
-		}
-		
-		return effects.toArray(new L2Effect[effects.size()]);
+		final L2Effect[] list = effects.toArray(new L2Effect[effects.size()]);
+		effected.getEffectList().add(list);
+		return effects.isEmpty() ? EMPTY_EFFECT_SET : list;
 	}
 	
 	public final L2Effect[] getEffectsSelf(L2Character effector)
@@ -1592,11 +1589,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			}
 		}
 		
-		if (effects.isEmpty())
-		{
-			return EMPTY_EFFECT_SET;
-		}
-		return effects.toArray(new L2Effect[effects.size()]);
+		final L2Effect[] list = effects.toArray(new L2Effect[effects.size()]);
+		effector.getEffectList().add(list);
+		return effects.isEmpty() ? EMPTY_EFFECT_SET : list;
 	}
 	
 	public final L2Effect[] getPassiveEffects(L2Character effector)
