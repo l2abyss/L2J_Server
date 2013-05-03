@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import static com.l2jserver.gameserver.datatables.MultiSell.PAGE_SIZE;
+import static com.l2jserver.gameserver.datatables.MultisellData.PAGE_SIZE;
 
 import com.l2jserver.gameserver.model.multisell.Entry;
 import com.l2jserver.gameserver.model.multisell.Ingredient;

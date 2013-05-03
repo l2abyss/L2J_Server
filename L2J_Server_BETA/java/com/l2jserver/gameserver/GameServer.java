@@ -63,7 +63,7 @@ import com.l2jserver.gameserver.datatables.InitialEquipmentData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.datatables.MerchantPriceConfigTable;
-import com.l2jserver.gameserver.datatables.MultiSell;
+import com.l2jserver.gameserver.datatables.MultisellData;
 import com.l2jserver.gameserver.datatables.NpcBufferTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.OfflineTradersTable;
@@ -224,7 +224,7 @@ public class GameServer
 		EnchantHPBonusData.getInstance();
 		MerchantPriceConfigTable.getInstance().loadInstances();
 		TradeController.getInstance();
-		MultiSell.getInstance();
+		MultisellData.getInstance();
 		RecipeData.getInstance();
 		ArmorSetsData.getInstance();
 		FishData.getInstance();

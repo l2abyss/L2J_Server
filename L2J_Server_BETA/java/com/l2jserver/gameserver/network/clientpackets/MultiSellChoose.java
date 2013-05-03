@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.MultiSell;
+import com.l2jserver.gameserver.datatables.MultisellData;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2Augmentation;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -216,7 +216,7 @@ public class MultiSellChoose extends L2GameClientPacket
 					}
 					if (e.getItemId() < 0)
 					{
-						if (!MultiSell.checkSpecialIngredient(e.getItemId(), e.getItemCount() * _amount, player))
+						if (!MultisellData.checkSpecialIngredient(e.getItemId(), e.getItemCount() * _amount, player))
 						{
 							return;
 						}
@@ -247,7 +247,7 @@ public class MultiSellChoose extends L2GameClientPacket
 					{
 						if (e.getItemId() < 0)
 						{
-							if (!MultiSell.getSpecialIngredient(e.getItemId(), e.getItemCount() * _amount, player))
+							if (!MultisellData.getSpecialIngredient(e.getItemId(), e.getItemCount() * _amount, player))
 							{
 								return;
 							}
@@ -387,7 +387,7 @@ public class MultiSellChoose extends L2GameClientPacket
 					{
 						if (e.getItemId() < 0)
 						{
-							MultiSell.addSpecialProduct(e.getItemId(), e.getItemCount() * _amount, player);
+							MultisellData.addSpecialProduct(e.getItemId(), e.getItemCount() * _amount, player);
 						}
 						else
 						{
