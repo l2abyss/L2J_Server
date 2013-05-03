@@ -21,6 +21,7 @@ package com.l2jserver.gameserver.model.itemcontainer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -838,7 +839,7 @@ public class PcInventory extends Inventory
 	 * @param sendSkillMessage if {@code true} will send a message of skill not available.
 	 * @return {@code true} if the inventory isn't full after taking new items and items weight add to current load doesn't exceed max weight load.
 	 */
-	public boolean checkInventorySlotsAndWeight(FastList<L2Item> itemList, boolean sendMessage, boolean sendSkillMessage)
+	public boolean checkInventorySlotsAndWeight(List<L2Item> itemList, boolean sendMessage, boolean sendSkillMessage)
 	{
 		int lootWeight = 0;
 		int requiredSlots = 0;
