@@ -14671,7 +14671,7 @@ public final class L2PcInstance extends L2Playable
 		return _charges.get();
 	}
 	
-	public synchronized void increaseCharges(int count, int max)
+	public void increaseCharges(int count, int max)
 	{
 		if (_charges.get() >= max)
 		{
@@ -14697,7 +14697,7 @@ public final class L2PcInstance extends L2Playable
 		sendPacket(new EtcStatusUpdate(this));
 	}
 	
-	public synchronized boolean decreaseCharges(int count)
+	public boolean decreaseCharges(int count)
 	{
 		if (_charges.get() < count)
 		{
@@ -14745,7 +14745,6 @@ public final class L2PcInstance extends L2Playable
 		if (_chargeTask != null)
 		{
 			_chargeTask.cancel(false);
-			// ThreadPoolManager.getInstance().removeGeneral((Runnable)_chargeTask);
 			_chargeTask = null;
 		}
 	}
