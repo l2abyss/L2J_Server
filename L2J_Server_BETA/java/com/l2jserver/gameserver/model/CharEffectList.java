@@ -771,8 +771,7 @@ public final class CharEffectList
 					{
 						if ((e != null) && (e.getSkill().getId() == skill.getId()) && (e.getEffectType() == effect.getEffectType()) && (e.getSkill().getAbnormalLvl() == skill.getAbnormalLvl()) && (e.getSkill().getAbnormalType() == skill.getAbnormalType()))
 						{
-							// Started scheduled timer needs to be canceled.
-							effect.stopEffectTask();
+							e.exit(); // exit this
 						}
 					}
 					_debuffs.add(effect);
@@ -1279,44 +1278,35 @@ public final class CharEffectList
 	}
 	
 	/**
-	 * Recalculate effect bits flag.<br>
-	 * Please no concurrency access.
+	 * Recalculate effect bits flag.
 	 */
 	private final void computeEffectFlags()
 	{
-		_rLock.lock();
-		try
+		int flags = 0;
+		if (hasBuffs())
 		{
-			int flags = 0;
-			if (hasBuffs())
+			for (L2Effect e : _buffs)
 			{
-				for (L2Effect e : _buffs)
+				if (e == null)
 				{
-					if (e == null)
-					{
-						continue;
-					}
-					flags |= e.getEffectFlags();
+					continue;
 				}
+				flags |= e.getEffectFlags();
 			}
-			
-			if (hasDebuffs())
-			{
-				for (L2Effect e : _debuffs)
-				{
-					if (e == null)
-					{
-						continue;
-					}
-					flags |= e.getEffectFlags();
-				}
-			}
-			_effectFlags = flags;
 		}
-		finally
+		
+		if (hasDebuffs())
 		{
-			_rLock.unlock();
+			for (L2Effect e : _debuffs)
+			{
+				if (e == null)
+				{
+					continue;
+				}
+				flags |= e.getEffectFlags();
+			}
 		}
+		_effectFlags = flags;
 	}
 	
 	/**
