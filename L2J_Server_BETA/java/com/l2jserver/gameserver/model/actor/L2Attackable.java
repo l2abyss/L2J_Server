@@ -390,14 +390,19 @@ public class L2Attackable extends L2Npc
 		
 		if (!skill.isStatic())
 		{
-			if (skill.isMagic() && isMuted())
+			if (skill.isMagic())
 			{
-				return;
+				if (isMuted())
+				{
+					return;
+				}
 			}
-			
-			if (isPhysicalMuted())
+			else
 			{
-				return;
+				if (isPhysicalMuted())
+				{
+					return;
+				}
 			}
 		}
 		
