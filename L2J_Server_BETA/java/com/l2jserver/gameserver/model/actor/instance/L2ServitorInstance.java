@@ -404,7 +404,7 @@ public class L2ServitorInstance extends L2Summon
 							ps2.setInt(3, getReferenceSkill());
 							ps2.setInt(4, skill.getId());
 							ps2.setInt(5, skill.getLevel());
-							ps2.setInt(6, effect.getCount());
+							ps2.setInt(6, effect.getTickCount());
 							ps2.setInt(7, effect.getTime());
 							ps2.setInt(8, ++buff_index);
 							ps2.execute();
@@ -422,7 +422,7 @@ public class L2ServitorInstance extends L2Summon
 								SummonEffectsTable.getInstance().getServitorEffects(getOwner()).put(getReferenceSkill(), new FastList<SummonEffect>());
 							}
 							
-							SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effect.getCount(), effect.getTime()));
+							SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effect.getTickCount(), effect.getTime()));
 						}
 					}
 				}

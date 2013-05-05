@@ -8309,7 +8309,7 @@ public final class L2PcInstance extends L2Playable
 						statement.setInt(1, getObjectId());
 						statement.setInt(2, skill.getId());
 						statement.setInt(3, skill.getLevel());
-						statement.setInt(4, effect.getCount());
+						statement.setInt(4, effect.getTickCount());
 						statement.setInt(5, effect.getTime());
 						
 						if (_reuseTimeStampsSkills.containsKey(skill.getReuseHashCode()))

@@ -1108,7 +1108,7 @@ public class L2PetInstance extends L2Summon
 						ps2.setInt(1, getControlObjectId());
 						ps2.setInt(2, skill.getId());
 						ps2.setInt(3, skill.getLevel());
-						ps2.setInt(4, effect.getCount());
+						ps2.setInt(4, effect.getTickCount());
 						ps2.setInt(5, effect.getTime());
 						ps2.setInt(6, ++buff_index);
 						ps2.execute();
@@ -1118,7 +1118,7 @@ public class L2PetInstance extends L2Summon
 							SummonEffectsTable.getInstance().getPetEffects().put(getControlObjectId(), new FastList<SummonEffect>());
 						}
 						
-						SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effect.getCount(), effect.getTime()));
+						SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effect.getTickCount(), effect.getTime()));
 					}
 				}
 			}

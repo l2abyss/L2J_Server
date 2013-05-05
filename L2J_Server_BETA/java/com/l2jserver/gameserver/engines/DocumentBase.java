@@ -141,7 +141,7 @@ public abstract class DocumentBase
 	
 	public Document parse()
 	{
-		Document doc;
+		Document doc = null;
 		try
 		{
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -153,7 +153,6 @@ public abstract class DocumentBase
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, "Error loading file " + _file, e);
-			return null;
 		}
 		return doc;
 	}
@@ -291,10 +290,14 @@ public abstract class DocumentBase
 		final NamedNodeMap attrs = n.getAttributes();
 		final String name = getValue(attrs.getNamedItem("name").getNodeValue().intern(), template);
 		
-		int count = 1;
-		if (attrs.getNamedItem("count") != null)
+		int ticks = 1;
+		if (attrs.getNamedItem("count") != null) // TODO: Change to ticks when Datapack part is done.
 		{
-			count = Integer.decode(getValue(attrs.getNamedItem("count").getNodeValue(), template));
+			ticks = Integer.decode(getValue(attrs.getNamedItem("ticks").getNodeValue(), template));
+			if (ticks < 0)
+			{
+				ticks = Integer.MAX_VALUE; // -1 ticks means "infinite" time.
+			}
 		}
 		
 		int abnormalTime = 0;
@@ -411,7 +414,7 @@ public abstract class DocumentBase
 			throw new NoSuchElementException("Invalid chance condition: " + chanceCond + " " + activationChance);
 		}
 		
-		final EffectTemplate lt = new EffectTemplate(attachCond, applayCond, name, lambda, count, abnormalTime, abnormalVisualEffect, special, event, icon, effectPower, trigId, trigLvl, chance);
+		final EffectTemplate lt = new EffectTemplate(attachCond, applayCond, name, lambda, ticks, abnormalTime, abnormalVisualEffect, special, event, icon, effectPower, trigId, trigLvl, chance);
 		parseTemplate(n, lt);
 		if (template instanceof L2Item)
 		{
