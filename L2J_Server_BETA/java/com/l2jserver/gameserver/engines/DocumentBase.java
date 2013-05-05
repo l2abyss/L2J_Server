@@ -291,7 +291,7 @@ public abstract class DocumentBase
 		final String name = getValue(attrs.getNamedItem("name").getNodeValue().intern(), template);
 		
 		int ticks = 1;
-		if (attrs.getNamedItem("count") != null) // TODO: Change to ticks when Datapack part is done.
+		if (attrs.getNamedItem("ticks") != null)
 		{
 			ticks = Integer.decode(getValue(attrs.getNamedItem("ticks").getNodeValue(), template));
 			if (ticks < 0)
