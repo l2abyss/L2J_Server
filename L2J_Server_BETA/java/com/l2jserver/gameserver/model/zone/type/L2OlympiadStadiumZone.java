@@ -188,7 +188,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 				else
 				{
 					// check for pet
-					if (player.hasSummon() && player.getSummon().isPet())
+					if (player.hasPet())
 					{
 						player.getSummon().unSummon(player);
 					}

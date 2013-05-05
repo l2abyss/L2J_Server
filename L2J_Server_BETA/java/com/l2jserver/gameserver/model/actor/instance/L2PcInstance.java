@@ -9372,6 +9372,7 @@ public final class L2PcInstance extends L2Playable
 				target = this;
 				break;
 			case PET:
+			case SERVITOR:
 			case SUMMON:
 				target = getSummon();
 				break;
@@ -9616,6 +9617,7 @@ public final class L2PcInstance extends L2Playable
 			switch (sklTargetType)
 			{
 				case PET:
+				case SERVITOR:
 				case SUMMON:
 				case AURA:
 				case FRONT_AURA:
@@ -11267,7 +11269,7 @@ public final class L2PcInstance extends L2Playable
 			_charges.set(0);
 			stopChargeTask();
 			
-			if (hasSummon() && getSummon().isServitor())
+			if (hasServitor())
 			{
 				getSummon().unSummon(this);
 			}

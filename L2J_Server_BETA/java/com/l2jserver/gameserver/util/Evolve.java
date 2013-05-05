@@ -53,7 +53,7 @@ public final class Evolve
 			return false;
 		}
 		
-		if (!player.hasSummon() || !player.getSummon().isPet())
+		if (!player.hasPet())
 		{
 			return false;
 		}

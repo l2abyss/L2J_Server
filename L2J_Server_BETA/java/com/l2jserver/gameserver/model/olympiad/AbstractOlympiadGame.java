@@ -35,7 +35,6 @@ import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
@@ -270,7 +269,7 @@ public abstract class AbstractOlympiadGame
 				summon.abortAttack();
 				summon.abortCast();
 				
-				if (summon instanceof L2PetInstance)
+				if (summon.isPet())
 				{
 					summon.unSummon(player);
 				}

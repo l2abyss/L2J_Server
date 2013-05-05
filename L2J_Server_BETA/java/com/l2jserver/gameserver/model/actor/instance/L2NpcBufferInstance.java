@@ -94,7 +94,7 @@ public class L2NpcBufferInstance extends L2Npc
 		L2Character target = player;
 		if (command.startsWith("Pet"))
 		{
-			if (!player.hasSummon())
+			if (!player.hasSummon()) // TODO: Should be hasPet() ?
 			{
 				player.sendPacket(SystemMessageId.DONT_HAVE_PET);
 				showChatWindow(player, 0); // 0 = main window

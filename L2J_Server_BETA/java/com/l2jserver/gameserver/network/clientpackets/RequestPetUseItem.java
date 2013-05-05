@@ -46,7 +46,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		if ((activeChar == null) || !activeChar.hasSummon() || !activeChar.getSummon().isPet())
+		if ((activeChar == null) || !activeChar.hasPet())
 		{
 			return;
 		}

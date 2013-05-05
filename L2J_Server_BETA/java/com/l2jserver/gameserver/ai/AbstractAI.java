@@ -688,7 +688,7 @@ public abstract class AbstractAI implements Ctrl
 		}
 		if (!isAutoAttacking())
 		{
-			if ((_actor instanceof L2PcInstance) && ((L2PcInstance) _actor).hasSummon())
+			if (_actor.isPlayer() && _actor.hasSummon())
 			{
 				_actor.getSummon().broadcastPacket(new AutoAttackStart(_actor.getSummon().getObjectId()));
 			}

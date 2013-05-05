@@ -46,7 +46,7 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 	protected void runImpl()
 	{
 		final L2PcInstance player = getClient().getActiveChar();
-		if ((player == null) || !player.hasSummon() || !player.getSummon().isPet())
+		if ((player == null) || !player.hasPet())
 		{
 			return;
 		}
