@@ -18,8 +18,6 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -34,12 +32,11 @@ import com.l2jserver.gameserver.network.serverpackets.ShowTownMap;
 import com.l2jserver.gameserver.network.serverpackets.StaticObject;
 
 /**
+ * Static Object instance.
  * @author godson
  */
-public class L2StaticObjectInstance extends L2Character
+public final class L2StaticObjectInstance extends L2Character
 {
-	protected static final Logger log = Logger.getLogger(L2StaticObjectInstance.class.getName());
-	
 	/** The interaction distance of the L2StaticObjectInstance */
 	public static final int INTERACTION_DISTANCE = 150;
 	
@@ -51,10 +48,6 @@ public class L2StaticObjectInstance extends L2Character
 	/** This class may be created only by L2Character and only for AI */
 	public class AIAccessor extends L2Character.AIAccessor
 	{
-		protected AIAccessor()
-		{
-		}
-		
 		@Override
 		public L2StaticObjectInstance getActor()
 		{
@@ -175,9 +168,6 @@ public class L2StaticObjectInstance extends L2Character
 		return 1;
 	}
 	
-	/**
-	 * Return null.
-	 */
 	@Override
 	public L2ItemInstance getActiveWeaponInstance()
 	{

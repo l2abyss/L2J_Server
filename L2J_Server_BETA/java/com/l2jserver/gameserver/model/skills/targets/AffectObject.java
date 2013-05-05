@@ -19,45 +19,19 @@
 package com.l2jserver.gameserver.model.skills.targets;
 
 /**
- * Target type enumerated.
+ * Affect object enumerated.
  * @author Zoey76
  */
-public enum TargetType
+public enum AffectObject
 {
-	/** Advance Head Quarters (Outposts). */
-	ADVANCE_BASE,
-	/** Enemies in high terrain or protected by castle walls and doors. */
-	ARTILLERY,
-	/** Doors or treasure chests. */
-	DOOR_TREASURE,
-	/** Any enemies (included allies). */
-	ENEMY,
-	/** Friendly. */
-	ENEMY_NOT,
-	/** Only enemies (not included allies). */
-	ENEMY_ONLY,
-	/** Fortress's Flagpole. */
-	FORTRESS_FLAGPOLE,
-	/** Ground. */
-	GROUND,
-	/** Holy Artifacts from sieges. */
-	HOLYTHING,
-	/** Items. */
-	ITEM,
-	/** Nothing. */
-	NONE,
-	/** NPC corpses. */
-	NPC_BODY,
-	/** Others, except caster. */
-	OTHERS,
-	/** Player corpses. */
-	PC_BODY,
-	/** Self. */
-	SELF,
-	/** Servitor, not pet. */
-	SUMMON,
-	/** Anything targetable. */
-	TARGET,
-	/** Wyverns. */
-	WYVERN_TARGET;
+	ALL,
+	CLAN,
+	FRIEND,
+	HIDDEN_PLACE,
+	INVISIBLE,
+	NOE,
+	NOT_FRIEND,
+	OBJECT_DEAD_NPC_BODY,
+	UNDEAD_REAL_ENEMY,
+	WYVERN_OBJECT
 }
