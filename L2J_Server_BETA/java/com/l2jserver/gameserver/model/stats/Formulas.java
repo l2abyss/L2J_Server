@@ -2399,7 +2399,7 @@ public final class Formulas
 		
 		final L2Skill skill = env.getSkill();
 		final L2Character effected = env.getTarget();
-		int time = (template.getCustomAbnormalTime() != 0) || (skill == null) ? template.getCustomAbnormalTime() : !skill.isPassive() ? skill.getAbnormalTime() : -1;
+		int time = (template.getAbnormalTime() != 0) || (skill == null) ? template.getAbnormalTime() : !skill.isPassive() ? skill.getAbnormalTime() : -1;
 		// Support for retail herbs duration when effected has a servitor.
 		if (effected != null)
 		{

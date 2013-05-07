@@ -47,8 +47,8 @@ public class EffectTemplate
 	// private final Condition _applyCond; // TODO: Use or cleanup.
 	private final Lambda _lambda;
 	private final int _totalTickCount;
-	/** Custom abnormal time. */
-	private final int _customAbnormalTime;
+	/** Effect specific abnormal time. */
+	private final int _abnormalTime;
 	private final AbnormalEffect _abnormalEffect;
 	private final AbnormalEffect[] _specialEffect;
 	private final AbnormalEffect _eventEffect;
@@ -67,15 +67,15 @@ public class EffectTemplate
 		_lambda = lambda;
 		_name = set.getString("name");
 		_totalTickCount = set.getInteger("ticks", 1);
-		_customAbnormalTime = set.getInteger("abnormalTime", 0);
-		_abnormalEffect = set.getEnum("abnormalVisualEffect", AbnormalEffect.class, AbnormalEffect.NULL);
+		_abnormalTime = set.getInteger("abnormalTime", 0);
+		_abnormalEffect = AbnormalEffect.getByName(set.getString("abnormalVisualEffect", ""));
 		final String[] specialEffects = set.getString("special", "").split(",");
 		_specialEffect = new AbnormalEffect[specialEffects.length];
 		for (int i = 0; i < specialEffects.length; i++)
 		{
 			_specialEffect[i] = AbnormalEffect.getByName(specialEffects[i]);
 		}
-		_eventEffect = set.getEnum("event", AbnormalEffect.class, AbnormalEffect.NULL);
+		_eventEffect = AbnormalEffect.getByName(set.getString("event", ""));
 		_showIcon = set.getInteger("noicon", 0) == 0;
 		_effectPower = set.getDouble("effectPower", -1);
 		_triggeredId = set.getInteger("triggeredId", 0);
@@ -189,9 +189,9 @@ public class EffectTemplate
 		return _totalTickCount;
 	}
 	
-	public int getCustomAbnormalTime()
+	public int getAbnormalTime()
 	{
-		return _customAbnormalTime;
+		return _abnormalTime;
 	}
 	
 	public AbnormalEffect getAbnormalEffect()

@@ -18,7 +18,6 @@
  */
 package com.l2jserver.gameserver.model.effects;
 
-import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -110,20 +109,22 @@ public enum AbnormalEffect
 	}
 	
 	/**
-	 * @param name the name of the abnormal effect to get.
-	 * @return the found abnormal effect.
-	 * @throws NoSuchElementException if no abnormal effect is found with the specified name.
+	 * @param name the name of the abnormal effect to get
+	 * @return the found abnormal effect
 	 */
 	public static AbnormalEffect getByName(String name)
 	{
-		for (AbnormalEffect eff : AbnormalEffect.values())
+		if ((name != null) && !name.isEmpty())
 		{
-			if (eff.getName().equals(name))
+			for (AbnormalEffect eff : AbnormalEffect.values())
 			{
-				return eff;
+				if (eff.getName().equals(name))
+				{
+					return eff;
+				}
 			}
+			_log.log(Level.WARNING, AbnormalEffect.class.getSimpleName() + ": Abnormal effect not found for name: " + name + "!");
 		}
-		_log.log(Level.WARNING, AbnormalEffect.class.getSimpleName() + ": Abnormal effect not found for name: " + name + "!");
 		return NULL;
 	}
 }
