@@ -19,6 +19,8 @@
 package com.l2jserver.gameserver.model.effects;
 
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author DrHouse
@@ -87,6 +89,7 @@ public enum AbnormalEffect
 	E_VESPER_3("vesper3", 0x000080),
 	HUNTING_BONUS("hunting_bonus", 0x80000);
 	
+	private static final Logger _log = Logger.getLogger(AbnormalEffect.class.getName());
 	private final int _mask;
 	private final String _name;
 	
@@ -120,6 +123,7 @@ public enum AbnormalEffect
 				return eff;
 			}
 		}
-		throw new NoSuchElementException(AbnormalEffect.class.getSimpleName() + ": Abnormal effect not found for name: " + name + "!");
+		_log.log(Level.WARNING, AbnormalEffect.class.getSimpleName() + ": Abnormal effect not found for name: " + name + "!");
+		return NULL;
 	}
 }

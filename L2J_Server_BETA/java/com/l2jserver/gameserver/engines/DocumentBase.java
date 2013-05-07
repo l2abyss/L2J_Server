@@ -22,7 +22,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,7 +35,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.model.ChanceCondition;
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.PlayerState;
@@ -109,7 +107,6 @@ import com.l2jserver.gameserver.model.conditions.ConditionTargetWeight;
 import com.l2jserver.gameserver.model.conditions.ConditionUsingItemType;
 import com.l2jserver.gameserver.model.conditions.ConditionUsingSkill;
 import com.l2jserver.gameserver.model.conditions.ConditionWithSkill;
-import com.l2jserver.gameserver.model.effects.AbnormalEffect;
 import com.l2jserver.gameserver.model.effects.EffectTemplate;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.type.L2ArmorType;
@@ -288,151 +285,35 @@ public abstract class DocumentBase
 	protected void attachEffect(Node n, Object template, Condition attachCond)
 	{
 		final NamedNodeMap attrs = n.getAttributes();
-		final String name = getValue(attrs.getNamedItem("name").getNodeValue().intern(), template);
-		
-		int ticks = 1;
-		if (attrs.getNamedItem("ticks") != null)
+		final StatsSet set = new StatsSet();
+		for (int i = 0; i < attrs.getLength(); i++)
 		{
-			ticks = Integer.decode(getValue(attrs.getNamedItem("ticks").getNodeValue(), template));
-			if (ticks < 0)
-			{
-				ticks = Integer.MAX_VALUE; // -1 ticks means "infinite" time.
-			}
+			Node att = attrs.item(i);
+			set.set(att.getNodeName(), getValue(att.getNodeValue(), template));
 		}
 		
-		int abnormalTime = 0;
-		if (attrs.getNamedItem("abnormalTime") != null)
-		{
-			abnormalTime = Integer.decode(getValue(attrs.getNamedItem("abnormalTime").getNodeValue(), template));
-		}
-		
-		boolean self = false;
-		if (attrs.getNamedItem("self") != null)
-		{
-			if (Integer.decode(getValue(attrs.getNamedItem("self").getNodeValue(), template)) == 1)
-			{
-				self = true;
-			}
-		}
-		
-		boolean icon = true;
-		if (attrs.getNamedItem("noicon") != null)
-		{
-			if (Integer.decode(getValue(attrs.getNamedItem("noicon").getNodeValue(), template)) == 1)
-			{
-				icon = false;
-			}
-		}
-		
-		Lambda lambda = getLambda(n, template);
-		Condition applayCond = parseCondition(n.getFirstChild(), template);
-		AbnormalEffect abnormalVisualEffect = AbnormalEffect.NULL;
-		if (attrs.getNamedItem("abnormalVisualEffect") != null)
-		{
-			String abn = attrs.getNamedItem("abnormalVisualEffect").getNodeValue();
-			abnormalVisualEffect = AbnormalEffect.getByName(abn);
-		}
-		AbnormalEffect[] special = null;
-		if (attrs.getNamedItem("special") != null)
-		{
-			final String[] specials = attrs.getNamedItem("special").getNodeValue().split(",");
-			special = new AbnormalEffect[specials.length];
-			for (int s = 0; s < specials.length; s++)
-			{
-				special[s] = AbnormalEffect.getByName(specials[s]);
-			}
-		}
-		AbnormalEffect event = AbnormalEffect.NULL;
-		if (attrs.getNamedItem("event") != null)
-		{
-			String spc = attrs.getNamedItem("event").getNodeValue();
-			event = AbnormalEffect.getByName(spc);
-		}
-		
-		double effectPower = -1;
-		if (attrs.getNamedItem("effectPower") != null)
-		{
-			effectPower = Double.parseDouble(getValue(attrs.getNamedItem("effectPower").getNodeValue(), template));
-		}
-		
-		final boolean isChanceSkillTrigger = name.equals("ChanceSkillTrigger");
-		int trigId = 0;
-		if (attrs.getNamedItem("triggeredId") != null)
-		{
-			trigId = Integer.parseInt(getValue(attrs.getNamedItem("triggeredId").getNodeValue(), template));
-		}
-		else if (isChanceSkillTrigger)
-		{
-			throw new NoSuchElementException(name + " requires triggerId");
-		}
-		
-		int trigLvl = 1;
-		if (attrs.getNamedItem("triggeredLevel") != null)
-		{
-			trigLvl = Integer.parseInt(getValue(attrs.getNamedItem("triggeredLevel").getNodeValue(), template));
-		}
-		
-		String chanceCond = null;
-		if (attrs.getNamedItem("chanceType") != null)
-		{
-			chanceCond = getValue(attrs.getNamedItem("chanceType").getNodeValue(), template);
-		}
-		else if (isChanceSkillTrigger)
-		{
-			throw new NoSuchElementException(name + " requires chanceType");
-		}
-		
-		int activationChance = -1;
-		if (attrs.getNamedItem("activationChance") != null)
-		{
-			activationChance = Integer.parseInt(getValue(attrs.getNamedItem("activationChance").getNodeValue(), template));
-		}
-		int activationMinDamage = -1;
-		if (attrs.getNamedItem("activationMinDamage") != null)
-		{
-			activationMinDamage = Integer.parseInt(getValue(attrs.getNamedItem("activationMinDamage").getNodeValue(), template));
-		}
-		String activationElements = null;
-		if (attrs.getNamedItem("activationElements") != null)
-		{
-			activationElements = getValue(attrs.getNamedItem("activationElements").getNodeValue(), template);
-		}
-		String activationSkills = null;
-		if (attrs.getNamedItem("activationSkills") != null)
-		{
-			activationSkills = getValue(attrs.getNamedItem("activationSkills").getNodeValue(), template);
-		}
-		boolean pvpOnly = false;
-		if (attrs.getNamedItem("pvpChanceOnly") != null)
-		{
-			pvpOnly = Boolean.parseBoolean(getValue(attrs.getNamedItem("pvpChanceOnly").getNodeValue(), template));
-		}
-		
-		ChanceCondition chance = ChanceCondition.parse(chanceCond, activationChance, activationMinDamage, activationElements, activationSkills, pvpOnly);
-		if ((chance == null) && isChanceSkillTrigger)
-		{
-			throw new NoSuchElementException("Invalid chance condition: " + chanceCond + " " + activationChance);
-		}
-		
-		final EffectTemplate lt = new EffectTemplate(attachCond, applayCond, name, lambda, ticks, abnormalTime, abnormalVisualEffect, special, event, icon, effectPower, trigId, trigLvl, chance);
-		parseTemplate(n, lt);
+		final Lambda lambda = getLambda(n, template);
+		final Condition applayCond = parseCondition(n.getFirstChild(), template);
+		final EffectTemplate effectTemplate = new EffectTemplate(attachCond, applayCond, lambda, set);
+		parseTemplate(n, effectTemplate);
 		if (template instanceof L2Item)
 		{
-			((L2Item) template).attach(lt);
+			((L2Item) template).attach(effectTemplate);
 		}
 		else if (template instanceof L2Skill)
 		{
-			if (self)
+			final L2Skill sk = (L2Skill) template;
+			if (set.getInteger("self", 0) == 1)
 			{
-				((L2Skill) template).attachSelf(lt);
+				sk.attachSelf(effectTemplate);
 			}
-			else if (((L2Skill) template).isPassive())
+			else if (sk.isPassive())
 			{
-				((L2Skill) template).attachPassive(lt);
+				sk.attachPassive(effectTemplate);
 			}
 			else
 			{
-				((L2Skill) template).attach(lt);
+				sk.attach(effectTemplate);
 			}
 		}
 	}

@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.handler.EffectHandler;
 import com.l2jserver.gameserver.model.ChanceCondition;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.conditions.Condition;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.skills.funcs.Lambda;
@@ -40,7 +41,7 @@ public class EffectTemplate
 {
 	private static final Logger _log = Logger.getLogger(EffectTemplate.class.getName());
 	
-	private final Class<?> _func;
+	private final Class<?> _handler;
 	private final Constructor<?> _constructor;
 	private final Condition _attachCond;
 	// private final Condition _applyCond; // TODO: Use or cleanup.
@@ -53,38 +54,42 @@ public class EffectTemplate
 	private final AbnormalEffect _eventEffect;
 	private List<FuncTemplate> _funcTemplates;
 	private final boolean _showIcon;
-	private final String _funcName;
+	private final String _name;
 	private final double _effectPower; // to handle chance
 	private final int _triggeredId;
 	private final int _triggeredLevel;
 	private final ChanceCondition _chanceCondition;
 	
-	public EffectTemplate(Condition attachCond, Condition applyCond, String func, Lambda lambda, int totalTickCount, int abnormalTime, AbnormalEffect abnormalEffect, AbnormalEffect[] specialEffect, AbnormalEffect eventEffect, boolean showIcon, double power, int trigId, int trigLvl, ChanceCondition chanceCond)
+	public EffectTemplate(Condition attachCond, Condition applyCond, Lambda lambda, StatsSet set)
 	{
 		_attachCond = attachCond;
 		// _applyCond = applyCond;
 		_lambda = lambda;
-		_totalTickCount = totalTickCount;
-		_customAbnormalTime = abnormalTime;
-		_abnormalEffect = abnormalEffect;
-		_specialEffect = specialEffect;
-		_eventEffect = eventEffect;
-		_showIcon = showIcon;
-		_effectPower = power;
-		_triggeredId = trigId;
-		_triggeredLevel = trigLvl;
-		_chanceCondition = chanceCond;
-		_funcName = func;
-		_func = EffectHandler.getInstance().getHandler(func);
-		if (_func == null)
+		_name = set.getString("name");
+		_totalTickCount = set.getInteger("ticks", 1);
+		_customAbnormalTime = set.getInteger("abnormalTime", 0);
+		_abnormalEffect = set.getEnum("abnormalVisualEffect", AbnormalEffect.class, AbnormalEffect.NULL);
+		final String[] specialEffects = set.getString("special", "").split(",");
+		_specialEffect = new AbnormalEffect[specialEffects.length];
+		for (int i = 0; i < specialEffects.length; i++)
 		{
-			_log.warning(getClass().getSimpleName() + ": Requested Unexistent effect handler: " + func);
-			throw new RuntimeException();
+			_specialEffect[i] = AbnormalEffect.getByName(specialEffects[i]);
+		}
+		_eventEffect = set.getEnum("event", AbnormalEffect.class, AbnormalEffect.NULL);
+		_showIcon = set.getInteger("noicon", 0) == 0;
+		_effectPower = set.getDouble("effectPower", -1);
+		_triggeredId = set.getInteger("triggeredId", 0);
+		_triggeredLevel = set.getInteger("triggeredLevel", 1);
+		_chanceCondition = ChanceCondition.parse(set.getString("chanceType", null), set.getInteger("activationChance", -1), set.getInteger("activationMinDamage", -1), set.getString("activationElements", null), set.getString("activationSkills", null), set.getBool("pvpChanceOnly", false));
+		_handler = EffectHandler.getInstance().getHandler(_name);
+		if (_handler == null)
+		{
+			throw new RuntimeException(getClass().getSimpleName() + ": Requested unexistent effect handler: " + _name);
 		}
 		
 		try
 		{
-			_constructor = _func.getConstructor(Env.class, EffectTemplate.class);
+			_constructor = _handler.getConstructor(Env.class, EffectTemplate.class);
 		}
 		catch (NoSuchMethodException e)
 		{
@@ -106,8 +111,7 @@ public class EffectTemplate
 		
 		try
 		{
-			L2Effect effect = (L2Effect) _constructor.newInstance(env, this);
-			return effect;
+			return (L2Effect) _constructor.newInstance(env, this);
 		}
 		catch (IllegalAccessException | InstantiationException e)
 		{
@@ -116,7 +120,7 @@ public class EffectTemplate
 		}
 		catch (InvocationTargetException e)
 		{
-			_log.log(Level.WARNING, "Error creating new instance of Class " + _func + " Exception was: " + e.getTargetException().getMessage(), e.getTargetException());
+			_log.log(Level.WARNING, "Error creating new instance of Class " + _handler + " Exception was: " + e.getTargetException().getMessage(), e.getTargetException());
 			return null;
 		}
 	}
@@ -129,7 +133,7 @@ public class EffectTemplate
 	 */
 	public L2Effect getStolenEffect(Env env, L2Effect stolen)
 	{
-		Class<?> func = EffectHandler.getInstance().getHandler(_funcName);
+		Class<?> func = EffectHandler.getInstance().getHandler(_name);
 		if (func == null)
 		{
 			throw new RuntimeException();
