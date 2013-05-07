@@ -926,23 +926,21 @@ public final class CharEffectList
 						}
 						_buffs.add(pos, effect);
 					}
-					
-					// Check if a stack group is defined for this effect
-					if (skill.getAbnormalType().isNone())
-					{
-						// Set this L2Effect to In Use
-						if (effect.setInUse(true))
-						{
-							// Add Funcs of this effect to the Calculator set of the L2Character
-							_owner.addStatFuncs(effect.getStatFuncs());
-						}
-					}
 				}
 			}
 			
 			// Effects without abnormal shouldn't stack.
 			if (skill.getAbnormalType().isNone())
 			{
+				for (L2Effect effect : effects)
+				{
+					// Set effect in use.
+					if (effect.setInUse(true))
+					{
+						// Add stats.
+						_owner.addStatFuncs(effect.getStatFuncs());
+					}
+				}
 				// Update effect flags and icons.
 				computeEffectFlags();
 				updateEffectIcons();

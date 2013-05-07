@@ -94,7 +94,6 @@ import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.options.OptionsSkillHolder;
 import com.l2jserver.gameserver.model.options.OptionsSkillType;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
@@ -3179,15 +3178,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	}
 	
 	/**
-	 * Active the abnormal effect Confused flag, notify the L2Character AI and send Server->Client UserInfo/CharInfo packet.
-	 */
-	public final void startConfused()
-	{
-		getAI().notifyEvent(CtrlEvent.EVT_CONFUSED);
-		updateAbnormalEffect();
-	}
-	
-	/**
 	 * Active the abnormal effect Fake Death flag, notify the L2Character AI and send Server->Client UserInfo/CharInfo packet.
 	 */
 	public final void startFakeDeath()
@@ -3204,58 +3194,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		stopMove(null);
 		getAI().notifyEvent(CtrlEvent.EVT_FAKE_DEATH);
 		broadcastPacket(new ChangeWaitType(this, ChangeWaitType.WT_START_FAKEDEATH));
-	}
-	
-	/**
-	 * Active the abnormal effect Fear flag, notify the L2Character AI and send Server->Client UserInfo/CharInfo packet.
-	 */
-	public final void startFear()
-	{
-		getAI().notifyEvent(CtrlEvent.EVT_AFRAID);
-		updateAbnormalEffect();
-	}
-	
-	/**
-	 * Active the abnormal effect Muted flag, notify the L2Character AI and send Server->Client UserInfo/CharInfo packet.
-	 */
-	public final void startMuted()
-	{
-		/* Aborts any casts if muted */
-		abortCast();
-		getAI().notifyEvent(CtrlEvent.EVT_MUTED);
-		updateAbnormalEffect();
-	}
-	
-	/**
-	 * Active the abnormal effect Psychical_Muted flag, notify the L2Character AI and send Server->Client UserInfo/CharInfo packet.
-	 */
-	public final void startPsychicalMuted()
-	{
-		getAI().notifyEvent(CtrlEvent.EVT_MUTED);
-		updateAbnormalEffect();
-	}
-	
-	/**
-	 * Active the abnormal effect Root flag, notify the L2Character AI and send Server->Client UserInfo/CharInfo packet.
-	 */
-	public final void startRooted()
-	{
-		stopMove(null);
-		getAI().notifyEvent(CtrlEvent.EVT_ROOTED);
-		updateAbnormalEffect();
-	}
-	
-	/**
-	 * Active the abnormal effect Sleep flag, notify the L2Character AI and send Server->Client UserInfo/CharInfo packet.
-	 */
-	public final void startSleeping()
-	{
-		/* Aborts any attacks/casts if asleep */
-		abortAttack();
-		abortCast();
-		stopMove(null);
-		getAI().notifyEvent(CtrlEvent.EVT_SLEEPING);
-		updateAbnormalEffect();
 	}
 	
 	/**
@@ -3411,112 +3349,10 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			getActingPlayer().setRecentFakeDeath(true);
 		}
 		
-		ChangeWaitType revive = new ChangeWaitType(this, ChangeWaitType.WT_STOP_FAKEDEATH);
-		broadcastPacket(revive);
+		broadcastPacket(new ChangeWaitType(this, ChangeWaitType.WT_STOP_FAKEDEATH));
 		// TODO: Temp hack: players see FD on ppl that are moving: Teleport to someone who uses FD - if he gets up he will fall down again for that client -
 		// even tho he is actually standing... Probably bad info in CharInfo packet?
 		broadcastPacket(new Revive(this));
-	}
-	
-	/**
-	 * Stop a specified/all Fear abnormal L2Effect.<br>
-	 * <B><U>Actions</U>:</B>
-	 * <ul>
-	 * <li>Delete a specified/all (if effect=null) Fear abnormal L2Effect from L2Character and update client magic icon</li>
-	 * <li>Set the abnormal effect flag _affraid to False</li>
-	 * <li>Notify the L2Character AI</li>
-	 * <li>Send Server->Client UserInfo/CharInfo packet</li>
-	 * </ul>
-	 * @param removeEffects
-	 */
-	public final void stopFear(boolean removeEffects)
-	{
-		if (removeEffects)
-		{
-			stopEffects(L2EffectType.FEAR);
-		}
-		updateAbnormalEffect();
-	}
-	
-	/**
-	 * Stop a specified/all Muted abnormal L2Effect.<br>
-	 * <B><U>Actions</U>:</B>
-	 * <ul>
-	 * <li>Delete a specified/all (if effect=null) Muted abnormal L2Effect from L2Character and update client magic icon</li>
-	 * <li>Set the abnormal effect flag _muted to False</li>
-	 * <li>Notify the L2Character AI</li>
-	 * <li>Send Server->Client UserInfo/CharInfo packet</li>
-	 * </ul>
-	 * @param removeEffects
-	 */
-	public final void stopMuted(boolean removeEffects)
-	{
-		if (removeEffects)
-		{
-			stopEffects(L2EffectType.MUTE);
-		}
-		
-		updateAbnormalEffect();
-	}
-	
-	public final void stopPsychicalMuted(boolean removeEffects)
-	{
-		if (removeEffects)
-		{
-			stopEffects(L2EffectType.PHYSICAL_MUTE);
-		}
-		
-		updateAbnormalEffect();
-	}
-	
-	/**
-	 * Stop a specified/all Root abnormal L2Effect.<br>
-	 * <B><U>Actions</U>:</B>
-	 * <ul>
-	 * <li>Delete a specified/all (if effect=null) Root abnormal L2Effect from L2Character and update client magic icon</li>
-	 * <li>Set the abnormal effect flag _rooted to False</li>
-	 * <li>Notify the L2Character AI</li>
-	 * <li>Send Server->Client UserInfo/CharInfo packet</li>
-	 * </ul>
-	 * @param removeEffects
-	 */
-	public final void stopRooting(boolean removeEffects)
-	{
-		if (removeEffects)
-		{
-			stopEffects(L2EffectType.ROOT);
-		}
-		
-		if (!isPlayer())
-		{
-			getAI().notifyEvent(CtrlEvent.EVT_THINK);
-		}
-		updateAbnormalEffect();
-	}
-	
-	/**
-	 * Stop a specified/all Sleep abnormal L2Effect.<br>
-	 * <B><U>Actions</U>:</B>
-	 * <ul>
-	 * <li>Delete a specified/all (if effect=null) Sleep abnormal L2Effect from L2Character and update client magic icon</li>
-	 * <li>Set the abnormal effect flag _sleeping to False</li>
-	 * <li>Notify the L2Character AI</li>
-	 * <li>Send Server->Client UserInfo/CharInfo packet</li>
-	 * </ul>
-	 * @param removeEffects
-	 */
-	public final void stopSleeping(boolean removeEffects)
-	{
-		if (removeEffects)
-		{
-			stopEffects(L2EffectType.SLEEP);
-		}
-		
-		if (!isPlayer())
-		{
-			getAI().notifyEvent(CtrlEvent.EVT_THINK);
-		}
-		updateAbnormalEffect();
 	}
 	
 	/**
@@ -3709,33 +3545,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	public final L2Effect getFirstPassiveEffect(L2EffectType type)
 	{
 		return _effectList.getFirstPassiveEffect(type);
-	}
-	
-	/**
-	 * Add abnormal types to the blocked buff slot set.
-	 * @param blockedBuffSlots the blocked buff slot set to add
-	 */
-	public final void addBlockedBuffSlots(Set<AbnormalType> blockedBuffSlots)
-	{
-		_effectList.addBlockedBuffSlots(blockedBuffSlots);
-	}
-	
-	/**
-	 * Remove abnormal types from the blocked buff slot set.
-	 * @param blockedBuffSlots the blocked buff slot set to remove
-	 */
-	public final void removeBlockedBuffSlots(Set<AbnormalType> blockedBuffSlots)
-	{
-		_effectList.removeBlockedBuffSlots(blockedBuffSlots);
-	}
-	
-	/**
-	 * Get all the blocked abnormal types for this character.
-	 * @return the current blocked buff slots set
-	 */
-	public final Set<AbnormalType> getAllBlockedBuffSlots()
-	{
-		return _effectList.getAllBlockedBuffSlots();
 	}
 	
 	// TODO: NEED TO ORGANIZE AND MOVE TO PROPER PLACE
