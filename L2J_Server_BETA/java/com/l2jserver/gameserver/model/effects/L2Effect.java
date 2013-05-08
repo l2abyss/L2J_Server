@@ -367,9 +367,13 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	}
 	
 	/**
-	 * @return true for continuation of this effect
+	 * Method called on each tick.
+	 * @return {@code true} for continuation of this effect, {@code false} otherwise
 	 */
-	public abstract boolean onActionTime();
+	public boolean onActionTime()
+	{
+		return false;
+	}
 	
 	public final void scheduleEffect()
 	{
@@ -471,7 +475,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		env.setSkill(_skill);
 		for (FuncTemplate t : _template.getFuncTemplates())
 		{
-			Func f = t.getFunc(env, this); // effect is owner
+			final Func f = t.getFunc(env, this);
 			if (f != null)
 			{
 				funcs.add(f);

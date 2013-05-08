@@ -648,6 +648,7 @@ public final class CharEffectList
 				if (effect.setInUse(false))
 				{
 					_owner.removeStatsOwner(effect);
+					
 					if (_passives != null)
 					{
 						_passives.remove(effect);
@@ -666,10 +667,7 @@ public final class CharEffectList
 		// Remove the effect from character effects.
 		for (L2Effect effect : effects)
 		{
-			if (effect.setInUse(false))
-			{
-				_owner.removeStatsOwner(effect);
-			}
+			_owner.removeStatsOwner(effect);
 			
 			effectList.remove(effect);
 			
