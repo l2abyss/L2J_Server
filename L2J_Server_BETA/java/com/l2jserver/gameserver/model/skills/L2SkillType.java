@@ -21,11 +21,9 @@ package com.l2jserver.gameserver.model.skills;
 import java.lang.reflect.Constructor;
 
 import com.l2jserver.gameserver.model.StatsSet;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillChargeDmg;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillCreateItem;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDecoy;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDefault;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDrain;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillLearnSkill;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSiegeFlag;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSignet;
@@ -41,16 +39,8 @@ import com.l2jserver.gameserver.model.skills.l2skills.L2SkillTrap;
 public enum L2SkillType
 {
 	// Damage
-	PDAM,
-	MDAM,
-	MANADAM,
-	CPDAMPERCENT,
 	DOT,
 	MDOT,
-	DRAIN(L2SkillDrain.class),
-	DEATHLINK,
-	FATAL,
-	BLOW,
 	SIGNET(L2SkillSignet.class),
 	SIGNET_CASTTIME(L2SkillSignetCasttime.class),
 	// Disablers
@@ -104,7 +94,6 @@ public enum L2SkillType
 	// Summons
 	SUMMON(L2SkillSummon.class),
 	FEED_PET,
-	STRSIEGEASSAULT,
 	ERASE,
 	BETRAY,
 	DECOY(L2SkillDecoy.class),
@@ -116,7 +105,6 @@ public enum L2SkillType
 	FUSION,
 	
 	RESURRECT,
-	CHARGEDAM(L2SkillChargeDmg.class),
 	RECALL(L2SkillTeleport.class),
 	TELEPORT(L2SkillTeleport.class),
 	SUMMON_FRIEND,

@@ -7273,23 +7273,6 @@ public final class L2PcInstance extends L2Playable
 		return false;
 	}
 	
-	@Override
-	public boolean isUsingDualWeapon()
-	{
-		final L2Weapon weaponItem = getActiveWeaponItem();
-		if (weaponItem != null)
-		{
-			switch (weaponItem.getItemType())
-			{
-				case DUAL:
-				case DUALFIST:
-				case DUALDAGGER:
-					return true;
-			}
-		}
-		return false;
-	}
-	
 	public void setUptime(long time)
 	{
 		_uptime = time;
@@ -9673,7 +9656,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		// TODO: Unhardcode skillId 844 which is the outpost construct skill
-		if (((sklTargetType == L2TargetType.HOLY) && !checkIfOkToCastSealOfRule(CastleManager.getInstance().getCastle(this), false, skill, target)) || ((sklTargetType == L2TargetType.FLAGPOLE) && !checkIfOkToCastFlagDisplay(FortManager.getInstance().getFort(this), false, skill, target)) || ((sklType == L2SkillType.SIEGEFLAG) && !L2SkillSiegeFlag.checkIfOkToPlaceFlag(this, false, skill.getId() == 844)) || ((sklType == L2SkillType.STRSIEGEASSAULT) && !checkIfOkToUseStriderSiegeAssault()) || ((sklType == L2SkillType.SUMMON_FRIEND) && !(checkSummonerStatus(this) && checkSummonTargetStatus(target, this))))
+		if (((sklTargetType == L2TargetType.HOLY) && !checkIfOkToCastSealOfRule(CastleManager.getInstance().getCastle(this), false, skill, target)) || ((sklTargetType == L2TargetType.FLAGPOLE) && !checkIfOkToCastFlagDisplay(FortManager.getInstance().getFort(this), false, skill, target)) || ((sklType == L2SkillType.SIEGEFLAG) && !L2SkillSiegeFlag.checkIfOkToPlaceFlag(this, false, skill.getId() == 844)) || ((sklType == L2SkillType.SUMMON_FRIEND) && !(checkSummonerStatus(this) && checkSummonTargetStatus(target, this))))
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			abortCast();
@@ -9701,83 +9684,6 @@ public final class L2PcInstance extends L2Playable
 		}
 		// finally, after passing all conditions
 		return true;
-	}
-	
-	public boolean checkIfOkToUseStriderSiegeAssault()
-	{
-		Castle castle = CastleManager.getInstance().getCastle(this);
-		Fort fort = FortManager.getInstance().getFort(this);
-		
-		if ((castle == null) && (fort == null))
-		{
-			return false;
-		}
-		
-		if (castle != null)
-		{
-			return checkIfOkToUseStriderSiegeAssault(castle);
-		}
-		return checkIfOkToUseStriderSiegeAssault(fort);
-	}
-	
-	public boolean checkIfOkToUseStriderSiegeAssault(Castle castle)
-	{
-		String text = "";
-		
-		if ((castle == null) || (castle.getCastleId() <= 0))
-		{
-			text = "You must be on castle ground to use strider siege assault";
-		}
-		else if (!castle.getSiege().getIsInProgress())
-		{
-			text = "You can only use strider siege assault during a siege.";
-		}
-		else if (!(getTarget() instanceof L2DoorInstance))
-		{
-			text = "You can only use strider siege assault on doors and walls.";
-		}
-		else if (!isRidingStrider())
-		{
-			text = "You can only use strider siege assault when on strider.";
-		}
-		else
-		{
-			return true;
-		}
-		
-		sendMessage(text);
-		
-		return false;
-	}
-	
-	public boolean checkIfOkToUseStriderSiegeAssault(Fort fort)
-	{
-		String text = "";
-		
-		if ((fort == null) || (fort.getFortId() <= 0))
-		{
-			text = "You must be on fort ground to use strider siege assault";
-		}
-		else if (!fort.getSiege().getIsInProgress())
-		{
-			text = "You can only use strider siege assault during a siege.";
-		}
-		else if (!(getTarget() instanceof L2DoorInstance))
-		{
-			text = "You can only use strider siege assault on doors and walls.";
-		}
-		else if (!isRidingStrider())
-		{
-			text = "You can only use strider siege assault when on strider.";
-		}
-		else
-		{
-			return true;
-		}
-		
-		sendMessage(text);
-		
-		return false;
 	}
 	
 	public boolean checkIfOkToCastSealOfRule(Castle castle, boolean isCheckOnly, L2Skill skill, L2Object target)
@@ -13708,7 +13614,6 @@ public final class L2PcInstance extends L2Playable
 	public void increaseSouls(int count)
 	{
 		_souls += count;
-		// TODO: Fix double message if skill have a self effect.
 		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOUR_SOUL_HAS_INCREASED_BY_S1_SO_IT_IS_NOW_AT_S2);
 		sm.addNumber(count);
 		sm.addNumber(_souls);
@@ -14006,10 +13911,10 @@ public final class L2PcInstance extends L2Playable
 		// Check if hit is missed
 		if (miss)
 		{
-			if (target instanceof L2PcInstance)
+			if (target.isPlayer())
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_EVADED_C2_ATTACK);
-				sm.addPcName((L2PcInstance) target);
+				sm.addPcName(target.getActingPlayer());
 				sm.addCharName(this);
 				target.sendPacket(sm);
 			}
@@ -14025,44 +13930,35 @@ public final class L2PcInstance extends L2Playable
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAD_CRITICAL_HIT);
 			sm.addPcName(this);
 			sendPacket(sm);
-			if ((target instanceof L2Npc) && (getSkillLevel(467) > 0))
-			{
-				L2Skill skill = SkillTable.getInstance().getInfo(467, getSkillLevel(467));
-				if (Rnd.get(100) < skill.getCritChance())
-				{
-					absorbSoul(skill, ((L2Npc) target));
-				}
-			}
 		}
 		if (mcrit)
 		{
 			sendPacket(SystemMessageId.CRITICAL_HIT_MAGIC);
 		}
 		
-		if (isInOlympiadMode() && (target instanceof L2PcInstance) && ((L2PcInstance) target).isInOlympiadMode() && (((L2PcInstance) target).getOlympiadGameId() == getOlympiadGameId()))
+		if (isInOlympiadMode() && target.isPlayer() && target.getActingPlayer().isInOlympiadMode() && (target.getActingPlayer().getOlympiadGameId() == getOlympiadGameId()))
 		{
 			OlympiadGameManager.getInstance().notifyCompetitorDamage(this, damage);
 		}
 		
 		final SystemMessage sm;
 		
-		if (target.isInvul() && !(target instanceof L2Npc))
+		if (target.isInvul() && !target.isNpc())
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.ATTACK_WAS_BLOCKED);
 		}
-		else if ((target instanceof L2DoorInstance) || (target instanceof L2ControlTowerInstance))
+		else if (target.isDoor() || (target instanceof L2ControlTowerInstance))
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_DID_S1_DMG);
 			sm.addNumber(damage);
 		}
 		else
 		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_GAVE_C2_DAMAGE_OF_S3);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DONE_S3_DAMAGE_TO_C2);
 			sm.addPcName(this);
 			sm.addCharName(target);
 			sm.addNumber(damage);
 		}
-		
 		sendPacket(sm);
 	}
 	

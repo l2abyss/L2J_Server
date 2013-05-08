@@ -113,15 +113,12 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _magic;
 	private final L2TraitType _traitType;
 	private final boolean _staticReuse;
-	private final boolean _staticDamage; // Damage dealing skills do static damage based on the power value.
 	/** MP consumption. */
 	private final int _mpConsume;
 	/** Initial MP consumption. */
 	private final int _mpInitialConsume;
 	/** HP consumption. */
 	private final int _hpConsume;
-	/** CP consumption. */
-	private final int _cpConsume;
 	/** Amount of items consumed by this skill from target. */
 	private final int _targetConsumeCount;
 	/** Id of item consumed by this skill from target. */
@@ -209,7 +206,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _soulMaxConsume;
 	private final int _numSouls;
 	private final int _expNeeded;
-	private final int _critChance;
 	private final boolean _dependOnTargetBuff;
 	
 	private final int _afterEffectId;
@@ -249,7 +245,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final boolean _ignoreShield;
 	
 	private final boolean _isSuicideAttack;
-	private final boolean _canBeReflected;
 	private final boolean _canBeDispeled;
 	
 	private final boolean _isClanSkill;
@@ -274,11 +269,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_magic = set.getInteger("isMagic", 0);
 		_traitType = set.getEnum("trait", L2TraitType.class, L2TraitType.NONE);
 		_staticReuse = set.getBool("staticReuse", false);
-		_staticDamage = set.getBool("staticDamage", false);
 		_mpConsume = set.getInteger("mpConsume", 0);
 		_mpInitialConsume = set.getInteger("mpInitialConsume", 0);
 		_hpConsume = set.getInteger("hpConsume", 0);
-		_cpConsume = set.getInteger("cpConsume", 0);
 		_targetConsumeCount = set.getInteger("targetConsumeCount", 0);
 		_targetConsumeId = set.getInteger("targetConsumeId", 0);
 		_itemConsumeCount = set.getInteger("itemConsumeCount", 0);
@@ -462,14 +455,13 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_soulMaxConsume = set.getInteger("soulMaxConsumeCount", 0);
 		_blowChance = set.getInteger("blowChance", 0);
 		_expNeeded = set.getInteger("expNeeded", 0);
-		_critChance = set.getInteger("critChance", 0);
 		
 		_isHeroSkill = SkillTreesData.getInstance().isHeroSkill(_id, _level);
 		_isGMSkill = SkillTreesData.getInstance().isGMSkill(_id, _level);
 		_isSevenSigns = (_id > 4360) && (_id < 4367);
 		_isClanSkill = SkillTreesData.getInstance().isClanSkill(_id, _level);
 		
-		_baseCritRate = set.getInteger("baseCritRate", ((_skillType == L2SkillType.PDAM) || (_skillType == L2SkillType.BLOW)) ? 0 : -1);
+		_baseCritRate = set.getInteger("baseCritRate", 0);
 		_halfKillRate = set.getInteger("halfKillRate", 0);
 		_lethalStrikeRate = set.getInteger("lethalStrikeRate", 0);
 		
@@ -481,7 +473,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_flyType = set.getString("flyType", null);
 		_flyRadius = set.getInteger("flyRadius", 0);
 		_flyCourse = set.getFloat("flyCourse", 0);
-		_canBeReflected = set.getBool("canBeReflected", true);
 		
 		_canBeDispeled = set.getBool("canBeDispeled", true);
 		
@@ -578,21 +569,16 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			return getPower(isPvP, isPvE);
 		}
 		
-		switch (_skillType)
+		if (hasEffectType(L2EffectType.DEATH_LINK))
 		{
-			case DEATHLINK:
-			{
-				return getPower(isPvP, isPvE) * (-((activeChar.getCurrentHp() * 2) / activeChar.getMaxHp()) + 2);
-			}
-			case FATAL:
-			{
-				return getPower(isPvP, isPvE) * (-((target.getCurrentHp() * 2) / target.getMaxHp()) + 2);
-			}
-			default:
-			{
-				return getPower(isPvP, isPvE);
-			}
+			return getPower(isPvP, isPvE) * (-((activeChar.getCurrentHp() * 2) / activeChar.getMaxHp()) + 2);
 		}
+		
+		if (hasEffectType(L2EffectType.PHYSICAL_ATTACK_HP_LINK))
+		{
+			return getPower(isPvP, isPvE) * (-((target.getCurrentHp() * 2) / target.getMaxHp()) + 2);
+		}
+		return getPower(isPvP, isPvE);
 	}
 	
 	public final double getPower()
@@ -713,14 +699,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final int getCastRange()
 	{
 		return _castRange;
-	}
-	
-	/**
-	 * @return Returns the cpConsume;
-	 */
-	public final int getCpConsume()
-	{
-		return _cpConsume;
 	}
 	
 	/**
@@ -853,6 +831,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _magic == 2;
 	}
 	
+	/**
+	 * @return Returns true to set dance skills.
+	 */
 	public final boolean isDance()
 	{
 		return _magic == 3;
@@ -864,11 +845,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final boolean isStaticReuse()
 	{
 		return _staticReuse;
-	}
-	
-	public final boolean isStaticDamage()
-	{
-		return _staticDamage;
 	}
 	
 	/**
@@ -978,15 +954,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	public final boolean useSoulShot()
 	{
-		switch (getSkillType())
-		{
-			case PDAM:
-			case CHARGEDAM:
-			case BLOW:
-				return true;
-			default:
-				return false;
-		}
+		return (hasEffectType(L2EffectType.PHYSICAL_ATTACK, L2EffectType.PHYSICAL_ATTACK_HP_LINK, L2EffectType.FATAL_BLOW, L2EffectType.ENERGY_ATTACK));
 	}
 	
 	public final boolean useSpiritShot()
@@ -1047,11 +1015,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final int getExpNeeded()
 	{
 		return _expNeeded;
-	}
-	
-	public final int getCritChance()
-	{
-		return _critChance;
 	}
 	
 	public final int getBaseCritRate()
@@ -1589,7 +1552,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 				effects.add(e);
 			}
 		}
-		
 		final L2Effect[] list = effects.toArray(new L2Effect[effects.size()]);
 		effector.getEffectList().add(list);
 		return effects.isEmpty() ? EMPTY_EFFECT_SET : list;
@@ -1748,11 +1710,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public boolean ignoreShield()
 	{
 		return _ignoreShield;
-	}
-	
-	public boolean canBeReflected()
-	{
-		return _canBeReflected;
 	}
 	
 	public boolean canBeDispeled()

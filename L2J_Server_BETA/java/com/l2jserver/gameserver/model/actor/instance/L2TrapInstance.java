@@ -158,7 +158,7 @@ public class L2TrapInstance extends L2Trap
 		}
 		else
 		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_GAVE_C2_DAMAGE_OF_S3);
+			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DONE_S3_DAMAGE_TO_C2);
 			sm.addCharName(this);
 			sm.addCharName(target);
 			sm.addNumber(damage);

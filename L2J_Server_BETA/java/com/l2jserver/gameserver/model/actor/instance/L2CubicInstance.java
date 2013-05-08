@@ -38,13 +38,13 @@ import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.entity.TvTEventTeam;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDrain;
-import com.l2jserver.gameserver.model.stats.BaseStats;
 import com.l2jserver.gameserver.model.stats.Formulas;
+import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
@@ -144,84 +144,24 @@ public final class L2CubicInstance
 				_skills.add(SkillTable.getInstance().getInfo(5116, level));
 				break;
 			case SMART_CUBIC_ARCANALORD:
-				// _skills.add(SkillTable.getInstance().getInfo(4049,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4050,7)); no animation
-				_skills.add(SkillTable.getInstance().getInfo(4051, 7)); // have animation
-				// _skills.add(SkillTable.getInstance().getInfo(4052,6)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4053,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4054,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4055,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4164,9)); no animation
-				_skills.add(SkillTable.getInstance().getInfo(4165, 9)); // have animation
-				// _skills.add(SkillTable.getInstance().getInfo(4166,9)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(5115,4)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(5116,4)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(5579,4)); no need to add to the
-				// cubic skills list
+				_skills.add(SkillTable.getInstance().getInfo(4051, 7));
+				_skills.add(SkillTable.getInstance().getInfo(4165, 9));
 				break;
 			case SMART_CUBIC_ELEMENTALMASTER:
-				_skills.add(SkillTable.getInstance().getInfo(4049, 8)); // have animation
-				// _skills.add(SkillTable.getInstance().getInfo(4050,7)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4051,7)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4052,6)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4053,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4054,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4055,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4164,9)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4165,9)); no animation
-				_skills.add(SkillTable.getInstance().getInfo(4166, 9)); // have animation
-				// _skills.add(SkillTable.getInstance().getInfo(5115,4)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(5116,4)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(5579,4)); no need to add to the
-				// cubic skills list
+				_skills.add(SkillTable.getInstance().getInfo(4049, 8));
+				_skills.add(SkillTable.getInstance().getInfo(4166, 9));
 				break;
 			case SMART_CUBIC_SPECTRALMASTER:
-				_skills.add(SkillTable.getInstance().getInfo(4049, 8)); // have animation
-				// _skills.add(SkillTable.getInstance().getInfo(4050,7)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4051,7)); no animation
-				_skills.add(SkillTable.getInstance().getInfo(4052, 6)); // have animation
-				// _skills.add(SkillTable.getInstance().getInfo(4053,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4054,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4055,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4164,9)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4165,9)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4166,9)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(5115,4)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(5116,4)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(5579,4)); no need to add to the
-				// cubic skills list
+				_skills.add(SkillTable.getInstance().getInfo(4049, 8));
+				_skills.add(SkillTable.getInstance().getInfo(4052, 6));
 				break;
 			case SMART_CUBIC_EVATEMPLAR:
-				// _skills.add(SkillTable.getInstance().getInfo(4049,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4050,7)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4051,7)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4052,6)); no animation
-				_skills.add(SkillTable.getInstance().getInfo(4053, 8)); // have animation
-				// _skills.add(SkillTable.getInstance().getInfo(4054,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4055,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4164,9)); no animation
-				_skills.add(SkillTable.getInstance().getInfo(4165, 9)); // have animation
-				// _skills.add(SkillTable.getInstance().getInfo(4166,9)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(5115,4)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(5116,4)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(5579,4)); no need to add to the
-				// cubic skills list
+				_skills.add(SkillTable.getInstance().getInfo(4053, 8));
+				_skills.add(SkillTable.getInstance().getInfo(4165, 9));
 				break;
 			case SMART_CUBIC_SHILLIENTEMPLAR:
-				_skills.add(SkillTable.getInstance().getInfo(4049, 8)); // have animation
-				// _skills.add(SkillTable.getInstance().getInfo(4050,7)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4051,7)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4052,6)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4053,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4054,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4055,8)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4164,9)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4165,9)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(4166,9)); no animation
-				_skills.add(SkillTable.getInstance().getInfo(5115, 4)); // have animation
-				// _skills.add(SkillTable.getInstance().getInfo(5116,4)); no animation
-				// _skills.add(SkillTable.getInstance().getInfo(5579,4)); no need to add to the
-				// cubic skills list
+				_skills.add(SkillTable.getInstance().getInfo(4049, 8));
+				_skills.add(SkillTable.getInstance().getInfo(5115, 4));
 				break;
 		}
 		_disappearTask = ThreadPoolManager.getInstance().scheduleGeneral(new Disappear(), _cubicDuration); // disappear
@@ -266,12 +206,6 @@ public final class L2CubicInstance
 	public L2PcInstance getOwner()
 	{
 		return _owner;
-	}
-	
-	public final int getMCriticalHit(L2Character target, L2Skill skill)
-	{
-		// Magical Critical Rate for cubics is the base Magical Critical Rate of its owner
-		return (int) (BaseStats.WIT.calcBonus(_owner) * 10);
 	}
 	
 	public int getCubicPower()
@@ -628,14 +562,6 @@ public final class L2CubicInstance
 								}
 								useCubicDisabler(type, L2CubicInstance.this, skill, targets);
 							}
-							else if (type == L2SkillType.MDAM)
-							{
-								if (Config.DEBUG)
-								{
-									_log.info("L2CubicInstance: Action.run() handler " + type);
-								}
-								useCubicMdam(L2CubicInstance.this, skill, targets);
-							}
 							else if ((type == L2SkillType.POISON) || (type == L2SkillType.DEBUFF) || (type == L2SkillType.DOT))
 							{
 								if (Config.DEBUG)
@@ -644,14 +570,6 @@ public final class L2CubicInstance
 								}
 								useCubicContinuous(L2CubicInstance.this, skill, targets);
 							}
-							else if (type == L2SkillType.DRAIN)
-							{
-								if (Config.DEBUG)
-								{
-									_log.info("L2CubicInstance: Action.run() skill " + type);
-								}
-								((L2SkillDrain) skill).useCubicSkill(L2CubicInstance.this, targets);
-							}
 							else
 							{
 								handler.useSkill(_owner, skill, targets);
@@ -659,6 +577,23 @@ public final class L2CubicInstance
 								{
 									_log.info("L2CubicInstance: Action.run(); other handler");
 								}
+							}
+							
+							if (skill.hasEffectType(L2EffectType.MAGICAL_ATTACK))
+							{
+								if (Config.DEBUG)
+								{
+									_log.info("L2CubicInstance: Action.run() handler " + type);
+								}
+								useCubicMdam(L2CubicInstance.this, skill, targets);
+							}
+							else if (skill.hasEffectType(L2EffectType.HP_DRAIN))
+							{
+								if (Config.DEBUG)
+								{
+									_log.info("L2CubicInstance: Action.run() skill " + type);
+								}
+								useCubicDrain(L2CubicInstance.this, skill, targets);
 							}
 							
 							// The cubic has done an action, increase the currentcount
@@ -698,14 +633,14 @@ public final class L2CubicInstance
 			// if this is a debuff let the duel manager know about it
 			// so the debuff can be removed after the duel
 			// (player & target must be in the same duel)
-			if ((target instanceof L2PcInstance) && ((L2PcInstance) target).isInDuel() && (skill.getSkillType() == L2SkillType.DEBUFF) && (activeCubic.getOwner().getDuelId() == ((L2PcInstance) target).getDuelId()))
+			if ((target.isPlayer()) && target.getActingPlayer().isInDuel() && (skill.getSkillType() == L2SkillType.DEBUFF) && (activeCubic.getOwner().getDuelId() == target.getActingPlayer().getDuelId()))
 			{
 				DuelManager dm = DuelManager.getInstance();
 				for (L2Effect debuff : skill.getEffects(activeCubic.getOwner(), target))
 				{
 					if (debuff != null)
 					{
-						dm.onBuff(((L2PcInstance) target), debuff);
+						dm.onBuff(target.getActingPlayer(), debuff);
 					}
 				}
 			}
@@ -727,7 +662,7 @@ public final class L2CubicInstance
 			
 			if (target.isAlikeDead())
 			{
-				if (target instanceof L2PcInstance)
+				if (target.isPlayer())
 				{
 					target.stopFakeDeath(true);
 				}
@@ -737,17 +672,9 @@ public final class L2CubicInstance
 				}
 			}
 			
-			boolean mcrit = Formulas.calcMCrit(activeCubic.getMCriticalHit(target, skill));
+			boolean mcrit = Formulas.calcMCrit(activeCubic.getOwner().getMCriticalHit(target, skill));
 			byte shld = Formulas.calcShldUse(activeCubic.getOwner(), target, skill);
 			int damage = (int) Formulas.calcMagicDam(activeCubic, target, skill, mcrit, shld);
-			
-			/*
-			 * If target is reflecting the skill then no damage is done Ignoring vengance-like reflections
-			 */
-			if ((Formulas.calcSkillReflect(target, skill) & Formulas.SKILL_REFLECT_SUCCEED) > 0)
-			{
-				damage = 0;
-			}
 			
 			if (Config.DEBUG)
 			{
@@ -763,23 +690,62 @@ public final class L2CubicInstance
 					target.breakCast();
 				}
 				
-				activeCubic.getOwner().sendDamageMessage(target, damage, mcrit, false, false);
-				
-				if (skill.hasEffects())
+				// Shield Deflect Magic: If target is reflecting the skill then no damage is done.
+				if (target.getStat().calcStat(Stats.VENGEANCE_SKILL_MAGIC_DAMAGE, 0, target, skill) > Rnd.get(100))
 				{
-					// activate attacked effects, if any
-					target.stopSkillEffects(skill.getId());
-					if (target.getFirstEffect(skill) != null)
-					{
-						target.getEffectList().remove(target.getFirstEffect(skill));
-					}
-					if (Formulas.calcCubicSkillSuccess(activeCubic, target, skill, shld))
-					{
-						skill.getEffects(activeCubic, target, null);
-					}
+					damage = 0;
 				}
-				
+				else
+				{
+					activeCubic.getOwner().sendDamageMessage(target, damage, mcrit, false, false);
+					target.reduceCurrentHp(damage, activeCubic.getOwner(), skill);
+				}
+			}
+		}
+	}
+	
+	public void useCubicDrain(L2CubicInstance activeCubic, L2Skill skill, L2Object[] targets)
+	{
+		if (Config.DEBUG)
+		{
+			_log.info("L2SkillDrain: useCubicSkill()");
+		}
+		
+		for (L2Character target : (L2Character[]) targets)
+		{
+			if (target.isAlikeDead())
+			{
+				continue;
+			}
+			
+			boolean mcrit = Formulas.calcMCrit(activeCubic.getOwner().getMCriticalHit(target, skill));
+			byte shld = Formulas.calcShldUse(activeCubic.getOwner(), target, skill);
+			
+			int damage = (int) Formulas.calcMagicDam(activeCubic, target, skill, mcrit, shld);
+			if (Config.DEBUG)
+			{
+				_log.info("L2SkillDrain: useCubicSkill() -> damage = " + damage);
+			}
+			
+			// TODO: Unhardcode fixed value
+			double hpAdd = (0.4 * damage);
+			L2PcInstance owner = activeCubic.getOwner();
+			double hp = ((owner.getCurrentHp() + hpAdd) > owner.getMaxHp() ? owner.getMaxHp() : (owner.getCurrentHp() + hpAdd));
+			
+			owner.setCurrentHp(hp);
+			
+			// Check to see if we should damage the target
+			if ((damage > 0) && !target.isDead())
+			{
 				target.reduceCurrentHp(damage, activeCubic.getOwner(), skill);
+				
+				// Manage attack or cast break of the target (calculating rate, sending message...)
+				if (!target.isRaid() && Formulas.calcAtkBreak(target, damage))
+				{
+					target.breakAttack();
+					target.breakCast();
+				}
+				owner.sendDamageMessage(target, damage, mcrit, false, false);
 			}
 		}
 	}

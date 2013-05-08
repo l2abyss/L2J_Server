@@ -79,7 +79,6 @@ public enum Stats
 	SHIELD_RATE("rShld"),
 	CRITICAL_RATE("rCrit"),
 	BLOW_RATE("blowRate"),
-	LETHAL_RATE("lethalRate"),
 	MCRITICAL_RATE("mCritRate"),
 	EXPSP_RATE("rExp"),
 	BONUS_EXP("bonusExp"),
@@ -113,7 +112,6 @@ public enum Stats
 	AGGRESSION("aggression"), // locks a mob on tank caster
 	
 	// VULNERABILITIES
-	AGGRESSION_VULN("aggressionVuln"),
 	BLEED_VULN("bleedVuln"),
 	POISON_VULN("poisonVuln"),
 	STUN_VULN("stunVuln"),
@@ -154,7 +152,6 @@ public enum Stats
 	DARK_POWER("darkPower"),
 	
 	// PROFICIENCY
-	AGGRESSION_PROF("aggressionProf"),
 	BLEED_PROF("bleedProf"),
 	POISON_PROF("poisonProf"),
 	STUN_PROF("stunProf"),
@@ -165,11 +162,9 @@ public enum Stats
 	CANCEL_PROF("cancelProf"),
 	DERANGEMENT_PROF("derangementProf"),
 	DEBUFF_PROF("debuffProf"),
-	CRIT_PROF("critProf"),
 	VALAKAS_PROF("valakasProf"),
 	
 	// WEAPONS VULNERABILITIES
-	NONE_WPN_VULN("noneWpnVuln"), // Shields!!!
 	SWORD_WPN_VULN("swordWpnVuln"),
 	BLUNT_WPN_VULN("bluntWpnVuln"),
 	DAGGER_WPN_VULN("daggerWpnVuln"),
@@ -234,7 +229,6 @@ public enum Stats
 	MP_CONSUME("MpConsume"),
 	
 	// T1 stats
-	transformId("transformId"),
 	TALISMAN_SLOTS("talisman"),
 	CLOAK_SLOT("cloak"),
 	

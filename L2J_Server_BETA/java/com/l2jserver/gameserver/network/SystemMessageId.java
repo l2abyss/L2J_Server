@@ -13304,9 +13304,9 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 2261<br>
-	 * Message: $c1 has given $c2 damage of $s3.
+	 * Message: $c1 has done $s3 points of damage to $c2.
 	 */
-	public static final SystemMessageId C1_GAVE_C2_DAMAGE_OF_S3;
+	public static final SystemMessageId C1_DONE_S3_DAMAGE_TO_C2;
 	
 	/**
 	 * ID: 2262<br>
@@ -14545,6 +14545,12 @@ public final class SystemMessageId
 	public static final SystemMessageId YOU_CANT_CANCEL_RECEIVED_MAIL;
 	
 	/**
+	 * ID: 3031<br>
+	 * Message: By using the skill of Einhasad's holy sword, defeat the evil Lilims!
+	 */
+	public static final SystemMessageId USING_EINHASAD_HOLY_SWORD_DEFEAT_LILIMS;
+	
+	/**
 	 * ID: 3033<br>
 	 * Message: By using the invisible skill, sneak into the Dawn's document storage!
 	 */
@@ -14563,10 +14569,28 @@ public final class SystemMessageId
 	public static final SystemMessageId FEMALE_GUARDS_NOTICE_BETTER_THAN_MALE;
 	
 	/**
+	 * ID: 3039<br>
+	 * Message: By using the holy water of Einhasad, open the door possessed by the curse of flames.
+	 */
+	public static final SystemMessageId USING_EINHASAD_HOLY_WATER_TO_OPEN_DOOR;
+	
+	/**
+	 * ID: 3040<br>
+	 * Message: By using the Court Magician's Magic Staff, open the door on which the magician's barrier is placed.
+	 */
+	public static final SystemMessageId USING_COURT_MAGICIANS_STAFF_TO_OPEN_DOOR;
+	
+	/**
 	 * ID: 3059<br>
 	 * Message: $s1 did not receive it during the waiting time, so it was returned automatically.
 	 */
 	public static final SystemMessageId S1_NOT_RECEIVE_DURING_WAITING_TIME_MAIL_RETURNED;
+	
+	/**
+	 * ID: 3060<br>
+	 * Message: The sealing device glitters and moves. Activation complete normally!
+	 */
+	public static final SystemMessageId THE_SEALING_DEVICE_ACTIVATION_COMPLETE;
 	
 	/**
 	 * ID: 3062<br>
@@ -17205,7 +17229,7 @@ public final class SystemMessageId
 		YOU_HAVE_ALREADY_BOARDED_ANOTHER_AIRSHIP = new SystemMessageId(2258);
 		LOC_FANTASY_ISLAND_S1_S2_S3 = new SystemMessageId(2259);
 		PET_CAN_RUN_AWAY_WHEN_HUNGER_BELOW_10_PERCENT = new SystemMessageId(2260);
-		C1_GAVE_C2_DAMAGE_OF_S3 = new SystemMessageId(2261);
+		C1_DONE_S3_DAMAGE_TO_C2 = new SystemMessageId(2261);
 		C1_RECEIVED_DAMAGE_OF_S3_FROM_C2 = new SystemMessageId(2262);
 		C1_RECEIVED_DAMAGE_OF_S3_THROUGH_C2 = new SystemMessageId(2263);
 		C1_EVADED_C2_ATTACK = new SystemMessageId(2264);
@@ -17406,10 +17430,14 @@ public final class SystemMessageId
 		YOU_CANNOT_USE_SKILL_ENCHANT_ATTACKING_TRANSFORMED_BOAT = new SystemMessageId(3028);
 		S1_RETURNED_MAIL = new SystemMessageId(3029);
 		YOU_CANT_CANCEL_RECEIVED_MAIL = new SystemMessageId(3030);
+		USING_EINHASAD_HOLY_SWORD_DEFEAT_LILIMS = new SystemMessageId(3031);
 		SNEAK_INTO_DAWNS_DOCUMENT_STORAGE = new SystemMessageId(3033);
 		MALE_GUARDS_CAN_DETECT_FEMALES_DONT = new SystemMessageId(3037);
 		FEMALE_GUARDS_NOTICE_BETTER_THAN_MALE = new SystemMessageId(3038);
+		USING_EINHASAD_HOLY_WATER_TO_OPEN_DOOR = new SystemMessageId(3039);
+		USING_COURT_MAGICIANS_STAFF_TO_OPEN_DOOR = new SystemMessageId(3040);
 		S1_NOT_RECEIVE_DURING_WAITING_TIME_MAIL_RETURNED = new SystemMessageId(3059);
+		THE_SEALING_DEVICE_ACTIVATION_COMPLETE = new SystemMessageId(3060);
 		DO_YOU_WANT_TO_PAY_S1_ADENA = new SystemMessageId(3062);
 		DO_YOU_WANT_TO_FORWARD = new SystemMessageId(3063);
 		UNREAD_MAIL = new SystemMessageId(3064);
