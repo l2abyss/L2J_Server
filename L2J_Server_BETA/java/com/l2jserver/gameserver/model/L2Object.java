@@ -355,11 +355,11 @@ public abstract class L2Object
 					int endTime = (int) ((oldI.getInstanceEndTime() - oldI.getInstanceStartTime()) / 1000);
 					if (oldI.isTimerIncrease())
 					{
-						sendPacket(new ExSendUIEvent(this, true, true, startTime, endTime, oldI.getTimerText()));
+						sendPacket(new ExSendUIEvent(getActingPlayer(), true, true, startTime, endTime, oldI.getTimerText()));
 					}
 					else
 					{
-						sendPacket(new ExSendUIEvent(this, true, false, endTime - startTime, 0, oldI.getTimerText()));
+						sendPacket(new ExSendUIEvent(getActingPlayer(), true, false, endTime - startTime, 0, oldI.getTimerText()));
 					}
 				}
 			}
@@ -372,11 +372,11 @@ public abstract class L2Object
 					int endTime = (int) ((newI.getInstanceEndTime() - newI.getInstanceStartTime()) / 1000);
 					if (newI.isTimerIncrease())
 					{
-						sendPacket(new ExSendUIEvent(this, false, true, startTime, endTime, newI.getTimerText()));
+						sendPacket(new ExSendUIEvent(getActingPlayer(), false, true, startTime, endTime, newI.getTimerText()));
 					}
 					else
 					{
-						sendPacket(new ExSendUIEvent(this, false, false, endTime - startTime, 0, newI.getTimerText()));
+						sendPacket(new ExSendUIEvent(getActingPlayer(), false, false, endTime - startTime, 0, newI.getTimerText()));
 					}
 				}
 			}
