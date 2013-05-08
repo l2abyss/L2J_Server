@@ -68,11 +68,8 @@ import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncMAtkCritical;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncMAtkMod;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncMAtkSpeed;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncMDefMod;
-import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncMaxCpAdd;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncMaxCpMul;
-import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncMaxHpAdd;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncMaxHpMul;
-import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncMaxMpAdd;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncMaxMpMul;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncMoveSpeed;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncPAtkMod;
@@ -163,8 +160,9 @@ public final class Formulas
 		std[Stats.MAGIC_ATTACK_SPEED.ordinal()] = new Calculator();
 		std[Stats.MAGIC_ATTACK_SPEED.ordinal()].addFunc(FuncMAtkSpeed.getInstance());
 		
-		std[Stats.RUN_SPEED.ordinal()] = new Calculator();
-		std[Stats.RUN_SPEED.ordinal()].addFunc(FuncMoveSpeed.getInstance());
+		std[Stats.MOVE_SPEED.ordinal()] = new Calculator();
+		std[Stats.MOVE_SPEED.ordinal()].addFunc(FuncMoveSpeed.getInstance());
+
 		
 		return std;
 	}
@@ -203,11 +201,8 @@ public final class Formulas
 	{
 		if (cha.isPlayer())
 		{
-			cha.addStatFunc(FuncMaxHpAdd.getInstance());
 			cha.addStatFunc(FuncMaxHpMul.getInstance());
-			cha.addStatFunc(FuncMaxCpAdd.getInstance());
 			cha.addStatFunc(FuncMaxCpMul.getInstance());
-			cha.addStatFunc(FuncMaxMpAdd.getInstance());
 			cha.addStatFunc(FuncMaxMpMul.getInstance());
 			// cha.addStatFunc(FuncMultRegenResting.getInstance(Stats.REGENERATE_HP_RATE));
 			// cha.addStatFunc(FuncMultRegenResting.getInstance(Stats.REGENERATE_CP_RATE));
@@ -268,7 +263,7 @@ public final class Formulas
 	 */
 	public static final double calcHpRegen(L2Character cha)
 	{
-		double init = cha.getTemplate().getBaseHpReg();
+		double init = cha.isPlayer() ? cha.getActingPlayer().getTemplate().getBaseHpRegen(cha.getLevel()) : cha.getTemplate().getBaseHpReg();
 		double hpRegenMultiplier = cha.isRaid() ? Config.RAID_HP_REGEN_MULTIPLIER : Config.HP_REGEN_MULTIPLIER;
 		double hpRegenBonus = 0;
 		
@@ -280,9 +275,6 @@ public final class Formulas
 		if (cha.isPlayer())
 		{
 			L2PcInstance player = cha.getActingPlayer();
-			
-			// Calculate correct baseHpReg value for certain level of PC
-			init += (player.getLevel() > 10) ? ((player.getLevel() - 1) / 10.0) : 0.5;
 			
 			// SevenSigns Festival modifier
 			if (SevenSignsFestival.getInstance().isFestivalInProgress() && player.isFestivalParticipant())
@@ -392,16 +384,13 @@ public final class Formulas
 	 */
 	public static final double calcMpRegen(L2Character cha)
 	{
-		double init = cha.getTemplate().getBaseMpReg();
+		double init = cha.isPlayer() ? cha.getActingPlayer().getTemplate().getBaseMpRegen(cha.getLevel()) : cha.getTemplate().getBaseMpReg();
 		double mpRegenMultiplier = cha.isRaid() ? Config.RAID_MP_REGEN_MULTIPLIER : Config.MP_REGEN_MULTIPLIER;
 		double mpRegenBonus = 0;
 		
 		if (cha.isPlayer())
 		{
 			L2PcInstance player = cha.getActingPlayer();
-			
-			// Calculate correct baseMpReg value for certain level of PC
-			init += 0.3 * ((player.getLevel() - 1) / 10.0);
 			
 			// SevenSigns Festival modifier
 			if (SevenSignsFestival.getInstance().isFestivalInProgress() && player.isFestivalParticipant())
@@ -503,16 +492,13 @@ public final class Formulas
 	 */
 	public static final double calcCpRegen(L2Character cha)
 	{
-		double init = cha.getTemplate().getBaseHpReg();
+		double init = cha.isPlayer() ? cha.getActingPlayer().getTemplate().getBaseCpRegen(cha.getLevel()) : cha.getTemplate().getBaseHpReg();
 		double cpRegenMultiplier = Config.CP_REGEN_MULTIPLIER;
 		double cpRegenBonus = 0;
 		
 		if (cha.isPlayer())
 		{
 			L2PcInstance player = cha.getActingPlayer();
-			
-			// Calculate correct baseHpReg value for certain level of PC
-			init += (player.getLevel() > 10) ? ((player.getLevel() - 1) / 10.0) : 0.5;
 			
 			// Calculate Movement bonus
 			if (player.isSitting())

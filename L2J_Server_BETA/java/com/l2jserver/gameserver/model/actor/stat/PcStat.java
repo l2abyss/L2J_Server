@@ -22,7 +22,8 @@ import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.PetDataTable;
+import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2ClassMasterInstance;
@@ -30,8 +31,10 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.entity.RecoBonus;
 import com.l2jserver.gameserver.model.quest.QuestState;
+import com.l2jserver.gameserver.model.stats.MoveType;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.model.zone.ZoneId;
+import com.l2jserver.gameserver.model.zone.type.L2SwampZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExVitalityPointInfo;
@@ -411,7 +414,7 @@ public class PcStat extends PlayableStat
 	public final int getMaxCp()
 	{
 		// Get the Max CP (base+modifier) of the L2PcInstance
-		int val = super.getMaxCp();
+		int val = (getActiveChar() == null) ? 1 : (int) calcStat(Stats.MAX_CP, getActiveChar().getTemplate().getBaseCpMax(getActiveChar().getLevel()));
 		if (val != _oldMaxCp)
 		{
 			_oldMaxCp = val;
@@ -429,7 +432,7 @@ public class PcStat extends PlayableStat
 	public final int getMaxHp()
 	{
 		// Get the Max HP (base+modifier) of the L2PcInstance
-		int val = super.getMaxHp();
+		int val = (getActiveChar() == null) ? 1 : (int) calcStat(Stats.MAX_HP, getActiveChar().getTemplate().getBaseHpMax(getActiveChar().getLevel()));
 		if (val != _oldMaxHp)
 		{
 			_oldMaxHp = val;
@@ -448,7 +451,7 @@ public class PcStat extends PlayableStat
 	public final int getMaxMp()
 	{
 		// Get the Max MP (base+modifier) of the L2PcInstance
-		int val = super.getMaxMp();
+		int val = (getActiveChar() == null) ? 1 : (int) calcStat(Stats.MAX_MP, getActiveChar().getTemplate().getBaseMpMax(getActiveChar().getLevel()));
 		
 		if (val != _oldMaxMp)
 		{
@@ -493,6 +496,74 @@ public class PcStat extends PlayableStat
 		}
 	}
 	
+	/**
+	 * @param mt movement type
+	 * @return the base move speed of given movement type.
+	 */
+	@Override
+	protected double getBaseMoveSpeed(MoveType mt)
+	{
+		L2PcInstance player = getActiveChar();
+		int val = 0;
+		
+		if (player.isInsideZone(ZoneId.WATER))
+		{
+			if (player.isMounted())
+			{
+				switch (mt)
+				{
+					case WALK:
+						val = PetDataTable.getInstance().getPetLevelData(player.getMountNpcId(), player.getMountLevel()).getSpeedOnRide(MoveType.SLOW_SWIM);
+						break;
+					case RUN:
+						val = PetDataTable.getInstance().getPetLevelData(player.getMountNpcId(), player.getMountLevel()).getSpeedOnRide(MoveType.FAST_SWIM);
+						break;
+				}
+			}
+			else
+			{
+				switch (mt)
+				{
+					case WALK:
+						val = player.getTemplate().getBaseSlowSwimSpd();
+						break;
+					case RUN:
+						val = player.getTemplate().getBaseFastSwimSpd();
+						break;
+				}
+			}
+		}
+		else
+		{
+			val = player.isMounted() ? PetDataTable.getInstance().getPetLevelData(player.getMountNpcId(), player.getMountLevel()).getSpeedOnRide(mt) : player.getTemplate().getBaseMoveSpd(mt);
+			
+			if (player.isInsideZone(ZoneId.SWAMP))
+			{
+				L2SwampZone zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
+				int bonus = zone == null ? 0 : zone.getMoveBonus();
+				double dbonus = bonus / 100.0; // %
+				val += val * dbonus;
+			}
+		}
+		
+		// Check for mount penalties
+		if (player.isMounted())
+		{
+			// if level diff with mount >= 10, it decreases move speed by 50%
+			if ((player.getMountLevel() - player.getLevel()) >= 10)
+			{
+				val /= 2;
+			}
+			// if mount is hungry, it decreases move speed by 50%
+			if (player.isHungry())
+			{
+				val /= 2;
+			}
+		}
+		
+		return val;
+	}
+	
 	@Override
 	public int getRunSpeed()
 	{
@@ -501,19 +572,27 @@ public class PcStat extends PlayableStat
 			return 1;
 		}
 		
-		int val;
+		int val = super.getRunSpeed();
+		val += Config.RUN_SPD_BOOST;
 		
-		L2PcInstance player = getActiveChar();
-		if (player.isMounted())
+		// Apply max run speed cap.
+		if ((val > Config.MAX_RUN_SPEED) && !getActiveChar().canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
 		{
-			int baseRunSpd = NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseRunSpd();
-			val = (int) Math.round(calcStat(Stats.RUN_SPEED, baseRunSpd, null, null));
-		}
-		else
-		{
-			val = super.getRunSpeed();
+			return Config.MAX_RUN_SPEED;
 		}
 		
+		return val;
+	}
+	
+	@Override
+	public int getWalkSpeed()
+	{
+		if (getActiveChar() == null)
+		{
+			return 1;
+		}
+		
+		int val = super.getWalkSpeed();
 		val += Config.RUN_SPD_BOOST;
 		
 		// Apply max run speed cap.
@@ -574,21 +653,10 @@ public class PcStat extends PlayableStat
 		
 		if (getActiveChar().isMounted())
 		{
-			return (getRunSpeed() * 1f) / NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseRunSpd();
+			return (getRunSpeed() * 1f) / PetDataTable.getInstance().getPetLevelData(getActiveChar().getMountNpcId(), getActiveChar().getMountLevel()).getSpeedOnRide(MoveType.RUN);
 		}
 		
 		return super.getMovementSpeedMultiplier();
-	}
-	
-	@Override
-	public int getWalkSpeed()
-	{
-		if (getActiveChar() == null)
-		{
-			return 1;
-		}
-		
-		return (getRunSpeed() * 70) / 100;
 	}
 	
 	private void updateVitalityLevel(boolean quiet)

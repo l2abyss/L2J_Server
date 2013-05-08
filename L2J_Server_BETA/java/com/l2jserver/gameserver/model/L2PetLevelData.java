@@ -18,6 +18,8 @@
  */
 package com.l2jserver.gameserver.model;
 
+import com.l2jserver.gameserver.model.stats.MoveType;
+
 /**
  * Stats definition for each pet level.
  * @author JIV, Zoey76
@@ -39,7 +41,13 @@ public class L2PetLevelData
 	private final float _petRegenMP;
 	private final short _petSoulShot;
 	private final short _petSpiritShot;
-	
+	private final int _walkSpeedOnRide;
+	private final int _runSpeedOnRide;
+	private final int _slowSwimSpeedOnRide;
+	private final int _fastSwimSpeedOnRide;
+	private final int _slowFlySpeedOnRide;
+	private final int _fastFlySpeedOnRide;
+
 	public L2PetLevelData(StatsSet set)
 	{
 		_ownerExpTaken = set.getInteger("get_exp_type");
@@ -57,6 +65,12 @@ public class L2PetLevelData
 		_petRegenMP = set.getFloat("org_mp_regen");
 		_petSoulShot = set.getShort("soulshot_count");
 		_petSpiritShot = set.getShort("spiritshot_count");
+		_walkSpeedOnRide = set.getInteger("walkSpeedOnRide", 0);
+		_runSpeedOnRide = set.getInteger("runSpeedOnRide", 0);
+		_slowSwimSpeedOnRide = set.getInteger("slowSwimSpeedOnRide", 0);
+		_fastSwimSpeedOnRide = set.getInteger("fastSwimSpeedOnRide", 0);
+		_slowFlySpeedOnRide = set.getInteger("slowFlySpeedOnRide", 0);
+		_fastFlySpeedOnRide = set.getInteger("fastFlySpeedOnRide", 0);
 	}
 	
 	/**
@@ -177,5 +191,30 @@ public class L2PetLevelData
 	public short getPetSpiritShot()
 	{
 		return _petSpiritShot;
+	}
+
+	/**
+	 * @param mt movement type
+	 * @return the base riding speed of given movement type.
+	 */
+	public int getSpeedOnRide(MoveType mt)
+	{
+		switch(mt)
+		{
+			case WALK:
+				return _walkSpeedOnRide;
+			case RUN:
+				return _runSpeedOnRide;
+			case SLOW_SWIM:
+				return _slowSwimSpeedOnRide;
+			case FAST_SWIM:
+				return _fastSwimSpeedOnRide;
+			case SLOW_FLY:
+				return _slowFlySpeedOnRide;
+			case FAST_FLY:
+				return _fastFlySpeedOnRide;
+		}
+
+		return 0;
 	}
 }

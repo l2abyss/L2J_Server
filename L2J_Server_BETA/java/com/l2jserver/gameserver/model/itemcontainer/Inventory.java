@@ -909,6 +909,15 @@ public abstract class Inventory extends ItemContainer
 	{
 		return _paperdoll[slot];
 	}
+
+	/**
+	 * @param slot the slot.
+	 * @return {@code true} if specified paperdoll slot is empty, {@code false} otherwise
+	 */
+	public boolean isPaperdollSlotEmpty(int slot)
+	{
+		return _paperdoll[slot] == null;
+	}
 	
 	public static int getPaperdollIndex(int slot)
 	{

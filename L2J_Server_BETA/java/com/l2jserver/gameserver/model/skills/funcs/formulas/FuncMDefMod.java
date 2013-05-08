@@ -48,25 +48,25 @@ public class FuncMDefMod extends Func
 		if (env.getCharacter().isPlayer())
 		{
 			L2PcInstance p = env.getPlayer();
-			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_LFINGER) != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_LFINGER))
 			{
-				env.subValue(5);
+				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_LFINGER));
 			}
-			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_RFINGER) != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_RFINGER))
 			{
-				env.subValue(5);
+				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_RFINGER));
 			}
-			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_LEAR) != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_LEAR))
 			{
-				env.subValue(9);
+				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_LEAR));
 			}
-			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_REAR) != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_REAR))
 			{
-				env.subValue(9);
+				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_REAR));
 			}
-			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_NECK) != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_NECK))
 			{
-				env.subValue(13);
+				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_NECK));
 			}
 			env.mulValue(BaseStats.MEN.calcBonus(env.getPlayer()) * env.getPlayer().getLevelMod());
 		}

@@ -37,10 +37,12 @@ import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.appearance.PcAppearance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.stat.PcStat;
 import com.l2jserver.gameserver.model.actor.templates.L2PcTemplate;
+import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.items.PcItemTemplate;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
@@ -187,7 +189,7 @@ public final class CharacterCreate extends L2GameClientPacket
 			}
 			
 			template = CharTemplateTable.getInstance().getTemplate(_classId);
-			if ((template == null) || (template.getClassBaseLevel() > 1))
+			if ((template == null) || (ClassId.getClassId(_classId).level() > 0))
 			{
 				if (Config.DEBUG)
 				{
@@ -256,9 +258,9 @@ public final class CharacterCreate extends L2GameClientPacket
 			newChar.addAdena("Init", Config.STARTING_ADENA, null, false);
 		}
 		
-		// TODO: Make it random.
 		final L2PcTemplate template = newChar.getTemplate();
-		newChar.setXYZInvisible(template.getSpawnX(), template.getSpawnY(), template.getSpawnZ());
+		Location createLoc = template.getCreationPoint();
+		newChar.setXYZInvisible(createLoc.getX(), createLoc.getY(), createLoc.getZ());
 		newChar.setTitle("");
 		
 		if (Config.ENABLE_VITALITY)

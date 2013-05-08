@@ -21,7 +21,6 @@ package com.l2jserver.gameserver.model.skills.funcs.formulas;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.items.L2Item;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Stats;
@@ -49,38 +48,35 @@ public class FuncPDefMod extends Func
 		if (env.getCharacter().isPlayer())
 		{
 			L2PcInstance p = env.getPlayer();
-			boolean hasMagePDef = (p.getClassId().isMage() || (p.getClassId().getId() == 0x31)); // orc mystics are a special case
-			L2ItemInstance chest = p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_CHEST);
-			if (chest != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_CHEST))
 			{
-				env.subValue(hasMagePDef ? 15 : 31);
+				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_CHEST));
 			}
-			if ((p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_LEGS) != null) || ((chest != null) && (chest.getItem().getBodyPart() == L2Item.SLOT_FULL_ARMOR)))
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_LEGS) || (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_CHEST) && (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_CHEST).getItem().getBodyPart() == L2Item.SLOT_FULL_ARMOR)))
 			{
-				env.subValue(hasMagePDef ? 8 : 18);
+				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_LEGS));
 			}
-			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_HEAD) != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_HEAD))
 			{
-				env.subValue(12);
+				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_HEAD));
 			}
-			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_FEET) != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_FEET))
 			{
-				env.subValue(7);
+				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_FEET));
 			}
-			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_GLOVES) != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_GLOVES))
 			{
-				env.subValue(8);
+				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_GLOVES));
 			}
-			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_UNDER) != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_UNDER))
 			{
-				env.subValue(3);
+				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_UNDER));
 			}
-			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_CLOAK) != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_CLOAK))
 			{
-				env.subValue(1);
+				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_CLOAK));
 			}
-			env.addValue(4);
-			env.mulValue(env.getPlayer().getLevelMod());
+			env.mulValue(p.getLevelMod());
 		}
 		else
 		{

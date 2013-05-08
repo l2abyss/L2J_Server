@@ -3979,7 +3979,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				{
 					su.addAttribute(StatusUpdate.CAST_SPD, getMAtkSpd());
 				}
-				else if (stat == Stats.RUN_SPEED)
+				else if (stat == Stats.MOVE_SPEED)
 				{
 					broadcastFull = true;
 				}
@@ -6895,9 +6895,9 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	/**
 	 * @return the Level Modifier ((level + 89) / 100).
 	 */
-	public float getLevelMod()
+	public double getLevelMod()
 	{
-		return ((getLevel() + 89) / 100f);
+		return ((getLevel() + 89) / 100d);
 	}
 	
 	public final void setSkillCast(Future<?> newSkillCast)

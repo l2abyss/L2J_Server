@@ -118,7 +118,25 @@ public final class PetDataTable extends DocumentParser
 									if (bean.getNodeName().equals("set"))
 									{
 										attrs = bean.getAttributes();
-										set.set(attrs.getNamedItem("name").getNodeValue(), attrs.getNamedItem("val").getNodeValue());
+										if (attrs.getNamedItem("name").getNodeValue().equals("speed_on_ride"))
+										{
+											set.set("walkSpeedOnRide", attrs.getNamedItem("walk").getNodeValue());
+											set.set("runSpeedOnRide", attrs.getNamedItem("run").getNodeValue());
+											set.set("slowSwimSpeedOnRide", attrs.getNamedItem("slowSwim").getNodeValue());
+											set.set("fastSwimSpeedOnRide", attrs.getNamedItem("fastSwim").getNodeValue());
+											if (attrs.getNamedItem("slowFly") != null)
+											{
+												set.set("slowFlySpeedOnRide", attrs.getNamedItem("slowFly").getNodeValue());
+											}
+											if (attrs.getNamedItem("fastFly") != null)
+											{
+												set.set("fastFlySpeedOnRide", attrs.getNamedItem("fastFly").getNodeValue());
+											}
+										}
+										else
+										{
+											set.set(attrs.getNamedItem("name").getNodeValue(), attrs.getNamedItem("val").getNodeValue());
+										}
 									}
 								}
 								data.addNewStat(level, new L2PetLevelData(set));
