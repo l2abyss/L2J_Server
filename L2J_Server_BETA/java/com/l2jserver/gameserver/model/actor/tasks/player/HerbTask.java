@@ -16,41 +16,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.network.serverpackets;
+package com.l2jserver.gameserver.model.actor.tasks.player;
 
-import com.l2jserver.gameserver.model.TeleportBookmark;
+import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * @author ShanSoft
+ * Task dedicated to apply herbs on player.
+ * @author UnAfraid
  */
-public class ExGetBookMarkInfoPacket extends L2GameServerPacket
+public class HerbTask implements Runnable
 {
-	private final L2PcInstance player;
+	private final L2PcInstance _player;
+	private final String _process;
+	private final int _itemId;
+	private final long _count;
+	private final L2Object _reference;
+	private final boolean _sendMessage;
 	
-	public ExGetBookMarkInfoPacket(L2PcInstance cha)
+	public HerbTask(L2PcInstance player, String process, int itemId, long count, L2Object reference, boolean sendMessage)
 	{
-		player = cha;
+		_player = player;
+		_process = process;
+		_itemId = itemId;
+		_count = count;
+		_reference = reference;
+		_sendMessage = sendMessage;
 	}
 	
 	@Override
-	protected final void writeImpl()
+	public void run()
 	{
-		writeC(0xFE);
-		writeH(0x84);
-		writeD(0x00); // Dummy
-		writeD(player.getBookmarkslot());
-		writeD(player.getTeleportBookmarks().size());
-		
-		for (TeleportBookmark tpbm : player.getTeleportBookmarks())
+		if (_player != null)
 		{
-			writeD(tpbm.getId());
-			writeD(tpbm.getX());
-			writeD(tpbm.getY());
-			writeD(tpbm.getZ());
-			writeS(tpbm.getName());
-			writeD(tpbm.getIcon());
-			writeS(tpbm.getTag());
+			_player.addItem(_process, _itemId, _count, _reference, _sendMessage);
 		}
 	}
 }

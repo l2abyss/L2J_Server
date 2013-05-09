@@ -18,7 +18,6 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.TradeController;
 import com.l2jserver.gameserver.datatables.MerchantPriceConfigTable;
 import com.l2jserver.gameserver.datatables.MerchantPriceConfigTable.MerchantPriceConfig;
@@ -84,12 +83,7 @@ public class L2MerchantInstance extends L2NpcInstance
 		
 		taxRate = getMpc().getTotalTaxRate();
 		
-		player.tempInventoryDisable();
-		
-		if (Config.DEBUG)
-		{
-			_log.fine("Showing buylist");
-		}
+		player.setInventoryBlockingStatus(true);
 		
 		L2TradeList list = TradeController.getInstance().getBuyList(val);
 		

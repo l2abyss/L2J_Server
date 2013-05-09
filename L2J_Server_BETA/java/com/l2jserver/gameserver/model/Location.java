@@ -20,7 +20,7 @@ package com.l2jserver.gameserver.model;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
 
-public final class Location
+public class Location
 {
 	private final int _x;
 	private final int _y;

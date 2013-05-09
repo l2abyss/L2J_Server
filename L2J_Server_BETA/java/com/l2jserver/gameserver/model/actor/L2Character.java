@@ -69,7 +69,6 @@ import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.SkillDat;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2RiftInvaderInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.CharKnownList;
@@ -84,6 +83,7 @@ import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
+import com.l2jserver.gameserver.model.holders.SkillUseHolder;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
 import com.l2jserver.gameserver.model.interfaces.ISkillsHolder;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
@@ -6382,7 +6382,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		if (isPlayer())
 		{
 			L2PcInstance currPlayer = getActingPlayer();
-			SkillDat queuedSkill = currPlayer.getQueuedSkill();
+			SkillUseHolder queuedSkill = currPlayer.getQueuedSkill();
 			
 			currPlayer.setCurrentSkill(null, false, false);
 			

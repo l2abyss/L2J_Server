@@ -220,12 +220,7 @@ public class L2MerchantSummonInstance extends L2ServitorInstance
 	{
 		double taxRate = 50;
 		
-		player.tempInventoryDisable();
-		
-		if (Config.DEBUG)
-		{
-			_log.fine("Showing buylist");
-		}
+		player.setInventoryBlockingStatus(true);
 		
 		L2TradeList list = TradeController.getInstance().getBuyList(val);
 		

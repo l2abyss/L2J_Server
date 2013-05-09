@@ -16,41 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.network.serverpackets;
+package com.l2jserver.gameserver.model.actor.tasks.player;
 
-import com.l2jserver.gameserver.model.TeleportBookmark;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * @author ShanSoft
+ * Task dedicated to put player to sit down.
+ * @author UnAfraid
  */
-public class ExGetBookMarkInfoPacket extends L2GameServerPacket
+public class SitDownTask implements Runnable
 {
-	private final L2PcInstance player;
+	private final L2PcInstance _player;
 	
-	public ExGetBookMarkInfoPacket(L2PcInstance cha)
+	public SitDownTask(L2PcInstance player)
 	{
-		player = cha;
+		_player = player;
 	}
 	
 	@Override
-	protected final void writeImpl()
+	public void run()
 	{
-		writeC(0xFE);
-		writeH(0x84);
-		writeD(0x00); // Dummy
-		writeD(player.getBookmarkslot());
-		writeD(player.getTeleportBookmarks().size());
-		
-		for (TeleportBookmark tpbm : player.getTeleportBookmarks())
+		if (_player != null)
 		{
-			writeD(tpbm.getId());
-			writeD(tpbm.getX());
-			writeD(tpbm.getY());
-			writeD(tpbm.getZ());
-			writeS(tpbm.getName());
-			writeD(tpbm.getIcon());
-			writeS(tpbm.getTag());
+			_player.setIsParalyzed(false);
 		}
 	}
 }

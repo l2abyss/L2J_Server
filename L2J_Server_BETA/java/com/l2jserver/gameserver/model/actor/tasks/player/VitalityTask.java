@@ -16,41 +16,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.network.serverpackets;
+package com.l2jserver.gameserver.model.actor.tasks.player;
 
-import com.l2jserver.gameserver.model.TeleportBookmark;
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.stat.PcStat;
+import com.l2jserver.gameserver.model.zone.ZoneId;
+import com.l2jserver.gameserver.network.serverpackets.ExVitalityPointInfo;
 
 /**
- * @author ShanSoft
+ * Task dedicated to reward player with vitality.
+ * @author UnAfraid
  */
-public class ExGetBookMarkInfoPacket extends L2GameServerPacket
+public class VitalityTask implements Runnable
 {
-	private final L2PcInstance player;
+	private final L2PcInstance _player;
 	
-	public ExGetBookMarkInfoPacket(L2PcInstance cha)
+	public VitalityTask(L2PcInstance player)
 	{
-		player = cha;
+		_player = player;
 	}
 	
 	@Override
-	protected final void writeImpl()
+	public void run()
 	{
-		writeC(0xFE);
-		writeH(0x84);
-		writeD(0x00); // Dummy
-		writeD(player.getBookmarkslot());
-		writeD(player.getTeleportBookmarks().size());
-		
-		for (TeleportBookmark tpbm : player.getTeleportBookmarks())
+		if (!_player.isInsideZone(ZoneId.PEACE))
 		{
-			writeD(tpbm.getId());
-			writeD(tpbm.getX());
-			writeD(tpbm.getY());
-			writeD(tpbm.getZ());
-			writeS(tpbm.getName());
-			writeD(tpbm.getIcon());
-			writeS(tpbm.getTag());
+			return;
 		}
+		
+		if (_player.getVitalityPoints() >= PcStat.MAX_VITALITY_POINTS)
+		{
+			return;
+		}
+		
+		_player.updateVitalityPoints(Config.RATE_RECOVERY_VITALITY_PEACE_ZONE, false, false);
+		_player.sendPacket(new ExVitalityPointInfo(_player.getVitalityPoints()));
 	}
 }

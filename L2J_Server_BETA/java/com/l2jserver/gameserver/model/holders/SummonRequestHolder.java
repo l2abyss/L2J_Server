@@ -16,41 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.network.serverpackets;
+package com.l2jserver.gameserver.model.holders;
 
-import com.l2jserver.gameserver.model.TeleportBookmark;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
- * @author ShanSoft
+ * @author UnAfraid
  */
-public class ExGetBookMarkInfoPacket extends L2GameServerPacket
+public class SummonRequestHolder
 {
-	private final L2PcInstance player;
+	private final L2PcInstance _target;
+	private final L2Skill _skill;
 	
-	public ExGetBookMarkInfoPacket(L2PcInstance cha)
+	public SummonRequestHolder(L2PcInstance destination, L2Skill skill)
 	{
-		player = cha;
+		_target = destination;
+		_skill = skill;
 	}
 	
-	@Override
-	protected final void writeImpl()
+	public L2PcInstance getTarget()
 	{
-		writeC(0xFE);
-		writeH(0x84);
-		writeD(0x00); // Dummy
-		writeD(player.getBookmarkslot());
-		writeD(player.getTeleportBookmarks().size());
-		
-		for (TeleportBookmark tpbm : player.getTeleportBookmarks())
-		{
-			writeD(tpbm.getId());
-			writeD(tpbm.getX());
-			writeD(tpbm.getY());
-			writeD(tpbm.getZ());
-			writeS(tpbm.getName());
-			writeD(tpbm.getIcon());
-			writeS(tpbm.getTag());
-		}
+		return _target;
+	}
+	
+	public L2Skill getSkill()
+	{
+		return _skill;
 	}
 }
