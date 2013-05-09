@@ -131,20 +131,35 @@ public class L2PcTemplate extends L2CharTemplate
 		switch (paramName)
 		{
 			case "hp":
+			{
 				_baseHp[level] = (float) val;
 				break;
+			}
 			case "mp":
+			{
 				_baseMp[level] = (float) val;
 				break;
+			}
 			case "cp":
+			{
 				_baseCp[level] = (float) val;
 				break;
+			}
 			case "hpRegen":
+			{
 				_baseHpReg[level] = val;
+				break;
+			}
 			case "mpRegen":
+			{
 				_baseMpReg[level] = val;
+				break;
+			}
 			case "cpRegen":
+			{
 				_baseCpReg[level] = val;
+				break;
+			}
 		}
 	}
 	
