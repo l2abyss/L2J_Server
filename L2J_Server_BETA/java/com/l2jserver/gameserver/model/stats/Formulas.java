@@ -162,7 +162,6 @@ public final class Formulas
 		
 		std[Stats.MOVE_SPEED.ordinal()] = new Calculator();
 		std[Stats.MOVE_SPEED.ordinal()].addFunc(FuncMoveSpeed.getInstance());
-
 		
 		return std;
 	}
@@ -2055,7 +2054,7 @@ public final class Formulas
 		return result;
 	}
 	
-	public static void isDamageReflected(L2Character activeChar, L2Character target, L2Skill skill)
+	public static void calcDamageReflected(L2Character activeChar, L2Character target, L2Skill skill, boolean crit)
 	{
 		boolean reflect = true;
 		// Only melee skills can be reflected
@@ -2085,6 +2084,10 @@ public final class Formulas
 				// 1189 x Your PATK / PDEF of target
 				double vegdamage = ((1189 * target.getPAtk(activeChar)) / activeChar.getPDef(target));
 				activeChar.reduceCurrentHp(vegdamage, target, skill);
+				if (crit)
+				{
+					activeChar.reduceCurrentHp(vegdamage, target, skill);
+				}
 			}
 		}
 	}
