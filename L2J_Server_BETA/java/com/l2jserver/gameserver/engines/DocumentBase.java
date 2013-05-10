@@ -292,9 +292,10 @@ public abstract class DocumentBase
 			set.set(att.getNodeName(), getValue(att.getNodeValue(), template));
 		}
 		
+		final StatsSet parameters = parseParameters(n.getFirstChild(), template);
 		final Lambda lambda = getLambda(n, template);
 		final Condition applayCond = parseCondition(n.getFirstChild(), template);
-		final EffectTemplate effectTemplate = new EffectTemplate(attachCond, applayCond, lambda, set);
+		final EffectTemplate effectTemplate = new EffectTemplate(attachCond, applayCond, lambda, set, parameters);
 		parseTemplate(n, effectTemplate);
 		if (template instanceof L2Item)
 		{
@@ -316,6 +317,36 @@ public abstract class DocumentBase
 				sk.attach(effectTemplate);
 			}
 		}
+	}
+	
+	/**
+	 * Parse effect's parameters.
+	 * @param n the node to start the parsing
+	 * @param template the effect template
+	 * @return the list of parameters if any, {@code null} otherwise
+	 */
+	private StatsSet parseParameters(Node n, Object template)
+	{
+		StatsSet parameters = null;
+		while ((n != null))
+		{
+			// Parse all parameters.
+			if ((n.getNodeType() == Node.ELEMENT_NODE) && "param".equals(n.getNodeName()))
+			{
+				if (parameters == null)
+				{
+					parameters = new StatsSet();
+				}
+				NamedNodeMap params = n.getAttributes();
+				for (int i = 0; i < params.getLength(); i++)
+				{
+					Node att = params.item(i);
+					parameters.set(att.getNodeName(), getValue(att.getNodeValue(), template));
+				}
+			}
+			n = n.getNextSibling();
+		}
+		return parameters;
 	}
 	
 	protected Condition parseCondition(Node n, Object template)

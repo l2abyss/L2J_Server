@@ -59,8 +59,9 @@ public class EffectTemplate
 	private final int _triggeredId;
 	private final int _triggeredLevel;
 	private final ChanceCondition _chanceCondition;
+	private final StatsSet _parameters;
 	
-	public EffectTemplate(Condition attachCond, Condition applyCond, Lambda lambda, StatsSet set)
+	public EffectTemplate(Condition attachCond, Condition applyCond, Lambda lambda, StatsSet set, StatsSet params)
 	{
 		_attachCond = attachCond;
 		// _applyCond = applyCond;
@@ -81,6 +82,7 @@ public class EffectTemplate
 		_triggeredId = set.getInteger("triggeredId", 0);
 		_triggeredLevel = set.getInteger("triggeredLevel", 1);
 		_chanceCondition = ChanceCondition.parse(set.getString("chanceType", null), set.getInteger("activationChance", -1), set.getInteger("activationMinDamage", -1), set.getString("activationElements", null), set.getString("activationSkills", null), set.getBool("pvpChanceOnly", false));
+		_parameters = params;
 		_handler = EffectHandler.getInstance().getHandler(_name);
 		if (_handler == null)
 		{
@@ -237,5 +239,23 @@ public class EffectTemplate
 	public ChanceCondition getChanceCondition()
 	{
 		return _chanceCondition;
+	}
+	
+	/**
+	 * Get the parameters.
+	 * @return the parameters of this effect template
+	 */
+	public StatsSet getParameters()
+	{
+		return _parameters;
+	}
+	
+	/**
+	 * Verify if this effect template has parameters.
+	 * @return {@code true} if this effect template has parameters, {@code false} otherwise
+	 */
+	public boolean hasParameters()
+	{
+		return _parameters != null;
 	}
 }

@@ -21,14 +21,11 @@ package com.l2jserver.gameserver.model.skills;
 import java.lang.reflect.Constructor;
 
 import com.l2jserver.gameserver.model.StatsSet;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillCreateItem;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDecoy;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDefault;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillLearnSkill;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSiegeFlag;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSignet;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSignetCasttime;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSpawn;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillTeleport;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillTrap;
@@ -89,15 +86,12 @@ public enum L2SkillType
 	// Creation
 	COMMON_CRAFT,
 	DWARVEN_CRAFT,
-	CREATE_ITEM(L2SkillCreateItem.class),
 	LEARN_SKILL(L2SkillLearnSkill.class),
 	// Summons
 	SUMMON(L2SkillSummon.class),
 	FEED_PET,
 	ERASE,
 	BETRAY,
-	DECOY(L2SkillDecoy.class),
-	SPAWN(L2SkillSpawn.class),
 	
 	BUFF,
 	DEBUFF,
