@@ -58,7 +58,12 @@ public abstract class L2Tower extends L2Npc
 			return;
 		}
 		
-		if (interact)
+		if (this != player.getTarget())
+		{
+			// Set the target of the L2PcInstance player
+			player.setTarget(this);
+		}
+		else if (interact)
 		{
 			if (isAutoAttackable(player) && (Math.abs(player.getZ() - getZ()) < 100) && GeoData.getInstance().canSeeTarget(player, this))
 			{
