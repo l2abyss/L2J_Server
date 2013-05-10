@@ -59,6 +59,7 @@ public class Location
 		_x = obj.getX();
 		_y = obj.getY();
 		_z = obj.getZ();
+		_heading = obj.getHeading();
 		_instanceId = obj.getInstanceId();
 	}
 	

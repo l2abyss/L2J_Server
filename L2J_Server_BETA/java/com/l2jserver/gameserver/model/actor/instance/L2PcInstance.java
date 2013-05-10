@@ -269,6 +269,7 @@ import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.LeaveWorld;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
+import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.NicknameChanged;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.ObservationMode;
@@ -305,6 +306,7 @@ import com.l2jserver.gameserver.network.serverpackets.TradeDone;
 import com.l2jserver.gameserver.network.serverpackets.TradeOtherDone;
 import com.l2jserver.gameserver.network.serverpackets.TradeStart;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
+import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.scripting.scriptengine.events.EquipmentEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.HennaEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ProfessionChangeEvent;
@@ -316,6 +318,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerDe
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.ProfessionChangeListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.TransformListener;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
+import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.gameserver.util.FloodProtectors;
 import com.l2jserver.gameserver.util.PlayerEventStatus;
 import com.l2jserver.gameserver.util.Point3D;
@@ -5198,50 +5201,37 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Set a target. <B><U> Actions</U> :</B> <li>Remove the L2PcInstance from the _statusListener of the old target if it was a L2Character</li> <li>Add the L2PcInstance to the _statusListener of the new target if it's a L2Character</li> <li>Target the new L2Object (add the target to the
-	 * L2PcInstance _target, _knownObject and L2PcInstance to _KnownObject of the L2Object)</li>
+	 * Set a target. <B><U> Actions</U> :</B>
+	 * <ul>
+	 * <li>Remove the L2PcInstance from the _statusListener of the old target if it was a L2Character</li>
+	 * <li>Add the L2PcInstance to the _statusListener of the new target if it's a L2Character</li>
+	 * <li>Target the new L2Object (add the target to the L2PcInstance _target, _knownObject and L2PcInstance to _KnownObject of the L2Object)</li>
+	 * </ul>
 	 * @param newTarget The L2Object to target
 	 */
 	@Override
 	public void setTarget(L2Object newTarget)
 	{
-		
 		if (newTarget != null)
 		{
-			boolean isParty = (((newTarget instanceof L2PcInstance) && isInParty() && getParty().getMembers().contains(newTarget)));
-			
-			// Check if the new target is visible
-			if (!isParty && !newTarget.isVisible())
-			{
-				newTarget = null;
-			}
+			boolean isInParty = (newTarget.isPlayer() && isInParty() && getParty().containsPlayer(newTarget.getActingPlayer()));
 			
 			// Prevents /target exploiting
-			if ((newTarget != null) && !isParty && (Math.abs(newTarget.getZ() - getZ()) > 1000))
+			if (!isInParty && (Math.abs(newTarget.getZ() - getZ()) > 1000))
 			{
 				newTarget = null;
 			}
-		}
-		if (!isGM())
-		{
-			// Can't target and attack festival monsters if not participant
-			if ((newTarget instanceof L2FestivalMonsterInstance) && !isFestivalParticipant())
+			
+			// Check if the new target is visible
+			if ((newTarget != null) && !isInParty && !newTarget.isVisible())
 			{
 				newTarget = null;
 			}
-			else if (newTarget instanceof L2Vehicle)
+			
+			// vehicles cant be targeted
+			if (!isGM() && (newTarget instanceof L2Vehicle))
 			{
 				newTarget = null;
-			}
-			else if (isInParty() && getParty().isInDimensionalRift())
-			{
-				byte riftType = getParty().getDimensionalRift().getType();
-				byte riftRoom = getParty().getDimensionalRift().getCurrentRoom();
-				
-				if ((newTarget != null) && !DimensionalRiftManager.getInstance().getRoom(riftType, riftRoom).checkIfInZone(newTarget.getX(), newTarget.getY(), newTarget.getZ()))
-				{
-					newTarget = null;
-				}
 			}
 		}
 		
@@ -5250,25 +5240,47 @@ public final class L2PcInstance extends L2Playable
 		
 		if (oldTarget != null)
 		{
-			if (oldTarget.equals(newTarget))
+			if (oldTarget.equals(newTarget)) // no target change?
 			{
-				return; // no target change
+				// Validate location of the target.
+				if ((newTarget != null) && (newTarget.getObjectId() != getObjectId()))
+				{
+					sendPacket(new ValidateLocation(newTarget));
+				}
+				return;
 			}
 			
-			// Remove the L2PcInstance from the _statusListener of the old target if it was a L2Character
-			if (oldTarget instanceof L2Character)
-			{
-				((L2Character) oldTarget).removeStatusListener(this);
-			}
+			// Remove the target from the status listener.
+			oldTarget.removeStatusListener(this);
 		}
 		
-		// Add the L2PcInstance to the _statusListener of the new target if it's a L2Character
 		if (newTarget instanceof L2Character)
 		{
-			((L2Character) newTarget).addStatusListener(this);
-			TargetSelected my = new TargetSelected(getObjectId(), newTarget.getObjectId(), getX(), getY(), getZ());
-			broadcastPacket(my);
+			final L2Character target = (L2Character) newTarget;
+			
+			// Validate location of the new target.
+			if (newTarget.getObjectId() != getObjectId())
+			{
+				sendPacket(new ValidateLocation(target));
+			}
+			
+			// Show the client his new target.
+			sendPacket(new MyTargetSelected(this, target));
+			
+			// Register target to listen for hp changes.
+			target.addStatusListener(this);
+			
+			// Send max/current hp.
+			final StatusUpdate su = new StatusUpdate(target);
+			su.addAttribute(StatusUpdate.MAX_HP, target.getMaxHp());
+			su.addAttribute(StatusUpdate.CUR_HP, (int) target.getCurrentHp());
+			sendPacket(su);
+			
+			// To others the new target, and not yourself!
+			Broadcast.toKnownPlayers(this, new TargetSelected(getObjectId(), newTarget.getObjectId(), getX(), getY(), getZ()));
 		}
+		
+		// Target was removed?
 		if ((newTarget == null) && (getTarget() != null))
 		{
 			broadcastPacket(new TargetUnselected(this));

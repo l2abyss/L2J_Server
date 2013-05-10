@@ -33,10 +33,8 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.BuyList;
 import com.l2jserver.gameserver.network.serverpackets.ExBuySellList;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SellList;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 
 /**
  * @author Kerberos
@@ -170,13 +168,6 @@ public class L2MerchantSummonInstance extends L2ServitorInstance
 		{
 			// Set the target of the L2PcInstance player
 			player.setTarget(this);
-			
-			// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
-			final MyTargetSelected my = new MyTargetSelected(getObjectId(), 0);
-			player.sendPacket(my);
-			
-			// Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
-			player.sendPacket(new ValidateLocation(this));
 		}
 		else if (interact)
 		{

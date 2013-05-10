@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.model.actor.stat.ControllableAirShipStat;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.DeleteObject;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 public class L2ControllableAirShipInstance extends L2AirShipInstance
@@ -249,13 +248,6 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 		}
 		
 		super.oustPlayer(player);
-	}
-	
-	@Override
-	public void onAction(L2PcInstance player, boolean interact)
-	{
-		player.sendPacket(new MyTargetSelected(_helmId, 0));
-		super.onAction(player, interact);
 	}
 	
 	@Override

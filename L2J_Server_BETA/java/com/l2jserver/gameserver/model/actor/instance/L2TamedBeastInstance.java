@@ -37,11 +37,8 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
-import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.StopMove;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.Rnd;
 
@@ -576,19 +573,6 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 		{
 			// Set the target of the L2PcInstance player
 			player.setTarget(this);
-			
-			// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
-			MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
-			player.sendPacket(my);
-			
-			// Send a Server->Client packet StatusUpdate of the L2NpcInstance to the L2PcInstance to update its HP bar
-			StatusUpdate su = new StatusUpdate(this);
-			su.addAttribute(StatusUpdate.CUR_HP, (int) getStatus().getCurrentHp());
-			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
-			player.sendPacket(su);
-			
-			// Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
-			player.sendPacket(new ValidateLocation(this));
 		}
 		else if (interact)
 		{

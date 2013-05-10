@@ -4043,6 +4043,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	/**
 	 * @return the orientation of the L2Character.
 	 */
+	@Override
 	public final int getHeading()
 	{
 		return _heading;
@@ -7226,6 +7227,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		getStatus().reduceMp(i);
 	}
 	
+	@Override
 	public void removeStatusListener(L2Character object)
 	{
 		getStatus().removeStatusListener(object);

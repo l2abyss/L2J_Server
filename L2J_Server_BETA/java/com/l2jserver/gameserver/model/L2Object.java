@@ -430,6 +430,11 @@ public abstract class L2Object
 		return getPosition().getZ();
 	}
 	
+	public int getHeading()
+	{
+		return 0;
+	}
+	
 	/**
 	 * Remove a L2Object from the world.<BR>
 	 * <BR>
@@ -916,5 +921,10 @@ public abstract class L2Object
 			return null;
 		}
 		return (T) _scripts.get(script.getName());
+	}
+	
+	public void removeStatusListener(L2Character object)
+	{
+		
 	}
 }

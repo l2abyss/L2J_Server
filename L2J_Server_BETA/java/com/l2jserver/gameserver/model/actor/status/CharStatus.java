@@ -264,6 +264,7 @@ public class CharStatus
 	public void setCurrentHp(double newHp, boolean broadcastPacket)
 	{
 		// Get the Max HP of the L2Character
+		int currentHp = (int) getCurrentHp();
 		final double maxHp = getActiveChar().getStat().getMaxHp();
 		
 		synchronized (this)
@@ -297,7 +298,7 @@ public class CharStatus
 		}
 		
 		// Send the Server->Client packet StatusUpdate with current HP and MP to all other L2PcInstance to inform
-		if (broadcastPacket)
+		if ((currentHp != _currentHp) && broadcastPacket)
 		{
 			getActiveChar().broadcastStatusUpdate();
 		}
@@ -322,6 +323,7 @@ public class CharStatus
 	public final void setCurrentMp(double newMp, boolean broadcastPacket)
 	{
 		// Get the Max MP of the L2Character
+		int currentMp = (int) getCurrentMp();
 		final int maxMp = getActiveChar().getStat().getMaxMp();
 		
 		synchronized (this)
@@ -355,7 +357,7 @@ public class CharStatus
 		}
 		
 		// Send the Server->Client packet StatusUpdate with current HP and MP to all other L2PcInstance to inform
-		if (broadcastPacket)
+		if ((currentMp != _currentMp) && broadcastPacket)
 		{
 			getActiveChar().broadcastStatusUpdate();
 		}
