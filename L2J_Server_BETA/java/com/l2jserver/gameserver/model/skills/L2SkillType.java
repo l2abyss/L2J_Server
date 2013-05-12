@@ -53,8 +53,6 @@ public enum L2SkillType
 	DISARM,
 	// reco
 	GIVE_RECO,
-	// vitality
-	GIVE_VITALITY,
 	// Aggro
 	AGGDAMAGE,
 	AGGREDUCE,
