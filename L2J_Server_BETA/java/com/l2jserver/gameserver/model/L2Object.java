@@ -77,7 +77,6 @@ public abstract class L2Object
 		L2Playable(L2Character),
 		L2Summon(L2Playable),
 		L2Decoy(L2Character),
-		L2Trap(L2Character),
 		L2PcInstance(L2Playable),
 		L2NpcInstance(L2Npc),
 		L2MerchantInstance(L2NpcInstance),
@@ -93,7 +92,7 @@ public abstract class L2Object
 		L2PetInstance(L2Summon),
 		L2BabyPetInstance(L2PetInstance),
 		L2DecoyInstance(L2Decoy),
-		L2TrapInstance(L2Trap),
+		L2TrapInstance(L2Npc),
 		// Attackable
 		L2Attackable(L2Npc),
 		L2GuardInstance(L2Attackable),

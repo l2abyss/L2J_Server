@@ -965,22 +965,21 @@ public class L2Npc extends L2Character
 	}
 	
 	/**
-	 * Return null (regular NPCs don't have weapons instancies).
+	 * Return null (regular NPCs don't have weapons instances).
 	 */
 	@Override
 	public L2ItemInstance getActiveWeaponInstance()
 	{
-		// regular NPCs dont have weapons instancies
 		return null;
 	}
 	
 	/**
-	 * Return the weapon item equiped in the right hand of the L2NpcInstance or null.
+	 * Return the weapon item equipped in the right hand of the L2NpcInstance or null.
 	 */
 	@Override
 	public L2Weapon getActiveWeaponItem()
 	{
-		// Get the weapon identifier equiped in the right hand of the L2NpcInstance
+		// Get the weapon identifier equipped in the right hand of the L2NpcInstance
 		int weaponId = getTemplate().getRightHand();
 		
 		if (weaponId < 1)
@@ -988,7 +987,7 @@ public class L2Npc extends L2Character
 			return null;
 		}
 		
-		// Get the weapon item equiped in the right hand of the L2NpcInstance
+		// Get the weapon item equipped in the right hand of the L2NpcInstance
 		L2Item item = ItemTable.getInstance().getTemplate(getTemplate().getRightHand());
 		
 		if (!(item instanceof L2Weapon))
@@ -1000,30 +999,28 @@ public class L2Npc extends L2Character
 	}
 	
 	/**
-	 * Return null (regular NPCs don't have weapons instancies).
+	 * Return null (regular NPCs don't have weapons instances).
 	 */
 	@Override
 	public L2ItemInstance getSecondaryWeaponInstance()
 	{
-		// regular NPCs dont have weapons instancies
 		return null;
 	}
 	
 	/**
-	 * Return the weapon item equiped in the left hand of the L2NpcInstance or null.
+	 * Return the weapon item equipped in the left hand of the L2NpcInstance or null.
 	 */
 	@Override
 	public L2Weapon getSecondaryWeaponItem()
 	{
-		// Get the weapon identifier equiped in the right hand of the L2NpcInstance
+		// Get the weapon identifier equipped in the right hand of the L2NpcInstance
 		int weaponId = getTemplate().getLeftHand();
-		
 		if (weaponId < 1)
 		{
 			return null;
 		}
 		
-		// Get the weapon item equiped in the right hand of the L2NpcInstance
+		// Get the weapon item equipped in the right hand of the L2NpcInstance
 		L2Item item = ItemTable.getInstance().getTemplate(getTemplate().getLeftHand());
 		
 		if (!(item instanceof L2Weapon))

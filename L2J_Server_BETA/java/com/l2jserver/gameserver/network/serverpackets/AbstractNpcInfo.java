@@ -26,10 +26,10 @@ import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Summon;
-import com.l2jserver.gameserver.model.actor.L2Trap;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2TrapInstance;
 import com.l2jserver.gameserver.model.effects.AbnormalEffect;
 import com.l2jserver.gameserver.model.stats.MoveType;
 import com.l2jserver.gameserver.model.zone.ZoneId;
@@ -204,9 +204,9 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 	
 	public static class TrapInfo extends AbstractNpcInfo
 	{
-		private final L2Trap _trap;
+		private final L2TrapInstance _trap;
 		
-		public TrapInfo(L2Trap cha, L2Character attacker)
+		public TrapInfo(L2TrapInstance cha, L2Character attacker)
 		{
 			super(cha);
 			

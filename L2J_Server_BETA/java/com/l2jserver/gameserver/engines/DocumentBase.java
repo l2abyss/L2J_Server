@@ -744,15 +744,19 @@ public abstract class DocumentBase
 			}
 			else if ("npcIdRadius".equalsIgnoreCase(a.getNodeName()))
 			{
-				StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
-				int npcId = 0;
-				int radius = 0;
-				if (st.countTokens() > 1)
+				final StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+				if (st.countTokens() == 3)
 				{
-					npcId = Integer.decode(getValue(st.nextToken().trim(), null));
-					radius = Integer.decode(getValue(st.nextToken().trim(), null));
+					final String[] ids = st.nextToken().split(";");
+					final int[] npcIds = new int[ids.length];
+					for (int index = 0; index < ids.length; index++)
+					{
+						npcIds[index] = Integer.parseInt(getValue(ids[index], template));
+					}
+					final int radius = Integer.parseInt(st.nextToken());
+					final boolean val = Boolean.parseBoolean(st.nextToken());
+					cond = joinAnd(cond, new ConditionPlayerRangeFromNpc(npcIds, radius, val));
 				}
-				cond = joinAnd(cond, new ConditionPlayerRangeFromNpc(npcId, radius));
 			}
 			else if ("canSweep".equalsIgnoreCase(a.getNodeName()))
 			{

@@ -21,39 +21,43 @@ package com.l2jserver.gameserver.model.conditions;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.stats.Env;
+import com.l2jserver.gameserver.util.Util;
 
 /**
- * @author UnAfraid
+ * Exist NPC condition.
+ * @author UnAfraid, Zoey76
  */
 public class ConditionPlayerRangeFromNpc extends Condition
 {
-	private final int _npcId;
+	/** NPC Ids. */
+	private final int[] _npcIds;
+	/** Radius to check. */
 	private final int _radius;
+	/** Expected value. */
+	private final boolean _val;
 	
-	public ConditionPlayerRangeFromNpc(int npcId, int radius)
+	public ConditionPlayerRangeFromNpc(int[] npcIds, int radius, boolean val)
 	{
-		_npcId = npcId;
+		_npcIds = npcIds;
 		_radius = radius;
+		_val = val;
 	}
 	
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if ((_npcId == 0) || (_radius == 0))
+		boolean existNpc = false;
+		if ((_npcIds != null) && (_npcIds.length > 0) && (_radius > 0))
 		{
-			return false;
-		}
-		
-		for (L2Character target : env.getCharacter().getKnownList().getKnownCharactersInRadius(_radius))
-		{
-			if (target instanceof L2Npc)
+			for (L2Character target : env.getCharacter().getKnownList().getKnownCharactersInRadius(_radius))
 			{
-				if (((L2Npc) target).getNpcId() == _npcId)
+				if (target.isNpc() && Util.contains(_npcIds, ((L2Npc) target).getNpcId()))
 				{
-					return true;
+					existNpc = true;
+					break;
 				}
 			}
 		}
-		return false;
+		return existNpc == _val;
 	}
 }

@@ -28,9 +28,9 @@ import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSignet;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSignetCasttime;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillTeleport;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillTrap;
 
 /**
+ * Skill type enumerated.
  * @author nBd
  */
 public enum L2SkillType
@@ -108,7 +108,6 @@ public enum L2SkillType
 	BEAST_SKILL,
 	BEAST_ACCOMPANY,
 	TRANSFORMDISPEL,
-	SUMMON_TRAP(L2SkillTrap.class),
 	DETECT_TRAP,
 	REMOVE_TRAP,
 	SHIFT_TARGET,

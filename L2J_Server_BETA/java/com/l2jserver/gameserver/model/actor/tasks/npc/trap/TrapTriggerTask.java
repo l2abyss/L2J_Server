@@ -16,38 +16,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.actor.knownlist;
+package com.l2jserver.gameserver.model.actor.tasks.npc.trap;
 
-import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.instance.L2TrapInstance;
 
-public class TrapKnownList extends NpcKnownList
+/**
+ * Trap trigger task.
+ * @author Zoey76
+ */
+public class TrapTriggerTask implements Runnable
 {
-	public TrapKnownList(L2TrapInstance activeChar)
+	private final L2TrapInstance _trap;
+	
+	public TrapTriggerTask(L2TrapInstance trap)
 	{
-		super(activeChar);
+		_trap = trap;
 	}
 	
 	@Override
-	public final L2TrapInstance getActiveChar()
+	public void run()
 	{
-		return (L2TrapInstance) super.getActiveChar();
-	}
-	
-	@Override
-	public int getDistanceToForgetObject(L2Object object)
-	{
-		if ((object == getActiveChar().getActingPlayer()) || (object == getActiveChar().getTarget()))
+		try
 		{
-			return 6000;
+			_trap.doCast(_trap.getSkill());
+			ThreadPoolManager.getInstance().scheduleGeneral(new TrapUnsummonTask(_trap), _trap.getSkill().getHitTime() + 300);
 		}
-		
-		return 3000;
-	}
-	
-	@Override
-	public int getDistanceToWatchObject(L2Object object)
-	{
-		return 1500;
+		catch (Exception e)
+		{
+			_trap.unSummon();
+		}
 	}
 }

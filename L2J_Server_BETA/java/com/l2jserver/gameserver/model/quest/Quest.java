@@ -53,7 +53,6 @@ import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.L2Trap;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -685,7 +684,7 @@ public class Quest extends ManagedScript
 	 * @param trigger the character which makes effect on the trap
 	 * @param action 0: trap casting its skill. 1: trigger detects the trap. 2: trigger removes the trap
 	 */
-	public final void notifyTrapAction(L2Trap trap, L2Character trigger, TrapAction action)
+	public final void notifyTrapAction(L2TrapInstance trap, L2Character trigger, TrapAction action)
 	{
 		String res = null;
 		try
@@ -1388,7 +1387,7 @@ public class Quest extends ManagedScript
 	 * @param action this parameter contains a reference to the action that was triggered.
 	 * @return
 	 */
-	public String onTrapAction(L2Trap trap, L2Character trigger, TrapAction action)
+	public String onTrapAction(L2TrapInstance trap, L2Character trigger, TrapAction action)
 	{
 		return null;
 	}
@@ -2801,17 +2800,15 @@ public class Quest extends ManagedScript
 	 * @param instanceId
 	 * @return
 	 */
-	public L2Trap addTrap(int trapId, int x, int y, int z, int heading, L2Skill skill, int instanceId)
+	public L2TrapInstance addTrap(int trapId, int x, int y, int z, int heading, L2Skill skill, int instanceId)
 	{
-		L2NpcTemplate TrapTemplate = NpcTable.getInstance().getTemplate(trapId);
-		L2Trap trap = new L2TrapInstance(IdFactory.getInstance().getNextId(), TrapTemplate, instanceId, -1, skill);
+		final L2NpcTemplate npcTemplate = NpcTable.getInstance().getTemplate(trapId);
+		L2TrapInstance trap = new L2TrapInstance(IdFactory.getInstance().getNextId(), npcTemplate, instanceId, -1);
 		trap.setCurrentHp(trap.getMaxHp());
 		trap.setCurrentMp(trap.getMaxMp());
 		trap.setIsInvul(true);
 		trap.setHeading(heading);
-		// L2World.getInstance().storeObject(trap);
 		trap.spawnMe(x, y, z);
-		
 		return trap;
 	}
 	
