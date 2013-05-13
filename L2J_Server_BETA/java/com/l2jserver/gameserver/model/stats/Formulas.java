@@ -1557,71 +1557,70 @@ public final class Formulas
 		return elementMod;
 	}
 	
-	public static boolean calcEffectSuccess(L2Character attacker, L2Character target, EffectTemplate effect, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
+	public static boolean calcEffectSuccess(Env env)
 	{
 		// Effect base rate, if it's -1 (or less) always land.
-		final double baseRate = effect.getEffectPower();
-		if ((baseRate < 0) || skill.hasEffectType(L2EffectType.CANCEL_DEBUFF, L2EffectType.CANCEL))
+		final double baseRate = env.getEffect().getEffectPower();
+		if (baseRate < 0)
 		{
 			return true;
 		}
 		
-		if (skill.isDebuff())
+		if (env.getSkill().isDebuff())
 		{
-			if (skill.getPower() == -1)
+			if (env.getSkill().getPower() == -1)
 			{
-				if (attacker.isDebug())
+				if (env.getCharacter().isDebug())
 				{
-					attacker.sendDebugMessage(skill.getName() + " effect ignoring resists");
+					env.getCharacter().sendDebugMessage(env.getSkill().getName() + " effect ignoring resists");
 				}
 				return true;
 			}
-			else if (target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0)
+			else if (env.getTarget().calcStat(Stats.DEBUFF_IMMUNITY, 0, null, env.getSkill()) > 0)
 			{
 				return false;
 			}
 		}
 		
 		// Perfect Shield Block.
-		if (shld == SHIELD_DEFENSE_PERFECT_BLOCK)
+		if (env.getShield() == SHIELD_DEFENSE_PERFECT_BLOCK)
 		{
-			if (attacker.isDebug())
+			if (env.getCharacter().isDebug())
 			{
-				attacker.sendDebugMessage(skill.getName() + " effect blocked by shield");
+				env.getCharacter().sendDebugMessage(env.getSkill().getName() + " effect blocked by shield");
 			}
-			
 			return false;
 		}
 		
 		// Calculate BaseRate.
-		double statMod = calcSkillStatMod(skill, target);
+		double statMod = calcSkillStatMod(env.getSkill(), env.getTarget());
 		double rate = (baseRate / statMod);
 		
 		// Resist Modifier.
-		double resMod = calcResMod(attacker, target, skill);
+		double resMod = calcResMod(env.getCharacter(), env.getTarget(), env.getSkill());
 		rate *= resMod;
 		
 		// Lvl Bonus Modifier.
-		double lvlBonusMod = calcLvlBonusMod(attacker, target, skill);
+		double lvlBonusMod = calcLvlBonusMod(env.getCharacter(), env.getTarget(), env.getSkill());
 		rate *= lvlBonusMod;
 		
 		// Element Modifier.
-		double elementMod = calcElementMod(attacker, target, skill);
+		double elementMod = calcElementMod(env.getCharacter(), env.getTarget(), env.getSkill());
 		rate *= elementMod;
 		
 		// Add Matk/Mdef Bonus (TODO: Pending)
 		
 		// Check the Rate Limits.
-		rate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
+		rate = Math.min(Math.max(rate, env.getSkill().getMinChance()), env.getSkill().getMaxChance());
 		
-		if (attacker.isDebug() || Config.DEVELOPER)
+		if (env.getCharacter().isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, skill.getName(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), " elem:", String.format("%1.2f", elementMod), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
+			StringUtil.append(stat, env.getSkill().getName(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), " elem:", String.format("%1.2f", elementMod), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
 			final String result = stat.toString();
-			if (attacker.isDebug())
+			if (env.getCharacter().isDebug())
 			{
-				attacker.sendDebugMessage(result);
+				env.getCharacter().sendDebugMessage(result);
 			}
 			if (Config.DEVELOPER)
 			{
@@ -2303,7 +2302,7 @@ public final class Formulas
 		
 		// An herb buff will affect both master and servitor, but the buff duration will be half of the normal duration.
 		// If a servitor is not summoned, the master will receive the full buff duration.
-		if ((effected != null) && effected.isServitor() && (skill != null) && skill.abnormalInstant())
+		if ((effected != null) && effected.isServitor() && (skill != null) && skill.isAbnormalInstant())
 		{
 			time /= 2;
 		}

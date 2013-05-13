@@ -18,6 +18,7 @@
  */
 package com.l2jserver.gameserver.model;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,8 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 public final class CharEffectList
 {
 	private static final Logger _log = Logger.getLogger(CharEffectList.class.getName());
+	/** Static empty array of effects, used for toArray operations. */
+	private static final L2Effect[] EMPTY_EFFECT_ARRAY = new L2Effect[0];
 	/** List containing all effect buffs for this effect list. */
 	private List<L2Effect> _buffs;
 	/** List containing all effect debuffs for this effect list. */
@@ -685,7 +688,16 @@ public final class CharEffectList
 	
 	/**
 	 * Add a set of effects to this effect list.
-	 * @param effects the effect list to add
+	 * @param effects the effect collection to add
+	 */
+	public void add(Collection<L2Effect> effects)
+	{
+		add(effects.toArray(EMPTY_EFFECT_ARRAY));
+	}
+	
+	/**
+	 * Add a set of effects to this effect list.
+	 * @param effects the effect array to add
 	 */
 	public void add(L2Effect... effects)
 	{

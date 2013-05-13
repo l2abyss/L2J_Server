@@ -46,7 +46,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.conditions.Condition;
@@ -63,7 +62,6 @@ import com.l2jserver.gameserver.model.stats.BaseStats;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.gameserver.model.zone.ZoneId;
-import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
@@ -73,7 +71,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	protected static final Logger _log = Logger.getLogger(L2Skill.class.getName());
 	
 	private static final L2Object[] EMPTY_TARGET_LIST = new L2Object[0];
-	private static final L2Effect[] EMPTY_EFFECT_SET = new L2Effect[0];
+	private static final List<L2Effect> EMPTY_EFFECT_LIST = Collections.<L2Effect> emptyList();
 	
 	public static final int SKILL_CREATE_DWARVEN = 172;
 	public static final int SKILL_EXPERTISE = 239;
@@ -98,7 +96,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public static final int COND_CHARGES = 0x0080;
 	public static final int COND_SHIELD = 0x0100;
 	
-	private final boolean _abnormalInstant;
 	/** Skill Id. */
 	private final int _id;
 	/** Skill level. */
@@ -132,6 +129,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _castRange;
 	/** Effect range: how far the skill affect the target. */
 	private final int _effectRange;
+	/** Abnormal instant, used for herbs mostly. */
+	private final boolean _isAbnormalInstant;
 	/** Abnormal level, global effect level. */
 	private final int _abnormalLvl;
 	/** Abnormal type: global effect "group". */
@@ -260,7 +259,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	protected L2Skill(StatsSet set)
 	{
-		_abnormalInstant = set.getBool("abnormalInstant", false);
+		_isAbnormalInstant = set.getBool("abnormalInstant", false);
 		_id = set.getInteger("skill_id");
 		_level = set.getInteger("level");
 		_refId = set.getInteger("referenceId", 0);
@@ -497,11 +496,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	public abstract void useSkill(L2Character caster, L2Object[] targets);
 	
-	public final boolean abnormalInstant()
-	{
-		return _abnormalInstant;
-	}
-	
 	public final int getConditionValue()
 	{
 		return _conditionValue;
@@ -606,6 +600,14 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final Set<AbnormalType> getBlockBuffSlots()
 	{
 		return _blockBuffSlots;
+	}
+	
+	/**
+	 * @return {@code true} if the skill is abnormal instant, {@code false} otherwise
+	 */
+	public final boolean isAbnormalInstant()
+	{
+		return _isAbnormalInstant;
 	}
 	
 	public final int getAbnormalLvl()
@@ -1391,17 +1393,17 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	 * @param env
 	 * @return an array with the effects that have been added to effector
 	 */
-	public final L2Effect[] getEffects(L2Character effector, L2Character effected, Env env)
+	public final List<L2Effect> getEffects(L2Character effector, L2Character effected, Env env)
 	{
-		if (!hasEffects() || isPassive())
+		if ((effected == null) || !hasEffects() || isPassive())
 		{
-			return EMPTY_EFFECT_SET;
+			return EMPTY_EFFECT_LIST;
 		}
 		
 		// doors and siege flags cannot receive any effects
-		if ((effected instanceof L2DoorInstance) || (effected instanceof L2SiegeFlagInstance))
+		if (effected.isDoor() || (effected instanceof L2SiegeFlagInstance))
 		{
-			return EMPTY_EFFECT_SET;
+			return EMPTY_EFFECT_LIST;
 		}
 		
 		if (effector != effected)
@@ -1410,53 +1412,43 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			{
 				if (effected.isInvul())
 				{
-					return EMPTY_EFFECT_SET;
+					return EMPTY_EFFECT_LIST;
 				}
 				
-				if ((effector instanceof L2PcInstance) && ((L2PcInstance) effector).isGM())
+				if (effector.isPlayer() && effector.isGM())
 				{
-					if (!((L2PcInstance) effector).getAccessLevel().canGiveDamage())
+					if (!effector.getAccessLevel().canGiveDamage())
 					{
-						return EMPTY_EFFECT_SET;
+						return EMPTY_EFFECT_LIST;
 					}
 				}
 			}
 		}
 		
-		final List<L2Effect> effects = new ArrayList<>(_effectTemplates.size());
 		if (env == null)
 		{
 			env = new Env();
 		}
-		
 		env.setSkillMastery(Formulas.calcSkillMastery(effector, this));
 		env.setCharacter(effector);
 		env.setTarget(effected);
 		env.setSkill(this);
 		
+		final List<L2Effect> effects = new ArrayList<>(_effectTemplates.size());
 		for (EffectTemplate et : _effectTemplates)
 		{
-			if (Formulas.calcEffectSuccess(effector, effected, et, this, env.getShield(), env.isSoulShot(), env.isSpiritShot(), env.isBlessedSpiritShot()))
+			final L2Effect e = et.getEffect(env);
+			if (e != null)
 			{
-				L2Effect e = et.getEffect(env);
-				if (e != null)
+				if (e.calcSuccess())
 				{
 					e.scheduleEffect();
 					effects.add(e);
 				}
 			}
-			// display fail message only for effects with icons
-			else if (et.isIconDisplay() && effector.isPlayer())
-			{
-				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
-				sm.addCharName(effected);
-				sm.addSkillName(this);
-				effector.sendPacket(sm);
-			}
 		}
-		final L2Effect[] list = effects.toArray(new L2Effect[effects.size()]);
-		effected.getEffectList().add(list);
-		return effects.isEmpty() ? EMPTY_EFFECT_SET : list;
+		effected.getEffectList().add(effects);
+		return effects;
 	}
 	
 	/**
@@ -1465,31 +1457,16 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	 * @param effected
 	 * @return
 	 */
-	public final L2Effect[] getEffects(L2Character effector, L2Character effected)
+	public final List<L2Effect> getEffects(L2Character effector, L2Character effected)
 	{
 		return getEffects(effector, effected, null);
 	}
 	
-	/**
-	 * This method has suffered some changes in CT2.2 ->CT2.3<br>
-	 * Effect engine is now supporting secondary effects with independent success/fail calculus from effect skill.<br>
-	 * Env parameter has been added to pass parameters like soulshot, spiritshots, blessed spiritshots or shield defense.<br>
-	 * Some other optimizations have been done<br>
-	 * This new feature works following next rules:
-	 * <ul>
-	 * <li>To enable feature, effectPower must be over -1 (check DocumentSkill#attachEffect for further information)</li>
-	 * <li>If main skill fails, secondary effect always fail</li>
-	 * </ul>
-	 * @param effector
-	 * @param effected
-	 * @param env
-	 * @return
-	 */
-	public final L2Effect[] getEffects(L2CubicInstance effector, L2Character effected, Env env)
+	public final List<L2Effect> getEffects(L2CubicInstance effector, L2Character effected, Env env)
 	{
-		if (!hasEffects() || isPassive())
+		if ((effector == null) || (effected == null) || !hasEffects() || isPassive())
 		{
-			return EMPTY_EFFECT_SET;
+			return EMPTY_EFFECT_LIST;
 		}
 		
 		if (effector.getOwner() != effected)
@@ -1498,94 +1475,97 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			{
 				if (effected.isInvul())
 				{
-					return EMPTY_EFFECT_SET;
+					return EMPTY_EFFECT_LIST;
 				}
 				
 				if (effector.getOwner().isGM() && !effector.getOwner().getAccessLevel().canGiveDamage())
 				{
-					return EMPTY_EFFECT_SET;
+					return EMPTY_EFFECT_LIST;
 				}
 			}
 		}
 		
-		List<L2Effect> effects = new ArrayList<>(_effectTemplates.size());
 		if (env == null)
 		{
 			env = new Env();
 		}
-		
 		env.setCharacter(effector.getOwner());
 		env.setCubic(effector);
 		env.setTarget(effected);
 		env.setSkill(this);
 		
+		final List<L2Effect> effects = new ArrayList<>(_effectTemplates.size());
 		for (EffectTemplate et : _effectTemplates)
 		{
-			if (Formulas.calcEffectSuccess(effector.getOwner(), effected, et, this, env.getShield(), env.isSoulShot(), env.isSpiritShot(), env.isBlessedSpiritShot()))
+			final L2Effect e = et.getEffect(env);
+			if (e != null)
 			{
-				L2Effect e = et.getEffect(env);
-				if (e != null)
+				if (e.calcSuccess())
 				{
 					e.scheduleEffect();
 					effects.add(e);
 				}
 			}
 		}
-		
-		final L2Effect[] list = effects.toArray(new L2Effect[effects.size()]);
-		effected.getEffectList().add(list);
-		return effects.isEmpty() ? EMPTY_EFFECT_SET : list;
+		return effects;
 	}
 	
-	public final L2Effect[] getEffectsSelf(L2Character effector)
+	public final List<L2Effect> getEffectsSelf(L2Character effector)
 	{
-		if (!hasSelfEffects() || isPassive())
+		if ((effector == null) || !hasSelfEffects() || isPassive())
 		{
-			return EMPTY_EFFECT_SET;
+			return EMPTY_EFFECT_LIST;
 		}
+		
+		final Env env = new Env();
+		env.setCharacter(effector);
+		env.setTarget(effector);
+		env.setSkill(this);
 		
 		final List<L2Effect> effects = new ArrayList<>(_effectTemplatesSelf.size());
 		for (EffectTemplate et : _effectTemplatesSelf)
 		{
-			Env env = new Env();
-			env.setCharacter(effector);
-			env.setTarget(effector);
-			env.setSkill(this);
-			L2Effect e = et.getEffect(env);
+			final L2Effect e = et.getEffect(env);
 			if (e != null)
 			{
-				e.setSelfEffect();
-				e.scheduleEffect();
-				effects.add(e);
+				if (e.calcSuccess())
+				{
+					e.setSelfEffect();
+					e.scheduleEffect();
+					effects.add(e);
+				}
 			}
 		}
-		final L2Effect[] list = effects.toArray(new L2Effect[effects.size()]);
-		effector.getEffectList().add(list);
-		return effects.isEmpty() ? EMPTY_EFFECT_SET : list;
+		effector.getEffectList().add(effects);
+		return effects;
 	}
 	
-	public final L2Effect[] getPassiveEffects(L2Character effector)
+	public final List<L2Effect> getPassiveEffects(L2Character effector)
 	{
-		if (!hasPassiveEffects())
+		if ((effector == null) || !hasPassiveEffects())
 		{
-			return EMPTY_EFFECT_SET;
+			return EMPTY_EFFECT_LIST;
 		}
 		
+		final Env env = new Env();
+		env.setCharacter(effector);
+		env.setTarget(effector);
+		env.setSkill(this);
 		final List<L2Effect> effects = new ArrayList<>(_effectTemplatesPassive.size());
 		for (EffectTemplate et : _effectTemplatesPassive)
 		{
-			Env env = new Env();
-			env.setCharacter(effector);
-			env.setTarget(effector);
-			env.setSkill(this);
-			L2Effect e = et.getEffect(env);
+			final L2Effect e = et.getEffect(env);
 			if (e != null)
 			{
-				e.scheduleEffect();
-				effects.add(e);
+				if (e.calcSuccess())
+				{
+					e.scheduleEffect();
+					effects.add(e);
+				}
 			}
 		}
-		return effects.isEmpty() ? EMPTY_EFFECT_SET : effects.toArray(new L2Effect[effects.size()]);
+		effector.getEffectList().add(effects);
+		return effects;
 	}
 	
 	public final void attach(FuncTemplate f)

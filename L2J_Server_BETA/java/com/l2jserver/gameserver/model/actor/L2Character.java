@@ -5789,9 +5789,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			{
 				addChanceTrigger(newSkill);
 			}
-			
-			// Add passive effects if there are any.
-			_effectList.add(newSkill.getPassiveEffects(this));
+			newSkill.getPassiveEffects(this);
 		}
 		return oldSkill;
 	}

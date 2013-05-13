@@ -261,6 +261,23 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		return _lambda.calc(env);
 	}
 	
+	/**
+	 * Calculates whether this effects land or not.<br>
+	 * If it lands will be scheduled and added to the character effect list.<br>
+	 * Override in effect implementation to change behavior.
+	 * @return {@code true} if this effect land, {@code false} otherwise
+	 */
+	public boolean calcSuccess()
+	{
+		final Env env = new Env();
+		env.setSkillMastery(Formulas.calcSkillMastery(getEffector(), getSkill()));
+		env.setCharacter(getEffector());
+		env.setTarget(getEffected());
+		env.setSkill(getSkill());
+		env.setEffect(this);
+		return Formulas.calcEffectSuccess(env);
+	}
+	
 	private final void startEffectTask()
 	{
 		if (_abnormalTime > 0)

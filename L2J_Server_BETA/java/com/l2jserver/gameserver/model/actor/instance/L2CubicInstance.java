@@ -651,6 +651,11 @@ public final class L2CubicInstance
 		}
 	}
 	
+	/**
+	 * @param activeCubic
+	 * @param skill
+	 * @param targets
+	 */
 	public void useCubicMdam(L2CubicInstance activeCubic, L2Skill skill, L2Object[] targets)
 	{
 		for (L2Character target : (L2Character[]) targets)
