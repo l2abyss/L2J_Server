@@ -2285,8 +2285,6 @@ public final class Formulas
 	 * Calculates the abnormal time for an effect.<br>
 	 * The abnormal time is taken from the skill definition, and it's global for all effects present in the skills.<br>
 	 * However there is the possibility to define an abnormal time for each effect.<br>
-	 * If the effected is a servitor and the skill comes from an herb, the effect will last half of the default time.<br>
-	 * If the skill is a mastery skill, the effect will last twice the default time.
 	 * @param template the effect template
 	 * @param env the data transfer object with required information
 	 * @return the time that the effect will last
@@ -2302,15 +2300,15 @@ public final class Formulas
 		final L2Skill skill = env.getSkill();
 		final L2Character effected = env.getTarget();
 		int time = (template.getAbnormalTime() != 0) || (skill == null) ? template.getAbnormalTime() : !skill.isPassive() ? skill.getAbnormalTime() : -1;
-		// Support for retail herbs duration when effected has a servitor.
-		if (effected != null)
+		
+		// An herb buff will affect both master and servitor, but the buff duration will be half of the normal duration.
+		// If a servitor is not summoned, the master will receive the full buff duration.
+		if ((effected != null) && effected.isServitor() && (skill != null) && skill.abnormalInstant())
 		{
-			if (effected.isServitor() && (skill != null) && (((skill.getId() > 2277) && (skill.getId() < 2286)) || ((skill.getId() >= 2512) && (skill.getId() <= 2514))))
-			{
-				time /= 2;
-			}
+			time /= 2;
 		}
 		
+		// If the skill is a mastery skill, the effect will last twice the default time.
 		if (env.isSkillMastery())
 		{
 			time *= 2;

@@ -98,6 +98,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public static final int COND_CHARGES = 0x0080;
 	public static final int COND_SHIELD = 0x0100;
 	
+	private final boolean _abnormalInstant;
 	/** Skill Id. */
 	private final int _id;
 	/** Skill level. */
@@ -259,6 +260,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	protected L2Skill(StatsSet set)
 	{
+		_abnormalInstant = set.getBool("abnormalInstant", false);
 		_id = set.getInteger("skill_id");
 		_level = set.getInteger("level");
 		_refId = set.getInteger("referenceId", 0);
@@ -494,6 +496,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	}
 	
 	public abstract void useSkill(L2Character caster, L2Object[] targets);
+	
+	public final boolean abnormalInstant()
+	{
+		return _abnormalInstant;
+	}
 	
 	public final int getConditionValue()
 	{
