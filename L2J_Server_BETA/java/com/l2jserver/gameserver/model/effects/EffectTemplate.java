@@ -135,16 +135,10 @@ public class EffectTemplate
 	 */
 	public L2Effect getStolenEffect(Env env, L2Effect stolen)
 	{
-		Class<?> func = EffectHandler.getInstance().getHandler(_name);
-		if (func == null)
-		{
-			throw new RuntimeException();
-		}
-		
 		Constructor<?> stolenCons;
 		try
 		{
-			stolenCons = func.getConstructor(Env.class, L2Effect.class);
+			stolenCons = _handler.getConstructor(Env.class, L2Effect.class);
 		}
 		catch (NoSuchMethodException e)
 		{
@@ -167,7 +161,7 @@ public class EffectTemplate
 		}
 		catch (InvocationTargetException e)
 		{
-			_log.log(Level.WARNING, "Error creating new instance of Class " + func + " Exception was: " + e.getTargetException().getMessage(), e.getTargetException());
+			_log.log(Level.WARNING, "Error creating new instance of Class " + _handler + " Exception was: " + e.getTargetException().getMessage(), e.getTargetException());
 			return null;
 		}
 	}
@@ -257,5 +251,11 @@ public class EffectTemplate
 	public boolean hasParameters()
 	{
 		return _parameters != null;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Effect template[" + _handler + "]";
 	}
 }
