@@ -218,7 +218,7 @@ public class L2MerchantSummonInstance extends L2ServitorInstance
 		if ((list != null) && list.getNpcId().equals(String.valueOf(getNpcId())))
 		{
 			player.sendPacket(new BuyList(list, player.getAdena(), taxRate));
-			player.sendPacket(new ExBuySellList(player, taxRate, false));
+			player.sendPacket(new ExBuySellList(player, false));
 		}
 		else
 		{

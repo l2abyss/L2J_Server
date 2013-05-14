@@ -114,7 +114,6 @@ public final class RequestRefundItem extends L2GameClientPacket
 		}
 		
 		L2TradeList list = null;
-		double taxRate = 0;
 		
 		if (merchant != null)
 		{
@@ -122,12 +121,10 @@ public final class RequestRefundItem extends L2GameClientPacket
 			if (merchant instanceof L2MerchantInstance)
 			{
 				lists = TradeController.getInstance().getBuyListByNpcId(((L2MerchantInstance) merchant).getNpcId());
-				taxRate = ((L2MerchantInstance) merchant).getMpc().getTotalTaxRate();
 			}
 			else
 			{
 				lists = TradeController.getInstance().getBuyListByNpcId(((L2MerchantSummonInstance) merchant).getNpcId());
-				taxRate = 50;
 			}
 			
 			if (!player.isGM())
@@ -249,7 +246,7 @@ public final class RequestRefundItem extends L2GameClientPacket
 		StatusUpdate su = new StatusUpdate(player);
 		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
 		player.sendPacket(su);
-		player.sendPacket(new ExBuySellList(player, taxRate, true));
+		player.sendPacket(new ExBuySellList(player, true));
 	}
 	
 	@Override

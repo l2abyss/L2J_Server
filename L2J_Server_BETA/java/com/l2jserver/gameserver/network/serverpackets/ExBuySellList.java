@@ -30,7 +30,7 @@ public class ExBuySellList extends L2GameServerPacket
 	private L2ItemInstance[] _refundList = null;
 	private final boolean _done;
 	
-	public ExBuySellList(L2PcInstance player, double taxRate, boolean done)
+	public ExBuySellList(L2PcInstance player, boolean done)
 	{
 		_sellList = player.getInventory().getAvailableItems(false, false, false);
 		if (player.hasRefund())

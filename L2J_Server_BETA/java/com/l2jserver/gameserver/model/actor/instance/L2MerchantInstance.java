@@ -79,25 +79,26 @@ public class L2MerchantInstance extends L2NpcInstance
 	
 	public final void showBuyWindow(L2PcInstance player, int val)
 	{
-		double taxRate = 0;
-		
-		taxRate = getMpc().getTotalTaxRate();
+		showBuyWindow(player, val, true);
+	}
+	
+	public final void showBuyWindow(L2PcInstance player, int val, boolean applyTax)
+	{
+		final double taxRate = (applyTax) ? getMpc().getTotalTaxRate() : 0;
+		final L2TradeList list = TradeController.getInstance().getBuyList(val);
 		
 		player.setInventoryBlockingStatus(true);
-		
-		L2TradeList list = TradeController.getInstance().getBuyList(val);
 		
 		if ((list != null) && list.getNpcId().equals(String.valueOf(getNpcId())))
 		{
 			player.sendPacket(new BuyList(list, player.getAdena(), taxRate));
-			player.sendPacket(new ExBuySellList(player, taxRate, false));
+			player.sendPacket(new ExBuySellList(player, false));
 		}
 		else
 		{
 			_log.warning("possible client hacker: " + player.getName() + " attempting to buy from GM shop! < Ban him!");
 			_log.warning("buylist id:" + val);
 		}
-		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 }

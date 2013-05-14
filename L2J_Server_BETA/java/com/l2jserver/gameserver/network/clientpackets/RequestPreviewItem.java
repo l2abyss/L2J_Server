@@ -31,7 +31,6 @@ import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2TradeList;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.instance.L2MercManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
@@ -142,7 +141,7 @@ public final class RequestPreviewItem extends L2GameClientPacket
 		// Check current target of the player and the INTERACTION_DISTANCE
 		L2Object target = _activeChar.getTarget();
 		if (!_activeChar.isGM() && ((target == null // No target (i.e. GM Shop)
-			) || !((target instanceof L2MerchantInstance) || (target instanceof L2MercManagerInstance)) // Target not a merchant and not mercmanager
+			) || !((target instanceof L2MerchantInstance)) // Target not a merchant
 		|| !_activeChar.isInsideRadius(target, L2Npc.INTERACTION_DISTANCE, false, false) // Distance is too far
 		))
 		{
