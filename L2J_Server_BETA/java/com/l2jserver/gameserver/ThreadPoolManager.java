@@ -159,13 +159,20 @@ public class ThreadPoolManager
 		}
 	}
 	
-	public ScheduledFuture<?> scheduleEffectAtFixedRate(Runnable r, long initial, long delay)
+	/**
+	 * Schedule an effect at a fixed rate.
+	 * @param task the runnable task
+	 * @param initialDelay the initial delay in milliseconds
+	 * @param period the period between executions in milliseconds
+	 * @return a runnable scheduled future object
+	 */
+	public ScheduledFuture<?> scheduleEffectAtFixedRate(Runnable task, long initialDelay, long period)
 	{
 		try
 		{
-			delay = ThreadPoolManager.validateDelay(delay);
-			initial = ThreadPoolManager.validateDelay(initial);
-			return _effectsScheduledThreadPool.scheduleAtFixedRate(new RunnableWrapper(r), initial, delay, TimeUnit.MILLISECONDS);
+			period = ThreadPoolManager.validateDelay(period);
+			initialDelay = ThreadPoolManager.validateDelay(initialDelay);
+			return _effectsScheduledThreadPool.scheduleAtFixedRate(new RunnableWrapper(task), initialDelay, period, TimeUnit.MILLISECONDS);
 		}
 		catch (RejectedExecutionException e)
 		{

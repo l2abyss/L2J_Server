@@ -112,7 +112,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		_effected = env.getTarget();
 		_effector = env.getCharacter();
 		_lambda = template.getLambda();
-		_tickCount = template.getTotalTickCount(); // Initial tick count is total tick count.
+		_tickCount = 1;
 		_abnormalTime = Formulas.calcEffectAbnormalTime(env, template);
 		_periodStartTicks = GameTimeController.getInstance().getGameTicks();
 		_periodFirstTime = 0;
@@ -186,11 +186,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	 */
 	public int getTaskTime()
 	{
-		if (_tickCount == _template.getTotalTickCount())
-		{
-			return 0;
-		}
-		return Math.abs(((_tickCount - _template.getTotalTickCount()) + 1) * _abnormalTime) + getTime() + 1;
+		return (_tickCount * _abnormalTime) + getTime();
 	}
 	
 	/**
@@ -254,7 +250,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	
 	public final double calc()
 	{
-		Env env = new Env();
+		final Env env = new Env();
 		env.setCharacter(_effector);
 		env.setTarget(_effected);
 		env.setSkill(_skill);
@@ -278,36 +274,40 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		return Formulas.calcEffectSuccess(env);
 	}
 	
+	/**
+	 * Start the effect task.<br>
+	 * If the effect has ticks defined it will be scheduled.<br>
+	 * If abnormal time is defined (greater than 1) the period will be calculated like abnormal time divided total tick count.<br>
+	 * Otherwise it each tick will represent 1 second (1000 milliseconds).
+	 */
 	private final void startEffectTask()
 	{
-		if (_abnormalTime > 0)
+		stopEffectTask();
+		final int initialDelay = Math.max((_abnormalTime - _periodFirstTime) * 1000, 5); // Sanity check
+		if (_template.getTotalTickCount() > 1)
 		{
-			stopEffectTask();
-			final int initialDelay = Math.max((_abnormalTime - _periodFirstTime) * 1000, 5);
-			if (_tickCount > 1)
-			{
-				_currentFuture = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new EffectTask(), initialDelay, _abnormalTime * 1000);
-			}
-			else
-			{
-				_currentFuture = ThreadPoolManager.getInstance().scheduleEffect(new EffectTask(), initialDelay);
-			}
+			// TODO: If default abnormal time is changed to 0, the first check below must be updated as well.
+			final int period = ((_abnormalTime > 1) ? (_abnormalTime / _template.getTotalTickCount()) : _template.getTotalTickCount()) * 1000;
+			_currentFuture = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new EffectTask(), initialDelay, period);
+		}
+		else
+		{
+			_currentFuture = ThreadPoolManager.getInstance().scheduleEffect(new EffectTask(), initialDelay);
 		}
 	}
 	
 	/**
-	 * Stop the L2Effect task and send Server->Client update packet.<br>
-	 * <B><U>Actions</U>:</B>
-	 * <ul>
-	 * <li>Cancel the effect in the the abnormal effect map of the L2Character</li>
-	 * <li>Stop the task of the L2Effect, remove it and update client magic icon</li>
-	 * </ul>
+	 * Exit this effect without preventing an update.
 	 */
 	public final void exit()
 	{
 		exit(false);
 	}
 	
+	/**
+	 * Exit this effect.
+	 * @param preventExitUpdate
+	 */
 	public final void exit(boolean preventExitUpdate)
 	{
 		_preventExitUpdate = preventExitUpdate;
@@ -316,12 +316,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	}
 	
 	/**
-	 * Stop the task of the L2Effect, remove it and update client magic icon.<br>
-	 * <B><U>Actions</U>:</B>
-	 * <ul>
-	 * <li>Cancel the task</li>
-	 * <li>Stop and remove L2Effect from L2Character and update client magic icon</li>
-	 * </ul>
+	 * Stop the task of this effect, remove it and update client magic icon.
 	 */
 	public final void stopEffectTask()
 	{
@@ -402,7 +397,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 				
 				if (_skill.isPVP() && isIconDisplay() && getEffected().isPlayer())
 				{
-					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
+					final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
 					sm.addSkillName(_skill);
 					getEffected().sendPacket(sm);
 				}
@@ -412,34 +407,30 @@ public abstract class L2Effect implements IChanceSkillTrigger
 					startEffectTask();
 					return;
 				}
-				// effects not having count or period should start
 				_startConditionsCorrect = onStart();
 			}
 			case ACTING:
 			{
-				if (_tickCount > 0)
+				if (isInUse())
 				{
-					_tickCount--;
-					if (isInUse())
+					if (onActionTime() && _startConditionsCorrect && (_tickCount <= _template.getTotalTickCount()))
 					{
-						// effect has to be in use
-						if (onActionTime() && _startConditionsCorrect && (_tickCount >= 0))
-						{
-							return; // false causes effect to finish right away
-						}
+						return; // false causes effect to finish right away
 					}
-					else if (_tickCount > 0)
-					{
-						// do not finish it yet, in case reactivated
-						return;
-					}
+					
+					_tickCount++; // Increase tick count.
+				}
+				
+				if (_tickCount <= _template.getTotalTickCount())
+				{
+					return; // Do not finish it yet, has remaining ticks.
 				}
 				_state = EffectState.FINISHING;
 			}
 			case FINISHING:
 			{
 				// If the time left is equal to zero, send the message
-				if ((_tickCount == 0) && isIconDisplay() && getEffected().isPlayer())
+				if ((_tickCount >= _template.getTotalTickCount()) && isIconDisplay() && getEffected().isPlayer())
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_WORN_OFF);
 					sm.addSkillName(_skill);

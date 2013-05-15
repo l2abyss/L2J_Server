@@ -2290,15 +2290,9 @@ public final class Formulas
 	 */
 	public static int calcEffectAbnormalTime(Env env, EffectTemplate template)
 	{
-		// TODO: Uncomment when ticks Datapack part is done.
-		// if (template.getTotalTickCount() > 1)
-		// {
-		// return template.getTotalTickCount();
-		// }
-		
 		final L2Skill skill = env.getSkill();
 		final L2Character effected = env.getTarget();
-		int time = (template.getAbnormalTime() != 0) || (skill == null) ? template.getAbnormalTime() : !skill.isPassive() ? skill.getAbnormalTime() : -1;
+		int time = (template.getAbnormalTime() != 0) || (skill == null) ? template.getAbnormalTime() : skill.isPassive() || skill.isToggle() ? -1 : skill.getAbnormalTime();
 		
 		// An herb buff will affect both master and servitor, but the buff duration will be half of the normal duration.
 		// If a servitor is not summoned, the master will receive the full buff duration.
@@ -2312,6 +2306,6 @@ public final class Formulas
 		{
 			time *= 2;
 		}
-		return time / template.getTotalTickCount(); // TODO: Replace with return time; when ticks Datapack part is done.
+		return time;
 	}
 }
