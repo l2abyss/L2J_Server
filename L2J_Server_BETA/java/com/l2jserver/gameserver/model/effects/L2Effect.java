@@ -586,7 +586,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	 */
 	public boolean canBeStolen()
 	{
-		return (getEffectType() != L2EffectType.TRANSFORMATION) && !getSkill().isPassive() && !getSkill().isToggle() && !getSkill().isDebuff() && !getSkill().isHeroSkill() && !getSkill().isGMSkill() && !(getSkill().isStatic() && ((getSkill().getId() != 2274) && (getSkill().getId() != 2341))) && getSkill().canBeDispeled();
+		return !getSkill().isPassive() && !getSkill().isToggle() && !getSkill().isDebuff() && !getSkill().isHeroSkill() && !getSkill().isGMSkill() && !(getSkill().isStatic() && (getSkill().getId() != 2341)) && getSkill().canBeDispeled();
 	}
 	
 	/**
