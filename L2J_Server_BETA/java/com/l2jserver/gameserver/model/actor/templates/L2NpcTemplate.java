@@ -439,37 +439,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 						addCOTSkill(skill);
 						addRangeSkill(skill);
 						break;
-					case ROOT:
-						addRootSkill(skill);
-						addImmobiliseSkill(skill);
-						addRangeSkill(skill);
-						break;
-					case SLEEP:
-						addSleepSkill(skill);
-						addImmobiliseSkill(skill);
-						break;
-					case STUN:
-						addRootSkill(skill);
-						addImmobiliseSkill(skill);
-						addRangeSkill(skill);
-						break;
-					case PARALYZE:
-						addParalyzeSkill(skill);
-						addImmobiliseSkill(skill);
-						addRangeSkill(skill);
-						break;
-					case POISON:
-					case DOT:
-					case MDOT:
-					case BLEED:
-						addDOTSkill(skill);
-						addRangeSkill(skill);
-						break;
-					case MUTE:
-					case FEAR:
-						addCOTSkill(skill);
-						addRangeSkill(skill);
-						break;
 					case DUMMY:
 						if (skill.hasEffectType(L2EffectType.CANCEL, L2EffectType.CANCEL_ALL, L2EffectType.NEGATE))
 						{
@@ -484,6 +453,33 @@ public final class L2NpcTemplate extends L2CharTemplate
 						{
 							addAtkSkill(skill);
 							addUniversalSkill(skill);
+							addRangeSkill(skill);
+						}
+						else if (skill.hasEffectType(L2EffectType.SLEEP))
+						{
+							addSleepSkill(skill);
+							addImmobiliseSkill(skill);
+						}
+						else if (skill.hasEffectType(L2EffectType.STUN, L2EffectType.ROOT))
+						{
+							addRootSkill(skill);
+							addImmobiliseSkill(skill);
+							addRangeSkill(skill);
+						}
+						else if (skill.hasEffectType(L2EffectType.MUTE, L2EffectType.FEAR))
+						{
+							addCOTSkill(skill);
+							addRangeSkill(skill);
+						}
+						else if (skill.hasEffectType(L2EffectType.PARALYZE))
+						{
+							addParalyzeSkill(skill);
+							addImmobiliseSkill(skill);
+							addRangeSkill(skill);
+						}
+						else if (skill.hasEffectType(L2EffectType.DMG_OVER_TIME, L2EffectType.DMG_OVER_TIME_PERCENT))
+						{
+							addDOTSkill(skill);
 							addRangeSkill(skill);
 						}
 						else

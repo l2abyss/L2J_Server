@@ -561,7 +561,7 @@ public final class CharEffectList
 		{
 			for (L2Effect e : _buffs)
 			{
-				if ((e != null) && e.getSkill().isRemovedOnDamage() && (awake || (e.getSkill().getSkillType() != L2SkillType.SLEEP)))
+				if ((e != null) && e.getSkill().isRemovedOnDamage() && awake)
 				{
 					e.exit(true);
 				}
@@ -571,7 +571,7 @@ public final class CharEffectList
 		{
 			for (L2Effect e : _debuffs)
 			{
-				if ((e != null) && e.getSkill().isRemovedOnDamage() && (awake || (e.getSkill().getSkillType() != L2SkillType.SLEEP)))
+				if ((e != null) && e.getSkill().isRemovedOnDamage() && awake)
 				{
 					e.exit(true);
 				}

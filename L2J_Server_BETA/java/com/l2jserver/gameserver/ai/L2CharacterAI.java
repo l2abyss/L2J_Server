@@ -1292,37 +1292,6 @@ public class L2CharacterAI extends AbstractAI
 					case BUFF:
 						buffSkills.add(sk);
 						continue; // won't be considered something for fighting
-					case PARALYZE:
-					case STUN:
-						// hardcoding petrification until improvements are made to
-						// EffectTemplate... petrification is totally different for
-						// AI than paralyze
-						switch (sk.getId())
-						{
-							case 367:
-							case 4111:
-							case 4383:
-							case 4616:
-							case 4578:
-								sleepSkills.add(sk);
-								break;
-							default:
-								generalDisablers.add(sk);
-								break;
-						}
-						break;
-					case MUTE:
-						muteSkills.add(sk);
-						break;
-					case SLEEP:
-						sleepSkills.add(sk);
-						break;
-					case ROOT:
-						rootSkills.add(sk);
-						break;
-					case FEAR: // could be used as an alternative for healing?
-					case CONFUSION:
-						// trickSkills.add(sk);
 					case DEBUFF:
 						debuffSkills.add(sk);
 						break;
@@ -1342,6 +1311,41 @@ public class L2CharacterAI extends AbstractAI
 						{
 							healSkills.add(sk);
 							hasHealOrResurrect = true;
+						}
+						else if (sk.hasEffectType(L2EffectType.SLEEP))
+						{
+							sleepSkills.add(sk);
+						}
+						else if (sk.hasEffectType(L2EffectType.STUN, L2EffectType.PARALYZE))
+						{
+							// hardcoding petrification until improvements are made to
+							// EffectTemplate... petrification is totally different for
+							// AI than paralyze
+							switch (sk.getId())
+							{
+								case 367:
+								case 4111:
+								case 4383:
+								case 4616:
+								case 4578:
+									sleepSkills.add(sk);
+									break;
+								default:
+									generalDisablers.add(sk);
+									break;
+							}
+						}
+						else if (sk.hasEffectType(L2EffectType.ROOT))
+						{
+							rootSkills.add(sk);
+						}
+						else if (sk.hasEffectType(L2EffectType.CONFUSION, L2EffectType.FEAR))
+						{
+							debuffSkills.add(sk);
+						}
+						else if (sk.hasEffectType(L2EffectType.MUTE))
+						{
+							muteSkills.add(sk);
 						}
 						else
 						{

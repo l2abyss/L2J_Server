@@ -24,7 +24,6 @@ package com.l2jserver.gameserver.model.effects;
  */
 public enum L2EffectType
 {
-	BETRAY,
 	BLOCK_RESURRECTION,
 	BUFF,
 	CANCEL,
@@ -34,6 +33,7 @@ public enum L2EffectType
 	CHARM_OF_LUCK,
 	CHARMOFCOURAGE,
 	CLAN_GATE,
+	CONFUSION,
 	CPDAMPERCENT,
 	CPHEAL,
 	CPHEAL_OVER_TIME,
@@ -69,7 +69,6 @@ public enum L2EffectType
 	MANAHEAL,
 	MANAHEAL_BY_LEVEL,
 	MANAHEAL_PERCENT,
-	MP_CONSUME_PER_LEVEL,
 	MUTE,
 	NEGATE,
 	NOBLESSE_BLESSING,

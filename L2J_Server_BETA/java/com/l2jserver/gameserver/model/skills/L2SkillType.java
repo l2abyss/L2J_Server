@@ -35,22 +35,10 @@ import com.l2jserver.gameserver.model.skills.l2skills.L2SkillTeleport;
 public enum L2SkillType
 {
 	// Damage
-	DOT,
-	MDOT,
 	SIGNET(L2SkillSignet.class),
 	SIGNET_CASTTIME(L2SkillSignetCasttime.class),
 	// Disablers
-	BLEED,
-	POISON,
-	STUN,
-	ROOT,
-	CONFUSION,
-	FEAR,
-	SLEEP,
 	CONFUSE_MOB_ONLY,
-	MUTE,
-	PARALYZE,
-	DISARM,
 	// reco
 	GIVE_RECO,
 	// Aggro
@@ -86,8 +74,6 @@ public enum L2SkillType
 	// Summons
 	SUMMON(L2SkillSummon.class),
 	FEED_PET,
-	ERASE,
-	BETRAY,
 	
 	BUFF,
 	DEBUFF,

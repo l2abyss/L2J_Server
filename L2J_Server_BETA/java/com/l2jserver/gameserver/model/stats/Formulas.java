@@ -1627,7 +1627,16 @@ public final class Formulas
 				_log.info(result);
 			}
 		}
-		return (Rnd.get(100) < rate);
+		
+		if ((Rnd.get(100) >= rate))
+		{
+			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
+			sm.addCharName(env.getTarget());
+			sm.addSkillName(env.getSkill());
+			env.getCharacter().sendPacket(sm);
+			return false;
+		}
+		return true;
 	}
 	
 	public static boolean calcSkillSuccess(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
@@ -2097,7 +2106,7 @@ public final class Formulas
 	{
 		boolean reflect = false;
 		// Neither some special skills (like hero debuffs...) or those skills ignoring resistances can't be reflected
-		if ((skill.getPower() == -1) || (skill.isHeroSkill() && skill.isDebuff()))
+		if ((skill.getPower() == -1) || ((skill.isHeroSkill() && skill.isDebuff()) || (!skill.isDebuff() && skill.isOffensive())))
 		{
 			return reflect;
 		}

@@ -554,7 +554,7 @@ public final class L2CubicInstance
 								target
 							};
 							
-							if ((type == L2SkillType.PARALYZE) || (type == L2SkillType.STUN) || (type == L2SkillType.ROOT) || (type == L2SkillType.AGGDAMAGE))
+							if (type == L2SkillType.AGGDAMAGE)
 							{
 								if (Config.DEBUG)
 								{
@@ -562,7 +562,7 @@ public final class L2CubicInstance
 								}
 								useCubicDisabler(type, L2CubicInstance.this, skill, targets);
 							}
-							else if ((type == L2SkillType.POISON) || (type == L2SkillType.DEBUFF) || (type == L2SkillType.DOT))
+							else if (type == L2SkillType.DEBUFF)
 							{
 								if (Config.DEBUG)
 								{
@@ -594,6 +594,22 @@ public final class L2CubicInstance
 									_log.info("L2CubicInstance: Action.run() skill " + type);
 								}
 								useCubicDrain(L2CubicInstance.this, skill, targets);
+							}
+							else if (skill.hasEffectType(L2EffectType.STUN, L2EffectType.ROOT, L2EffectType.PARALYZE))
+							{
+								if (Config.DEBUG)
+								{
+									_log.info("L2CubicInstance: Action.run() handler " + type);
+								}
+								useCubicDisabler(type, L2CubicInstance.this, skill, targets);
+							}
+							else if (skill.hasEffectType(L2EffectType.DMG_OVER_TIME, L2EffectType.DMG_OVER_TIME_PERCENT))
+							{
+								if (Config.DEBUG)
+								{
+									_log.info("L2CubicInstance: Action.run() handler " + type);
+								}
+								useCubicContinuous(L2CubicInstance.this, skill, targets);
 							}
 							
 							// The cubic has done an action, increase the currentcount
@@ -771,70 +787,64 @@ public final class L2CubicInstance
 			
 			byte shld = Formulas.calcShldUse(activeCubic.getOwner(), target, skill);
 			
-			switch (type)
+			if (skill.hasEffectType(L2EffectType.STUN, L2EffectType.PARALYZE, L2EffectType.ROOT))
 			{
-				case STUN:
-				case PARALYZE:
-				case ROOT:
+				if (Formulas.calcCubicSkillSuccess(activeCubic, target, skill, shld))
 				{
-					if (Formulas.calcCubicSkillSuccess(activeCubic, target, skill, shld))
+					// if this is a debuff let the duel manager know about it
+					// so the debuff can be removed after the duel
+					// (player & target must be in the same duel)
+					if ((target instanceof L2PcInstance) && ((L2PcInstance) target).isInDuel() && (skill.getSkillType() == L2SkillType.DEBUFF) && (activeCubic.getOwner().getDuelId() == ((L2PcInstance) target).getDuelId()))
 					{
-						// if this is a debuff let the duel manager know about it
-						// so the debuff can be removed after the duel
-						// (player & target must be in the same duel)
-						if ((target instanceof L2PcInstance) && ((L2PcInstance) target).isInDuel() && (skill.getSkillType() == L2SkillType.DEBUFF) && (activeCubic.getOwner().getDuelId() == ((L2PcInstance) target).getDuelId()))
+						DuelManager dm = DuelManager.getInstance();
+						for (L2Effect debuff : skill.getEffects(activeCubic.getOwner(), target))
 						{
-							DuelManager dm = DuelManager.getInstance();
-							for (L2Effect debuff : skill.getEffects(activeCubic.getOwner(), target))
+							if (debuff != null)
 							{
-								if (debuff != null)
-								{
-									dm.onBuff(((L2PcInstance) target), debuff);
-								}
+								dm.onBuff(((L2PcInstance) target), debuff);
 							}
 						}
-						else
-						{
-							skill.getEffects(activeCubic, target, null);
-						}
-						
-						if (Config.DEBUG)
-						{
-							_log.info("Disablers: useCubicSkill() -> success");
-						}
 					}
 					else
 					{
-						if (Config.DEBUG)
-						{
-							_log.info("Disablers: useCubicSkill() -> failed");
-						}
-					}
-					break;
-				}
-				case AGGDAMAGE:
-				{
-					if (Formulas.calcCubicSkillSuccess(activeCubic, target, skill, shld))
-					{
-						if (target instanceof L2Attackable)
-						{
-							target.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, activeCubic.getOwner(), (int) ((150 * skill.getPower()) / (target.getLevel() + 7)));
-						}
 						skill.getEffects(activeCubic, target, null);
-						
-						if (Config.DEBUG)
-						{
-							_log.info("Disablers: useCubicSkill() -> success");
-						}
 					}
-					else
+					
+					if (Config.DEBUG)
 					{
-						if (Config.DEBUG)
-						{
-							_log.info("Disablers: useCubicSkill() -> failed");
-						}
+						_log.info("Disablers: useCubicSkill() -> success");
 					}
-					break;
+				}
+				else
+				{
+					if (Config.DEBUG)
+					{
+						_log.info("Disablers: useCubicSkill() -> failed");
+					}
+				}
+			}
+			
+			if (type == L2SkillType.AGGDAMAGE)
+			{
+				if (Formulas.calcCubicSkillSuccess(activeCubic, target, skill, shld))
+				{
+					if (target instanceof L2Attackable)
+					{
+						target.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, activeCubic.getOwner(), (int) ((150 * skill.getPower()) / (target.getLevel() + 7)));
+					}
+					skill.getEffects(activeCubic, target, null);
+					
+					if (Config.DEBUG)
+					{
+						_log.info("Disablers: useCubicSkill() -> success");
+					}
+				}
+				else
+				{
+					if (Config.DEBUG)
+					{
+						_log.info("Disablers: useCubicSkill() -> failed");
+					}
 				}
 			}
 		}

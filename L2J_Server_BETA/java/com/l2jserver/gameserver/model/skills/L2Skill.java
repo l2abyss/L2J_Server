@@ -428,7 +428,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_nextActionIsAttack = set.getBool("nextActionAttack", false);
 		
 		_removedOnAnyActionExceptMove = set.getBool("removedOnAnyActionExceptMove", false);
-		_removedOnDamage = set.getBool("removedOnDamage", _skillType == L2SkillType.SLEEP);
+		_removedOnDamage = set.getBool("removedOnDamage", false);
 		
 		_element = set.getByte("element", (byte) -1);
 		_elementPower = set.getInteger("elementPower", 0);
