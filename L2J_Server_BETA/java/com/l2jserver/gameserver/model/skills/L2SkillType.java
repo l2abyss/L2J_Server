@@ -68,9 +68,6 @@ public enum L2SkillType
 	INSTANT_JUMP,
 	DETECTION,
 	DUMMY,
-	// Creation
-	COMMON_CRAFT,
-	DWARVEN_CRAFT,
 	// Summons
 	SUMMON(L2SkillSummon.class),
 	FEED_PET,

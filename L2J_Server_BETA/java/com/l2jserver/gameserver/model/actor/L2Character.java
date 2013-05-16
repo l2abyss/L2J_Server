@@ -6593,47 +6593,40 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 						}
 					}
 					
-					// crafting does not trigger any chance skills
-					// possibly should be unhardcoded
-					switch (skill.getSkillType())
+					// Static skills not trigger any chance skills
+					if (!skill.isStatic())
 					{
-						case COMMON_CRAFT:
-						case DWARVEN_CRAFT:
-							break;
-						default:
+						// Launch weapon Special ability skill effect if available
+						if ((activeWeapon != null) && !target.isDead())
 						{
-							// Launch weapon Special ability skill effect if available
-							if ((activeWeapon != null) && !target.isDead())
+							if (activeWeapon.getSkillEffects(this, target, skill) && isPlayer())
 							{
-								if (activeWeapon.getSkillEffects(this, target, skill) && isPlayer())
+								SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_BEEN_ACTIVATED);
+								sm.addSkillName(skill);
+								sendPacket(sm);
+							}
+						}
+						
+						// Maybe launch chance skills on us
+						if (_chanceSkills != null)
+						{
+							_chanceSkills.onSkillHit(target, skill, false);
+						}
+						// Maybe launch chance skills on target
+						if (target.getChanceSkills() != null)
+						{
+							target.getChanceSkills().onSkillHit(this, skill, true);
+						}
+						
+						if (_triggerSkills != null)
+						{
+							for (OptionsSkillHolder holder : _triggerSkills.values())
+							{
+								if ((skill.isMagic() && (holder.getSkillType() == OptionsSkillType.MAGIC)) || (skill.isPhysical() && (holder.getSkillType() == OptionsSkillType.ATTACK)))
 								{
-									SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_BEEN_ACTIVATED);
-									sm.addSkillName(skill);
-									sendPacket(sm);
-								}
-							}
-							
-							// Maybe launch chance skills on us
-							if (_chanceSkills != null)
-							{
-								_chanceSkills.onSkillHit(target, skill, false);
-							}
-							// Maybe launch chance skills on target
-							if (target.getChanceSkills() != null)
-							{
-								target.getChanceSkills().onSkillHit(this, skill, true);
-							}
-							
-							if (_triggerSkills != null)
-							{
-								for (OptionsSkillHolder holder : _triggerSkills.values())
-								{
-									if ((skill.isMagic() && (holder.getSkillType() == OptionsSkillType.MAGIC)) || (skill.isPhysical() && (holder.getSkillType() == OptionsSkillType.ATTACK)))
+									if (Rnd.get(100) < holder.getChance())
 									{
-										if (Rnd.get(100) < holder.getChance())
-										{
-											makeTriggerCast(holder.getSkill(), target);
-										}
+										makeTriggerCast(holder.getSkill(), target);
 									}
 								}
 							}
