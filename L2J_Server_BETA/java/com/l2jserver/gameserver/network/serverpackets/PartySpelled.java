@@ -18,57 +18,40 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javolution.util.FastList;
-
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
+import com.l2jserver.gameserver.model.holders.EffectDurationHolder;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
 public class PartySpelled extends L2GameServerPacket
 {
-	private final List<Effect> _effects;
+	private final List<EffectDurationHolder> _effects = new ArrayList<>();
 	private final L2Character _activeChar;
-	
-	private static class Effect
-	{
-		protected int _skillId;
-		protected int _dat;
-		protected int _duration;
-		
-		public Effect(int pSkillId, int pDat, int pDuration)
-		{
-			_skillId = pSkillId;
-			_dat = pDat;
-			_duration = pDuration;
-		}
-	}
 	
 	public PartySpelled(L2Character cha)
 	{
-		_effects = new FastList<>();
 		_activeChar = cha;
+	}
+	
+	public void addPartySpelledEffect(L2Skill skill, int duration)
+	{
+		_effects.add(new EffectDurationHolder(skill, duration));
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0xF4);
-		writeD(_activeChar instanceof L2ServitorInstance ? 2 : _activeChar instanceof L2PetInstance ? 1 : 0);
+		writeD(_activeChar.isServitor() ? 2 : _activeChar.isPet() ? 1 : 0);
 		writeD(_activeChar.getObjectId());
 		writeD(_effects.size());
-		for (Effect temp : _effects)
+		for (EffectDurationHolder edh : _effects)
 		{
-			writeD(temp._skillId);
-			writeH(temp._dat);
-			writeD(temp._duration / 1000);
+			writeD(edh.getSkillId());
+			writeH(edh.getSkillLvl());
+			writeD(edh.getDuration());
 		}
-		
-	}
-	
-	public void addPartySpelledEffect(int skillId, int dat, int duration)
-	{
-		_effects.add(new Effect(skillId, dat, duration));
 	}
 }

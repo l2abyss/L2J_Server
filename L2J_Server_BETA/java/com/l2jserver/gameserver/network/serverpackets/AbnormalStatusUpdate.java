@@ -18,67 +18,40 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javolution.util.FastList;
+import com.l2jserver.gameserver.model.holders.EffectDurationHolder;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 
 public class AbnormalStatusUpdate extends L2GameServerPacket
 {
-	private final List<Effect> _effects;
+	private final List<EffectDurationHolder> _effects = new ArrayList<>();
 	
-	private static class Effect
+	public void addEffect(L2Skill skill, int duration)
 	{
-		protected int _skillId;
-		protected int _level;
-		protected int _duration;
-		
-		public Effect(int pSkillId, int pLevel, int pDuration)
+		switch (skill.getId())
 		{
-			_skillId = pSkillId;
-			_level = pLevel;
-			_duration = pDuration;
+			case 2031:
+			case 2032:
+			case 2037:
+			case 26025:
+			case 26026:
+				return;
 		}
-	}
-	
-	public AbnormalStatusUpdate()
-	{
-		_effects = new FastList<>();
-	}
-	
-	/**
-	 * @param skillId
-	 * @param level
-	 * @param duration
-	 */
-	public void addEffect(int skillId, int level, int duration)
-	{
-		if ((skillId == 2031) || (skillId == 2032) || (skillId == 2037) || (skillId == 26025) || (skillId == 26026))
-		{
-			return;
-		}
-		_effects.add(new Effect(skillId, level, duration));
+		_effects.add(new EffectDurationHolder(skill, duration));
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x85);
-		
 		writeH(_effects.size());
-		
-		for (Effect temp : _effects)
+		for (EffectDurationHolder edh : _effects)
 		{
-			writeD(temp._skillId);
-			writeH(temp._level);
-			
-			if (temp._duration == -1)
-			{
-				writeD(-1);
-			}
-			else
-			{
-				writeD(temp._duration / 1000);
-			}
+			writeD(edh.getSkillId());
+			writeH(edh.getSkillLvl());
+			writeD(edh.getDuration());
 		}
 	}
 }

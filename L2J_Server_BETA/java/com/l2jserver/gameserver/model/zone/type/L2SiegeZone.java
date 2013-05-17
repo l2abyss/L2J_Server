@@ -250,7 +250,7 @@ public class L2SiegeZone extends L2ZoneType
 				final L2Effect e = character.getFirstEffect(5660);
 				if (e != null)
 				{
-					lvl = Math.min(lvl + e.getLevel(), 5);
+					lvl = Math.min(lvl + e.getSkill().getLevel(), 5);
 				}
 				
 				final L2Skill skill = SkillTable.getInstance().getInfo(5660, lvl);

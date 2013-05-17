@@ -93,7 +93,7 @@ public class L2DynamicZone extends L2ZoneType
 			return;
 		}
 		
-		character.stopSkillEffects(_skill.getId());
+		character.stopSkillEffects(true, _skill.getId());
 	}
 	
 	protected void remove()
@@ -108,9 +108,9 @@ public class L2DynamicZone extends L2ZoneType
 		_region.removeZone(this);
 		for (L2Character member : getCharactersInside())
 		{
-			member.stopSkillEffects(_skill.getId());
+			member.stopSkillEffects(true, _skill.getId());
 		}
-		_owner.stopSkillEffects(_skill.getId());
+		_owner.stopSkillEffects(true, _skill.getId());
 		
 	}
 	
@@ -123,7 +123,7 @@ public class L2DynamicZone extends L2ZoneType
 		}
 		else
 		{
-			character.stopSkillEffects(_skill.getId());
+			character.stopSkillEffects(true, _skill.getId());
 		}
 	}
 	

@@ -301,9 +301,9 @@ public class L2ServitorInstance extends L2Summon
 	}
 	
 	@Override
-	public final void stopSkillEffects(int skillId)
+	public final void stopSkillEffects(boolean removed, int skillId)
 	{
-		super.stopSkillEffects(skillId);
+		super.stopSkillEffects(removed, skillId);
 		final TIntObjectHashMap<List<SummonEffect>> servitorEffects = SummonEffectsTable.getInstance().getServitorEffects(getOwner());
 		if (servitorEffects != null)
 		{

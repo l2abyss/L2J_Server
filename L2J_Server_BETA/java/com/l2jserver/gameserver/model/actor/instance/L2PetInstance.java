@@ -970,9 +970,9 @@ public class L2PetInstance extends L2Summon
 	}
 	
 	@Override
-	public final void stopSkillEffects(int skillId)
+	public final void stopSkillEffects(boolean removed, int skillId)
 	{
-		super.stopSkillEffects(skillId);
+		super.stopSkillEffects(removed, skillId);
 		List<SummonEffect> effects = SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId());
 		if ((effects != null) && !effects.isEmpty())
 		{

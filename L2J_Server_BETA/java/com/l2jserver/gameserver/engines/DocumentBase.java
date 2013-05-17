@@ -41,7 +41,6 @@ import com.l2jserver.gameserver.model.base.PlayerState;
 import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.conditions.Condition;
 import com.l2jserver.gameserver.model.conditions.ConditionChangeWeapon;
-import com.l2jserver.gameserver.model.conditions.ConditionForceBuff;
 import com.l2jserver.gameserver.model.conditions.ConditionGameChance;
 import com.l2jserver.gameserver.model.conditions.ConditionGameTime;
 import com.l2jserver.gameserver.model.conditions.ConditionGameTime.CheckGameTime;
@@ -451,7 +450,6 @@ public abstract class DocumentBase
 	protected Condition parsePlayerCondition(Node n, Object template)
 	{
 		Condition cond = null;
-		byte[] forces = new byte[2];
 		NamedNodeMap attrs = n.getAttributes();
 		for (int i = 0; i < attrs.getLength(); i++)
 		{
@@ -574,14 +572,6 @@ public abstract class DocumentBase
 			{
 				int value = Integer.decode(getValue(a.getNodeValue(), null));
 				cond = joinAnd(cond, new ConditionPlayerSiegeSide(value));
-			}
-			else if ("battle_force".equalsIgnoreCase(a.getNodeName()))
-			{
-				forces[0] = Byte.decode(getValue(a.getNodeValue(), null));
-			}
-			else if ("spell_force".equalsIgnoreCase(a.getNodeName()))
-			{
-				forces[1] = Byte.decode(getValue(a.getNodeValue(), null));
 			}
 			else if ("charges".equalsIgnoreCase(a.getNodeName()))
 			{
@@ -773,11 +763,6 @@ public abstract class DocumentBase
 				}
 				cond = joinAnd(cond, new ConditionPlayerInsideZoneId(array));
 			}
-		}
-		
-		if ((forces[0] + forces[1]) > 0)
-		{
-			cond = joinAnd(cond, new ConditionForceBuff(forces));
 		}
 		
 		if (cond == null)

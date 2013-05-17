@@ -74,13 +74,13 @@ public class RequestDispel extends L2GameClientPacket
 		}
 		if (activeChar.getObjectId() == _objectId)
 		{
-			activeChar.stopSkillEffects(_skillId);
+			activeChar.stopSkillEffects(true, _skillId);
 		}
 		else
 		{
 			if (activeChar.hasSummon() && (activeChar.getSummon().getObjectId() == _objectId))
 			{
-				activeChar.getSummon().stopSkillEffects(_skillId);
+				activeChar.getSummon().stopSkillEffects(true, _skillId);
 			}
 		}
 	}

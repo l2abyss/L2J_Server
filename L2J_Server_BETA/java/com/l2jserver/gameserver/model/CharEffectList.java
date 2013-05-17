@@ -508,9 +508,10 @@ public final class CharEffectList
 	
 	/**
 	 * Exits all effects created by a specific skill Id.
+	 * @param removed {@code true} if the effect is removed, {@code false} otherwise
 	 * @param skillId the skill Id
 	 */
-	public final void stopSkillEffects(int skillId)
+	public final void stopSkillEffects(boolean removed, int skillId)
 	{
 		if (hasBuffs())
 		{
@@ -518,6 +519,7 @@ public final class CharEffectList
 			{
 				if ((e != null) && (e.getSkill().getId() == skillId))
 				{
+					e.setRemoved(removed);
 					e.exit();
 				}
 			}
@@ -528,6 +530,7 @@ public final class CharEffectList
 			{
 				if ((e != null) && (e.getSkill().getId() == skillId))
 				{
+					e.setRemoved(removed);
 					e.exit();
 				}
 			}
@@ -676,9 +679,13 @@ public final class CharEffectList
 			
 			if (_owner.isPlayer() && effect.isIconDisplay())
 			{
-				final SystemMessage sm = SystemMessage.getSystemMessage(skill.isToggle() ? SystemMessageId.S1_HAS_BEEN_ABORTED : SystemMessageId.EFFECT_S1_DISAPPEARED);
-				sm.addSkillName(effect);
-				_owner.sendPacket(sm);
+				final SystemMessageId smId = skill.isToggle() ? SystemMessageId.S1_HAS_BEEN_ABORTED : effect.isRemoved() ? SystemMessageId.EFFECT_S1_DISAPPEARED : null;
+				if (smId != null)
+				{
+					final SystemMessage sm = SystemMessage.getSystemMessage(smId);
+					sm.addSkillName(effect);
+					_owner.sendPacket(sm);
+				}
 			}
 		}
 		// Update effect flags.

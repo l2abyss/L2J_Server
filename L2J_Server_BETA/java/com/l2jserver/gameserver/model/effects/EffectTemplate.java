@@ -46,6 +46,7 @@ public class EffectTemplate
 	private final Condition _attachCond;
 	// private final Condition _applyCond; // TODO: Use or cleanup.
 	private final Lambda _lambda;
+	/** Effect's total tick count. */
 	private final int _totalTickCount;
 	/** Effect specific abnormal time. */
 	private final int _abnormalTime;
@@ -67,7 +68,7 @@ public class EffectTemplate
 		// _applyCond = applyCond;
 		_lambda = lambda;
 		_name = set.getString("name");
-		_totalTickCount = set.getInteger("ticks", 1);
+		_totalTickCount = set.getInteger("ticks", 0);
 		_abnormalTime = set.getInteger("abnormalTime", 0);
 		_abnormalEffect = AbnormalEffect.getByName(set.getString("abnormalVisualEffect", ""));
 		final String[] specialEffects = set.getString("special", "").split(",");

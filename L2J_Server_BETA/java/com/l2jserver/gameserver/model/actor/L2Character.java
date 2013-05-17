@@ -3280,15 +3280,13 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	}
 	
 	/**
-	 * Stop and remove the L2Effects corresponding to the L2Skill Identifier and update client magic icon.<br>
-	 * <B><U>Concept</U>:</B><br>
-	 * All active skills effects in progress on the L2Character are identified in ConcurrentHashMap(Integer,L2Effect) <B>_effects</B>.<br>
-	 * The Integer key of _effects is the L2Skill Identifier that has created the L2Effect.
-	 * @param skillId the L2Skill Identifier of the L2Effect to remove from _effects
+	 * Stop and remove the effects corresponding to the skill Id.
+	 * @param removed if {@code true} the effect will be set as removed, and a system message will be sent
+	 * @param skillId the skill Id
 	 */
-	public void stopSkillEffects(int skillId)
+	public void stopSkillEffects(boolean removed, int skillId)
 	{
-		_effectList.stopSkillEffects(skillId);
+		_effectList.stopSkillEffects(removed, skillId);
 	}
 	
 	/**
@@ -5848,7 +5846,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				if ((e == null) || (e.getEffectType() != L2EffectType.TRANSFORMATION))
 				{
 					removeStatsOwner(oldSkill);
-					stopSkillEffects(oldSkill.getId());
+					stopSkillEffects(true, oldSkill.getId());
 				}
 			}
 			if (isPlayer())
