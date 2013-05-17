@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSiegeFlag;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSignet;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSignetCasttime;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillTeleport;
 
 /**
  * Skill type enumerated.
@@ -78,8 +77,6 @@ public enum L2SkillType
 	FUSION,
 	
 	RESURRECT,
-	RECALL(L2SkillTeleport.class),
-	TELEPORT(L2SkillTeleport.class),
 	SUMMON_FRIEND,
 	BEAST_FEED,
 	BEAST_RELEASE,
