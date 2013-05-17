@@ -2299,13 +2299,14 @@ public final class Formulas
 	 */
 	public static int calcEffectAbnormalTime(Env env, EffectTemplate template)
 	{
+		final L2Character caster = env.getCharacter();
+		final L2Character target = env.getTarget();
 		final L2Skill skill = env.getSkill();
-		final L2Character effected = env.getTarget();
 		int time = (template.getAbnormalTime() != 0) || (skill == null) ? template.getAbnormalTime() : skill.isPassive() || skill.isToggle() ? -1 : skill.getAbnormalTime();
 		
 		// An herb buff will affect both master and servitor, but the buff duration will be half of the normal duration.
 		// If a servitor is not summoned, the master will receive the full buff duration.
-		if ((effected != null) && effected.isServitor() && (skill != null) && skill.isAbnormalInstant())
+		if ((target != null) && target.isServitor() && (skill != null) && skill.isAbnormalInstant())
 		{
 			time /= 2;
 		}
@@ -2314,6 +2315,17 @@ public final class Formulas
 		if (env.isSkillMastery())
 		{
 			time *= 2;
+		}
+		
+		// Debuffs Duration Affected by Resistances.
+		if ((caster != null) && (target != null) && (skill != null) && skill.isDebuff())
+		{
+			double statMod = calcSkillStatMod(skill, target);
+			double resMod = calcResMod(caster, target, skill);
+			double lvlBonusMod = calcLvlBonusMod(caster, target, skill);
+			double elementMod = calcElementMod(caster, target, skill);
+			time /= statMod;
+			time *= resMod * lvlBonusMod * elementMod;
 		}
 		return time;
 	}
