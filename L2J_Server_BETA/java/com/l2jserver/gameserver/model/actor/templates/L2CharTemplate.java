@@ -455,14 +455,14 @@ public class L2CharTemplate
 	
 	public int getBaseMoveSpd(MoveType mt)
 	{
-		switch(mt)
+		switch (mt)
 		{
 			case WALK:
 				return _baseWalkSpd;
 			case RUN:
 				return _baseRunSpd;
 		}
-
+		
 		return 0;
 	}
 	

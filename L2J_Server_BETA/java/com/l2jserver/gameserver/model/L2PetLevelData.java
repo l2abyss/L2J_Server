@@ -47,7 +47,7 @@ public class L2PetLevelData
 	private final int _fastSwimSpeedOnRide;
 	private final int _slowFlySpeedOnRide;
 	private final int _fastFlySpeedOnRide;
-
+	
 	public L2PetLevelData(StatsSet set)
 	{
 		_ownerExpTaken = set.getInteger("get_exp_type");
@@ -192,14 +192,14 @@ public class L2PetLevelData
 	{
 		return _petSpiritShot;
 	}
-
+	
 	/**
 	 * @param mt movement type
 	 * @return the base riding speed of given movement type.
 	 */
 	public int getSpeedOnRide(MoveType mt)
 	{
-		switch(mt)
+		switch (mt)
 		{
 			case WALK:
 				return _walkSpeedOnRide;
@@ -214,7 +214,7 @@ public class L2PetLevelData
 			case FAST_FLY:
 				return _fastFlySpeedOnRide;
 		}
-
+		
 		return 0;
 	}
 }

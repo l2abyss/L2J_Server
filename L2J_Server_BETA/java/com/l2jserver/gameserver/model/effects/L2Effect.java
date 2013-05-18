@@ -141,8 +141,8 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	}
 	
 	/**
-	 * Get the corrent tick count.
-	 * @return the tic count
+	 * Get the correct tick count.
+	 * @return the tick count
 	 */
 	public int getTickCount()
 	{
@@ -161,6 +161,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	}
 	
 	/**
+	 * Verify if this effect display an icon.
 	 * @return {@code true} if this effect display an icon, {@code false} otherwise
 	 */
 	public boolean isIconDisplay()
@@ -177,6 +178,10 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		return _abnormalTime;
 	}
 	
+	/**
+	 * Get the elapsed time from the beginning of this effect.
+	 * @return the elapsed time
+	 */
 	public int getTime()
 	{
 		return (GameTimeController.getInstance().getGameTicks() - _periodStartTicks) / GameTimeController.TICKS_PER_SECOND;
@@ -353,6 +358,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	}
 	
 	/**
+	 * Get this effect's type.
 	 * @return the effect type
 	 */
 	public abstract L2EffectType getEffectType();
@@ -406,6 +412,9 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		return false;
 	}
 	
+	/**
+	 * Schedule this effect.
+	 */
 	public final void scheduleEffect()
 	{
 		switch (_state)
@@ -448,7 +457,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 			}
 			case FINISHING:
 			{
-				// If the time left is equal to zero, send the message
+				// Message
 				if (!getSkill().isToggle() && (_tickCount > _template.getTotalTickCount()) && isIconDisplay() && getEffected().isPlayer())
 				{
 					final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_WORN_OFF);
@@ -462,10 +471,10 @@ public abstract class L2Effect implements IChanceSkillTrigger
 					getEffected().getEffectList().remove(this);
 				}
 				
-				// Stop the task of the L2Effect, remove it and update client magic icon
+				// Stop the task of this effect, remove it and update client magic icon.
 				stopEffectTask();
 				
-				// Cancel the effect in the the abnormal effect map of the L2Character
+				// Cancel the effect in the the abnormal effect list of the character.
 				if (isInUse() || !((_tickCount > 1) || (_abnormalTime > 0)))
 				{
 					if (_startConditionsCorrect)
@@ -488,6 +497,10 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		}
 	}
 	
+	/**
+	 * Get this effect's stats functions.
+	 * @return a list of stat functions.
+	 */
 	public List<Func> getStatFuncs()
 	{
 		if (_template.getFuncTemplates() == null)
@@ -511,6 +524,10 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		return funcs;
 	}
 	
+	/**
+	 * Add the abnormal status update data for this effect.
+	 * @param mi the abnormal status packet
+	 */
 	public final void addIcon(AbnormalStatusUpdate mi)
 	{
 		if (_state != EffectState.ACTING)
@@ -528,6 +545,10 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		}
 	}
 	
+	/**
+	 * Add the party spelled data for this effect.
+	 * @param ps the party spelled packet
+	 */
 	public final void addPartySpelledIcon(PartySpelled ps)
 	{
 		if (_state != EffectState.ACTING)
@@ -546,6 +567,10 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		}
 	}
 	
+	/**
+	 * Add the olympiad spelled data for this effect.
+	 * @param os the olympiad spelled packet
+	 */
 	public final void addOlympiadSpelledIcon(ExOlympiadSpelledInfo os)
 	{
 		if (_state != EffectState.ACTING)
@@ -569,14 +594,13 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		return _periodStartTicks;
 	}
 	
+	/**
+	 * Get the effect template.
+	 * @return the effect template
+	 */
 	public EffectTemplate getEffectTemplate()
 	{
 		return _template;
-	}
-	
-	public double getEffectPower()
-	{
-		return _template.getEffectPower();
 	}
 	
 	/**
@@ -589,6 +613,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	}
 	
 	/**
+	 * Get the effect flags.
 	 * @return bit flag for current effect
 	 */
 	public int getEffectFlags()

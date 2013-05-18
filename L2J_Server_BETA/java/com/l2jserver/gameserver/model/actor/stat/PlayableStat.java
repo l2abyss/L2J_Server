@@ -237,7 +237,7 @@ public class PlayableStat extends CharStat
 	protected double getBaseMoveSpeed(MoveType mt)
 	{
 		double val = super.getBaseMoveSpeed(mt);
-
+		
 		if (getActiveChar().isInsideZone(ZoneId.SWAMP))
 		{
 			L2SwampZone zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);

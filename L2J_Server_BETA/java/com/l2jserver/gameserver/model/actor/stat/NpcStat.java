@@ -54,7 +54,7 @@ public class NpcStat extends CharStat
 		{
 			return 1;
 		}
-
+		
 		return (getWalkSpeed() * 1f) / getActiveChar().getTemplate().getBaseMoveSpd(getActiveChar().isRunning() ? MoveType.RUN : MoveType.WALK);
 	}
 }

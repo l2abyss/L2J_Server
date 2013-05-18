@@ -1560,7 +1560,7 @@ public final class Formulas
 	public static boolean calcEffectSuccess(Env env)
 	{
 		// Effect base rate, if it's -1 (or less) always land.
-		final double baseRate = env.getEffect().getEffectPower();
+		final double baseRate = env.getEffect().getEffectTemplate().getEffectPower();
 		if (baseRate < 0)
 		{
 			return true;
