@@ -42,11 +42,9 @@ import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
-import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AbnormalStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadSpelledInfo;
 import com.l2jserver.gameserver.network.serverpackets.PartySpelled;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * Effect lists.
@@ -676,17 +674,6 @@ public final class CharEffectList
 			_owner.removeStatsOwner(effect);
 			
 			effectList.remove(effect);
-			
-			if (_owner.isPlayer() && effect.isIconDisplay())
-			{
-				final SystemMessageId smId = skill.isToggle() ? SystemMessageId.S1_HAS_BEEN_ABORTED : effect.isRemoved() ? SystemMessageId.EFFECT_S1_DISAPPEARED : null;
-				if (smId != null)
-				{
-					final SystemMessage sm = SystemMessage.getSystemMessage(smId);
-					sm.addSkillName(effect);
-					_owner.sendPacket(sm);
-				}
-			}
 		}
 		// Update effect flags.
 		computeEffectFlags();

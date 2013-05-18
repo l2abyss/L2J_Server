@@ -141,7 +141,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	}
 	
 	/**
-	 * Get the correct tick count.
+	 * Get the current tick count.
 	 * @return the tick count
 	 */
 	public int getTickCount()
@@ -458,11 +458,28 @@ public abstract class L2Effect implements IChanceSkillTrigger
 			case FINISHING:
 			{
 				// Message
-				if (!getSkill().isToggle() && (_tickCount > _template.getTotalTickCount()) && isIconDisplay() && getEffected().isPlayer())
+				if (getEffected().isPlayer() && isIconDisplay())
 				{
-					final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_WORN_OFF);
-					sm.addSkillName(_skill);
-					getEffected().sendPacket(sm);
+					SystemMessageId smId = null;
+					if (getSkill().isToggle())
+					{
+						smId = SystemMessageId.S1_HAS_BEEN_ABORTED;
+					}
+					else if (isRemoved())
+					{
+						smId = SystemMessageId.EFFECT_S1_DISAPPEARED;
+					}
+					else if (_tickCount >= _template.getTotalTickCount())
+					{
+						smId = SystemMessageId.S1_HAS_WORN_OFF;
+					}
+					
+					if (smId != null)
+					{
+						final SystemMessage sm = SystemMessage.getSystemMessage(smId);
+						sm.addSkillName(getSkill());
+						getEffected().sendPacket(sm);
+					}
 				}
 				
 				// if task is null - stopEffectTask does not remove effect
