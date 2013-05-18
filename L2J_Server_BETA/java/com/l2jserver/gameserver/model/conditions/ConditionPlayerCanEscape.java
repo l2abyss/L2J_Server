@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.model.conditions;
 
 import com.l2jserver.gameserver.instancemanager.GrandBossManager;
 import com.l2jserver.gameserver.model.PcCondOverride;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.stats.Env;
 
@@ -39,43 +40,44 @@ public class ConditionPlayerCanEscape extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
+		final L2PcInstance player = env.getPlayer();
+		if (player == null)
+		{
+			return !_val;
+		}
+		
 		boolean canTeleport = true;
-		if (env.getPlayer() == null)
+		if (!TvTEvent.onEscapeUse(player.getObjectId()))
 		{
 			canTeleport = false;
 		}
 		
-		if (!TvTEvent.onEscapeUse(env.getPlayer().getActingPlayer().getObjectId()))
+		if (player.isInDuel())
 		{
 			canTeleport = false;
 		}
 		
-		if (env.getPlayer().getActingPlayer().isInDuel())
+		if (player.isAfraid())
 		{
 			canTeleport = false;
 		}
 		
-		if (env.getPlayer().isAfraid())
+		if (player.isCombatFlagEquipped())
 		{
 			canTeleport = false;
 		}
 		
-		if (env.getPlayer().getActingPlayer().isCombatFlagEquipped())
+		if (player.isFlying() || player.isFlyingMounted())
 		{
 			canTeleport = false;
 		}
 		
-		if (env.getPlayer().isFlying() || env.getPlayer().getActingPlayer().isFlyingMounted())
+		if (player.isInOlympiadMode())
 		{
 			canTeleport = false;
 		}
 		
-		if (env.getPlayer().getActingPlayer().isInOlympiadMode())
-		{
-			canTeleport = false;
-		}
-		
-		if ((GrandBossManager.getInstance().getZone(env.getPlayer()) != null) && !env.getPlayer().canOverrideCond(PcCondOverride.SKILL_CONDITIONS))
+		if ((GrandBossManager.getInstance().getZone(player) != null) && !player.canOverrideCond(PcCondOverride.SKILL_CONDITIONS))
 		{
 			canTeleport = false;
 		}
