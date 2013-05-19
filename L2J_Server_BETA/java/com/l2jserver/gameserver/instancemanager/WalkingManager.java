@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -30,18 +29,20 @@ import org.w3c.dom.Node;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.engines.DocumentParser;
+import com.l2jserver.gameserver.model.ArrivedTask;
 import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2NpcWalkerNode;
 import com.l2jserver.gameserver.model.L2WalkRoute;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.WalkInfo;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
+import com.l2jserver.gameserver.model.holders.NpcRoutesHolder;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 import com.l2jserver.gameserver.util.Broadcast;
-import com.l2jserver.util.Rnd;
 
 /**
  * This class manages walking monsters.
@@ -54,169 +55,14 @@ public class WalkingManager extends DocumentParser
 	// 1 - go to first point (circle style)
 	// 2 - teleport to first point (conveyor style)
 	// 3 - random walking between points.
-	private static final byte REPEAT_GO_BACK = 0;
-	private static final byte REPEAT_GO_FIRST = 1;
-	private static final byte REPEAT_TELE_FIRST = 2;
-	private static final byte REPEAT_RANDOM = 3;
+	public static final byte REPEAT_GO_BACK = 0;
+	public static final byte REPEAT_GO_FIRST = 1;
+	public static final byte REPEAT_TELE_FIRST = 2;
+	public static final byte REPEAT_RANDOM = 3;
 	
-	protected final Map<String, L2WalkRoute> _routes = new HashMap<>(); // all available routes
+	private final Map<String, L2WalkRoute> _routes = new HashMap<>(); // all available routes
 	private final Map<Integer, WalkInfo> _activeRoutes = new HashMap<>(); // each record represents NPC, moving by predefined route from _routes, and moving progress
 	private final Map<Integer, NpcRoutesHolder> _routesToAttach = new HashMap<>(); // each record represents NPC and all available routes for it
-	
-	/**
-	 * Holds depending between NPC's spawn point and route
-	 */
-	private class NpcRoutesHolder
-	{
-		private final Map<String, String> _correspondences;
-		
-		public NpcRoutesHolder()
-		{
-			_correspondences = new HashMap<>();
-		}
-		
-		/**
-		 * Add correspondence between specific route and specific spawn point
-		 * @param routeName name of route
-		 * @param loc Location of spawn point
-		 */
-		public void addRoute(String routeName, Location loc)
-		{
-			_correspondences.put(getUniqueKey(loc), routeName);
-		}
-		
-		/**
-		 * @param npc
-		 * @return route name for given NPC.
-		 */
-		public String getRouteName(L2Npc npc)
-		{
-			if (npc.getSpawn() != null)
-			{
-				String key = getUniqueKey(npc.getSpawn().getSpawnLocation());
-				return _correspondences.containsKey(key) ? _correspondences.get(key) : "";
-			}
-			return "";
-		}
-		
-		/**
-		 * @param loc
-		 * @return unique text string for given Location.
-		 */
-		private String getUniqueKey(Location loc)
-		{
-			return (loc.getX() + "-" + loc.getY() + "-" + loc.getZ());
-		}
-	}
-	
-	/**
-	 * Holds info about current walk progress.<br>
-	 * Zoey76: TODO: Move to own file, and use getters and setters.
-	 */
-	private class WalkInfo
-	{
-		protected ScheduledFuture<?> _walkCheckTask;
-		protected boolean _blocked = false;
-		protected boolean _suspended = false;
-		protected boolean _stoppedByAttack = false;
-		protected int _currentNode = 0;
-		protected boolean _forward = true; // Determines first --> last or first <-- last direction
-		private final String _routeName;
-		protected long _lastActionTime; // Debug field
-		
-		public WalkInfo(String routeName)
-		{
-			_routeName = routeName;
-		}
-		
-		/**
-		 * @return name of route of this WalkInfo.
-		 */
-		protected L2WalkRoute getRoute()
-		{
-			return _routes.get(_routeName);
-		}
-		
-		/**
-		 * @return current node of this WalkInfo.
-		 */
-		protected L2NpcWalkerNode getCurrentNode()
-		{
-			return getRoute().getNodeList().get(_currentNode);
-		}
-		
-		/**
-		 * Calculate next node for this WalkInfo and send debug message from given npc
-		 * @param npc NPC to debug message to be sent from
-		 */
-		protected void calculateNextNode(L2Npc npc)
-		{
-			// Check this first, within the bounds of random moving, we have no conception of "first" or "last" node
-			if (getRoute().getRepeatType() == REPEAT_RANDOM)
-			{
-				int newNode = _currentNode;
-				
-				while (newNode == _currentNode)
-				{
-					newNode = Rnd.get(getRoute().getNodesCount());
-				}
-				
-				_currentNode = newNode;
-				npc.sendDebugMessage("Route: " + getRoute().getName() + ", next random node is " + _currentNode);
-			}
-			else
-			{
-				if (_forward)
-				{
-					_currentNode++;
-				}
-				else
-				{
-					_currentNode--;
-				}
-				
-				if (_currentNode == getRoute().getNodesCount()) // Last node arrived
-				{
-					// Notify quest
-					if (npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_ROUTE_FINISHED) != null)
-					{
-						for (Quest quest : npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_ROUTE_FINISHED))
-						{
-							quest.notifyRouteFinished(npc);
-						}
-					}
-					npc.sendDebugMessage("Route: " + getRoute().getName() + ", last node arrived");
-					
-					if (!getRoute().repeatWalk())
-					{
-						cancelMoving(npc);
-						return;
-					}
-					
-					switch (getRoute().getRepeatType())
-					{
-						case REPEAT_GO_BACK:
-							_forward = false;
-							_currentNode -= 2;
-							break;
-						case REPEAT_GO_FIRST:
-							_currentNode = 0;
-							break;
-						case REPEAT_TELE_FIRST:
-							npc.teleToLocation(npc.getSpawn().getLocx(), npc.getSpawn().getLocy(), npc.getSpawn().getLocz());
-							_currentNode = 0;
-							break;
-					}
-				}
-				
-				else if (_currentNode == -1) // First node arrived, when direction is first <-- last
-				{
-					_currentNode = 1;
-					_forward = true;
-				}
-			}
-		}
-	}
 	
 	protected WalkingManager()
 	{
@@ -363,11 +209,16 @@ public class WalkingManager extends DocumentParser
 		}
 		
 		WalkInfo walk = monster != null ? _activeRoutes.get(monster.getObjectId()) : _activeRoutes.get(npc.getObjectId());
-		if (walk._stoppedByAttack || walk._suspended)
+		if (walk.isStoppedByAttack() || walk.isSuspended())
 		{
 			return false;
 		}
 		return true;
+	}
+	
+	public L2WalkRoute getRoute(String route)
+	{
+		return _routes.get(route);
 	}
 	
 	/**
@@ -406,7 +257,7 @@ public class WalkingManager extends DocumentParser
 					
 					if (npc.isDebug())
 					{
-						walk._lastActionTime = System.currentTimeMillis();
+						walk.setLastAction(System.currentTimeMillis());
 					}
 					
 					L2NpcWalkerNode node = walk.getCurrentNode();
@@ -428,14 +279,14 @@ public class WalkingManager extends DocumentParser
 					npc.sendDebugMessage("Starting to move at route " + routeName);
 					npc.setIsRunning(node.getRunning());
 					npc.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(node.getMoveX(), node.getMoveY(), node.getMoveZ(), 0));
-					walk._walkCheckTask = ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new Runnable()
+					walk.setWalkCheckTask(ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new Runnable()
 					{
 						@Override
 						public void run()
 						{
 							startMoving(npc, routeName);
 						}
-					}, 60000, 60000); // start walk check task, for resuming walk after fight
+					}, 60000, 60000)); // start walk check task, for resuming walk after fight
 					
 					npc.getKnownList().startTrackingTask();
 					
@@ -462,19 +313,19 @@ public class WalkingManager extends DocumentParser
 					WalkInfo walk = _activeRoutes.get(npc.getObjectId());
 					
 					// Prevent call simultaneously from scheduled task and onArrived() or temporarily stop walking for resuming in future
-					if (walk._blocked || walk._suspended)
+					if (walk.isBlocked() || walk.isSuspended())
 					{
 						npc.sendDebugMessage("Trying continue to move at route " + routeName + ", but cannot now (operation is blocked)");
 						return;
 					}
 					
-					walk._blocked = true;
+					walk.setBlocked(true);
 					L2NpcWalkerNode node = walk.getCurrentNode();
-					npc.sendDebugMessage("Route id: " + routeName + ", continue to node " + walk._currentNode);
+					npc.sendDebugMessage("Route id: " + routeName + ", continue to node " + walk.getCurrentNodeId());
 					npc.setIsRunning(node.getRunning());
 					npc.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(node.getMoveX(), node.getMoveY(), node.getMoveZ(), 0));
-					walk._blocked = false;
-					walk._stoppedByAttack = false;
+					walk.setBlocked(false);
+					walk.setStoppedByAttack(false);
 				}
 				else
 				{
@@ -493,7 +344,7 @@ public class WalkingManager extends DocumentParser
 		if (_activeRoutes.containsKey(npc.getObjectId()))
 		{
 			final WalkInfo walk = _activeRoutes.remove(npc.getObjectId());
-			walk._walkCheckTask.cancel(true);
+			walk.getWalkCheckTask().cancel(true);
 			npc.getKnownList().stopTrackingTask();
 		}
 	}
@@ -510,8 +361,8 @@ public class WalkingManager extends DocumentParser
 		}
 		
 		WalkInfo walk = _activeRoutes.get(npc.getObjectId());
-		walk._suspended = false;
-		walk._stoppedByAttack = false;
+		walk.setSuspended(false);
+		walk.setStoppedByAttack(false);
 		startMoving(npc, walk.getRoute().getName());
 	}
 	
@@ -544,8 +395,8 @@ public class WalkingManager extends DocumentParser
 		
 		WalkInfo walk = monster != null ? _activeRoutes.get(monster.getObjectId()) : _activeRoutes.get(npc.getObjectId());
 		
-		walk._suspended = suspend;
-		walk._stoppedByAttack = stoppedByAttack;
+		walk.setSuspended(suspend);
+		walk.setStoppedByAttack(stoppedByAttack);
 		
 		if (monster != null)
 		{
@@ -579,16 +430,16 @@ public class WalkingManager extends DocumentParser
 			WalkInfo walk = _activeRoutes.get(npc.getObjectId());
 			
 			// Opposite should not happen... but happens sometime
-			if ((walk._currentNode >= 0) && (walk._currentNode < walk.getRoute().getNodesCount()))
+			if ((walk.getCurrentNodeId() >= 0) && (walk.getCurrentNodeId() < walk.getRoute().getNodesCount()))
 			{
-				L2NpcWalkerNode node = walk.getRoute().getNodeList().get(walk._currentNode);
+				L2NpcWalkerNode node = walk.getRoute().getNodeList().get(walk.getCurrentNodeId());
 				if (npc.isInsideRadius(node.getMoveX(), node.getMoveY(), node.getMoveZ(), 10, false, false))
 				{
-					npc.sendDebugMessage("Route: " + walk.getRoute().getName() + ", arrived to node " + walk._currentNode);
-					npc.sendDebugMessage("Done in " + ((System.currentTimeMillis() - walk._lastActionTime) / 1000) + " s.");
+					npc.sendDebugMessage("Route: " + walk.getRoute().getName() + ", arrived to node " + walk.getCurrentNodeId());
+					npc.sendDebugMessage("Done in " + ((System.currentTimeMillis() - walk.getLastAction()) / 1000) + " s.");
 					walk.calculateNextNode(npc);
 					int delay = node.getDelay();
-					walk._blocked = true; // prevents to be ran from walk check task, if there is delay in this node.
+					walk.setBlocked(true); // prevents to be ran from walk check task, if there is delay in this node.
 					
 					if (node.getNpcString() != null)
 					{
@@ -605,7 +456,7 @@ public class WalkingManager extends DocumentParser
 					
 					if (npc.isDebug())
 					{
-						walk._lastActionTime = System.currentTimeMillis();
+						walk.setLastAction(System.currentTimeMillis());
 					}
 					ThreadPoolManager.getInstance().scheduleGeneral(new ArrivedTask(npc, walk), 100 + (delay * 1000L));
 				}
@@ -635,25 +486,6 @@ public class WalkingManager extends DocumentParser
 			{
 				startMoving(npc, routeName);
 			}
-		}
-	}
-	
-	private class ArrivedTask implements Runnable
-	{
-		WalkInfo _walk;
-		L2Npc _npc;
-		
-		public ArrivedTask(L2Npc npc, WalkInfo walk)
-		{
-			_npc = npc;
-			_walk = walk;
-		}
-		
-		@Override
-		public void run()
-		{
-			_walk._blocked = false;
-			startMoving(_npc, _walk.getRoute().getName());
 		}
 	}
 	
