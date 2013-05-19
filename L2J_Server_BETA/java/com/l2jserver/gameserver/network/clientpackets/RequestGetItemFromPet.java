@@ -21,6 +21,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -48,7 +49,7 @@ public final class RequestGetItemFromPet extends L2GameClientPacket
 	protected void runImpl()
 	{
 		final L2PcInstance player = getClient().getActiveChar();
-		if ((player == null) || !player.hasPet())
+		if ((_amount <= 0) || (player == null) || !player.hasPet())
 		{
 			return;
 		}
@@ -64,13 +65,16 @@ public final class RequestGetItemFromPet extends L2GameClientPacket
 		{
 			return;
 		}
-		if (_amount < 0)
+		
+		final L2ItemInstance item = pet.getInventory().getItemByObjectId(_objectId);
+		if (item == null)
 		{
-			Util.handleIllegalPlayerAction(player, "[RequestGetItemFromPet] Character " + player.getName() + " of account " + player.getAccountName() + " tried to get item with oid " + _objectId + " from pet but has count < 0!", Config.DEFAULT_PUNISH);
 			return;
 		}
-		else if (_amount == 0)
+		
+		if (_amount > item.getCount())
 		{
+			Util.handleIllegalPlayerAction(player, getClass().getSimpleName() + ": Character " + player.getName() + " of account " + player.getAccountName() + " tried to get item with oid " + _objectId + " from pet but has invalid count " + _amount + " item count: " + item.getCount(), Config.DEFAULT_PUNISH);
 			return;
 		}
 		

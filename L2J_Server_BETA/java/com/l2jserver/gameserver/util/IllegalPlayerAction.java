@@ -55,8 +55,11 @@ public final class IllegalPlayerAction implements Runnable
 				_actor.sendMessage("You will be kicked for illegal action, GM informed.");
 				break;
 			case PUNISH_KICKBAN:
-				_actor.setAccessLevel(-1);
-				_actor.setAccountAccesslevel(-1);
+				if (!_actor.isGM())
+				{
+					_actor.setAccessLevel(-1);
+					_actor.setAccountAccesslevel(-1);
+				}
 				_actor.sendMessage("You are banned for illegal action, GM informed.");
 				break;
 			case PUNISH_JAIL:
@@ -79,20 +82,22 @@ public final class IllegalPlayerAction implements Runnable
 		_logAudit.log(record);
 		
 		AdminTable.getInstance().broadcastMessageToGMs(_message);
-		
-		switch (_punishment)
+		if (!_actor.isGM())
 		{
-			case PUNISH_BROADCAST:
-				return;
-			case PUNISH_KICK:
-				_actor.logout(false);
-				break;
-			case PUNISH_KICKBAN:
-				_actor.logout();
-				break;
-			case PUNISH_JAIL:
-				_actor.setPunishLevel(L2PcInstance.PunishLevel.JAIL, Config.DEFAULT_PUNISH_PARAM);
-				break;
+			switch (_punishment)
+			{
+				case PUNISH_BROADCAST:
+					return;
+				case PUNISH_KICK:
+					_actor.logout(false);
+					break;
+				case PUNISH_KICKBAN:
+					_actor.logout();
+					break;
+				case PUNISH_JAIL:
+					_actor.setPunishLevel(L2PcInstance.PunishLevel.JAIL, Config.DEFAULT_PUNISH_PARAM);
+					break;
+			}
 		}
 	}
 }
