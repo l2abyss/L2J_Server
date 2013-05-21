@@ -23,6 +23,7 @@ import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Decoy;
+import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.effects.AbnormalEffect;
@@ -316,9 +317,9 @@ public class CharInfo extends L2GameServerPacket
 			writeC(_activeChar.getPrivateStoreType()); // 1 - sellshop
 			
 			writeH(_activeChar.getCubics().size());
-			for (int id : _activeChar.getCubics().keySet())
+			for (L2CubicInstance c : _activeChar.getCubics())
 			{
-				writeH(id);
+				writeH(c.getId());
 			}
 			
 			writeC(_activeChar.isInPartyMatchRoom() ? 1 : 0);

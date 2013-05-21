@@ -464,7 +464,7 @@ public final class L2CubicInstance
 				if (_owner.isDead() || !_owner.isOnline())
 				{
 					stopAction();
-					_owner.delCubic(_id);
+					_owner.getCubics().remove(this);
 					_owner.broadcastUserInfo();
 					cancelDisappear();
 					return;
@@ -972,7 +972,7 @@ public final class L2CubicInstance
 			if (_owner.isDead() || !_owner.isOnline())
 			{
 				stopAction();
-				_owner.delCubic(_id);
+				_owner.getCubics().remove(this);
 				_owner.broadcastUserInfo();
 				cancelDisappear();
 				return;
@@ -1035,7 +1035,7 @@ public final class L2CubicInstance
 		public void run()
 		{
 			stopAction();
-			_owner.delCubic(_id);
+			_owner.getCubics().remove(this);
 			_owner.broadcastUserInfo();
 		}
 	}

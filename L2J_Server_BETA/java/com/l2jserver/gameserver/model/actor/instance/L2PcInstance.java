@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -224,7 +225,6 @@ import com.l2jserver.gameserver.model.quest.State;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSiegeFlag;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Formulas;
@@ -792,7 +792,7 @@ public final class L2PcInstance extends L2Playable
 	
 	protected boolean _inventoryDisable = false;
 	
-	private final FastMap<Integer, L2CubicInstance> _cubics = new FastMap<>();
+	private final List<L2CubicInstance> _cubics = new CopyOnWriteArrayList<>();
 	
 	/** Active shots. */
 	protected FastSet<Integer> _activeSoulShots = new FastSet<Integer>().shared();
@@ -1163,8 +1163,6 @@ public final class L2PcInstance extends L2Playable
 		_radar = new L2Radar(this);
 		
 		startVitalityTask();
-		
-		_cubics.shared();
 	}
 	
 	@Override
@@ -4407,21 +4405,10 @@ public final class L2PcInstance extends L2Playable
 			return false;
 		}
 		
-		switch (skill.getSkillType())
+		if ((skill.getSkillType() == L2SkillType.SUMMON) && (hasSummon() || isMounted() || inObserverMode()))
 		{
-			case SUMMON:
-			{
-				if (!((L2SkillSummon) skill).isCubic() && (hasSummon() || isMounted() || CharSummonTable.getInstance().getPets().contains(getObjectId()) || CharSummonTable.getInstance().getPets().contains(getObjectId())))
-				{
-					if (Config.DEBUG)
-					{
-						_log.fine("player has a pet already. ignore summon skill");
-					}
-					
-					sendPacket(SystemMessageId.YOU_ALREADY_HAVE_A_PET);
-					return false;
-				}
-			}
+			sendPacket(SystemMessageId.SUMMON_ONLY_ONE);
+			return false;
 		}
 		
 		// TODO: Should possibly be checked only in L2PcInstance's useMagic
@@ -5671,7 +5658,7 @@ public final class L2PcInstance extends L2Playable
 		// Unsummon Cubics
 		if (!_cubics.isEmpty())
 		{
-			for (L2CubicInstance cubic : _cubics.values())
+			for (L2CubicInstance cubic : _cubics)
 			{
 				cubic.stopAction();
 				cubic.cancelDisappear();
@@ -9759,7 +9746,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		if (!_cubics.isEmpty())
 		{
-			for (L2CubicInstance cubic : _cubics.values())
+			for (L2CubicInstance cubic : _cubics)
 			{
 				cubic.stopAction();
 				cubic.cancelDisappear();
@@ -9773,17 +9760,14 @@ public final class L2PcInstance extends L2Playable
 	{
 		if (!_cubics.isEmpty())
 		{
-			final Iterator<L2CubicInstance> iter = _cubics.values().iterator();
-			L2CubicInstance cubic;
 			boolean broadcast = false;
-			while (iter.hasNext())
+			for (L2CubicInstance cubic : _cubics)
 			{
-				cubic = iter.next();
 				if (cubic.givenByOther())
 				{
 					cubic.stopAction();
 					cubic.cancelDisappear();
-					iter.remove();
+					_cubics.remove(cubic);
 					broadcast = true;
 				}
 			}
@@ -9833,13 +9817,13 @@ public final class L2PcInstance extends L2Playable
 		return _inventoryDisable;
 	}
 	
-	public FastMap<Integer, L2CubicInstance> getCubics()
+	public List<L2CubicInstance> getCubics()
 	{
 		return _cubics;
 	}
 	
 	/**
-	 * Add a L2CubicInstance to the L2PcInstance _cubics.
+	 * Add a cubic to this player.
 	 * @param id
 	 * @param level
 	 * @param cubicPower
@@ -9851,24 +9835,24 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void addCubic(int id, int level, double cubicPower, int cubicDelay, int cubicSkillChance, int cubicMaxCount, int cubicDuration, boolean givenByOther)
 	{
-		_cubics.put(id, new L2CubicInstance(this, id, level, (int) cubicPower, cubicDelay, cubicSkillChance, cubicMaxCount, cubicDuration, givenByOther));
+		_cubics.add(new L2CubicInstance(this, id, level, (int) cubicPower, cubicDelay, cubicSkillChance, cubicMaxCount, cubicDuration, givenByOther));
 	}
 	
 	/**
-	 * @param id a L2CubicInstance from the L2PcInstance _cubics.
+	 * Get the player cubic by NPC Id, if any.
+	 * @param id the NPC id
+	 * @return the cubic with the given NPC id, {@code null} otherwise
 	 */
-	public void delCubic(int id)
+	public L2CubicInstance getCubicById(int id)
 	{
-		_cubics.remove(id);
-	}
-	
-	/**
-	 * @param id
-	 * @return the L2CubicInstance corresponding to the Identifier of the L2PcInstance _cubics.
-	 */
-	public L2CubicInstance getCubic(int id)
-	{
-		return _cubics.get(id);
+		for (L2CubicInstance c : _cubics)
+		{
+			if (c.getId() == id)
+			{
+				return c;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -10135,7 +10119,7 @@ public final class L2PcInstance extends L2Playable
 		
 		if (!_cubics.isEmpty())
 		{
-			for (L2CubicInstance cubic : _cubics.values())
+			for (L2CubicInstance cubic : _cubics)
 			{
 				cubic.stopAction();
 				cubic.cancelDisappear();
