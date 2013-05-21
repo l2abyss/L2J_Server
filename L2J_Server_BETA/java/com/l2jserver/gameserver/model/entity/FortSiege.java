@@ -966,7 +966,7 @@ public class FortSiege implements Siegable
 			b = false;
 			player.sendPacket(SystemMessageId.CLAN_THAT_OWNS_CASTLE_IS_AUTOMATICALLY_REGISTERED_DEFENDING);
 		}
-		else if ((getFort().getOwnerClan() != null) && (player.getClan().getCastleId() > 0) && (player.getClan().getCastleId() == getFort().getCastleId()))
+		else if ((getFort().getOwnerClan() != null) && (player.getClan().getCastleId() > 0) && (player.getClan().getCastleId() == getFort().getContractedCastleId()))
 		{
 			b = false;
 			player.sendPacket(SystemMessageId.CANT_REGISTER_TO_SIEGE_DUE_TO_CONTRACT);

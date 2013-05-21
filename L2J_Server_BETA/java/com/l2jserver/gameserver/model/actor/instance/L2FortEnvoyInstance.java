@@ -18,13 +18,13 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import java.util.StringTokenizer;
-
-import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.entity.Castle;
+import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
+import com.l2jserver.gameserver.util.Util;
 
 public class L2FortEnvoyInstance extends L2Npc
 {
@@ -37,71 +37,63 @@ public class L2FortEnvoyInstance extends L2Npc
 	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
-		player.sendPacket(ActionFailed.STATIC_PACKET);
-		
-		String filename;
-		
-		if (!player.isClanLeader() || (getFort().getFortId() != player.getClan().getFortId()))
+		String filePath;
+		final Fort fortress = getFort();
+		if (!player.isClanLeader() || (fortress.getFortId() != player.getClan().getFortId()))
 		{
-			filename = "data/html/fortress/envoy-noclan.htm";
+			filePath = "data/html/fortress/ambassador-not-leader.htm";
 		}
-		else if (getFort().getFortState() == 0)
+		else if (fortress.getFortState() == 1)
 		{
-			filename = "data/html/fortress/envoy.htm";
+			filePath = "data/html/fortress/ambassador-rejected.htm";
+		}
+		else if (fortress.getFortState() == 2)
+		{
+			filePath = "data/html/fortress/ambassador-signed.htm";
+		}
+		else if (fortress.isBorderFortress())
+		{
+			// border fortresses may only declare independence
+			filePath = "data/html/fortress/ambassador-border.htm";
 		}
 		else
 		{
-			filename = "data/html/fortress/envoy-no.htm";
+			// normal fortresses can swear fealty or declare independence
+			filePath = "data/html/fortress/ambassador.htm";
 		}
 		
+		player.sendPacket(ActionFailed.STATIC_PACKET);
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-		html.setFile(player.getHtmlPrefix(), filename);
+		html.setFile(player.getHtmlPrefix(), filePath);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
-		html.replace("%castleName%", String.valueOf(CastleManager.getInstance().getCastleById(getFort().getCastleIdFromEnvoy(getNpcId())).getName()));
+		html.replace("%castleName%", String.valueOf(fortress.getCastleByAmbassador(getNpcId()).getName()));
 		player.sendPacket(html);
 	}
 	
 	@Override
 	public void onBypassFeedback(L2PcInstance player, String command)
 	{
-		StringTokenizer st = new StringTokenizer(command, " ");
-		String actualCommand = st.nextToken(); // Get actual command
-		
-		String par = "";
-		if (st.countTokens() >= 1)
+		if (command.startsWith("select "))
 		{
-			par = st.nextToken();
-		}
-		
-		if (actualCommand.equalsIgnoreCase("select"))
-		{
-			int val = 0;
-			try
+			String param = command.substring(7);
+			Fort fortress = getFort();
+			Castle castle = fortress.getCastleByAmbassador(getNpcId());
+			String filePath;
+			
+			if (castle.getOwnerId() == 0)
 			{
-				val = Integer.parseInt(par);
+				filePath = "data/html/fortress/ambassador-not-owned.htm";
 			}
-			catch (IndexOutOfBoundsException ioobe)
+			else
 			{
-			}
-			catch (NumberFormatException nfe)
-			{
+				int choice = Util.isDigit(param) ? Integer.parseInt(param) : 0;
+				fortress.setFortState(choice, castle.getCastleId());
+				filePath = (choice == 1) ? "data/html/fortress/ambassador-independent.htm" : "data/html/fortress/ambassador-signed.htm";
 			}
 			
-			int castleId = 0;
 			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-			if (val == 2)
-			{
-				castleId = getFort().getCastleIdFromEnvoy(getNpcId());
-				if (CastleManager.getInstance().getCastleById(castleId).getOwnerId() < 1)
-				{
-					html.setHtml("<html><body>Contact is currently not possible, " + CastleManager.getInstance().getCastleById(castleId).getName() + " Castle isn't currently owned by clan.</body></html>");
-					player.sendPacket(html);
-					return;
-				}
-			}
-			getFort().setFortState(val, castleId);
-			html.setFile(player.getHtmlPrefix(), "data/html/fortress/envoy-ok.htm");
-			html.replace("%castleName%", String.valueOf(CastleManager.getInstance().getCastleById(getFort().getCastleIdFromEnvoy(getNpcId())).getName()));
+			html.setFile(player.getHtmlPrefix(), filePath);
+			html.replace("%castleName%", castle.getName());
 			player.sendPacket(html);
 		}
 		else
