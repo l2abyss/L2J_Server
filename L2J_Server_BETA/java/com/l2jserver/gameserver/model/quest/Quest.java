@@ -3237,12 +3237,6 @@ public class Quest extends ManagedScript
 			return;
 		}
 		
-		// If item for reward is adena (Id=57), modify count with rate for quest reward if rates available
-		if ((itemId == PcInventory.ADENA_ID) && (enchantlevel == 0))
-		{
-			count = (long) (count * Config.RATE_QUEST_REWARD_ADENA);
-		}
-		
 		// Add items to player's inventory
 		final L2ItemInstance item = player.getInventory().addItem("Quest", itemId, count, player, player.getTarget());
 		if (item == null)
