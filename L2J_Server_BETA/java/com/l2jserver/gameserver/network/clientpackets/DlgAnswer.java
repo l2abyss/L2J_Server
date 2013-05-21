@@ -100,7 +100,7 @@ public final class DlgAnswer extends L2GameClientPacket
 			final SummonRequestHolder holder = activeChar.getScript(SummonRequestHolder.class);
 			if ((_answer == 1) && (holder != null) && (holder.getTarget().getObjectId() == _requesterId))
 			{
-				L2PcInstance.teleToTarget(activeChar, holder.getTarget(), holder.getSkill());
+				activeChar.teleToLocation(holder.getTarget().getX(), holder.getTarget().getY(), holder.getTarget().getZ(), true);
 			}
 			activeChar.removeScript(SummonRequestHolder.class);
 		}

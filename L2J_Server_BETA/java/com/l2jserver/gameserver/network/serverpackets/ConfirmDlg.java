@@ -88,15 +88,15 @@ public class ConfirmDlg extends L2GameServerPacket
 	
 	public ConfirmDlg addCharName(L2Character cha)
 	{
-		if (cha instanceof L2Npc)
+		if (cha.isNpc())
 		{
 			return addNpcName((L2Npc) cha);
 		}
-		if (cha instanceof L2PcInstance)
+		if (cha.isPlayer())
 		{
-			return addPcName((L2PcInstance) cha);
+			return addPcName(cha.getActingPlayer());
 		}
-		if (cha instanceof L2Summon)
+		if (cha.isSummon())
 		{
 			return addNpcName((L2Summon) cha);
 		}

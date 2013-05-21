@@ -51,6 +51,7 @@ import com.l2jserver.gameserver.model.conditions.ConditionMinDistance;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerActiveEffectId;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerActiveSkillId;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerAgathionId;
+import com.l2jserver.gameserver.model.conditions.ConditionPlayerCallPc;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanEscape;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanSweep;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCharges;
@@ -748,6 +749,10 @@ public abstract class DocumentBase
 					final boolean val = Boolean.parseBoolean(st.nextToken());
 					cond = joinAnd(cond, new ConditionPlayerRangeFromNpc(npcIds, radius, val));
 				}
+			}
+			else if ("callPc".equalsIgnoreCase(a.getNodeName()))
+			{
+				cond = joinAnd(cond, new ConditionPlayerCallPc(Boolean.parseBoolean(a.getNodeValue())));
 			}
 			else if ("canEscape".equalsIgnoreCase(a.getNodeName()))
 			{
