@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.model.stats.Env;
  */
 public class ConditionPlayerCharges extends Condition
 {
-	
 	private final int _charges;
 	
 	/**
