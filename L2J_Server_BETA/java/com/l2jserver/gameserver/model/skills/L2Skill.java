@@ -117,10 +117,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _mpInitialConsume;
 	/** HP consumption. */
 	private final int _hpConsume;
-	/** Amount of items consumed by this skill from target. */
-	private final int _targetConsumeCount;
-	/** Id of item consumed by this skill from target. */
-	private final int _targetConsumeId;
 	/** Amount of items consumed by this skill from caster. */
 	private final int _itemConsumeCount;
 	/** Id of item consumed by this skill from caster. */
@@ -273,8 +269,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_mpConsume = set.getInteger("mpConsume", 0);
 		_mpInitialConsume = set.getInteger("mpInitialConsume", 0);
 		_hpConsume = set.getInteger("hpConsume", 0);
-		_targetConsumeCount = set.getInteger("targetConsumeCount", 0);
-		_targetConsumeId = set.getInteger("targetConsumeId", 0);
 		_itemConsumeCount = set.getInteger("itemConsumeCount", 0);
 		_itemConsumeId = set.getInteger("itemConsumeId", 0);
 		_afterEffectId = set.getInteger("afterEffectId", 0);
@@ -774,22 +768,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final BaseStats getSaveVs()
 	{
 		return _saveVs;
-	}
-	
-	/**
-	 * @return Returns the _targetConsumeId.
-	 */
-	public final int getTargetConsumeId()
-	{
-		return _targetConsumeId;
-	}
-	
-	/**
-	 * @return Returns the targetConsume.
-	 */
-	public final int getTargetConsume()
-	{
-		return _targetConsumeCount;
 	}
 	
 	/**
