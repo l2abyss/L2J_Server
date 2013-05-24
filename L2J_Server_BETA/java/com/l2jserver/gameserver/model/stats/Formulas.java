@@ -20,7 +20,6 @@ package com.l2jserver.gameserver.model.stats;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -51,7 +50,6 @@ import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.type.L2ArmorType;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
-import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.L2TraitType;
@@ -2149,132 +2147,63 @@ public final class Formulas
 		return Rnd.get(100) < activeChar.calcStat(Stats.BLOW_RATE, blowChance, target, null);
 	}
 	
-	public static List<L2Effect> calcCancelStealEffects(L2Character activeChar, L2Character target, L2Skill skill, double power)
+	public static List<L2Effect> calcCancelStealEffects(L2Character activeChar, L2Character target, L2Skill skill, String slot, int rate, int max)
 	{
-		// Resists.
-		int cancelMagicLvl = skill.getMagicLevel();
-		int count = skill.getMaxNegatedEffects();
-		final double vuln = target.calcStat(Stats.CANCEL_VULN, 0, target, null);
-		final double prof = activeChar.calcStat(Stats.CANCEL_PROF, 0, target, null);
-		double resMod = 1 + (((vuln + prof) * -1) / 100);
-		double rate = power / resMod;
-		
-		if (activeChar.isDebug() || Config.DEVELOPER)
-		{
-			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, skill.getName(), " Base Rate:", String.valueOf((int) power), " Magiclvl:", String.valueOf(cancelMagicLvl), " resMod:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") Rate:", String.valueOf(rate));
-			final String result = stat.toString();
-			if (activeChar.isDebug())
-			{
-				activeChar.sendDebugMessage(result);
-			}
-			if (Config.DEVELOPER)
-			{
-				_log.info(result);
-			}
-		}
-		
-		// Cancel for Abnormals.
 		final List<L2Effect> effects = target.getAllEffects();
-		List<L2Effect> canceled = new ArrayList<>(count);
-		if (!skill.getNegateAbnormals().isEmpty())
+		List<L2Effect> canceled = new ArrayList<>(max);
+		if (!effects.isEmpty())
 		{
-			for (L2Effect eff : effects)
+			if (slot.equals("buff"))
 			{
-				if (eff == null)
-				{
-					continue;
-				}
+				int cancelMagicLvl = skill.getMagicLevel();
+				final double vuln = target.calcStat(Stats.CANCEL_VULN, 0, target, null);
+				final double prof = activeChar.calcStat(Stats.CANCEL_PROF, 0, target, null);
+				double resMod = 1 + (((vuln + prof) * -1) / 100);
+				double finalRate = rate / resMod;
 				
-				for (Entry<AbnormalType, Byte> negate : skill.getNegateAbnormals().entrySet())
+				if (activeChar.isDebug() || Config.DEVELOPER)
 				{
-					if ((eff.getSkill().getAbnormalType() == negate.getKey()) && (negate.getValue() >= eff.getSkill().getAbnormalLvl()))
+					final StringBuilder stat = new StringBuilder(100);
+					StringUtil.append(stat, skill.getName(), " Base Rate:", String.valueOf(rate), " Magiclvl:", String.valueOf(cancelMagicLvl), " resMod:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") Rate:", String.valueOf(rate));
+					final String result = stat.toString();
+					if (activeChar.isDebug())
 					{
-						if (calcCancelSuccess(eff, cancelMagicLvl, (int) rate, skill))
-						{
-							eff.exit();
-						}
+						activeChar.sendDebugMessage(result);
+					}
+					if (Config.DEVELOPER)
+					{
+						_log.info(result);
 					}
 				}
-			}
-		}
-		// Common Cancel/Steal.
-		else
-		{
-			// First Pass.
-			int lastCanceledSkillId = 0;
-			L2Effect effect;
-			for (int i = effects.size(); --i >= 0;) // reverse order
-			{
-				effect = effects.get(i);
-				if (effect == null)
-				{
-					continue;
-				}
 				
-				// remove effect if can't be stolen
-				if (!effect.canBeStolen())
-				{
-					effects.remove(i);
-					continue;
-				}
-				
-				// Only Dances/Songs.
-				if (!effect.getSkill().isDance())
-				{
-					continue;
-				}
-				
-				if (!calcCancelSuccess(effect, cancelMagicLvl, (int) rate, skill))
-				{
-					continue;
-				}
-				
-				if (effect.getSkill().getId() != lastCanceledSkillId)
-				{
-					lastCanceledSkillId = effect.getSkill().getId();
-					count--;
-				}
-				
-				canceled.add(effect);
-				if (count == 0)
-				{
-					break;
-				}
-			}
-			// Second Pass.
-			if (count > 0)
-			{
-				lastCanceledSkillId = 0;
-				for (int i = effects.size(); --i >= 0;)
+				L2Effect effect;
+				for (int i = effects.size(); --i >= 0;) // reverse order
 				{
 					effect = effects.get(i);
-					if (effect == null)
+					if (!effect.canBeStolen() || effect.getSkill().isDance() || (!calcCancelSuccess(effect, cancelMagicLvl, (int) finalRate, skill)))
 					{
 						continue;
 					}
-					
-					// All Except Dances/Songs.
-					if (effect.getSkill().isDance())
-					{
-						continue;
-					}
-					
-					if (!calcCancelSuccess(effect, cancelMagicLvl, (int) rate, skill))
-					{
-						continue;
-					}
-					
-					if (effect.getSkill().getId() != lastCanceledSkillId)
-					{
-						lastCanceledSkillId = effect.getSkill().getId();
-						count--;
-					}
-					
 					canceled.add(effect);
-					if (count == 0)
+					if (canceled.size() >= max)
 					{
 						break;
+					}
+				}
+			}
+			else if (slot.equals("debuff"))
+			{
+				L2Effect effect;
+				for (int i = effects.size(); --i >= 0;) // reverse order
+				{
+					effect = effects.get(i);
+					if (effect.getSkill().isDebuff() && effect.getSkill().canBeDispeled() && (Rnd.get(100) <= rate))
+					{
+						canceled.add(effect);
+						if (canceled.size() >= max)
+						{
+							break;
+						}
 					}
 				}
 			}

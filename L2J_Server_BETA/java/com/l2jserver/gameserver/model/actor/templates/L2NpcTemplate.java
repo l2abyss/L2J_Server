@@ -440,7 +440,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 						addRangeSkill(skill);
 						break;
 					case DUMMY:
-						if (skill.hasEffectType(L2EffectType.CANCEL, L2EffectType.CANCEL_ALL, L2EffectType.NEGATE))
+						if (skill.hasEffectType(L2EffectType.DISPEL))
 						{
 							addNegativeSkill(skill);
 							addRangeSkill(skill);

@@ -21,10 +21,8 @@ package com.l2jserver.gameserver.model.skills;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -133,12 +131,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final AbnormalType _abnormalType;
 	/** Abnormal time: global effect duration time. */
 	private final int _abnormalTime;
-	/** Abnormal type map for types that this skills might remove. */
-	private final Map<AbnormalType, Byte> _negateAbnormals;
 	/** Abnormal type set for abnormal types that this effect skill blocks. */
 	private final Set<AbnormalType> _blockBuffSlots;
-	/** Maximum amount of effects removed. */
-	private final int _maxNegatedEffects;
 	/** If {@code true} this skill's effect should stay after death. */
 	private final boolean _stayAfterDeath;
 	/** If {@code true} this skill's effect should stay after class-subclass change. */
@@ -294,39 +288,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		
 		_abnormalTime = abnormalTime;
 		_attribute = set.getString("attribute", "");
-		String negateAbnormals = set.getString("negateAbnormals", null);
-		if ((negateAbnormals != null) && !negateAbnormals.isEmpty())
-		{
-			_negateAbnormals = new EnumMap<>(AbnormalType.class);
-			for (String ngtStack : negateAbnormals.split(";"))
-			{
-				String[] ngt = ngtStack.split(",");
-				final AbnormalType type = AbnormalType.getAbnormalType(ngt[0]);
-				if (ngt.length == 1) // Only abnormalType is present, without abnormalLvl
-				{
-					_negateAbnormals.put(type, Byte.MAX_VALUE);
-				}
-				else if (ngt.length == 2) // Both abnormalType and abnormalLvl are present
-				{
-					try
-					{
-						_negateAbnormals.put(type, Byte.parseByte(ngt[1]));
-					}
-					catch (Exception e)
-					{
-						throw new IllegalArgumentException("SkillId: " + _id + " Byte value required, but found: " + ngt[1]);
-					}
-				}
-				else
-				{
-					throw new IllegalArgumentException("SkillId: " + _id + ": Incorrect negate Abnormals for " + ngtStack + ". Lvl: abnormalType1,abnormalLvl1;abnormalType2,abnormalLvl2;abnormalType3,abnormalLvl3... or abnormalType1;abnormalType2;abnormalType3...");
-				}
-			}
-		}
-		else
-		{
-			_negateAbnormals = Collections.<AbnormalType, Byte> emptyMap();
-		}
 		
 		String blockBuffSlots = set.getString("blockBuffSlot", null);
 		if ((blockBuffSlots != null) && !blockBuffSlots.isEmpty())
@@ -341,8 +302,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		{
 			_blockBuffSlots = Collections.<AbnormalType> emptySet();
 		}
-		
-		_maxNegatedEffects = set.getInteger("maxNegated", 0);
 		
 		_stayAfterDeath = set.getBool("stayAfterDeath", false);
 		_stayOnSubclassChange = set.getBool("stayOnSubclassChange", true);
@@ -586,11 +545,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return isPvE ? _pvePower : isPvP ? _pvpPower : _power;
 	}
 	
-	public final Map<AbnormalType, Byte> getNegateAbnormals()
-	{
-		return _negateAbnormals;
-	}
-	
 	public final Set<AbnormalType> getBlockBuffSlots()
 	{
 		return _blockBuffSlots;
@@ -622,11 +576,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final int getMagicLevel()
 	{
 		return _magicLevel;
-	}
-	
-	public final int getMaxNegatedEffects()
-	{
-		return _maxNegatedEffects;
 	}
 	
 	public final int getLvlBonusRate()
