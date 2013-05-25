@@ -58,7 +58,7 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 			return;
 		}
 		
-		if (player.getActiveEnchantItem() != null)
+		if (player.getActiveEnchantItemId() != L2PcInstance.ID_NONE)
 		{
 			return;
 		}

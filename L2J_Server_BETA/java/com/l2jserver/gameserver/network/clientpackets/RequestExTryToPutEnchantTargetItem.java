@@ -58,7 +58,7 @@ public class RequestExTryToPutEnchantTargetItem extends L2GameClientPacket
 		}
 		
 		L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
-		L2ItemInstance scroll = activeChar.getActiveEnchantItem();
+		L2ItemInstance scroll = activeChar.getInventory().getItemByObjectId(activeChar.getActiveEnchantItemId());
 		
 		if ((item == null) || (scroll == null))
 		{
@@ -69,7 +69,7 @@ public class RequestExTryToPutEnchantTargetItem extends L2GameClientPacket
 		if ((scrollTemplate == null) || !scrollTemplate.isValid(item))
 		{
 			activeChar.sendPacket(SystemMessageId.DOES_NOT_FIT_SCROLL_CONDITIONS);
-			activeChar.setActiveEnchantItem(null);
+			activeChar.setActiveEnchantItemId(L2PcInstance.ID_NONE);
 			activeChar.sendPacket(new ExPutEnchantTargetItemResult(0));
 			if (scrollTemplate == null)
 			{

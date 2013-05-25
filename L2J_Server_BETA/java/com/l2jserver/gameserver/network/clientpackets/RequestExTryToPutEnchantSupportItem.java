@@ -64,11 +64,11 @@ public class RequestExTryToPutEnchantSupportItem extends L2GameClientPacket
 				{
 					// message may be custom
 					activeChar.sendPacket(SystemMessageId.INAPPROPRIATE_ENCHANT_CONDITION);
-					activeChar.setActiveEnchantSupportItem(null);
+					activeChar.setActiveEnchantSupportItemId(L2PcInstance.ID_NONE);
 					activeChar.sendPacket(new ExPutEnchantSupportItemResult(0));
 					return;
 				}
-				activeChar.setActiveEnchantSupportItem(support);
+				activeChar.setActiveEnchantSupportItemId(support.getObjectId());
 				activeChar.sendPacket(new ExPutEnchantSupportItemResult(_supportObjectId));
 			}
 		}

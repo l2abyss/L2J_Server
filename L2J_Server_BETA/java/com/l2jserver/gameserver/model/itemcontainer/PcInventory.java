@@ -755,9 +755,9 @@ public class PcInventory extends Inventory
 		getOwner().removeItemFromShortCut(item.getObjectId());
 		
 		// Removes active Enchant Scroll
-		if (item.equals(getOwner().getActiveEnchantItem()))
+		if (item.getObjectId() == getOwner().getActiveEnchantItemId())
 		{
-			getOwner().setActiveEnchantItem(null);
+			getOwner().setActiveEnchantItemId(L2PcInstance.ID_NONE);
 		}
 		
 		if (item.getItemId() == ADENA_ID)

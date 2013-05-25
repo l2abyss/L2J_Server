@@ -384,6 +384,8 @@ public final class L2PcInstance extends L2Playable
 	private static final String LOAD_ZONE_RESTART_LIMIT = "SELECT time_limit FROM character_norestart_zone_time WHERE charId = ?";
 	private static final String UPDATE_ZONE_RESTART_LIMIT = "REPLACE INTO character_norestart_zone_time (charId, time_limit) VALUES (?,?)";
 	
+	public static final int ID_NONE = -1;
+	
 	public static final int REQUEST_TIMEOUT = 15;
 	public static final int STORE_PRIVATE_NONE = 0;
 	public static final int STORE_PRIVATE_SELL = 1;
@@ -785,9 +787,9 @@ public final class L2PcInstance extends L2Playable
 	private int _expertisePenaltyBonus = 0;
 	
 	private boolean _isEnchanting = false;
-	private L2ItemInstance _activeEnchantItem = null;
-	private L2ItemInstance _activeEnchantSupportItem = null;
-	private L2ItemInstance _activeEnchantAttrItem = null;
+	private int _activeEnchantItemId = ID_NONE;
+	private int _activeEnchantSupportItemId = ID_NONE;
+	private int _activeEnchantAttrItemId = ID_NONE;
 	private long _activeEnchantTimestamp = 0;
 	
 	protected boolean _inventoryDisable = false;
@@ -2656,41 +2658,41 @@ public final class L2PcInstance extends L2Playable
 		return getStat().getExp();
 	}
 	
-	public void setActiveEnchantAttrItem(L2ItemInstance stone)
+	public void setActiveEnchantAttrItemId(int objectId)
 	{
-		_activeEnchantAttrItem = stone;
+		_activeEnchantAttrItemId = objectId;
 	}
 	
-	public L2ItemInstance getActiveEnchantAttrItem()
+	public int getActiveEnchantAttrItemId()
 	{
-		return _activeEnchantAttrItem;
+		return _activeEnchantAttrItemId;
 	}
 	
-	public void setActiveEnchantItem(L2ItemInstance scroll)
+	public void setActiveEnchantItemId(int objectId)
 	{
 		// If we don't have a Enchant Item, we are not enchanting.
-		if (scroll == null)
+		if (objectId == ID_NONE)
 		{
-			setActiveEnchantSupportItem(null);
+			setActiveEnchantSupportItemId(ID_NONE);
 			setActiveEnchantTimestamp(0);
 			setIsEnchanting(false);
 		}
-		_activeEnchantItem = scroll;
+		_activeEnchantItemId = objectId;
 	}
 	
-	public L2ItemInstance getActiveEnchantItem()
+	public int getActiveEnchantItemId()
 	{
-		return _activeEnchantItem;
+		return _activeEnchantItemId;
 	}
 	
-	public void setActiveEnchantSupportItem(L2ItemInstance item)
+	public void setActiveEnchantSupportItemId(int objectId)
 	{
-		_activeEnchantSupportItem = item;
+		_activeEnchantSupportItemId = objectId;
 	}
 	
-	public L2ItemInstance getActiveEnchantSupportItem()
+	public int getActiveEnchantSupportItemId()
 	{
-		return _activeEnchantSupportItem;
+		return _activeEnchantSupportItemId;
 	}
 	
 	public long getActiveEnchantTimestamp()
@@ -4055,7 +4057,7 @@ public final class L2PcInstance extends L2Playable
 	 * @param reference L2Object Object referencing current action like NPC selling item or previous item in transformation
 	 * @param sendMessage boolean Specifies whether to send message to Client about this action
 	 * @param protectItem whether or not dropped item must be protected temporary against other players
-	 * @return boolean informing if the action was successfull
+	 * @return boolean informing if the action was successful
 	 */
 	public boolean dropItem(String process, L2ItemInstance item, L2Object reference, boolean sendMessage, boolean protectItem)
 	{
@@ -4264,13 +4266,12 @@ public final class L2PcInstance extends L2Playable
 			return null;
 		}
 		
-		if ((getActiveEnchantItem() != null) && (getActiveEnchantItem().getObjectId() == objectId))
+		if (getActiveEnchantItemId() == objectId)
 		{
 			if (Config.DEBUG)
 			{
 				_log.finest(getObjectId() + ":player tried to " + action + " an enchant scroll he was using");
 			}
-			
 			return null;
 		}
 		
@@ -11646,13 +11647,12 @@ public final class L2PcInstance extends L2Playable
 			return false;
 		}
 		
-		if ((getActiveEnchantItem() != null) && (getActiveEnchantItem().getObjectId() == objectId))
+		if (getActiveEnchantItemId() == objectId)
 		{
 			if (Config.DEBUG)
 			{
 				_log.finest(getObjectId() + ":player tried to " + action + " an enchant scroll he was using");
 			}
-			
 			return false;
 		}
 		
