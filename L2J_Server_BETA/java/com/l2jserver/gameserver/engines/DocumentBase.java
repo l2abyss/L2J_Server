@@ -54,6 +54,8 @@ import com.l2jserver.gameserver.model.conditions.ConditionPlayerAgathionId;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCallPc;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanEscape;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanSweep;
+import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanTransform;
+import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanUntransform;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCharges;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerClassIdRestriction;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCloakStatus;
@@ -761,6 +763,14 @@ public abstract class DocumentBase
 			else if ("canSweep".equalsIgnoreCase(a.getNodeName()))
 			{
 				cond = joinAnd(cond, new ConditionPlayerCanSweep(Boolean.parseBoolean(a.getNodeValue())));
+			}
+			else if ("canTransform".equalsIgnoreCase(a.getNodeName()))
+			{
+				cond = joinAnd(cond, new ConditionPlayerCanTransform(Boolean.parseBoolean(a.getNodeValue())));
+			}
+			else if ("canUntransform".equalsIgnoreCase(a.getNodeName()))
+			{
+				cond = joinAnd(cond, new ConditionPlayerCanUntransform(Boolean.parseBoolean(a.getNodeValue())));
 			}
 			else if ("insideZoneId".equalsIgnoreCase(a.getNodeName()))
 			{

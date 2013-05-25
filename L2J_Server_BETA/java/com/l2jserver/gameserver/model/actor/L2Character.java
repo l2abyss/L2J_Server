@@ -5815,23 +5815,19 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				removeSkill(oldSkill.getTriggeredId(), true);
 			}
 			
-			// does not abort casting of the transformation dispell
-			if (oldSkill.getSkillType() != L2SkillType.TRANSFORMDISPEL)
+			// Stop casting if this skill is used right now
+			if ((getLastSkillCast() != null) && isCastingNow())
 			{
-				// Stop casting if this skill is used right now
-				if ((getLastSkillCast() != null) && isCastingNow())
+				if (oldSkill.getId() == getLastSkillCast().getId())
 				{
-					if (oldSkill.getId() == getLastSkillCast().getId())
-					{
-						abortCast();
-					}
+					abortCast();
 				}
-				if ((getLastSimultaneousSkillCast() != null) && isCastingSimultaneouslyNow())
+			}
+			if ((getLastSimultaneousSkillCast() != null) && isCastingSimultaneouslyNow())
+			{
+				if (oldSkill.getId() == getLastSimultaneousSkillCast().getId())
 				{
-					if (oldSkill.getId() == getLastSimultaneousSkillCast().getId())
-					{
-						abortCast();
-					}
+					abortCast();
 				}
 			}
 			

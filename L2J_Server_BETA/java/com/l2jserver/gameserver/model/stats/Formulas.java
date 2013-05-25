@@ -2153,58 +2153,63 @@ public final class Formulas
 		List<L2Effect> canceled = new ArrayList<>(max);
 		if (!effects.isEmpty())
 		{
-			if (slot.equals("buff"))
+			switch (slot)
 			{
-				int cancelMagicLvl = skill.getMagicLevel();
-				final double vuln = target.calcStat(Stats.CANCEL_VULN, 0, target, null);
-				final double prof = activeChar.calcStat(Stats.CANCEL_PROF, 0, target, null);
-				double resMod = 1 + (((vuln + prof) * -1) / 100);
-				double finalRate = rate / resMod;
-				
-				if (activeChar.isDebug() || Config.DEVELOPER)
+				case "buff":
 				{
-					final StringBuilder stat = new StringBuilder(100);
-					StringUtil.append(stat, skill.getName(), " Base Rate:", String.valueOf(rate), " Magiclvl:", String.valueOf(cancelMagicLvl), " resMod:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") Rate:", String.valueOf(rate));
-					final String result = stat.toString();
-					if (activeChar.isDebug())
+					int cancelMagicLvl = skill.getMagicLevel();
+					final double vuln = target.calcStat(Stats.CANCEL_VULN, 0, target, null);
+					final double prof = activeChar.calcStat(Stats.CANCEL_PROF, 0, target, null);
+					double resMod = 1 + (((vuln + prof) * -1) / 100);
+					double finalRate = rate / resMod;
+					
+					if (activeChar.isDebug() || Config.DEVELOPER)
 					{
-						activeChar.sendDebugMessage(result);
+						final StringBuilder stat = new StringBuilder(100);
+						StringUtil.append(stat, skill.getName(), " Base Rate:", String.valueOf(rate), " Magiclvl:", String.valueOf(cancelMagicLvl), " resMod:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") Rate:", String.valueOf(rate));
+						final String result = stat.toString();
+						if (activeChar.isDebug())
+						{
+							activeChar.sendDebugMessage(result);
+						}
+						if (Config.DEVELOPER)
+						{
+							_log.info(result);
+						}
 					}
-					if (Config.DEVELOPER)
+					
+					L2Effect effect;
+					for (int i = effects.size(); --i >= 0;) // reverse order
 					{
-						_log.info(result);
-					}
-				}
-				
-				L2Effect effect;
-				for (int i = effects.size(); --i >= 0;) // reverse order
-				{
-					effect = effects.get(i);
-					if (!effect.canBeStolen() || effect.getSkill().isDance() || (!calcCancelSuccess(effect, cancelMagicLvl, (int) finalRate, skill)))
-					{
-						continue;
-					}
-					canceled.add(effect);
-					if (canceled.size() >= max)
-					{
-						break;
-					}
-				}
-			}
-			else if (slot.equals("debuff"))
-			{
-				L2Effect effect;
-				for (int i = effects.size(); --i >= 0;) // reverse order
-				{
-					effect = effects.get(i);
-					if (effect.getSkill().isDebuff() && effect.getSkill().canBeDispeled() && (Rnd.get(100) <= rate))
-					{
+						effect = effects.get(i);
+						if (!effect.canBeStolen() || effect.getSkill().isDance() || (!calcCancelSuccess(effect, cancelMagicLvl, (int) finalRate, skill)))
+						{
+							continue;
+						}
 						canceled.add(effect);
 						if (canceled.size() >= max)
 						{
 							break;
 						}
 					}
+					break;
+				}
+				case "debuff":
+				{
+					L2Effect effect;
+					for (int i = effects.size(); --i >= 0;) // reverse order
+					{
+						effect = effects.get(i);
+						if (effect.getSkill().isDebuff() && effect.getSkill().canBeDispeled() && (Rnd.get(100) <= rate))
+						{
+							canceled.add(effect);
+							if (canceled.size() >= max)
+							{
+								break;
+							}
+						}
+					}
+					break;
 				}
 			}
 		}
