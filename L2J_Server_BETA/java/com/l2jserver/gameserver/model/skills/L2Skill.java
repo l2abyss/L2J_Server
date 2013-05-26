@@ -209,7 +209,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _lethalStrikeRate;
 	private final boolean _directHpDmg; // If true then damage is being make directly
 	private final boolean _isTriggeredSkill; // If true the skill will take activation buff slot instead of a normal buff slot
-	private final float _sSBoost; // If true skill will have SoulShot boost (power*2)
 	private final int _aggroPoints;
 	// Condition lists
 	private List<Condition> _preCondition;
@@ -421,7 +420,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		
 		_directHpDmg = set.getBool("dmgDirectlyToHp", false);
 		_isTriggeredSkill = set.getBool("isTriggeredSkill", false);
-		_sSBoost = set.getFloat("SSBoost", 0.f);
 		_aggroPoints = set.getInteger("aggroPoints", 0);
 		
 		_flyType = set.getString("flyType", null);
@@ -876,11 +874,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final boolean isTriggeredSkill()
 	{
 		return _isTriggeredSkill;
-	}
-	
-	public final float getSSBoost()
-	{
-		return _sSBoost;
 	}
 	
 	public final int getAggroPoints()

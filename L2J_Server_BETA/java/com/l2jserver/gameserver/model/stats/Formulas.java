@@ -605,7 +605,7 @@ public final class Formulas
 		double damage = 0;
 		double proximityBonus = 1;
 		double graciaPhysSkillBonus = skill.isMagic() ? 1 : 1.10113; // Gracia final physical skill bonus 10.113%
-		double ssboost = ss ? (skill.getSSBoost() > 0 ? skill.getSSBoost() : 2.04) : 1; // 104% bonus with SS
+		double ssboost = ss ? 2.04 : 1; // 104% bonus with SS
 		double pvpBonus = 1;
 		
 		if (attacker.isPlayable() && target.isPlayable())
@@ -622,18 +622,8 @@ public final class Formulas
 		damage *= calcValakasTrait(attacker, target, skill);
 		double element = calcElemental(attacker, target, skill);
 		
-		// SSBoost > 0 have different calculation
-		if (skill.getSSBoost() > 0)
-		{
-			damage += (((70. * graciaPhysSkillBonus * (attacker.getPAtk(target) + power)) / defence) * (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill)) * (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * ssboost * proximityBonus * element * pvpBonus) + (((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70) / defence) * graciaPhysSkillBonus);
-		}
-		else
-		{
-			damage += (((70. * graciaPhysSkillBonus * (power + (attacker.getPAtk(target) * ssboost))) / defence) * (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill)) * (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * proximityBonus * element * pvpBonus) + (((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70) / defence) * graciaPhysSkillBonus);
-		}
-		
+		damage += (((70. * graciaPhysSkillBonus * (power + (attacker.getPAtk(target) * ssboost))) / defence) * (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill)) * (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * proximityBonus * element * pvpBonus) + (((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70) / defence) * graciaPhysSkillBonus);
 		damage += target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill) * 6.1;
-		
 		// get the vulnerability for the instance due to skills (buffs, passives, toggles, etc)
 		damage = target.calcStat(Stats.DAGGER_WPN_VULN, damage, target, null);
 		// Random weapon damage
@@ -654,7 +644,6 @@ public final class Formulas
 		}
 		
 		// TODO: Formulas.calcStunBreak(target, damage);
-		
 		return damage < 1 ? 1. : damage;
 	}
 	
@@ -698,31 +687,9 @@ public final class Formulas
 			}
 		}
 		
-		if (ss)
-		{
-			damage *= 2;
-		}
-		if (skill != null)
-		{
-			double skillpower = skill.getPower(attacker, target, isPvP, isPvE);
-			float ssboost = skill.getSSBoost();
-			if (ssboost <= 0)
-			{
-				damage += skillpower;
-			}
-			else if (ssboost > 0)
-			{
-				if (ss)
-				{
-					skillpower *= ssboost;
-					damage += skillpower;
-				}
-				else
-				{
-					damage += skillpower;
-				}
-			}
-		}
+		// Add soulshot boost.
+		int ssBoost = ss ? 2 : 1;
+		damage = (skill != null) ? ((damage * ssBoost) + skill.getPower(attacker, target, isPvP, isPvE)) : (damage * ssBoost);
 		
 		// Defense modifier depending of the attacker weapon
 		L2Weapon weapon = attacker.getActiveWeaponItem();
