@@ -373,6 +373,11 @@ public class NpcTable
 				updated += performUpdate(npcaidataAttributes, "npcaidata", "npcId", npcaidataAttributeValues, npcId, con);
 				updated += performUpdate(npcElementAttributes, "npc_elementals", "npc_id", npcElementAttributeValues, npcId, con);
 			}
+			
+			if (updated > 0)
+			{
+				reloadNpc(npcId, !npcAttributeValues.isEmpty(), !npcaidataAttributeValues.isEmpty(), !npcElementAttributeValues.isEmpty(), false, false, false);
+			}
 		}
 		catch (Exception e)
 		{
