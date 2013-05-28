@@ -23,6 +23,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +40,6 @@ import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.ClassId;
-import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.BaseStats;
 
@@ -181,40 +180,55 @@ public class NpcTable
 		npcDat.set("baseHolyRes", 20);
 		npcDat.set("baseDarkRes", 20);
 		
-		_npcs.put(id, new L2NpcTemplate(npcDat));
+		final L2NpcTemplate template = getTemplate(id);
+		if (template == null)
+		{
+			_npcs.put(id, new L2NpcTemplate(npcDat));
+		}
+		else
+		{
+			template.set(npcDat);
+		}
 	}
 	
 	/**
 	 * Reload npc.
 	 * @param id of the NPC to reload.
+	 * @param base reloads base npc data.
+	 * @param ai reloads AI npc data.
+	 * @param element reloads elemental npc data
+	 * @param skills reloads skills npc data.
+	 * @param drops reloads drop npc data
+	 * @param minions reloads minions npc data.
 	 */
-	public void reloadNpc(int id)
+	public void reloadNpc(int id, boolean base, boolean ai, boolean element, boolean skills, boolean drops, boolean minions)
 	{
-		Map<QuestEventType, List<Quest>> quests = null;
 		try
 		{
-			// save a copy of the old data
-			L2NpcTemplate old = getTemplate(id);
-			
-			if (old != null)
+			if (base)
 			{
-				quests = old.getEventQuests();
+				loadNpcs(id);
 			}
-			
-			loadNpcs(id);
-			loadNpcsSkills(id);
-			loadNpcsDrop(id);
-			loadNpcsSkillLearn(id);
-			loadMinions(id);
-			loadNpcsAI(id);
-			loadNpcsElement(id);
-			
-			// restore additional data from saved copy
-			L2NpcTemplate created = getTemplate(id);
-			
-			if ((old != null) && (created != null))
+			if (ai)
 			{
-				created.getEventQuests().putAll(quests);
+				loadNpcsAI(id);
+			}
+			if (element)
+			{
+				loadNpcsElement(id);
+			}
+			if (skills)
+			{
+				loadNpcsSkills(id);
+				loadNpcsSkillLearn(id);
+			}
+			if (drops)
+			{
+				loadNpcsDrop(id);
+			}
+			if (minions)
+			{
+				loadMinions(id);
 			}
 		}
 		catch (Exception e)
@@ -232,41 +246,113 @@ public class NpcTable
 	}
 	
 	/**
-	 * Save npc.
+	 * Save npc into the database.
 	 * @param npc the npc
 	 */
 	public void saveNpc(StatsSet npc)
 	{
-		final Map<String, Object> set = npc.getSet();
-		int length = 0;
-		for (Object obj : set.keySet())
-		{
-			// 15 is just guessed npc name length
-			length += ((String) obj).length() + 7 + 15;
-		}
+		final int npcId = npc.getInteger("npcId");
 		
-		final StringBuilder npcSb = new StringBuilder(length);
-		final StringBuilder npcAiSb = new StringBuilder(30);
-		String attribute;
-		String value;
-		for (Entry<String, Object> entry : set.entrySet())
+		final StringBuilder npcAttributes = new StringBuilder();
+		final ArrayList<Object> npcAttributeValues = new ArrayList<>();
+		
+		final StringBuilder npcaidataAttributes = new StringBuilder();
+		final ArrayList<Object> npcaidataAttributeValues = new ArrayList<>();
+		
+		final StringBuilder npcElementAttributes = new StringBuilder();
+		final ArrayList<Object> npcElementAttributeValues = new ArrayList<>();
+		
+		for (Entry<String, Object> entry : npc.getSet().entrySet())
 		{
-			attribute = entry.getKey();
-			value = String.valueOf(entry.getValue());
-			switch (attribute)
+			switch (entry.getKey())
 			{
 				case "npcId":
 					break;
-				case "aggro":
-				case "showName":
-				case "targetable":
+				case "serverSideName":
+				case "serverSideTitle":
+				case "sex":
+				case "enchant":
+				case "level":
+				case "str":
+				case "con":
+				case "dex":
+				case "int":
+				case "wit":
+				case "men":
+				case "critical":
+				case "dropHerbGroup":
+				case "atkspd":
+				case "matkspd":
+				case "attackrange":
+				case "rhand":
+				case "lhand":
+				case "idTemplate":
+				case "exp":
+				case "sp":
+				case "collision_radius":
+				case "collision_height":
+				case "walkspd":
+				case "runspd":
+				case "patk":
+				case "pdef":
+				case "matk":
+				case "mdef":
+				case "hp":
+				case "mp":
+				case "hpreg":
+				case "mpreg":
+				case "type":
+				case "title":
+				case "name":
 				{
-					appendEntry(npcAiSb, attribute, value);
+					appendEntry(npcAttributes, entry.getKey());
+					npcAttributeValues.add(entry.getValue());
+					break;
+				}
+				case "canMove":
+				case "targetable":
+				case "showName":
+				case "isChaos":
+				case "dodge":
+				case "minSkillChance":
+				case "maxSkillChance":
+				case "minRangeChance":
+				case "maxRangeChance":
+				case "ssChance":
+				case "spsChance":
+				case "aggro":
+				case "clanRange":
+				case "enemyRange":
+				case "primarySkillId":
+				case "minRangeSkill":
+				case "maxRangeSkill":
+				case "soulShot":
+				case "spiritShot":
+				case "clan":
+				case "enemyClan":
+				case "aiType":
+				{
+					appendEntry(npcaidataAttributes, entry.getKey());
+					npcaidataAttributeValues.add(entry.getValue());
+					break;
+				}
+				case "elemAtkType":
+				case "elemAtkValue":
+				case "fireDefValue":
+				case "waterDefValue":
+				case "windDefValue":
+				case "earthDefValue":
+				case "holyDefValue":
+				case "darkDefValue":
+				{
+					appendEntry(npcElementAttributes, entry.getKey());
+					npcElementAttributeValues.add(entry.getValue());
 					break;
 				}
 				default:
 				{
-					appendEntry(npcSb, attribute, value);
+					_log.warning("Unknown stat " + entry.getKey() + " can't set.");
+					return;
 				}
 			}
 		}
@@ -274,17 +360,18 @@ public class NpcTable
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			int updated = 0;
-			final int npcId = npc.getInteger("npcId");
 			if (Config.CUSTOM_NPC_TABLE)
 			{
-				updated = performUpdate(npcSb, "custom_npc", "id", npcId, con);
-				performUpdate(npcAiSb, "custom_npcaidata", "npcId", npcId, con);
+				updated += performUpdate(npcAttributes, "custom_npc", "id", npcAttributeValues, npcId, con);
+				updated += performUpdate(npcaidataAttributes, "custom_npcaidata", "npcId", npcaidataAttributeValues, npcId, con);
+				updated += performUpdate(npcElementAttributes, "custom_npc_elementals", "npc_id", npcElementAttributeValues, npcId, con);
 			}
 			
 			if (updated == 0)
 			{
-				performUpdate(npcSb, "npc", "id", npcId, con);
-				performUpdate(npcAiSb, "npcaidata", "npcId", npcId, con);
+				updated += performUpdate(npcAttributes, "npc", "id", npcAttributeValues, npcId, con);
+				updated += performUpdate(npcaidataAttributes, "npcaidata", "npcId", npcaidataAttributeValues, npcId, con);
+				updated += performUpdate(npcElementAttributes, "npc_elementals", "npc_id", npcElementAttributeValues, npcId, con);
 			}
 		}
 		catch (Exception e)
@@ -297,19 +384,16 @@ public class NpcTable
 	 * Append entry.
 	 * @param sb the string builder to append the attribute and value.
 	 * @param attribute the attribute to append.
-	 * @param value the value to append.
 	 */
-	private final void appendEntry(StringBuilder sb, String attribute, String value)
+	private final void appendEntry(StringBuilder sb, String attribute)
 	{
 		if (sb.length() > 0)
 		{
 			sb.append(", ");
 		}
-		
+		sb.append("`");
 		sb.append(attribute);
-		sb.append(" = '");
-		sb.append(value);
-		sb.append('\'');
+		sb.append("` = ?");
 	}
 	
 	/**
@@ -317,12 +401,13 @@ public class NpcTable
 	 * @param sb the string builder with the parameters
 	 * @param table the table to update.
 	 * @param key the key of the table.
+	 * @param values the values of keys.
 	 * @param npcId the Npc Id.
 	 * @param con the current database connection.
 	 * @return the count of updated NPCs.
 	 * @throws SQLException the SQL exception.
 	 */
-	private final int performUpdate(StringBuilder sb, String table, String key, int npcId, Connection con) throws SQLException
+	private final int performUpdate(StringBuilder sb, String table, String key, Collection<Object> values, int npcId, Connection con) throws SQLException
 	{
 		int updated = 0;
 		if ((sb != null) && !sb.toString().isEmpty())
@@ -337,7 +422,13 @@ public class NpcTable
 			sbQuery.append(" = ?");
 			try (PreparedStatement ps = con.prepareStatement(sbQuery.toString()))
 			{
-				ps.setInt(1, npcId);
+				int i = 1;
+				for (Object value : values)
+				{
+					ps.setObject(i, value);
+					i++;
+				}
+				ps.setInt(i, npcId);
 				updated = ps.executeUpdate();
 			}
 		}

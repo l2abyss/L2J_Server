@@ -30,49 +30,49 @@ import com.l2jserver.gameserver.model.stats.MoveType;
 public class L2CharTemplate
 {
 	// BaseStats
-	private final int _baseSTR;
-	private final int _baseCON;
-	private final int _baseDEX;
-	private final int _baseINT;
-	private final int _baseWIT;
-	private final int _baseMEN;
-	private final float _baseHpMax;
-	private final float _baseCpMax;
-	private final float _baseMpMax;
-	private final float _baseHpReg;
-	private final float _baseMpReg;
-	private final int _basePAtk;
-	private final int _baseMAtk;
-	private final int _basePDef;
-	private final int _baseMDef;
-	private final int _basePAtkSpd;
-	private final int _baseMAtkSpd;
-	private final float _baseMReuseRate;
-	private final int _baseShldDef;
-	private final int _baseAtkRange;
-	private final int _baseShldRate;
-	private final int _baseCritRate;
-	private final int _baseMCritRate;
-	private final int _baseWalkSpd;
-	private final int _baseRunSpd;
+	private int _baseSTR;
+	private int _baseCON;
+	private int _baseDEX;
+	private int _baseINT;
+	private int _baseWIT;
+	private int _baseMEN;
+	private float _baseHpMax;
+	private float _baseCpMax;
+	private float _baseMpMax;
+	private float _baseHpReg;
+	private float _baseMpReg;
+	private int _basePAtk;
+	private int _baseMAtk;
+	private int _basePDef;
+	private int _baseMDef;
+	private int _basePAtkSpd;
+	private int _baseMAtkSpd;
+	private float _baseMReuseRate;
+	private int _baseShldDef;
+	private int _baseAtkRange;
+	private int _baseShldRate;
+	private int _baseCritRate;
+	private int _baseMCritRate;
+	private int _baseWalkSpd;
+	private int _baseRunSpd;
 	// SpecialStats
-	private final int _baseBreath;
-	private final int _baseAggression;
-	private final int _baseBleed;
-	private final int _basePoison;
-	private final int _baseStun;
-	private final int _baseRoot;
-	private final int _baseMovement;
-	private final int _baseConfusion;
-	private final int _baseSleep;
-	private final double _baseAggressionVuln;
-	private final double _baseBleedVuln;
-	private final double _basePoisonVuln;
-	private final double _baseStunVuln;
-	private final double _baseRootVuln;
-	private final double _baseMovementVuln;
-	private final double _baseSleepVuln;
-	private final double _baseCritVuln;
+	private int _baseBreath;
+	private int _baseAggression;
+	private int _baseBleed;
+	private int _basePoison;
+	private int _baseStun;
+	private int _baseRoot;
+	private int _baseMovement;
+	private int _baseConfusion;
+	private int _baseSleep;
+	private double _baseAggressionVuln;
+	private double _baseBleedVuln;
+	private double _basePoisonVuln;
+	private double _baseStunVuln;
+	private double _baseRootVuln;
+	private double _baseMovementVuln;
+	private double _baseSleepVuln;
+	private double _baseCritVuln;
 	private int _baseFire;
 	private int _baseWind;
 	private int _baseWater;
@@ -86,23 +86,28 @@ public class L2CharTemplate
 	private double _baseHolyRes;
 	private double _baseDarkRes;
 	
-	private final int _baseMpConsumeRate;
-	private final int _baseHpConsumeRate;
+	private int _baseMpConsumeRate;
+	private int _baseHpConsumeRate;
 	
 	/**
 	 * For client info use {@link #_fCollisionRadius}
 	 */
-	private final int _collisionRadius;
+	private int _collisionRadius;
 	
 	/**
 	 * For client info use {@link #_fCollisionHeight}
 	 */
-	private final int _collisionHeight;
+	private int _collisionHeight;
 	
-	private final double _fCollisionRadius;
-	private final double _fCollisionHeight;
+	private double _fCollisionRadius;
+	private double _fCollisionHeight;
 	
 	public L2CharTemplate(StatsSet set)
+	{
+		set(set);
+	}
+	
+	public void set(StatsSet set)
 	{
 		// Base stats
 		_baseSTR = set.getInteger("baseSTR", 0);

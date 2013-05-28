@@ -46,31 +46,31 @@ public final class L2NpcTemplate extends L2CharTemplate
 {
 	private static final Logger _log = Logger.getLogger(L2NpcTemplate.class.getName());
 	
-	private final int _npcId;
-	private final int _idTemplate;
-	private final String _type;
-	private final String _name;
-	private final boolean _serverSideName;
-	private final String _title;
-	private final boolean _serverSideTitle;
-	private final String _sex;
-	private final byte _level;
-	private final int _rewardExp;
-	private final int _rewardSp;
-	private final int _rHand;
-	private final int _lHand;
-	private final int _enchantEffect;
+	private int _npcId;
+	private int _idTemplate;
+	private String _type;
+	private String _name;
+	private boolean _serverSideName;
+	private String _title;
+	private boolean _serverSideTitle;
+	private String _sex;
+	private byte _level;
+	private int _rewardExp;
+	private int _rewardSp;
+	private int _rHand;
+	private int _lHand;
+	private int _enchantEffect;
 	
-	private Race _race;
-	private final String _clientClass;
+	private Race _race = Race.NONE;
+	private String _clientClass;
 	
-	private final int _dropHerbGroup;
-	private final boolean _isCustom;
+	private int _dropHerbGroup;
+	private boolean _isCustom;
 	/**
 	 * Doesn't include all mobs that are involved in quests, just plain quest monsters for preventing champion spawn.
 	 */
-	private final boolean _isQuestMonster;
-	private final float _baseVitalityDivider;
+	private boolean _isQuestMonster;
+	private float _baseVitalityDivider;
 	
 	// Skill AI
 	private final List<L2Skill> _buffSkills = new ArrayList<>();
@@ -156,6 +156,53 @@ public final class L2NpcTemplate extends L2CharTemplate
 		NONE
 	}
 	
+	/**
+	 * Constructor of L2Character.
+	 * @param set The StatsSet object to transfer data to the method
+	 */
+	public L2NpcTemplate(StatsSet set)
+	{
+		super(set);
+	}
+	
+	@Override
+	public void set(StatsSet set)
+	{
+		super.set(set);
+		_npcId = set.getInteger("npcId");
+		_idTemplate = set.getInteger("idTemplate");
+		_type = set.getString("type");
+		_name = set.getString("name");
+		_serverSideName = set.getBool("serverSideName");
+		_title = set.getString("title");
+		_isQuestMonster = getTitle().equalsIgnoreCase("Quest Monster");
+		_serverSideTitle = set.getBool("serverSideTitle");
+		_sex = set.getString("sex");
+		_level = set.getByte("level");
+		_rewardExp = set.getInteger("rewardExp");
+		_rewardSp = set.getInteger("rewardSp");
+		_rHand = set.getInteger("rhand");
+		_lHand = set.getInteger("lhand");
+		_enchantEffect = set.getInteger("enchant");
+		final int herbGroup = set.getInteger("dropHerbGroup");
+		if ((herbGroup > 0) && (HerbDropTable.getInstance().getHerbDroplist(herbGroup) == null))
+		{
+			_log.warning("Missing Herb Drop Group for npcId: " + getNpcId());
+			_dropHerbGroup = 0;
+		}
+		else
+		{
+			_dropHerbGroup = herbGroup;
+		}
+		
+		_clientClass = set.getString("client_class");
+		
+		// TODO: Could be loaded from db.
+		_baseVitalityDivider = (getLevel() > 0) && (getRewardExp() > 0) ? (getBaseHpMax() * 9 * getLevel() * getLevel()) / (100 * getRewardExp()) : 0;
+		
+		_isCustom = _npcId != _idTemplate;
+	}
+	
 	public static boolean isAssignableTo(Class<?> sub, Class<?> clazz)
 	{
 		// If clazz represents an interface
@@ -197,48 +244,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public static boolean isAssignableTo(Object obj, Class<?> clazz)
 	{
 		return L2NpcTemplate.isAssignableTo(obj.getClass(), clazz);
-	}
-	
-	/**
-	 * Constructor of L2Character.
-	 * @param set The StatsSet object to transfer data to the method
-	 */
-	public L2NpcTemplate(StatsSet set)
-	{
-		super(set);
-		_npcId = set.getInteger("npcId");
-		_idTemplate = set.getInteger("idTemplate");
-		_type = set.getString("type");
-		_name = set.getString("name");
-		_serverSideName = set.getBool("serverSideName");
-		_title = set.getString("title");
-		_isQuestMonster = getTitle().equalsIgnoreCase("Quest Monster");
-		_serverSideTitle = set.getBool("serverSideTitle");
-		_sex = set.getString("sex");
-		_level = set.getByte("level");
-		_rewardExp = set.getInteger("rewardExp");
-		_rewardSp = set.getInteger("rewardSp");
-		_rHand = set.getInteger("rhand");
-		_lHand = set.getInteger("lhand");
-		_enchantEffect = set.getInteger("enchant");
-		_race = null;
-		final int herbGroup = set.getInteger("dropHerbGroup");
-		if ((herbGroup > 0) && (HerbDropTable.getInstance().getHerbDroplist(herbGroup) == null))
-		{
-			_log.warning("Missing Herb Drop Group for npcId: " + getNpcId());
-			_dropHerbGroup = 0;
-		}
-		else
-		{
-			_dropHerbGroup = herbGroup;
-		}
-		
-		_clientClass = set.getString("client_class");
-		
-		// TODO: Could be loaded from db.
-		_baseVitalityDivider = (getLevel() > 0) && (getRewardExp() > 0) ? (getBaseHpMax() * 9 * getLevel() * getLevel()) / (100 * getRewardExp()) : 0;
-		
-		_isCustom = _npcId != _idTemplate;
 	}
 	
 	public void addAtkSkill(L2Skill skill)
@@ -736,10 +741,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public Race getRace()
 	{
-		if (_race == null)
-		{
-			_race = Race.NONE;
-		}
 		return _race;
 	}
 	
