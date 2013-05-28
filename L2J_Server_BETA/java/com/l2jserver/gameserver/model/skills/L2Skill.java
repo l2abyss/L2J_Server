@@ -244,6 +244,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	private int _npcId = 0;
 	
+	private final String _icon;
+	
 	private byte[] _effectTypes;
 	
 	protected L2Skill(StatsSet set)
@@ -443,6 +445,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			_extractableItems = parseExtractableSkill(_id, _level, capsuled_items);
 		}
 		_npcId = set.getInteger("npcId", 0);
+		_icon = set.getString("icon", "icon.skill0000");
 	}
 	
 	public abstract void useSkill(L2Character caster, L2Object[] targets);
@@ -1748,5 +1751,13 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * @return icon of the current skill.
+	 */
+	public String getIcon()
+	{
+		return _icon;
 	}
 }
