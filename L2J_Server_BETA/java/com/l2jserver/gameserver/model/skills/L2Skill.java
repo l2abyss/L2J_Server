@@ -83,17 +83,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	public static final boolean geoEnabled = Config.GEODATA > 0;
 	
-	// conditional values
-	public static final int COND_RUNNING = 0x0001;
-	public static final int COND_WALKING = 0x0002;
-	public static final int COND_SIT = 0x0004;
-	public static final int COND_BEHIND = 0x0008;
-	public static final int COND_CRIT = 0x0010;
-	public static final int COND_LOWHP = 0x0020;
-	public static final int COND_ROBES = 0x0040;
-	public static final int COND_CHARGES = 0x0080;
-	public static final int COND_SHIELD = 0x0100;
-	
 	/** Skill Id. */
 	private final int _id;
 	/** Skill level. */
@@ -182,8 +171,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	private final BaseStats _saveVs;
 	
-	private final int _condition;
-	private final int _conditionValue;
 	private final boolean _overhit;
 	
 	private final int _minPledgeClass;
@@ -204,7 +191,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final boolean _isGMSkill; // True if skill is GM skill
 	private final boolean _isSevenSigns;
 	
-	private final int _baseCritRate; // percent of success for skill critical hit (especially for PDAM & BLOW - they're not affected by rCrit values or buffs). Default loads -1 for all other skills but 0 to PDAM & BLOW
+	private final int _baseCritRate; // percent of success for skill critical hit (especially for PhysicalAttack & Blow - they're not affected by rCrit values or buffs).
 	private final int _halfKillRate;
 	private final int _lethalStrikeRate;
 	private final boolean _directHpDmg; // If true then damage is being make directly
@@ -389,8 +376,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		
 		_saveVs = set.getEnum("saveVs", BaseStats.class, BaseStats.NULL);
 		
-		_condition = set.getInteger("condition", 0);
-		_conditionValue = set.getInteger("conditionValue", 0);
 		_overhit = set.getBool("overHit", false);
 		_isSuicideAttack = set.getBool("isSuicideAttack", false);
 		
@@ -450,11 +435,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	
 	public abstract void useSkill(L2Character caster, L2Object[] targets);
 	
-	public final int getConditionValue()
-	{
-		return _conditionValue;
-	}
-	
 	public final L2SkillType getSkillType()
 	{
 		return _skillType;
@@ -482,11 +462,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final L2TargetType getTargetType()
 	{
 		return _targetType;
-	}
-	
-	public final int getCondition()
-	{
-		return _condition;
 	}
 	
 	public final boolean isOverhit()
@@ -999,12 +974,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		if (activeChar.canOverrideCond(PcCondOverride.SKILL_CONDITIONS) && !Config.GM_SKILL_RESTRICTION)
 		{
 			return true;
-		}
-		if ((getCondition() & L2Skill.COND_SHIELD) != 0)
-		{
-			// L2ItemInstance dummy = activeChar.getInventory().getPaperdollItem(Inventory.PAPERDOLL_RHAND);
-			// L2Armor armorPiece = (L2Armor) dummy.getItem();
-			// TODO add checks for shield here.
 		}
 		
 		List<Condition> preCondition = _preCondition;

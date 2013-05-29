@@ -2102,7 +2102,7 @@ public final class Formulas
 	
 	public static boolean calcBlowSuccess(L2Character activeChar, L2Character target, L2Skill skill)
 	{
-		if (((skill.getCondition() & L2Skill.COND_BEHIND) != 0) && !activeChar.isBehindTarget())
+		if (!activeChar.isBehindTarget())
 		{
 			return false;
 		}
