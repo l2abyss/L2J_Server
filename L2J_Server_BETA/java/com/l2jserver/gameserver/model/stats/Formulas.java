@@ -647,6 +647,67 @@ public final class Formulas
 		return damage < 1 ? 1. : damage;
 	}
 	
+	public static double calcBackstabDamage(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss)
+	{
+		double defence = target.getPDef(attacker);
+		
+		switch (shld)
+		{
+			case Formulas.SHIELD_DEFENSE_SUCCEED:
+				defence += target.getShldDef();
+				break;
+			case Formulas.SHIELD_DEFENSE_PERFECT_BLOCK: // perfect block
+				return 1;
+		}
+		
+		boolean isPvP = attacker.isPlayable() && target.isPlayer();
+		boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
+		double power = skill.getPower(isPvP, isPvE);
+		double damage = 0;
+		double proximityBonus = 1;
+		double graciaPhysSkillBonus = skill.isMagic() ? 1 : 1.10113; // Gracia final physical skill bonus 10.113%
+		double ssboost = ss ? 1.5 : 1; // 50% bonus with SS
+		double pvpBonus = 1;
+		
+		if (attacker.isPlayable() && target.isPlayable())
+		{
+			// Dmg bonuses in PvP fight
+			pvpBonus *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);
+			// Def bonuses in PvP fight
+			defence *= target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);
+		}
+		
+		// Behind: +20% - Side: +10% (TODO: values are unconfirmed, possibly custom, remove or update when confirmed)
+		proximityBonus = attacker.isBehindTarget() ? 1.2 : attacker.isInFrontOfTarget() ? 1 : 1.1;
+		
+		damage *= calcValakasTrait(attacker, target, skill);
+		double element = calcElemental(attacker, target, skill);
+		
+		damage += (((70. * graciaPhysSkillBonus * (power + attacker.getPAtk(target))) / defence) * ssboost * (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill)) * (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * proximityBonus * element * pvpBonus) + (((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70) / defence) * graciaPhysSkillBonus);
+		damage += target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill) * 6.1;
+		// get the vulnerability for the instance due to skills (buffs, passives, toggles, etc)
+		damage = target.calcStat(Stats.DAGGER_WPN_VULN, damage, target, null);
+		// Random weapon damage
+		damage *= attacker.getRandomDamageMultiplier();
+		
+		if (target.isL2Attackable() && !target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2))
+		{
+			int lvlDiff = target.getLevel() - attacker.getActingPlayer().getLevel() - 1;
+			if (lvlDiff >= Config.NPC_SKILL_DMG_PENALTY.size())
+			{
+				damage *= Config.NPC_SKILL_DMG_PENALTY.get(Config.NPC_SKILL_DMG_PENALTY.size() - 1);
+			}
+			else
+			{
+				damage *= Config.NPC_SKILL_DMG_PENALTY.get(lvlDiff);
+			}
+			
+		}
+		
+		// TODO: Formulas.calcStunBreak(target, damage);
+		return damage < 1 ? 1. : damage;
+	}
+	
 	/**
 	 * Calculated damage caused by ATTACK of attacker on target.
 	 * @param attacker player or NPC that makes ATTACK
@@ -2102,11 +2163,6 @@ public final class Formulas
 	
 	public static boolean calcBlowSuccess(L2Character activeChar, L2Character target, L2Skill skill)
 	{
-		if (!activeChar.isBehindTarget())
-		{
-			return false;
-		}
-		
 		// Apply DEX Mod.
 		double blowChance = skill.getBlowChance() * BaseStats.DEX.calcBonus(activeChar);
 		// Apply Position Bonus (TODO: values are unconfirmed, possibly custom, remove or update when confirmed).
