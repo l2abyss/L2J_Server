@@ -111,7 +111,6 @@ import com.l2jserver.gameserver.model.L2ContactList;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.L2Macro;
 import com.l2jserver.gameserver.model.L2ManufactureItem;
-import com.l2jserver.gameserver.model.L2ManufactureList;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Party.messageType;
@@ -323,8 +322,6 @@ import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.L2FastList;
 import com.l2jserver.util.Rnd;
-
-import gnu.trove.list.array.TIntArrayList;
 
 /**
  * This class represents all player characters in the world.<br>
@@ -631,7 +628,8 @@ public final class L2PcInstance extends L2Playable
 	
 	private TradeList _activeTradeList;
 	private ItemContainer _activeWarehouse;
-	private L2ManufactureList _createList;
+	private List<L2ManufactureItem> _createList;
+	private String _storeName = "";
 	private TradeList _sellList;
 	private TradeList _buyList;
 	
@@ -741,7 +739,7 @@ public final class L2PcInstance extends L2Playable
 	private boolean _messageRefusal = false; // message refusal mode
 	
 	private boolean _silenceMode = false; // silence mode
-	private final TIntArrayList _silenceModeExcluded = new TIntArrayList(); // silence mode
+	private List<Integer> _silenceModeExcluded; // silence mode
 	private boolean _dietMode = false; // ignore weight penalty
 	private boolean _tradeRefusal = false; // Trade refusal
 	private boolean _exchangeRefusal = false; // Exchange refusal
@@ -6506,20 +6504,40 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * @return the _createList object of the L2PcInstance.
+	 * Get the create list of this player.
+	 * @return the the create list
 	 */
-	public L2ManufactureList getCreateList()
+	public List<L2ManufactureItem> getCreateList()
 	{
+		if (_createList == null)
+		{
+			synchronized (this)
+			{
+				if (_createList == null)
+				{
+					_createList = new CopyOnWriteArrayList<>();
+				}
+			}
+		}
 		return _createList;
 	}
 	
 	/**
-	 * Set the _createList object of the L2PcInstance.
-	 * @param x
+	 * Get the store name, if any.
+	 * @return the store name
 	 */
-	public void setCreateList(L2ManufactureList x)
+	public String getStoreName()
 	{
-		_createList = x;
+		return _storeName;
+	}
+	
+	/**
+	 * Set the store name.
+	 * @param name the store name to set
+	 */
+	public void setStoreName(String name)
+	{
+		_storeName = name == null ? "" : name;
 	}
 	
 	/**
@@ -14346,9 +14364,6 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	/**
-	 * 
-	 */
 	private void notifyFriends()
 	{
 		FriendStatusPacket pkt = new FriendStatusPacket(getObjectId());
@@ -14363,7 +14378,8 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * @return the _silenceMode
+	 * Verify if this player is in silence mode.
+	 * @return the {@code true} if this player is in silence mode, {@code false} otherwise
 	 */
 	public boolean isSilenceMode()
 	{
@@ -14371,85 +14387,93 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * While at silenceMode, checks if this PC Instance blocks PMs for this user
-	 * @param objId
-	 * @return
+	 * While at silenceMode, checks if this player blocks PMs for this user
+	 * @param playerObjId the player object Id
+	 * @return {@code true} if the given Id is not excluded and this player is in silence mode, {@code false} otherwise
 	 */
-	public boolean isSilenceMode(int objId)
+	public boolean isSilenceMode(int playerObjId)
 	{
-		if (Config.SILENCE_MODE_EXCLUDE && _silenceMode)
+		if (Config.SILENCE_MODE_EXCLUDE && _silenceMode && (_silenceModeExcluded != null))
 		{
-			return !_silenceModeExcluded.contains(objId);
+			return !_silenceModeExcluded.contains(playerObjId);
 		}
-		
 		return _silenceMode;
 	}
 	
 	/**
-	 * @param mode the _silenceMode to set
+	 * Set the silence mode.
+	 * @param mode the value
 	 */
 	public void setSilenceMode(boolean mode)
 	{
 		_silenceMode = mode;
-		_silenceModeExcluded.clear(); // Clear the excluded list on each setSilenceMode
+		if (_silenceModeExcluded != null)
+		{
+			_silenceModeExcluded.clear(); // Clear the excluded list on each setSilenceMode
+		}
 		sendPacket(new EtcStatusUpdate(this));
 	}
 	
+	/**
+	 * Add a player to the "excluded silence mode" list.
+	 * @param playerObjId the player's object Id
+	 */
 	public void addSilenceModeExcluded(int playerObjId)
 	{
+		if (_silenceModeExcluded == null)
+		{
+			_silenceModeExcluded = new ArrayList<>(1);
+		}
 		_silenceModeExcluded.add(playerObjId);
 	}
 	
 	private void storeRecipeShopList()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		if ((_createList != null) && !_createList.isEmpty())
 		{
-			PreparedStatement statement;
-			L2ManufactureList list = getCreateList();
-			
-			if ((list != null) && (list.size() > 0))
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement delete = con.prepareStatement("DELETE FROM character_recipeshoplist WHERE charId=? ");
+				PreparedStatement insert = con.prepareStatement("INSERT INTO character_recipeshoplist (charId, Recipeid, Price, Pos) VALUES (?, ?, ?, ?)"))
 			{
+				delete.setInt(1, getObjectId());
+				delete.execute();
 				int _position = 1;
-				statement = con.prepareStatement("DELETE FROM character_recipeshoplist WHERE charId=? ");
-				statement.setInt(1, getObjectId());
-				statement.execute();
-				statement.close();
-				
-				PreparedStatement statement2 = con.prepareStatement("INSERT INTO character_recipeshoplist (charId, Recipeid, Price, Pos) VALUES (?, ?, ?, ?)");
-				for (L2ManufactureItem item : list.getList())
+				for (L2ManufactureItem item : _createList)
 				{
-					statement2.setInt(1, getObjectId());
-					statement2.setInt(2, item.getRecipeId());
-					statement2.setLong(3, item.getCost());
-					statement2.setInt(4, _position);
-					statement2.execute();
-					statement2.clearParameters();
+					insert.setInt(1, getObjectId());
+					insert.setInt(2, item.getRecipeId());
+					insert.setLong(3, item.getCost());
+					insert.setInt(4, _position);
+					insert.addBatch();
 					_position++;
 				}
-				statement2.close();
+				insert.executeBatch();
 			}
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "Could not store recipe shop for playerID " + getObjectId() + ": ", e);
+			catch (Exception e)
+			{
+				_log.log(Level.SEVERE, "Could not store recipe shop for playerID " + getObjectId() + ": ", e);
+			}
 		}
 	}
 	
 	private void restoreRecipeShopList()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		if (_createList != null)
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT Recipeid,Price FROM character_recipeshoplist WHERE charId=? ORDER BY Pos ASC");
+			_createList.clear();
+		}
+		
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT Recipeid,Price FROM character_recipeshoplist WHERE charId=? ORDER BY Pos ASC"))
+		{
 			statement.setInt(1, getObjectId());
-			ResultSet rset = statement.executeQuery();
-			L2ManufactureList createList = new L2ManufactureList();
-			while (rset.next())
+			try (ResultSet rset = statement.executeQuery())
 			{
-				createList.add(new L2ManufactureItem(rset.getInt("Recipeid"), rset.getLong("Price")));
+				while (rset.next())
+				{
+					getCreateList().add(new L2ManufactureItem(rset.getInt("Recipeid"), rset.getLong("Price")));
+				}
 			}
-			setCreateList(createList);
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{

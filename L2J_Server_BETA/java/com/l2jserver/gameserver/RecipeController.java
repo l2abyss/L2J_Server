@@ -246,7 +246,7 @@ public class RecipeController
 			// check that customer can afford to pay for creation services
 			if (_player != _target)
 			{
-				for (L2ManufactureItem temp : _player.getCreateList().getList())
+				for (L2ManufactureItem temp : _player.getCreateList())
 				{
 					if (temp.getRecipeId() == _recipeList.getId()) // find recipe for item we want manufactured
 					{

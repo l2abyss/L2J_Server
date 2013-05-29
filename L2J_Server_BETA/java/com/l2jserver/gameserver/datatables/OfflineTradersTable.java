@@ -30,7 +30,6 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.LoginServerThread;
 import com.l2jserver.gameserver.model.L2ManufactureItem;
-import com.l2jserver.gameserver.model.L2ManufactureList;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.TradeItem;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -113,8 +112,8 @@ public class OfflineTradersTable
 								{
 									continue;
 								}
-								title = pc.getCreateList().getStoreName();
-								for (L2ManufactureItem i : pc.getCreateList().getList())
+								title = pc.getStoreName();
+								for (L2ManufactureItem i : pc.getCreateList())
 								{
 									stm_items.setInt(1, pc.getObjectId());
 									stm_items.setInt(2, i.getRecipeId());
@@ -216,13 +215,11 @@ public class OfflineTradersTable
 									player.getSellList().setPackaged(type == L2PcInstance.STORE_PRIVATE_PACKAGE_SELL);
 									break;
 								case L2PcInstance.STORE_PRIVATE_MANUFACTURE:
-									L2ManufactureList createList = new L2ManufactureList();
 									while (items.next())
 									{
-										createList.add(new L2ManufactureItem(items.getInt(2), items.getLong(4)));
+										player.getCreateList().add(new L2ManufactureItem(items.getInt(2), items.getLong(4)));
 									}
-									player.setCreateList(createList);
-									player.getCreateList().setStoreName(rs.getString("title"));
+									player.setStoreName(rs.getString("title"));
 									break;
 							}
 						}

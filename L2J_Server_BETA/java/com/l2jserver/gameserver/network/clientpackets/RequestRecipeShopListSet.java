@@ -26,7 +26,6 @@ import java.util.List;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.RecipeData;
 import com.l2jserver.gameserver.model.L2ManufactureItem;
-import com.l2jserver.gameserver.model.L2ManufactureList;
 import com.l2jserver.gameserver.model.L2RecipeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.ZoneId;
@@ -100,8 +99,6 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 			return;
 		}
 		
-		L2ManufactureList createList = new L2ManufactureList();
-		
 		List<L2RecipeList> dwarfRecipes = Arrays.asList(player.getDwarvenRecipeBook());
 		List<L2RecipeList> commonRecipes = Arrays.asList(player.getCommonRecipeBook());
 		final RecipeData rd = RecipeData.getInstance();
@@ -114,16 +111,14 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 				return;
 			}
 			
-			if (!i.addToList(createList))
+			if (!i.addToList(player.getCreateList()))
 			{
 				Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " tried to set price more than " + MAX_ADENA + " adena in Private Manufacture.", Config.DEFAULT_PUNISH);
 				return;
 			}
 		}
 		
-		createList.setStoreName(player.getCreateList() != null ? player.getCreateList().getStoreName() : "");
-		player.setCreateList(createList);
-		
+		player.setStoreName(player.getCreateList().isEmpty() ? "" : player.getStoreName());
 		player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_MANUFACTURE);
 		player.sitDown();
 		player.broadcastUserInfo();
@@ -142,7 +137,7 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 			_cost = c;
 		}
 		
-		public boolean addToList(L2ManufactureList list)
+		public boolean addToList(List<L2ManufactureItem> list)
 		{
 			if (_cost > MAX_ADENA)
 			{

@@ -31,7 +31,6 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SummonSkillsTable;
 import com.l2jserver.gameserver.instancemanager.AirShipManager;
 import com.l2jserver.gameserver.model.L2CharPosition;
-import com.l2jserver.gameserver.model.L2ManufactureList;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2BabyPetInstance;
@@ -252,11 +251,6 @@ public final class RequestActionUse extends L2GameClientPacket
 					activeChar.standUp();
 				}
 				
-				if (activeChar.getCreateList() == null)
-				{
-					activeChar.setCreateList(new L2ManufactureList());
-				}
-				
 				sendPacket(new RecipeShopManageList(activeChar, true));
 				break;
 			case 38: // Mount/Dismount
@@ -314,11 +308,6 @@ public final class RequestActionUse extends L2GameClientPacket
 				if (activeChar.isSitting())
 				{
 					activeChar.standUp();
-				}
-				
-				if (activeChar.getCreateList() == null)
-				{
-					activeChar.setCreateList(new L2ManufactureList());
 				}
 				
 				sendPacket(new RecipeShopManageList(activeChar, false));
