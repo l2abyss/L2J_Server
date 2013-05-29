@@ -46,15 +46,4 @@ public class NpcStat extends CharStat
 	{
 		return (int) calcStat(Stats.MOVE_SPEED, getActiveChar().getTemplate().getBaseMoveSpd(MoveType.WALK), null, null);
 	}
-	
-	@Override
-	public float getMovementSpeedMultiplier()
-	{
-		if (getActiveChar() == null)
-		{
-			return 1;
-		}
-		
-		return (getWalkSpeed() * 1f) / getActiveChar().getTemplate().getBaseMoveSpd(getActiveChar().isRunning() ? MoveType.RUN : MoveType.WALK);
-	}
 }
