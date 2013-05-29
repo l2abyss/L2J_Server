@@ -64,7 +64,6 @@ public enum L2SkillType
 	DELUXE_KEY_UNLOCK,
 	SOW,
 	GET_PLAYER,
-	INSTANT_JUMP,
 	DETECTION,
 	DUMMY,
 	// Summons

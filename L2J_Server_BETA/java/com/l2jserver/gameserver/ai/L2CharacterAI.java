@@ -825,11 +825,7 @@ public class L2CharacterAI extends AbstractAI
 		{
 			setTarget(null);
 			
-			if (getIntention() == AI_INTENTION_INTERACT)
-			{
-				setIntention(AI_INTENTION_ACTIVE);
-			}
-			else if (getIntention() == AI_INTENTION_PICK_UP)
+			if ((getIntention() == AI_INTENTION_INTERACT) || (getIntention() == AI_INTENTION_PICK_UP))
 			{
 				setIntention(AI_INTENTION_ACTIVE);
 			}
@@ -1339,7 +1335,7 @@ public class L2CharacterAI extends AbstractAI
 						{
 							rootSkills.add(sk);
 						}
-						else if (sk.hasEffectType(L2EffectType.CONFUSION, L2EffectType.FEAR))
+						else if (sk.hasEffectType(L2EffectType.FEAR))
 						{
 							debuffSkills.add(sk);
 						}

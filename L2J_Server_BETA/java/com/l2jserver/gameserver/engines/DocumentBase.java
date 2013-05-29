@@ -100,6 +100,7 @@ import com.l2jserver.gameserver.model.conditions.ConditionTargetClassIdRestricti
 import com.l2jserver.gameserver.model.conditions.ConditionTargetInvSize;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetLevel;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetLevelRange;
+import com.l2jserver.gameserver.model.conditions.ConditionTargetMyPartyExceptMe;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetNpcId;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetNpcType;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetPlayable;
@@ -824,6 +825,10 @@ public abstract class DocumentBase
 					lvlRange[1] = Integer.decode(getValue(a.getNodeValue(), template).split(";")[1]);
 					cond = joinAnd(cond, new ConditionTargetLevelRange(lvlRange));
 				}
+			}
+			else if ("myPartyExceptMe".equalsIgnoreCase(a.getNodeName()))
+			{
+				cond = joinAnd(cond, new ConditionTargetMyPartyExceptMe(Boolean.parseBoolean(a.getNodeValue())));
 			}
 			else if ("playable".equalsIgnoreCase(a.getNodeName()))
 			{
