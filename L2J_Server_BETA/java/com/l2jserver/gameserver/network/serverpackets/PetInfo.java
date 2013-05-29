@@ -21,7 +21,6 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
-import com.l2jserver.gameserver.model.stats.MoveType;
 
 public class PetInfo extends L2GameServerPacket
 {
@@ -37,7 +36,7 @@ public class PetInfo extends L2GameServerPacket
 	private int _flyWalkSpd;
 	private final int _maxHp, _maxMp;
 	private int _maxFed, _curFed;
-	private final float _multiplier;
+	private final float _moveMultiplier;
 	
 	/**
 	 * @param summon
@@ -53,9 +52,9 @@ public class PetInfo extends L2GameServerPacket
 		_heading = _summon.getHeading();
 		_mAtkSpd = _summon.getMAtkSpd();
 		_pAtkSpd = _summon.getPAtkSpd();
-		_multiplier = _summon.getMovementSpeedMultiplier();
-		_runSpd = _summon.getTemplate().getBaseMoveSpd(MoveType.RUN);
-		_walkSpd = _summon.getTemplate().getBaseMoveSpd(MoveType.WALK);
+		_moveMultiplier = _summon.getMovementSpeedMultiplier();
+		_runSpd = Math.round(_summon.getRunSpeed() / _moveMultiplier);
+		_walkSpd = Math.round(_summon.getWalkSpeed() / _moveMultiplier);
 		_swimRunSpd = _flRunSpd = _flyRunSpd = _runSpd;
 		_swimWalkSpd = _flWalkSpd = _flyWalkSpd = _walkSpd;
 		_maxHp = _summon.getMaxHp();
@@ -100,15 +99,15 @@ public class PetInfo extends L2GameServerPacket
 		writeD(_flyRunSpd);
 		writeD(_flyWalkSpd);
 		
-		writeF(_multiplier); // movement multiplier
-		writeF(1); // attack speed multiplier
+		writeF(_moveMultiplier); // movement multiplier
+		writeF(_summon.getAttackSpeedMultiplier()); // attack speed multiplier
 		writeF(_summon.getTemplate().getfCollisionRadius());
 		writeF(_summon.getTemplate().getfCollisionHeight());
 		writeD(_summon.getWeapon()); // right hand weapon
 		writeD(_summon.getArmor()); // body armor
-		writeD(0); // left hand weapon
+		writeD(0x00); // left hand weapon
 		writeC(_summon.getOwner() != null ? 1 : 0); // when pet is dead and player exit game, pet doesn't show master name
-		writeC(1); // running=1 (it is always 1, walking mode is calculated from multiplier)
+		writeC(_summon.isRunning() ? 1 : 0); // running=1 (it is always 1, walking mode is calculated from multiplier)
 		writeC(_summon.isInCombat() ? 1 : 0); // attacking 1=true
 		writeC(_summon.isAlikeDead() ? 1 : 0); // dead 1=true
 		writeC(_isSummoned ? 2 : _val); // 0=teleported 1=default 2=summoned
@@ -124,8 +123,8 @@ public class PetInfo extends L2GameServerPacket
 		writeD(-1); // High Five NPCString ID
 		writeS(_summon.getTitle()); // owner name
 		writeD(1);
-		writeD(_summon.getOwner() != null ? _summon.getOwner().getPvpFlag() : 0); // 0 = white,2= purpleblink, if its greater then karma = purple
-		writeD(_summon.getOwner() != null ? _summon.getOwner().getKarma() : 0); // karma
+		writeD(_summon.getPvpFlag()); // 0 = white,2= purpleblink, if its greater then karma = purple
+		writeD(_summon.getKarma()); // karma
 		writeD(_curFed); // how fed it is
 		writeD(_maxFed); // max fed it can be
 		writeD((int) _summon.getCurrentHp());// current hp
@@ -166,7 +165,7 @@ public class PetInfo extends L2GameServerPacket
 		
 		// Following all added in C4.
 		writeH(0); // ??
-		writeC(_summon.getOwner() != null ? _summon.getOwner().getTeam() : 0); // team aura (1 = blue, 2 = red)
+		writeC(_summon.getTeam()); // team aura (1 = blue, 2 = red)
 		writeD(_summon.getSoulShotsPerHit()); // How many soulshots this servitor uses per hit
 		writeD(_summon.getSpiritShotsPerHit()); // How many spiritshots this servitor uses per hit
 		
