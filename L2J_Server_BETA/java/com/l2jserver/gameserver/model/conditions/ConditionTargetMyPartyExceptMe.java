@@ -52,7 +52,7 @@ public class ConditionTargetMyPartyExceptMe extends Condition
 			player.sendPacket(SystemMessageId.CANNOT_USE_ON_YOURSELF);
 			isPartyMember = false;
 		}
-		else if ((target.getParty() == null) || (player.isInParty() && target.isInParty() && (player.getParty().getLeaderObjectId() != target.getParty().getLeaderObjectId())))
+		else if (!player.isInParty() || !player.getParty().equals(target.getParty()))
 		{
 			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addSkillName(env.getSkill());

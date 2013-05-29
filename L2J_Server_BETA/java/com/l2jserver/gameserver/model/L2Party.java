@@ -1151,6 +1151,6 @@ public class L2Party extends AbstractPlayerGroup
 	 */
 	public boolean equals(L2Party party)
 	{
-		return (getLeaderObjectId() == party.getLeaderObjectId());
+		return (party != null) && (getLeaderObjectId() == party.getLeaderObjectId());
 	}
 }
