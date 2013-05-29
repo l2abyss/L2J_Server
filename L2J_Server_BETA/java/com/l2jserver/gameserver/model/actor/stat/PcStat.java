@@ -653,7 +653,8 @@ public class PcStat extends PlayableStat
 		
 		if (getActiveChar().isMounted())
 		{
-			return (getRunSpeed() * 1f) / PetDataTable.getInstance().getPetLevelData(getActiveChar().getMountNpcId(), getActiveChar().getMountLevel()).getSpeedOnRide(MoveType.RUN);
+			float baseSpeed = PetDataTable.getInstance().getPetLevelData(getActiveChar().getMountNpcId(), getActiveChar().getMountLevel()).getSpeedOnRide(MoveType.RUN);
+			return (getMoveSpeed() / baseSpeed);
 		}
 		
 		return super.getMovementSpeedMultiplier();

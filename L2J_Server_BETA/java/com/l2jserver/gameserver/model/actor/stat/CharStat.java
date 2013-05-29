@@ -22,7 +22,6 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
@@ -441,8 +440,8 @@ public class CharStat
 		{
 			return 1;
 		}
-		final L2CharTemplate template = _activeChar.getTemplate();
-		return _activeChar.isRunning() ? (getRunSpeed() / template.getBaseMoveSpd(MoveType.RUN)) : (getWalkSpeed() / template.getBaseMoveSpd(MoveType.WALK));
+		final float baseSpeed = _activeChar.getTemplate().getBaseMoveSpd(_activeChar.isRunning() ? MoveType.RUN : MoveType.WALK);
+		return (getMoveSpeed() / baseSpeed);
 	}
 	
 	/**
