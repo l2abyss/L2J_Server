@@ -191,7 +191,7 @@ public class PcStatus extends PlayableStatus
 				
 				transferDmg = ((int) value * (int) getActiveChar().getStat().calcStat(Stats.TRANSFER_DAMAGE_TO_PLAYER, 0, null, null)) / 100;
 				transferDmg = Math.min((int) caster.getCurrentHp() - 1, transferDmg);
-				if ((transferDmg > 0) && (attacker instanceof L2Playable))
+				if (transferDmg > 0)
 				{
 					int membersInRange = 0;
 					for (L2PcInstance member : caster.getParty().getMembers())
@@ -202,22 +202,25 @@ public class PcStatus extends PlayableStatus
 						}
 					}
 					
-					if (caster.getCurrentCp() > 0)
+					if (attacker instanceof L2Playable && caster.getCurrentCp() > 0)
 					{
 						if (caster.getCurrentCp() > transferDmg)
 						{
-							reduceCp(transferDmg);
+							caster.getStatus().reduceCp(transferDmg);
 						}
 						else
 						{
 							transferDmg = (int) (transferDmg - caster.getCurrentCp());
-							reduceCp((int) caster.getCurrentCp());
+							caster.getStatus().reduceCp((int) caster.getCurrentCp());
 						}
 					}
-					
-					caster.reduceCurrentHp(transferDmg / membersInRange, attacker, null);
-					value -= transferDmg;
-					fullValue = (int) value;
+
+					if (membersInRange > 0)
+					{
+						caster.reduceCurrentHp(transferDmg / membersInRange, attacker, null);
+						value -= transferDmg;
+						fullValue = (int) value;
+					}
 				}
 			}
 			
