@@ -139,36 +139,24 @@ public final class RecoBonus
 	
 	public static int getRecoBonus(L2PcInstance activeChar)
 	{
-		if ((activeChar != null) && activeChar.isOnline())
+		if ((activeChar != null) && activeChar.isOnline() && (activeChar.getRecomHave() != 0))
 		{
-			if (activeChar.getRecomHave() == 0)
-			{
-				return 0;
-			}
+			final int lvl = activeChar.getLevel() / 10;
+			final int exp = (Math.min(100, activeChar.getRecomHave()) - 1) / 10;
 			
-			int _lvl = activeChar.getLevel() / 10;
-			int _exp = (Math.min(100, activeChar.getRecomHave()) - 1) / 10;
-			
-			return _recoBonus[_lvl][_exp];
+			return _recoBonus[lvl][exp];
 		}
 		return 0;
 	}
 	
 	public static double getRecoMultiplier(L2PcInstance activeChar)
 	{
-		double _multiplier = 1;
-		
-		double bonus = getRecoBonus(activeChar);
+		double multiplier = 1.0;
+		final double bonus = getRecoBonus(activeChar);
 		if (bonus > 0)
 		{
-			_multiplier = (1 + (bonus / 100));
+			multiplier += (bonus / 100);
 		}
-		
-		if (_multiplier < 1)
-		{
-			_multiplier = 1;
-		}
-		
-		return _multiplier;
+		return multiplier;
 	}
 }
