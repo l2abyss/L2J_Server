@@ -262,6 +262,6 @@ public class L2CommandChannel extends AbstractPlayerGroup
 	 */
 	public boolean equals(L2CommandChannel cc)
 	{
-		return (getLeaderObjectId() == cc.getLeaderObjectId());
+		return (cc != null) && (getLeaderObjectId() == cc.getLeaderObjectId());
 	}
 }

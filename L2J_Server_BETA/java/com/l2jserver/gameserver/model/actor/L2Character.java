@@ -6715,7 +6715,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 								switch (skill.getSkillType())
 								{
 									case SUMMON:
-									case BEAST_FEED:
 									case UNLOCK:
 									case DELUXE_KEY_UNLOCK:
 									case UNLOCK_SPECIAL:

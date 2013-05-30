@@ -36,8 +36,6 @@ public enum L2SkillType
 	// Damage
 	SIGNET(L2SkillSignet.class),
 	SIGNET_CASTTIME(L2SkillSignetCasttime.class),
-	// Disablers
-	CONFUSE_MOB_ONLY,
 	// reco
 	GIVE_RECO,
 	// Aggro
@@ -76,11 +74,6 @@ public enum L2SkillType
 	FUSION,
 	
 	RESURRECT,
-	BEAST_FEED,
-	BEAST_RELEASE,
-	BEAST_RELEASE_ALL,
-	BEAST_SKILL,
-	BEAST_ACCOMPANY,
 	DETECT_TRAP,
 	REMOVE_TRAP,
 	SHIFT_TARGET,
