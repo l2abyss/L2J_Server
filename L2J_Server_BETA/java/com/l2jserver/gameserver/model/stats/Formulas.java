@@ -2180,6 +2180,7 @@ public final class Formulas
 			{
 				case "buff":
 				{
+					// Resist Modifier.
 					int cancelMagicLvl = skill.getMagicLevel();
 					final double vuln = target.calcStat(Stats.CANCEL_VULN, 0, target, null);
 					final double prof = activeChar.calcStat(Stats.CANCEL_PROF, 0, target, null);
@@ -2189,7 +2190,7 @@ public final class Formulas
 					if (activeChar.isDebug() || Config.DEVELOPER)
 					{
 						final StringBuilder stat = new StringBuilder(100);
-						StringUtil.append(stat, skill.getName(), " Base Rate:", String.valueOf(rate), " Magiclvl:", String.valueOf(cancelMagicLvl), " resMod:", String.format("%1.2f", resMod), "(", String.format("%1.2f", prof), "/", String.format("%1.2f", vuln), ") Rate:", String.valueOf(rate));
+						StringUtil.append(stat, skill.getName(), " Base Rate:", String.valueOf(rate), " Magiclvl:", String.valueOf(cancelMagicLvl), " resMod:", String.format("%1.2f", resMod), " Rate:", String.format("%1.2f", finalRate));
 						final String result = stat.toString();
 						if (activeChar.isDebug())
 						{
@@ -2242,7 +2243,7 @@ public final class Formulas
 	public static boolean calcCancelSuccess(L2Effect eff, int cancelMagicLvl, int rate, L2Skill skill)
 	{
 		// Lvl Bonus Modifier.
-		rate *= (eff.getSkill().getMagicLevel() > 0) ? (cancelMagicLvl / eff.getSkill().getMagicLevel()) : 1;
+		rate *= eff.getSkill().getMagicLevel() > 0 ? 1 + ((cancelMagicLvl - eff.getSkill().getMagicLevel()) / 100.) : 1;
 		return Rnd.get(100) < Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
 	}
 	
