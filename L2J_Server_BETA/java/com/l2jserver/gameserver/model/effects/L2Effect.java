@@ -193,7 +193,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	 */
 	public int getTimeLeft()
 	{
-		if (_template.getTotalTickCount() > 0)
+		if (_template.getTotalTickCount() > 1)
 		{
 			return (((_template.getTotalTickCount() - _tickCount) + 1) * (_abnormalTime / _template.getTotalTickCount())) - getTime();
 		}
@@ -300,13 +300,14 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	 */
 	private final void startEffectTask()
 	{
+		stopEffectTask();
+		
 		if (isInstant())
 		{
-			_currentFuture = ThreadPoolManager.getInstance().scheduleEffect(new EffectTask(), 0);
+			_currentFuture = ThreadPoolManager.getInstance().scheduleEffect(new EffectTask(), 5);
 			return;
 		}
 		
-		stopEffectTask();
 		final int delay = Math.max((_abnormalTime - _periodFirstTime) * 1000, 5); // Sanity check
 		if (_template.getTotalTickCount() > 0)
 		{

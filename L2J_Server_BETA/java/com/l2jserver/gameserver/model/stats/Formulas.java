@@ -1583,6 +1583,11 @@ public final class Formulas
 		return elementMod;
 	}
 	
+	/**
+	 * Calculates the effect landing success.<br>
+	 * @param env the data transfer object
+	 * @return {@code true} if the effect lands
+	 */
 	public static boolean calcEffectSuccess(Env env)
 	{
 		// Effect base rate, if it's -1 (or less) always land.
