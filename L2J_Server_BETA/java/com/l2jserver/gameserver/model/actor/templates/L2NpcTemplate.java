@@ -148,7 +148,6 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public L2NpcTemplate(StatsSet set)
 	{
 		super(set);
-		resetSkills();
 	}
 	
 	@Override
