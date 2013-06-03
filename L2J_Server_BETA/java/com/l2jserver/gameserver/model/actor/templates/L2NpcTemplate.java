@@ -23,9 +23,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
-
-import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.datatables.HerbDropTable;
 import com.l2jserver.gameserver.model.L2DropCategory;
@@ -66,55 +66,23 @@ public final class L2NpcTemplate extends L2CharTemplate
 	
 	private int _dropHerbGroup;
 	private boolean _isCustom;
-	/**
-	 * Doesn't include all mobs that are involved in quests, just plain quest monsters for preventing champion spawn.
-	 */
 	private boolean _isQuestMonster;
+	
 	private float _baseVitalityDivider;
 	
-	// Skill AI
-	private final List<L2Skill> _buffSkills = new ArrayList<>();
-	private final List<L2Skill> _negativeSkills = new ArrayList<>();
-	private final List<L2Skill> _debuffSkills = new ArrayList<>();
-	private final List<L2Skill> _atkSkills = new ArrayList<>();
-	private final List<L2Skill> _rootSkills = new ArrayList<>();
-	private final List<L2Skill> _stunskills = new ArrayList<>();
-	private final List<L2Skill> _sleepSkills = new ArrayList<>();
-	private final List<L2Skill> _paralyzeSkills = new ArrayList<>();
-	private final List<L2Skill> _fossilSkills = new ArrayList<>();
-	private final List<L2Skill> _floatSkills = new ArrayList<>();
-	private final List<L2Skill> _immobilizeSkills = new ArrayList<>();
-	private final List<L2Skill> _healSkills = new ArrayList<>();
-	private final List<L2Skill> _resSkills = new ArrayList<>();
-	private final List<L2Skill> _dotSkills = new ArrayList<>();
-	private final List<L2Skill> _cotSkills = new ArrayList<>();
-	private final List<L2Skill> _universalSkills = new ArrayList<>();
-	private final List<L2Skill> _manaSkills = new ArrayList<>();
-	private final List<L2Skill> _longRangeSkills = new ArrayList<>();
-	private final List<L2Skill> _shortRangeSkills = new ArrayList<>();
-	private final List<L2Skill> _generalSkills = new ArrayList<>();
-	private final List<L2Skill> _suicideSkills = new ArrayList<>();
+	private final Map<AISkillType, List<L2Skill>> _aiSkills = new ConcurrentHashMap<>();
 	
-	private L2NpcAIData _AIdataStatic = new L2NpcAIData();
+	private final Map<Integer, L2Skill> _skills = new ConcurrentHashMap<>();
 	
-	/**
-	 * The table containing all Item that can be dropped by L2NpcInstance using this L2NpcTemplate
-	 */
-	private final List<L2DropCategory> _categories = new ArrayList<>();
+	private final List<L2DropCategory> _dropCategories = new CopyOnWriteArrayList<>();
 	
-	/**
-	 * The table containing all Minions that must be spawn with the L2NpcInstance using this L2NpcTemplate
-	 */
 	private final List<L2MinionData> _minions = new ArrayList<>();
 	
 	private final List<ClassId> _teachInfo = new ArrayList<>();
 	
-	private final Map<Integer, L2Skill> _skills = new FastMap<Integer, L2Skill>().shared();
+	private final Map<QuestEventType, List<Quest>> _questEvents = new ConcurrentHashMap<>();
 	
-	/**
-	 * Contains a list of quests for each event type (questStart, questAttack, questKill, etc).
-	 */
-	private final Map<QuestEventType, List<Quest>> _questEvents = new FastMap<QuestEventType, List<Quest>>().shared();
+	private L2NpcAIData _aiData;
 	
 	public static enum AIType
 	{
@@ -156,6 +124,23 @@ public final class L2NpcTemplate extends L2CharTemplate
 		NONE
 	}
 	
+	private enum AISkillType
+	{
+		BUFF,
+		DEBUFF,
+		NEGATIVE,
+		ATTACK,
+		IMMOBILIZE,
+		HEAL,
+		RES,
+		COT,
+		UNIVERSAL,
+		LONG_RANGE,
+		SHORT_RANGE,
+		GENERAL,
+		SUICIDE
+	}
+	
 	/**
 	 * Constructor of L2Character.
 	 * @param set The StatsSet object to transfer data to the method
@@ -163,6 +148,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public L2NpcTemplate(StatsSet set)
 	{
 		super(set);
+		resetSkills();
 	}
 	
 	@Override
@@ -201,6 +187,20 @@ public final class L2NpcTemplate extends L2CharTemplate
 		_baseVitalityDivider = (getLevel() > 0) && (getRewardExp() > 0) ? (getBaseHpMax() * 9 * getLevel() * getLevel()) / (100 * getRewardExp()) : 0;
 		
 		_isCustom = _npcId != _idTemplate;
+	}
+	
+	public void resetSkills()
+	{
+		for (AISkillType type : AISkillType.values())
+		{
+			_aiSkills.put(type, new ArrayList<L2Skill>());
+		}
+		_skills.clear();
+	}
+	
+	public void resetDroplist()
+	{
+		_dropCategories.clear();
 	}
 	
 	public static boolean isAssignableTo(Class<?> sub, Class<?> clazz)
@@ -248,27 +248,22 @@ public final class L2NpcTemplate extends L2CharTemplate
 	
 	public void addAtkSkill(L2Skill skill)
 	{
-		_atkSkills.add(skill);
+		getAtkSkills().add(skill);
 	}
 	
 	public void addBuffSkill(L2Skill skill)
 	{
-		_buffSkills.add(skill);
+		getBuffSkills().add(skill);
 	}
 	
 	public void addCOTSkill(L2Skill skill)
 	{
-		_cotSkills.add(skill);
+		getCostOverTimeSkills().add(skill);
 	}
 	
 	public void addDebuffSkill(L2Skill skill)
 	{
-		_debuffSkills.add(skill);
-	}
-	
-	public void addDOTSkill(L2Skill skill)
-	{
-		_dotSkills.add(skill);
+		getDebuffSkills().add(skill);
 	}
 	
 	/**
@@ -282,38 +277,25 @@ public final class L2NpcTemplate extends L2CharTemplate
 		if (!drop.isQuestDrop())
 		{
 			// If the category doesn't already exist, create it first
-			synchronized (_categories)
+			boolean catExists = false;
+			for (L2DropCategory cat : _dropCategories)
 			{
-				boolean catExists = false;
-				for (L2DropCategory cat : _categories)
+				// If the category exists, add the drop to this category.
+				if (cat.getCategoryType() == categoryType)
 				{
-					// If the category exists, add the drop to this category.
-					if (cat.getCategoryType() == categoryType)
-					{
-						cat.addDropData(drop, isType("L2RaidBoss") || isType("L2GrandBoss"));
-						catExists = true;
-						break;
-					}
-				}
-				// If the category doesn't exit, create it and add the drop
-				if (!catExists)
-				{
-					final L2DropCategory cat = new L2DropCategory(categoryType);
 					cat.addDropData(drop, isType("L2RaidBoss") || isType("L2GrandBoss"));
-					_categories.add(cat);
+					catExists = true;
+					break;
 				}
 			}
+			// If the category doesn't exit, create it and add the drop
+			if (!catExists)
+			{
+				final L2DropCategory cat = new L2DropCategory(categoryType);
+				cat.addDropData(drop, isType("L2RaidBoss") || isType("L2GrandBoss"));
+				_dropCategories.add(cat);
+			}
 		}
-	}
-	
-	public void addFloatSkill(L2Skill skill)
-	{
-		_floatSkills.add(skill);
-	}
-	
-	public void addFossilSkill(L2Skill skill)
-	{
-		_fossilSkills.add(skill);
 	}
 	
 	public void addGeneralSkill(L2Skill skill)
@@ -323,49 +305,33 @@ public final class L2NpcTemplate extends L2CharTemplate
 	
 	public void addHealSkill(L2Skill skill)
 	{
-		_healSkills.add(skill);
+		getHealSkills().add(skill);
 	}
 	
 	public void addImmobiliseSkill(L2Skill skill)
 	{
-		_immobilizeSkills.add(skill);
-	}
-	
-	public void addManaHealSkill(L2Skill skill)
-	{
-		_manaSkills.add(skill);
+		getImmobiliseSkills().add(skill);
 	}
 	
 	public void addNegativeSkill(L2Skill skill)
 	{
-		_negativeSkills.add(skill);
+		getNegativeSkills().add(skill);
 	}
 	
-	public void addParalyzeSkill(L2Skill skill)
+	public void addQuestEvent(QuestEventType eventType, Quest q)
 	{
-		_paralyzeSkills.add(skill);
-	}
-	
-	public void addQuestEvent(QuestEventType EventType, Quest q)
-	{
-		if (!_questEvents.containsKey(EventType))
+		if (!_questEvents.containsKey(eventType))
 		{
-			List<Quest> quests = new ArrayList<>();
-			quests.add(q);
-			_questEvents.put(EventType, quests);
+			_questEvents.put(eventType, new ArrayList<Quest>());
+		}
+		
+		if (!eventType.isMultipleRegistrationAllowed() && !_questEvents.get(eventType).isEmpty())
+		{
+			_log.warning("Quest event not allowed in multiple quests.  Skipped addition of Event Type \"" + eventType + "\" for NPC \"" + _name + "\" and quest \"" + q.getName() + "\".");
 		}
 		else
 		{
-			List<Quest> quests = _questEvents.get(EventType);
-			
-			if (!EventType.isMultipleRegistrationAllowed() && !quests.isEmpty())
-			{
-				_log.warning("Quest event not allowed in multiple quests.  Skipped addition of Event Type \"" + EventType + "\" for NPC \"" + _name + "\" and quest \"" + q.getName() + "\".");
-			}
-			else
-			{
-				quests.add(q);
-			}
+			_questEvents.get(eventType).add(q);
 		}
 	}
 	
@@ -393,7 +359,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 		}
 	}
 	
-	public void addRaidData(L2MinionData minion)
+	public void addMinionData(L2MinionData minion)
 	{
 		_minions.add(minion);
 	}
@@ -402,22 +368,17 @@ public final class L2NpcTemplate extends L2CharTemplate
 	{
 		if ((skill.getCastRange() <= 150) && (skill.getCastRange() > 0))
 		{
-			_shortRangeSkills.add(skill);
+			getShortRangeSkills().add(skill);
 		}
 		else if (skill.getCastRange() > 150)
 		{
-			_longRangeSkills.add(skill);
+			getLongRangeSkills().add(skill);
 		}
 	}
 	
 	public void addResSkill(L2Skill skill)
 	{
-		_resSkills.add(skill);
-	}
-	
-	public void addRootSkill(L2Skill skill)
-	{
-		_rootSkills.add(skill);
+		getResSkills().add(skill);
 	}
 	
 	public void addSkill(L2Skill skill)
@@ -462,12 +423,10 @@ public final class L2NpcTemplate extends L2CharTemplate
 						}
 						else if (skill.hasEffectType(L2EffectType.SLEEP))
 						{
-							addSleepSkill(skill);
 							addImmobiliseSkill(skill);
 						}
 						else if (skill.hasEffectType(L2EffectType.STUN, L2EffectType.ROOT))
 						{
-							addRootSkill(skill);
 							addImmobiliseSkill(skill);
 							addRangeSkill(skill);
 						}
@@ -478,13 +437,11 @@ public final class L2NpcTemplate extends L2CharTemplate
 						}
 						else if (skill.hasEffectType(L2EffectType.PARALYZE))
 						{
-							addParalyzeSkill(skill);
 							addImmobiliseSkill(skill);
 							addRangeSkill(skill);
 						}
 						else if (skill.hasEffectType(L2EffectType.DMG_OVER_TIME, L2EffectType.DMG_OVER_TIME_PERCENT))
 						{
-							addDOTSkill(skill);
 							addRangeSkill(skill);
 						}
 						else
@@ -499,19 +456,9 @@ public final class L2NpcTemplate extends L2CharTemplate
 		_skills.put(skill.getId(), skill);
 	}
 	
-	public void addSleepSkill(L2Skill skill)
-	{
-		_sleepSkills.add(skill);
-	}
-	
-	public void addStunSkill(L2Skill skill)
-	{
-		_stunskills.add(skill);
-	}
-	
 	public void addSuicideSkill(L2Skill skill)
 	{
-		_suicideSkills.add(skill);
+		getSuicideSkills().add(skill);
 	}
 	
 	public void addTeachInfo(ClassId classId)
@@ -521,7 +468,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	
 	public void addUniversalSkill(L2Skill skill)
 	{
-		_universalSkills.add(skill);
+		getUniversalSkills().add(skill);
 	}
 	
 	public boolean canTeach(ClassId classId)
@@ -538,18 +485,22 @@ public final class L2NpcTemplate extends L2CharTemplate
 	/**
 	 * Empty all possible drops of this L2NpcTemplate.
 	 */
-	public synchronized void clearAllDropData()
+	public void clearAllDropData()
 	{
-		for (L2DropCategory cat : _categories)
+		for (L2DropCategory cat : _dropCategories)
 		{
 			cat.clearAllDrops();
 		}
-		_categories.clear();
+		_dropCategories.clear();
 	}
 	
 	public L2NpcAIData getAIDataStatic()
 	{
-		return _AIdataStatic;
+		if (_aiData == null)
+		{
+			_aiData = new L2NpcAIData();
+		}
+		return _aiData;
 	}
 	
 	/**
@@ -559,7 +510,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	public List<L2DropData> getAllDropData()
 	{
 		final List<L2DropData> list = new ArrayList<>();
-		for (L2DropCategory tmp : _categories)
+		for (L2DropCategory tmp : _dropCategories)
 		{
 			list.addAll(tmp.getAllDrops());
 		}
@@ -571,7 +522,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public List<L2Skill> getAtkSkills()
 	{
-		return _atkSkills;
+		return _aiSkills.get(AISkillType.ATTACK);
 	}
 	
 	/**
@@ -587,7 +538,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public List<L2Skill> getBuffSkills()
 	{
-		return _buffSkills;
+		return _aiSkills.get(AISkillType.BUFF);
 	}
 	
 	/**
@@ -603,7 +554,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public List<L2Skill> getCostOverTimeSkills()
 	{
-		return _cotSkills;
+		return _aiSkills.get(AISkillType.COT);
 	}
 	
 	/**
@@ -611,7 +562,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public List<L2Skill> getDebuffSkills()
 	{
-		return _debuffSkills;
+		return _aiSkills.get(AISkillType.DEBUFF);
 	}
 	
 	/**
@@ -619,7 +570,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public List<L2DropCategory> getDropData()
 	{
-		return _categories;
+		return _dropCategories;
 	}
 	
 	/**
@@ -653,7 +604,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public List<L2Skill> getGeneralskills()
 	{
-		return _generalSkills;
+		return _aiSkills.get(AISkillType.GENERAL);
 	}
 	
 	/**
@@ -661,7 +612,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public List<L2Skill> getHealSkills()
 	{
-		return _healSkills;
+		return _aiSkills.get(AISkillType.HEAL);
 	}
 	
 	/**
@@ -677,7 +628,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public List<L2Skill> getImmobiliseSkills()
 	{
-		return _immobilizeSkills;
+		return _aiSkills.get(AISkillType.IMMOBILIZE);
 	}
 	
 	/**
@@ -701,7 +652,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public List<L2Skill> getLongRangeSkills()
 	{
-		return _longRangeSkills;
+		return _aiSkills.get(AISkillType.LONG_RANGE);
 	}
 	
 	/**
@@ -725,7 +676,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public List<L2Skill> getNegativeSkills()
 	{
-		return _negativeSkills;
+		return _aiSkills.get(AISkillType.NEGATIVE);
 	}
 	
 	/**
@@ -749,7 +700,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public List<L2Skill> getResSkills()
 	{
-		return _resSkills;
+		return _aiSkills.get(AISkillType.RES);
 	}
 	
 	/**
@@ -789,7 +740,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public List<L2Skill> getShortRangeSkills()
 	{
-		return _shortRangeSkills;
+		return _aiSkills.get(AISkillType.SHORT_RANGE);
 	}
 	
 	@Override
@@ -800,7 +751,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	
 	public List<L2Skill> getSuicideSkills()
 	{
-		return _suicideSkills;
+		return _aiSkills.get(AISkillType.SUICIDE);
 	}
 	
 	public List<ClassId> getTeachInfo()
@@ -829,7 +780,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 	 */
 	public List<L2Skill> getUniversalSkills()
 	{
-		return _universalSkills;
+		return _aiSkills.get(AISkillType.UNIVERSAL);
 	}
 	
 	/**
@@ -882,9 +833,9 @@ public final class L2NpcTemplate extends L2CharTemplate
 		return _race == Race.UNDEAD;
 	}
 	
-	public void setAIData(L2NpcAIData AIData)
+	public void setAIData(L2NpcAIData aiData)
 	{
-		_AIdataStatic = AIData;
+		_aiData = aiData;
 	}
 	
 	public void setRace(int raceId)

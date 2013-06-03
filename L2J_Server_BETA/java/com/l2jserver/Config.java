@@ -645,11 +645,11 @@ public final class Config
 	public static boolean CUSTOM_NPC_SKILLS_TABLE;
 	public static boolean CUSTOM_TELEPORT_TABLE;
 	public static boolean CUSTOM_DROPLIST_TABLE;
-	public static boolean CUSTOM_MERCHANT_TABLES;
 	public static boolean CUSTOM_NPCBUFFER_TABLES;
 	public static boolean CUSTOM_SKILLS_LOAD;
 	public static boolean CUSTOM_ITEMS_LOAD;
 	public static boolean CUSTOM_MULTISELL_LOAD;
+	public static boolean CUSTOM_BUYLIST_LOAD;
 	public static int ALT_BIRTHDAY_GIFT;
 	public static String ALT_BIRTHDAY_MAIL_SUBJECT;
 	public static String ALT_BIRTHDAY_MAIL_TEXT;
@@ -2148,11 +2148,11 @@ public final class Config
 			CUSTOM_NPC_SKILLS_TABLE = Boolean.parseBoolean(General.getProperty("CustomNpcSkillsTable", "false"));
 			CUSTOM_TELEPORT_TABLE = Boolean.parseBoolean(General.getProperty("CustomTeleportTable", "false"));
 			CUSTOM_DROPLIST_TABLE = Boolean.parseBoolean(General.getProperty("CustomDroplistTable", "false"));
-			CUSTOM_MERCHANT_TABLES = Boolean.parseBoolean(General.getProperty("CustomMerchantTables", "false"));
 			CUSTOM_NPCBUFFER_TABLES = Boolean.parseBoolean(General.getProperty("CustomNpcBufferTables", "false"));
 			CUSTOM_SKILLS_LOAD = Boolean.parseBoolean(General.getProperty("CustomSkillsLoad", "false"));
 			CUSTOM_ITEMS_LOAD = Boolean.parseBoolean(General.getProperty("CustomItemsLoad", "false"));
 			CUSTOM_MULTISELL_LOAD = Boolean.parseBoolean(General.getProperty("CustomMultisellLoad", "false"));
+			CUSTOM_BUYLIST_LOAD = Boolean.parseBoolean(General.getProperty("CustomBuyListLoad", "false"));
 			ALT_BIRTHDAY_GIFT = Integer.parseInt(General.getProperty("AltBirthdayGift", "22187"));
 			ALT_BIRTHDAY_MAIL_SUBJECT = General.getProperty("AltBirthdayMailSubject", "Happy Birthday!");
 			ALT_BIRTHDAY_MAIL_TEXT = General.getProperty("AltBirthdayMailText", "Hello Adventurer!! Seeing as you're one year older now, I thought I would send you some birthday cheer :) Please find your birthday pack attached. May these gifts bring you joy and happiness on this very special day." + EOL + EOL + "Sincerely, Alegria");

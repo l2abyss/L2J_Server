@@ -42,7 +42,7 @@ import com.l2jserver.gameserver.network.serverpackets.MultiSellList;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.util.Util;
-import com.l2jserver.util.file.filter.MultisellFilter;
+import com.l2jserver.util.file.filter.NumericNameFilter;
 
 public class MultisellData extends DocumentParser
 {
@@ -56,7 +56,7 @@ public class MultisellData extends DocumentParser
 	
 	protected MultisellData()
 	{
-		setCurrentFileFilter(new MultisellFilter());
+		setCurrentFileFilter(new NumericNameFilter());
 		load();
 	}
 	

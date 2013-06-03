@@ -56,8 +56,8 @@ public class NpcTable
 	private static final String SELECT_SKILLS_ALL = "SELECT * FROM npcskills ORDER BY npcid";
 	private static final String SELECT_SKILLS_BY_ID = "SELECT * FROM npcskills WHERE npcid = ?";
 	
-	private static final String SELECT_DROPLIST_ALL = "SELECT * FROM droplist ORDER BY mobId, chance DESC";
-	private static final String SELECT_DROPLIST_BY_ID = "SELECT * FROM droplist WHERE mobId = ? ORDER BY mobId, chance DESC";
+	private static final String SELECT_DROPLIST_ALL = "SELECT * FROM droplist ORDER BY mobId, category, chance";
+	private static final String SELECT_DROPLIST_BY_ID = "SELECT * FROM droplist WHERE mobId = ? ORDER BY mobId, category, chance";
 	
 	private static final String SELECT_NPC_AI_ALL = "SELECT * FROM npcaidata ORDER BY npcId";
 	private static final String SELECT_NPC_AI_BY_ID = "SELECT * FROM npcaidata WHERE npcId = ?";
@@ -78,8 +78,8 @@ public class NpcTable
 	private static final String CUSTOM_SELECT_SKILLS_ALL = "SELECT * FROM custom_npcskills ORDER BY npcid";
 	private static final String CUSTOM_SELECT_SKILLS_BY_ID = "SELECT * FROM custom_npcskills WHERE npcid = ?";
 	
-	private static final String CUSTOM_SELECT_DROPLIST_ALL = "SELECT * FROM custom_droplist ORDER BY mobId, chance DESC";
-	private static final String CUSTOM_SELECT_DROPLIST_BY_ID = "SELECT * FROM custom_droplist WHERE mobId = ? ORDER BY mobId, chance DESC";
+	private static final String CUSTOM_SELECT_DROPLIST_ALL = "SELECT * FROM custom_droplist ORDER BY mobId, category, chance";
+	private static final String CUSTOM_SELECT_DROPLIST_BY_ID = "SELECT * FROM custom_droplist WHERE mobId = ? ORDER BY mobId, category, chance";
 	
 	private static final String CUSTOM_SELECT_NPC_AI_ALL = "SELECT * FROM custom_npcaidata ORDER BY npcId";
 	private static final String CUSTOM_SELECT_NPC_AI_BY_ID = "SELECT * FROM custom_npcaidata WHERE npcId = ?";
@@ -585,7 +585,7 @@ public class NpcTable
 		int count = 0;
 		try
 		{
-			final String query = isCustom ? (((id > 0) ? CUSTOM_SELECT_NPC_BY_ID : CUSTOM_SELECT_NPC_ALL)) : ((id > 0) ? SELECT_NPC_BY_ID : SELECT_NPC_ALL);
+			final String query = isCustom ? ((id > 0) ? CUSTOM_SELECT_NPC_BY_ID : CUSTOM_SELECT_NPC_ALL) : ((id > 0) ? SELECT_NPC_BY_ID : SELECT_NPC_ALL);
 			try (PreparedStatement ps = con.prepareStatement(query))
 			{
 				if (id > 0)
@@ -642,12 +642,28 @@ public class NpcTable
 	private int loadNpcsSkills(Connection con, int id, boolean isCustom)
 	{
 		int count = 0;
-		final String query = isCustom ? (((id > 0) ? CUSTOM_SELECT_SKILLS_BY_ID : CUSTOM_SELECT_SKILLS_ALL)) : ((id > 0) ? SELECT_SKILLS_BY_ID : SELECT_SKILLS_ALL);
+		final String query = isCustom ? ((id > 0) ? CUSTOM_SELECT_SKILLS_BY_ID : CUSTOM_SELECT_SKILLS_ALL) : ((id > 0) ? SELECT_SKILLS_BY_ID : SELECT_SKILLS_ALL);
 		try (PreparedStatement ps = con.prepareStatement(query))
 		{
 			if (id > 0)
 			{
 				ps.setInt(1, id);
+				if (!isCustom)
+				{
+					final L2NpcTemplate template = getTemplate(id);
+					if (template != null)
+					{
+						template.resetSkills();
+					}
+				}
+			}
+			else if (!isCustom)
+			{
+				// Reset all template's skills.
+				for (L2NpcTemplate template : _npcs.values())
+				{
+					template.resetSkills();
+				}
 			}
 			
 			try (ResultSet rs = ps.executeQuery())
@@ -724,12 +740,28 @@ public class NpcTable
 	public int loadNpcsDrop(Connection con, int id, boolean isCustom)
 	{
 		int count = 0;
-		final String query = isCustom ? (((id > 0) ? CUSTOM_SELECT_DROPLIST_BY_ID : CUSTOM_SELECT_DROPLIST_ALL)) : ((id > 0) ? SELECT_DROPLIST_BY_ID : SELECT_DROPLIST_ALL);
+		final String query = isCustom ? ((id > 0) ? CUSTOM_SELECT_DROPLIST_BY_ID : CUSTOM_SELECT_DROPLIST_ALL) : ((id > 0) ? SELECT_DROPLIST_BY_ID : SELECT_DROPLIST_ALL);
 		try (PreparedStatement ps = con.prepareStatement(query))
 		{
 			if (id > 0)
 			{
 				ps.setInt(1, id);
+				if (!isCustom)
+				{
+					final L2NpcTemplate template = getTemplate(id);
+					if (template != null)
+					{
+						template.resetDroplist();
+					}
+				}
+			}
+			else if (!isCustom)
+			{
+				// Reset all template's droplist.
+				for (L2NpcTemplate template : _npcs.values())
+				{
+					template.resetDroplist();
+				}
 			}
 			
 			try (ResultSet rs = ps.executeQuery())
@@ -850,7 +882,7 @@ public class NpcTable
 					minionDat.setMinionId(rset.getInt("minion_id"));
 					minionDat.setAmountMin(rset.getInt("amount_min"));
 					minionDat.setAmountMax(rset.getInt("amount_max"));
-					npcDat.addRaidData(minionDat);
+					npcDat.addMinionData(minionDat);
 					count++;
 				}
 			}
@@ -894,7 +926,7 @@ public class NpcTable
 	private int loadNpcAi(Connection con, int id, boolean isCustom)
 	{
 		int count = 0;
-		final String query = isCustom ? (((id > 0) ? CUSTOM_SELECT_NPC_AI_BY_ID : CUSTOM_SELECT_NPC_AI_ALL)) : ((id > 0) ? SELECT_NPC_AI_BY_ID : SELECT_NPC_AI_ALL);
+		final String query = isCustom ? ((id > 0) ? CUSTOM_SELECT_NPC_AI_BY_ID : CUSTOM_SELECT_NPC_AI_ALL) : ((id > 0) ? SELECT_NPC_AI_BY_ID : SELECT_NPC_AI_ALL);
 		try (PreparedStatement ps = con.prepareStatement(query))
 		{
 			if (id > 0)
@@ -986,7 +1018,7 @@ public class NpcTable
 	private int loadNpcsElement(Connection con, int id, boolean isCustom)
 	{
 		int count = 0;
-		final String query = isCustom ? (((id > 0) ? CUSTOM_SELECT_NPC_ELEMENTALS_BY_ID : CUSTOM_SELECT_NPC_ELEMENTALS_ALL)) : ((id > 0) ? SELECT_NPC_ELEMENTALS_BY_ID : SELECT_NPC_ELEMENTALS_ALL);
+		final String query = isCustom ? ((id > 0) ? CUSTOM_SELECT_NPC_ELEMENTALS_BY_ID : CUSTOM_SELECT_NPC_ELEMENTALS_ALL) : ((id > 0) ? SELECT_NPC_ELEMENTALS_BY_ID : SELECT_NPC_ELEMENTALS_ALL);
 		try (PreparedStatement ps = con.prepareStatement(query))
 		{
 			if (id > 0)

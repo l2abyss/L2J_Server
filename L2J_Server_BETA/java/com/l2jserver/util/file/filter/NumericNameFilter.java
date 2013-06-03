@@ -26,15 +26,11 @@ import java.io.FileFilter;
  * Accepts <b>files</b> matching "numbers".xml only.
  * @author UnAfraid
  */
-public class MultisellFilter extends XMLFilter
+public class NumericNameFilter extends XMLFilter
 {
 	@Override
 	public boolean accept(File f)
 	{
-		if (!super.accept(f))
-		{
-			return false;
-		}
-		return f.getName().matches("\\d+\\.xml");
+		return super.accept(f) && f.getName().matches("\\d+\\.xml");
 	}
 }

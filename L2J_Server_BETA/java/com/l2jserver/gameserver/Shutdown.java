@@ -527,9 +527,6 @@ public class Shutdown extends Thread
 		_log.info("GrandBossManager: All Grand Boss info saved(" + tc.getEstimatedTimeAndRestartCounter() + "ms).");
 		HellboundManager.getInstance().cleanUp();
 		_log.info("Hellbound Manager: Data saved(" + tc.getEstimatedTimeAndRestartCounter() + "ms).");
-		_log.info("TradeController saving data.. This action may take some minutes! Please wait until completed!");
-		TradeController.getInstance().dataCountStore();
-		_log.info("TradeController: All count Item saved(" + tc.getEstimatedTimeAndRestartCounter() + "ms).");
 		ItemAuctionManager.getInstance().shutdown();
 		_log.info("Item Auction Manager: All tasks stopped(" + tc.getEstimatedTimeAndRestartCounter() + "ms).");
 		Olympiad.getInstance().saveOlympiadStatus();

@@ -18,7 +18,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -26,13 +25,13 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.TradeController;
-import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.datatables.BuyListData;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2TradeList;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.buylist.L2BuyList;
+import com.l2jserver.gameserver.model.buylist.Product;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.L2Armor;
@@ -154,8 +153,6 @@ public final class RequestPreviewItem extends L2GameClientPacket
 			return;
 		}
 		
-		L2TradeList list = null;
-		
 		// Get the current merchant targeted by the player
 		final L2MerchantInstance merchant = (target instanceof L2MerchantInstance) ? (L2MerchantInstance) target : null;
 		if (merchant == null)
@@ -164,42 +161,28 @@ public final class RequestPreviewItem extends L2GameClientPacket
 			return;
 		}
 		
-		final List<L2TradeList> lists = TradeController.getInstance().getBuyListByNpcId(merchant.getNpcId());
-		if (lists == null)
-		{
-			Util.handleIllegalPlayerAction(_activeChar, "Warning!! Character " + _activeChar.getName() + " of account " + _activeChar.getAccountName() + " sent a false BuyList list_id " + _listId, Config.DEFAULT_PUNISH);
-			return;
-		}
-		
-		for (L2TradeList tradeList : lists)
-		{
-			if (tradeList.getListId() == _listId)
-			{
-				list = tradeList;
-			}
-		}
-		
-		if (list == null)
+		final L2BuyList buyList = BuyListData.getInstance().getBuyList(_listId);
+		if (buyList == null)
 		{
 			Util.handleIllegalPlayerAction(_activeChar, "Warning!! Character " + _activeChar.getName() + " of account " + _activeChar.getAccountName() + " sent a false BuyList list_id " + _listId, Config.DEFAULT_PUNISH);
 			return;
 		}
 		
 		long totalPrice = 0;
-		_listId = list.getListId();
 		_item_list = new FastMap<>();
 		
 		for (int i = 0; i < _count; i++)
 		{
 			int itemId = _items[i];
 			
-			if (!list.containsItemId(itemId))
+			final Product product = buyList.getProductByItemId(itemId);
+			if (product == null)
 			{
 				Util.handleIllegalPlayerAction(_activeChar, "Warning!! Character " + _activeChar.getName() + " of account " + _activeChar.getAccountName() + " sent a false BuyList list_id " + _listId + " and item_id " + itemId, Config.DEFAULT_PUNISH);
 				return;
 			}
 			
-			L2Item template = ItemTable.getInstance().getTemplate(itemId);
+			L2Item template = product.getItem();
 			if (template == null)
 			{
 				continue;

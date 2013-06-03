@@ -21,14 +21,14 @@ package com.l2jserver.gameserver.model.actor.instance;
 import java.util.StringTokenizer;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.TradeController;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
+import com.l2jserver.gameserver.datatables.BuyListData;
 import com.l2jserver.gameserver.model.L2Party;
-import com.l2jserver.gameserver.model.L2TradeList;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.buylist.L2BuyList;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.BuyList;
@@ -209,23 +209,27 @@ public class L2MerchantSummonInstance extends L2ServitorInstance
 	
 	protected final void showBuyWindow(L2PcInstance player, int val)
 	{
+		final L2BuyList buyList = BuyListData.getInstance().getBuyList(val);
+		if (buyList == null)
+		{
+			_log.warning("BuyList not found! BuyListId:" + val);
+			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+		
+		if (!buyList.isNpcAllowed(getNpcId()))
+		{
+			_log.warning("Npc not allowed in BuyList! BuyListId:" + val + " NpcId:" + getNpcId());
+			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+		
 		double taxRate = 50;
 		
 		player.setInventoryBlockingStatus(true);
 		
-		L2TradeList list = TradeController.getInstance().getBuyList(val);
-		
-		if ((list != null) && list.getNpcId().equals(String.valueOf(getNpcId())))
-		{
-			player.sendPacket(new BuyList(list, player.getAdena(), taxRate));
-			player.sendPacket(new ExBuySellList(player, false));
-		}
-		else
-		{
-			_log.warning("possible client hacker: " + player.getName() + " attempting to buy from GM shop! < Ban him!");
-			_log.warning("buylist id:" + val);
-		}
-		
+		player.sendPacket(new BuyList(buyList, player.getAdena(), taxRate));
+		player.sendPacket(new ExBuySellList(player, false));
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 	
