@@ -113,7 +113,7 @@ public class OfflineTradersTable
 									continue;
 								}
 								title = pc.getStoreName();
-								for (L2ManufactureItem i : pc.getCreateList())
+								for (L2ManufactureItem i : pc.getManufactureItems().values())
 								{
 									stm_items.setInt(1, pc.getObjectId());
 									stm_items.setInt(2, i.getRecipeId());
@@ -217,7 +217,7 @@ public class OfflineTradersTable
 								case L2PcInstance.STORE_PRIVATE_MANUFACTURE:
 									while (items.next())
 									{
-										player.getCreateList().add(new L2ManufactureItem(items.getInt(2), items.getLong(4)));
+										player.getManufactureItems().put(items.getInt(2), new L2ManufactureItem(items.getInt(2), items.getLong(4)));
 									}
 									player.setStoreName(rs.getString("title"));
 									break;

@@ -246,18 +246,15 @@ public class RecipeController
 			// check that customer can afford to pay for creation services
 			if (_player != _target)
 			{
-				for (L2ManufactureItem temp : _player.getCreateList())
+				final L2ManufactureItem item = _player.getManufactureItems().get(_recipeList.getId());
+				if (item != null)
 				{
-					if (temp.getRecipeId() == _recipeList.getId()) // find recipe for item we want manufactured
+					_price = item.getCost();
+					if (_target.getAdena() < _price) // check price
 					{
-						_price = temp.getCost();
-						if (_target.getAdena() < _price) // check price
-						{
-							_target.sendPacket(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
-							abort();
-							return;
-						}
-						break;
+						_target.sendPacket(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
+						abort();
+						return;
 					}
 				}
 			}

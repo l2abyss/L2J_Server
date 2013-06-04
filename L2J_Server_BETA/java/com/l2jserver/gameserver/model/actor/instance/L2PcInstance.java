@@ -27,8 +27,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -628,7 +630,7 @@ public final class L2PcInstance extends L2Playable
 	
 	private TradeList _activeTradeList;
 	private ItemContainer _activeWarehouse;
-	private List<L2ManufactureItem> _createList;
+	private volatile Map<Integer, L2ManufactureItem> _manufactureItems;
 	private String _storeName = "";
 	private TradeList _sellList;
 	private TradeList _buyList;
@@ -1401,18 +1403,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean hasRecipeList(int recipeId)
 	{
-		if (_dwarvenRecipeBook.containsKey(recipeId))
-		{
-			return true;
-		}
-		else if (_commonRecipeBook.containsKey(recipeId))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return _dwarvenRecipeBook.containsKey(recipeId) || _commonRecipeBook.containsKey(recipeId);
 	}
 	
 	/**
@@ -6503,23 +6494,28 @@ public final class L2PcInstance extends L2Playable
 		onTradeCancel(this);
 	}
 	
-	/**
-	 * Get the create list of this player.
-	 * @return the the create list
-	 */
-	public List<L2ManufactureItem> getCreateList()
+	public boolean hasManufactureShop()
 	{
-		if (_createList == null)
+		return (_manufactureItems != null) && !_manufactureItems.isEmpty();
+	}
+	
+	/**
+	 * Get the manufacture items map of this player.
+	 * @return the the manufacture items map
+	 */
+	public Map<Integer, L2ManufactureItem> getManufactureItems()
+	{
+		if (_manufactureItems == null)
 		{
 			synchronized (this)
 			{
-				if (_createList == null)
+				if (_manufactureItems == null)
 				{
-					_createList = new CopyOnWriteArrayList<>();
+					_manufactureItems = Collections.synchronizedMap(new LinkedHashMap<Integer, L2ManufactureItem>());
 				}
 			}
 		}
-		return _createList;
+		return _manufactureItems;
 	}
 	
 	/**
@@ -14428,49 +14424,53 @@ public final class L2PcInstance extends L2Playable
 	
 	private void storeRecipeShopList()
 	{
-		if ((_createList != null) && !_createList.isEmpty())
+		if (hasManufactureShop())
 		{
-			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement delete = con.prepareStatement("DELETE FROM character_recipeshoplist WHERE charId=? ");
-				PreparedStatement insert = con.prepareStatement("INSERT INTO character_recipeshoplist (charId, Recipeid, Price, Pos) VALUES (?, ?, ?, ?)"))
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 			{
-				delete.setInt(1, getObjectId());
-				delete.execute();
-				int _position = 1;
-				for (L2ManufactureItem item : _createList)
+				try (PreparedStatement st = con.prepareStatement("DELETE FROM character_recipeshoplist WHERE charId=?"))
 				{
-					insert.setInt(1, getObjectId());
-					insert.setInt(2, item.getRecipeId());
-					insert.setLong(3, item.getCost());
-					insert.setInt(4, _position);
-					insert.addBatch();
-					_position++;
+					st.setInt(1, getObjectId());
+					st.execute();
 				}
-				insert.executeBatch();
+				
+				try (PreparedStatement st = con.prepareStatement("INSERT INTO character_recipeshoplist (charId, recipeId, price, index) VALUES (?, ?, ?, ?)"))
+				{
+					int i = 1;
+					for (L2ManufactureItem item : _manufactureItems.values())
+					{
+						st.setInt(1, getObjectId());
+						st.setInt(2, item.getRecipeId());
+						st.setLong(3, item.getCost());
+						st.setInt(4, i++);
+						st.addBatch();
+					}
+					st.executeBatch();
+				}
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, "Could not store recipe shop for playerID " + getObjectId() + ": ", e);
+				_log.log(Level.SEVERE, "Could not store recipe shop for playerId " + getObjectId() + ": ", e);
 			}
 		}
 	}
 	
 	private void restoreRecipeShopList()
 	{
-		if (_createList != null)
+		if (_manufactureItems != null)
 		{
-			_createList.clear();
+			_manufactureItems.clear();
 		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT Recipeid,Price FROM character_recipeshoplist WHERE charId=? ORDER BY Pos ASC"))
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM character_recipeshoplist WHERE charId=? ORDER BY index"))
 		{
 			statement.setInt(1, getObjectId());
 			try (ResultSet rset = statement.executeQuery())
 			{
 				while (rset.next())
 				{
-					getCreateList().add(new L2ManufactureItem(rset.getInt("Recipeid"), rset.getLong("Price")));
+					getManufactureItems().put(rset.getInt("recipeId"), new L2ManufactureItem(rset.getInt("recipeId"), rset.getLong("price")));
 				}
 			}
 		}

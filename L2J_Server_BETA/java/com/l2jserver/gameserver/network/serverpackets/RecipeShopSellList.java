@@ -34,16 +34,19 @@ public class RecipeShopSellList extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		if (!_manufacturer.getCreateList().isEmpty())
+		writeC(0xDF);
+		writeD(_manufacturer.getObjectId());
+		writeD((int) _manufacturer.getCurrentMp());// Creator's MP
+		writeD(_manufacturer.getMaxMp());// Creator's MP
+		writeQ(_buyer.getAdena());// Buyer Adena
+		if (!_manufacturer.hasManufactureShop())
 		{
-			writeC(0xDF);
-			writeD(_manufacturer.getObjectId());
-			writeD((int) _manufacturer.getCurrentMp());// Creator's MP
-			writeD(_manufacturer.getMaxMp());// Creator's MP
-			writeQ(_buyer.getAdena());// Buyer Adena
-			
-			writeD(_manufacturer.getCreateList().size());
-			for (L2ManufactureItem temp : _manufacturer.getCreateList())
+			writeD(0x00);
+		}
+		else
+		{
+			writeD(_manufacturer.getManufactureItems().size());
+			for (L2ManufactureItem temp : _manufacturer.getManufactureItems().values())
 			{
 				writeD(temp.getRecipeId());
 				writeD(0x00); // unknown

@@ -33,6 +33,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.RecipeShopMsg;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
+import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -44,7 +45,7 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 	
 	private static final int BATCH_LENGTH = 12;
 	
-	private Recipe[] _items = null;
+	private L2ManufactureItem[] _items = null;
 	
 	@Override
 	protected void readImpl()
@@ -55,7 +56,7 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 			return;
 		}
 		
-		_items = new Recipe[count];
+		_items = new L2ManufactureItem[count];
 		for (int i = 0; i < count; i++)
 		{
 			int id = readD();
@@ -65,7 +66,7 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 				_items = null;
 				return;
 			}
-			_items[i] = new Recipe(id, cost);
+			_items[i] = new L2ManufactureItem(id, cost);
 		}
 	}
 	
@@ -101,57 +102,29 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 		
 		List<L2RecipeList> dwarfRecipes = Arrays.asList(player.getDwarvenRecipeBook());
 		List<L2RecipeList> commonRecipes = Arrays.asList(player.getCommonRecipeBook());
-		final RecipeData rd = RecipeData.getInstance();
-		for (Recipe i : _items)
+		for (L2ManufactureItem i : _items)
 		{
-			L2RecipeList list = rd.getRecipeList(i.getRecipeId());
+			final L2RecipeList list = RecipeData.getInstance().getRecipeList(i.getRecipeId());
 			if (!dwarfRecipes.contains(list) && !commonRecipes.contains(list))
 			{
 				Util.handleIllegalPlayerAction(player, "Warning!! Player " + player.getName() + " of account " + player.getAccountName() + " tried to set recipe which he dont have.", Config.DEFAULT_PUNISH);
 				return;
 			}
 			
-			if (!i.addToList(player.getCreateList()))
+			if (i.getCost() > MAX_ADENA)
 			{
 				Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " tried to set price more than " + MAX_ADENA + " adena in Private Manufacture.", Config.DEFAULT_PUNISH);
 				return;
 			}
+			
+			player.getManufactureItems().put(i.getRecipeId(), i);
 		}
 		
-		player.setStoreName(player.getCreateList().isEmpty() ? "" : player.getStoreName());
+		player.setStoreName(!player.hasManufactureShop() ? "" : player.getStoreName());
 		player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_MANUFACTURE);
 		player.sitDown();
 		player.broadcastUserInfo();
-		player.sendPacket(new RecipeShopMsg(player));
-		player.broadcastPacket(new RecipeShopMsg(player));
-	}
-	
-	private static class Recipe
-	{
-		private final int _recipeId;
-		private final long _cost;
-		
-		public Recipe(int id, long c)
-		{
-			_recipeId = id;
-			_cost = c;
-		}
-		
-		public boolean addToList(List<L2ManufactureItem> list)
-		{
-			if (_cost > MAX_ADENA)
-			{
-				return false;
-			}
-			
-			list.add(new L2ManufactureItem(_recipeId, _cost));
-			return true;
-		}
-		
-		public int getRecipeId()
-		{
-			return _recipeId;
-		}
+		Broadcast.toSelfAndKnownPlayers(player, new RecipeShopMsg(player));
 	}
 	
 	@Override

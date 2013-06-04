@@ -39,25 +39,18 @@ public final class RequestRecipeShopManagePrev extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance player = getClient().getActiveChar();
-		if ((player == null) || (player.getTarget() == null))
+		final L2PcInstance player = getActiveChar();
+		if ((player == null))
 		{
 			return;
 		}
-		
-		// Player shouldn't be able to set stores if he/she is alike dead (dead or fake death)
-		if (player.isAlikeDead())
+		else if (player.isAlikeDead() || (player.getTarget() == null) || !player.getTarget().isPlayer())
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
-		if (!(player.getTarget() instanceof L2PcInstance))
-		{
-			return;
-		}
-		L2PcInstance target = (L2PcInstance) player.getTarget();
-		player.sendPacket(new RecipeShopSellList(player, target));
+		player.sendPacket(new RecipeShopSellList(player, player.getTarget().getActingPlayer()));
 	}
 	
 	@Override

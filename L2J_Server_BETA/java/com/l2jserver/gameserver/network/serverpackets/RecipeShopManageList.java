@@ -18,6 +18,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.Iterator;
+
 import com.l2jserver.gameserver.model.L2ManufactureItem;
 import com.l2jserver.gameserver.model.L2RecipeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -42,11 +44,17 @@ public class RecipeShopManageList extends L2GameServerPacket
 			_recipes = _seller.getCommonRecipeBook();
 		}
 		
-		for (L2ManufactureItem item : _seller.getCreateList())
+		if (_seller.hasManufactureShop())
 		{
-			if ((item.isDwarven() != _isDwarven) || !seller.hasRecipeList(item.getRecipeId()))
+			final Iterator<L2ManufactureItem> it = _seller.getManufactureItems().values().iterator();
+			L2ManufactureItem item;
+			while (it.hasNext())
 			{
-				_seller.getCreateList().remove(item);
+				item = it.next();
+				if ((item.isDwarven() != _isDwarven) || !seller.hasRecipeList(item.getRecipeId()))
+				{
+					it.remove();
+				}
 			}
 		}
 	}
@@ -54,7 +62,7 @@ public class RecipeShopManageList extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0xde);
+		writeC(0xDE);
 		writeD(_seller.getObjectId());
 		writeD((int) _seller.getAdena());
 		writeD(_isDwarven ? 0x00 : 0x01);
@@ -75,12 +83,19 @@ public class RecipeShopManageList extends L2GameServerPacket
 			}
 		}
 		
-		writeD(_seller.getCreateList().size());
-		for (L2ManufactureItem item : _seller.getCreateList())
+		if (!_seller.hasManufactureShop())
 		{
-			writeD(item.getRecipeId());
 			writeD(0x00);
-			writeQ(item.getCost());
+		}
+		else
+		{
+			writeD(_seller.getManufactureItems().size());
+			for (L2ManufactureItem item : _seller.getManufactureItems().values())
+			{
+				writeD(item.getRecipeId());
+				writeD(0x00);
+				writeQ(item.getCost());
+			}
 		}
 	}
 }
