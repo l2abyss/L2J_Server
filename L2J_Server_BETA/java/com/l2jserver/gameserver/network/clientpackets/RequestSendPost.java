@@ -222,7 +222,7 @@ public final class RequestSendPost extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.isInJail() && ((Config.JAIL_DISABLE_TRANSACTION && (_items != null)) || Config.JAIL_DISABLE_CHAT))
+		if (activeChar.isJailed() && ((Config.JAIL_DISABLE_TRANSACTION && (_items != null)) || Config.JAIL_DISABLE_CHAT))
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_FORWARD_NOT_IN_PEACE_ZONE);
 			return;

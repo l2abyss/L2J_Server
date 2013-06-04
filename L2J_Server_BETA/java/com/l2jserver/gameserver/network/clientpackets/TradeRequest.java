@@ -101,7 +101,7 @@ public final class TradeRequest extends L2GameClientPacket
 			return;
 		}
 		
-		if (Config.JAIL_DISABLE_TRANSACTION && (player.isInJail() || partner.isInJail()))
+		if (Config.JAIL_DISABLE_TRANSACTION && (player.isJailed() || partner.isJailed()))
 		{
 			player.sendMessage("You cannot trade while you are in in Jail.");
 			return;

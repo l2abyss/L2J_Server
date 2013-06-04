@@ -121,7 +121,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		int instanceId = 0;
 		
 		// force jail
-		if (activeChar.isInJail())
+		if (activeChar.isJailed())
 		{
 			_requestedPointType = 27;
 		}
@@ -254,7 +254,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 			}
 			case 27: // to jail
 			{
-				if (!activeChar.isInJail())
+				if (!activeChar.isJailed())
 				{
 					return;
 				}

@@ -101,6 +101,7 @@ import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
+import com.l2jserver.gameserver.instancemanager.PunishmentManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
@@ -160,7 +161,6 @@ import com.l2jserver.gameserver.model.actor.tasks.player.HerbTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.InventoryEnableTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.LookingForFishTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.PetFeedTask;
-import com.l2jserver.gameserver.model.actor.tasks.player.PunishTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.PvPFlagTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.RecoBonusTaskEnd;
 import com.l2jserver.gameserver.model.actor.tasks.player.RecoGiveTask;
@@ -219,6 +219,8 @@ import com.l2jserver.gameserver.model.multisell.PreparedListContainer;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
 import com.l2jserver.gameserver.model.olympiad.OlympiadManager;
+import com.l2jserver.gameserver.model.punishment.PunishmentAffect;
+import com.l2jserver.gameserver.model.punishment.PunishmentType;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.model.quest.QuestState;
@@ -350,8 +352,8 @@ public final class L2PcInstance extends L2Playable
 	
 	// Character Character SQL String Definitions:
 	private static final String INSERT_CHARACTER = "INSERT INTO characters (account_name,charId,char_name,level,maxHp,curHp,maxCp,curCp,maxMp,curMp,face,hairStyle,hairColor,sex,exp,sp,karma,fame,pvpkills,pkkills,clanid,race,classid,deletetime,cancraft,title,title_color,accesslevel,online,isin7sdungeon,clan_privs,wantspeace,base_class,newbie,nobless,power_grade,createDate) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	private static final String UPDATE_CHARACTER = "UPDATE characters SET level=?,maxHp=?,curHp=?,maxCp=?,curCp=?,maxMp=?,curMp=?,face=?,hairStyle=?,hairColor=?,sex=?,heading=?,x=?,y=?,z=?,exp=?,expBeforeDeath=?,sp=?,karma=?,fame=?,pvpkills=?,pkkills=?,clanid=?,race=?,classid=?,deletetime=?,title=?,title_color=?,accesslevel=?,online=?,isin7sdungeon=?,clan_privs=?,wantspeace=?,base_class=?,onlinetime=?,punish_level=?,punish_timer=?,newbie=?,nobless=?,power_grade=?,subpledge=?,lvl_joined_academy=?,apprentice=?,sponsor=?,clan_join_expiry_time=?,clan_create_expiry_time=?,char_name=?,death_penalty_level=?,bookmarkslot=?,vitality_points=?,language=? WHERE charId=?";
-	private static final String RESTORE_CHARACTER = "SELECT account_name, charId, char_name, level, maxHp, curHp, maxCp, curCp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, expBeforeDeath, sp, karma, fame, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, title_color, accesslevel, online, char_slot, lastAccess, clan_privs, wantspeace, base_class, onlinetime, isin7sdungeon, punish_level, punish_timer, newbie, nobless, power_grade, subpledge, lvl_joined_academy, apprentice, sponsor, clan_join_expiry_time,clan_create_expiry_time,death_penalty_level,bookmarkslot,vitality_points,createDate,language FROM characters WHERE charId=?";
+	private static final String UPDATE_CHARACTER = "UPDATE characters SET level=?,maxHp=?,curHp=?,maxCp=?,curCp=?,maxMp=?,curMp=?,face=?,hairStyle=?,hairColor=?,sex=?,heading=?,x=?,y=?,z=?,exp=?,expBeforeDeath=?,sp=?,karma=?,fame=?,pvpkills=?,pkkills=?,clanid=?,race=?,classid=?,deletetime=?,title=?,title_color=?,accesslevel=?,online=?,isin7sdungeon=?,clan_privs=?,wantspeace=?,base_class=?,onlinetime=?,newbie=?,nobless=?,power_grade=?,subpledge=?,lvl_joined_academy=?,apprentice=?,sponsor=?,clan_join_expiry_time=?,clan_create_expiry_time=?,char_name=?,death_penalty_level=?,bookmarkslot=?,vitality_points=?,language=? WHERE charId=?";
+	private static final String RESTORE_CHARACTER = "SELECT * FROM characters WHERE charId=?";
 	
 	// Character Teleport Bookmark:
 	private static final String INSERT_TP_BOOKMARK = "INSERT INTO character_tpbookmark (charId,Id,x,y,z,icon,tag,name) values (?,?,?,?,?,?,?,?)";
@@ -519,42 +521,10 @@ public final class L2PcInstance extends L2Playable
 	
 	private final Map<Integer, TeleportBookmark> _tpbookmarks = new FastMap<>();
 	
-	private PunishLevel _punishLevel = PunishLevel.NONE;
-	private long _punishTimer = 0;
-	private ScheduledFuture<?> _punishTask;
-	
 	private boolean _canFeed;
 	private int _eventEffectId = 0;
 	private boolean _isInSiege;
 	private boolean _isInHideoutSiege = false;
-	
-	public enum PunishLevel
-	{
-		NONE(0, ""),
-		CHAT(1, "chat banned"),
-		JAIL(2, "jailed"),
-		CHAR(3, "banned"),
-		ACC(4, "banned");
-		
-		private final int punValue;
-		private final String punString;
-		
-		PunishLevel(int value, String string)
-		{
-			punValue = value;
-			punString = string;
-		}
-		
-		public int value()
-		{
-			return punValue;
-		}
-		
-		public String string()
-		{
-			return punString;
-		}
-	}
 	
 	/** Olympiad */
 	private boolean _inOlympiadMode = false;
@@ -4340,6 +4310,16 @@ public final class L2PcInstance extends L2Playable
 		_client = client;
 	}
 	
+	public String getIPAddress()
+	{
+		String ip = "N/A";
+		if ((_client != null) && (_client.getConnectionAddress() != null))
+		{
+			ip = _client.getConnectionAddress().getHostAddress();
+		}
+		return ip;
+	}
+	
 	/**
 	 * Close the active connection with the client.
 	 * @param closeClient
@@ -6239,7 +6219,6 @@ public final class L2PcInstance extends L2Playable
 		storePetFood(_mountNpcId);
 		stopRentPet();
 		stopPvpRegTask();
-		stopPunishTask(true);
 		stopSoulTask();
 		stopChargeTask();
 		stopFameTask();
@@ -7514,15 +7493,6 @@ public final class L2PcInstance extends L2Playable
 					player.setSponsor(rset.getInt("sponsor"));
 					player.setLvlJoinedAcademy(rset.getInt("lvl_joined_academy"));
 					player.setIsIn7sDungeon(rset.getInt("isin7sdungeon") == 1);
-					player.setPunishLevel(rset.getInt("punish_level"));
-					if (player.getPunishLevel() != PunishLevel.NONE)
-					{
-						player.setPunishTimer(rset.getLong("punish_timer"));
-					}
-					else
-					{
-						player.setPunishTimer(0);
-					}
 					
 					CursedWeaponsManager.getInstance().checkPlayer(player);
 					
@@ -7974,23 +7944,21 @@ public final class L2PcInstance extends L2Playable
 			}
 			
 			statement.setLong(35, totalOnlineTime);
-			statement.setInt(36, getPunishLevel().value());
-			statement.setLong(37, getPunishTimer());
-			statement.setInt(38, getNewbie());
-			statement.setInt(39, isNoble() ? 1 : 0);
-			statement.setInt(40, getPowerGrade());
-			statement.setInt(41, getPledgeType());
-			statement.setInt(42, getLvlJoinedAcademy());
-			statement.setLong(43, getApprentice());
-			statement.setLong(44, getSponsor());
-			statement.setLong(45, getClanJoinExpiryTime());
-			statement.setLong(46, getClanCreateExpiryTime());
-			statement.setString(47, getName());
-			statement.setLong(48, getDeathPenaltyBuffLevel());
-			statement.setInt(49, getBookMarkSlot());
-			statement.setInt(50, getVitalityPoints());
-			statement.setString(51, getLang());
-			statement.setInt(52, getObjectId());
+			statement.setInt(36, getNewbie());
+			statement.setInt(37, isNoble() ? 1 : 0);
+			statement.setInt(38, getPowerGrade());
+			statement.setInt(39, getPledgeType());
+			statement.setInt(40, getLvlJoinedAcademy());
+			statement.setLong(41, getApprentice());
+			statement.setLong(42, getSponsor());
+			statement.setLong(43, getClanJoinExpiryTime());
+			statement.setLong(44, getClanCreateExpiryTime());
+			statement.setString(45, getName());
+			statement.setLong(46, getDeathPenaltyBuffLevel());
+			statement.setInt(47, getBookMarkSlot());
+			statement.setInt(48, getVitalityPoints());
+			statement.setString(49, getLang());
+			statement.setInt(50, getObjectId());
 			
 			statement.execute();
 			statement.close();
@@ -10437,7 +10405,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean canDuel()
 	{
-		if (isInCombat() || (getPunishLevel() == PunishLevel.JAIL))
+		if (isInCombat() || isJailed())
 		{
 			_noDuelReason = SystemMessageId.C1_CANNOT_DUEL_BECAUSE_C1_IS_CURRENTLY_ENGAGED_IN_BATTLE;
 			return false;
@@ -11103,9 +11071,6 @@ public final class L2PcInstance extends L2Playable
 				sendMessage("You have been teleported to the nearest town because you have not signed for any cabal.");
 			}
 		}
-		
-		// jail task
-		updatePunishState();
 		
 		if (isGM())
 		{
@@ -12835,247 +12800,19 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * returns punishment level of player
-	 * @return
+	 * @return {@code true} if player is jailed, {@code false} otherwise.
 	 */
-	public PunishLevel getPunishLevel()
+	public boolean isJailed()
 	{
-		return _punishLevel;
+		return PunishmentManager.getInstance().hasPunishment(getObjectId(), PunishmentAffect.CHARACTER, PunishmentType.JAIL) || PunishmentManager.getInstance().hasPunishment(getAccountName(), PunishmentAffect.ACCOUNT, PunishmentType.JAIL) || PunishmentManager.getInstance().hasPunishment(getIPAddress(), PunishmentAffect.IP, PunishmentType.JAIL);
 	}
 	
 	/**
-	 * @return True if player is jailed
-	 */
-	public boolean isInJail()
-	{
-		return _punishLevel == PunishLevel.JAIL;
-	}
-	
-	/**
-	 * @return True if player is chat banned
+	 * @return {@code true} if player is chat banned, {@code false} otherwise.
 	 */
 	public boolean isChatBanned()
 	{
-		return _punishLevel == PunishLevel.CHAT;
-	}
-	
-	public void setPunishLevel(int state)
-	{
-		switch (state)
-		{
-			case 0:
-			{
-				_punishLevel = PunishLevel.NONE;
-				break;
-			}
-			case 1:
-			{
-				_punishLevel = PunishLevel.CHAT;
-				break;
-			}
-			case 2:
-			{
-				_punishLevel = PunishLevel.JAIL;
-				break;
-			}
-			case 3:
-			{
-				_punishLevel = PunishLevel.CHAR;
-				break;
-			}
-			case 4:
-			{
-				_punishLevel = PunishLevel.ACC;
-				break;
-			}
-		}
-	}
-	
-	/**
-	 * Sets punish level for player based on delay
-	 * @param state
-	 * @param delayInMinutes 0 - Indefinite
-	 */
-	public void setPunishLevel(PunishLevel state, int delayInMinutes)
-	{
-		long delayInMilliseconds = delayInMinutes * 60000L;
-		switch (state)
-		{
-			case NONE: // Remove Punishments
-			{
-				switch (_punishLevel)
-				{
-					case CHAT:
-					{
-						_punishLevel = state;
-						stopPunishTask(true);
-						sendPacket(new EtcStatusUpdate(this));
-						sendMessage("Your Chat ban has been lifted");
-						break;
-					}
-					case JAIL:
-					{
-						_punishLevel = state;
-						// Open a Html message to inform the player
-						NpcHtmlMessage htmlMsg = new NpcHtmlMessage(0);
-						String jailInfos = HtmCache.getInstance().getHtm(getHtmlPrefix(), "data/html/jail_out.htm");
-						if (jailInfos != null)
-						{
-							htmlMsg.setHtml(jailInfos);
-						}
-						else
-						{
-							htmlMsg.setHtml("<html><body>You are free for now, respect server rules!</body></html>");
-						}
-						sendPacket(htmlMsg);
-						stopPunishTask(true);
-						teleToLocation(17836, 170178, -3507, true); // Floran
-						break;
-					}
-				}
-				break;
-			}
-			case CHAT: // Chat Ban
-			{
-				// not allow player to escape jail using chat ban
-				if (_punishLevel == PunishLevel.JAIL)
-				{
-					break;
-				}
-				_punishLevel = state;
-				_punishTimer = 0;
-				sendPacket(new EtcStatusUpdate(this));
-				// Remove the task if any
-				stopPunishTask(false);
-				
-				if (delayInMinutes > 0)
-				{
-					_punishTimer = delayInMilliseconds;
-					
-					// start the countdown
-					_punishTask = ThreadPoolManager.getInstance().scheduleGeneral(new PunishTask(this), _punishTimer);
-					sendMessage("You are chat banned for " + delayInMinutes + " minutes.");
-				}
-				else
-				{
-					sendMessage("You have been chat banned");
-				}
-				break;
-				
-			}
-			case JAIL: // Jail Player
-			{
-				_punishLevel = state;
-				_punishTimer = 0;
-				// Remove the task if any
-				stopPunishTask(false);
-				
-				if (delayInMinutes > 0)
-				{
-					_punishTimer = delayInMilliseconds;
-					
-					// start the countdown
-					_punishTask = ThreadPoolManager.getInstance().scheduleGeneral(new PunishTask(this), _punishTimer);
-					sendMessage("You are in jail for " + delayInMinutes + " minutes.");
-				}
-				
-				if (!TvTEvent.isInactive() && TvTEvent.isPlayerParticipant(getObjectId()))
-				{
-					TvTEvent.removeParticipant(getObjectId());
-				}
-				if (OlympiadManager.getInstance().isRegisteredInComp(this))
-				{
-					OlympiadManager.getInstance().removeDisconnectedCompetitor(this);
-				}
-				
-				// Open a Html message to inform the player
-				NpcHtmlMessage htmlMsg = new NpcHtmlMessage(0);
-				String jailInfos = HtmCache.getInstance().getHtm(getHtmlPrefix(), "data/html/jail_in.htm");
-				if (jailInfos != null)
-				{
-					htmlMsg.setHtml(jailInfos);
-				}
-				else
-				{
-					htmlMsg.setHtml("<html><body>You have been put in jail by an admin.</body></html>");
-				}
-				sendPacket(htmlMsg);
-				setInstanceId(0);
-				setIsIn7sDungeon(false);
-				
-				teleToLocation(-114356, -249645, -2984, false); // Jail
-				break;
-			}
-			case CHAR: // Ban Character
-			{
-				setAccessLevel(-1);
-				logout();
-				break;
-			}
-			case ACC: // Ban Account
-			{
-				setAccountAccesslevel(-1);
-				logout();
-				break;
-			}
-			default:
-			{
-				_punishLevel = state;
-				break;
-			}
-		}
-		
-		// store in database
-		storeCharBase();
-	}
-	
-	public long getPunishTimer()
-	{
-		return _punishTimer;
-	}
-	
-	public void setPunishTimer(long time)
-	{
-		_punishTimer = time;
-	}
-	
-	private void updatePunishState()
-	{
-		if (getPunishLevel() != PunishLevel.NONE)
-		{
-			// If punish timer exists, restart punishtask.
-			if (_punishTimer > 0)
-			{
-				_punishTask = ThreadPoolManager.getInstance().scheduleGeneral(new PunishTask(this), _punishTimer);
-				sendMessage("You are still " + getPunishLevel().string() + " for " + Math.round(_punishTimer / 60000f) + " minutes.");
-			}
-			if (getPunishLevel() == PunishLevel.JAIL)
-			{
-				// If player escaped, put him back in jail
-				if (!isInsideZone(ZoneId.JAIL))
-				{
-					teleToLocation(-114356, -249645, -2984, true);
-				}
-			}
-		}
-	}
-	
-	public void stopPunishTask(boolean save)
-	{
-		if (_punishTask != null)
-		{
-			if (save)
-			{
-				long delay = _punishTask.getDelay(TimeUnit.MILLISECONDS);
-				if (delay < 0)
-				{
-					delay = 0;
-				}
-				setPunishTimer(delay);
-			}
-			_punishTask.cancel(false);
-			_punishTask = null;
-		}
+		return PunishmentManager.getInstance().hasPunishment(getObjectId(), PunishmentAffect.CHARACTER, PunishmentType.CHAT_BAN) || PunishmentManager.getInstance().hasPunishment(getAccountName(), PunishmentAffect.ACCOUNT, PunishmentType.CHAT_BAN) || PunishmentManager.getInstance().hasPunishment(getIPAddress(), PunishmentAffect.IP, PunishmentType.CHAT_BAN);
 	}
 	
 	public void startFameTask(long delay, int fameFixRate)

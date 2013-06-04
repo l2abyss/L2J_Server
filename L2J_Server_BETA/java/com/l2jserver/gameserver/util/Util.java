@@ -333,6 +333,27 @@ public final class Util
 	}
 	
 	/**
+	 * Based on implode() in PHP
+	 * @param <T>
+	 * @param array
+	 * @param delim
+	 * @return a delimited string for a given array of string elements.
+	 */
+	public static <T> String implode(T[] array, String delim)
+	{
+		String result = "";
+		for (T val : array)
+		{
+			result += val.toString() + delim;
+		}
+		if (!result.isEmpty())
+		{
+			result = result.substring(0, result.length() - 1);
+		}
+		return result;
+	}
+	
+	/**
 	 * (Based on round() in PHP)
 	 * @param number - the number to round
 	 * @param numPlaces - how many digits after decimal point to leave intact

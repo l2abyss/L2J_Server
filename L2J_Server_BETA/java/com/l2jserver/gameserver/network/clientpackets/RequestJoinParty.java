@@ -104,7 +104,7 @@ public final class RequestJoinParty extends L2GameClientPacket
 			return;
 		}
 		
-		if (target.isInJail() || requestor.isInJail())
+		if (target.isJailed() || requestor.isJailed())
 		{
 			requestor.sendMessage("You cannot invite a player while is in Jail.");
 			return;

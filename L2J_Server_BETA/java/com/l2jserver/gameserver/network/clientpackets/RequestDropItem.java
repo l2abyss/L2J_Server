@@ -107,7 +107,7 @@ public final class RequestDropItem extends L2GameClientPacket
 			return;
 		}
 		
-		if (Config.JAIL_DISABLE_TRANSACTION && activeChar.isInJail())
+		if (Config.JAIL_DISABLE_TRANSACTION && activeChar.isJailed())
 		{
 			activeChar.sendMessage("You cannot drop items in Jail.");
 			return;

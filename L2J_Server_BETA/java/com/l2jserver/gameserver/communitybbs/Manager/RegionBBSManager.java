@@ -208,7 +208,7 @@ public class RegionBBSManager extends BaseBBSManager
 					separateAndSend(htmlCode.toString(), activeChar);
 					return;
 				}
-				if (Config.JAIL_DISABLE_CHAT && receiver.isInJail())
+				if (Config.JAIL_DISABLE_CHAT && receiver.isJailed())
 				{
 					activeChar.sendMessage("Player is in jail.");
 					return;
@@ -218,7 +218,7 @@ public class RegionBBSManager extends BaseBBSManager
 					activeChar.sendMessage("Player is chat banned.");
 					return;
 				}
-				if (activeChar.isInJail() && Config.JAIL_DISABLE_CHAT)
+				if (activeChar.isJailed() && Config.JAIL_DISABLE_CHAT)
 				{
 					activeChar.sendMessage("You can not chat while in jail.");
 					return;

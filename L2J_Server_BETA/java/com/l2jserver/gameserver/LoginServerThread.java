@@ -757,6 +757,11 @@ public class LoginServerThread extends Thread
 		}
 	}
 	
+	public L2GameClient getClient(String name)
+	{
+		return name != null ? _accountsInGameServer.get(name) : null;
+	}
+	
 	public static class SessionKey
 	{
 		public int playOkID1;

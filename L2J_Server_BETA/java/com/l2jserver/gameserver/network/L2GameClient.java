@@ -799,7 +799,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	protected boolean offlineMode(L2PcInstance player)
 	{
 		boolean canSetShop = false;
-		if (player.isInOlympiadMode() || player.isFestivalParticipant() || player.isBlockedFromExit() || player.isInJail() || (player.getVehicle() != null))
+		if (player.isInOlympiadMode() || player.isFestivalParticipant() || player.isBlockedFromExit() || player.isJailed() || (player.getVehicle() != null))
 		{
 			return false;
 		}

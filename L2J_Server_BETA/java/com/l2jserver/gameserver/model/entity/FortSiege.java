@@ -925,7 +925,7 @@ public class FortSiege implements Siegable
 		
 		for (L2PcInstance player : players)
 		{
-			if (player.canOverrideCond(PcCondOverride.FORTRESS_CONDITIONS) || player.isInJail())
+			if (player.canOverrideCond(PcCondOverride.FORTRESS_CONDITIONS) || player.isJailed())
 			{
 				continue;
 			}
