@@ -565,7 +565,10 @@ public class L2Attackable extends L2Npc
 		@Override
 		public void run()
 		{
-			_quest.notifyKill(_attackable, _killer, _isSummon);
+			if ((_quest != null) && (_attackable != null) && (_killer != null))
+			{
+				_quest.notifyKill(_attackable, _killer, _isSummon);
+			}
 		}
 	}
 	
