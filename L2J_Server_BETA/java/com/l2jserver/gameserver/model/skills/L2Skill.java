@@ -976,34 +976,29 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			return true;
 		}
 		
-		List<Condition> preCondition = _preCondition;
-		if (itemOrWeapon)
-		{
-			preCondition = _itemPreCondition;
-		}
-		
+		final List<Condition> preCondition = itemOrWeapon ? _itemPreCondition : _preCondition;
 		if ((preCondition == null) || preCondition.isEmpty())
 		{
 			return true;
 		}
 		
+		final Env env = new Env();
+		env.setCharacter(activeChar);
+		if (target instanceof L2Character)
+		{
+			env.setTarget((L2Character) target);
+		}
+		env.setSkill(this);
+		
 		for (Condition cond : preCondition)
 		{
-			Env env = new Env();
-			env.setCharacter(activeChar);
-			if (target instanceof L2Character)
-			{
-				env.setTarget((L2Character) target);
-			}
-			env.setSkill(this);
-			
 			if (!cond.test(env))
 			{
-				String msg = cond.getMessage();
-				int msgId = cond.getMessageId();
+				final String msg = cond.getMessage();
+				final int msgId = cond.getMessageId();
 				if (msgId != 0)
 				{
-					SystemMessage sm = SystemMessage.getSystemMessage(msgId);
+					final SystemMessage sm = SystemMessage.getSystemMessage(msgId);
 					if (cond.isAddName())
 					{
 						sm.addSkillName(_id);
