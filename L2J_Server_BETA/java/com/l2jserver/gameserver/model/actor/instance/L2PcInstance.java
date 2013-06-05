@@ -14171,7 +14171,7 @@ public final class L2PcInstance extends L2Playable
 					st.execute();
 				}
 				
-				try (PreparedStatement st = con.prepareStatement("INSERT INTO character_recipeshoplist (charId, recipeId, price, index) VALUES (?, ?, ?, ?)"))
+				try (PreparedStatement st = con.prepareStatement("INSERT INTO character_recipeshoplist (`charId`, `recipeId`, `price`, `index`) VALUES (?, ?, ?, ?)"))
 				{
 					int i = 1;
 					for (L2ManufactureItem item : _manufactureItems.values())
@@ -14200,7 +14200,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM character_recipeshoplist WHERE charId=? ORDER BY index"))
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM character_recipeshoplist WHERE charId=? ORDER BY `index`"))
 		{
 			statement.setInt(1, getObjectId());
 			try (ResultSet rset = statement.executeQuery())
