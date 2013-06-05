@@ -19,8 +19,8 @@
 package com.l2jserver.gameserver.model.buylist;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,7 +30,7 @@ import java.util.Set;
 public final class L2BuyList
 {
 	private final int _listId;
-	private final Map<Integer, Product> _products = new HashMap<>();
+	private final Map<Integer, Product> _products = new LinkedHashMap<>();
 	private Set<Integer> _allowedNpcs = null;
 	
 	public L2BuyList(int listId)
