@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.datatables;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -41,7 +41,7 @@ import com.l2jserver.util.file.filter.NumericNameFilter;
  */
 public final class BuyListData extends DocumentParser
 {
-	private final Map<Integer, L2BuyList> _buyLists = new HashMap<>();
+	private final Map<Integer, L2BuyList> _buyLists = new LinkedHashMap<>();
 	
 	protected BuyListData()
 	{
