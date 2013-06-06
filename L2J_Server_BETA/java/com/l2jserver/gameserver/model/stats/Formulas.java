@@ -1647,7 +1647,7 @@ public final class Formulas
 		if (env.getCharacter().isDebug() || Config.DEVELOPER)
 		{
 			final StringBuilder stat = new StringBuilder(100);
-			StringUtil.append(stat, env.getSkill().getName(), " power:", String.valueOf(baseRate), " stat:", String.format("%1.2f", statMod), " res:", String.format("%1.2f", resMod), " elem:", String.format("%1.2f", elementMod), " lvl:", String.format("%1.2f", lvlBonusMod), " total:", String.valueOf(rate));
+			StringUtil.append(stat, "Effect Name: ", String.valueOf(env.getEffect().getEffectTemplate().getName()), " Base Rate: ", String.valueOf(baseRate), " Stat Type: ", String.valueOf(env.getSkill().getSaveVs()), " Stat Mod: ", String.format("%1.2f", statMod), " Res Mod: ", String.format("%1.2f", resMod), " Elem Mod: ", String.format("%1.2f", elementMod), " Lvl Mod: ", String.format("%1.2f", lvlBonusMod), " Final Rate: ", String.valueOf(rate));
 			final String result = stat.toString();
 			if (env.getCharacter().isDebug())
 			{

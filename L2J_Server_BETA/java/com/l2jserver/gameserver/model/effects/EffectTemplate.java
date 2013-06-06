@@ -191,6 +191,11 @@ public class EffectTemplate
 		return _abnormalTime;
 	}
 	
+	public String getName()
+	{
+		return _name;
+	}
+	
 	public AbnormalEffect getAbnormalEffect()
 	{
 		return _abnormalEffect;
