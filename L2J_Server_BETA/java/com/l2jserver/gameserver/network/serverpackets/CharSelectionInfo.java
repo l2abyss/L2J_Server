@@ -219,7 +219,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 		List<CharSelectInfoPackage> characterList = new FastList<>();
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT account_name, charId, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, accesslevel, online, char_slot, lastAccess, base_class, transform_id, language, vitality_points FROM characters WHERE account_name=?"))
+			PreparedStatement statement = con.prepareStatement("SELECT account_name, charId, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, accesslevel, online, char_slot, lastAccess, base_class, transform_id, language, vitality_points FROM characters WHERE account_name=? ORDER BY createDate"))
 		{
 			statement.setString(1, loginName);
 			try (ResultSet charList = statement.executeQuery())
