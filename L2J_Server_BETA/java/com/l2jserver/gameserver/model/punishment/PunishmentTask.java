@@ -182,7 +182,7 @@ public class PunishmentTask implements Runnable
 			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 				PreparedStatement st = con.prepareStatement(INSERT_QUERY))
 			{
-				st.setString(1, String.valueOf(_key));
+				st.setObject(1, _key);
 				st.setString(2, _affect.name());
 				st.setString(3, _type.name());
 				st.setLong(4, _expirationTime);

@@ -64,7 +64,7 @@ public class PunishmentManager
 		{
 			while (rset.next())
 			{
-				final Object key = rset.getInt("key");
+				final Object key = rset.getObject("key");
 				final PunishmentAffect affect = PunishmentAffect.getByName(rset.getString("affect"));
 				final PunishmentType type = PunishmentType.getByName(rset.getString("type"));
 				final long expirationTime = rset.getLong("expiration");
