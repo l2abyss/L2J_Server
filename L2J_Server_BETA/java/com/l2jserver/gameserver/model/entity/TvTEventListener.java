@@ -32,13 +32,6 @@ public final class TvTEventListener extends EventListener
 	}
 	
 	@Override
-	public void register()
-	{
-		super.register();
-		player.setCanRevive(false);
-	}
-	
-	@Override
 	public void unregister()
 	{
 		super.unregister();

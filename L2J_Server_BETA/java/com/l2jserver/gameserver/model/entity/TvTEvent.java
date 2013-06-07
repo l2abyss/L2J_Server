@@ -310,6 +310,8 @@ public class TvTEvent
 			{
 				if (playerInstance != null)
 				{
+					// Disable player revival.
+					playerInstance.setCanRevive(false);
 					// Teleporter implements Runnable and starts itself
 					new TvTEventTeleporter(playerInstance, team.getCoordinates(), false, false);
 				}
@@ -451,6 +453,9 @@ public class TvTEvent
 				// Check for nullpointer
 				if (playerInstance != null)
 				{
+					// Enable player revival.
+					playerInstance.setCanRevive(true);
+					// Teleport back.
 					new TvTEventTeleporter(playerInstance, Config.TVT_EVENT_PARTICIPATION_NPC_COORDINATES, false, false);
 				}
 			}
