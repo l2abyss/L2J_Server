@@ -53,6 +53,7 @@ import com.l2jserver.gameserver.model.conditions.ConditionPlayerActiveSkillId;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerAgathionId;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCallPc;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanEscape;
+import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanRefuelAirship;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanSweep;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanTransform;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanUntransform;
@@ -760,6 +761,10 @@ public abstract class DocumentBase
 			else if ("canEscape".equalsIgnoreCase(a.getNodeName()))
 			{
 				cond = joinAnd(cond, new ConditionPlayerCanEscape(Boolean.parseBoolean(a.getNodeValue())));
+			}
+			else if ("canRefuelAirship".equalsIgnoreCase(a.getNodeName()))
+			{
+				cond = joinAnd(cond, new ConditionPlayerCanRefuelAirship(Integer.parseInt(a.getNodeValue())));
 			}
 			else if ("canSweep".equalsIgnoreCase(a.getNodeName()))
 			{
