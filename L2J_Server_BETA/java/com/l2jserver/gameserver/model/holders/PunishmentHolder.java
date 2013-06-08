@@ -29,7 +29,7 @@ import com.l2jserver.gameserver.model.punishment.PunishmentType;
  */
 public class PunishmentHolder
 {
-	private final Map<Object, Map<PunishmentType, PunishmentTask>> _holder = new ConcurrentHashMap<>();
+	private final Map<String, Map<PunishmentType, PunishmentTask>> _holder = new ConcurrentHashMap<>();
 	
 	/**
 	 * Stores the punishment task in the Map.
@@ -39,11 +39,12 @@ public class PunishmentHolder
 	{
 		if (!task.isExpired())
 		{
-			if (!_holder.containsKey(task.getKey()))
+			String key = String.valueOf(task.getKey());
+			if (!_holder.containsKey(key))
 			{
-				_holder.put(task.getKey(), new ConcurrentHashMap<PunishmentType, PunishmentTask>());
+				_holder.put(key, new ConcurrentHashMap<PunishmentType, PunishmentTask>());
 			}
-			_holder.get(task.getKey()).put(task.getType(), task);
+			_holder.get(key).put(task.getType(), task);
 		}
 	}
 	
@@ -53,14 +54,15 @@ public class PunishmentHolder
 	 */
 	public void stopPunishment(PunishmentTask task)
 	{
-		if (_holder.containsKey(task.getKey()))
+		String key = String.valueOf(task.getKey());
+		if (_holder.containsKey(key))
 		{
 			task.stopPunishment();
-			final Map<PunishmentType, PunishmentTask> punishments = _holder.get(task.getKey());
+			final Map<PunishmentType, PunishmentTask> punishments = _holder.get(key);
 			punishments.remove(task.getType());
 			if (punishments.isEmpty())
 			{
-				_holder.remove(task.getKey());
+				_holder.remove(key);
 			}
 		}
 	}
@@ -70,7 +72,7 @@ public class PunishmentHolder
 	 * @param type
 	 * @return {@code true} if Map contains the current key and type, {@code false} otherwise.
 	 */
-	public boolean hasPunishment(Object key, PunishmentType type)
+	public boolean hasPunishment(String key, PunishmentType type)
 	{
 		return getPunishment(key, type) != null;
 	}
@@ -80,7 +82,7 @@ public class PunishmentHolder
 	 * @param type
 	 * @return {@link PunishmentTask} by specified key and type if exists, null otherwise.
 	 */
-	public PunishmentTask getPunishment(Object key, PunishmentType type)
+	public PunishmentTask getPunishment(String key, PunishmentType type)
 	{
 		if (_holder.containsKey(key))
 		{

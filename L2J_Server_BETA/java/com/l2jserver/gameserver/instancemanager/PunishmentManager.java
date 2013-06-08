@@ -110,7 +110,7 @@ public class PunishmentManager
 	public boolean hasPunishment(Object key, PunishmentAffect affect, PunishmentType type)
 	{
 		final PunishmentHolder holder = _tasks.get(affect);
-		return holder.hasPunishment(key, type);
+		return holder.hasPunishment(String.valueOf(key), type);
 	}
 	
 	public long getPunishmentExpiration(Object key, PunishmentAffect affect, PunishmentType type)
@@ -121,7 +121,7 @@ public class PunishmentManager
 	
 	private PunishmentTask getPunishment(Object key, PunishmentAffect affect, PunishmentType type)
 	{
-		return _tasks.get(affect).getPunishment(key, type);
+		return _tasks.get(affect).getPunishment(String.valueOf(key), type);
 	}
 	
 	public static final PunishmentManager getInstance()
