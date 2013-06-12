@@ -20,7 +20,9 @@ package com.l2jserver.gameserver.model.punishment;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,8 +41,10 @@ public class PunishmentTask implements Runnable
 	protected static final Logger _log = Logger.getLogger(PunishmentTask.class.getName());
 	
 	private static final String INSERT_QUERY = "INSERT INTO punishments (`key`, `affect`, `type`, `expiration`, `reason`, `punishedBy`) VALUES (?, ?, ?, ?, ?, ?)";
+	private static final String UPDATE_QUERY = "UPDATE punishments SET expiration = ? WHERE id = ?";
 	
-	private final Object _key;
+	private int _id;
+	private final String _key;
 	private final PunishmentAffect _affect;
 	private final PunishmentType _type;
 	private final long _expirationTime;
@@ -51,12 +55,13 @@ public class PunishmentTask implements Runnable
 	
 	public PunishmentTask(Object key, PunishmentAffect affect, PunishmentType type, long expirationTime, String reason, String punishedBy)
 	{
-		this(key, affect, type, expirationTime, reason, punishedBy, false);
+		this(0, key, affect, type, expirationTime, reason, punishedBy, false);
 	}
 	
-	public PunishmentTask(Object key, PunishmentAffect affect, PunishmentType type, long expirationTime, String reason, String punishedBy, boolean isStored)
+	public PunishmentTask(int id, Object key, PunishmentAffect affect, PunishmentType type, long expirationTime, String reason, String punishedBy, boolean isStored)
 	{
-		_key = key;
+		_id = id;
+		_key = String.valueOf(key);
 		_affect = affect;
 		_type = type;
 		_expirationTime = expirationTime;
@@ -180,15 +185,22 @@ public class PunishmentTask implements Runnable
 		if (!_isStored)
 		{
 			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-				PreparedStatement st = con.prepareStatement(INSERT_QUERY))
+				PreparedStatement st = con.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS))
 			{
-				st.setObject(1, _key);
+				st.setString(1, _key);
 				st.setString(2, _affect.name());
 				st.setString(3, _type.name());
 				st.setLong(4, _expirationTime);
 				st.setString(5, _reason);
 				st.setString(6, _punishedBy);
 				st.execute();
+				try (ResultSet rset = st.getGeneratedKeys())
+				{
+					if (rset.next())
+					{
+						_id = rset.getInt(1);
+					}
+				}
 				_isStored = true;
 			}
 			catch (SQLException e)
@@ -209,6 +221,21 @@ public class PunishmentTask implements Runnable
 	 */
 	private void onEnd()
 	{
+		if (_isStored)
+		{
+			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+				PreparedStatement st = con.prepareStatement(UPDATE_QUERY))
+			{
+				st.setLong(1, System.currentTimeMillis());
+				st.setLong(2, _id);
+				st.execute();
+			}
+			catch (SQLException e)
+			{
+				_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't update punishment task for: " + _affect + " " + _key + " id: " + _id, e);
+			}
+		}
+		
 		final IPunishmentHandler handler = PunishmentHandler.getInstance().getHandler(_type);
 		if (handler != null)
 		{

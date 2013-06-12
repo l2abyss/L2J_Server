@@ -64,7 +64,8 @@ public class PunishmentManager
 		{
 			while (rset.next())
 			{
-				final Object key = rset.getObject("key");
+				final int id = rset.getInt("id");
+				final String key = rset.getString("key");
 				final PunishmentAffect affect = PunishmentAffect.getByName(rset.getString("affect"));
 				final PunishmentType type = PunishmentType.getByName(rset.getString("type"));
 				final long expirationTime = rset.getLong("expiration");
@@ -72,15 +73,14 @@ public class PunishmentManager
 				final String punishedBy = rset.getString("punishedBy");
 				if ((type != null) && (affect != null))
 				{
-					PunishmentTask task = new PunishmentTask(key, affect, type, expirationTime, reason, punishedBy, true);
-					if (task.isExpired())
+					if ((expirationTime > 0) && (System.currentTimeMillis() > expirationTime)) // expired task.
 					{
 						expired++;
 					}
 					else
 					{
 						initiated++;
-						_tasks.get(affect).addPunishment(task);
+						_tasks.get(affect).addPunishment(new PunishmentTask(id, key, affect, type, expirationTime, reason, punishedBy, true));
 					}
 				}
 			}
