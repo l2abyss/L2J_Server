@@ -405,12 +405,13 @@ public abstract class L2Effect implements IChanceSkillTrigger
 	}
 	
 	/**
-	 * Method called on each tick.
-	 * @return {@code true} for continuation of this effect, {@code false} otherwise
+	 * Method called on each tick.<br>
+	 * By default if the abnormal time is lesser than zero it will return {@code true}, this means the effect will last forever.
+	 * @return if {@code true} this effect will continue forever, if {@code false} it will stop after tick count is reached
 	 */
 	public boolean onActionTime()
 	{
-		return false;
+		return getAbnormalTime() < 0;
 	}
 	
 	/**
