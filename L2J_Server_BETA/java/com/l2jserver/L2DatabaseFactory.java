@@ -274,7 +274,7 @@ public class L2DatabaseFactory
 				}
 				else
 				{
-					getExecutor().schedule(new ConnectionCloser(con, new RuntimeException()), Config.CONNECTION_CLOSE_TIME, TimeUnit.SECONDS);
+					getExecutor().schedule(new ConnectionCloser(con, new RuntimeException()), Config.CONNECTION_CLOSE_TIME, TimeUnit.MILLISECONDS);
 				}
 			}
 			catch (SQLException e)

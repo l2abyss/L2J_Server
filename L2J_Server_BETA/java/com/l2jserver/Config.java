@@ -3050,6 +3050,7 @@ public final class Config
 			DATABASE_PASSWORD = ServerSettings.getProperty("Password", "");
 			DATABASE_MAX_CONNECTIONS = Integer.parseInt(ServerSettings.getProperty("MaximumDbConnections", "10"));
 			DATABASE_MAX_IDLE_TIME = Integer.parseInt(ServerSettings.getProperty("MaximumDbIdleTime", "0"));
+			CONNECTION_CLOSE_TIME = Long.parseLong(ServerSettings.getProperty("ConnectionCloseTime", "60000"));
 			
 			SHOW_LICENCE = Boolean.parseBoolean(ServerSettings.getProperty("ShowLicence", "true"));
 			
