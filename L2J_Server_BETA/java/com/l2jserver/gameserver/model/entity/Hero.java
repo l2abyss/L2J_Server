@@ -117,10 +117,11 @@ public class Hero
 		_heroMessage.clear();
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			Statement s = con.createStatement();
-			ResultSet rset = s.executeQuery(GET_HEROES);
+			Statement s1 = con.createStatement();
+			ResultSet rset = s1.executeQuery(GET_HEROES);
 			PreparedStatement ps = con.prepareStatement(GET_CLAN_ALLY);
-			ResultSet rset2 = s.executeQuery(GET_ALL_HEROES))
+			Statement s2 = con.createStatement();
+			ResultSet rset2 = s2.executeQuery(GET_ALL_HEROES))
 		{
 			while (rset.next())
 			{
