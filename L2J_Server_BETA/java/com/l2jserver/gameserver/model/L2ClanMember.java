@@ -270,13 +270,12 @@ public class L2ClanMember
 	 */
 	public void updatePledgeType()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("UPDATE characters SET subpledge=? WHERE charId=?"))
 		{
-			PreparedStatement statement = con.prepareStatement("UPDATE characters SET subpledge=? WHERE charId=?");
-			statement.setLong(1, _pledgeType);
-			statement.setInt(2, getObjectId());
-			statement.execute();
-			statement.close();
+			ps.setLong(1, _pledgeType);
+			ps.setInt(2, getObjectId());
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -320,13 +319,12 @@ public class L2ClanMember
 	 */
 	public void updatePowerGrade()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("UPDATE characters SET power_grade=? WHERE charId=?"))
 		{
-			PreparedStatement statement = con.prepareStatement("UPDATE characters SET power_grade=? WHERE charId=?");
-			statement.setLong(1, _powerGrade);
-			statement.setInt(2, getObjectId());
-			statement.execute();
-			statement.close();
+			ps.setLong(1, _powerGrade);
+			ps.setInt(2, getObjectId());
+			ps.execute();
 		}
 		catch (Exception e)
 		{
@@ -750,14 +748,13 @@ public class L2ClanMember
 	 */
 	public void saveApprenticeAndSponsor(int apprentice, int sponsor)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("UPDATE characters SET apprentice=?,sponsor=? WHERE charId=?"))
 		{
-			PreparedStatement statement = con.prepareStatement("UPDATE characters SET apprentice=?,sponsor=? WHERE charId=?");
-			statement.setInt(1, apprentice);
-			statement.setInt(2, sponsor);
-			statement.setInt(3, getObjectId());
-			statement.execute();
-			statement.close();
+			ps.setInt(1, apprentice);
+			ps.setInt(2, sponsor);
+			ps.setInt(3, getObjectId());
+			ps.execute();
 		}
 		catch (SQLException e)
 		{

@@ -426,125 +426,148 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			PreparedStatement statement = con.prepareStatement("DELETE FROM character_contacts WHERE charId=? OR contactId=?");
-			statement.setInt(1, objid);
-			statement.setInt(2, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_contacts WHERE charId=? OR contactId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.setInt(2, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_friends WHERE charId=? OR friendId=?");
-			statement.setInt(1, objid);
-			statement.setInt(2, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_friends WHERE charId=? OR friendId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.setInt(2, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_hennas WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_hennas WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_macroses WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_macroses WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_quests WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_quests WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_quest_global_data WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.executeUpdate();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_quest_global_data WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.executeUpdate();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_recipebook WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_recipebook WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_shortcuts WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_shortcuts WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_skills WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_skills WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_skills_save WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_skills_save WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_subclasses WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_subclasses WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM heroes WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM heroes WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM olympiad_nobles WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM olympiad_nobles WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM seven_signs WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM seven_signs WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM pets WHERE item_obj_id IN (SELECT object_id FROM items WHERE items.owner_id=?)");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM pets WHERE item_obj_id IN (SELECT object_id FROM items WHERE items.owner_id=?)"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM item_attributes WHERE itemId IN (SELECT object_id FROM items WHERE items.owner_id=?)");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM item_attributes WHERE itemId IN (SELECT object_id FROM items WHERE items.owner_id=?)"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM items WHERE owner_id=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM items WHERE owner_id=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM merchant_lease WHERE player_id=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM merchant_lease WHERE player_id=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_raid_points WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_raid_points WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_reco_bonus WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_reco_bonus WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_instance_time WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_instance_time WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM characters WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM characters WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
 			if (Config.L2JMOD_ALLOW_WEDDING)
 			{
-				statement = con.prepareStatement("DELETE FROM mods_wedding WHERE player1Id = ? OR player2Id = ?");
-				statement.setInt(1, objid);
-				statement.setInt(2, objid);
-				statement.execute();
-				statement.close();
+				try (PreparedStatement ps = con.prepareStatement("DELETE FROM mods_wedding WHERE player1Id = ? OR player2Id = ?"))
+				{
+					ps.setInt(1, objid);
+					ps.setInt(2, objid);
+					ps.execute();
+				}
 			}
 		}
 		catch (Exception e)

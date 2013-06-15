@@ -145,29 +145,26 @@ public class CursedWeapon
 				// Remove from Db
 				_log.info(_name + " being removed offline.");
 				
-				try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+				try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+					PreparedStatement del = con.prepareStatement("DELETE FROM items WHERE owner_id=? AND item_id=?");
+					PreparedStatement ps = con.prepareStatement("UPDATE characters SET karma=?, pkkills=? WHERE charId=?"))
 				{
 					// Delete the item
-					PreparedStatement statement = con.prepareStatement("DELETE FROM items WHERE owner_id=? AND item_id=?");
-					statement.setInt(1, _playerId);
-					statement.setInt(2, _itemId);
-					if (statement.executeUpdate() != 1)
+					del.setInt(1, _playerId);
+					del.setInt(2, _itemId);
+					if (del.executeUpdate() != 1)
 					{
 						_log.warning("Error while deleting itemId " + _itemId + " from userId " + _playerId);
 					}
-					statement.close();
 					
 					// Restore the karma
-					statement = con.prepareStatement("UPDATE characters SET karma=?, pkkills=? WHERE charId=?");
-					statement.setInt(1, _playerKarma);
-					statement.setInt(2, _playerPkKills);
-					statement.setInt(3, _playerId);
-					if (statement.executeUpdate() != 1)
+					ps.setInt(1, _playerKarma);
+					ps.setInt(2, _playerPkKills);
+					ps.setInt(3, _playerId);
+					if (ps.executeUpdate() != 1)
 					{
 						_log.warning("Error while updating karma & pkkills for userId " + _playerId);
 					}
-					
-					statement.close();
 				}
 				catch (Exception e)
 				{
@@ -508,25 +505,23 @@ public class CursedWeapon
 			_log.info("CursedWeapon: Saving data to disk.");
 		}
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement del = con.prepareStatement("DELETE FROM cursed_weapons WHERE itemId = ?");
+			PreparedStatement ps = con.prepareStatement("INSERT INTO cursed_weapons (itemId, charId, playerKarma, playerPkKills, nbKills, endTime) VALUES (?, ?, ?, ?, ?, ?)"))
 		{
 			// Delete previous datas
-			PreparedStatement statement = con.prepareStatement("DELETE FROM cursed_weapons WHERE itemId = ?");
-			statement.setInt(1, _itemId);
-			statement.executeUpdate();
-			statement.close();
+			del.setInt(1, _itemId);
+			del.executeUpdate();
 			
 			if (_isActivated)
 			{
-				statement = con.prepareStatement("INSERT INTO cursed_weapons (itemId, charId, playerKarma, playerPkKills, nbKills, endTime) VALUES (?, ?, ?, ?, ?, ?)");
-				statement.setInt(1, _itemId);
-				statement.setInt(2, _playerId);
-				statement.setInt(3, _playerKarma);
-				statement.setInt(4, _playerPkKills);
-				statement.setInt(5, _nbKills);
-				statement.setLong(6, _endTime);
-				statement.executeUpdate();
-				statement.close();
+				ps.setInt(1, _itemId);
+				ps.setInt(2, _playerId);
+				ps.setInt(3, _playerKarma);
+				ps.setInt(4, _playerPkKills);
+				ps.setInt(5, _nbKills);
+				ps.setLong(6, _endTime);
+				ps.executeUpdate();
 			}
 		}
 		catch (SQLException e)

@@ -274,7 +274,7 @@ public class L2DatabaseFactory
 				}
 				else
 				{
-					getExecutor().schedule(new ConnectionCloser(con, new RuntimeException()), 60, TimeUnit.SECONDS);
+					getExecutor().schedule(new ConnectionCloser(con, new RuntimeException()), Config.CONNECTION_CLOSE_TIME, TimeUnit.SECONDS);
 				}
 			}
 			catch (SQLException e)
@@ -323,29 +323,6 @@ public class L2DatabaseFactory
 			{
 				_log.log(Level.WARNING, "", e);
 			}
-		}
-	}
-	
-	/**
-	 * Close the connection.
-	 * @param con the con the connection
-	 * @deprecated now database connections are closed using try-with-resource.
-	 */
-	@Deprecated
-	public static void close(Connection con)
-	{
-		if (con == null)
-		{
-			return;
-		}
-		
-		try
-		{
-			con.close();
-		}
-		catch (SQLException e)
-		{
-			_log.log(Level.WARNING, "Failed to close database connection!", e);
 		}
 	}
 	

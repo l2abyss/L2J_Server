@@ -894,66 +894,62 @@ public class L2PetInstance extends L2Summon
 	
 	private static L2PetInstance restore(L2ItemInstance control, L2NpcTemplate template, L2PcInstance owner)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT item_obj_id, name, level, curHp, curMp, exp, sp, fed FROM pets WHERE item_obj_id=?"))
 		{
 			L2PetInstance pet;
-			PreparedStatement statement = con.prepareStatement("SELECT item_obj_id, name, level, curHp, curMp, exp, sp, fed FROM pets WHERE item_obj_id=?");
 			statement.setInt(1, control.getObjectId());
-			ResultSet rset = statement.executeQuery();
-			final int id = IdFactory.getInstance().getNextId();
-			if (!rset.next())
+			try (ResultSet rset = statement.executeQuery())
 			{
+				final int id = IdFactory.getInstance().getNextId();
+				if (!rset.next())
+				{
+					if (template.isType("L2BabyPet"))
+					{
+						pet = new L2BabyPetInstance(id, template, owner, control);
+					}
+					else
+					{
+						pet = new L2PetInstance(id, template, owner, control);
+					}
+					return pet;
+				}
+				
 				if (template.isType("L2BabyPet"))
 				{
-					pet = new L2BabyPetInstance(id, template, owner, control);
+					pet = new L2BabyPetInstance(id, template, owner, control, rset.getByte("level"));
 				}
 				else
 				{
-					pet = new L2PetInstance(id, template, owner, control);
+					pet = new L2PetInstance(id, template, owner, control, rset.getByte("level"));
 				}
 				
-				rset.close();
-				statement.close();
-				return pet;
+				pet._respawned = true;
+				pet.setName(rset.getString("name"));
+				
+				long exp = rset.getLong("exp");
+				L2PetLevelData info = PetDataTable.getInstance().getPetLevelData(pet.getNpcId(), pet.getLevel());
+				// DS: update experience based by level
+				// Avoiding pet delevels due to exp per level values changed.
+				if ((info != null) && (exp < info.getPetMaxExp()))
+				{
+					exp = info.getPetMaxExp();
+				}
+				
+				pet.getStat().setExp(exp);
+				pet.getStat().setSp(rset.getInt("sp"));
+				
+				pet.getStatus().setCurrentHp(rset.getInt("curHp"));
+				pet.getStatus().setCurrentMp(rset.getInt("curMp"));
+				pet.getStatus().setCurrentCp(pet.getMaxCp());
+				if (rset.getDouble("curHp") < 1)
+				{
+					pet.setIsDead(true);
+					pet.stopHpMpRegeneration();
+				}
+				
+				pet.setCurrentFed(rset.getInt("fed"));
 			}
-			
-			if (template.isType("L2BabyPet"))
-			{
-				pet = new L2BabyPetInstance(id, template, owner, control, rset.getByte("level"));
-			}
-			else
-			{
-				pet = new L2PetInstance(id, template, owner, control, rset.getByte("level"));
-			}
-			
-			pet._respawned = true;
-			pet.setName(rset.getString("name"));
-			
-			long exp = rset.getLong("exp");
-			L2PetLevelData info = PetDataTable.getInstance().getPetLevelData(pet.getNpcId(), pet.getLevel());
-			// DS: update experience based by level
-			// Avoiding pet delevels due to exp per level values changed.
-			if ((info != null) && (exp < info.getPetMaxExp()))
-			{
-				exp = info.getPetMaxExp();
-			}
-			
-			pet.getStat().setExp(exp);
-			pet.getStat().setSp(rset.getInt("sp"));
-			
-			pet.getStatus().setCurrentHp(rset.getInt("curHp"));
-			pet.getStatus().setCurrentMp(rset.getInt("curMp"));
-			pet.getStatus().setCurrentCp(pet.getMaxCp());
-			if (rset.getDouble("curHp") < 1)
-			{
-				pet.setIsDead(true);
-				pet.stopHpMpRegeneration();
-			}
-			
-			pet.setCurrentFed(rset.getInt("fed"));
-			
-			rset.close();
-			statement.close();
 			return pet;
 		}
 		catch (Exception e)
@@ -1010,9 +1006,9 @@ public class L2PetInstance extends L2Summon
 			req = "UPDATE pets SET name=?,level=?,curHp=?,curMp=?,exp=?,sp=?,fed=?,ownerId=?,restore=? " + "WHERE item_obj_id = ?";
 		}
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement(req))
 		{
-			PreparedStatement statement = con.prepareStatement(req);
 			statement.setString(1, getName());
 			statement.setInt(2, getStat().getLevel());
 			statement.setDouble(3, getStatus().getCurrentHp());
@@ -1023,9 +1019,8 @@ public class L2PetInstance extends L2Summon
 			statement.setInt(8, getOwner().getObjectId());
 			statement.setString(9, String.valueOf(_restoreSummon)); // True restores pet on login
 			statement.setInt(10, getControlObjectId());
-			
 			statement.executeUpdate();
-			statement.close();
+			
 			_respawned = true;
 			
 			if (_restoreSummon)

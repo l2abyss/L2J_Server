@@ -915,18 +915,19 @@ public class Castle
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			// NEED TO REMOVE HAS CASTLE FLAG FROM CLAN_DATA
-			// SHOULD BE CHECKED FROM CASTLE TABLE
-			PreparedStatement statement = con.prepareStatement("UPDATE clan_data SET hasCastle = 0 WHERE hasCastle = ?");
-			statement.setInt(1, getCastleId());
-			statement.execute();
-			statement.close();
+			// Need to remove has castle flag from clan_data, should be checked from castle table.
+			try (PreparedStatement ps = con.prepareStatement("UPDATE clan_data SET hasCastle = 0 WHERE hasCastle = ?"))
+			{
+				ps.setInt(1, getCastleId());
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("UPDATE clan_data SET hasCastle = ? WHERE clan_id = ?");
-			statement.setInt(1, getCastleId());
-			statement.setInt(2, getOwnerId());
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("UPDATE clan_data SET hasCastle = ? WHERE clan_id = ?"))
+			{
+				ps.setInt(1, getCastleId());
+				ps.setInt(2, getOwnerId());
+				ps.execute();
+			}
 			
 			// Announce to clan members
 			if (clan != null)
@@ -1202,13 +1203,12 @@ public class Castle
 	// save manor production data for specified period
 	public void saveSeedData(int period)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(CASTLE_MANOR_DELETE_PRODUCTION_PERIOD))
 		{
-			PreparedStatement statement = con.prepareStatement(CASTLE_MANOR_DELETE_PRODUCTION_PERIOD);
-			statement.setInt(1, getCastleId());
-			statement.setInt(2, period);
-			statement.execute();
-			statement.close();
+			ps.setInt(1, getCastleId());
+			ps.setInt(2, period);
+			ps.execute();
 			
 			List<SeedProduction> prod = null;
 			prod = getSeedProduction(period);
@@ -1230,9 +1230,10 @@ public class Castle
 					{
 						query.append(',').append(values[i]);
 					}
-					statement = con.prepareStatement(query.toString());
-					statement.execute();
-					statement.close();
+					try (PreparedStatement insert = con.prepareStatement(query.toString()))
+					{
+						insert.execute();
+					}
 				}
 			}
 		}
@@ -1309,13 +1310,12 @@ public class Castle
 	// save crop procure data for specified period
 	public void saveCropData(int period)
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(CASTLE_MANOR_DELETE_PROCURE_PERIOD))
 		{
-			PreparedStatement statement = con.prepareStatement(CASTLE_MANOR_DELETE_PROCURE_PERIOD);
-			statement.setInt(1, getCastleId());
-			statement.setInt(2, period);
-			statement.execute();
-			statement.close();
+			ps.setInt(1, getCastleId());
+			ps.setInt(2, period);
+			ps.execute();
 			
 			List<CropProcure> proc = null;
 			proc = getCropProcure(period);
@@ -1339,9 +1339,10 @@ public class Castle
 						query.append(',');
 						query.append(values[i]);
 					}
-					statement = con.prepareStatement(query.toString());
-					statement.execute();
-					statement.close();
+					try (PreparedStatement insert = con.prepareStatement(query.toString()))
+					{
+						insert.execute();
+					}
 				}
 			}
 		}
@@ -1544,11 +1545,11 @@ public class Castle
 		_ticketBuyCount = count;
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("UPDATE castle SET ticketBuyCount = ? WHERE id = ?"))
+			PreparedStatement ps = con.prepareStatement("UPDATE castle SET ticketBuyCount = ? WHERE id = ?"))
 		{
-			statement.setInt(1, _ticketBuyCount);
-			statement.setInt(2, _castleId);
-			statement.execute();
+			ps.setInt(1, _ticketBuyCount);
+			ps.setInt(2, _castleId);
+			ps.execute();
 		}
 		catch (Exception e)
 		{

@@ -21,6 +21,7 @@ package com.l2jserver.gameserver.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
@@ -118,12 +119,12 @@ public class AutoSpawnHandler
 	
 	private void restoreSpawnData()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT * FROM random_spawn ORDER BY groupId ASC");
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM random_spawn_loc WHERE groupId=?"))
 		{
 			// Restore spawn group data, then the location data.
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM random_spawn ORDER BY groupId ASC");
-			ResultSet rs = statement.executeQuery();
-			PreparedStatement statement2 = con.prepareStatement("SELECT * FROM random_spawn_loc WHERE groupId=?");
 			while (rs.next())
 			{
 				// Register random spawn group, set various options on the
@@ -135,20 +136,18 @@ public class AutoSpawnHandler
 				spawnInst.setRandomSpawn(rs.getBoolean("randomSpawn"));
 				
 				// Restore the spawn locations for this spawn group/instance.
-				statement2.setInt(1, rs.getInt("groupId"));
-				ResultSet rs2 = statement2.executeQuery();
-				statement2.clearParameters();
-				
-				while (rs2.next())
+				ps.setInt(1, rs.getInt("groupId"));
+				try (ResultSet rs2 = ps.executeQuery())
 				{
-					// Add each location to the spawn group/instance.
-					spawnInst.addSpawnLocation(rs2.getInt("x"), rs2.getInt("y"), rs2.getInt("z"), rs2.getInt("heading"));
+					ps.clearParameters();
+					
+					while (rs2.next())
+					{
+						// Add each location to the spawn group/instance.
+						spawnInst.addSpawnLocation(rs2.getInt("x"), rs2.getInt("y"), rs2.getInt("z"), rs2.getInt("heading"));
+					}
 				}
-				rs2.close();
 			}
-			statement2.close();
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
