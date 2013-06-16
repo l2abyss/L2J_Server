@@ -2285,7 +2285,7 @@ public final class Formulas
 			double resMod = calcResMod(caster, target, skill);
 			double lvlBonusMod = calcLvlBonusMod(caster, target, skill);
 			double elementMod = calcElementMod(caster, target, skill);
-			time = (int) Math.ceil(((time * resMod * lvlBonusMod * elementMod) / statMod));
+			time = (int) Math.ceil(Math.min(Math.max((time * resMod * lvlBonusMod * elementMod) / statMod, time * 0.5), time));
 		}
 		return time;
 	}
