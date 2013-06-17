@@ -2316,14 +2316,7 @@ public final class L2PcInstance extends L2Playable
 		
 		// calc weapon penalty
 		weaponPenalty = weaponPenalty - expertiseLevel - bonus;
-		if (weaponPenalty < 0)
-		{
-			weaponPenalty = 0;
-		}
-		else if (weaponPenalty > 4)
-		{
-			weaponPenalty = 4;
-		}
+		weaponPenalty = Math.min(Math.max(weaponPenalty, 0), 4);
 		
 		if ((getExpertiseWeaponPenalty() != weaponPenalty) || (getSkillLevel(FrequentSkill.WEAPON_GRADE_PENALTY.getId()) != weaponPenalty))
 		{
@@ -2341,14 +2334,7 @@ public final class L2PcInstance extends L2Playable
 		
 		// calc armor penalty
 		armorPenalty = armorPenalty - expertiseLevel - bonus;
-		if (armorPenalty < 0)
-		{
-			armorPenalty = 0;
-		}
-		else if (armorPenalty > 4)
-		{
-			armorPenalty = 4;
-		}
+		armorPenalty = Math.min(Math.max(armorPenalty, 0), 4);
 		
 		if ((getExpertiseArmorPenalty() != armorPenalty) || (getSkillLevel(FrequentSkill.ARMOR_GRADE_PENALTY.getId()) != armorPenalty))
 		{
@@ -2490,14 +2476,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void setFame(int fame)
 	{
-		if (fame > Config.MAX_PERSONAL_FAME_POINTS)
-		{
-			_fame = Config.MAX_PERSONAL_FAME_POINTS;
-		}
-		else
-		{
-			_fame = fame;
-		}
+		_fame = (fame > Config.MAX_PERSONAL_FAME_POINTS) ? Config.MAX_PERSONAL_FAME_POINTS : fame;
 	}
 	
 	/**

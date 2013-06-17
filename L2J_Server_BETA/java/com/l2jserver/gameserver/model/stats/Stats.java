@@ -108,7 +108,6 @@ public enum Stats
 	// VARIOUS
 	BREATH("breath"),
 	FALL("fall"),
-	AGGRESSION("aggression"), // locks a mob on tank caster
 	
 	// VULNERABILITIES
 	BLEED_VULN("bleedVuln"),

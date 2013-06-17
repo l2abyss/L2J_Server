@@ -1643,7 +1643,6 @@ public class L2CharacterAI extends AbstractAI
 			{
 				return true;
 			}
-			
 		}
 		return false;
 	}

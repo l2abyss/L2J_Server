@@ -2289,4 +2289,23 @@ public final class Formulas
 		}
 		return time;
 	}
+	
+	/**
+	 * Calculate Probability in following effects:<br>
+	 * TargetCancel,<br>
+	 * TargetMeProbability,<br>
+	 * SkillTurning,<br>
+	 * Betray,<br>
+	 * Bluff<br>
+	 * @param baseChance chance from effect parameter
+	 * @param attacker
+	 * @param target
+	 * @param skill
+	 * @return chance for effect to succeed
+	 */
+	public static boolean calcProbability(double baseChance, L2Character attacker, L2Character target, L2Skill skill)
+	{
+		return Rnd.get(100) < (((((skill.getMagicLevel() + baseChance) - target.getLevel()) + 30) - target.getINT()) * Formulas.calcElemental(attacker, target, skill));
+	}
+	
 }

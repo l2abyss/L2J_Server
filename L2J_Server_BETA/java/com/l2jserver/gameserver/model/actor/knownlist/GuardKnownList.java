@@ -89,8 +89,8 @@ public class GuardKnownList extends AttackableKnownList
 			return false;
 		}
 		
-		// Check if the _aggroList of the L2GuardInstance is Empty
-		if (getActiveChar().noTarget())
+		// Check if the aggression list of this guard is empty.
+		if (getActiveChar().getAggroList().isEmpty())
 		{
 			// Set the L2GuardInstance to AI_INTENTION_IDLE
 			if (getActiveChar().hasAI())

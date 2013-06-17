@@ -38,12 +38,6 @@ public enum L2SkillType
 	SIGNET_CASTTIME(L2SkillSignetCasttime.class),
 	// reco
 	GIVE_RECO,
-	// Aggro
-	AGGDAMAGE,
-	AGGREDUCE,
-	AGGREMOVE,
-	AGGREDUCE_CHAR,
-	AGGDEBUFF,
 	// Fishing
 	FISHING,
 	PUMPING,
@@ -76,7 +70,6 @@ public enum L2SkillType
 	RESURRECT,
 	DETECT_TRAP,
 	REMOVE_TRAP,
-	SHIFT_TARGET,
 	
 	// Skill is done within the core.
 	COREDONE,

@@ -25,8 +25,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
-import javolution.util.FastMap;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ItemsAutoDestroy;
 import com.l2jserver.gameserver.SevenSigns;
@@ -79,7 +77,7 @@ public class L2Attackable extends L2Npc
 	private boolean _isRaid = false;
 	private boolean _isRaidMinion = false;
 	private boolean _champion = false;
-	private final Map<L2Character, AggroInfo> _aggroList = new FastMap<L2Character, AggroInfo>().shared();
+	private final Map<L2Character, AggroInfo> _aggroList = new ConcurrentHashMap<>();
 	private boolean _isReturningToSpawnPoint = false;
 	private boolean _canReturnToSpawnPoint = true;
 	private boolean _seeThroughSilentMove = false;
@@ -948,10 +946,9 @@ public class L2Attackable extends L2Npc
 			return;
 		}
 		
-		L2PcInstance targetPlayer = attacker.getActingPlayer();
+		final L2PcInstance targetPlayer = attacker.getActingPlayer();
 		// Get the AggroInfo of the attacker L2Character from the _aggroList of the L2Attackable
 		AggroInfo ai = getAggroList().get(attacker);
-		
 		if (ai == null)
 		{
 			ai = new AggroInfo(attacker);
@@ -983,7 +980,7 @@ public class L2Attackable extends L2Npc
 		}
 		
 		// Set the intention to the L2Attackable to AI_INTENTION_ACTIVE
-		if ((aggro > 0) && (getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE))
+		if ((aggro != 0) && (getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE))
 		{
 			getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
 		}
@@ -1003,7 +1000,6 @@ public class L2Attackable extends L2Npc
 		if (target == null) // whole aggrolist
 		{
 			L2Character mostHated = getMostHated();
-			
 			if (mostHated == null) // makes target passive for a moment more
 			{
 				((L2AttackableAI) getAI()).setGlobalAggro(-25);
@@ -1016,11 +1012,11 @@ public class L2Attackable extends L2Npc
 				{
 					return;
 				}
-				ai.addHate(-amount);
+				ai.addHate(amount);
 			}
 			
 			amount = getHating(mostHated);
-			if (amount <= 0)
+			if (amount >= 0)
 			{
 				((L2AttackableAI) getAI()).setGlobalAggro(-25);
 				clearAggroList();
@@ -1033,19 +1029,17 @@ public class L2Attackable extends L2Npc
 		AggroInfo ai = getAggroList().get(target);
 		if (ai == null)
 		{
+			_log.info("target " + target + " not present in aggro list of " + this);
 			return;
 		}
 		
-		ai.addHate(-amount);
-		if (ai.getHate() <= 0)
+		ai.addHate(amount);
+		if ((ai.getHate() >= 0) && (getMostHated() == null))
 		{
-			if (getMostHated() == null)
-			{
-				((L2AttackableAI) getAI()).setGlobalAggro(-25);
-				clearAggroList();
-				getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
-				setWalking();
-			}
+			((L2AttackableAI) getAI()).setGlobalAggro(-25);
+			clearAggroList();
+			getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+			setWalking();
 		}
 	}
 	
@@ -1971,14 +1965,6 @@ public class L2Attackable extends L2Npc
 	public L2ItemInstance getActiveWeapon()
 	{
 		return null;
-	}
-	
-	/**
-	 * @return True if the _aggroList of this L2Attackable is Empty.
-	 */
-	public boolean noTarget()
-	{
-		return getAggroList().isEmpty();
 	}
 	
 	/**

@@ -6203,7 +6203,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				if (tgt.isPlayable())
 				{
 					L2Character target = (L2Character) tgt;
-					
 					if (skill.getSkillType() == L2SkillType.BUFF)
 					{
 						SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
@@ -6214,6 +6213,18 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 					if (isPlayer() && target.isSummon())
 					{
 						((L2Summon) target).updateAndBroadcastStatus(1);
+					}
+				}
+				else if (isPlayable() && tgt.isL2Attackable())
+				{
+					L2Character target = (L2Character) tgt;
+					if (skill.getEffectPoint() > 0)
+					{
+						((L2Attackable) target).reduceHate(this, skill.getEffectPoint());
+					}
+					else if (skill.getEffectPoint() < 0)
+					{
+						((L2Attackable) target).addDamageHate(this, 0, -skill.getEffectPoint());
 					}
 				}
 			}
@@ -6693,17 +6704,9 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 								}
 							}
 							// notify target AI about the attack
-							if (((L2Character) target).hasAI())
+							if (((L2Character) target).hasAI() && !skill.hasEffectType(L2EffectType.HATE))
 							{
-								switch (skill.getSkillType())
-								{
-									case AGGREDUCE:
-									case AGGREDUCE_CHAR:
-									case AGGREMOVE:
-										break;
-									default:
-										((L2Character) target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, this);
-								}
+								((L2Character) target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, this);
 							}
 						}
 						else
@@ -6752,24 +6755,15 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				}
 			}
 			// Notify AI
-			if (skill.isOffensive())
+			if (skill.isOffensive() && !skill.hasEffectType(L2EffectType.HATE))
 			{
-				switch (skill.getSkillType())
+				for (L2Object target : targets)
 				{
-					case AGGREDUCE:
-					case AGGREDUCE_CHAR:
-					case AGGREMOVE:
-						break;
-					default:
-						for (L2Object target : targets)
-						{
-							if ((target instanceof L2Character) && ((L2Character) target).hasAI())
-							{
-								// notify target AI about the attack
-								((L2Character) target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, this);
-							}
-						}
-						break;
+					if ((target instanceof L2Character) && ((L2Character) target).hasAI())
+					{
+						// notify target AI about the attack
+						((L2Character) target).getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, this);
+					}
 				}
 			}
 		}

@@ -554,15 +554,7 @@ public final class L2CubicInstance
 								target
 							};
 							
-							if (type == L2SkillType.AGGDAMAGE)
-							{
-								if (Config.DEBUG)
-								{
-									_log.info("L2CubicInstance: Action.run() handler " + type);
-								}
-								useCubicDisabler(type, L2CubicInstance.this, skill, targets);
-							}
-							else if (type == L2SkillType.DEBUFF)
+							if (type == L2SkillType.DEBUFF)
 							{
 								if (Config.DEBUG)
 								{
@@ -610,6 +602,14 @@ public final class L2CubicInstance
 									_log.info("L2CubicInstance: Action.run() handler " + type);
 								}
 								useCubicContinuous(L2CubicInstance.this, skill, targets);
+							}
+							else if (skill.hasEffectType(L2EffectType.AGGRESSION))
+							{
+								if (Config.DEBUG)
+								{
+									_log.info("L2CubicInstance: Action.run() handler " + type);
+								}
+								useCubicDisabler(type, L2CubicInstance.this, skill, targets);
 							}
 							
 							// The cubic has done an action, increase the currentcount
@@ -824,11 +824,11 @@ public final class L2CubicInstance
 				}
 			}
 			
-			if (type == L2SkillType.AGGDAMAGE)
+			if (skill.hasEffectType(L2EffectType.AGGRESSION))
 			{
 				if (Formulas.calcCubicSkillSuccess(activeCubic, target, skill, shld))
 				{
-					if (target instanceof L2Attackable)
+					if (target.isL2Attackable())
 					{
 						target.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, activeCubic.getOwner(), (int) ((150 * skill.getPower()) / (target.getLevel() + 7)));
 					}

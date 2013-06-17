@@ -24,6 +24,7 @@ package com.l2jserver.gameserver.model.effects;
  */
 public enum L2EffectType
 {
+	AGGRESSION,
 	BLOCK_RESURRECTION,
 	BUFF,
 	CHARM_OF_LUCK,
@@ -46,6 +47,7 @@ public enum L2EffectType
 	FATAL_BLOW,
 	FEAR,
 	FUSION,
+	HATE,
 	HEAL,
 	HEAL_OVER_TIME,
 	HEAL_PERCENT,
@@ -82,7 +84,6 @@ public enum L2EffectType
 	STATIC_DAMAGE,
 	STUN,
 	SUMMON_PET,
-	TARGET_ME,
 	TELEPORT,
 	TELEPORT_TO_TARGET,
 	TRANSFORMATION,
