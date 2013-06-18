@@ -38,6 +38,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -96,7 +97,7 @@ public final class RequestActionUse extends L2GameClientPacket
 		}
 		
 		// Don't do anything if player is dead or confused
-		if (activeChar.isAlikeDead() || activeChar.isDead() || activeChar.isOutOfControl())
+		if ((activeChar.isFakeDeath() && (_actionId != 0)) || activeChar.isDead() || activeChar.isOutOfControl())
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -119,7 +120,7 @@ public final class RequestActionUse extends L2GameClientPacket
 		switch (_actionId)
 		{
 			case 0: // Sit/Stand
-				if (activeChar.isSitting() || !activeChar.isMoving())
+				if (activeChar.isSitting() || !activeChar.isMoving() || activeChar.isFakeDeath())
 				{
 					useSit(activeChar, target);
 				}
@@ -777,7 +778,11 @@ public final class RequestActionUse extends L2GameClientPacket
 			return true;
 		}
 		
-		if (activeChar.isSitting())
+		if (activeChar.isFakeDeath())
+		{
+			activeChar.stopEffects(L2EffectType.FAKE_DEATH);
+		}
+		else if (activeChar.isSitting())
 		{
 			activeChar.standUp();
 		}
