@@ -23,10 +23,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,7 +43,7 @@ public class MacroList
 	private final L2PcInstance _owner;
 	private int _revision;
 	private int _macroId;
-	private final Map<Integer, Macro> _macroses = new ConcurrentHashMap<>();
+	private final Map<Integer, Macro> _macroses = Collections.synchronizedMap(new LinkedHashMap<Integer, Macro>());
 	
 	public MacroList(L2PcInstance owner)
 	{
@@ -56,14 +57,9 @@ public class MacroList
 		return _revision;
 	}
 	
-	public Collection<Macro> getAllMacroses()
+	public Map<Integer, Macro> getAllMacroses()
 	{
-		return _macroses.values();
-	}
-	
-	public Macro getMacro(int id)
-	{
-		return _macroses.get(id - 1);
+		return _macroses;
 	}
 	
 	public void registerMacro(Macro macro)
@@ -92,14 +88,13 @@ public class MacroList
 	
 	public void deleteMacro(int id)
 	{
-		Macro toRemove = _macroses.get(id);
-		if (toRemove != null)
+		final Macro removed = _macroses.remove(id);
+		if (removed != null)
 		{
-			deleteMacroFromDb(toRemove);
+			deleteMacroFromDb(removed);
 		}
-		_macroses.remove(id);
 		
-		L2ShortCut[] allShortCuts = _owner.getAllShortCuts();
+		final L2ShortCut[] allShortCuts = _owner.getAllShortCuts();
 		for (L2ShortCut sc : allShortCuts)
 		{
 			if ((sc.getId() == id) && (sc.getType() == L2ShortCut.TYPE_MACRO))
@@ -114,16 +109,19 @@ public class MacroList
 	public void sendUpdate()
 	{
 		_revision++;
-		Collection<Macro> all = getAllMacroses();
-		if (all.isEmpty())
+		final Collection<Macro> allMacros = _macroses.values();
+		synchronized (_macroses)
 		{
-			_owner.sendPacket(new SendMacroList(_revision, 0, null));
-		}
-		else
-		{
-			for (Macro m : all)
+			if (allMacros.isEmpty())
 			{
-				_owner.sendPacket(new SendMacroList(_revision, all.size(), m));
+				_owner.sendPacket(new SendMacroList(_revision, 0, null));
+			}
+			else
+			{
+				for (Macro m : allMacros)
+				{
+					_owner.sendPacket(new SendMacroList(_revision, allMacros.size(), m));
+				}
 			}
 		}
 	}
