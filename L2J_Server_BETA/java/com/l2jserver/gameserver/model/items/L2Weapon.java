@@ -385,11 +385,13 @@ public final class L2Weapon extends L2Item
 		}
 		
 		final L2Skill onMagicSkill = _skillsOnMagic.getSkill();
-		// No Trigger if Offensive Skill
-		if (trigger.isOffensive() && onMagicSkill.isOffensive())
+		
+		// Trigger only if both are good or bad magic.
+		if (trigger.isBad() != onMagicSkill.isBad())
 		{
 			return false;
 		}
+		
 		// No Trigger if not Magic Skill
 		if (!trigger.isMagic() && !onMagicSkill.isMagic())
 		{

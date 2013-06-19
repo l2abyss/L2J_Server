@@ -969,6 +969,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _stayOnSubclassChange;
 	}
 	
+	public final boolean isBad()
+	{
+		return _effectPoint < 0;
+	}
+	
 	public boolean checkCondition(L2Character activeChar, L2Object target, boolean itemOrWeapon)
 	{
 		if (activeChar.canOverrideCond(PcCondOverride.SKILL_CONDITIONS) && !Config.GM_SKILL_RESTRICTION)
