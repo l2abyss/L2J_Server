@@ -2297,7 +2297,12 @@ public final class Formulas
 	 * TargetMeProbability,<br>
 	 * SkillTurning,<br>
 	 * Betray,<br>
-	 * Bluff<br>
+	 * Bluff,<br>
+	 * DeleteHate,<br>
+	 * RandomizeHate,<br>
+	 * DeleteHateOfMe,<br>
+	 * TransferHate,<br>
+	 * Confuse<br>
 	 * @param baseChance chance from effect parameter
 	 * @param attacker
 	 * @param target

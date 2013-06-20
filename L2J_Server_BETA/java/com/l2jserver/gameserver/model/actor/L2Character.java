@@ -6679,7 +6679,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 					// EVT_ATTACKED and PvPStatus
 					if (target instanceof L2Character)
 					{
-						if (skill.isOffensive())
+						if (skill.isBad())
 						{
 							if (target.isPlayer() || target.isSummon() || target.isTrap())
 							{
@@ -6736,16 +6736,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 							}
 							else if (target.isL2Attackable())
 							{
-								switch (skill.getSkillType())
-								{
-									case SUMMON:
-									case UNLOCK:
-									case DELUXE_KEY_UNLOCK:
-									case UNLOCK_SPECIAL:
-										break;
-									default:
-										player.updatePvPStatus();
-								}
+								player.updatePvPStatus();
 							}
 						}
 					}

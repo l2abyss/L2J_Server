@@ -9196,41 +9196,11 @@ public final class L2PcInstance extends L2Playable
 				return false;
 			}
 		}
-		// Check if the skill is defensive
-		if (!skill.isOffensive() && target.isMonster() && !forceUse)
+		// Check if the skill is not a good magic, target is a monster and if force attack is set, if not then we don't want to cast.
+		if (!skill.isBad() && target.isMonster() && !forceUse)
 		{
-			// check if the target is a monster and if force attack is set.. if not then we don't want to cast.
-			switch (sklTargetType)
-			{
-				case PET:
-				case SERVITOR:
-				case SUMMON:
-				case AURA:
-				case FRONT_AURA:
-				case BEHIND_AURA:
-				case AURA_CORPSE_MOB:
-				case CLAN:
-				case PARTY_CLAN:
-				case SELF:
-				case PARTY:
-				case CORPSE_MOB:
-				case AREA_CORPSE_MOB:
-				case GROUND:
-					break;
-				default:
-				{
-					switch (sklType)
-					{
-						case DELUXE_KEY_UNLOCK:
-						case UNLOCK:
-							break;
-						default:
-							sendPacket(ActionFailed.STATIC_PACKET);
-							return false;
-					}
-					break;
-				}
-			}
+			sendPacket(ActionFailed.STATIC_PACKET);
+			return false;
 		}
 		
 		// Check if this is a Pvp skill and target isn't a non-flagged/non-karma player
