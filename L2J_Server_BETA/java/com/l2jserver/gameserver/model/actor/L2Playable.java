@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.model.actor;
 
 import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
+import com.l2jserver.gameserver.model.actor.events.PlayableEvents;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.PlayableKnownList;
 import com.l2jserver.gameserver.model.actor.stat.PlayableStat;
@@ -99,6 +100,11 @@ public abstract class L2Playable extends L2Character
 	@Override
 	public boolean doDie(L2Character killer)
 	{
+		if (!getEvents().onDeath(killer))
+		{
+			return false;
+		}
+		
 		// killing is only possible one time
 		synchronized (this)
 		{
@@ -109,14 +115,6 @@ public abstract class L2Playable extends L2Character
 			// now reset currentHp to zero
 			setCurrentHp(0);
 			setIsDead(true);
-		}
-		
-		/**
-		 * This needs to stay here because it overrides L2Character.doDie() and does not call for super.doDie()
-		 */
-		if (!super.fireDeathListeners(killer))
-		{
-			return false;
 		}
 		
 		// Set target to null and cancel Attack or Cast
@@ -337,6 +335,18 @@ public abstract class L2Playable extends L2Character
 	public L2PcInstance getTransferingDamageTo()
 	{
 		return transferDmgTo;
+	}
+	
+	@Override
+	public void initCharEvents()
+	{
+		setCharEvents(new PlayableEvents(this));
+	}
+	
+	@Override
+	public PlayableEvents getEvents()
+	{
+		return (PlayableEvents) super.getEvents();
 	}
 	
 	public abstract int getKarma();

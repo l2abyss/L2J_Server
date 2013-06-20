@@ -150,6 +150,7 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.L2Vehicle;
 import com.l2jserver.gameserver.model.actor.appearance.PcAppearance;
+import com.l2jserver.gameserver.model.actor.events.PlayerEvents;
 import com.l2jserver.gameserver.model.actor.knownlist.PcKnownList;
 import com.l2jserver.gameserver.model.actor.position.PcPosition;
 import com.l2jserver.gameserver.model.actor.stat.PcStat;
@@ -257,7 +258,6 @@ import com.l2jserver.gameserver.network.serverpackets.ExGetOnAirShip;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMode;
 import com.l2jserver.gameserver.network.serverpackets.ExPrivateStoreSetWholeMsg;
 import com.l2jserver.gameserver.network.serverpackets.ExSetCompassZoneCode;
-import com.l2jserver.gameserver.network.serverpackets.ExSpawnEmitter;
 import com.l2jserver.gameserver.network.serverpackets.ExStartScenePlayer;
 import com.l2jserver.gameserver.network.serverpackets.ExStorageMaxCount;
 import com.l2jserver.gameserver.network.serverpackets.ExUseSharedGroupItem;
@@ -1171,6 +1171,18 @@ public final class L2PcInstance extends L2Playable
 	public void initCharStatus()
 	{
 		setStatus(new PcStatus(this));
+	}
+	
+	@Override
+	public void initCharEvents()
+	{
+		setCharEvents(new PlayerEvents(this));
+	}
+	
+	@Override
+	public PlayerEvents getEvents()
+	{
+		return (PlayerEvents) super.getEvents();
 	}
 	
 	@Override
@@ -12863,27 +12875,6 @@ public final class L2PcInstance extends L2Playable
 	public int getChargedSouls()
 	{
 		return _souls;
-	}
-	
-	/**
-	 * Absorbs a Soul from a Npc.
-	 * @param skill
-	 * @param npc
-	 */
-	public void absorbSoul(L2Skill skill, L2Npc npc)
-	{
-		if (_souls >= skill.getNumSouls())
-		{
-			sendPacket(SystemMessageId.SOUL_CANNOT_BE_ABSORBED_ANYMORE);
-			return;
-		}
-		
-		increaseSouls(1);
-		
-		if (npc != null)
-		{
-			broadcastPacket(new ExSpawnEmitter(this, npc), 500);
-		}
 	}
 	
 	/**

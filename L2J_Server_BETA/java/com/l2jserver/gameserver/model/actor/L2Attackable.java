@@ -49,6 +49,7 @@ import com.l2jserver.gameserver.model.L2DropCategory;
 import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
+import com.l2jserver.gameserver.model.actor.events.AttackableEvents;
 import com.l2jserver.gameserver.model.actor.instance.L2GrandBossInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -322,6 +323,18 @@ public class L2Attackable extends L2Npc
 	public void initCharStatus()
 	{
 		setStatus(new AttackableStatus(this));
+	}
+	
+	@Override
+	public void initCharEvents()
+	{
+		setCharEvents(new AttackableEvents(this));
+	}
+	
+	@Override
+	public AttackableEvents getEvents()
+	{
+		return (AttackableEvents) super.getEvents();
 	}
 	
 	/**
@@ -722,14 +735,6 @@ public class L2Attackable extends L2Npc
 								final long addexp = Math.round(attacker.calcStat(Stats.EXPSP_RATE, exp, null, null));
 								final int addsp = (int) attacker.calcStat(Stats.EXPSP_RATE, sp, null, null);
 								
-								final L2Skill skill = attacker.getKnownSkill(L2Skill.SKILL_SOUL_MASTERY);
-								if (skill != null)
-								{
-									if (skill.getExpNeeded() <= addexp)
-									{
-										attacker.absorbSoul(skill, this);
-									}
-								}
 								attacker.addExpAndSp(addexp, addsp, useVitalityRate());
 								if (addexp > 0)
 								{
@@ -2406,6 +2411,11 @@ public class L2Attackable extends L2Npc
 	public final void setOnKillDelay(int delay)
 	{
 		_onKillDelay = delay;
+	}
+	
+	public final int getOnKillDelay()
+	{
+		return _onKillDelay;
 	}
 	
 	/**

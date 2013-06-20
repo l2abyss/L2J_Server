@@ -33,6 +33,7 @@ import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.actor.L2Attackable.AggroInfo;
+import com.l2jserver.gameserver.model.actor.events.SummonEvents;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -77,9 +78,6 @@ public abstract class L2Summon extends L2Playable
 	protected boolean _restoreSummon = true;
 	private int _shotsMask = 0;
 	
-	// TODO: Unhardcode
-	// We don't have walk speed in pet data so for now use run speed / 3
-	public static final int WALK_SPEED_MULTIPLIER = 3;
 	// @formatter:off
 	private static final int[] PASSIVE_SUMMONS =
 	{
@@ -184,6 +182,18 @@ public abstract class L2Summon extends L2Playable
 	public void initCharStatus()
 	{
 		setStatus(new SummonStatus(this));
+	}
+	
+	@Override
+	public void initCharEvents()
+	{
+		setCharEvents(new SummonEvents(this));
+	}
+	
+	@Override
+	public SummonEvents getEvents()
+	{
+		return (SummonEvents) super.getEvents();
 	}
 	
 	@Override

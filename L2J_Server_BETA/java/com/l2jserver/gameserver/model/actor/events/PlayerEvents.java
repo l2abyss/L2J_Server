@@ -16,15 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.interfaces;
+package com.l2jserver.gameserver.model.actor.events;
 
-import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * @author UnAfraid
  */
-public interface IDamageReceivedListener
+public class PlayerEvents extends PlayableEvents
 {
-	public void onDamageReceived(double damage, L2Character attacker, L2Skill skill, boolean critical);
+	public PlayerEvents(L2PcInstance activeChar)
+	{
+		super(activeChar);
+	}
+	
+	@Override
+	public L2PcInstance getActingPlayer()
+	{
+		return (L2PcInstance) super.getActingPlayer();
+	}
 }

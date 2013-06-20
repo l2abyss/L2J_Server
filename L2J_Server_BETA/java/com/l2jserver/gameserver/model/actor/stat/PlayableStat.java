@@ -54,6 +54,11 @@ public class PlayableStat extends CharStat
 			value = getExpForLevel(getMaxLevel()) - 1 - getExp();
 		}
 		
+		if (!getActiveChar().getEvents().onExperienceReceived(value))
+		{
+			return false;
+		}
+		
 		setExp(getExp() + value);
 		
 		byte minimumLevel = 1;

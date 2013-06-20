@@ -23,10 +23,11 @@ import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_FOLLOW;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -68,6 +69,7 @@ import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.ShotType;
+import com.l2jserver.gameserver.model.actor.events.CharEvents;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
@@ -86,7 +88,6 @@ import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.holders.SkillUseHolder;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
-import com.l2jserver.gameserver.model.interfaces.IDamageReceivedListener;
 import com.l2jserver.gameserver.model.interfaces.ISkillsHolder;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.items.L2Item;
@@ -192,6 +193,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	
 	private CharStat _stat;
 	private CharStatus _status;
+	private CharEvents _events;
 	private L2CharTemplate _template; // The link on the L2CharTemplate object containing generic and static properties of this L2Character type (ex : Max HP, Speed...)
 	private String _title;
 	
@@ -205,7 +207,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	private Calculator[] _calculators;
 	
 	/** Map containing all skills of this character. */
-	private final FastMap<Integer, L2Skill> _skills = new FastMap<>();
+	private final Map<Integer, L2Skill> _skills = Collections.synchronizedMap(new LinkedHashMap<Integer, L2Skill>());
 	
 	/** Map containing the active chance skills on this character */
 	private volatile ChanceSkillList _chanceSkills;
@@ -231,8 +233,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	private volatile Map<Integer, OptionsSkillHolder> _triggerSkills;
 	
 	private final CharEffectList _effectList = new CharEffectList(this);
-	
-	private volatile List<IDamageReceivedListener> _onDamageReceivedListeners;
 	
 	public final CharEffectList getEffectList()
 	{
@@ -406,11 +406,15 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	public L2Character(int objectId, L2CharTemplate template)
 	{
 		super(objectId);
+		if (template == null)
+		{
+			throw new NullPointerException("Template is null!");
+		}
+		
 		setInstanceType(InstanceType.L2Character);
 		initCharStat();
 		initCharStatus();
-		
-		_skills.shared();
+		initCharEvents();
 		
 		// Set its template to the new L2Character
 		_template = template;
@@ -419,14 +423,14 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		{
 			_calculators = Formulas.getStdDoorCalculators();
 		}
-		else if ((template != null) && isNpc())
+		else if (isNpc())
 		{
 			// Copy the Standard Calculators of the L2NPCInstance in _calculators
 			_calculators = NPC_STD_CALCULATOR;
 			
 			// Copy the skills of the L2NPCInstance from its template to the L2Character Instance
 			// The skills list can be affected by spell effects so it's necessary to make a copy
-			// to avoid that a spell affecting a L2NPCInstance, affects others L2NPCInstance of the same type too.
+			// to avoid that a spell affecting a L2NpcInstance, affects others L2NPCInstance of the same type too.
 			if (template.getSkills() != null)
 			{
 				_skills.putAll(template.getSkills());
@@ -447,10 +451,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				// Copy the skills of the L2Summon from its template to the L2Character Instance
 				// The skills list can be affected by spell effects so it's necessary to make a copy
 				// to avoid that a spell affecting a L2Summon, affects others L2Summon of the same type too.
-				if (template != null)
-				{
-					_skills.putAll(((L2NpcTemplate) template).getSkills());
-				}
+				_skills.putAll(((L2NpcTemplate) template).getSkills());
 				
 				for (L2Skill skill : _skills.values())
 				{
@@ -508,6 +509,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			}
 			spawnMe(getPosition().getX(), getPosition().getY(), getPosition().getZ());
 			setIsTeleporting(false);
+			getEvents().onTeleported();
 		}
 		finally
 		{
@@ -2263,7 +2265,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			setCurrentHp(0);
 			setIsDead(true);
 		}
-		if (!fireDeathListeners(killer))
+		if (!getEvents().onDeath(killer))
 		{
 			return false;
 		}
@@ -2902,6 +2904,21 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	public void initPosition()
 	{
 		setObjectPosition(new CharPosition(this));
+	}
+	
+	public void initCharEvents()
+	{
+		_events = new CharEvents(this);
+	}
+	
+	public void setCharEvents(CharEvents events)
+	{
+		_events = events;
+	}
+	
+	public CharEvents getEvents()
+	{
+		return _events;
 	}
 	
 	public L2CharTemplate getTemplate()
@@ -5365,12 +5382,12 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				
 				// reduce targets HP
 				target.reduceCurrentHp(damage, this, null);
-				target.notifyDamageReceivedToEffects(damage, this, null, crit);
+				target.notifyDamageReceived(damage, this, null, crit);
 				
 				if (reflectedDamage > 0)
 				{
 					reduceCurrentHp(reflectedDamage, target, true, false, null);
-					notifyDamageReceivedToEffects(reflectedDamage, target, null, crit);
+					notifyDamageReceived(reflectedDamage, target, null, crit);
 				}
 				
 				if (!isBow) // Do not absorb if weapon is of type bow
@@ -7607,51 +7624,10 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		return 0;
 	}
 	
-	public void registerDamageReceiveListener(IDamageReceivedListener listener)
+	public void notifyDamageReceived(double damage, L2Character attacker, L2Skill skill, boolean critical)
 	{
-		if (_onDamageReceivedListeners == null)
-		{
-			synchronized (this)
-			{
-				if (_onDamageReceivedListeners == null)
-				{
-					_onDamageReceivedListeners = new CopyOnWriteArrayList<>();
-				}
-			}
-		}
-		_onDamageReceivedListeners.add(listener);
-	}
-	
-	public void unregisterDamageReceiveListener(IDamageReceivedListener listener)
-	{
-		if (_onDamageReceivedListeners != null)
-		{
-			if (_onDamageReceivedListeners.contains(listener))
-			{
-				_onDamageReceivedListeners.remove(listener);
-			}
-			if (_onDamageReceivedListeners.isEmpty())
-			{
-				synchronized (this)
-				{
-					if (_onDamageReceivedListeners.isEmpty())
-					{
-						_onDamageReceivedListeners = null;
-					}
-				}
-			}
-		}
-	}
-	
-	public void notifyDamageReceivedToEffects(double damage, L2Character attacker, L2Skill skill, boolean critical)
-	{
-		if (_onDamageReceivedListeners != null)
-		{
-			for (IDamageReceivedListener listener : _onDamageReceivedListeners)
-			{
-				listener.onDamageReceived(damage, attacker, skill, critical);
-			}
-		}
+		getEvents().onDamageReceived(damage, attacker, skill, critical);
+		attacker.getEvents().onDamageDealt(damage, this, skill, critical);
 	}
 	
 	// LISTENERS

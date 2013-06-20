@@ -237,7 +237,10 @@ public enum Stats
 	SKILL_MASTERY("skillMastery"),
 	
 	// Vitality
-	VITALITY_CONSUME_RATE("vitalityConsumeRate");
+	VITALITY_CONSUME_RATE("vitalityConsumeRate"),
+	
+	// Souls
+	MAX_SOULS("maxSouls");
 	
 	public static final int NUM_STATS = values().length;
 	

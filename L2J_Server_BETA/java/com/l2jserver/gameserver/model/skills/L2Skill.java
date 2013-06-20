@@ -75,7 +75,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public static final int SKILL_EXPERTISE = 239;
 	public static final int SKILL_CRYSTALLIZE = 248;
 	public static final int SKILL_CLAN_LUCK = 390;
-	public static final int SKILL_SOUL_MASTERY = 467;
 	public static final int SKILL_ONYX_BEAST_TRANSFORMATION = 617;
 	public static final int SKILL_CREATE_COMMON = 1320;
 	public static final int SKILL_DIVINE_INSPIRATION = 1405;
@@ -181,8 +180,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final int _triggeredLevel;
 	private final String _chanceType;
 	private final int _soulMaxConsume;
-	private final int _numSouls;
-	private final int _expNeeded;
 	private final boolean _dependOnTargetBuff;
 	
 	private final int _afterEffectId;
@@ -391,10 +388,8 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			_chanceCondition = ChanceCondition.parse(set);
 		}
 		
-		_numSouls = set.getInteger("num_souls", 0);
 		_soulMaxConsume = set.getInteger("soulMaxConsumeCount", 0);
 		_blowChance = set.getInteger("blowChance", 0);
-		_expNeeded = set.getInteger("expNeeded", 0);
 		
 		_isHeroSkill = SkillTreesData.getInstance().isHeroSkill(_id, _level);
 		_isGMSkill = SkillTreesData.getInstance().isGMSkill(_id, _level);
@@ -909,19 +904,9 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _chargeConsume;
 	}
 	
-	public final int getNumSouls()
-	{
-		return _numSouls;
-	}
-	
 	public final int getMaxSoulConsumeCount()
 	{
 		return _soulMaxConsume;
-	}
-	
-	public final int getExpNeeded()
-	{
-		return _expNeeded;
 	}
 	
 	public final int getBaseCritRate()

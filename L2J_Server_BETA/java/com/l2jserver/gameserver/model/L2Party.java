@@ -32,7 +32,6 @@ import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.SevenSignsFestival;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.DuelManager;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -43,7 +42,6 @@ import com.l2jserver.gameserver.model.entity.DimensionalRift;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExAskModifyPartyLooting;
@@ -770,18 +768,6 @@ public class L2Party extends AbstractPlayerGroup
 				int addsp = (int) member.calcStat(Stats.EXPSP_RATE, spReward * preCalculation, null, null);
 				
 				addexp = calculateExpSpPartyCutoff(member.getActingPlayer(), topLvl, addexp, addsp, useVitalityRate);
-				
-				// TODO: unhardcode me?
-				final int skillLvl = member.getActingPlayer().getSkillLevel(467);
-				if (skillLvl > 0)
-				{
-					final L2Skill skill = SkillTable.getInstance().getInfo(467, skillLvl);
-					if (skill.getExpNeeded() <= addexp)
-					{
-						member.absorbSoul(skill, target);
-					}
-				}
-				
 				if (addexp > 0)
 				{
 					member.updateVitalityPoints(vitalityPoints, true, false);
