@@ -19,7 +19,6 @@
 package com.l2jserver.gameserver.model.actor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -613,7 +612,9 @@ public class L2Attackable extends L2Npc
 				return;
 			}
 			
-			final Map<L2PcInstance, RewardInfo> rewards = new HashMap<>();
+			// NOTE: Concurrent-safe map is used because while iterating to verify all conditions sometimes an entry must be removed.
+			final Map<L2PcInstance, RewardInfo> rewards = new ConcurrentHashMap<>();
+			
 			L2PcInstance maxDealer = null;
 			int maxDamage = 0;
 			long totalDamage = 0;
