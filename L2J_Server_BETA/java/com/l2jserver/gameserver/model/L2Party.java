@@ -18,6 +18,7 @@
  */
 package com.l2jserver.gameserver.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Future;
@@ -35,10 +36,8 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.DuelManager;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.entity.DimensionalRift;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
@@ -726,13 +725,7 @@ public class L2Party extends AbstractPlayerGroup
 	/**
 	 * Distribute Experience and SP rewards to L2PcInstance Party members in the known area of the last attacker.<BR>
 	 * <BR>
-	 * <B><U> Actions</U> :</B><BR>
-	 * <BR>
-	 * <li>Get the L2PcInstance owner of the L2ServitorInstance (if necessary)</li> <li>Calculate the Experience and SP reward distribution rate</li> <li>Add Experience and SP to the L2PcInstance</li><BR>
-	 * <BR>
-	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T GIVE rewards to L2PetInstance</B></FONT><BR>
-	 * <BR>
-	 * Exception are L2PetInstances that leech from the owner's XP; they get the exp indirectly, via the owner's exp gain<BR>
+	 * <B><U> Actions</U> :</B> <li>Get the L2PcInstance owner of the L2ServitorInstance (if necessary)</li> <li>Calculate the Experience and SP reward distribution rate</li> <li>Add Experience and SP to the L2PcInstance</li><BR>
 	 * @param xpReward The Experience reward to distribute
 	 * @param spReward The SP reward to distribute
 	 * @param rewardedMembers The list of L2PcInstance to reward
@@ -740,89 +733,63 @@ public class L2Party extends AbstractPlayerGroup
 	 * @param partyDmg
 	 * @param target
 	 */
-	public void distributeXpAndSp(long xpReward, int spReward, List<L2Playable> rewardedMembers, int topLvl, int partyDmg, L2Attackable target)
+	public void distributeXpAndSp(long xpReward, int spReward, List<L2PcInstance> rewardedMembers, int topLvl, int partyDmg, L2Attackable target)
 	{
-		List<L2Playable> validMembers = getValidMembers(rewardedMembers, topLvl);
-		
-		float penalty;
-		double sqLevel;
-		double preCalculation;
+		final List<L2PcInstance> validMembers = getValidMembers(rewardedMembers, topLvl);
 		
 		xpReward *= getExpBonus(validMembers.size());
 		spReward *= getSpBonus(validMembers.size());
 		
-		double sqLevelSum = 0;
-		for (L2Playable character : validMembers)
+		int sqLevelSum = 0;
+		for (L2PcInstance member : validMembers)
 		{
-			sqLevelSum += (character.getLevel() * character.getLevel());
+			sqLevelSum += (member.getLevel() * member.getLevel());
 		}
 		
 		final float vitalityPoints = (target.getVitalityPoints(partyDmg) * Config.RATE_PARTY_XP) / validMembers.size();
 		final boolean useVitalityRate = target.useVitalityRate();
 		
-		// Go through the L2PcInstances and L2PetInstances (not L2ServitorInstances) that must be rewarded
-		synchronized (rewardedMembers)
+		for (L2PcInstance member : rewardedMembers)
 		{
-			for (L2Character member : rewardedMembers)
+			if (member.isDead())
 			{
-				if (member.isDead())
-				{
-					continue;
-				}
-				
-				penalty = 0;
-				
+				continue;
+			}
+			
+			// Calculate and add the EXP and SP reward to the member
+			if (validMembers.contains(member))
+			{
 				// The servitor penalty
-				if ((member.getSummon() != null) && member.getSummon().isServitor())
+				final float penalty = member.hasServitor() ? ((L2ServitorInstance) member.getSummon()).getExpPenalty() : 0;
+				
+				final double sqLevel = member.getLevel() * member.getLevel();
+				final double preCalculation = (sqLevel / sqLevelSum) * (1 - penalty);
+				
+				// Add the XP/SP points to the requested party member
+				long addexp = Math.round(member.calcStat(Stats.EXPSP_RATE, xpReward * preCalculation, null, null));
+				int addsp = (int) member.calcStat(Stats.EXPSP_RATE, spReward * preCalculation, null, null);
+				
+				addexp = calculateExpSpPartyCutoff(member.getActingPlayer(), topLvl, addexp, addsp, useVitalityRate);
+				
+				// TODO: unhardcode me?
+				final int skillLvl = member.getActingPlayer().getSkillLevel(467);
+				if (skillLvl > 0)
 				{
-					penalty = ((L2ServitorInstance) member.getSummon()).getExpPenalty();
-				}
-				// Pets that leech xp from the owner (like babypets) do not get rewarded directly
-				if (member.isPet())
-				{
-					if (((L2PetInstance) member).getPetLevelData().getOwnerExpTaken() > 0)
+					final L2Skill skill = SkillTable.getInstance().getInfo(467, skillLvl);
+					if (skill.getExpNeeded() <= addexp)
 					{
-						continue;
+						member.absorbSoul(skill, target);
 					}
-					// TODO: This is a temporary fix while correct pet xp in party is figured out
-					penalty = (float) 0.85;
 				}
 				
-				// Calculate and add the EXP and SP reward to the member
-				if (validMembers.contains(member))
+				if (addexp > 0)
 				{
-					sqLevel = member.getLevel() * member.getLevel();
-					preCalculation = (sqLevel / sqLevelSum) * (1 - penalty);
-					
-					// Add the XP/SP points to the requested party member
-					long addexp = Math.round(member.calcStat(Stats.EXPSP_RATE, xpReward * preCalculation, null, null));
-					int addsp = (int) member.calcStat(Stats.EXPSP_RATE, spReward * preCalculation, null, null);
-					if (member.isPlayer())
-					{
-						addexp = calculateExpSpPartyCutoff(member.getActingPlayer(), topLvl, addexp, addsp, useVitalityRate);
-						final int skillLvl = member.getActingPlayer().getSkillLevel(467);
-						if (skillLvl > 0)
-						{
-							final L2Skill skill = SkillTable.getInstance().getInfo(467, skillLvl);
-							if (skill.getExpNeeded() <= addexp)
-							{
-								member.getActingPlayer().absorbSoul(skill, target);
-							}
-						}
-						if (addexp > 0)
-						{
-							member.getActingPlayer().updateVitalityPoints(vitalityPoints, true, false);
-						}
-					}
-					else
-					{
-						member.addExpAndSp(addexp, addsp);
-					}
+					member.updateVitalityPoints(vitalityPoints, true, false);
 				}
-				else
-				{
-					member.addExpAndSp(0, 0);
-				}
+			}
+			else
+			{
+				member.addExpAndSp(0, 0);
 			}
 		}
 	}
@@ -876,14 +843,14 @@ public class L2Party extends AbstractPlayerGroup
 		_partyLvl = newLevel;
 	}
 	
-	private List<L2Playable> getValidMembers(List<L2Playable> members, int topLvl)
+	private List<L2PcInstance> getValidMembers(List<L2PcInstance> members, int topLvl)
 	{
-		List<L2Playable> validMembers = new FastList<>();
+		final List<L2PcInstance> validMembers = new ArrayList<>();
 		
 		// Fixed LevelDiff cutoff point
 		if (Config.PARTY_XP_CUTOFF_METHOD.equalsIgnoreCase("level"))
 		{
-			for (L2Playable member : members)
+			for (L2PcInstance member : members)
 			{
 				if ((topLvl - member.getLevel()) <= Config.PARTY_XP_CUTOFF_LEVEL)
 				{
@@ -895,12 +862,12 @@ public class L2Party extends AbstractPlayerGroup
 		else if (Config.PARTY_XP_CUTOFF_METHOD.equalsIgnoreCase("percentage"))
 		{
 			int sqLevelSum = 0;
-			for (L2Playable member : members)
+			for (L2PcInstance member : members)
 			{
 				sqLevelSum += (member.getLevel() * member.getLevel());
 			}
 			
-			for (L2Playable member : members)
+			for (L2PcInstance member : members)
 			{
 				int sqLevel = member.getLevel() * member.getLevel();
 				if ((sqLevel * 100) >= (sqLevelSum * Config.PARTY_XP_CUTOFF_PERCENT))
@@ -913,7 +880,7 @@ public class L2Party extends AbstractPlayerGroup
 		else if (Config.PARTY_XP_CUTOFF_METHOD.equalsIgnoreCase("auto"))
 		{
 			int sqLevelSum = 0;
-			for (L2Playable member : members)
+			for (L2PcInstance member : members)
 			{
 				sqLevelSum += (member.getLevel() * member.getLevel());
 			}
@@ -928,7 +895,7 @@ public class L2Party extends AbstractPlayerGroup
 				i = BONUS_EXP_SP.length - 1;
 			}
 			
-			for (L2Playable member : members)
+			for (L2PcInstance member : members)
 			{
 				int sqLevel = member.getLevel() * member.getLevel();
 				if (sqLevel >= (sqLevelSum / (members.size() * members.size())))
