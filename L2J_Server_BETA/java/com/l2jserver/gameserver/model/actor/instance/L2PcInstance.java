@@ -5608,10 +5608,6 @@ public final class L2PcInstance extends L2Playable
 							deathPenalty(atWar, (pk != null), siegeNpc);
 						}
 					}
-					else if (!(isInsideZone(ZoneId.PVP) && !isInSiege()) || (pk == null))
-					{
-						onDieUpdateKarma(); // Update karma if delevel is not allowed
-					}
 				}
 			}
 		}
@@ -5766,60 +5762,22 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	private void onDieUpdateKarma()
-	{
-		// Karma lose for server that does not allow delevel
-		if (getKarma() > 0)
-		{
-			// this formula seems to work relatively well:
-			// baseKarma * thisLVL * (thisLVL/100)
-			// Calculate the new Karma of the attacker : newKarma = baseKarma*pkCountMulti*lvlDiffMulti
-			double karmaLost = Config.KARMA_LOST_BASE;
-			karmaLost *= getLevel(); // multiply by char lvl
-			karmaLost *= (getLevel() / 100.0); // divide by 0.charLVL
-			karmaLost = Math.round(karmaLost);
-			if (karmaLost < 0)
-			{
-				karmaLost = 1;
-			}
-			
-			// Decrease Karma of the L2PcInstance and Send it a Server->Client StatusUpdate packet with Karma and PvP Flag if necessary
-			setKarma(getKarma() - (int) karmaLost);
-		}
-	}
-	
 	public void onKillUpdatePvPKarma(L2Character target)
 	{
-		if (target == null)
-		{
-			return;
-		}
-		if (!(target instanceof L2Playable))
+		if ((target == null) || !target.isPlayable())
 		{
 			return;
 		}
 		
 		L2PcInstance targetPlayer = target.getActingPlayer();
-		
-		if (targetPlayer == null)
+		if ((targetPlayer == null) || (targetPlayer == this))
 		{
-			return; // Target player is null
-		}
-		if (targetPlayer == this)
-		{
-			return; // Target player is self
+			return;
 		}
 		
 		if (isCursedWeaponEquipped())
 		{
 			CursedWeaponsManager.getInstance().increaseKills(_cursedWeaponEquippedId);
-			// Custom message for time left
-			// CursedWeapon cw = CursedWeaponsManager.getInstance().getCursedWeapon(_cursedWeaponEquipedId);
-			// SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.THERE_IS_S1_HOUR_AND_S2_MINUTE_LEFT_OF_THE_FIXED_USAGE_TIME);
-			// int timeLeftInHours = (int)(((cw.getTimeLeft()/60000)/60));
-			// msg.addItemName(_cursedWeaponEquipedId);
-			// msg.addNumber(timeLeftInHours);
-			// sendPacket(msg);
 			return;
 		}
 		
@@ -5836,18 +5794,13 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		// Check if it's pvp
-		if ((checkIfPvP(target) && // Can pvp and
-		(targetPlayer.getPvpFlag() != 0 // Target player has pvp flag set
-		)) || // or
-		(isInsideZone(ZoneId.PVP) && // Player is inside pvp zone and
-		targetPlayer.isInsideZone(ZoneId.PVP) // Target player is inside pvp zone
-		))
+		if ((checkIfPvP(target) && (targetPlayer.getPvpFlag() != 0)) || (isInsideZone(ZoneId.PVP) && targetPlayer.isInsideZone(ZoneId.PVP)))
 		{
 			increasePvpKills(target);
 		}
 		else
-		// Target player doesn't have pvp flag set
 		{
+			// Target player doesn't have pvp flag set
 			// check about wars
 			if ((targetPlayer.getClan() != null) && (getClan() != null) && getClan().isAtWarWith(targetPlayer.getClanId()) && targetPlayer.getClan().isAtWarWith(getClanId()) && (targetPlayer.getPledgeType() != L2Clan.SUBUNIT_ACADEMY) && (getPledgeType() != L2Clan.SUBUNIT_ACADEMY))
 			{
@@ -5867,8 +5820,7 @@ public final class L2PcInstance extends L2Playable
 			else if (targetPlayer.getPvpFlag() == 0) // Target player doesn't have karma
 			{
 				increasePkKillsAndKarma(target);
-				// Unequip adventurer items
-				checkItemRestriction();
+				checkItemRestriction(); // Unequip adventurer items
 			}
 		}
 	}
@@ -5896,112 +5848,24 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void increasePkKillsAndKarma(L2Character target)
 	{
-		int baseKarma = Config.KARMA_MIN_KARMA;
-		int newKarma = baseKarma;
-		int karmaLimit = Config.KARMA_MAX_KARMA;
-		
-		int pkLVL = getLevel();
-		int pkPKCount = getPkKills();
-		
-		int targLVL = target.getLevel();
-		
-		int lvlDiffMulti = 0;
-		int pkCountMulti = 0;
-		
-		// Check if the attacker has a PK counter greater than 0
-		if (pkPKCount > 0)
+		// Only playables can increase karma/pk
+		if ((target == null) || !target.isPlayable())
 		{
-			pkCountMulti = pkPKCount / 2;
-		}
-		else
-		{
-			pkCountMulti = 1;
+			return;
 		}
 		
-		if (pkCountMulti < 1)
-		{
-			pkCountMulti = 1;
-		}
-		
-		// Calculate the level difference Multiplier between attacker and killed L2PcInstance
-		if (pkLVL > targLVL)
-		{
-			lvlDiffMulti = pkLVL / targLVL;
-		}
-		else
-		{
-			lvlDiffMulti = 1;
-		}
-		
-		if (lvlDiffMulti < 1)
-		{
-			lvlDiffMulti = 1;
-		}
-		
-		// Calculate the new Karma of the attacker : newKarma = baseKarma*pkCountMulti*lvlDiffMulti
-		newKarma *= pkCountMulti;
-		newKarma *= lvlDiffMulti;
-		
-		// Make sure newKarma is less than karmaLimit and higher than baseKarma
-		if (newKarma < baseKarma)
-		{
-			newKarma = baseKarma;
-		}
-		if (newKarma > karmaLimit)
-		{
-			newKarma = karmaLimit;
-		}
-		
-		// Fix to prevent overflow (=> karma has a max value of 2 147 483 647)
-		if (getKarma() > (Integer.MAX_VALUE - newKarma))
-		{
-			newKarma = Integer.MAX_VALUE - getKarma();
-		}
-		
-		// Add karma to attacker and increase its PK counter
-		setKarma(getKarma() + newKarma);
-		if ((target instanceof L2PcInstance) && AntiFeedManager.getInstance().check(this, target))
+		// PK Points are increased only if you kill a player.
+		if (target.isPlayer())
 		{
 			setPkKills(getPkKills() + 1);
 		}
 		
-		// Send a Server->Client UserInfo packet to attacker with its Karma and PK Counter
+		// Calculate new karma.
+		setKarma(getKarma() + Formulas.calculateKarmaGain(getPkKills(), target.isSummon()));
+		
+		// Update player's UI.
 		sendPacket(new UserInfo(this));
 		sendPacket(new ExBrExtraUserInfo(this));
-	}
-	
-	public int calculateKarmaLost(long exp)
-	{
-		// KARMA LOSS
-		// When a PKer gets killed by another player or a L2MonsterInstance, it loses a certain amount of Karma based on their level.
-		// this (with defaults) results in a level 1 losing about ~2 karma per death, and a lvl 70 loses about 11760 karma per death...
-		// You lose karma as long as you were not in a pvp zone and you did not kill urself.
-		// NOTE: exp for death (if delevel is allowed) is based on the players level
-		
-		long expGained = Math.abs(exp);
-		expGained /= Config.KARMA_XP_DIVIDER;
-		
-		// FIXME Micht : Maybe this code should be fixed and karma set to a long value
-		int karmaLost = 0;
-		if (expGained > Integer.MAX_VALUE)
-		{
-			karmaLost = Integer.MAX_VALUE;
-		}
-		else
-		{
-			karmaLost = (int) expGained;
-		}
-		
-		if (karmaLost < Config.KARMA_LOST_BASE)
-		{
-			karmaLost = Config.KARMA_LOST_BASE;
-		}
-		if (karmaLost > getKarma())
-		{
-			karmaLost = getKarma();
-		}
-		
-		return karmaLost;
 	}
 	
 	public void updatePvPStatus()

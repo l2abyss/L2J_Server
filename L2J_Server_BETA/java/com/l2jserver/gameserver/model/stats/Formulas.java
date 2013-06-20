@@ -26,6 +26,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.SevenSignsFestival;
 import com.l2jserver.gameserver.datatables.HitConditionBonus;
+import com.l2jserver.gameserver.datatables.KarmaData;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
@@ -2308,4 +2309,41 @@ public final class Formulas
 		return Rnd.get(100) < (((((skill.getMagicLevel() + baseChance) - target.getLevel()) + 30) - target.getINT()) * Formulas.calcElemental(attacker, target, skill));
 	}
 	
+	/**
+	 * Calculates karma lost upon death.
+	 * @param player
+	 * @param exp
+	 * @return the amount of karma player has loosed.
+	 */
+	public static int calculateKarmaLost(L2PcInstance player, long exp)
+	{
+		double karmaLooseMul = KarmaData.getInstance().getMultiplier(player.getLevel());
+		return (int) ((Math.abs(exp) / karmaLooseMul) / 15);
+	}
+	
+	/**
+	 * Calculates karma gain upon player kill.
+	 * @param pkCount
+	 * @param isSummon
+	 * @return karma points that will be added to the player.
+	 */
+	public static int calculateKarmaGain(int pkCount, boolean isSummon)
+	{
+		int result = 14400;
+		if (pkCount < 100)
+		{
+			result = (int) (((((pkCount - 1) * 0.5) + 1) * 60) * 4);
+		}
+		else if (pkCount < 180)
+		{
+			result = (int) (((((pkCount + 1) * 0.125) + 37.5) * 60) * 4);
+		}
+		
+		if (isSummon)
+		{
+			result = ((pkCount & 3) + result) >> 2;
+		}
+		
+		return result;
+	}
 }
