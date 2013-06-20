@@ -24,7 +24,7 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 /**
  * @author UnAfraid
  */
-public interface iDamageDealtEventListener extends IEventListener
+public interface IDamageDealtEventListener extends IEventListener
 {
 	public void onDamageDealtEvent(L2Character attacker, L2Character target, double damage, L2Skill skill, boolean crit);
 }

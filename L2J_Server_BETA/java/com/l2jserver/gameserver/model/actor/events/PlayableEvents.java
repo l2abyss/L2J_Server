@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.model.actor.events;
 
 import com.l2jserver.gameserver.model.actor.L2Playable;
-import com.l2jserver.gameserver.model.actor.events.listeners.iExperienceReceivedEventListener;
+import com.l2jserver.gameserver.model.actor.events.listeners.IExperienceReceivedEventListener;
 
 /**
  * @author UnAfraid
@@ -36,7 +36,7 @@ public class PlayableEvents extends CharEvents
 	{
 		if (hasEventListeners())
 		{
-			for (iExperienceReceivedEventListener listener : getEventListeners(iExperienceReceivedEventListener.class))
+			for (IExperienceReceivedEventListener listener : getEventListeners(IExperienceReceivedEventListener.class))
 			{
 				listener.onExperienceReceived(getActingPlayer(), exp);
 			}

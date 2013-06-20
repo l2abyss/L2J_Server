@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 /**
  * @author UnAfraid
  */
-public interface iExperienceReceivedEventListener extends IEventListener
+public interface IExperienceReceivedEventListener extends IEventListener
 {
 	public boolean onExperienceReceived(L2Playable playable, long exp);
 }

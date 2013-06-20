@@ -21,10 +21,10 @@ package com.l2jserver.gameserver.model.actor.events;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.events.listeners.iDamageDealtEventListener;
-import com.l2jserver.gameserver.model.actor.events.listeners.iDamageReceivedEventListener;
-import com.l2jserver.gameserver.model.actor.events.listeners.iDeathEventListener;
-import com.l2jserver.gameserver.model.actor.events.listeners.iTeleportedEventListener;
+import com.l2jserver.gameserver.model.actor.events.listeners.IDamageDealtEventListener;
+import com.l2jserver.gameserver.model.actor.events.listeners.IDamageReceivedEventListener;
+import com.l2jserver.gameserver.model.actor.events.listeners.IDeathEventListener;
+import com.l2jserver.gameserver.model.actor.events.listeners.ITeleportedEventListener;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
@@ -56,7 +56,7 @@ public class CharEvents extends AbstractCharEvents
 		// Notify event listeners.
 		if (hasEventListeners())
 		{
-			for (iDeathEventListener listener : getEventListeners(iDeathEventListener.class))
+			for (IDeathEventListener listener : getEventListeners(IDeathEventListener.class))
 			{
 				listener.onDeath(getActingPlayer(), killer);
 			}
@@ -75,7 +75,7 @@ public class CharEvents extends AbstractCharEvents
 	{
 		if (hasEventListeners())
 		{
-			for (iDamageDealtEventListener listener : getEventListeners(iDamageDealtEventListener.class))
+			for (IDamageDealtEventListener listener : getEventListeners(IDamageDealtEventListener.class))
 			{
 				listener.onDamageDealtEvent(getActingPlayer(), target, damage, skill, crit);
 			}
@@ -93,7 +93,7 @@ public class CharEvents extends AbstractCharEvents
 	{
 		if (hasEventListeners())
 		{
-			for (iDamageReceivedEventListener listener : getEventListeners(iDamageReceivedEventListener.class))
+			for (IDamageReceivedEventListener listener : getEventListeners(IDamageReceivedEventListener.class))
 			{
 				listener.onDamageReceivedEvent(attacker, getActingPlayer(), damage, skill, crit);
 			}
@@ -107,7 +107,7 @@ public class CharEvents extends AbstractCharEvents
 	{
 		if (hasEventListeners())
 		{
-			for (iTeleportedEventListener listener : getEventListeners(iTeleportedEventListener.class))
+			for (ITeleportedEventListener listener : getEventListeners(ITeleportedEventListener.class))
 			{
 				listener.onTeleported(getActingPlayer());
 			}

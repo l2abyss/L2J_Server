@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 /**
  * @author UnAfraid
  */
-public interface iTeleportedEventListener extends IEventListener
+public interface IDeathEventListener extends IEventListener
 {
-	public void onTeleported(L2Character target);
+	public boolean onDeath(L2Character attacker, L2Character target);
 }
