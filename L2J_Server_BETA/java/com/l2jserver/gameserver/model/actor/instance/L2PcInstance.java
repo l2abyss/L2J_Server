@@ -9196,7 +9196,7 @@ public final class L2PcInstance extends L2Playable
 				return false;
 			}
 		}
-		// Check if the skill is not a good magic, target is a monster and if force attack is set, if not then we don't want to cast.
+		// Check if the skill is a good magic, target is a monster and if force attack is set, if not then we don't want to cast.
 		if (!skill.isBad() && target.isMonster() && !forceUse)
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
