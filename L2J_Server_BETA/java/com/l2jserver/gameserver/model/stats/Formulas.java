@@ -1374,7 +1374,7 @@ public final class Formulas
 	{
 		// TODO: CHECK/FIX THIS FORMULA UP!!
 		double defence = 0;
-		if (skill.isActive() && skill.isOffensive())
+		if (skill.isActive() && skill.isBad())
 		{
 			defence = target.getMDef(actor, skill);
 		}
@@ -2136,7 +2136,7 @@ public final class Formulas
 	{
 		boolean reflect = false;
 		// Neither some special skills (like hero debuffs...) or those skills ignoring resistances can't be reflected
-		if ((skill.getPower() == -1) || ((skill.isHeroSkill() && skill.isDebuff()) || (!skill.isDebuff() && skill.isOffensive())))
+		if ((skill.getPower() == -1) || ((skill.isHeroSkill() && skill.isDebuff()) || (!skill.isDebuff() && skill.isBad())))
 		{
 			return reflect;
 		}

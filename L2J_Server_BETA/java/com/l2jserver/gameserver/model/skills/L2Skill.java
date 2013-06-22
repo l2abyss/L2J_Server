@@ -173,8 +173,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final boolean _overhit;
 	
 	private final int _minPledgeClass;
-	private final boolean _isOffensive;
-	private final boolean _isPVP;
 	private final int _chargeConsume;
 	private final int _triggeredId;
 	private final int _triggeredLevel;
@@ -377,8 +375,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_isSuicideAttack = set.getBool("isSuicideAttack", false);
 		
 		_minPledgeClass = set.getInteger("minPledgeClass", 0);
-		_isOffensive = set.getBool("offensive", false);
-		_isPVP = set.getBool("pvp", false);
 		_chargeConsume = set.getInteger("chargeConsume", 0);
 		_triggeredId = set.getInteger("triggeredId", 0);
 		_triggeredLevel = set.getInteger("triggeredLevel", 1);
@@ -874,16 +870,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _minPledgeClass;
 	}
 	
-	public final boolean isOffensive()
-	{
-		return _isOffensive || isPVP();
-	}
-	
-	public final boolean isPVP()
-	{
-		return _isPVP;
-	}
-	
 	public final boolean isHeroSkill()
 	{
 		return _isHeroSkill;
@@ -1108,12 +1094,12 @@ public abstract class L2Skill implements IChanceSkillTrigger
 					return false;
 				}
 				
-				if (skill.isOffensive() && (player.getSiegeState() > 0) && player.isInsideZone(ZoneId.SIEGE) && (player.getSiegeState() == targetPlayer.getSiegeState()) && (player.getSiegeSide() == targetPlayer.getSiegeSide()))
+				if (skill.isBad() && (player.getSiegeState() > 0) && player.isInsideZone(ZoneId.SIEGE) && (player.getSiegeState() == targetPlayer.getSiegeState()) && (player.getSiegeSide() == targetPlayer.getSiegeSide()))
 				{
 					return false;
 				}
 				
-				if (skill.isOffensive() && target.isInsideZone(ZoneId.PEACE))
+				if (skill.isBad() && target.isInsideZone(ZoneId.PEACE))
 				{
 					return false;
 				}
@@ -1283,21 +1269,18 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			return EMPTY_EFFECT_LIST;
 		}
 		
-		if (effector != effected)
+		if ((effector != effected) && isBad())
 		{
-			if (isOffensive() || isDebuff())
+			if (effected.isInvul())
 			{
-				if (effected.isInvul())
+				return EMPTY_EFFECT_LIST;
+			}
+			
+			if (effector.isPlayer() && effector.isGM())
+			{
+				if (!effector.getAccessLevel().canGiveDamage())
 				{
 					return EMPTY_EFFECT_LIST;
-				}
-				
-				if (effector.isPlayer() && effector.isGM())
-				{
-					if (!effector.getAccessLevel().canGiveDamage())
-					{
-						return EMPTY_EFFECT_LIST;
-					}
 				}
 			}
 		}
@@ -1346,19 +1329,16 @@ public abstract class L2Skill implements IChanceSkillTrigger
 			return EMPTY_EFFECT_LIST;
 		}
 		
-		if (effector.getOwner() != effected)
+		if ((effector.getOwner() != effected) && isBad())
 		{
-			if (isDebuff() || isOffensive())
+			if (effected.isInvul())
 			{
-				if (effected.isInvul())
-				{
-					return EMPTY_EFFECT_LIST;
-				}
-				
-				if (effector.getOwner().isGM() && !effector.getOwner().getAccessLevel().canGiveDamage())
-				{
-					return EMPTY_EFFECT_LIST;
-				}
+				return EMPTY_EFFECT_LIST;
+			}
+			
+			if (effector.getOwner().isGM() && !effector.getOwner().getAccessLevel().canGiveDamage())
+			{
+				return EMPTY_EFFECT_LIST;
 			}
 		}
 		

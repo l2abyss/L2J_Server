@@ -418,7 +418,7 @@ public final class L2Weapon extends L2Item
 		}
 		
 		final byte shld = Formulas.calcShldUse(caster, target, onMagicSkill);
-		if (onMagicSkill.isOffensive() && !Formulas.calcSkillSuccess(caster, target, onMagicSkill, shld, false, false, false))
+		if (onMagicSkill.isBad() && !Formulas.calcSkillSuccess(caster, target, onMagicSkill, shld, false, false, false))
 		{
 			return false;
 		}

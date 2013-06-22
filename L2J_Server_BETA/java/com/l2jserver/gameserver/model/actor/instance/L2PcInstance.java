@@ -9077,8 +9077,8 @@ public final class L2PcInstance extends L2Playable
 		
 		// ************************************* Check Skill Type *******************************************
 		
-		// Check if this is offensive magic skill
-		if (skill.isOffensive())
+		// Check if this is bad magic skill
+		if (skill.isBad())
 		{
 			if ((isInsidePeaceZone(this, target)) && !getAccessLevel().allowPeaceAttack())
 			{
@@ -9197,7 +9197,7 @@ public final class L2PcInstance extends L2Playable
 			}
 		}
 		// Check if the skill is a good magic, target is a monster and if force attack is set, if not then we don't want to cast.
-		if (!skill.isBad() && target.isMonster() && !forceUse)
+		if ((skill.getEffectPoint() > 0) && target.isMonster() && !forceUse)
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return false;
@@ -9381,27 +9381,13 @@ public final class L2PcInstance extends L2Playable
 		{
 			SkillUseHolder skilldat = getCurrentSkill();
 			SkillUseHolder skilldatpet = getCurrentPetSkill();
-			if (skill.isPVP())
+			if (((skilldat != null) && !skilldat.isCtrlPressed() && skill.isBad() && !srcIsSummon) || ((skilldatpet != null) && !skilldatpet.isCtrlPressed() && skill.isBad() && srcIsSummon))
 			{
 				if ((getClan() != null) && (targetPlayer.getClan() != null))
 				{
 					if (getClan().isAtWarWith(targetPlayer.getClan().getClanId()) && targetPlayer.getClan().isAtWarWith(getClan().getClanId()))
 					{
-						return true; // in clan war player can attack whites even with sleep etc.
-					}
-				}
-				if ((targetPlayer.getPvpFlag() == 0) && (targetPlayer.getKarma() == 0))
-				{
-					return false;
-				}
-			}
-			else if (((skilldat != null) && !skilldat.isCtrlPressed() && skill.isOffensive() && !srcIsSummon) || ((skilldatpet != null) && !skilldatpet.isCtrlPressed() && skill.isOffensive() && srcIsSummon))
-			{
-				if ((getClan() != null) && (targetPlayer.getClan() != null))
-				{
-					if (getClan().isAtWarWith(targetPlayer.getClan().getClanId()) && targetPlayer.getClan().isAtWarWith(getClan().getClanId()))
-					{
-						return true; // in clan war player can attack whites even without ctrl
+						return true;
 					}
 				}
 				if ((targetPlayer.getPvpFlag() == 0) && (targetPlayer.getKarma() == 0))
@@ -9410,7 +9396,6 @@ public final class L2PcInstance extends L2Playable
 				}
 			}
 		}
-		
 		return true;
 	}
 	

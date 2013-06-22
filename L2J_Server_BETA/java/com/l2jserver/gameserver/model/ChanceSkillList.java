@@ -93,7 +93,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 		if (ownerWasHit)
 		{
 			event = ChanceCondition.EVT_HIT_BY_SKILL;
-			if (skill.isOffensive())
+			if (skill.isBad())
 			{
 				event |= ChanceCondition.EVT_HIT_BY_OFFENSIVE_SKILL;
 				event |= ChanceCondition.EVT_ATTACKED;
@@ -108,7 +108,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 		{
 			event = ChanceCondition.EVT_CAST;
 			event |= skill.isMagic() ? ChanceCondition.EVT_MAGIC : ChanceCondition.EVT_PHYSICAL;
-			event |= skill.isOffensive() ? ChanceCondition.EVT_MAGIC_OFFENSIVE : ChanceCondition.EVT_MAGIC_GOOD;
+			event |= skill.isBad() ? ChanceCondition.EVT_MAGIC_OFFENSIVE : ChanceCondition.EVT_MAGIC_GOOD;
 		}
 		
 		onEvent(event, 0, target, skill, skill.getElement());

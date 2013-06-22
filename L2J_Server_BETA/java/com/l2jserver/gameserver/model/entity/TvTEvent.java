@@ -1036,7 +1036,7 @@ public class TvTEvent
 		// players in the different teams ?
 		if (getParticipantTeamId(sourcePlayerId) != getParticipantTeamId(targetPlayerId))
 		{
-			if (!skill.isOffensive())
+			if (!skill.isBad())
 			{
 				return false;
 			}

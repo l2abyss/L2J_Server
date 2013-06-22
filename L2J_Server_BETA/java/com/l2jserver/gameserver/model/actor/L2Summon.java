@@ -685,8 +685,8 @@ public abstract class L2Summon extends L2Playable
 			return false;
 		}
 		
-		// Check if this is offensive magic skill
-		if (skill.isOffensive())
+		// Check if this is bad magic skill
+		if (skill.isBad())
 		{
 			if (getOwner() == target)
 			{

@@ -85,7 +85,7 @@ public abstract class L2PlayableAI extends L2CharacterAI
 	@Override
 	protected void onIntentionCast(L2Skill skill, L2Object target)
 	{
-		if ((target instanceof L2Playable) && skill.isOffensive())
+		if ((target instanceof L2Playable) && skill.isBad())
 		{
 			if (target.getActingPlayer().isProtectionBlessingAffected() && ((_actor.getActingPlayer().getLevel() - target.getActingPlayer().getLevel()) >= 10) && (_actor.getActingPlayer().getKarma() > 0) && !target.isInsideZone(ZoneId.PVP))
 			{
@@ -107,15 +107,7 @@ public abstract class L2PlayableAI extends L2CharacterAI
 				return;
 			}
 			
-			if (target.getActingPlayer().isCursedWeaponEquipped() && (_actor.getActingPlayer().getLevel() <= 20))
-			{
-				_actor.getActingPlayer().sendPacket(SystemMessageId.TARGET_IS_INCORRECT);
-				clientActionFailed();
-				_actor.setIsCastingNow(false);
-				return;
-			}
-			
-			if (_actor.getActingPlayer().isCursedWeaponEquipped() && (target.getActingPlayer().getLevel() <= 20))
+			if (target.getActingPlayer().isCursedWeaponEquipped() && ((_actor.getActingPlayer().getLevel() <= 20) || (target.getActingPlayer().getLevel() <= 20)))
 			{
 				_actor.getActingPlayer().sendPacket(SystemMessageId.TARGET_IS_INCORRECT);
 				clientActionFailed();
@@ -123,7 +115,6 @@ public abstract class L2PlayableAI extends L2CharacterAI
 				return;
 			}
 		}
-		
 		super.onIntentionCast(skill, target);
 	}
 	

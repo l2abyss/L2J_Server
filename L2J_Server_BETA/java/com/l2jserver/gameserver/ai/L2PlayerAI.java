@@ -68,7 +68,7 @@ public class L2PlayerAI extends L2PlayableAI
 	{
 		// do nothing unless CAST intention
 		// however, forget interrupted actions when starting to use an offensive skill
-		if ((intention != AI_INTENTION_CAST) || ((arg0 != null) && ((L2Skill) arg0).isOffensive()))
+		if ((intention != AI_INTENTION_CAST) || ((arg0 != null) && ((L2Skill) arg0).isBad()))
 		{
 			_nextIntention = null;
 			super.changeIntention(intention, arg0, arg1);
@@ -258,7 +258,7 @@ public class L2PlayerAI extends L2PlayableAI
 		{
 			if (checkTargetLost(target))
 			{
-				if (_skill.isOffensive() && (getAttackTarget() != null))
+				if (_skill.isBad() && (getAttackTarget() != null))
 				{
 					// Notify the target
 					setCastTarget(null);

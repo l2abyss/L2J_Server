@@ -425,7 +425,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 			{
 				_state = isInstant() ? EffectState.FINISHING : EffectState.ACTING;
 				
-				if (_skill.isPVP() && isIconDisplay() && getEffected().isPlayer())
+				if (_skill.isBad() && isIconDisplay() && getEffected().isPlayer())
 				{
 					final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
 					sm.addSkillName(_skill);

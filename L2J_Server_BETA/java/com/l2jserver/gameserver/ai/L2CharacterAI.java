@@ -1196,7 +1196,7 @@ public class L2CharacterAI extends AbstractAI
 			setIntention(AI_INTENTION_ACTIVE);
 			return true;
 		}
-		if ((_actor != null) && (_skill != null) && _skill.isOffensive() && (_skill.getAffectRange() > 0) && (Config.GEODATA > 0) && !GeoData.getInstance().canSeeTarget(_actor, target))
+		if ((_actor != null) && (_skill != null) && _skill.isBad() && (_skill.getAffectRange() > 0) && (Config.GEODATA > 0) && !GeoData.getInstance().canSeeTarget(_actor, target))
 		{
 			setIntention(AI_INTENTION_ACTIVE);
 			return true;

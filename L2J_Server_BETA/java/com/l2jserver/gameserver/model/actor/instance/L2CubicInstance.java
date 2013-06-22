@@ -634,7 +634,7 @@ public final class L2CubicInstance
 				continue;
 			}
 			
-			if (skill.isOffensive())
+			if (skill.isBad())
 			{
 				byte shld = Formulas.calcShldUse(activeCubic.getOwner(), target, skill);
 				boolean acted = Formulas.calcCubicSkillSuccess(activeCubic, target, skill, shld);

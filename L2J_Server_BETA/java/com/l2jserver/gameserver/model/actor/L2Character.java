@@ -6021,7 +6021,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	}
 	
 	/**
-	 * Manage the magic skill launching task (MP, HP, Item consummation...) and display the magic skill animation on client.<br>
+	 * Manage the magic skill launching task (MP, HP, Item consumation...) and display the magic skill animation on client.<br>
 	 * <B><U>Actions</U>:</B>
 	 * <ul>
 	 * <li>Send a Server->Client packet MagicSkillLaunched (to display magic skill animation) to all L2PcInstance of L2Charcater _knownPlayers</li>
@@ -6092,7 +6092,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 						_skipgeo++;
 						continue;
 					}
-					if (skill.isOffensive())
+					if (skill.isBad())
 					{
 						if (isPlayer())
 						{
@@ -6393,7 +6393,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, target);
 			}
 		}
-		if (skill.isOffensive() && !(skill.getSkillType() == L2SkillType.UNLOCK) && !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK))
+		if (skill.isBad() && !(skill.getSkillType() == L2SkillType.UNLOCK) && !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK))
 		{
 			getAI().clientStartAutoAttack();
 		}
@@ -6571,10 +6571,10 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 						targetsAttackTarget = target.getAI().getAttackTarget();
 						targetsCastTarget = target.getAI().getCastTarget();
 					}
-					if (!Config.RAID_DISABLE_CURSE && ((target.isRaid() && target.giveRaidCurse() && (getLevel() > (target.getLevel() + 8))) || (!skill.isOffensive() && (targetsAttackTarget != null) && targetsAttackTarget.isRaid() && targetsAttackTarget.giveRaidCurse() && targetsAttackTarget.getAttackByList().contains(target) // has
-																																																																																		// attacked
-																																																																																		// raid
-					&& (getLevel() > (targetsAttackTarget.getLevel() + 8))) || (!skill.isOffensive() && (targetsCastTarget != null) && targetsCastTarget.isRaid() && targetsCastTarget.giveRaidCurse() && targetsCastTarget.getAttackByList().contains(target) // has attacked raid
+					if (!Config.RAID_DISABLE_CURSE && ((target.isRaid() && target.giveRaidCurse() && (getLevel() > (target.getLevel() + 8))) || (!skill.isBad() && (targetsAttackTarget != null) && targetsAttackTarget.isRaid() && targetsAttackTarget.giveRaidCurse() && targetsAttackTarget.getAttackByList().contains(target) // has
+																																																																																	// attacked
+																																																																																	// raid
+					&& (getLevel() > (targetsAttackTarget.getLevel() + 8))) || (!skill.isBad() && (targetsCastTarget != null) && targetsCastTarget.isRaid() && targetsCastTarget.giveRaidCurse() && targetsCastTarget.getAttackByList().contains(target) // has attacked raid
 					&& (getLevel() > (targetsCastTarget.getLevel() + 8)))))
 					{
 						if (skill.isMagic())
@@ -6679,12 +6679,12 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 					// EVT_ATTACKED and PvPStatus
 					if (target instanceof L2Character)
 					{
-						if (skill.isBad())
+						if (skill.getEffectPoint() <= 0)
 						{
 							if (target.isPlayer() || target.isSummon() || target.isTrap())
 							{
-								// Signets are a special case, casted on target_self but don't harm self
-								if ((skill.getSkillType() != L2SkillType.SIGNET) && (skill.getSkillType() != L2SkillType.SIGNET_CASTTIME))
+								// Casted on target_self but don't harm self
+								if (!target.equals(this))
 								{
 									if (target.isPlayer())
 									{
@@ -6761,7 +6761,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				}
 			}
 			// Notify AI
-			if (skill.isOffensive() && !skill.hasEffectType(L2EffectType.HATE))
+			if (skill.isBad() && !skill.hasEffectType(L2EffectType.HATE))
 			{
 				for (L2Object target : targets)
 				{
