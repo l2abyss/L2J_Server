@@ -20,7 +20,6 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.ai.L2AirShipAI;
 import com.l2jserver.gameserver.instancemanager.AirShipManager;
-import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Vehicle;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
@@ -160,9 +159,9 @@ public class L2AirShipInstance extends L2Vehicle
 	}
 	
 	@Override
-	public void stopMove(L2CharPosition pos, boolean updateKnownObjects)
+	public void stopMove(Location loc, boolean updateKnownObjects)
 	{
-		super.stopMove(pos, updateKnownObjects);
+		super.stopMove(loc, updateKnownObjects);
 		
 		broadcastPacket(new ExStopMoveAirShip(this));
 	}

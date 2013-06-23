@@ -348,7 +348,7 @@ public class MapRegionManager extends DocumentParser
 					L2SiegeFlagInstance tw_flag = TerritoryWarManager.getInstance().getFlagForClan(player.getClan());
 					if (tw_flag != null)
 					{
-						return new Location(tw_flag.getX(), tw_flag.getY(), tw_flag.getZ());
+						return tw_flag.getLocation();
 					}
 					else if (castle != null)
 					{
@@ -359,8 +359,7 @@ public class MapRegionManager extends DocumentParser
 							if ((flags != null) && !flags.isEmpty())
 							{
 								// Spawn to flag - Need more work to get player to the nearest flag
-								L2Npc flag = flags.get(0);
-								return new Location(flag.getX(), flag.getY(), flag.getZ());
+								return flags.get(0).getLocation();
 							}
 						}
 						
@@ -374,8 +373,7 @@ public class MapRegionManager extends DocumentParser
 							if ((flags != null) && !flags.isEmpty())
 							{
 								// Spawn to flag - Need more work to get player to the nearest flag
-								L2Npc flag = flags.get(0);
-								return new Location(flag.getX(), flag.getY(), flag.getZ());
+								return flags.get(0).getLocation();
 							}
 						}
 					}
@@ -385,8 +383,7 @@ public class MapRegionManager extends DocumentParser
 						List<L2Npc> flags = sHall.getSiege().getFlag(player.getClan());
 						if ((flags != null) && !flags.isEmpty())
 						{
-							L2Npc flag = flags.get(0);
-							return new Location(flag.getX(), flag.getY(), flag.getZ());
+							return flags.get(0).getLocation();
 						}
 					}
 				}

@@ -92,9 +92,9 @@ public class RaidBossSpawnManager
 				if (template != null)
 				{
 					spawnDat = new L2Spawn(template);
-					spawnDat.setLocx(rset.getInt("loc_x"));
-					spawnDat.setLocy(rset.getInt("loc_y"));
-					spawnDat.setLocz(rset.getInt("loc_z"));
+					spawnDat.setX(rset.getInt("loc_x"));
+					spawnDat.setY(rset.getInt("loc_y"));
+					spawnDat.setZ(rset.getInt("loc_z"));
 					spawnDat.setAmount(rset.getInt("amount"));
 					spawnDat.setHeading(rset.getInt("heading"));
 					spawnDat.setRespawnDelay(rset.getInt("respawn_delay"), rset.getInt("respawn_random"));
@@ -286,9 +286,9 @@ public class RaidBossSpawnManager
 			{
 				statement.setInt(1, spawnDat.getNpcid());
 				statement.setInt(2, spawnDat.getAmount());
-				statement.setInt(3, spawnDat.getLocx());
-				statement.setInt(4, spawnDat.getLocy());
-				statement.setInt(5, spawnDat.getLocz());
+				statement.setInt(3, spawnDat.getX());
+				statement.setInt(4, spawnDat.getY());
+				statement.setInt(5, spawnDat.getZ());
 				statement.setInt(6, spawnDat.getHeading());
 				statement.setLong(7, respawnTime);
 				statement.setDouble(8, currentHP);

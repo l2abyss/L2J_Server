@@ -16,29 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model;
+package com.l2jserver.gameserver.model.interfaces;
+
+import com.l2jserver.gameserver.model.Location;
 
 /**
- * This class permit to pass (x, y, z, heading) position data to method.
+ * Positionable objects interface.
+ * @author Zoey76
  */
-public final class L2CharPosition
+public interface IPositionable
 {
+	public int getX();
 	
-	public final int x, y, z, heading;
+	public int getY();
 	
-	/**
-	 * Constructor of L2CharPosition.
-	 * @param pX
-	 * @param pY
-	 * @param pZ
-	 * @param pHeading
-	 */
-	public L2CharPosition(int pX, int pY, int pZ, int pHeading)
-	{
-		x = pX;
-		y = pY;
-		z = pZ;
-		heading = pHeading;
-	}
+	public int getZ();
 	
+	public Location getLocation();
 }

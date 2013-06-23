@@ -63,9 +63,9 @@ public final class RequestSaveInventoryOrder extends L2GameClientPacket
 			for (InventoryOrder order : _order)
 			{
 				L2ItemInstance item = inventory.getItemByObjectId(order.objectID);
-				if ((item != null) && (item.getLocation() == ItemLocation.INVENTORY))
+				if ((item != null) && (item.getItemLocation() == ItemLocation.INVENTORY))
 				{
-					item.setLocation(ItemLocation.INVENTORY, order.order);
+					item.setItemLocation(ItemLocation.INVENTORY, order.order);
 				}
 			}
 		}

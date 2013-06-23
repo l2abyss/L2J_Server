@@ -34,6 +34,7 @@ import com.l2jserver.gameserver.model.actor.knownlist.ObjectKnownList;
 import com.l2jserver.gameserver.model.actor.poly.ObjectPoly;
 import com.l2jserver.gameserver.model.actor.position.ObjectPosition;
 import com.l2jserver.gameserver.model.entity.Instance;
+import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -47,7 +48,7 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
  * <BR>
  * <li>L2Character</li> <li>L2ItemInstance</li>
  */
-public abstract class L2Object
+public abstract class L2Object implements IPositionable
 {
 	private boolean _isVisible; // Object visibility
 	private ObjectKnownList _knownList;
@@ -308,10 +309,36 @@ public abstract class L2Object
 		getPosition().setXYZInvisible(x, y, z);
 	}
 	
+	@Override
 	public final int getX()
 	{
 		assert (getPosition().getWorldRegion() != null) || _isVisible;
 		return getPosition().getX();
+	}
+	
+	@Override
+	public final int getY()
+	{
+		assert (getPosition().getWorldRegion() != null) || _isVisible;
+		return getPosition().getY();
+	}
+	
+	@Override
+	public final int getZ()
+	{
+		assert (getPosition().getWorldRegion() != null) || _isVisible;
+		return getPosition().getZ();
+	}
+	
+	@Override
+	public Location getLocation()
+	{
+		return new Location(getX(), getY(), getZ(), getHeading(), getInstanceId());
+	}
+	
+	public int getHeading()
+	{
+		return 0;
 	}
 	
 	/**
@@ -414,23 +441,6 @@ public abstract class L2Object
 				spawnMe();
 			}
 		}
-	}
-	
-	public final int getY()
-	{
-		assert (getPosition().getWorldRegion() != null) || _isVisible;
-		return getPosition().getY();
-	}
-	
-	public final int getZ()
-	{
-		assert (getPosition().getWorldRegion() != null) || _isVisible;
-		return getPosition().getZ();
-	}
-	
-	public int getHeading()
-	{
-		return 0;
 	}
 	
 	/**

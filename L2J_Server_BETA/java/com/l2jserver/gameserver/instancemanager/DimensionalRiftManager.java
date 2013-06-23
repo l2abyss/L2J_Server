@@ -199,9 +199,9 @@ public class DimensionalRiftManager
 												{
 													spawnDat = new L2Spawn(template);
 													spawnDat.setAmount(1);
-													spawnDat.setLocx(x);
-													spawnDat.setLocy(y);
-													spawnDat.setLocz(z);
+													spawnDat.setX(x);
+													spawnDat.setY(y);
+													spawnDat.setZ(z);
 													spawnDat.setHeading(-1);
 													spawnDat.setRespawnDelay(delay);
 													SpawnTable.getInstance().addNewSpawn(spawnDat, false);

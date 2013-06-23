@@ -398,9 +398,9 @@ public final class L2ItemInstance extends L2Object
 	 * Sets the location of the item
 	 * @param loc : ItemLocation (enumeration)
 	 */
-	public void setLocation(ItemLocation loc)
+	public void setItemLocation(ItemLocation loc)
 	{
-		setLocation(loc, 0);
+		setItemLocation(loc, 0);
 	}
 	
 	/**
@@ -410,7 +410,7 @@ public final class L2ItemInstance extends L2Object
 	 * @param loc : ItemLocation (enumeration)
 	 * @param loc_data : int designating the slot where the item is stored or the village for freights
 	 */
-	public void setLocation(ItemLocation loc, int loc_data)
+	public void setItemLocation(ItemLocation loc, int loc_data)
 	{
 		if ((loc == _loc) && (loc_data == _locData))
 		{
@@ -429,7 +429,7 @@ public final class L2ItemInstance extends L2Object
 		giveSkillsToOwner();
 	}
 	
-	public ItemLocation getLocation()
+	public ItemLocation getItemLocation()
 	{
 		return _loc;
 	}
@@ -543,7 +543,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public int isEnchantable()
 	{
-		if ((getLocation() == ItemLocation.INVENTORY) || (getLocation() == ItemLocation.PAPERDOLL))
+		if ((getItemLocation() == ItemLocation.INVENTORY) || (getItemLocation() == ItemLocation.PAPERDOLL))
 		{
 			return getItem().isEnchantable();
 		}
@@ -1372,7 +1372,7 @@ public final class L2ItemInstance extends L2Object
 					player.broadcastUserInfo();
 				}
 				
-				if (getLocation() != ItemLocation.WAREHOUSE)
+				if (getItemLocation() != ItemLocation.WAREHOUSE)
 				{
 					// destroy
 					player.getInventory().destroyItem("L2ItemInstance", this, player, null);
@@ -1402,7 +1402,7 @@ public final class L2ItemInstance extends L2Object
 				{
 					scheduleConsumeManaTask();
 				}
-				if (getLocation() != ItemLocation.WAREHOUSE)
+				if (getItemLocation() != ItemLocation.WAREHOUSE)
 				{
 					InventoryUpdate iu = new InventoryUpdate();
 					iu.addModifiedItem(this);
@@ -1870,7 +1870,7 @@ public final class L2ItemInstance extends L2Object
 				player.broadcastUserInfo();
 			}
 			
-			if (getLocation() != ItemLocation.WAREHOUSE)
+			if (getItemLocation() != ItemLocation.WAREHOUSE)
 			{
 				// destroy
 				player.getInventory().destroyItem("L2ItemInstance", this, player, null);
@@ -2016,7 +2016,7 @@ public final class L2ItemInstance extends L2Object
 	
 	public boolean isElementable()
 	{
-		if ((getLocation() == ItemLocation.INVENTORY) || (getLocation() == ItemLocation.PAPERDOLL))
+		if ((getItemLocation() == ItemLocation.INVENTORY) || (getItemLocation() == ItemLocation.PAPERDOLL))
 		{
 			return getItem().isElementable();
 		}
@@ -2058,7 +2058,7 @@ public final class L2ItemInstance extends L2Object
 	
 	public boolean hasPassiveSkills()
 	{
-		return (getItemType() == L2EtcItemType.RUNE) && (getLocation() == ItemLocation.INVENTORY) && (getOwnerId() > 0) && getItem().hasSkills();
+		return (getItemType() == L2EtcItemType.RUNE) && (getItemLocation() == ItemLocation.INVENTORY) && (getOwnerId() > 0) && getItem().hasSkills();
 	}
 	
 	public void giveSkillsToOwner()

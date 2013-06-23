@@ -162,9 +162,9 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 						final int npcId = rset.getInt("npcId");
 						final L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId);
 						L2Spawn spawn = new L2Spawn(template);
-						spawn.setLocx(rset.getInt("x"));
-						spawn.setLocy(rset.getInt("y"));
-						spawn.setLocz(rset.getInt("z"));
+						spawn.setX(rset.getInt("x"));
+						spawn.setY(rset.getInt("y"));
+						spawn.setZ(rset.getInt("z"));
 						spawn.setHeading(rset.getInt("heading"));
 						spawn.setRespawnDelay(rset.getInt("respawnDelay"));
 						spawn.setAmount(1);

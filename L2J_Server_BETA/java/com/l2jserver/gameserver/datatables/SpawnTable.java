@@ -107,14 +107,14 @@ public final class SpawnTable
 				
 				spawn = new L2Spawn(npcTemplate);
 				spawn.setAmount(rs.getInt("count"));
-				spawn.setLocx(rs.getInt("locx"));
-				spawn.setLocy(rs.getInt("locy"));
-				spawn.setLocz(rs.getInt("locz"));
+				spawn.setX(rs.getInt("locx"));
+				spawn.setY(rs.getInt("locy"));
+				spawn.setZ(rs.getInt("locz"));
 				spawn.setHeading(rs.getInt("heading"));
 				spawn.setRespawnDelay(rs.getInt("respawn_delay"), rs.getInt("respawn_random"));
 				spawn.setCustom(isCustom);
 				int loc_id = rs.getInt("loc_id");
-				spawn.setLocation(loc_id);
+				spawn.setLocationId(loc_id);
 				
 				switch (rs.getInt("periodOfDay"))
 				{
@@ -193,13 +193,13 @@ public final class SpawnTable
 			{
 				insert.setInt(1, spawn.getAmount());
 				insert.setInt(2, spawn.getNpcid());
-				insert.setInt(3, spawn.getLocx());
-				insert.setInt(4, spawn.getLocy());
-				insert.setInt(5, spawn.getLocz());
+				insert.setInt(3, spawn.getX());
+				insert.setInt(4, spawn.getY());
+				insert.setInt(5, spawn.getZ());
 				insert.setInt(6, spawn.getHeading());
 				insert.setInt(7, spawn.getRespawnDelay() / 1000);
 				insert.setInt(8, spawn.getRespawnMaxDelay() - spawn.getRespawnMinDelay());
-				insert.setInt(9, spawn.getLocation());
+				insert.setInt(9, spawn.getLocationId());
 				insert.execute();
 			}
 			catch (Exception e)
@@ -226,9 +226,9 @@ public final class SpawnTable
 			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 				PreparedStatement delete = con.prepareStatement("DELETE FROM " + (spawn.isCustom() ? "custom_spawnlist" : "spawnlist") + " WHERE locx=? AND locy=? AND locz=? AND npc_templateid=? AND heading=?"))
 			{
-				delete.setInt(1, spawn.getLocx());
-				delete.setInt(2, spawn.getLocy());
-				delete.setInt(3, spawn.getLocz());
+				delete.setInt(1, spawn.getX());
+				delete.setInt(2, spawn.getY());
+				delete.setInt(3, spawn.getZ());
 				delete.setInt(4, spawn.getNpcid());
 				delete.setInt(5, spawn.getHeading());
 				delete.execute();

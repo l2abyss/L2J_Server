@@ -411,7 +411,7 @@ public class ItemTable
 			long old = item.getCount();
 			item.setCount(0);
 			item.setOwnerId(0);
-			item.setLocation(ItemLocation.VOID);
+			item.setItemLocation(ItemLocation.VOID);
 			item.setLastChange(L2ItemInstance.REMOVED);
 			
 			L2World.getInstance().removeObject(item);

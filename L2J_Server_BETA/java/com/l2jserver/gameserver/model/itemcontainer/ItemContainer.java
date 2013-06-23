@@ -242,7 +242,7 @@ public abstract class ItemContainer
 		else
 		{
 			item.setOwnerId(process, getOwnerId(), actor, reference);
-			item.setLocation(getBaseLocation());
+			item.setItemLocation(getBaseLocation());
 			item.setLastChange((L2ItemInstance.ADDED));
 			
 			// Add item in inventory
@@ -304,7 +304,7 @@ public abstract class ItemContainer
 				
 				item = ItemTable.getInstance().createItem(process, itemId, template.isStackable() ? count : 1, actor, reference);
 				item.setOwnerId(getOwnerId());
-				item.setLocation(getBaseLocation());
+				item.setItemLocation(getBaseLocation());
 				item.setLastChange(L2ItemInstance.ADDED);
 				
 				// Add item in inventory

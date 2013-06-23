@@ -377,9 +377,9 @@ public class L2Fishing implements Runnable
 			try
 			{
 				L2Spawn spawn = new L2Spawn(monster);
-				spawn.setLocx(_fisher.getX());
-				spawn.setLocy(_fisher.getY());
-				spawn.setLocz(_fisher.getZ());
+				spawn.setX(_fisher.getX());
+				spawn.setY(_fisher.getY());
+				spawn.setZ(_fisher.getZ());
 				spawn.setAmount(1);
 				spawn.setHeading(_fisher.getHeading());
 				spawn.stopRespawn();

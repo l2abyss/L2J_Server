@@ -99,7 +99,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			return;
 		}
 		
-		switch (item.getLocation())
+		switch (item.getItemLocation())
 		{
 			case INVENTORY:
 			case PAPERDOLL:

@@ -819,7 +819,7 @@ public abstract class Inventory extends ItemContainer
 			
 			removeItem(item);
 			item.setOwnerId(process, 0, actor, reference);
-			item.setLocation(ItemLocation.VOID);
+			item.setItemLocation(ItemLocation.VOID);
 			item.setLastChange(L2ItemInstance.REMOVED);
 			
 			item.updateDatabase();
@@ -1066,7 +1066,7 @@ public abstract class Inventory extends ItemContainer
 			{
 				_paperdoll[slot] = null;
 				// Put old item from paperdoll slot to base location
-				old.setLocation(getBaseLocation());
+				old.setItemLocation(getBaseLocation());
 				old.setLastChange(L2ItemInstance.MODIFIED);
 				// Get the mask for paperdoll
 				int mask = 0;
@@ -1095,7 +1095,7 @@ public abstract class Inventory extends ItemContainer
 			if (item != null)
 			{
 				_paperdoll[slot] = item;
-				item.setLocation(getEquipLocation(), slot);
+				item.setItemLocation(getEquipLocation(), slot);
 				item.setLastChange(L2ItemInstance.MODIFIED);
 				_wearedMask |= item.getItem().getItemMask();
 				for (PaperdollListener listener : _paperdollListeners)
@@ -1677,7 +1677,7 @@ public abstract class Inventory extends ItemContainer
 						
 						if (!player.canOverrideCond(PcCondOverride.ITEM_CONDITIONS) && !player.isHero() && item.isHeroItem())
 						{
-							item.setLocation(ItemLocation.INVENTORY);
+							item.setItemLocation(ItemLocation.INVENTORY);
 						}
 					}
 					

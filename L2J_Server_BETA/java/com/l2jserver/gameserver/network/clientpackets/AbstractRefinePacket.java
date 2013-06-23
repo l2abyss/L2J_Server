@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.model.items.L2Armor;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
 public abstract class AbstractRefinePacket extends L2GameClientPacket
@@ -219,7 +220,7 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 			return false;
 		}
 		// .. and located in inventory
-		if (gemStones.getLocation() != L2ItemInstance.ItemLocation.INVENTORY)
+		if (gemStones.getItemLocation() != ItemLocation.INVENTORY)
 		{
 			return false;
 		}
@@ -261,7 +262,7 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 			return false;
 		}
 		// Lifestone must be located in inventory
-		if (refinerItem.getLocation() != L2ItemInstance.ItemLocation.INVENTORY)
+		if (refinerItem.getItemLocation() != ItemLocation.INVENTORY)
 		{
 			return false;
 		}
@@ -342,7 +343,7 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 		}
 		
 		// Source item can be equipped or in inventory
-		switch (item.getLocation())
+		switch (item.getItemLocation())
 		{
 			case INVENTORY:
 			case PAPERDOLL:

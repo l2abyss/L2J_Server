@@ -516,7 +516,7 @@ public final class ItemAuctionInstance
 			else
 			{
 				item.setOwnerId(bid.getPlayerObjId());
-				item.setLocation(ItemLocation.WAREHOUSE);
+				item.setItemLocation(ItemLocation.WAREHOUSE);
 				item.updateDatabase();
 				L2World.getInstance().removeObject(item);
 				

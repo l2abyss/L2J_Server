@@ -1252,9 +1252,9 @@ public class Fort
 					{
 						spawnDat = new L2Spawn(template);
 						spawnDat.setAmount(1);
-						spawnDat.setLocx(rs.getInt("x"));
-						spawnDat.setLocy(rs.getInt("y"));
-						spawnDat.setLocz(rs.getInt("z"));
+						spawnDat.setX(rs.getInt("x"));
+						spawnDat.setY(rs.getInt("y"));
+						spawnDat.setZ(rs.getInt("z"));
 						spawnDat.setHeading(rs.getInt("heading"));
 						spawnDat.setRespawnDelay(60);
 						SpawnTable.getInstance().addNewSpawn(spawnDat, false);
@@ -1293,9 +1293,9 @@ public class Fort
 					{
 						spawnDat = new L2Spawn(template);
 						spawnDat.setAmount(1);
-						spawnDat.setLocx(rs.getInt("x"));
-						spawnDat.setLocy(rs.getInt("y"));
-						spawnDat.setLocz(rs.getInt("z"));
+						spawnDat.setX(rs.getInt("x"));
+						spawnDat.setY(rs.getInt("y"));
+						spawnDat.setZ(rs.getInt("z"));
 						spawnDat.setHeading(rs.getInt("heading"));
 						spawnDat.setRespawnDelay(60);
 						_siegeNpcs.add(spawnDat);
@@ -1332,9 +1332,9 @@ public class Fort
 					{
 						spawnDat = new L2Spawn(template);
 						spawnDat.setAmount(1);
-						spawnDat.setLocx(rs.getInt("x"));
-						spawnDat.setLocy(rs.getInt("y"));
-						spawnDat.setLocz(rs.getInt("z"));
+						spawnDat.setX(rs.getInt("x"));
+						spawnDat.setY(rs.getInt("y"));
+						spawnDat.setZ(rs.getInt("z"));
 						spawnDat.setHeading(rs.getInt("heading"));
 						spawnDat.setRespawnDelay(60);
 						_npcCommanders.add(spawnDat);
@@ -1376,9 +1376,9 @@ public class Fort
 					{
 						spawnDat = new L2Spawn(template);
 						spawnDat.setAmount(1);
-						spawnDat.setLocx(rs.getInt("x"));
-						spawnDat.setLocy(rs.getInt("y"));
-						spawnDat.setLocz(rs.getInt("z"));
+						spawnDat.setX(rs.getInt("x"));
+						spawnDat.setY(rs.getInt("y"));
+						spawnDat.setZ(rs.getInt("z"));
 						spawnDat.setHeading(rs.getInt("heading"));
 						spawnDat.setRespawnDelay(60);
 						_specialEnvoys.add(spawnDat);

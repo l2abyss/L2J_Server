@@ -177,9 +177,9 @@ public class L2Event
 		{
 			L2Spawn spawn = new L2Spawn(template);
 			
-			spawn.setLocx(target.getX() + 50);
-			spawn.setLocy(target.getY() + 50);
-			spawn.setLocz(target.getZ());
+			spawn.setX(target.getX() + 50);
+			spawn.setY(target.getY() + 50);
+			spawn.setZ(target.getZ());
 			spawn.setAmount(1);
 			spawn.setHeading(target.getHeading());
 			spawn.stopRespawn();

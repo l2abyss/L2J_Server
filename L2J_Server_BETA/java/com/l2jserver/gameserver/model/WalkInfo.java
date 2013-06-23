@@ -125,7 +125,7 @@ public class WalkInfo
 					}
 					case WalkingManager.REPEAT_TELE_FIRST:
 					{
-						npc.teleToLocation(npc.getSpawn().getLocx(), npc.getSpawn().getLocy(), npc.getSpawn().getLocz());
+						npc.teleToLocation(npc.getSpawn().getLocation(), 0);
 						_currentNode = 0;
 						break;
 					}

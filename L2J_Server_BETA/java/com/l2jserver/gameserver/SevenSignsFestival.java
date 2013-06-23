@@ -42,12 +42,12 @@ import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
-import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.SpawnListener;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -2155,9 +2155,9 @@ public class SevenSignsFestival implements SpawnListener
 			{
 				L2Spawn npcSpawn = new L2Spawn(witchTemplate);
 				
-				npcSpawn.setLocx(_witchSpawn._x);
-				npcSpawn.setLocy(_witchSpawn._y);
-				npcSpawn.setLocz(_witchSpawn._z);
+				npcSpawn.setX(_witchSpawn._x);
+				npcSpawn.setY(_witchSpawn._y);
+				npcSpawn.setZ(_witchSpawn._z);
 				npcSpawn.setHeading(_witchSpawn._heading);
 				npcSpawn.setAmount(1);
 				npcSpawn.setRespawnDelay(1);
@@ -2228,10 +2228,8 @@ public class SevenSignsFestival implements SpawnListener
 					y -= Rnd.nextInt(FESTIVAL_MAX_OFFSET_Y);
 				}
 				
-				L2CharPosition moveTo = new L2CharPosition(x, y, _startLocation._z, Rnd.nextInt(65536));
-				
 				festivalMob.setRunning();
-				festivalMob.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, moveTo);
+				festivalMob.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new Location(x, y, _startLocation._z, Rnd.nextInt(65536)));
 			}
 		}
 		
@@ -2281,9 +2279,9 @@ public class SevenSignsFestival implements SpawnListener
 				{
 					L2Spawn npcSpawn = new L2Spawn(npcTemplate);
 					
-					npcSpawn.setLocx(currSpawn._x);
-					npcSpawn.setLocy(currSpawn._y);
-					npcSpawn.setLocz(currSpawn._z);
+					npcSpawn.setX(currSpawn._x);
+					npcSpawn.setY(currSpawn._y);
+					npcSpawn.setZ(currSpawn._z);
 					npcSpawn.setHeading(Rnd.nextInt(65536));
 					npcSpawn.setAmount(1);
 					npcSpawn.setRespawnDelay(respawnDelay);

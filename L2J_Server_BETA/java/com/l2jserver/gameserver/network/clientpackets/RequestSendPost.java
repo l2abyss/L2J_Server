@@ -331,7 +331,7 @@ public final class RequestSendPost extends L2GameClientPacket
 				_log.warning("Error adding attachment for char " + player.getName() + " (newitem == null)");
 				continue;
 			}
-			newItem.setLocation(newItem.getLocation(), msg.getId());
+			newItem.setItemLocation(newItem.getItemLocation(), msg.getId());
 			
 			if (playerIU != null)
 			{

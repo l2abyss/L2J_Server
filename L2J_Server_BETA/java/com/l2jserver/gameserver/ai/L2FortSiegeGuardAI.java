@@ -656,8 +656,8 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 				double dx = _actor.getX() - attackTarget.getX();
 				double dy = _actor.getY() - attackTarget.getY();
 				double dz = _actor.getZ() - attackTarget.getZ();
-				double homeX = attackTarget.getX() - sGuard.getSpawn().getLocx();
-				double homeY = attackTarget.getY() - sGuard.getSpawn().getLocy();
+				double homeX = attackTarget.getX() - sGuard.getSpawn().getX();
+				double homeY = attackTarget.getY() - sGuard.getSpawn().getY();
 				
 				// Check if the L2SiegeGuardInstance isn't too far from it's home location
 				if ((((dx * dx) + (dy * dy)) > 10000) && (((homeX * homeX) + (homeY * homeY)) > 3240000) // 1800 * 1800
@@ -930,8 +930,8 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 				{
 					sGuard = (L2DefenderInstance) _actor;
 				}
-				double homeX = target.getX() - sGuard.getSpawn().getLocx();
-				double homeY = target.getY() - sGuard.getSpawn().getLocy();
+				double homeX = target.getX() - sGuard.getSpawn().getX();
+				double homeY = target.getY() - sGuard.getSpawn().getY();
 				
 				// Check if the L2SiegeGuardInstance is not too far from its home location
 				if (((homeX * homeX) + (homeY * homeY)) < 3240000)

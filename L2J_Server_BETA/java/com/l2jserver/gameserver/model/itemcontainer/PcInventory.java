@@ -315,7 +315,7 @@ public class PcInventory extends Inventory
 			}
 			else if (feightable)
 			{
-				if ((item.getLocation() == ItemLocation.INVENTORY) && item.isFreightable())
+				if ((item.getItemLocation() == ItemLocation.INVENTORY) && item.isFreightable())
 				{
 					list.add(item);
 				}

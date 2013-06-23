@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.ai.L2CharacterAI;
-import com.l2jserver.gameserver.model.L2CharPosition;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.knownlist.StaticObjectKnownList;
 import com.l2jserver.gameserver.model.actor.stat.StaticObjStat;
@@ -65,7 +65,7 @@ public final class L2StaticObjectInstance extends L2Character
 		}
 		
 		@Override
-		public void stopMove(L2CharPosition pos)
+		public void stopMove(Location loc)
 		{
 		}
 		

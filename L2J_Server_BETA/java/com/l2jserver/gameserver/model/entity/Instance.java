@@ -578,9 +578,9 @@ public final class Instance
 								if (npcTemplate != null)
 								{
 									spawnDat = new L2Spawn(npcTemplate);
-									spawnDat.setLocx(x);
-									spawnDat.setLocy(y);
-									spawnDat.setLocz(z);
+									spawnDat.setX(x);
+									spawnDat.setY(y);
+									spawnDat.setZ(z);
 									spawnDat.setAmount(1);
 									spawnDat.setHeading(heading);
 									spawnDat.setRespawnDelay(respawn, respawnRandom);

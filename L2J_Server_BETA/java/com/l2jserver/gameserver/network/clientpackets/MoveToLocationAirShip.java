@@ -21,8 +21,8 @@ package com.l2jserver.gameserver.network.clientpackets;
 import com.l2jserver.gameserver.TaskPriority;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.instancemanager.AirShipManager;
-import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.VehiclePathPoint;
 import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -87,7 +87,7 @@ public class MoveToLocationAirShip extends L2GameClientPacket
 				}
 				if (_param1 < L2World.GRACIA_MAX_X)
 				{
-					ship.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(_param1, _param2, z, 0));
+					ship.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new Location(_param1, _param2, z));
 				}
 				break;
 			case 1:
@@ -105,7 +105,7 @@ public class MoveToLocationAirShip extends L2GameClientPacket
 				if (z < L2World.GRACIA_MAX_Z)
 				{
 					z = Math.min(z + STEP, L2World.GRACIA_MAX_Z);
-					ship.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(ship.getX(), ship.getY(), z, 0));
+					ship.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new Location(ship.getX(), ship.getY(), z));
 				}
 				break;
 			case 3:
@@ -116,7 +116,7 @@ public class MoveToLocationAirShip extends L2GameClientPacket
 				if (z > L2World.GRACIA_MIN_Z)
 				{
 					z = Math.max(z - STEP, L2World.GRACIA_MIN_Z);
-					ship.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(ship.getX(), ship.getY(), z, 0));
+					ship.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new Location(ship.getX(), ship.getY(), z));
 				}
 				break;
 			case 4:

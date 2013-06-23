@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SummonSkillsTable;
 import com.l2jserver.gameserver.instancemanager.AirShipManager;
-import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2BabyPetInstance;
@@ -330,7 +329,7 @@ public final class RequestActionUse extends L2GameClientPacket
 					if ((target != null) && (summon != target) && !summon.isMovementDisabled())
 					{
 						summon.setFollowStatus(false);
-						summon.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(target.getX(), target.getY(), target.getZ(), 0));
+						summon.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, target.getLocation());
 					}
 				}
 				break;
@@ -340,7 +339,7 @@ public final class RequestActionUse extends L2GameClientPacket
 					if ((target != null) && (summon != target) && !summon.isMovementDisabled())
 					{
 						summon.setFollowStatus(false);
-						summon.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(target.getX(), target.getY(), target.getZ(), 0));
+						summon.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, target.getLocation());
 					}
 				}
 				break;

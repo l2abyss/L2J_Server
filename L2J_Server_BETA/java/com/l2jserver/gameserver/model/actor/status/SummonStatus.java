@@ -52,31 +52,32 @@ public class SummonStatus extends PlayableStatus
 		{
 			attackerPlayer.setDuelState(Duel.DUELSTATE_INTERRUPTED);
 		}
-
+		
 		final L2PcInstance caster = getActiveChar().getTransferingDamageTo();
 		if (getActiveChar().getOwner().getParty() != null)
 		{
-			if (caster != null
-					&& Util.checkIfInRange(1000, getActiveChar(), caster, true)
-					&& !caster.isDead()
-					&& getActiveChar().getParty().getMembers().contains(caster))
+			if ((caster != null) && Util.checkIfInRange(1000, getActiveChar(), caster, true) && !caster.isDead() && getActiveChar().getParty().getMembers().contains(caster))
 			{
 				int transferDmg = 0;
-
-				transferDmg = (int) value * (int) getActiveChar().getStat().calcStat(Stats.TRANSFER_DAMAGE_TO_PLAYER, 0, null, null) / 100;
+				
+				transferDmg = ((int) value * (int) getActiveChar().getStat().calcStat(Stats.TRANSFER_DAMAGE_TO_PLAYER, 0, null, null)) / 100;
 				transferDmg = Math.min((int) caster.getCurrentHp() - 1, transferDmg);
 				if (transferDmg > 0)
 				{
 					int membersInRange = 0;
 					for (L2PcInstance member : caster.getParty().getMembers())
 					{
-						if (Util.checkIfInRange(1000, member, caster, false) && member != caster)
+						if (Util.checkIfInRange(1000, member, caster, false) && (member != caster))
+						{
 							membersInRange++;
+						}
 					}
-					if (attacker instanceof L2Playable && caster.getCurrentCp() > 0)
+					if ((attacker instanceof L2Playable) && (caster.getCurrentCp() > 0))
 					{
 						if (caster.getCurrentCp() > transferDmg)
+						{
 							caster.getStatus().reduceCp(transferDmg);
+						}
 						else
 						{
 							transferDmg = (int) (transferDmg - caster.getCurrentCp());
@@ -91,27 +92,27 @@ public class SummonStatus extends PlayableStatus
 				}
 			}
 		}
-		else if (caster != null && caster == getActiveChar().getOwner()
-				&& Util.checkIfInRange(1000, getActiveChar(), caster, true)
-				&& !caster.isDead()) // when no party, transfer only to owner (caster)
+		else if ((caster != null) && (caster == getActiveChar().getOwner()) && Util.checkIfInRange(1000, getActiveChar(), caster, true) && !caster.isDead()) // when no party, transfer only to owner (caster)
 		{
 			int transferDmg = 0;
-
-			transferDmg = (int) value * (int) getActiveChar().getStat().calcStat(Stats.TRANSFER_DAMAGE_TO_PLAYER, 0, null, null) / 100;
+			
+			transferDmg = ((int) value * (int) getActiveChar().getStat().calcStat(Stats.TRANSFER_DAMAGE_TO_PLAYER, 0, null, null)) / 100;
 			transferDmg = Math.min((int) caster.getCurrentHp() - 1, transferDmg);
 			if (transferDmg > 0)
 			{
-				if (attacker instanceof L2Playable && caster.getCurrentCp() > 0)
+				if ((attacker instanceof L2Playable) && (caster.getCurrentCp() > 0))
 				{
 					if (caster.getCurrentCp() > transferDmg)
+					{
 						caster.getStatus().reduceCp(transferDmg);
+					}
 					else
 					{
 						transferDmg = (int) (transferDmg - caster.getCurrentCp());
 						caster.getStatus().reduceCp((int) caster.getCurrentCp());
 					}
 				}
-
+				
 				caster.reduceCurrentHp(transferDmg, attacker, null);
 				value -= transferDmg;
 			}

@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.ai.L2SpecialSiegeGuardAI;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
-import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
@@ -140,7 +139,7 @@ public class L2DefenderInstance extends L2Attackable
 		{
 			return;
 		}
-		if (!isInsideRadius(getSpawn().getLocx(), getSpawn().getLocy(), 40, false))
+		if (!isInsideRadius(getSpawn().getX(), getSpawn().getY(), 40, false))
 		{
 			if (Config.DEBUG)
 			{
@@ -151,7 +150,7 @@ public class L2DefenderInstance extends L2Attackable
 			
 			if (hasAI())
 			{
-				getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(getSpawn().getLocx(), getSpawn().getLocy(), getSpawn().getLocz(), 0));
+				getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, getSpawn().getLocation());
 			}
 		}
 	}

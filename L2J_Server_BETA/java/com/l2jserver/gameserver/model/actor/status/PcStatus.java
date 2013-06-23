@@ -202,7 +202,7 @@ public class PcStatus extends PlayableStatus
 						}
 					}
 					
-					if (attacker instanceof L2Playable && caster.getCurrentCp() > 0)
+					if ((attacker instanceof L2Playable) && (caster.getCurrentCp() > 0))
 					{
 						if (caster.getCurrentCp() > transferDmg)
 						{
@@ -214,7 +214,7 @@ public class PcStatus extends PlayableStatus
 							caster.getStatus().reduceCp((int) caster.getCurrentCp());
 						}
 					}
-
+					
 					if (membersInRange > 0)
 					{
 						caster.reduceCurrentHp(transferDmg / membersInRange, attacker, null);

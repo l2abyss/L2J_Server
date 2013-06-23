@@ -1538,9 +1538,9 @@ public class Siege implements Siegable
 				closestCt = null;
 				distanceClosest = Integer.MAX_VALUE;
 				
-				x = spawn.getLocx();
-				y = spawn.getLocy();
-				z = spawn.getLocz();
+				x = spawn.getX();
+				y = spawn.getY();
+				z = spawn.getZ();
 				
 				for (L2ControlTowerInstance ct : _controlTowers)
 				{

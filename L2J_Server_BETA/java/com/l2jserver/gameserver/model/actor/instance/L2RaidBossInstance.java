@@ -154,9 +154,9 @@ public class L2RaidBossInstance extends L2MonsterInstance
 			return;
 		}
 		
-		final int spawnX = spawn.getLocx();
-		final int spawnY = spawn.getLocy();
-		final int spawnZ = spawn.getLocz();
+		final int spawnX = spawn.getX();
+		final int spawnY = spawn.getY();
+		final int spawnZ = spawn.getZ();
 		
 		if (!isInCombat() && !isMovementDisabled())
 		{

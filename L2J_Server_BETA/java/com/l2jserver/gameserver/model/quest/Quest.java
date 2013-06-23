@@ -2768,9 +2768,9 @@ public class Quest extends ManagedScript
 				L2Spawn spawn = new L2Spawn(template);
 				spawn.setInstanceId(instanceId);
 				spawn.setHeading(heading);
-				spawn.setLocx(x);
-				spawn.setLocy(y);
-				spawn.setLocz(z);
+				spawn.setX(x);
+				spawn.setY(y);
+				spawn.setZ(z);
 				spawn.stopRespawn();
 				result = spawn.spawnOne(isSummonSpawn);
 				

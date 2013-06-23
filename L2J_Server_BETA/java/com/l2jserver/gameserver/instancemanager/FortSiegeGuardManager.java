@@ -127,12 +127,12 @@ public class FortSiegeGuardManager
 					{
 						spawn1 = new L2Spawn(template1);
 						spawn1.setAmount(1);
-						spawn1.setLocx(rs.getInt("x"));
-						spawn1.setLocy(rs.getInt("y"));
-						spawn1.setLocz(rs.getInt("z"));
+						spawn1.setX(rs.getInt("x"));
+						spawn1.setY(rs.getInt("y"));
+						spawn1.setZ(rs.getInt("z"));
 						spawn1.setHeading(rs.getInt("heading"));
 						spawn1.setRespawnDelay(rs.getInt("respawnDelay"));
-						spawn1.setLocation(0);
+						spawn1.setLocationId(0);
 						
 						_siegeGuardsSpawns.add(spawn1);
 					}

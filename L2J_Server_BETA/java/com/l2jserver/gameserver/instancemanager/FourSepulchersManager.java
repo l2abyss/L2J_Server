@@ -305,27 +305,27 @@ public class FourSepulchersManager
 				switch (i)
 				{
 					case 31921: // conquerors
-						spawnDat.setLocx(181061);
-						spawnDat.setLocy(-85595);
-						spawnDat.setLocz(-7200);
+						spawnDat.setX(181061);
+						spawnDat.setY(-85595);
+						spawnDat.setZ(-7200);
 						spawnDat.setHeading(-32584);
 						break;
 					case 31922: // emperors
-						spawnDat.setLocx(179292);
-						spawnDat.setLocy(-88981);
-						spawnDat.setLocz(-7200);
+						spawnDat.setX(179292);
+						spawnDat.setY(-88981);
+						spawnDat.setZ(-7200);
 						spawnDat.setHeading(-33272);
 						break;
 					case 31923: // sages
-						spawnDat.setLocx(173202);
-						spawnDat.setLocy(-87004);
-						spawnDat.setLocz(-7200);
+						spawnDat.setX(173202);
+						spawnDat.setY(-87004);
+						spawnDat.setZ(-7200);
 						spawnDat.setHeading(-16248);
 						break;
 					case 31924: // judges
-						spawnDat.setLocx(175606);
-						spawnDat.setLocy(-82853);
-						spawnDat.setLocz(-7200);
+						spawnDat.setX(175606);
+						spawnDat.setY(-82853);
+						spawnDat.setZ(-7200);
 						spawnDat.setHeading(-16248);
 						break;
 				}
@@ -445,9 +445,9 @@ public class FourSepulchersManager
 					{
 						spawnDat = new L2Spawn(template1);
 						spawnDat.setAmount(rs.getInt("count"));
-						spawnDat.setLocx(rs.getInt("locx"));
-						spawnDat.setLocy(rs.getInt("locy"));
-						spawnDat.setLocz(rs.getInt("locz"));
+						spawnDat.setX(rs.getInt("locx"));
+						spawnDat.setY(rs.getInt("locy"));
+						spawnDat.setZ(rs.getInt("locz"));
 						spawnDat.setHeading(rs.getInt("heading"));
 						spawnDat.setRespawnDelay(rs.getInt("respawn_delay"));
 						SpawnTable.getInstance().addNewSpawn(spawnDat, false);
@@ -483,9 +483,9 @@ public class FourSepulchersManager
 				{
 					spawnDat = new L2Spawn(template);
 					spawnDat.setAmount(1);
-					spawnDat.setLocx(0);
-					spawnDat.setLocy(0);
-					spawnDat.setLocz(0);
+					spawnDat.setX(0);
+					spawnDat.setY(0);
+					spawnDat.setZ(0);
 					spawnDat.setHeading(0);
 					spawnDat.setRespawnDelay(3600);
 					SpawnTable.getInstance().addNewSpawn(spawnDat, false);
@@ -533,9 +533,9 @@ public class FourSepulchersManager
 							{
 								spawnDat = new L2Spawn(template1);
 								spawnDat.setAmount(rs2.getInt("count"));
-								spawnDat.setLocx(rs2.getInt("locx"));
-								spawnDat.setLocy(rs2.getInt("locy"));
-								spawnDat.setLocz(rs2.getInt("locz"));
+								spawnDat.setX(rs2.getInt("locx"));
+								spawnDat.setY(rs2.getInt("locy"));
+								spawnDat.setZ(rs2.getInt("locz"));
 								spawnDat.setHeading(rs2.getInt("heading"));
 								spawnDat.setRespawnDelay(rs2.getInt("respawn_delay"));
 								SpawnTable.getInstance().addNewSpawn(spawnDat, false);
@@ -591,9 +591,9 @@ public class FourSepulchersManager
 							{
 								spawnDat = new L2Spawn(template1);
 								spawnDat.setAmount(rset2.getInt("count"));
-								spawnDat.setLocx(rset2.getInt("locx"));
-								spawnDat.setLocy(rset2.getInt("locy"));
-								spawnDat.setLocz(rset2.getInt("locz"));
+								spawnDat.setX(rset2.getInt("locx"));
+								spawnDat.setY(rset2.getInt("locy"));
+								spawnDat.setZ(rset2.getInt("locz"));
 								spawnDat.setHeading(rset2.getInt("heading"));
 								spawnDat.setRespawnDelay(rset2.getInt("respawn_delay"));
 								SpawnTable.getInstance().addNewSpawn(spawnDat, false);
@@ -652,9 +652,9 @@ public class FourSepulchersManager
 							{
 								spawnDat = new L2Spawn(template1);
 								spawnDat.setAmount(rset2.getInt("count"));
-								spawnDat.setLocx(rset2.getInt("locx"));
-								spawnDat.setLocy(rset2.getInt("locy"));
-								spawnDat.setLocz(rset2.getInt("locz"));
+								spawnDat.setX(rset2.getInt("locx"));
+								spawnDat.setY(rset2.getInt("locy"));
+								spawnDat.setZ(rset2.getInt("locz"));
 								spawnDat.setHeading(rset2.getInt("heading"));
 								spawnDat.setRespawnDelay(rset2.getInt("respawn_delay"));
 								SpawnTable.getInstance().addNewSpawn(spawnDat, false);
@@ -711,9 +711,9 @@ public class FourSepulchersManager
 							{
 								spawnDat = new L2Spawn(template1);
 								spawnDat.setAmount(rs2.getInt("count"));
-								spawnDat.setLocx(rs2.getInt("locx"));
-								spawnDat.setLocy(rs2.getInt("locy"));
-								spawnDat.setLocz(rs2.getInt("locz"));
+								spawnDat.setX(rs2.getInt("locx"));
+								spawnDat.setY(rs2.getInt("locy"));
+								spawnDat.setZ(rs2.getInt("locz"));
 								spawnDat.setHeading(rs2.getInt("heading"));
 								spawnDat.setRespawnDelay(rs2.getInt("respawn_delay"));
 								SpawnTable.getInstance().addNewSpawn(spawnDat, false);
@@ -763,9 +763,9 @@ public class FourSepulchersManager
 				{
 					spawnDat = new L2Spawn(template);
 					spawnDat.setAmount(1);
-					spawnDat.setLocx(_shadowSpawnLoc[locNo][i][1]);
-					spawnDat.setLocy(_shadowSpawnLoc[locNo][i][2]);
-					spawnDat.setLocz(_shadowSpawnLoc[locNo][i][3]);
+					spawnDat.setX(_shadowSpawnLoc[locNo][i][1]);
+					spawnDat.setY(_shadowSpawnLoc[locNo][i][2]);
+					spawnDat.setZ(_shadowSpawnLoc[locNo][i][3]);
 					spawnDat.setHeading(_shadowSpawnLoc[locNo][i][4]);
 					SpawnTable.getInstance().addNewSpawn(spawnDat, false);
 					int keyNpcId = gateKeeper[i];
@@ -797,9 +797,9 @@ public class FourSepulchersManager
 				{
 					spawnDat = new L2Spawn(template);
 					spawnDat.setAmount(1);
-					spawnDat.setLocx(0);
-					spawnDat.setLocy(0);
-					spawnDat.setLocz(0);
+					spawnDat.setX(0);
+					spawnDat.setY(0);
+					spawnDat.setZ(0);
 					spawnDat.setHeading(0);
 					spawnDat.setRespawnDelay(3600);
 					SpawnTable.getInstance().addNewSpawn(spawnDat, false);
@@ -1136,10 +1136,7 @@ public class FourSepulchersManager
 						{
 							keyBoxMobSpawn = new L2Spawn(template);
 							keyBoxMobSpawn.setAmount(1);
-							keyBoxMobSpawn.setLocx(spawnDat.getLocx());
-							keyBoxMobSpawn.setLocy(spawnDat.getLocy());
-							keyBoxMobSpawn.setLocz(spawnDat.getLocz());
-							keyBoxMobSpawn.setHeading(spawnDat.getHeading());
+							keyBoxMobSpawn.setLocation(spawnDat.getLocation());
 							keyBoxMobSpawn.setRespawnDelay(3600);
 							SpawnTable.getInstance().addNewSpawn(keyBoxMobSpawn, false);
 							mob = (L2SepulcherMonsterInstance) keyBoxMobSpawn.doSpawn();
@@ -1253,9 +1250,9 @@ public class FourSepulchersManager
 		if (spawnDat != null)
 		{
 			spawnDat.setAmount(1);
-			spawnDat.setLocx(activeChar.getX());
-			spawnDat.setLocy(activeChar.getY());
-			spawnDat.setLocz(activeChar.getZ());
+			spawnDat.setX(activeChar.getX());
+			spawnDat.setY(activeChar.getY());
+			spawnDat.setZ(activeChar.getZ());
 			spawnDat.setHeading(activeChar.getHeading());
 			spawnDat.setRespawnDelay(3600);
 			_allMobs.add(spawnDat.doSpawn());
@@ -1276,9 +1273,9 @@ public class FourSepulchersManager
 		if (spawnDat != null)
 		{
 			spawnDat.setAmount(1);
-			spawnDat.setLocx(activeChar.getX());
-			spawnDat.setLocy(activeChar.getY());
-			spawnDat.setLocz(activeChar.getZ());
+			spawnDat.setX(activeChar.getX());
+			spawnDat.setY(activeChar.getY());
+			spawnDat.setZ(activeChar.getZ());
 			spawnDat.setHeading(activeChar.getHeading());
 			spawnDat.setRespawnDelay(3600);
 			_allMobs.add(spawnDat.doSpawn());
@@ -1355,9 +1352,9 @@ public class FourSepulchersManager
 		{
 			int keyNpcId = gateKeeper[i];
 			spawnDat = _shadowSpawns.get(keyNpcId);
-			spawnDat.setLocx(_shadowSpawnLoc[locNo][i][1]);
-			spawnDat.setLocy(_shadowSpawnLoc[locNo][i][2]);
-			spawnDat.setLocz(_shadowSpawnLoc[locNo][i][3]);
+			spawnDat.setX(_shadowSpawnLoc[locNo][i][1]);
+			spawnDat.setY(_shadowSpawnLoc[locNo][i][2]);
+			spawnDat.setZ(_shadowSpawnLoc[locNo][i][3]);
 			spawnDat.setHeading(_shadowSpawnLoc[locNo][i][4]);
 			_shadowSpawns.put(keyNpcId, spawnDat);
 		}

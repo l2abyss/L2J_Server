@@ -258,7 +258,7 @@ public final class RequestPostAttachment extends L2GameClientPacket
 			{
 				L2ItemInstance paidAdena = ItemTable.getInstance().createItem("PayMail", ADENA_ID, adena, activeChar, null);
 				paidAdena.setOwnerId(msg.getSenderId());
-				paidAdena.setLocation(ItemLocation.INVENTORY);
+				paidAdena.setItemLocation(ItemLocation.INVENTORY);
 				paidAdena.updateDatabase(true);
 				L2World.getInstance().removeObject(paidAdena);
 			}

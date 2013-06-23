@@ -18,7 +18,6 @@
  */
 package com.l2jserver.gameserver.model.actor.events.listeners;
 
-
 /**
  * @author UnAfraid
  */
