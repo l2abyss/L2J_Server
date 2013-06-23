@@ -66,7 +66,6 @@ public class CharEvents extends AbstractCharEvents
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
-					continue;
 				}
 			}
 		}
@@ -97,7 +96,6 @@ public class CharEvents extends AbstractCharEvents
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
-					continue;
 				}
 			}
 		}
@@ -125,7 +123,6 @@ public class CharEvents extends AbstractCharEvents
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
-					continue;
 				}
 			}
 		}
@@ -152,7 +149,6 @@ public class CharEvents extends AbstractCharEvents
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
-					continue;
 				}
 			}
 		}
@@ -178,7 +174,6 @@ public class CharEvents extends AbstractCharEvents
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
-					continue;
 				}
 			}
 		}
@@ -200,7 +195,6 @@ public class CharEvents extends AbstractCharEvents
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
-					continue;
 				}
 			}
 		}

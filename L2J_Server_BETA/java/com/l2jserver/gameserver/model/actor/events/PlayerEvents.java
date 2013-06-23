@@ -64,7 +64,6 @@ public class PlayerEvents extends PlayableEvents
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
-					continue;
 				}
 			}
 		}
@@ -93,7 +92,6 @@ public class PlayerEvents extends PlayableEvents
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
-					continue;
 				}
 			}
 		}
@@ -122,7 +120,6 @@ public class PlayerEvents extends PlayableEvents
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
-					continue;
 				}
 			}
 		}
@@ -151,7 +148,6 @@ public class PlayerEvents extends PlayableEvents
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
-					continue;
 				}
 			}
 		}

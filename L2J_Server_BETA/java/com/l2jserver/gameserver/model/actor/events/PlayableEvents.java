@@ -54,7 +54,6 @@ public class PlayableEvents extends CharEvents
 				catch (Exception e)
 				{
 					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
-					continue;
 				}
 			}
 		}
