@@ -28,16 +28,17 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
  */
 public class SkillUseEvent implements L2Event
 {
-	private L2Character caster;
-	private L2Skill skill;
-	private L2Object[] targets;
+	private L2Character _caster;
+	private L2Skill _skill;
+	private L2Character _target;
+	private L2Object[] _targets;
 	
 	/**
 	 * @return the caster
 	 */
 	public L2Character getCaster()
 	{
-		return caster;
+		return _caster;
 	}
 	
 	/**
@@ -45,7 +46,7 @@ public class SkillUseEvent implements L2Event
 	 */
 	public void setCaster(L2Character caster)
 	{
-		this.caster = caster;
+		_caster = caster;
 	}
 	
 	/**
@@ -53,7 +54,7 @@ public class SkillUseEvent implements L2Event
 	 */
 	public L2Object[] getTargets()
 	{
-		return targets;
+		return _targets;
 	}
 	
 	/**
@@ -61,7 +62,7 @@ public class SkillUseEvent implements L2Event
 	 */
 	public void setTargets(L2Object[] targets)
 	{
-		this.targets = targets;
+		_targets = targets;
 	}
 	
 	/**
@@ -69,7 +70,7 @@ public class SkillUseEvent implements L2Event
 	 */
 	public L2Skill getSkill()
 	{
-		return skill;
+		return _skill;
 	}
 	
 	/**
@@ -77,6 +78,22 @@ public class SkillUseEvent implements L2Event
 	 */
 	public void setSkill(L2Skill skill)
 	{
-		this.skill = skill;
+		_skill = skill;
+	}
+	
+	/**
+	 * @return Caster's selected target.
+	 */
+	public L2Character getTarget()
+	{
+		return _target;
+	}
+	
+	/**
+	 * @param target
+	 */
+	public void setTarget(L2Character target)
+	{
+		_target = target;
 	}
 }

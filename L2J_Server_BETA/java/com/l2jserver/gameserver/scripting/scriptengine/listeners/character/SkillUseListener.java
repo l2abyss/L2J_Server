@@ -19,93 +19,51 @@
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.character;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.scripting.scriptengine.events.SkillUseEvent;
+import com.l2jserver.gameserver.model.actor.events.AbstractCharEvents;
+import com.l2jserver.gameserver.model.actor.events.listeners.ISkillUseEventListener;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
  * @author TheOne
  */
-public abstract class SkillUseListener extends L2JListener
+public abstract class SkillUseListener extends L2JListener implements ISkillUseEventListener
 {
 	private L2Character _character = null;
-	private int _skillId = -1;
-	private int _npcId = -1;
-	private boolean _characterSpecific = false;
 	
 	/**
 	 * constructor L2Character specific, will only be fired when this L2Character uses the specified skill Use skillId = -1 to be notified of all skills used
 	 * @param character
-	 * @param skillId
 	 */
-	public SkillUseListener(L2Character character, int skillId)
+	public SkillUseListener(L2Character character)
 	{
-		_skillId = skillId;
 		_character = character;
-		_characterSpecific = true;
 		register();
 	}
-	
-	/**
-	 * constructor NPC specific, will only be triggered when npc with the given ID uses the correct skill Use skillId = -1 to be notified of all skills used Use npcId = -1 to be notified for all NPCs use npcId = -2 to be notified for all players use npcId = -3 to be notified for all L2Characters
-	 * @param npcId
-	 * @param skillId
-	 */
-	public SkillUseListener(int npcId, int skillId)
-	{
-		_skillId = skillId;
-		_npcId = npcId;
-		register();
-	}
-	
-	/**
-	 * A L2Character just cast a skill
-	 * @param event
-	 * @return
-	 */
-	public abstract boolean onSkillUse(SkillUseEvent event);
 	
 	@Override
 	public void register()
 	{
-		if (!_characterSpecific)
+		if (_character == null)
 		{
-			L2Character.addGlobalSkillUseListener(this);
+			AbstractCharEvents.registerStaticListener(this);
 		}
 		else
 		{
-			_character.addSkillUseListener(this);
+			_character.getEvents().registerListener(this);
 		}
 	}
 	
 	@Override
 	public void unregister()
 	{
-		if (!_characterSpecific)
+		if (_character == null)
 		{
-			L2Character.removeGlobalSkillUseListener(this);
+			AbstractCharEvents.unregisterStaticListener(this);
 		}
 		else
 		{
-			_character.removeSkillUseListener(this);
+			_character.getEvents().unregisterListener(this);
 		}
-	}
-	
-	/**
-	 * Returns the npcId this listener will be triggered for
-	 * @return
-	 */
-	public int getNpcId()
-	{
-		return _npcId;
-	}
-	
-	/**
-	 * Returns the skillId this listener will be triggered for
-	 * @return
-	 */
-	public int getSkillId()
-	{
-		return _skillId;
 	}
 	
 	/**

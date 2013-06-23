@@ -123,19 +123,27 @@ public abstract class AbstractCharEvents
 		return _listeners != null;
 	}
 	
+	protected final boolean hasListeners()
+	{
+		return (_listeners != null) || (_staticListeners != null);
+	}
+	
 	protected final <T> List<T> getEventListeners(Class<T> clazz)
 	{
-		if (!hasEventListeners() && !hasStaticEventListeners())
+		if (!hasListeners())
 		{
 			return Collections.<T> emptyList();
 		}
 		
 		final List<T> listeners = new ArrayList<>();
-		for (IEventListener listener : _listeners)
+		if (hasEventListeners())
 		{
-			if (clazz.isInstance(listener))
+			for (IEventListener listener : _listeners)
 			{
-				listeners.add(clazz.cast(listener));
+				if (clazz.isInstance(listener))
+				{
+					listeners.add(clazz.cast(listener));
+				}
 			}
 		}
 		

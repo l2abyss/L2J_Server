@@ -67,7 +67,6 @@ import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.ShotType;
 import com.l2jserver.gameserver.model.actor.events.CharEvents;
-import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2RiftInvaderInstance;
@@ -127,12 +126,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.TeleportToLocation;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 import com.l2jserver.gameserver.pathfinding.PathFinding;
-import com.l2jserver.gameserver.scripting.scriptengine.events.AttackEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.events.DeathEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.events.SkillUseEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.AttackListener;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.DeathListener;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.character.SkillUseListener;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 import com.l2jserver.gameserver.util.Point3D;
@@ -162,12 +155,6 @@ import com.l2jserver.util.Rnd;
 public abstract class L2Character extends L2Object implements ISkillsHolder
 {
 	public static final Logger _log = Logger.getLogger(L2Character.class.getName());
-	
-	private static List<DeathListener> globalDeathListeners = new FastList<DeathListener>().shared();
-	private static List<SkillUseListener> globalSkillUseListeners = new FastList<SkillUseListener>().shared();
-	private final List<AttackListener> attackListeners = new FastList<AttackListener>().shared();
-	private final List<DeathListener> deathListeners = new FastList<DeathListener>().shared();
-	private final List<SkillUseListener> skillUseListeners = new FastList<SkillUseListener>().shared();
 	
 	private volatile Set<L2Character> _attackByList;
 	private volatile boolean _isCastingNow = false;
@@ -789,7 +776,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 */
 	protected void doAttack(L2Character target)
 	{
-		if ((target == null) || isAttackingDisabled() || !fireAttackListeners(target))
+		if ((target == null) || isAttackingDisabled() || !getEvents().onAttack(target))
 		{
 			return;
 		}
@@ -1702,7 +1689,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	
 	private void beginCast(L2Skill skill, boolean simultaneously, L2Character target, L2Object[] targets)
 	{
-		if (target == null)
+		if ((target == null) || !getEvents().onMagic(skill, simultaneously, target, targets))
 		{
 			if (simultaneously)
 			{
@@ -1720,11 +1707,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			return;
 		}
 		
-		if (!fireSkillCastListeners(skill, simultaneously, target, targets))
-		{
-			return;
-		}
-		
+		// TODO: Unhardcode using event listeners!
 		if (skill.getSkillType() == L2SkillType.RESURRECT)
 		{
 			if (isResurrectionBlocked() || target.isResurrectionBlocked())
@@ -7611,270 +7594,5 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	{
 		getEvents().onDamageReceived(damage, attacker, skill, critical);
 		attacker.getEvents().onDamageDealt(damage, this, skill, critical);
-	}
-	
-	// LISTENERS
-	
-	/**
-	 * Fires the attack listeners, if any. Returns false if the attack is to be blocked.
-	 * @param target
-	 * @return
-	 */
-	private boolean fireAttackListeners(L2Character target)
-	{
-		if ((target != null) && (!attackListeners.isEmpty() || !target.getAttackListeners().isEmpty()))
-		{
-			AttackEvent event = new AttackEvent();
-			event.setTarget(target);
-			event.setAttacker(this);
-			for (AttackListener listener : attackListeners)
-			{
-				if (!listener.onAttack(event))
-				{
-					return false;
-				}
-			}
-			for (AttackListener listener : target.getAttackListeners())
-			{
-				if (!listener.isAttacked(event))
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Fires the skill cast listeners, if any. Returns false if the attack is to be blocked.
-	 * @param skill
-	 * @param simultaneously
-	 * @param target
-	 * @param targets
-	 * @return
-	 */
-	private boolean fireSkillCastListeners(L2Skill skill, boolean simultaneously, L2Character target, L2Object[] targets)
-	{
-		if ((skill != null) && ((target != null) || (targets.length != 0)) && (!skillUseListeners.isEmpty() || !globalSkillUseListeners.isEmpty()))
-		{
-			int arraySize = (target == null ? 0 : 1) + (targets == null ? 0 : targets.length);
-			L2Object[] t = new L2Object[arraySize];
-			int i = 0;
-			if (target != null)
-			{
-				t[0] = target;
-				i++;
-			}
-			if (targets != null)
-			{
-				System.arraycopy(targets, 0, t, i, targets.length);
-				
-				if (targets.length > 0)
-				{
-					SkillUseEvent event = new SkillUseEvent();
-					event.setCaster(this);
-					event.setSkill(skill);
-					event.setTargets(t);
-					for (SkillUseListener listener : skillUseListeners)
-					{
-						int skillId = skill.getId();
-						if ((listener.getSkillId() == -1) || (skillId == listener.getSkillId()))
-						{
-							if (!listener.onSkillUse(event))
-							{
-								return false;
-							}
-						}
-					}
-					for (SkillUseListener listener : globalSkillUseListeners)
-					{
-						int npcId = listener.getNpcId();
-						int skillId = listener.getSkillId();
-						boolean skillOk = (skillId == -1) || (skillId == skill.getId());
-						boolean charOk = ((npcId == -1) && (this instanceof L2NpcInstance)) || ((npcId == -2) && isPlayer()) || (npcId == -3) || ((this instanceof L2NpcInstance) && (((L2NpcInstance) this).getNpcId() == npcId));
-						if (skillOk && charOk)
-						{
-							if (!listener.onSkillUse(event))
-							{
-								return false;
-							}
-						}
-					}
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Fires the death listeners, if any.<br>
-	 * If it returns false, the doDie method will return false (and the L2Character wont die)<br>
-	 * The method is public so that L2Playable can access it.
-	 * @param killer
-	 * @return
-	 */
-	public boolean fireDeathListeners(L2Character killer)
-	{
-		if ((killer != null) && (!deathListeners.isEmpty() || !globalDeathListeners.isEmpty() || !killer.getDeathListeners().isEmpty()))
-		{
-			DeathEvent event = new DeathEvent();
-			event.setKiller(killer);
-			event.setVictim(this);
-			for (DeathListener listener : deathListeners)
-			{
-				if (!listener.onDeath(event))
-				{
-					return false;
-				}
-			}
-			for (DeathListener listener : killer.getDeathListeners())
-			{
-				if (!listener.onKill(event))
-				{
-					return false;
-				}
-			}
-			for (DeathListener listener : globalDeathListeners)
-			{
-				if (killer.isPlayer() || isPlayer())
-				{
-					if (!listener.onDeath(event))
-					{
-						return false;
-					}
-					
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Adds an attack listener
-	 * @param listener
-	 */
-	public void addAttackListener(AttackListener listener)
-	{
-		if (!attackListeners.contains(listener))
-		{
-			attackListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes an attack listener
-	 * @param listener
-	 */
-	public void removeAttackListener(AttackListener listener)
-	{
-		attackListeners.remove(listener);
-	}
-	
-	/**
-	 * Returns the attack listeners
-	 * @return
-	 */
-	public List<AttackListener> getAttackListeners()
-	{
-		return attackListeners;
-	}
-	
-	/**
-	 * Adds a death listener.<br>
-	 * Triggered when this char kills another char, and when this char gets killed by another char.
-	 * @param listener
-	 */
-	public void addDeathListener(DeathListener listener)
-	{
-		if (!deathListeners.contains(listener))
-		{
-			deathListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * removes a death listener
-	 * @param listener
-	 */
-	public void removeDeathListener(DeathListener listener)
-	{
-		deathListeners.remove(listener);
-	}
-	
-	/**
-	 * Returns the death listeners
-	 * @return
-	 */
-	public List<DeathListener> getDeathListeners()
-	{
-		return deathListeners;
-	}
-	
-	/**
-	 * Adds a global death listener
-	 * @param listener
-	 */
-	public static void addGlobalDeathListener(DeathListener listener)
-	{
-		if (!globalDeathListeners.contains(listener))
-		{
-			globalDeathListeners.add(listener);
-		}
-	}
-	
-	public static List<DeathListener> getGlobalDeathListeners()
-	{
-		return globalDeathListeners;
-	}
-	
-	/**
-	 * Removes a global death listener
-	 * @param listener
-	 */
-	public static void removeGlobalDeathListener(DeathListener listener)
-	{
-		globalDeathListeners.remove(listener);
-	}
-	
-	/**
-	 * Adds a skill use listener
-	 * @param listener
-	 */
-	public void addSkillUseListener(SkillUseListener listener)
-	{
-		if (!skillUseListeners.contains(listener))
-		{
-			skillUseListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a skill use listener
-	 * @param listener
-	 */
-	public void removeSkillUseListener(SkillUseListener listener)
-	{
-		skillUseListeners.remove(listener);
-	}
-	
-	/**
-	 * Adds a global skill use listener
-	 * @param listener
-	 */
-	public static void addGlobalSkillUseListener(SkillUseListener listener)
-	{
-		if (!globalSkillUseListeners.contains(listener))
-		{
-			globalSkillUseListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a global skill use listener
-	 * @param listener
-	 */
-	public static void removeGlobalSkillUseListener(SkillUseListener listener)
-	{
-		globalSkillUseListeners.remove(listener);
 	}
 }

@@ -18,6 +18,12 @@
  */
 package com.l2jserver.gameserver.model.actor.events;
 
+import java.util.logging.Level;
+
+import com.l2jserver.gameserver.model.actor.events.listeners.IFamePointsChangeEventListener;
+import com.l2jserver.gameserver.model.actor.events.listeners.IKarmaChangeEventListener;
+import com.l2jserver.gameserver.model.actor.events.listeners.IPKPointsChangeEventListener;
+import com.l2jserver.gameserver.model.actor.events.listeners.IPvPPointsEventChange;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -34,5 +40,121 @@ public class PlayerEvents extends PlayableEvents
 	public L2PcInstance getActingPlayer()
 	{
 		return (L2PcInstance) super.getActingPlayer();
+	}
+	
+	/**
+	 * Fired whenever player's karma points has change.
+	 * @param oldKarma
+	 * @param newKarma
+	 * @return {@code true} if karma change is possible, {@code false} otherwise.
+	 */
+	public boolean onKarmaChange(int oldKarma, int newKarma)
+	{
+		if (hasListeners())
+		{
+			for (IKarmaChangeEventListener listener : getEventListeners(IKarmaChangeEventListener.class))
+			{
+				try
+				{
+					if (!listener.onKarmaChange(getActingPlayer(), oldKarma, newKarma))
+					{
+						return false;
+					}
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+					continue;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fired whenever player's pk points has change.
+	 * @param oldPKPoints
+	 * @param newPKPoints
+	 * @return {@code true} if pk points change is possible, {@code false} otherwise.
+	 */
+	public boolean onPKChange(int oldPKPoints, int newPKPoints)
+	{
+		if (hasListeners())
+		{
+			for (IPKPointsChangeEventListener listener : getEventListeners(IPKPointsChangeEventListener.class))
+			{
+				try
+				{
+					if (!listener.onPKPointsChange(getActingPlayer(), oldPKPoints, newPKPoints))
+					{
+						return false;
+					}
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+					continue;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fired whenever player's pvp points has change.
+	 * @param oldPvPPoints
+	 * @param newPvPPoints
+	 * @return {@code true} if pvp points change is possible, {@code false} otherwise.
+	 */
+	public boolean onPvPChange(int oldPvPPoints, int newPvPPoints)
+	{
+		if (hasListeners())
+		{
+			for (IPvPPointsEventChange listener : getEventListeners(IPvPPointsEventChange.class))
+			{
+				try
+				{
+					if (!listener.onPvPPointsChange(getActingPlayer(), oldPvPPoints, newPvPPoints))
+					{
+						return false;
+					}
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+					continue;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fired whenever player's fame points has change.
+	 * @param oldFamePoints
+	 * @param newFamePoints
+	 * @return {@code true} if fame points change is possible, {@code false} otherwise.
+	 */
+	public boolean onFameChange(int oldFamePoints, int newFamePoints)
+	{
+		if (hasListeners())
+		{
+			for (IFamePointsChangeEventListener listener : getEventListeners(IFamePointsChangeEventListener.class))
+			{
+				try
+				{
+					if (!listener.onFamePointsChange(getActingPlayer(), oldFamePoints, newFamePoints))
+					{
+						return false;
+					}
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+					continue;
+				}
+			}
+		}
+		return true;
 	}
 }

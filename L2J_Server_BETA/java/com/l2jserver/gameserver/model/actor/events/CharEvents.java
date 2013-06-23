@@ -18,12 +18,16 @@
  */
 package com.l2jserver.gameserver.model.actor.events;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.events.listeners.IAttackEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.IDamageDealtEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.IDamageReceivedEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.IDeathEventListener;
+import com.l2jserver.gameserver.model.actor.events.listeners.ISkillUseEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.ITeleportedEventListener;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
@@ -42,23 +46,87 @@ public class CharEvents extends AbstractCharEvents
 	}
 	
 	/**
+	 * Fired whenever current char attacks someone.
+	 * @param target
+	 * @return {@code true} if current attack is possible, {@code false} otherwise.
+	 */
+	public boolean onAttack(L2Character target)
+	{
+		if (hasListeners())
+		{
+			for (IAttackEventListener listener : getEventListeners(IAttackEventListener.class))
+			{
+				try
+				{
+					if (!listener.onAttack(getActingPlayer(), target))
+					{
+						return false;
+					}
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+					continue;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fired whenever current char cast a magic.
+	 * @param skill
+	 * @param simultaneously
+	 * @param target
+	 * @param targets
+	 * @return {@code true} if cast can be made, {@code false} otherwise.
+	 */
+	public boolean onMagic(L2Skill skill, boolean simultaneously, L2Character target, L2Object[] targets)
+	{
+		if (hasListeners())
+		{
+			for (ISkillUseEventListener listener : getEventListeners(ISkillUseEventListener.class))
+			{
+				try
+				{
+					if (!listener.onSkillUse(getActingPlayer(), skill, simultaneously, target, targets))
+					{
+						return false;
+					}
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+					continue;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
 	 * Fired whenever current char dies.
 	 * @param killer
 	 * @return {@code true} if current char can die, {@code false} otherwise.
 	 */
 	public boolean onDeath(L2Character killer)
 	{
-		if (!getActingPlayer().fireDeathListeners(killer))
-		{
-			return false;
-		}
-		
-		// Notify event listeners.
-		if (hasEventListeners())
+		if (hasListeners())
 		{
 			for (IDeathEventListener listener : getEventListeners(IDeathEventListener.class))
 			{
-				listener.onDeath(getActingPlayer(), killer);
+				try
+				{
+					if (!listener.onDeath(getActingPlayer(), killer))
+					{
+						return false;
+					}
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+					continue;
+				}
 			}
 		}
 		return true;
@@ -73,11 +141,19 @@ public class CharEvents extends AbstractCharEvents
 	 */
 	public void onDamageDealt(double damage, L2Character target, L2Skill skill, boolean crit)
 	{
-		if (hasEventListeners())
+		if (hasListeners())
 		{
 			for (IDamageDealtEventListener listener : getEventListeners(IDamageDealtEventListener.class))
 			{
-				listener.onDamageDealtEvent(getActingPlayer(), target, damage, skill, crit);
+				try
+				{
+					listener.onDamageDealtEvent(getActingPlayer(), target, damage, skill, crit);
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+					continue;
+				}
 			}
 		}
 	}
@@ -91,11 +167,19 @@ public class CharEvents extends AbstractCharEvents
 	 */
 	public void onDamageReceived(double damage, L2Character attacker, L2Skill skill, boolean crit)
 	{
-		if (hasEventListeners())
+		if (hasListeners())
 		{
 			for (IDamageReceivedEventListener listener : getEventListeners(IDamageReceivedEventListener.class))
 			{
-				listener.onDamageReceivedEvent(attacker, getActingPlayer(), damage, skill, crit);
+				try
+				{
+					listener.onDamageReceivedEvent(attacker, getActingPlayer(), damage, skill, crit);
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+					continue;
+				}
 			}
 		}
 	}
@@ -105,18 +189,21 @@ public class CharEvents extends AbstractCharEvents
 	 */
 	public void onTeleported()
 	{
-		if (hasEventListeners())
+		if (hasListeners())
 		{
 			for (ITeleportedEventListener listener : getEventListeners(ITeleportedEventListener.class))
 			{
-				listener.onTeleported(getActingPlayer());
+				try
+				{
+					listener.onTeleported(getActingPlayer());
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+					continue;
+				}
 			}
 		}
-	}
-	
-	public boolean onExperienceReceived(long exp)
-	{
-		return true;
 	}
 	
 	/**

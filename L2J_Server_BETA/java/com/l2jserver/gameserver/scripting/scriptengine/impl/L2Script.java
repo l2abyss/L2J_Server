@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.scripting.scriptengine.events.AddToInventoryEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.AttackEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.AugmentEvent;
@@ -148,32 +150,12 @@ public abstract class L2Script extends Quest
 		}
 	}
 	
-	/**
-	 * Used locally to call onDeath()
-	 * @param event
-	 * @return
-	 */
-	protected boolean notifyDeath(DeathEvent event)
-	{
-		return onDeath(event);
-	}
-	
-	/**
-	 * Used locally to call onAttack(L2Character,L2Character)
-	 * @param event
-	 * @return
-	 */
-	protected boolean notifyAttack(AttackEvent event)
-	{
-		return onAttack(event);
-	}
-	
 	// Register for event notification
 	/**
 	 * Will notify the script when this L2Character is killed<br>
 	 * Can be used for Npc or Player<br>
 	 * When the L2Character is killed, the onDeath(L2Character,L2Character) method will be fired<br>
-	 * To set a global notifier (for all L2Character) set character to null!
+	 * If you specify null character you will get notified for all deaths from all L2Characters.
 	 * @param character
 	 */
 	public void addDeathNotify(final L2Character character)
@@ -181,15 +163,12 @@ public abstract class L2Script extends Quest
 		DeathListener listener = new DeathListener(character)
 		{
 			@Override
-			public boolean onKill(DeathEvent event)
+			public boolean onDeath(L2Character attacker, L2Character target)
 			{
-				return notifyDeath(event);
-			}
-			
-			@Override
-			public boolean onDeath(DeathEvent event)
-			{
-				return notifyDeath(event);
+				final DeathEvent event = new DeathEvent();
+				event.setKiller(attacker);
+				event.setVictim(target);
+				return L2Script.this.onDeath(event);
 			}
 		};
 		_listeners.add(listener);
@@ -258,29 +237,23 @@ public abstract class L2Script extends Quest
 	}
 	
 	/**
-	 * Adds an L2Character-specific attack listener Fires onAttack(L2Character target, L2Character attacker) when this character is attacked AND when it gets attacked
+	 * Adds an L2Character-specific attack listener Fires onAttack(L2Character target, L2Character attacker) when this character is attacked AND when it gets attacked If you specify null character you will get notified for all attacks from all L2Characters.
 	 * @param character
 	 */
 	public void addAttackNotify(final L2Character character)
 	{
-		if (character != null)
+		AttackListener listener = new AttackListener(character)
 		{
-			AttackListener listener = new AttackListener(character)
+			@Override
+			public boolean onAttack(L2Character attacker, L2Character target)
 			{
-				@Override
-				public boolean onAttack(AttackEvent event)
-				{
-					return notifyAttack(event);
-				}
-				
-				@Override
-				public boolean isAttacked(AttackEvent event)
-				{
-					return notifyAttack(event);
-				}
-			};
-			_listeners.add(listener);
-		}
+				final AttackEvent event = new AttackEvent();
+				event.setAttacker(attacker);
+				event.setTarget(target);
+				return L2Script.this.onAttack(event);
+			}
+		};
+		_listeners.add(listener);
 	}
 	
 	/**
@@ -289,57 +262,38 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeAttackNotify(L2Character character)
 	{
-		if (character != null)
+		List<L2JListener> removeList = new ArrayList<>();
+		for (L2JListener listener : _listeners)
 		{
-			List<L2JListener> removeList = new ArrayList<>();
-			for (L2JListener listener : _listeners)
+			if ((listener instanceof AttackListener) && (((AttackListener) listener).getCharacter() == character))
 			{
-				if ((listener instanceof AttackListener) && (((AttackListener) listener).getCharacter() == character))
-				{
-					removeList.add(listener);
-				}
+				removeList.add(listener);
 			}
-			removeListeners(removeList);
 		}
+		removeListeners(removeList);
 	}
 	
 	/**
-	 * NPC specific, will only be triggered when npc with the given ID uses the correct skill Use skillId = -1 to be notified of all skills used Use npcId = -1 to be notified for all NPCs use npcId = -2 to be notified for all players use npcId = -3 to be notified for all L2Characters
-	 * @param npcId
-	 * @param skillId
+	 * L2Character specific, will only be fired when this L2Character uses any skill.<br>
+	 * If you specify null character you will get notified for all casts from all L2Characters.
+	 * @param character
 	 */
-	public void addSkillUseNotify(int npcId, int skillId)
+	public void addSkillUseNotify(L2Character character)
 	{
-		SkillUseListener listener = new SkillUseListener(npcId, skillId)
+		SkillUseListener listener = new SkillUseListener(character)
 		{
 			@Override
-			public boolean onSkillUse(SkillUseEvent event)
+			public boolean onSkillUse(L2Character caster, L2Skill skill, boolean simultaneously, L2Character target, L2Object[] targets)
 			{
-				return onUseSkill(event);
+				final SkillUseEvent event = new SkillUseEvent();
+				event.setCaster(caster);
+				event.setSkill(skill);
+				event.setTarget(target);
+				event.setTargets(targets);
+				return L2Script.this.onSkillUse(event);
 			}
 		};
 		_listeners.add(listener);
-	}
-	
-	/**
-	 * L2Character specific, will only be fired when this L2Character uses the specified skill Use skillId = -1 to be notified of all skills used
-	 * @param character
-	 * @param skillId
-	 */
-	public void addSkillUseNotify(L2Character character, int skillId)
-	{
-		if (character != null)
-		{
-			SkillUseListener listener = new SkillUseListener(character, skillId)
-			{
-				@Override
-				public boolean onSkillUse(SkillUseEvent event)
-				{
-					return onUseSkill(event);
-				}
-			};
-			_listeners.add(listener);
-		}
 	}
 	
 	/**
@@ -348,30 +302,10 @@ public abstract class L2Script extends Quest
 	 */
 	public void removeSkillUseNotify(L2Character character)
 	{
-		if (character != null)
-		{
-			List<L2JListener> removeList = new ArrayList<>();
-			for (L2JListener listener : _listeners)
-			{
-				if ((listener instanceof SkillUseListener) && (((SkillUseListener) listener).getCharacter() == character))
-				{
-					removeList.add(listener);
-				}
-			}
-			removeListeners(removeList);
-		}
-	}
-	
-	/**
-	 * Removes a skill use listener
-	 * @param npcId
-	 */
-	public void removeSkillUseNotify(int npcId)
-	{
 		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
-			if ((listener instanceof SkillUseListener) && (((SkillUseListener) listener).getNpcId() == npcId))
+			if ((listener instanceof SkillUseListener) && (((SkillUseListener) listener).getCharacter() == character))
 			{
 				removeList.add(listener);
 			}
@@ -1299,12 +1233,12 @@ public abstract class L2Script extends Quest
 	}
 	
 	/**
-	 * Fired when a SKillUseListener gets triggered.<br>
+	 * Fired when a SkillUseListener gets triggered.<br>
 	 * Register using addSkillUseNotify()
 	 * @param event
 	 * @return
 	 */
-	public boolean onUseSkill(SkillUseEvent event)
+	public boolean onSkillUse(SkillUseEvent event)
 	{
 		return true;
 	}

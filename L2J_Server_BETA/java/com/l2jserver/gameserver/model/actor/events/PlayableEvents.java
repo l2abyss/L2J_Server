@@ -18,6 +18,8 @@
  */
 package com.l2jserver.gameserver.model.actor.events;
 
+import java.util.logging.Level;
+
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.events.listeners.IExperienceReceivedEventListener;
 
@@ -31,17 +33,32 @@ public class PlayableEvents extends CharEvents
 		super(activeChar);
 	}
 	
-	@Override
+	/**
+	 * Fired whenever current char receives any exp.
+	 * @param exp
+	 * @return {@code true} if experience can be received, {@code false} otherwise.
+	 */
 	public boolean onExperienceReceived(long exp)
 	{
-		if (hasEventListeners())
+		if (hasListeners())
 		{
 			for (IExperienceReceivedEventListener listener : getEventListeners(IExperienceReceivedEventListener.class))
 			{
-				listener.onExperienceReceived(getActingPlayer(), exp);
+				try
+				{
+					if (!listener.onExperienceReceived(getActingPlayer(), exp))
+					{
+						return false;
+					}
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+					continue;
+				}
 			}
 		}
-		return super.onExperienceReceived(exp);
+		return true;
 	}
 	
 	@Override

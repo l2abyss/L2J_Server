@@ -19,7 +19,8 @@
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.character;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.scripting.scriptengine.events.DeathEvent;
+import com.l2jserver.gameserver.model.actor.events.AbstractCharEvents;
+import com.l2jserver.gameserver.model.actor.events.listeners.IDeathEventListener;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
@@ -27,10 +28,9 @@ import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
  * Works for NPCs and Players
  * @author TheOne
  */
-public abstract class DeathListener extends L2JListener
+public abstract class DeathListener extends L2JListener implements IDeathEventListener
 {
 	private L2Character _character = null;
-	private boolean _isGlobal = false;
 	
 	/**
 	 * constructor To have a global listener, set character to null
@@ -38,29 +38,9 @@ public abstract class DeathListener extends L2JListener
 	 */
 	public DeathListener(L2Character character)
 	{
-		if (character == null)
-		{
-			_isGlobal = true;
-		}
 		_character = character;
 		register();
 	}
-	
-	/**
-	 * The character just killed the target<br>
-	 * If you use this listener as global, use: onDeathGlobal()
-	 * @param event
-	 * @return
-	 */
-	public abstract boolean onKill(DeathEvent event);
-	
-	/**
-	 * The character was just killed by the target<br>
-	 * If you use this listener as global, use: onDeathGlobal()
-	 * @param event
-	 * @return
-	 */
-	public abstract boolean onDeath(DeathEvent event);
 	
 	/**
 	 * Returns the character
@@ -74,26 +54,26 @@ public abstract class DeathListener extends L2JListener
 	@Override
 	public void register()
 	{
-		if (_isGlobal)
+		if (_character == null)
 		{
-			L2Character.addGlobalDeathListener(this);
+			AbstractCharEvents.registerStaticListener(this);
 		}
 		else
 		{
-			_character.addDeathListener(this);
+			_character.getEvents().registerListener(this);
 		}
 	}
 	
 	@Override
 	public void unregister()
 	{
-		if (_isGlobal)
+		if (_character == null)
 		{
-			L2Character.removeGlobalDeathListener(this);
+			AbstractCharEvents.unregisterStaticListener(this);
 		}
 		else
 		{
-			_character.removeDeathListener(this);
+			_character.getEvents().unregisterListener(this);
 		}
 	}
 }
