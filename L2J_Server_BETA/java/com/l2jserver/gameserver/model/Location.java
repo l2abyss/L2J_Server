@@ -35,19 +35,17 @@ public class Location implements IPositionable
 	
 	public Location(int x, int y, int z)
 	{
-		_x = x;
-		_y = y;
-		_z = z;
-		_instanceId = -1;
+		this(x, y, z, 0, -1);
 	}
 	
 	public Location(int x, int y, int z, int heading)
 	{
-		_x = x;
-		_y = y;
-		_z = z;
-		_heading = heading;
-		_instanceId = -1;
+		this(x, y, z, heading, -1);
+	}
+	
+	public Location(L2Object obj)
+	{
+		this(obj.getX(), obj.getY(), obj.getZ(), obj.getHeading(), obj.getInstanceId());
 	}
 	
 	public Location(int x, int y, int z, int heading, int instanceId)
@@ -57,15 +55,6 @@ public class Location implements IPositionable
 		_z = z;
 		_heading = heading;
 		_instanceId = instanceId;
-	}
-	
-	public Location(L2Object obj)
-	{
-		_x = obj.getX();
-		_y = obj.getY();
-		_z = obj.getZ();
-		_heading = obj.getHeading();
-		_instanceId = obj.getInstanceId();
 	}
 	
 	/**
