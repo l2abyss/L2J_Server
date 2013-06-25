@@ -142,7 +142,7 @@ public final class RequestPostAttachment extends L2GameClientPacket
 				return;
 			}
 			
-			if (!item.getLocation().equals(ItemLocation.MAIL))
+			if (item.getItemLocation() != ItemLocation.MAIL)
 			{
 				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to get wrong item (Location != MAIL) from attachment!", Config.DEFAULT_PUNISH);
 				return;

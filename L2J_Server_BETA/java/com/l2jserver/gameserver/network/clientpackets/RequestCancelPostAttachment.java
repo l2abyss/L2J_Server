@@ -128,7 +128,7 @@ public final class RequestCancelPostAttachment extends L2GameClientPacket
 				return;
 			}
 			
-			if (!item.getLocation().equals(ItemLocation.MAIL))
+			if (item.getItemLocation() != ItemLocation.MAIL)
 			{
 				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to get items not from mail !", Config.DEFAULT_PUNISH);
 				return;

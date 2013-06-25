@@ -272,7 +272,7 @@ public class HellboundManager
 					spawnDat.setAmount(1);
 					spawnDat.setX(rs.getInt("locx"));
 					spawnDat.setY(rs.getInt("locy"));
-					spawnDat.setX(rs.getInt("locz"));
+					spawnDat.setZ(rs.getInt("locz"));
 					spawnDat.setHeading(rs.getInt("heading"));
 					spawnDat.setRespawnDelay(rs.getInt("respawn_delay"), rs.getInt("respawn_random"));
 					spawnDat.setMinLvl(rs.getInt("min_hellbound_level"));
