@@ -15033,4 +15033,19 @@ public final class L2PcInstance extends L2Playable
 	{
 		return _eventListeners;
 	}
+	
+	/**
+	 * @return {@code true} if player has at least 1 henna symbol, {@code false} otherwise.
+	 */
+	public boolean hasHennas()
+	{
+		for (L2Henna henna : _henna)
+		{
+			if (henna != null)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }
