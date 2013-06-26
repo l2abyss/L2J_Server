@@ -187,8 +187,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final boolean _isSevenSigns;
 	
 	private final int _baseCritRate; // percent of success for skill critical hit (especially for PhysicalAttack & Blow - they're not affected by rCrit values or buffs).
-	private final int _halfKillRate;
-	private final int _lethalStrikeRate;
 	private final boolean _directHpDmg; // If true then damage is being make directly
 	private final boolean _isTriggeredSkill; // If true the skill will take activation buff slot instead of a normal buff slot
 	private final int _effectPoint;
@@ -393,9 +391,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_isClanSkill = SkillTreesData.getInstance().isClanSkill(_id, _level);
 		
 		_baseCritRate = set.getInteger("baseCritRate", 0);
-		_halfKillRate = set.getInteger("halfKillRate", 0);
-		_lethalStrikeRate = set.getInteger("lethalStrikeRate", 0);
-		
 		_directHpDmg = set.getBool("dmgDirectlyToHp", false);
 		_isTriggeredSkill = set.getBool("isTriggeredSkill", false);
 		_effectPoint = set.getInteger("effectPoint", 0);
@@ -898,16 +893,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final int getBaseCritRate()
 	{
 		return _baseCritRate;
-	}
-	
-	public final int getHalfKillRate()
-	{
-		return _halfKillRate;
-	}
-	
-	public final int getLethalStrikeRate()
-	{
-		return _lethalStrikeRate;
 	}
 	
 	public final boolean getDmgDirectlyToHP()
