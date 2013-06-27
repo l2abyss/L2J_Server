@@ -18,13 +18,13 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Level;
-
-import com.l2jserver.gameserver.cache.CrestCache;
 import com.l2jserver.gameserver.datatables.ClanTable;
-import com.l2jserver.gameserver.idfactory.IdFactory;
+import com.l2jserver.gameserver.datatables.CrestTable;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.L2Crest;
+import com.l2jserver.gameserver.model.L2Crest.CrestType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
  * Client packet for setting ally crest.
@@ -34,7 +34,7 @@ public final class RequestSetAllyCrest extends L2GameClientPacket
 	private static final String _C__91_REQUESTSETALLYCREST = "[C] 91 RequestSetAllyCrest";
 	
 	private int _length;
-	private byte[] _data;
+	private byte[] _data = null;
 	
 	@Override
 	protected void readImpl()
@@ -52,7 +52,7 @@ public final class RequestSetAllyCrest extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 		{
 			return;
@@ -63,41 +63,44 @@ public final class RequestSetAllyCrest extends L2GameClientPacket
 			activeChar.sendMessage("File transfer error.");
 			return;
 		}
+		
 		if (_length > 192)
 		{
-			activeChar.sendMessage("The ally crest file size was too big (max 192 bytes).");
+			activeChar.sendPacket(SystemMessageId.ADJUST_IMAGE_8_12);
 			return;
 		}
 		
-		if (activeChar.getAllyId() != 0)
+		if (activeChar.getAllyId() == 0)
 		{
-			L2Clan leaderclan = ClanTable.getInstance().getClan(activeChar.getAllyId());
-			
-			if ((activeChar.getClanId() != leaderclan.getClanId()) || !activeChar.isClanLeader())
-			{
-				return;
-			}
-			
-			boolean remove = false;
-			if ((_length == 0) || (_data.length == 0))
-			{
-				remove = true;
-			}
-			
-			int newId = 0;
-			if (!remove)
-			{
-				newId = IdFactory.getInstance().getNextId();
-			}
-			
-			if (!remove && !CrestCache.getInstance().saveAllyCrest(newId, _data))
-			{
-				_log.log(Level.INFO, "Error saving crest for ally " + leaderclan.getAllyName() + " [" + leaderclan.getAllyId() + "]");
-				return;
-			}
-			
-			leaderclan.changeAllyCrest(newId, false);
+			activeChar.sendPacket(SystemMessageId.FEATURE_ONLY_FOR_ALLIANCE_LEADER);
+			return;
 		}
+		
+		final L2Clan leaderClan = ClanTable.getInstance().getClan(activeChar.getAllyId());
+		
+		if ((activeChar.getClanId() != leaderClan.getClanId()) || !activeChar.isClanLeader())
+		{
+			activeChar.sendPacket(SystemMessageId.FEATURE_ONLY_FOR_ALLIANCE_LEADER);
+			return;
+		}
+		
+		if (_length == 0)
+		{
+			if (leaderClan.getAllyCrestId() != 0)
+			{
+				leaderClan.changeAllyCrest(0, false);
+			}
+		}
+		else
+		{
+			final L2Crest crest = CrestTable.getInstance().createCrest(_data, CrestType.ALLY);
+			if (crest != null)
+			{
+				leaderClan.changeAllyCrest(crest.getId(), false);
+				activeChar.sendPacket(SystemMessageId.CLAN_CREST_WAS_SUCCESSFULLY_REGISTRED);
+			}
+		}
+		
 	}
 	
 	@Override

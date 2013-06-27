@@ -18,11 +18,10 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Level;
-
-import com.l2jserver.gameserver.cache.CrestCache;
-import com.l2jserver.gameserver.idfactory.IdFactory;
+import com.l2jserver.gameserver.datatables.CrestTable;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.L2Crest;
+import com.l2jserver.gameserver.model.L2Crest.CrestType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
@@ -34,7 +33,7 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 	private static final String _C__09_REQUESTSETPLEDGECREST = "[C] 09 RequestSetPledgeCrest";
 	
 	private int _length;
-	private byte[] _data;
+	private byte[] _data = null;
 	
 	@Override
 	protected void readImpl()
@@ -52,13 +51,25 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 		{
 			return;
 		}
 		
-		L2Clan clan = activeChar.getClan();
+		if ((_length < 0))
+		{
+			activeChar.sendMessage("File transfer error.");
+			return;
+		}
+		
+		if (_length > 256)
+		{
+			activeChar.sendPacket(SystemMessageId.THE_SIZE_OF_THE_IMAGE_FILE_IS_INAPPROPRIATE);
+			return;
+		}
+		
+		final L2Clan clan = activeChar.getClan();
 		if (clan == null)
 		{
 			return;
@@ -70,51 +81,34 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 			return;
 		}
 		
-		if (_length < 0)
+		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_REGISTER_CREST) != L2Clan.CP_CL_REGISTER_CREST)
 		{
-			activeChar.sendMessage("File transfer error.");
+			activeChar.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 			return;
 		}
-		if (_length > 256)
+		
+		if (_length == 0)
 		{
-			activeChar.sendMessage("The clan crest file size was too big (max 256 bytes).");
-			return;
-		}
-		boolean updated = false;
-		int crestId = -1;
-		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_REGISTER_CREST) == L2Clan.CP_CL_REGISTER_CREST)
-		{
-			if ((_length == 0) || (_data.length == 0))
+			if (clan.getCrestId() != 0)
 			{
-				if (clan.getCrestId() == 0)
-				{
-					return;
-				}
-				
-				crestId = 0;
+				clan.changeClanCrest(0);
 				activeChar.sendPacket(SystemMessageId.CLAN_CREST_HAS_BEEN_DELETED);
-				updated = true;
-			}
-			else
-			{
-				if (clan.getLevel() < 3)
-				{
-					activeChar.sendPacket(SystemMessageId.CLAN_LVL_3_NEEDED_TO_SET_CREST);
-					return;
-				}
-				
-				crestId = IdFactory.getInstance().getNextId();
-				if (!CrestCache.getInstance().savePledgeCrest(crestId, _data))
-				{
-					_log.log(Level.INFO, "Error saving crest for clan " + clan.getName() + " [" + clan.getClanId() + "]");
-					return;
-				}
-				updated = true;
 			}
 		}
-		if (updated && (crestId != -1))
+		else
 		{
-			clan.changeClanCrest(crestId);
+			if (clan.getLevel() < 3)
+			{
+				activeChar.sendPacket(SystemMessageId.CLAN_LVL_3_NEEDED_TO_SET_CREST);
+				return;
+			}
+			
+			final L2Crest crest = CrestTable.getInstance().createCrest(_data, CrestType.PLEDGE);
+			if (crest != null)
+			{
+				clan.changeClanCrest(crest.getId());
+				activeChar.sendPacket(SystemMessageId.CLAN_CREST_WAS_SUCCESSFULLY_REGISTRED);
+			}
 		}
 	}
 	

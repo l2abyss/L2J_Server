@@ -3013,11 +3013,10 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public int getClanCrestLargeId()
 	{
-		if (_clan != null)
+		if ((_clan != null) && ((_clan.getCastleId() != 0) || (_clan.getHideoutId() != 0)))
 		{
 			return _clan.getCrestLargeId();
 		}
-		
 		return 0;
 	}
 	

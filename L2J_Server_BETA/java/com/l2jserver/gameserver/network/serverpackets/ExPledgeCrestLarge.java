@@ -18,6 +18,9 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import com.l2jserver.gameserver.datatables.CrestTable;
+import com.l2jserver.gameserver.model.L2Crest;
+
 /**
  * @author -Wooden-
  */
@@ -25,6 +28,13 @@ public class ExPledgeCrestLarge extends L2GameServerPacket
 {
 	private final int _crestId;
 	private final byte[] _data;
+	
+	public ExPledgeCrestLarge(int crestId)
+	{
+		_crestId = crestId;
+		final L2Crest crest = CrestTable.getInstance().getCrest(crestId);
+		_data = crest != null ? crest.getData() : null;
+	}
 	
 	public ExPledgeCrestLarge(int crestId, byte[] data)
 	{
@@ -37,10 +47,16 @@ public class ExPledgeCrestLarge extends L2GameServerPacket
 	{
 		writeC(0xFE);
 		writeH(0x1B);
-		
-		writeD(0x00); // ???
+		writeD(0x00);
 		writeD(_crestId);
-		writeD(_data.length);
-		writeB(_data);
+		if (_data != null)
+		{
+			writeD(_data.length);
+			writeB(_data);
+		}
+		else
+		{
+			writeD(0);
+		}
 	}
 }
