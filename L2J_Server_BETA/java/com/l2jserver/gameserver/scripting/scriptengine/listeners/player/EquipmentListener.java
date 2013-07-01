@@ -30,19 +30,13 @@ import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
  */
 public abstract class EquipmentListener extends L2JListener
 {
-	private boolean isGlobal = false;
-	
 	/**
 	 * Constructor To set a global listener, set the L2PcInstance value to null
-	 * @param character
+	 * @param activeChar
 	 */
-	public EquipmentListener(L2PcInstance character)
+	public EquipmentListener(L2PcInstance activeChar)
 	{
-		player = character;
-		if (character == null)
-		{
-			isGlobal = true;
-		}
+		super(activeChar);
 		register();
 	}
 	
@@ -56,26 +50,26 @@ public abstract class EquipmentListener extends L2JListener
 	@Override
 	public void register()
 	{
-		if (isGlobal)
+		if (getPlayer() == null)
 		{
 			L2PcInstance.addGlobalEquipmentListener(this);
 		}
 		else
 		{
-			player.addEquipmentListener(this);
+			getPlayer().addEquipmentListener(this);
 		}
 	}
 	
 	@Override
 	public void unregister()
 	{
-		if (isGlobal)
+		if (getPlayer() == null)
 		{
 			L2PcInstance.removeGlobalEquipmentListener(this);
 		}
 		else
 		{
-			player.removeEquipmentListener(this);
+			getPlayer().removeEquipmentListener(this);
 		}
 	}
 	

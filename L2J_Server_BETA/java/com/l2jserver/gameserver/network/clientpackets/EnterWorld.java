@@ -18,10 +18,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.io.UnsupportedEncodingException;
-
-import javolution.util.FastList;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.LoginServerThread;
@@ -92,7 +88,6 @@ import com.l2jserver.gameserver.network.serverpackets.QuestList;
 import com.l2jserver.gameserver.network.serverpackets.ShortCutInit;
 import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerSpawnListener;
 import com.l2jserver.util.Base64;
 
 /**
@@ -107,8 +102,6 @@ import com.l2jserver.util.Base64;
 public class EnterWorld extends L2GameClientPacket
 {
 	private static final String _C__11_ENTERWORLD = "[C] 11 EnterWorld";
-	
-	private static FastList<PlayerSpawnListener> listeners = new FastList<PlayerSpawnListener>().shared();
 	
 	private final int[][] tracert = new int[5][4];
 	
@@ -139,8 +132,7 @@ public class EnterWorld extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
-		
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 		{
 			_log.warning("EnterWorld failed! activeChar returned 'null'.");
@@ -603,11 +595,6 @@ public class EnterWorld extends L2GameClientPacket
 		{
 			activeChar.sendPacket(ExNotifyPremiumItem.STATIC_PACKET);
 		}
-		
-		for (PlayerSpawnListener listener : listeners)
-		{
-			listener.onSpawn(activeChar);
-		}
 	}
 	
 	/**
@@ -615,11 +602,11 @@ public class EnterWorld extends L2GameClientPacket
 	 */
 	private void engage(L2PcInstance cha)
 	{
-		int _chaid = cha.getObjectId();
+		int chaId = cha.getObjectId();
 		
 		for (Couple cl : CoupleManager.getInstance().getCouples())
 		{
-			if ((cl.getPlayer1Id() == _chaid) || (cl.getPlayer2Id() == _chaid))
+			if ((cl.getPlayer1Id() == chaId) || (cl.getPlayer2Id() == chaId))
 			{
 				if (cl.getMaried())
 				{
@@ -628,7 +615,7 @@ public class EnterWorld extends L2GameClientPacket
 				
 				cha.setCoupleId(cl.getId());
 				
-				if (cl.getPlayer1Id() == _chaid)
+				if (cl.getPlayer1Id() == chaId)
 				{
 					cha.setPartnerId(cl.getPlayer2Id());
 				}
@@ -646,24 +633,13 @@ public class EnterWorld extends L2GameClientPacket
 	 */
 	private void notifyPartner(L2PcInstance cha, int partnerId)
 	{
-		if (cha.getPartnerId() != 0)
+		int objId = cha.getPartnerId();
+		if (objId != 0)
 		{
-			int objId = cha.getPartnerId();
-			
-			try
+			final L2PcInstance partner = L2World.getInstance().getPlayer(objId);
+			if (partner != null)
 			{
-				L2PcInstance partner = L2World.getInstance().getPlayer(objId);
-				
-				if (partner != null)
-				{
-					partner.sendMessage("Your Partner has logged in.");
-				}
-				
-				partner = null;
-			}
-			catch (ClassCastException cce)
-			{
-				_log.warning("Wedding Error: ID " + objId + " is now owned by a(n) " + L2World.getInstance().findObject(objId).getClass().getSimpleName());
+				partner.sendMessage("Your Partner has logged in.");
 			}
 		}
 	}
@@ -673,16 +649,14 @@ public class EnterWorld extends L2GameClientPacket
 	 */
 	private void notifyClanMembers(L2PcInstance activeChar)
 	{
-		L2Clan clan = activeChar.getClan();
-		
-		// This null check may not be needed anymore since notifyClanMembers is called from within a null check already. Please remove if we're certain it's ok to do so.
+		final L2Clan clan = activeChar.getClan();
 		if (clan != null)
 		{
 			clan.getClanMember(activeChar.getObjectId()).setPlayerInstance(activeChar);
-			SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.CLAN_MEMBER_S1_LOGGED_IN);
+			
+			final SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.CLAN_MEMBER_S1_LOGGED_IN);
 			msg.addString(activeChar.getName());
 			clan.broadcastToOtherOnlineMembers(msg, activeChar);
-			msg = null;
 			clan.broadcastToOtherOnlineMembers(new PledgeShowMemberListUpdate(activeChar), activeChar);
 		}
 	}
@@ -694,22 +668,20 @@ public class EnterWorld extends L2GameClientPacket
 	{
 		if (activeChar.getSponsor() != 0)
 		{
-			L2PcInstance sponsor = L2World.getInstance().getPlayer(activeChar.getSponsor());
-			
+			final L2PcInstance sponsor = L2World.getInstance().getPlayer(activeChar.getSponsor());
 			if (sponsor != null)
 			{
-				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.YOUR_APPRENTICE_S1_HAS_LOGGED_IN);
+				final SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.YOUR_APPRENTICE_S1_HAS_LOGGED_IN);
 				msg.addString(activeChar.getName());
 				sponsor.sendPacket(msg);
 			}
 		}
 		else if (activeChar.getApprentice() != 0)
 		{
-			L2PcInstance apprentice = L2World.getInstance().getPlayer(activeChar.getApprentice());
-			
+			final L2PcInstance apprentice = L2World.getInstance().getPlayer(activeChar.getApprentice());
 			if (apprentice != null)
 			{
-				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.YOUR_SPONSOR_C1_HAS_LOGGED_IN);
+				final SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.YOUR_SPONSOR_C1_HAS_LOGGED_IN);
 				msg.addString(activeChar.getName());
 				apprentice.sendPacket(msg);
 			}
@@ -722,21 +694,12 @@ public class EnterWorld extends L2GameClientPacket
 	 */
 	private String getText(String string)
 	{
-		try
-		{
-			String result = new String(Base64.decode(string), "UTF-8");
-			return result;
-		}
-		catch (UnsupportedEncodingException e)
-		{
-			return null;
-		}
+		return new String(Base64.decode(string));
 	}
 	
 	private void loadTutorial(L2PcInstance player)
 	{
-		QuestState qs = player.getQuestState("255_Tutorial");
-		
+		final QuestState qs = player.getQuestState("255_Tutorial");
 		if (qs != null)
 		{
 			qs.getQuest().notifyEvent("UC", null, player);
@@ -753,27 +716,5 @@ public class EnterWorld extends L2GameClientPacket
 	protected boolean triggersOnActionRequest()
 	{
 		return false;
-	}
-	
-	// Player spawn listeners
-	/**
-	 * Adds a spawn listener
-	 * @param listener
-	 */
-	public static void addSpawnListener(PlayerSpawnListener listener)
-	{
-		if (!listeners.contains(listener))
-		{
-			listeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a spawn listener
-	 * @param listener
-	 */
-	public static void removeSpawnListener(PlayerSpawnListener listener)
-	{
-		listeners.remove(listener);
 	}
 }

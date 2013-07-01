@@ -35,13 +35,13 @@ public final class TvTEventListener extends EventListener
 	public void unregister()
 	{
 		super.unregister();
-		player.setCanRevive(true);
+		getPlayer().setCanRevive(true);
 	}
 	
 	@Override
 	public boolean isOnEvent()
 	{
-		return TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(player.getObjectId());
+		return TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(getPlayer().getObjectId());
 	}
 	
 	@Override

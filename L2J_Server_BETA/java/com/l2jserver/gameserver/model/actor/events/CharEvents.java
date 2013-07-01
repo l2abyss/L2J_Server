@@ -23,6 +23,9 @@ import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.events.annotations.PlayerOnly;
+import com.l2jserver.gameserver.model.actor.events.annotations.SkillId;
+import com.l2jserver.gameserver.model.actor.events.annotations.SkillLevel;
 import com.l2jserver.gameserver.model.actor.events.listeners.IAttackEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.IDamageDealtEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.IDamageReceivedEventListener;
@@ -30,6 +33,7 @@ import com.l2jserver.gameserver.model.actor.events.listeners.IDeathEventListener
 import com.l2jserver.gameserver.model.actor.events.listeners.ISkillUseEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.ITeleportedEventListener;
 import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.util.Util;
 
 /**
  * @author UnAfraid
@@ -58,6 +62,11 @@ public class CharEvents extends AbstractCharEvents
 			{
 				try
 				{
+					if (listener.getClass().isAnnotationPresent(PlayerOnly.class) && !target.isPlayer())
+					{
+						continue;
+					}
+					
 					if (!listener.onAttack(getActingPlayer(), target))
 					{
 						return false;
@@ -88,6 +97,23 @@ public class CharEvents extends AbstractCharEvents
 			{
 				try
 				{
+					if (listener.getClass().isAnnotationPresent(PlayerOnly.class) && !target.isPlayer())
+					{
+						continue;
+					}
+					
+					final SkillId skillIdA = listener.getClass().getAnnotation(SkillId.class);
+					if ((skillIdA != null) && (!Util.contains(skillIdA.value(), skill.getId())))
+					{
+						continue;
+					}
+					
+					final SkillLevel skillLevelA = listener.getClass().getAnnotation(SkillLevel.class);
+					if ((skillLevelA != null) && (!Util.contains(skillLevelA.value(), skill.getLevel())))
+					{
+						continue;
+					}
+					
 					if (!listener.onSkillUse(getActingPlayer(), skill, simultaneously, target, targets))
 					{
 						return false;
@@ -115,6 +141,11 @@ public class CharEvents extends AbstractCharEvents
 			{
 				try
 				{
+					if (listener.getClass().isAnnotationPresent(PlayerOnly.class) && !killer.isPlayer())
+					{
+						continue;
+					}
+					
 					if (!listener.onDeath(getActingPlayer(), killer))
 					{
 						return false;
@@ -144,6 +175,11 @@ public class CharEvents extends AbstractCharEvents
 			{
 				try
 				{
+					if (listener.getClass().isAnnotationPresent(PlayerOnly.class) && !target.isPlayer())
+					{
+						continue;
+					}
+					
 					listener.onDamageDealtEvent(getActingPlayer(), target, damage, skill, crit);
 				}
 				catch (Exception e)
@@ -169,6 +205,11 @@ public class CharEvents extends AbstractCharEvents
 			{
 				try
 				{
+					if (listener.getClass().isAnnotationPresent(PlayerOnly.class) && !attacker.isPlayer())
+					{
+						continue;
+					}
+					
 					listener.onDamageReceivedEvent(attacker, getActingPlayer(), damage, skill, crit);
 				}
 				catch (Exception e)

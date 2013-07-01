@@ -18,33 +18,29 @@
  */
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.player;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.network.clientpackets.RequestRestart;
+import com.l2jserver.gameserver.model.actor.events.AbstractCharEvents;
+import com.l2jserver.gameserver.model.actor.events.listeners.IPlayerLogoutEventListener;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
  * @author TheOne
  */
-public abstract class PlayerDespawnListener extends L2JListener
+public abstract class PlayerDespawnListener extends L2JListener implements IPlayerLogoutEventListener
 {
 	public PlayerDespawnListener()
 	{
 		register();
 	}
 	
-	public abstract void onDespawn(L2PcInstance player);
-	
 	@Override
 	public void register()
 	{
-		L2PcInstance.addDespawnListener(this);
-		RequestRestart.addDespawnListener(this);
+		AbstractCharEvents.registerStaticListener(this);
 	}
 	
 	@Override
 	public void unregister()
 	{
-		L2PcInstance.removeDespawnListener(this);
-		RequestRestart.removeDespawnListener(this);
+		AbstractCharEvents.unregisterStaticListener(this);
 	}
 }

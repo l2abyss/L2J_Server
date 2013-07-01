@@ -21,7 +21,9 @@ package com.l2jserver.gameserver.model.actor.events;
 import java.util.logging.Level;
 
 import com.l2jserver.gameserver.model.actor.L2Playable;
+import com.l2jserver.gameserver.model.actor.events.annotations.PlayerOnly;
 import com.l2jserver.gameserver.model.actor.events.listeners.IExperienceReceivedEventListener;
+import com.l2jserver.gameserver.model.actor.events.listeners.ILevelChangeEventListener;
 
 /**
  * @author UnAfraid
@@ -46,7 +48,44 @@ public class PlayableEvents extends CharEvents
 			{
 				try
 				{
+					if (listener.getClass().isAnnotationPresent(PlayerOnly.class) && !getActingPlayer().isPlayer())
+					{
+						continue;
+					}
+					
 					if (!listener.onExperienceReceived(getActingPlayer(), exp))
+					{
+						return false;
+					}
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fired whenever current playable's level has change.
+	 * @param levels
+	 * @return {@code true} if level change is possible, {@code false} otherwise.
+	 */
+	public boolean onLevelChange(byte levels)
+	{
+		if (hasListeners())
+		{
+			for (ILevelChangeEventListener listener : getEventListeners(ILevelChangeEventListener.class))
+			{
+				try
+				{
+					if (listener.getClass().isAnnotationPresent(PlayerOnly.class) && !getActingPlayer().isPlayer())
+					{
+						continue;
+					}
+					
+					if (!listener.onLevelChange(getActingPlayer(), levels))
 					{
 						return false;
 					}

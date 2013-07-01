@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.scripting.scriptengine.impl;
 
 import java.util.logging.Logger;
 
+import com.l2jserver.gameserver.model.actor.events.listeners.IEventListener;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -29,15 +30,24 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  * These are 2 convenience methods to avoid having to register the listeners ourselves. This is particularly useful for our less advanced coders.
  * @author TheOne
  */
-public abstract class L2JListener
+public abstract class L2JListener implements IEventListener
 {
-	public static Logger log = Logger.getLogger(L2JListener.class.getName());
+	protected static Logger log = Logger.getLogger(L2JListener.class.getName());
 	
-	public L2PcInstance player = null;
+	private L2PcInstance _player = null;
+	
+	public L2JListener()
+	{
+	}
+	
+	public L2JListener(L2PcInstance player)
+	{
+		_player = player;
+	}
 	
 	/**
 	 * Convenience method to add this listener in its proper place.<br>
-	 * Called automatically by the superconstructor when the class is instanciated.
+	 * Called automatically by the super constructor when the class is instanciated.
 	 */
 	public abstract void register();
 	
@@ -52,6 +62,6 @@ public abstract class L2JListener
 	 */
 	public L2PcInstance getPlayer()
 	{
-		return player;
+		return _player;
 	}
 }

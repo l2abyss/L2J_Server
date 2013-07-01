@@ -411,7 +411,7 @@ public class StatsSet
 	 * @param deflt : long designating the default value if value associated with the key is null
 	 * @return long : value associated to the key
 	 */
-	public long getLong(String name, int deflt)
+	public long getLong(String name, long deflt)
 	{
 		Object val = _set.get(name);
 		if (val == null)

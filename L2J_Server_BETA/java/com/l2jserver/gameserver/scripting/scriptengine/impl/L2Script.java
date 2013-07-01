@@ -24,6 +24,7 @@ import java.util.List;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -85,7 +86,6 @@ import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatFilter
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.DlgAnswerListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.RequestBypassToServerListener;
-import com.l2jserver.gameserver.util.Util;
 
 /**
  * L2Script is an extension of Quest.java which makes use of the L2J listeners.<br>
@@ -203,17 +203,17 @@ public abstract class L2Script extends Quest
 		PlayerSpawnListener spawn = new PlayerSpawnListener()
 		{
 			@Override
-			public void onSpawn(L2PcInstance player)
+			public void onPlayerLogin(L2PcInstance player)
 			{
-				onPlayerLogin(player);
+				L2Script.this.onPlayerLogin(player);
 			}
 		};
 		PlayerDespawnListener despawn = new PlayerDespawnListener()
 		{
 			@Override
-			public void onDespawn(L2PcInstance player)
+			public void onPlayerLogout(L2PcInstance player)
 			{
-				onPlayerLogout(player);
+				L2Script.this.onPlayerLogout(player);
 			}
 		};
 		_listeners.add(spawn);
@@ -715,9 +715,13 @@ public abstract class L2Script extends Quest
 		PlayerLevelListener listener = new PlayerLevelListener(player)
 		{
 			@Override
-			public void levelChanged(PlayerLevelChangeEvent event)
+			public boolean onLevelChange(L2Playable playable, byte levels)
 			{
-				onPlayerLevelChange(event);
+				final PlayerLevelChangeEvent event = new PlayerLevelChangeEvent();
+				event.setPlayer(playable.getActingPlayer());
+				event.setOldLevel(playable.getLevel());
+				event.setNewLevel(playable.getLevel() + levels);
+				return L2Script.this.onLevelChange(event);
 			}
 		};
 		_listeners.add(listener);
@@ -1056,27 +1060,30 @@ public abstract class L2Script extends Quest
 	
 	/**
 	 * You can use -1 to listen for all kinds of message id's
+	 * @param player
 	 * @param messageIds
 	 */
-	public void addDlgAnswerNotify(int... messageIds)
+	public void addDlgAnswerNotify(L2PcInstance player, int... messageIds)
 	{
-		for (int messageId : messageIds)
+		DlgAnswerListener dlgAnswer = new DlgAnswerListener(player)
 		{
-			DlgAnswerListener dlgAnswer = new DlgAnswerListener(messageId)
+			@Override
+			public boolean onDlgAnswer(L2PcInstance player, int messageId, int answer, int requesterId)
 			{
-				@Override
-				public void onDlgAnswer(DlgAnswerEvent event)
-				{
-					L2Script.this.onDlgAnswer(event);
-				}
-			};
-			
-			_listeners.add(dlgAnswer);
-		}
+				final DlgAnswerEvent event = new DlgAnswerEvent();
+				event.setActiveChar(player);
+				event.setMessageId(messageId);
+				event.setAnswer(answer);
+				event.setRequesterId(requesterId);
+				return L2Script.this.onDlgAnswer(event);
+			}
+		};
+		
+		_listeners.add(dlgAnswer);
 	}
 	
 	/**
-	 * Removes all Dlg Answer Listeners
+	 * Removes all DlgAnswer listeners
 	 */
 	public void removeDlgAnswerNotify()
 	{
@@ -1092,15 +1099,15 @@ public abstract class L2Script extends Quest
 	}
 	
 	/**
-	 * Removes specified Dlg Answer Listeners
-	 * @param messageIds
+	 * Removes all DlgAnswer listeners associated with the player.
+	 * @param player
 	 */
-	public void removeDlgAnswerNotify(int... messageIds)
+	public void removeDlgAnswerNotify(L2PcInstance player)
 	{
 		List<L2JListener> removeList = new ArrayList<>();
 		for (L2JListener listener : _listeners)
 		{
-			if ((listener instanceof DlgAnswerListener) && Util.contains(messageIds, ((DlgAnswerListener) listener).getMessageId()))
+			if ((listener instanceof DlgAnswerListener) && (((DlgAnswerListener) listener).getPlayer() == player))
 			{
 				removeList.add(listener);
 			}
@@ -1440,10 +1447,11 @@ public abstract class L2Script extends Quest
 	 * Fired when a player's level changes<br>
 	 * Register using addPlayerLevelNotify(player)
 	 * @param event
+	 * @return
 	 */
-	public void onPlayerLevelChange(PlayerLevelChangeEvent event)
+	public boolean onLevelChange(PlayerLevelChangeEvent event)
 	{
-		
+		return true;
 	}
 	
 	/**
@@ -1525,10 +1533,11 @@ public abstract class L2Script extends Quest
 	 * Fired when client answer on dialog request<br>
 	 * Register using addDlgAnswerNotify()
 	 * @param event
+	 * @return
 	 */
-	public void onDlgAnswer(DlgAnswerEvent event)
+	public boolean onDlgAnswer(DlgAnswerEvent event)
 	{
-		
+		return true;
 	}
 	
 	/**

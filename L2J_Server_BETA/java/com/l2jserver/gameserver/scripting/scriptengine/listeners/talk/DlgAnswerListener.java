@@ -18,42 +18,53 @@
  */
 package com.l2jserver.gameserver.scripting.scriptengine.listeners.talk;
 
-import com.l2jserver.gameserver.network.clientpackets.DlgAnswer;
-import com.l2jserver.gameserver.scripting.scriptengine.events.DlgAnswerEvent;
+import com.l2jserver.gameserver.model.actor.events.AbstractCharEvents;
+import com.l2jserver.gameserver.model.actor.events.listeners.IDlgAnswerEventListener;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
 
 /**
  * @author UnAfraid
  */
-public abstract class DlgAnswerListener extends L2JListener
+public abstract class DlgAnswerListener extends L2JListener implements IDlgAnswerEventListener
 {
-	private final int _messageId;
+	private final L2PcInstance _player;
 	
-	public DlgAnswerListener(int messageId)
+	public DlgAnswerListener(L2PcInstance player)
 	{
-		_messageId = messageId;
+		_player = player;
 		register();
 	}
-	
-	public int getMessageId()
-	{
-		return _messageId;
-	}
-	
-	/**
-	 * @param event
-	 */
-	public abstract void onDlgAnswer(DlgAnswerEvent event);
 	
 	@Override
 	public void register()
 	{
-		DlgAnswer.addDlgAnswerListener(this);
+		if (_player == null)
+		{
+			AbstractCharEvents.registerStaticListener(this);
+		}
+		else
+		{
+			_player.getEvents().registerListener(this);
+		}
 	}
 	
 	@Override
 	public void unregister()
 	{
-		DlgAnswer.removeDlgAnswerListener(this);
+		if (_player == null)
+		{
+			AbstractCharEvents.unregisterStaticListener(this);
+		}
+		else
+		{
+			_player.getEvents().unregisterListener(this);
+		}
+	}
+	
+	@Override
+	public L2PcInstance getPlayer()
+	{
+		return _player;
 	}
 }

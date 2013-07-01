@@ -26,9 +26,9 @@ import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
  */
 public abstract class EventListener extends L2JListener
 {
-	public EventListener(L2PcInstance player)
+	public EventListener(L2PcInstance activeChar)
 	{
-		super.player = player;
+		super(activeChar);
 		register();
 	}
 	
@@ -50,18 +50,18 @@ public abstract class EventListener extends L2JListener
 	@Override
 	public void register()
 	{
-		if (player != null)
+		if (getPlayer() != null)
 		{
-			player.addEventListener(this);
+			getPlayer().addEventListener(this);
 		}
 	}
 	
 	@Override
 	public void unregister()
 	{
-		if (player != null)
+		if (getPlayer() != null)
 		{
-			player.removeEventListener(this);
+			getPlayer().removeEventListener(this);
 		}
 	}
 }

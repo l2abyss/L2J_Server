@@ -27,14 +27,9 @@ import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
  */
 public abstract class TransformListener extends L2JListener
 {
-	
-	/**
-	 * constructor
-	 * @param player
-	 */
-	public TransformListener(L2PcInstance player)
+	public TransformListener(L2PcInstance activeChar)
 	{
-		this.player = player;
+		super(activeChar);
 		register();
 	}
 	
@@ -55,13 +50,18 @@ public abstract class TransformListener extends L2JListener
 	@Override
 	public void register()
 	{
-		player.addTransformListener(this);
+		if (getPlayer() != null)
+		{
+			getPlayer().addTransformListener(this);
+		}
 	}
 	
 	@Override
 	public void unregister()
 	{
-		player.removeTransformListener(this);
+		if (getPlayer() != null)
+		{
+			getPlayer().removeTransformListener(this);
+		}
 	}
-	
 }

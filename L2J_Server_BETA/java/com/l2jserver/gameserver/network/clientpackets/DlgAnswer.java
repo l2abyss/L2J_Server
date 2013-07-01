@@ -18,10 +18,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.List;
-
-import javolution.util.FastList;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.handler.AdminCommandHandler;
@@ -30,17 +26,14 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.holders.DoorRequestHolder;
 import com.l2jserver.gameserver.model.holders.SummonRequestHolder;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.scripting.scriptengine.events.DlgAnswerEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.DlgAnswerListener;
 import com.l2jserver.gameserver.util.GMAudit;
 
 /**
- * @author Dezmond_snz Format: cddd
+ * @author Dezmond_snz
  */
 public final class DlgAnswer extends L2GameClientPacket
 {
 	private static final String _C__C6_DLGANSWER = "[C] C6 DlgAnswer";
-	private static final List<DlgAnswerListener> _listeners = new FastList<DlgAnswerListener>().shared();
 	private int _messageId;
 	private int _answer;
 	private int _requesterId;
@@ -62,10 +55,15 @@ public final class DlgAnswer extends L2GameClientPacket
 			return;
 		}
 		
+		if (!activeChar.getEvents().onDlgAnswer(_messageId, _answer, _requesterId))
+		{
+			return;
+		}
+		
 		if (_messageId == SystemMessageId.S1.getId())
 		{
-			String _command = activeChar.getAdminConfirmCmd();
-			if (_command == null)
+			String cmd = activeChar.getAdminConfirmCmd();
+			if (cmd == null)
 			{
 				if (Config.L2JMOD_ALLOW_WEDDING)
 				{
@@ -79,15 +77,15 @@ public final class DlgAnswer extends L2GameClientPacket
 				{
 					return;
 				}
-				String command = _command.split(" ")[0];
+				String command = cmd.split(" ")[0];
 				IAdminCommandHandler ach = AdminCommandHandler.getInstance().getHandler(command);
 				if (AdminTable.getInstance().hasAccess(command, activeChar.getAccessLevel()))
 				{
 					if (Config.GMAUDIT)
 					{
-						GMAudit.auditGMAction(activeChar.getName() + " [" + activeChar.getObjectId() + "]", _command, (activeChar.getTarget() != null ? activeChar.getTarget().getName() : "no-target"));
+						GMAudit.auditGMAction(activeChar.getName() + " [" + activeChar.getObjectId() + "]", cmd, (activeChar.getTarget() != null ? activeChar.getTarget().getName() : "no-target"));
 					}
-					ach.useAdminCommand(_command, activeChar);
+					ach.useAdminCommand(cmd, activeChar);
 				}
 			}
 		}
@@ -97,74 +95,27 @@ public final class DlgAnswer extends L2GameClientPacket
 		}
 		else if (_messageId == SystemMessageId.C1_WISHES_TO_SUMMON_YOU_FROM_S2_DO_YOU_ACCEPT.getId())
 		{
-			final SummonRequestHolder holder = activeChar.getScript(SummonRequestHolder.class);
+			final SummonRequestHolder holder = activeChar.removeScript(SummonRequestHolder.class);
 			if ((_answer == 1) && (holder != null) && (holder.getTarget().getObjectId() == _requesterId))
 			{
 				activeChar.teleToLocation(holder.getTarget().getX(), holder.getTarget().getY(), holder.getTarget().getZ(), true);
 			}
-			activeChar.removeScript(SummonRequestHolder.class);
 		}
 		else if (_messageId == SystemMessageId.WOULD_YOU_LIKE_TO_OPEN_THE_GATE.getId())
 		{
-			final DoorRequestHolder holder = activeChar.getScript(DoorRequestHolder.class);
+			final DoorRequestHolder holder = activeChar.removeScript(DoorRequestHolder.class);
 			if ((holder != null) && (holder.getDoor() == activeChar.getTarget()) && (_answer == 1))
 			{
 				holder.getDoor().openMe();
 			}
-			activeChar.removeScript(DoorRequestHolder.class);
 		}
 		else if (_messageId == SystemMessageId.WOULD_YOU_LIKE_TO_CLOSE_THE_GATE.getId())
 		{
-			final DoorRequestHolder holder = activeChar.getScript(DoorRequestHolder.class);
+			final DoorRequestHolder holder = activeChar.removeScript(DoorRequestHolder.class);
 			if ((holder != null) && (holder.getDoor() == activeChar.getTarget()) && (_answer == 1))
 			{
 				holder.getDoor().closeMe();
 			}
-			activeChar.removeScript(DoorRequestHolder.class);
-		}
-		
-		fireDlgAnswerListener();
-	}
-	
-	/**
-	 * Fires the event when packet arrived.
-	 */
-	private void fireDlgAnswerListener()
-	{
-		DlgAnswerEvent event = new DlgAnswerEvent();
-		event.setActiveChar(getActiveChar());
-		event.setMessageId(_messageId);
-		event.setAnswer(_answer);
-		event.setRequesterId(_requesterId);
-		
-		for (DlgAnswerListener listener : _listeners)
-		{
-			if ((listener.getMessageId() == -1) || (_messageId == listener.getMessageId()))
-			{
-				listener.onDlgAnswer(event);
-			}
-		}
-	}
-	
-	/**
-	 * @param listener
-	 */
-	public static void addDlgAnswerListener(DlgAnswerListener listener)
-	{
-		if (!_listeners.contains(listener))
-		{
-			_listeners.add(listener);
-		}
-	}
-	
-	/**
-	 * @param listener
-	 */
-	public static void removeDlgAnswerListener(DlgAnswerListener listener)
-	{
-		if (_listeners.contains(listener))
-		{
-			_listeners.remove(listener);
 		}
 	}
 	

@@ -29,14 +29,9 @@ import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
  */
 public abstract class ProfessionChangeListener extends L2JListener
 {
-	
-	/**
-	 * constructor
-	 * @param player
-	 */
-	public ProfessionChangeListener(L2PcInstance player)
+	public ProfessionChangeListener(L2PcInstance activeChar)
 	{
-		super.player = player;
+		super(activeChar);
 		register();
 	}
 	
@@ -49,22 +44,26 @@ public abstract class ProfessionChangeListener extends L2JListener
 	@Override
 	public void register()
 	{
-		if (player != null)
+		if (getPlayer() == null)
 		{
-			player.addProfessionChangeListener(this);
-			return;
+			L2PcInstance.addGlobalProfessionChangeListener(this);
 		}
-		L2PcInstance.addGlobalProfessionChangeListener(this);
+		else
+		{
+			getPlayer().addProfessionChangeListener(this);
+		}
 	}
 	
 	@Override
 	public void unregister()
 	{
-		if (player != null)
+		if (getPlayer() == null)
 		{
-			player.removeProfessionChangeListener(this);
-			return;
+			L2PcInstance.removeGlobalProfessionChangeListener(this);
 		}
-		L2PcInstance.removeGlobalProfessionChangeListener(this);
+		else
+		{
+			getPlayer().removeProfessionChangeListener(this);
+		}
 	}
 }

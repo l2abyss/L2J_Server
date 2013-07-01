@@ -18,8 +18,6 @@
  */
 package com.l2jserver.gameserver.model.actor.stat;
 
-import javolution.util.FastList;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
@@ -45,8 +43,6 @@ import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
-import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerLevelChangeEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerLevelListener;
 import com.l2jserver.gameserver.util.Util;
 
 public class PcStat extends PlayableStat
@@ -65,11 +61,9 @@ public class PcStat extends PlayableStat
 		17000,
 		20000
 	};
+	
 	public static final int MAX_VITALITY_POINTS = VITALITY_LEVELS[4];
 	public static final int MIN_VITALITY_POINTS = 1;
-	
-	public FastList<PlayerLevelListener> levelListeners = new FastList<PlayerLevelListener>().shared();
-	public static FastList<PlayerLevelListener> globalLevelListeners = new FastList<PlayerLevelListener>().shared();
 	
 	public PcStat(L2PcInstance activeChar)
 	{
@@ -256,7 +250,11 @@ public class PcStat extends PlayableStat
 		{
 			return false;
 		}
-		fireLevelChangeListeners(value);
+		
+		if (!getActiveChar().getEvents().onLevelChange(value))
+		{
+			return false;
+		}
 		
 		boolean levelIncreased = super.addLevel(value);
 		if (levelIncreased)
@@ -914,73 +912,5 @@ public class PcStat extends PlayableStat
 		bonus = Math.min(bonus, Config.MAX_BONUS_SP);
 		
 		return bonus;
-	}
-	
-	/**
-	 * Listeners
-	 */
-	/**
-	 * Fires all the level change listeners, if any.
-	 * @param value
-	 */
-	private void fireLevelChangeListeners(byte value)
-	{
-		if (!levelListeners.isEmpty() || !globalLevelListeners.isEmpty())
-		{
-			PlayerLevelChangeEvent event = new PlayerLevelChangeEvent();
-			event.setPlayer(getActiveChar());
-			event.setOldLevel(getLevel());
-			event.setNewLevel(getLevel() + value);
-			for (PlayerLevelListener listener : levelListeners)
-			{
-				listener.levelChanged(event);
-			}
-			for (PlayerLevelListener listener : globalLevelListeners)
-			{
-				listener.levelChanged(event);
-			}
-		}
-	}
-	
-	/**
-	 * Adds a global player level listener
-	 * @param listener
-	 */
-	public static void addGlobalLevelListener(PlayerLevelListener listener)
-	{
-		if (!globalLevelListeners.contains(listener))
-		{
-			globalLevelListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a global player level listener
-	 * @param listener
-	 */
-	public static void removeGlobalLevelListener(PlayerLevelListener listener)
-	{
-		globalLevelListeners.remove(listener);
-	}
-	
-	/**
-	 * Adds a player level listener
-	 * @param listener
-	 */
-	public void addLevelListener(PlayerLevelListener listener)
-	{
-		if (!levelListeners.contains(listener))
-		{
-			levelListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a player level listener
-	 * @param listener
-	 */
-	public void removeLevelListener(PlayerLevelListener listener)
-	{
-		levelListeners.remove(listener);
 	}
 }

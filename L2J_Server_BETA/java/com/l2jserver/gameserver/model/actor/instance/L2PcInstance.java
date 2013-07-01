@@ -95,7 +95,6 @@ import com.l2jserver.gameserver.instancemanager.DimensionalRiftManager;
 import com.l2jserver.gameserver.instancemanager.DuelManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
-import com.l2jserver.gameserver.instancemanager.GlobalVariablesManager;
 import com.l2jserver.gameserver.instancemanager.GrandBossManager;
 import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
@@ -315,7 +314,6 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.TransformEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.EquipmentListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.EventListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.HennaListener;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerDespawnListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.ProfessionChangeListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.TransformListener;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
@@ -385,6 +383,8 @@ public final class L2PcInstance extends L2Playable
 	private static final String LOAD_ZONE_RESTART_LIMIT = "SELECT time_limit FROM character_norestart_zone_time WHERE charId = ?";
 	private static final String UPDATE_ZONE_RESTART_LIMIT = "REPLACE INTO character_norestart_zone_time (charId, time_limit) VALUES (?,?)";
 	
+	private static final String COND_OVERRIDE_KEY = "cond_override";
+	
 	public static final int ID_NONE = -1;
 	
 	public static final int REQUEST_TIMEOUT = 15;
@@ -394,7 +394,6 @@ public final class L2PcInstance extends L2Playable
 	public static final int STORE_PRIVATE_MANUFACTURE = 5;
 	public static final int STORE_PRIVATE_PACKAGE_SELL = 8;
 	
-	private static final List<PlayerDespawnListener> DESPAWN_LISTENERS = new FastList<PlayerDespawnListener>().shared();
 	private static final List<HennaListener> HENNA_LISTENERS = new FastList<HennaListener>().shared();
 	private static final List<EquipmentListener> GLOBAL_EQUIPMENT_LISTENERS = new FastList<EquipmentListener>().shared();
 	private static final List<ProfessionChangeListener> GLOBAL_PROFESSION_CHANGE_LISTENERS = new FastList<ProfessionChangeListener>().shared();
@@ -1306,10 +1305,6 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void logout()
 	{
-		for (PlayerDespawnListener listener : DESPAWN_LISTENERS)
-		{
-			listener.onDespawn(this);
-		}
 		logout(true);
 	}
 	
@@ -7466,6 +7461,12 @@ public final class L2PcInstance extends L2Playable
 			}
 			
 			player.restoreZoneRestartLimitTime();
+			
+			if (player.isGM())
+			{
+				final long masks = player.getVariables().getLong(COND_OVERRIDE_KEY, PcCondOverride.getAllExceptionsMask());
+				player.setOverrideCond(masks);
+			}
 		}
 		catch (Exception e)
 		{
@@ -10892,23 +10893,6 @@ public final class L2PcInstance extends L2Playable
 			{
 				sendMessage("Entering world in Silence mode.");
 			}
-			
-			if (GlobalVariablesManager.getInstance().isVariableStored(COND_EXCEPTIONS))
-			{
-				String exes = GlobalVariablesManager.getInstance().getStoredVariable(COND_EXCEPTIONS);
-				if (Util.isDigit(exes))
-				{
-					_exceptions = Long.valueOf(exes);
-				}
-				else
-				{
-					_exceptions = PcCondOverride.getAllExceptionsMask();
-				}
-			}
-			else
-			{
-				_exceptions = PcCondOverride.getAllExceptionsMask();
-			}
 		}
 		
 		revalidateZone(true);
@@ -10918,6 +10902,7 @@ public final class L2PcInstance extends L2Playable
 		{
 			checkPlayerSkills();
 		}
+		getEvents().onPlayerLogin();
 	}
 	
 	public long getLastAccess()
@@ -11550,6 +11535,8 @@ public final class L2PcInstance extends L2Playable
 	
 	private synchronized void cleanup()
 	{
+		getEvents().onPlayerLogout();
+		
 		// Set the online Flag to True or False and update the characters table of the database with online status and lastAccess (called when login and logout)
 		try
 		{
@@ -14850,27 +14837,6 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Adds a despawn listener
-	 * @param listener
-	 */
-	public static void addDespawnListener(PlayerDespawnListener listener)
-	{
-		if (!DESPAWN_LISTENERS.contains(listener))
-		{
-			DESPAWN_LISTENERS.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a despawn listener
-	 * @param listener
-	 */
-	public static void removeDespawnListener(PlayerDespawnListener listener)
-	{
-		DESPAWN_LISTENERS.remove(listener);
-	}
-	
-	/**
 	 * Adds a henna listener
 	 * @param listener
 	 */
@@ -15046,5 +15012,19 @@ public final class L2PcInstance extends L2Playable
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public void addOverrideCond(PcCondOverride... excs)
+	{
+		super.addOverrideCond(excs);
+		getVariables().set(COND_OVERRIDE_KEY, Long.toString(_exceptions));
+	}
+	
+	@Override
+	public void removeOverridedCond(PcCondOverride... excs)
+	{
+		super.removeOverridedCond(excs);
+		getVariables().set(COND_OVERRIDE_KEY, Long.toString(_exceptions));
 	}
 }

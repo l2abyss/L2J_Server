@@ -20,11 +20,16 @@ package com.l2jserver.gameserver.model.actor.events;
 
 import java.util.logging.Level;
 
+import com.l2jserver.gameserver.model.actor.events.annotations.Message;
+import com.l2jserver.gameserver.model.actor.events.listeners.IDlgAnswerEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.IFamePointsChangeEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.IKarmaChangeEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.IPKPointsChangeEventListener;
+import com.l2jserver.gameserver.model.actor.events.listeners.IPlayerLoginEventListener;
+import com.l2jserver.gameserver.model.actor.events.listeners.IPlayerLogoutEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.IPvPPointsEventChange;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.util.Util;
 
 /**
  * @author UnAfraid
@@ -152,5 +157,82 @@ public class PlayerEvents extends PlayableEvents
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Fired whenever player answer on a dialog yes/no.
+	 * @param messageId
+	 * @param answer
+	 * @param requesterId
+	 * @return {@code true} if current answer is possible, {@code false} otherwise.
+	 */
+	public boolean onDlgAnswer(int messageId, int answer, int requesterId)
+	{
+		if (hasListeners())
+		{
+			for (IDlgAnswerEventListener listener : getEventListeners(IDlgAnswerEventListener.class))
+			{
+				try
+				{
+					final Message messageA = listener.getClass().getAnnotation(Message.class);
+					if ((messageA != null) && !Util.contains(messageA.value(), messageId))
+					{
+						continue;
+					}
+					
+					if (!listener.onDlgAnswer(getActingPlayer(), messageId, answer, requesterId))
+					{
+						return false;
+					}
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Fired whenever current player login.
+	 */
+	public void onPlayerLogin()
+	{
+		if (hasListeners())
+		{
+			for (IPlayerLoginEventListener listener : getEventListeners(IPlayerLoginEventListener.class))
+			{
+				try
+				{
+					listener.onPlayerLogin(getActingPlayer());
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Fired whenever current player is logged out.
+	 */
+	public void onPlayerLogout()
+	{
+		if (hasListeners())
+		{
+			for (IPlayerLogoutEventListener listener : getEventListeners(IPlayerLogoutEventListener.class))
+			{
+				try
+				{
+					listener.onPlayerLogout(getActingPlayer());
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+				}
+			}
+		}
 	}
 }

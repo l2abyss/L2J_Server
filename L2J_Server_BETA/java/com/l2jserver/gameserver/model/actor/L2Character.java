@@ -49,7 +49,6 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.handler.ISkillHandler;
 import com.l2jserver.gameserver.handler.SkillHandler;
 import com.l2jserver.gameserver.instancemanager.DimensionalRiftManager;
-import com.l2jserver.gameserver.instancemanager.GlobalVariablesManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager.TeleportWhereType;
@@ -211,8 +210,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	protected long _exceptions = 0L;
 	
 	private boolean _lethalable = true;
-	
-	protected final String COND_EXCEPTIONS = "COND_EX_" + getObjectId();
 	
 	private volatile Map<Integer, OptionsSkillHolder> _triggerSkills;
 	
@@ -7423,7 +7420,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		{
 			_exceptions |= exc.getMask();
 		}
-		GlobalVariablesManager.getInstance().storeVariable(COND_EXCEPTIONS, Long.toString(_exceptions));
 	}
 	
 	public void removeOverridedCond(PcCondOverride... excs)
@@ -7432,12 +7428,16 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		{
 			_exceptions &= ~exc.getMask();
 		}
-		GlobalVariablesManager.getInstance().storeVariable(COND_EXCEPTIONS, Long.toString(_exceptions));
 	}
 	
 	public boolean canOverrideCond(PcCondOverride excs)
 	{
 		return (_exceptions & excs.getMask()) == excs.getMask();
+	}
+	
+	public void setOverrideCond(long masks)
+	{
+		_exceptions = masks;
 	}
 	
 	public void setLethalable(boolean val)

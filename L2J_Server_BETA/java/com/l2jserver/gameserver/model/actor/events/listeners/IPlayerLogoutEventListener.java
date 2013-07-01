@@ -16,32 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.scripting.scriptengine.listeners.player;
+package com.l2jserver.gameserver.model.actor.events.listeners;
 
-import com.l2jserver.gameserver.model.actor.events.AbstractCharEvents;
-import com.l2jserver.gameserver.model.actor.events.listeners.IPlayerLoginEventListener;
-import com.l2jserver.gameserver.scripting.scriptengine.impl.L2JListener;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * Gets triggered when a L2PcInstance is spawned in the world
- * @author TheOne
+ * @author UnAfraid
  */
-public abstract class PlayerSpawnListener extends L2JListener implements IPlayerLoginEventListener
+public interface IPlayerLogoutEventListener extends IEventListener
 {
-	public PlayerSpawnListener()
-	{
-		register();
-	}
-	
-	@Override
-	public void register()
-	{
-		AbstractCharEvents.registerStaticListener(this);
-	}
-	
-	@Override
-	public void unregister()
-	{
-		AbstractCharEvents.unregisterStaticListener(this);
-	}
+	public void onPlayerLogout(L2PcInstance player);
 }
