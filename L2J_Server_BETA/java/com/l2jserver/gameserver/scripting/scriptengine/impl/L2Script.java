@@ -1059,30 +1059,6 @@ public abstract class L2Script extends Quest
 	}
 	
 	/**
-	 * You can use -1 to listen for all kinds of message id's
-	 * @param player
-	 * @param messageIds
-	 */
-	public void addDlgAnswerNotify(L2PcInstance player, int... messageIds)
-	{
-		DlgAnswerListener dlgAnswer = new DlgAnswerListener(player)
-		{
-			@Override
-			public boolean onDlgAnswer(L2PcInstance player, int messageId, int answer, int requesterId)
-			{
-				final DlgAnswerEvent event = new DlgAnswerEvent();
-				event.setActiveChar(player);
-				event.setMessageId(messageId);
-				event.setAnswer(answer);
-				event.setRequesterId(requesterId);
-				return L2Script.this.onDlgAnswer(event);
-			}
-		};
-		
-		_listeners.add(dlgAnswer);
-	}
-	
-	/**
 	 * Removes all DlgAnswer listeners
 	 */
 	public void removeDlgAnswerNotify()
