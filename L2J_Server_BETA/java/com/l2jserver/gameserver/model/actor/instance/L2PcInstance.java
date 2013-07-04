@@ -5787,7 +5787,7 @@ public final class L2PcInstance extends L2Playable
 			return;
 		}
 		
-		if (isCursedWeaponEquipped())
+		if (isCursedWeaponEquipped() && target.isPlayer())
 		{
 			CursedWeaponsManager.getInstance().increaseKills(_cursedWeaponEquippedId);
 			return;
