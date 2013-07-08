@@ -16,24 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model;
+package com.l2jserver.gameserver.model.variables;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
  * @author UnAfraid
  */
-public class PlayerVariables extends StatsSet
+public class PlayerVariables extends AbstractVariables
 {
 	private static final Logger _log = Logger.getLogger(PlayerVariables.class.getName());
 	
@@ -43,7 +43,6 @@ public class PlayerVariables extends StatsSet
 	private static final String INSERT_QUERY = "INSERT INTO character_variables (charId, var, val) VALUES (?, ?, ?)";
 	
 	private final int _objectId;
-	private final AtomicBoolean _hasChanges = new AtomicBoolean(false);
 	
 	public PlayerVariables(int objectId)
 	{
@@ -51,7 +50,8 @@ public class PlayerVariables extends StatsSet
 		load();
 	}
 	
-	private void load()
+	@Override
+	protected void load()
 	{
 		// Restore previous variables.
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
@@ -62,7 +62,7 @@ public class PlayerVariables extends StatsSet
 			{
 				while (rset.next())
 				{
-					super.set(rset.getString("var"), rset.getString("val"));
+					set(rset.getString("var"), rset.getString("val"));
 				}
 			}
 		}
@@ -70,12 +70,17 @@ public class PlayerVariables extends StatsSet
 		{
 			_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't restore variables for: " + getPlayer(), e);
 		}
+		finally
+		{
+			compareAndSetChanges(true, false);
+		}
 	}
 	
+	@Override
 	public void store()
 	{
 		// No changes, nothing to store.
-		if (!_hasChanges.get())
+		if (!hasChanges())
 		{
 			return;
 		}
@@ -108,54 +113,8 @@ public class PlayerVariables extends StatsSet
 		}
 		finally
 		{
-			_hasChanges.compareAndSet(true, false);
+			compareAndSetChanges(true, false);
 		}
-	}
-	
-	/**
-	 * Overriding following methods to prevent from doing useless database operations if there is no changes since player's login.
-	 */
-	
-	@Override
-	public void set(String name, boolean value)
-	{
-		_hasChanges.compareAndSet(false, true);
-		super.set(name, value);
-	}
-	
-	@Override
-	public void set(String name, double value)
-	{
-		_hasChanges.compareAndSet(false, true);
-		super.set(name, value);
-	}
-	
-	@Override
-	public void set(String name, Enum<?> value)
-	{
-		_hasChanges.compareAndSet(false, true);
-		super.set(name, value);
-	}
-	
-	@Override
-	public void set(String name, int value)
-	{
-		_hasChanges.compareAndSet(false, true);
-		super.set(name, value);
-	}
-	
-	@Override
-	public void set(String name, long value)
-	{
-		_hasChanges.compareAndSet(false, true);
-		super.set(name, value);
-	}
-	
-	@Override
-	public void set(String name, String value)
-	{
-		_hasChanges.compareAndSet(false, true);
-		super.set(name, value);
 	}
 	
 	public L2PcInstance getPlayer()
