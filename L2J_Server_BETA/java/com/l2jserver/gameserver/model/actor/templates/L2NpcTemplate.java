@@ -460,9 +460,9 @@ public final class L2NpcTemplate extends L2CharTemplate
 		getSuicideSkills().add(skill);
 	}
 	
-	public void addTeachInfo(ClassId classId)
+	public void addTeachInfo(List<ClassId> teachInfo)
 	{
-		_teachInfo.add(classId);
+		_teachInfo.addAll(teachInfo);
 	}
 	
 	public void addUniversalSkill(L2Skill skill)

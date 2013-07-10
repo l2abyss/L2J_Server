@@ -73,6 +73,7 @@ import com.l2jserver.gameserver.datatables.OfflineTradersTable;
 import com.l2jserver.gameserver.datatables.OptionsData;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.RecipeData;
+import com.l2jserver.gameserver.datatables.SkillLearnData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
@@ -266,6 +267,7 @@ public class GameServer
 		
 		printSection("NPCs");
 		HerbDropTable.getInstance();
+		SkillLearnData.getInstance();
 		NpcTable.getInstance();
 		WalkingManager.getInstance();
 		StaticObjects.getInstance();

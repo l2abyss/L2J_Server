@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.model.CategoryType;
 
 /**
+ * This class holds different categories containing class ids or npc ids.
  * @author Nos, xban1x
  */
 public final class CategoryData extends DocumentParser

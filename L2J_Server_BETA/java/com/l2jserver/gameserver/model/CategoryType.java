@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.model;
 
 /**
+ * This class defines all category types.
  * @author xban1x
  */
 public enum CategoryType

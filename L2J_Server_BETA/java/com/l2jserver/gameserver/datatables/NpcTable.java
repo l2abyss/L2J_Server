@@ -39,7 +39,6 @@ import com.l2jserver.gameserver.model.L2MinionData;
 import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.BaseStats;
 
@@ -64,9 +63,6 @@ public class NpcTable
 	
 	private static final String SELECT_NPC_ELEMENTALS_ALL = "SELECT * FROM npc_elementals ORDER BY npc_id";
 	private static final String SELECT_NPC_ELEMENTALS_BY_ID = "SELECT * FROM npc_elementals WHERE npc_id = ?";
-	
-	private static final String SELECT_SKILL_LEARN_ALL = "SELECT * FROM skill_learn";
-	private static final String SELECT_SKILL_LEARN_BY_ID = "SELECT * FROM skill_learn WHERE npc_id = ?";
 	
 	private static final String SELECT_MINION_ALL = "SELECT * FROM minions ORDER BY boss_id";
 	private static final String SELECT_MINION_BY_ID = "SELECT * FROM minions WHERE boss_id = ?";
@@ -104,7 +100,7 @@ public class NpcTable
 		loadNpcs(0);
 		loadNpcsSkills(0);
 		loadNpcsDrop(0);
-		loadNpcsSkillLearn(0);
+		SkillLearnData.getInstance().setAllNpcSkillLearn();
 		loadMinions(0);
 		loadNpcsAI(0);
 		loadNpcsElement(0);
@@ -220,7 +216,7 @@ public class NpcTable
 			if (skills)
 			{
 				loadNpcsSkills(id);
-				loadNpcsSkillLearn(id);
+				SkillLearnData.getInstance().setNpcSkillLearn(id);
 			}
 			if (drops)
 			{
@@ -800,50 +796,6 @@ public class NpcTable
 			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error reading NPC dropdata. ", e);
 		}
 		return count;
-	}
-	
-	/**
-	 * Id equals to zero or lesser means all.
-	 * @param id of the NPC to load it's skill learn list.
-	 */
-	private void loadNpcsSkillLearn(int id)
-	{
-		final String query = (id > 0) ? SELECT_SKILL_LEARN_BY_ID : SELECT_SKILL_LEARN_ALL;
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(query))
-		{
-			if (id > 0)
-			{
-				statement.setInt(1, id);
-			}
-			
-			int count = 0;
-			try (ResultSet rs = statement.executeQuery())
-			{
-				int npcId;
-				int classId;
-				L2NpcTemplate npc;
-				while (rs.next())
-				{
-					npcId = rs.getInt("npc_id");
-					classId = rs.getInt("class_id");
-					npc = getTemplate(npcId);
-					if (npc == null)
-					{
-						_log.warning(getClass().getSimpleName() + ": Error getting NPC template ID " + npcId + " while trying to load skill trainer data.");
-						continue;
-					}
-					
-					count++;
-					npc.addTeachInfo(ClassId.getClassId(classId));
-				}
-			}
-			_log.info(getClass().getSimpleName() + ": Loaded " + count + " Skill Learn.");
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error reading NPC trainer data.", e);
-		}
 	}
 	
 	/**
