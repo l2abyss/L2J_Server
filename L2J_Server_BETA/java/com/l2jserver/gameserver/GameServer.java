@@ -41,6 +41,7 @@ import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.datatables.ArmorSetsData;
 import com.l2jserver.gameserver.datatables.AugmentationData;
 import com.l2jserver.gameserver.datatables.BuyListData;
+import com.l2jserver.gameserver.datatables.CategoryData;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.CharSummonTable;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
@@ -210,6 +211,9 @@ public class GameServer
 		MapRegionManager.getInstance();
 		Announcements.getInstance();
 		GlobalVariablesManager.getInstance();
+		
+		printSection("Data");
+		CategoryData.getInstance();
 		
 		printSection("Skills");
 		EffectHandler.getInstance().executeScript();
