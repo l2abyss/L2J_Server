@@ -100,7 +100,7 @@ public class NpcTable
 		loadNpcs(0);
 		loadNpcsSkills(0);
 		loadNpcsDrop(0);
-		SkillLearnData.getInstance().setAllNpcSkillLearn();
+		SkillLearnData.getInstance().setAllNpcSkillLearn(_npcs);
 		loadMinions(0);
 		loadNpcsAI(0);
 		loadNpcsElement(0);
