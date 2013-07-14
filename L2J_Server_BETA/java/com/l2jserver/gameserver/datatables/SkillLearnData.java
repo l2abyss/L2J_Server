@@ -26,7 +26,6 @@ import java.util.Map;
 import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.engines.DocumentParser;
-import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.ClassId;
 
 /**
@@ -43,7 +42,7 @@ public final class SkillLearnData extends DocumentParser
 	}
 	
 	@Override
-	public void load()
+	public synchronized void load()
 	{
 		parseDatapackFile("data/skillLearn.xml");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _skillLearn.size() + " Skill Learn data.");
@@ -75,33 +74,19 @@ public final class SkillLearnData extends DocumentParser
 		}
 	}
 	
-	public void setAllNpcSkillLearn(Map<Integer, L2NpcTemplate> npcs)
+	/**
+	 * @param npcId
+	 * @return {@link List} of {@link ClassId}'s that this npcId can teach.
+	 */
+	public List<ClassId> getSkillLearnData(int npcId)
 	{
-		for (int npcId : _skillLearn.keySet())
-		{
-			final L2NpcTemplate npc = npcs.get(npcId);
-			if (npc == null)
-			{
-				_log.warning(getClass().getSimpleName() + ": Error getting NPC template Id " + npcId + " while trying to load skill trainer data.");
-				continue;
-			}
-			
-			npc.addTeachInfo(_skillLearn.get(npcId));
-		}
+		return _skillLearn.get(npcId);
 	}
 	
-	public void setNpcSkillLearn(int npcId)
-	{
-		final L2NpcTemplate npc = NpcTable.getInstance().getTemplate(npcId);
-		if (npc == null)
-		{
-			_log.warning(getClass().getSimpleName() + ": Error getting NPC template Id " + npcId + " while trying to load skill trainer data.");
-			return;
-		}
-		
-		npc.addTeachInfo(_skillLearn.get(npcId));
-	}
-	
+	/**
+	 * Gets the single instance of SkillLearnData.
+	 * @return single instance of SkillLearnData
+	 */
 	public static SkillLearnData getInstance()
 	{
 		return SingletonHolder._instance;

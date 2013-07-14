@@ -39,6 +39,7 @@ import com.l2jserver.gameserver.model.L2MinionData;
 import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.BaseStats;
 
@@ -100,7 +101,7 @@ public class NpcTable
 		loadNpcs(0);
 		loadNpcsSkills(0);
 		loadNpcsDrop(0);
-		SkillLearnData.getInstance().setAllNpcSkillLearn(_npcs);
+		loadNpcsSkillLearn(0);
 		loadMinions(0);
 		loadNpcsAI(0);
 		loadNpcsElement(0);
@@ -216,7 +217,7 @@ public class NpcTable
 			if (skills)
 			{
 				loadNpcsSkills(id);
-				SkillLearnData.getInstance().setNpcSkillLearn(id);
+				loadNpcsSkillLearn(id);
 			}
 			if (drops)
 			{
@@ -723,6 +724,34 @@ public class NpcTable
 		catch (Exception e)
 		{
 			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error reading NPC AI Data: " + e.getMessage(), e);
+		}
+	}
+	
+	/**
+	 * Id equals to zero or lesser means all.
+	 * @param id of the NPC to load it's skill learn list.
+	 */
+	public void loadNpcsSkillLearn(int id)
+	{
+		if (id > 0)
+		{
+			final List<ClassId> teachInfo = SkillLearnData.getInstance().getSkillLearnData(id);
+			final L2NpcTemplate template = _npcs.get(id);
+			if ((teachInfo != null) && (template != null))
+			{
+				template.addTeachInfo(teachInfo);
+			}
+		}
+		else
+		{
+			for (L2NpcTemplate template : _npcs.values())
+			{
+				final List<ClassId> teachInfo = SkillLearnData.getInstance().getSkillLearnData(template.getNpcId());
+				if (teachInfo != null)
+				{
+					template.addTeachInfo(teachInfo);
+				}
+			}
 		}
 	}
 	
