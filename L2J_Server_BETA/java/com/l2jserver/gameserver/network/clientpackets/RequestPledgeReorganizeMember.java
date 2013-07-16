@@ -64,7 +64,7 @@ public final class RequestPledgeReorganizeMember extends L2GameClientPacket
 			return;
 		}
 		
-		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_MANAGE_RANKS) != L2Clan.CP_CL_MANAGE_RANKS)
+		if (!activeChar.hasClanPrivilege(L2Clan.CP_CL_MANAGE_RANKS))
 		{
 			return;
 		}

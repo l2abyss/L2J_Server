@@ -9833,6 +9833,11 @@ public final class L2PcInstance extends L2Playable
 		_clanPrivileges = n;
 	}
 	
+	public boolean hasClanPrivilege(int privilege)
+	{
+		return ((_clanPrivileges & privilege) == privilege);
+	}
+	
 	// baron etc
 	public void setPledgeClass(int classId)
 	{

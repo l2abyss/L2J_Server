@@ -55,7 +55,7 @@ public final class RequestOustPledgeMember extends L2GameClientPacket
 			activeChar.sendPacket(SystemMessageId.YOU_ARE_NOT_A_CLAN_MEMBER);
 			return;
 		}
-		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_DISMISS) != L2Clan.CP_CL_DISMISS)
+		if (!activeChar.hasClanPrivilege(L2Clan.CP_CL_DISMISS))
 		{
 			activeChar.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 			return;

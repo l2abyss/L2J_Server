@@ -956,7 +956,7 @@ public class FortSiege implements Siegable
 			b = false;
 			player.sendMessage("Only clans with Level " + FortSiegeManager.getInstance().getSiegeClanMinLevel() + " and higher may register for a fortress siege.");
 		}
-		else if ((player.getClanPrivileges() & L2Clan.CP_CS_MANAGE_SIEGE) != L2Clan.CP_CS_MANAGE_SIEGE)
+		else if (!player.hasClanPrivilege(L2Clan.CP_CS_MANAGE_SIEGE))
 		{
 			b = false;
 			player.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);

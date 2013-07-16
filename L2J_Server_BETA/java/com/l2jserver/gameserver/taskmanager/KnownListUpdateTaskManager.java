@@ -135,7 +135,6 @@ public class KnownListUpdateTaskManager
 							object.getKnownList().addKnownObject(obj);
 						}
 					}
-					
 				}
 				else if (object instanceof L2Character)
 				{
@@ -149,7 +148,6 @@ public class KnownListUpdateTaskManager
 							{
 								object.getKnownList().addKnownObject(obj);
 							}
-							
 						}
 					}
 				}

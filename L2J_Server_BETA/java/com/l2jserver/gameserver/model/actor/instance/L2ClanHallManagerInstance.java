@@ -93,7 +93,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 			if (actualCommand.equalsIgnoreCase("banish_foreigner"))
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(1);
-				if ((player.getClanPrivileges() & L2Clan.CP_CH_DISMISS) == L2Clan.CP_CH_DISMISS)
+				if (player.hasClanPrivilege(L2Clan.CP_CH_DISMISS))
 				{
 					if (val.equalsIgnoreCase("list"))
 					{
@@ -115,7 +115,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 			else if (actualCommand.equalsIgnoreCase("manage_vault"))
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(1);
-				if ((player.getClanPrivileges() & L2Clan.CP_CL_VIEW_WAREHOUSE) == L2Clan.CP_CL_VIEW_WAREHOUSE)
+				if (player.hasClanPrivilege(L2Clan.CP_CL_VIEW_WAREHOUSE))
 				{
 					if (getClanHall().getLease() <= 0)
 					{
@@ -139,7 +139,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 			else if (actualCommand.equalsIgnoreCase("door"))
 			{
 				NpcHtmlMessage html = new NpcHtmlMessage(1);
-				if ((player.getClanPrivileges() & L2Clan.CP_CH_OPEN_DOOR) == L2Clan.CP_CH_OPEN_DOOR)
+				if (player.hasClanPrivilege(L2Clan.CP_CH_OPEN_DOOR))
 				{
 					if (val.equalsIgnoreCase("open"))
 					{
@@ -248,7 +248,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 			}
 			else if (actualCommand.equalsIgnoreCase("manage"))
 			{
-				if ((player.getClanPrivileges() & L2Clan.CP_CH_SET_FUNCTIONS) == L2Clan.CP_CH_SET_FUNCTIONS)
+				if (player.hasClanPrivilege(L2Clan.CP_CH_SET_FUNCTIONS))
 				{
 					if (val.equalsIgnoreCase("recovery"))
 					{
@@ -256,7 +256,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 						{
 							if (getClanHall().getOwnerId() == 0)
 							{
-								player.sendMessage("This clan Hall have no owner, you cannot change configuration");
+								player.sendMessage("This clan hall has no owner, you cannot change the configuration.");
 								return;
 							}
 							val = st.nextToken();
@@ -764,7 +764,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 						{
 							if (getClanHall().getOwnerId() == 0)
 							{
-								player.sendMessage("This clan Hall have no owner, you cannot change configuration");
+								player.sendMessage("This clan hall has no owner, you cannot change the configuration.");
 								return;
 							}
 							val = st.nextToken();
@@ -888,7 +888,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 								{
 									if (getClanHall().getOwnerId() == 0)
 									{
-										player.sendMessage("This clan Hall have no owner, you cannot change configuration");
+										player.sendMessage("This clan hall has no owner, you cannot change the configuration.");
 										return;
 									}
 									if (Config.DEBUG)
@@ -1138,7 +1138,7 @@ public class L2ClanHallManagerInstance extends L2MerchantInstance
 						{
 							if (getClanHall().getOwnerId() == 0)
 							{
-								player.sendMessage("This clan Hall have no owner, you cannot change configuration");
+								player.sendMessage("This clan hall has no owner, you cannot change the configuration.");
 								return;
 							}
 							val = st.nextToken();

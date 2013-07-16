@@ -82,7 +82,7 @@ public class RequestSetCrop extends L2GameClientPacket
 		
 		L2PcInstance player = getClient().getActiveChar();
 		// check player privileges
-		if ((player == null) || (player.getClan() == null) || ((player.getClanPrivileges() & L2Clan.CP_CS_MANOR_ADMIN) == 0))
+		if ((player == null) || (player.getClan() == null) || !player.hasClanPrivilege(L2Clan.CP_CS_MANOR_ADMIN))
 		{
 			return;
 		}

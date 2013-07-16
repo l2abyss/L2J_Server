@@ -73,20 +73,20 @@ public class L2CastleDoormenInstance extends L2DoormenInstance
 	@Override
 	protected final boolean isOwnerClan(L2PcInstance player)
 	{
-		if (player.getClan() != null)
+		if ((player.getClan() != null) && player.hasClanPrivilege(L2Clan.CP_CS_OPEN_DOOR))
 		{
-			if (getConquerableHall() != null)
+			SiegableHall hall = getConquerableHall();
+			// save in variable because it's a costly call
+			if (hall != null)
 			{
-				// player should have privileges to open doors
-				if ((player.getClanId() == getConquerableHall().getOwnerId()) && ((player.getClanPrivileges() & L2Clan.CP_CS_OPEN_DOOR) == L2Clan.CP_CS_OPEN_DOOR))
+				if (player.getClanId() == hall.getOwnerId())
 				{
 					return true;
 				}
 			}
 			else if (getCastle() != null)
 			{
-				// player should have privileges to open doors
-				if ((player.getClanId() == getCastle().getOwnerId()) && ((player.getClanPrivileges() & L2Clan.CP_CS_OPEN_DOOR) == L2Clan.CP_CS_OPEN_DOOR))
+				if (player.getClanId() == getCastle().getOwnerId())
 				{
 					return true;
 				}

@@ -59,7 +59,7 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 		
 		if ((_length < 0))
 		{
-			activeChar.sendMessage("File transfer error.");
+			activeChar.sendPacket(SystemMessageId.WRONG_SIZE_UPLOADED_CREST);
 			return;
 		}
 		
@@ -81,7 +81,7 @@ public final class RequestSetPledgeCrest extends L2GameClientPacket
 			return;
 		}
 		
-		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_REGISTER_CREST) != L2Clan.CP_CL_REGISTER_CREST)
+		if (!activeChar.hasClanPrivilege(L2Clan.CP_CL_REGISTER_CREST))
 		{
 			activeChar.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 			return;

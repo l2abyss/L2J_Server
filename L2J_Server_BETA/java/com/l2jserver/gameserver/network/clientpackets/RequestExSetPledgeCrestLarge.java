@@ -64,15 +64,9 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 			return;
 		}
 		
-		if (_length < 0)
+		if ((_length < 0) || (_length > 2176))
 		{
-			activeChar.sendMessage("File transfer error.");
-			return;
-		}
-		
-		if (_length > 2176)
-		{
-			activeChar.sendMessage("The insignia file size is greater than 2176 bytes.");
+			activeChar.sendPacket(SystemMessageId.WRONG_SIZE_UPLOADED_CREST);
 			return;
 		}
 		
@@ -82,7 +76,7 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 			return;
 		}
 		
-		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_REGISTER_CREST) != L2Clan.CP_CL_REGISTER_CREST)
+		if (!activeChar.hasClanPrivilege(L2Clan.CP_CL_REGISTER_CREST))
 		{
 			activeChar.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 			return;
@@ -93,7 +87,7 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 			if (clan.getCrestLargeId() != 0)
 			{
 				clan.changeLargeCrest(0);
-				activeChar.sendMessage("The insignia has been removed.");
+				activeChar.sendPacket(SystemMessageId.CLAN_CREST_HAS_BEEN_DELETED);
 			}
 		}
 		else

@@ -118,9 +118,10 @@ public class WalkingManager extends DocumentParser
 						int y = parseInt(attrs, "Y");
 						int z = parseInt(attrs, "Z");
 						int delay = parseInt(attrs, "delay");
-						
-						String chatString = null;
+						boolean run = parseBoolean(attrs, "run");
 						NpcStringId npcString = null;
+						String chatString = null;
+						
 						Node node = attrs.getNamedItem("string");
 						if (node != null)
 						{
@@ -134,7 +135,7 @@ public class WalkingManager extends DocumentParser
 								npcString = NpcStringId.getNpcStringId(node.getNodeValue());
 								if (npcString == null)
 								{
-									_log.warning(getClass().getSimpleName() + ": Unknown npcstring '" + node.getNodeValue() + ".");
+									_log.warning(getClass().getSimpleName() + ": Unknown npcString '" + node.getNodeValue() + "' for route '" + routeName + "'");
 									continue;
 								}
 							}
@@ -146,13 +147,13 @@ public class WalkingManager extends DocumentParser
 									npcString = NpcStringId.getNpcStringId(Integer.parseInt(node.getNodeValue()));
 									if (npcString == null)
 									{
-										_log.warning(getClass().getSimpleName() + ": Unknown npcstring '" + node.getNodeValue() + ".");
+										_log.warning(getClass().getSimpleName() + ": Unknown npcString '" + node.getNodeValue() + "' for route '" + routeName + "'");
 										continue;
 									}
 								}
 							}
 						}
-						list.add(new L2NpcWalkerNode(0, npcString, chatString, x, y, z, delay, parseBoolean(attrs, "run")));
+						list.add(new L2NpcWalkerNode(x, y, z, delay, run, npcString, chatString));
 					}
 					
 					else if (r.getNodeName().equals("target"))
@@ -161,11 +162,9 @@ public class WalkingManager extends DocumentParser
 						try
 						{
 							int npcId = Integer.parseInt(attrs.getNamedItem("id").getNodeValue());
-							int x = 0, y = 0, z = 0;
-							
-							x = Integer.parseInt(attrs.getNamedItem("spawnX").getNodeValue());
-							y = Integer.parseInt(attrs.getNamedItem("spawnY").getNodeValue());
-							z = Integer.parseInt(attrs.getNamedItem("spawnZ").getNodeValue());
+							int x = Integer.parseInt(attrs.getNamedItem("spawnX").getNodeValue());
+							int y = Integer.parseInt(attrs.getNamedItem("spawnY").getNodeValue());
+							int z = Integer.parseInt(attrs.getNamedItem("spawnZ").getNodeValue());
 							
 							NpcRoutesHolder holder = _routesToAttach.containsKey(npcId) ? _routesToAttach.get(npcId) : new NpcRoutesHolder();
 							holder.addRoute(routeName, new Location(x, y, z));
@@ -173,7 +172,7 @@ public class WalkingManager extends DocumentParser
 						}
 						catch (Exception e)
 						{
-							_log.warning("Walking Manager: Error in target definition for route : " + routeName);
+							_log.warning(getClass().getSimpleName() + ": Error in target definition for route '" + routeName + "'");
 						}
 					}
 				}
@@ -262,22 +261,24 @@ public class WalkingManager extends DocumentParser
 					L2NpcWalkerNode node = walk.getCurrentNode();
 					
 					// adjust next waypoint, if NPC spawns at first waypoint
-					if ((npc.getX() == node.getMoveX()) && (npc.getY() == node.getMoveY()))
+					if ((npc.getX() == node.getX()) && (npc.getY() == node.getY()))
 					{
 						walk.calculateNextNode(npc);
 						node = walk.getCurrentNode();
-						npc.sendDebugMessage("Route " + routeName + ", spawn point is same with first waypoint, adjusted to next");
+						npc.sendDebugMessage("Route '" + routeName + "': spawn point is same with first waypoint, adjusted to next");
 					}
 					
-					if (!npc.isInsideRadius(node.getMoveX(), node.getMoveY(), node.getMoveZ(), 3000, true, false))
+					if (!npc.isInsideRadius(node, 3000, true, false))
 					{
-						npc.sendDebugMessage("Route " + routeName + ", NPC is too far from starting point, walking will no start");
+						String message = "Route '" + routeName + "': NPC is too far from starting point, walking will not start";
+						_log.warning(getClass().getSimpleName() + ": " + message);
+						npc.sendDebugMessage(message);
 						return;
 					}
 					
-					npc.sendDebugMessage("Starting to move at route " + routeName);
-					npc.setIsRunning(node.getRunning());
-					npc.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new Location(node.getMoveX(), node.getMoveY(), node.getMoveZ(), 0));
+					npc.sendDebugMessage("Starting to move at route '" + routeName + "'");
+					npc.setIsRunning(node.runToLocation());
+					npc.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, node);
 					walk.setWalkCheckTask(ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new Runnable()
 					{
 						@Override
@@ -293,7 +294,7 @@ public class WalkingManager extends DocumentParser
 				}
 				else
 				{
-					npc.sendDebugMessage("Trying to start move at route " + routeName + ", but cannot now, scheduled");
+					npc.sendDebugMessage("Failed to start moving along route '" + routeName + "', scheduled");
 					ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
 					{
 						@Override
@@ -318,21 +319,21 @@ public class WalkingManager extends DocumentParser
 					// Prevent call simultaneously from scheduled task and onArrived() or temporarily stop walking for resuming in future
 					if (walk.isBlocked() || walk.isSuspended())
 					{
-						npc.sendDebugMessage("Trying continue to move at route " + routeName + ", but cannot now (operation is blocked)");
+						npc.sendDebugMessage("Failed to continue moving along route '" + routeName + "' (operation is blocked)");
 						return;
 					}
 					
 					walk.setBlocked(true);
 					L2NpcWalkerNode node = walk.getCurrentNode();
-					npc.sendDebugMessage("Route id: " + routeName + ", continue to node " + walk.getCurrentNodeId());
-					npc.setIsRunning(node.getRunning());
-					npc.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new Location(node.getMoveX(), node.getMoveY(), node.getMoveZ(), 0));
+					npc.sendDebugMessage("Route '" + routeName + "', continuing to node " + walk.getCurrentNodeId());
+					npc.setIsRunning(node.runToLocation());
+					npc.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, node);
 					walk.setBlocked(false);
 					walk.setStoppedByAttack(false);
 				}
 				else
 				{
-					npc.sendDebugMessage("Trying continue to move at route " + routeName + ", but cannot now (wrong AI state)");
+					npc.sendDebugMessage("Failed to continue moving along route '" + routeName + "' (wrong AI state)");
 				}
 			}
 		}
@@ -436,32 +437,27 @@ public class WalkingManager extends DocumentParser
 			if ((walk.getCurrentNodeId() >= 0) && (walk.getCurrentNodeId() < walk.getRoute().getNodesCount()))
 			{
 				L2NpcWalkerNode node = walk.getRoute().getNodeList().get(walk.getCurrentNodeId());
-				if (npc.isInsideRadius(node.getMoveX(), node.getMoveY(), node.getMoveZ(), 10, false, false))
+				if (npc.isInsideRadius(node, 10, false, false))
 				{
-					npc.sendDebugMessage("Route: " + walk.getRoute().getName() + ", arrived to node " + walk.getCurrentNodeId());
-					npc.sendDebugMessage("Done in " + ((System.currentTimeMillis() - walk.getLastAction()) / 1000) + " s.");
+					npc.sendDebugMessage("Route '" + walk.getRoute().getName() + "', arrived to node " + walk.getCurrentNodeId());
+					npc.sendDebugMessage("Done in " + ((System.currentTimeMillis() - walk.getLastAction()) / 1000) + " s");
 					walk.calculateNextNode(npc);
-					int delay = node.getDelay();
 					walk.setBlocked(true); // prevents to be ran from walk check task, if there is delay in this node.
 					
 					if (node.getNpcString() != null)
 					{
 						Broadcast.toKnownPlayers(npc, new NpcSay(npc, Say2.NPC_ALL, node.getNpcString()));
 					}
-					else
+					else if (!node.getChatText().isEmpty())
 					{
-						final String text = node.getChatText();
-						if ((text != null) && !text.isEmpty())
-						{
-							Broadcast.toKnownPlayers(npc, new NpcSay(npc, Say2.NPC_ALL, text));
-						}
+						Broadcast.toKnownPlayers(npc, new NpcSay(npc, Say2.NPC_ALL, node.getChatText()));
 					}
 					
 					if (npc.isDebug())
 					{
 						walk.setLastAction(System.currentTimeMillis());
 					}
-					ThreadPoolManager.getInstance().scheduleGeneral(new ArrivedTask(npc, walk), 100 + (delay * 1000L));
+					ThreadPoolManager.getInstance().scheduleGeneral(new ArrivedTask(npc, walk), 100 + (node.getDelay() * 1000L));
 				}
 			}
 		}

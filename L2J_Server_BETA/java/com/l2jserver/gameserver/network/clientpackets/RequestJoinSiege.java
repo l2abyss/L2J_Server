@@ -56,7 +56,7 @@ public final class RequestJoinSiege extends L2GameClientPacket
 			return;
 		}
 		
-		if ((activeChar.getClanPrivileges() & L2Clan.CP_CS_MANAGE_SIEGE) != L2Clan.CP_CS_MANAGE_SIEGE)
+		if (!activeChar.hasClanPrivilege(L2Clan.CP_CS_MANAGE_SIEGE))
 		{
 			activeChar.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 			return;

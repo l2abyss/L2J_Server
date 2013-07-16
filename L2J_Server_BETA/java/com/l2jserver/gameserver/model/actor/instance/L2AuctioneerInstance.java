@@ -534,7 +534,7 @@ public final class L2AuctioneerInstance extends L2Npc
 			}
 			else if (actualCommand.equalsIgnoreCase("cancelAuction"))
 			{
-				if (!((player.getClanPrivileges() & L2Clan.CP_CH_AUCTION) == L2Clan.CP_CH_AUCTION))
+				if (!player.hasClanPrivilege(L2Clan.CP_CH_AUCTION))
 				{
 					String filename = "data/html/auction/not_authorized.htm";
 					NpcHtmlMessage html = new NpcHtmlMessage(1);
@@ -574,7 +574,7 @@ public final class L2AuctioneerInstance extends L2Npc
 			}
 			else if (actualCommand.equalsIgnoreCase("sale"))
 			{
-				if (!((player.getClanPrivileges() & L2Clan.CP_CH_AUCTION) == L2Clan.CP_CH_AUCTION))
+				if (!player.hasClanPrivilege(L2Clan.CP_CH_AUCTION))
 				{
 					String filename = "data/html/auction/not_authorized.htm";
 					NpcHtmlMessage html = new NpcHtmlMessage(1);
@@ -596,7 +596,7 @@ public final class L2AuctioneerInstance extends L2Npc
 			else if (actualCommand.equalsIgnoreCase("rebid"))
 			{
 				SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-				if (!((player.getClanPrivileges() & L2Clan.CP_CH_AUCTION) == L2Clan.CP_CH_AUCTION))
+				if (!player.hasClanPrivilege(L2Clan.CP_CH_AUCTION))
 				{
 					String filename = "data/html/auction/not_authorized.htm";
 					NpcHtmlMessage html = new NpcHtmlMessage(1);

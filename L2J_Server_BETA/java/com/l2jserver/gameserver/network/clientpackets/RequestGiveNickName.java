@@ -60,7 +60,7 @@ public class RequestGiveNickName extends L2GameClientPacket
 			activeChar.broadcastTitleInfo();
 		}
 		// Can the player change/give a title?
-		else if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_GIVE_TITLE) == L2Clan.CP_CL_GIVE_TITLE)
+		else if (activeChar.hasClanPrivilege(L2Clan.CP_CL_GIVE_TITLE))
 		{
 			if (activeChar.getClan().getLevel() < 3)
 			{
@@ -78,13 +78,12 @@ public class RequestGiveNickName extends L2GameClientPacket
 				{
 					// is target from the same clan?
 					member.setTitle(_title);
-					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.TITLE_CHANGED);
-					member.sendPacket(sm);
+					member.sendPacket(SystemMessageId.TITLE_CHANGED);
 					member.broadcastTitleInfo();
-					sm = null;
 				}
 				else
 				{
+					// TODO retail messages
 					activeChar.sendMessage("Target needs to be online to get a title");
 				}
 			}
