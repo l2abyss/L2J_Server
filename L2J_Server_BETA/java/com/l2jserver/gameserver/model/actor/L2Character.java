@@ -6479,21 +6479,25 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 								// Casted on target_self but don't harm self
 								if (!target.equals(this))
 								{
-									if (target.isPlayer())
+									// Combat-mode check
+									if (skill.getEffectPoint() != 0)
 									{
-										target.getActingPlayer().getAI().clientStartAutoAttack();
-									}
-									else if (target.isSummon() && ((L2Character) target).hasAI())
-									{
-										L2PcInstance owner = ((L2Summon) target).getOwner();
-										if (owner != null)
+										if (target.isPlayer())
 										{
-											owner.getAI().clientStartAutoAttack();
+											target.getActingPlayer().getAI().clientStartAutoAttack();
+										}
+										else if (target.isSummon() && ((L2Character) target).hasAI())
+										{
+											L2PcInstance owner = ((L2Summon) target).getOwner();
+											if (owner != null)
+											{
+												owner.getAI().clientStartAutoAttack();
+											}
 										}
 									}
 									// attack of the own pet does not flag player
 									// triggering trap not flag trap owner
-									if ((player.getSummon() != target) && !isTrap())
+									if ((player.getSummon() != target) && !isTrap() && !((skill.getEffectPoint() == 0) && (skill.getAffectRange() > 0)))
 									{
 										player.updatePvPStatus((L2Character) target);
 									}
