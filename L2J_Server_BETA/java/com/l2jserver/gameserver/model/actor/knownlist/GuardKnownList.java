@@ -93,7 +93,7 @@ public class GuardKnownList extends AttackableKnownList
 		if (getActiveChar().getAggroList().isEmpty())
 		{
 			// Set the L2GuardInstance to AI_INTENTION_IDLE
-			if (getActiveChar().hasAI())
+			if (getActiveChar().hasAI() && !getActiveChar().isWalker())
 			{
 				getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
 			}

@@ -270,7 +270,7 @@ public class WalkingManager extends DocumentParser
 					
 					if (!npc.isInsideRadius(node, 3000, true, false))
 					{
-						String message = "Route '" + routeName + "': NPC is too far from starting point, walking will not start";
+						String message = "Route '" + routeName + "': NPC (id=" + npc.getNpcId() + ", x=" + npc.getX() + ", y=" + npc.getY() + ", z=" + npc.getZ() + ") is too far from starting point (node x=" + node.getX() + ", y=" + node.getY() + ", z=" + node.getZ() + ", range=" + npc.getDistanceSq(node.getX(), node.getY(), node.getZ()) + "), walking will not start";
 						_log.warning(getClass().getSimpleName() + ": " + message);
 						npc.sendDebugMessage(message);
 						return;
@@ -333,7 +333,7 @@ public class WalkingManager extends DocumentParser
 				}
 				else
 				{
-					npc.sendDebugMessage("Failed to continue moving along route '" + routeName + "' (wrong AI state)");
+					npc.sendDebugMessage("Failed to continue moving along route '" + routeName + "' (wrong AI state - " + npc.getAI().getIntention() + ")");
 				}
 			}
 		}

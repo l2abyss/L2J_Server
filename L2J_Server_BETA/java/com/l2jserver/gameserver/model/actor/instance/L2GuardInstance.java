@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
@@ -45,6 +46,8 @@ public class L2GuardInstance extends L2Attackable
 	private static Logger _log = Logger.getLogger(L2GuardInstance.class.getName());
 	
 	private static final int RETURN_INTERVAL = 60000;
+	
+	private Future<?> _returnTask;
 	
 	public class ReturnTask implements Runnable
 	{
@@ -73,8 +76,6 @@ public class L2GuardInstance extends L2Attackable
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2GuardInstance);
-		
-		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new ReturnTask(), RETURN_INTERVAL, RETURN_INTERVAL + Rnd.nextInt(60000));
 	}
 	
 	@Override
@@ -120,6 +121,11 @@ public class L2GuardInstance extends L2Attackable
 	{
 		setIsNoRndWalk(true);
 		super.onSpawn();
+		
+		if ((_returnTask == null) && !isWalker())
+		{
+			_returnTask = ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new ReturnTask(), RETURN_INTERVAL, RETURN_INTERVAL + Rnd.nextInt(60000));
+		}
 		
 		// check the region where this mob is, do not activate the AI if region is inactive.
 		L2WorldRegion region = L2World.getInstance().getRegion(getX(), getY());
