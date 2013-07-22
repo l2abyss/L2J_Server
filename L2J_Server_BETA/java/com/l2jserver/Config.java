@@ -54,6 +54,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.engines.DocumentParser;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.util.FloodProtectorConfig;
 import com.l2jserver.util.L2Properties;
@@ -1579,7 +1580,7 @@ public final class Config
 			ALTERNATE_CLASS_MASTER = Boolean.parseBoolean(Character.getProperty("AlternateClassMaster", "False"));
 			if (ALLOW_CLASS_MASTERS || ALTERNATE_CLASS_MASTER)
 			{
-				CLASS_MASTER_SETTINGS = new ClassMasterSettings(Character.getProperty("ConfigClassMaster"));
+				CLASS_MASTER_SETTINGS = new ClassMasterSettings(Character.getProperty("ConfigClassMaster", ""));
 			}
 			LIFE_CRYSTAL_NEEDED = Boolean.parseBoolean(Character.getProperty("LifeCrystalNeeded", "true"));
 			ES_SP_BOOK_NEEDED = Boolean.parseBoolean(Character.getProperty("EnchantSkillSpBookNeeded", "true"));
@@ -4123,102 +4124,86 @@ public final class Config
 		return tType;
 	}
 	
-	public static class ClassMasterSettings
+	public static final class ClassMasterSettings
 	{
-		private final Map<Integer, Map<Integer, Integer>> _claimItems;
-		private final Map<Integer, Map<Integer, Integer>> _rewardItems;
-		private final Map<Integer, Boolean> _allowedClassChange;
+		private final Map<Integer, List<ItemHolder>> _claimItems = new HashMap<>(3);
+		private final Map<Integer, List<ItemHolder>> _rewardItems = new HashMap<>(3);
+		private final Map<Integer, Boolean> _allowedClassChange = new HashMap<>(3);
 		
-		public ClassMasterSettings(String _configLine)
+		public ClassMasterSettings(String configLine)
 		{
-			_claimItems = new HashMap<>(3);
-			_rewardItems = new HashMap<>(3);
-			_allowedClassChange = new HashMap<>(3);
-			if (_configLine != null)
-			{
-				parseConfigLine(_configLine.trim());
-			}
+			parseConfigLine(configLine.trim());
 		}
 		
-		private void parseConfigLine(String _configLine)
+		private void parseConfigLine(String configLine)
 		{
-			StringTokenizer st = new StringTokenizer(_configLine, ";");
+			if (configLine.isEmpty())
+			{
+				return;
+			}
+			
+			final StringTokenizer st = new StringTokenizer(configLine, ";");
 			
 			while (st.hasMoreTokens())
 			{
 				// get allowed class change
-				int job = Integer.parseInt(st.nextToken());
+				final int job = Integer.parseInt(st.nextToken());
 				
 				_allowedClassChange.put(job, true);
 				
-				Map<Integer, Integer> _items = new HashMap<>();
+				final List<ItemHolder> requiredItems = new ArrayList<>();
 				// parse items needed for class change
 				if (st.hasMoreTokens())
 				{
-					StringTokenizer st2 = new StringTokenizer(st.nextToken(), "[],");
+					final StringTokenizer st2 = new StringTokenizer(st.nextToken(), "[],");
 					
 					while (st2.hasMoreTokens())
 					{
-						StringTokenizer st3 = new StringTokenizer(st2.nextToken(), "()");
-						int _itemId = Integer.parseInt(st3.nextToken());
-						int _quantity = Integer.parseInt(st3.nextToken());
-						_items.put(_itemId, _quantity);
+						final StringTokenizer st3 = new StringTokenizer(st2.nextToken(), "()");
+						final int itemId = Integer.parseInt(st3.nextToken());
+						final int quantity = Integer.parseInt(st3.nextToken());
+						requiredItems.add(new ItemHolder(itemId, quantity));
 					}
 				}
 				
-				_claimItems.put(job, _items);
+				_claimItems.put(job, requiredItems);
 				
-				_items = new HashMap<>();
+				final List<ItemHolder> rewardItems = new ArrayList<>();
 				// parse gifts after class change
 				if (st.hasMoreTokens())
 				{
-					StringTokenizer st2 = new StringTokenizer(st.nextToken(), "[],");
+					final StringTokenizer st2 = new StringTokenizer(st.nextToken(), "[],");
 					
 					while (st2.hasMoreTokens())
 					{
-						StringTokenizer st3 = new StringTokenizer(st2.nextToken(), "()");
-						int _itemId = Integer.parseInt(st3.nextToken());
-						int _quantity = Integer.parseInt(st3.nextToken());
-						_items.put(_itemId, _quantity);
+						final StringTokenizer st3 = new StringTokenizer(st2.nextToken(), "()");
+						final int itemId = Integer.parseInt(st3.nextToken());
+						final int quantity = Integer.parseInt(st3.nextToken());
+						rewardItems.add(new ItemHolder(itemId, quantity));
 					}
 				}
 				
-				_rewardItems.put(job, _items);
+				_rewardItems.put(job, rewardItems);
 			}
 		}
 		
 		public boolean isAllowed(int job)
 		{
-			if (_allowedClassChange == null)
+			if ((_allowedClassChange == null) || !_allowedClassChange.containsKey(job))
 			{
 				return false;
 			}
-			if (_allowedClassChange.containsKey(job))
-			{
-				return _allowedClassChange.get(job);
-			}
-			
-			return false;
+			return _allowedClassChange.get(job);
 		}
 		
-		public Map<Integer, Integer> getRewardItems(int job)
+		public List<ItemHolder> getRewardItems(int job)
 		{
-			if (_rewardItems.containsKey(job))
-			{
-				return _rewardItems.get(job);
-			}
-			
-			return null;
+			return _rewardItems.get(job);
 		}
 		
-		public Map<Integer, Integer> getRequireItems(int job)
+		public List<ItemHolder> getRequireItems(int job)
 		{
-			if (_claimItems.containsKey(job))
-			{
-				return _claimItems.get(job);
-			}
-			
-			return null;
+			return _claimItems.get(job);
 		}
 	}
 	

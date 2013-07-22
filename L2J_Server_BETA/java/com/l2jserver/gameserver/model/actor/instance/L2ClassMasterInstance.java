@@ -24,6 +24,7 @@ import com.l2jserver.gameserver.datatables.ClassListData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.ClassId;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -198,7 +199,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 		}
 		else if (!Config.CLASS_MASTER_SETTINGS.isAllowed(level))
 		{
-			int jobLevel = player.getClassId().level();
+			final int jobLevel = player.getClassId().level();
 			final StringBuilder sb = new StringBuilder(100);
 			sb.append("<html><body>");
 			switch (jobLevel)
@@ -351,7 +352,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 			return false;
 		}
 		
-		int newJobLevel = currentClassId.level() + 1;
+		final int newJobLevel = currentClassId.level() + 1;
 		
 		// Weight/Inventory check
 		if (!Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).isEmpty() && !player.isInventoryUnder90(false))
@@ -361,10 +362,9 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 		}
 		
 		// check if player have all required items for class transfer
-		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).keySet())
+		for (ItemHolder holder : Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel))
 		{
-			int _count = Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).get(_itemId);
-			if (player.getInventory().getInventoryItemCount(_itemId, -1) < _count)
+			if (player.getInventory().getInventoryItemCount(holder.getId(), -1) < holder.getCount())
 			{
 				player.sendPacket(SystemMessageId.NOT_ENOUGH_ITEMS);
 				return false;
@@ -372,20 +372,18 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 		}
 		
 		// get all required items for class transfer
-		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).keySet())
+		for (ItemHolder holder : Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel))
 		{
-			int _count = Config.CLASS_MASTER_SETTINGS.getRequireItems(newJobLevel).get(_itemId);
-			if (!player.destroyItemByItemId("ClassMaster", _itemId, _count, player, true))
+			if (!player.destroyItemByItemId("ClassMaster", holder.getId(), holder.getCount(), player, true))
 			{
 				return false;
 			}
 		}
 		
 		// reward player with items
-		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).keySet())
+		for (ItemHolder holder : Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel))
 		{
-			int _count = Config.CLASS_MASTER_SETTINGS.getRewardItems(newJobLevel).get(_itemId);
-			player.addItem("ClassMaster", _itemId, _count, player, true);
+			player.addItem("ClassMaster", holder.getId(), holder.getCount(), player, true);
 		}
 		
 		player.setClassId(val);
@@ -436,15 +434,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 	 */
 	private static final boolean validateClassId(ClassId oldCID, int val)
 	{
-		try
-		{
-			return validateClassId(oldCID, ClassId.getClassId(val));
-		}
-		catch (Exception e)
-		{
-			// possible ArrayOutOfBoundsException
-		}
-		return false;
+		return validateClassId(oldCID, ClassId.getClassId(val));
 	}
 	
 	/**
@@ -479,11 +469,10 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 		{
 			return "<tr><td>none</td></tr>";
 		}
-		StringBuilder sb = new StringBuilder();
-		for (int _itemId : Config.CLASS_MASTER_SETTINGS.getRequireItems(level).keySet())
+		final StringBuilder sb = new StringBuilder();
+		for (ItemHolder holder : Config.CLASS_MASTER_SETTINGS.getRequireItems(level))
 		{
-			int _count = Config.CLASS_MASTER_SETTINGS.getRequireItems(level).get(_itemId);
-			sb.append("<tr><td><font color=\"LEVEL\">" + _count + "</font></td><td>" + ItemTable.getInstance().getTemplate(_itemId).getName() + "</td></tr>");
+			sb.append("<tr><td><font color=\"LEVEL\">" + holder.getCount() + "</font></td><td>" + ItemTable.getInstance().getTemplate(holder.getId()).getName() + "</td></tr>");
 		}
 		return sb.toString();
 	}
