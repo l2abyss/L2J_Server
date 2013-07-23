@@ -2786,10 +2786,6 @@ public final class Config
 				_log.log(Level.SEVERE, "Error while loading PVP settings!", e);
 			}
 			
-			KARMA_MIN_KARMA = Integer.parseInt(PVPSettings.getProperty("MinKarma", "240"));
-			KARMA_MAX_KARMA = Integer.parseInt(PVPSettings.getProperty("MaxKarma", "10000"));
-			KARMA_XP_DIVIDER = Integer.parseInt(PVPSettings.getProperty("XPDivider", "260"));
-			KARMA_LOST_BASE = Integer.parseInt(PVPSettings.getProperty("BaseKarmaLost", "0"));
 			KARMA_DROP_GM = Boolean.parseBoolean(PVPSettings.getProperty("CanGMDropEquipment", "false"));
 			KARMA_AWARD_PK_KILL = Boolean.parseBoolean(PVPSettings.getProperty("AwardPKKillPVPPoint", "true"));
 			KARMA_PK_LIMIT = Integer.parseInt(PVPSettings.getProperty("MinimumPKRequiredToDrop", "5"));
