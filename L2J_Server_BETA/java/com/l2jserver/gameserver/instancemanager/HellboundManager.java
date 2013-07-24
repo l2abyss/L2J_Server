@@ -238,10 +238,10 @@ public class HellboundManager
 	
 	private final void loadData()
 	{
-		if (GlobalVariablesManager.getInstance().isVariableStored("HBLevel"))
+		if (GlobalVariablesManager.getInstance().hasVariable("HBLevel"))
 		{
-			_level = Integer.parseInt(GlobalVariablesManager.getInstance().getStoredVariable("HBLevel"));
-			_trust = Integer.parseInt(GlobalVariablesManager.getInstance().getStoredVariable("HBTrust"));
+			_level = GlobalVariablesManager.getInstance().getInteger("HBLevel");
+			_trust = GlobalVariablesManager.getInstance().getInteger("HBTrust");
 		}
 		else
 		{
@@ -251,8 +251,8 @@ public class HellboundManager
 	
 	public final void saveData()
 	{
-		GlobalVariablesManager.getInstance().storeVariable("HBLevel", String.valueOf(_level));
-		GlobalVariablesManager.getInstance().storeVariable("HBTrust", String.valueOf(_trust));
+		GlobalVariablesManager.getInstance().set("HBLevel", _level);
+		GlobalVariablesManager.getInstance().set("HBTrust", _trust);
 	}
 	
 	private final void loadSpawns()

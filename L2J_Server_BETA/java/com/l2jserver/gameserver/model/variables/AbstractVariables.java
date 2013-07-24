@@ -80,6 +80,16 @@ public abstract class AbstractVariables extends StatsSet
 	}
 	
 	/**
+	 * Return true if there exists a record for the variable name.
+	 * @param name
+	 * @return
+	 */
+	public boolean hasVariable(String name)
+	{
+		return getSet().keySet().contains(name);
+	}
+	
+	/**
 	 * @return {@code true} if changes are made since last load/save.
 	 */
 	public final boolean hasChanges()

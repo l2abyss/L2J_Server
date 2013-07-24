@@ -53,9 +53,9 @@ public class GraciaSeedsManager
 		{
 			case SODTYPE:
 				// Seed of Destruction
-				GlobalVariablesManager.getInstance().storeVariable("SoDState", String.valueOf(_SoDState));
-				GlobalVariablesManager.getInstance().storeVariable("SoDTiatKilled", String.valueOf(_SoDTiatKilled));
-				GlobalVariablesManager.getInstance().storeVariable("SoDLSCDate", String.valueOf(_SoDLastStateChangeDate.getTimeInMillis()));
+				GlobalVariablesManager.getInstance().set("SoDState", _SoDState);
+				GlobalVariablesManager.getInstance().set("SoDTiatKilled", _SoDTiatKilled);
+				GlobalVariablesManager.getInstance().set("SoDLSCDate", _SoDLastStateChangeDate.getTimeInMillis());
 				break;
 			case SOITYPE:
 				// Seed of Infinity
@@ -72,11 +72,11 @@ public class GraciaSeedsManager
 	public void loadData()
 	{
 		// Seed of Destruction variables
-		if (GlobalVariablesManager.getInstance().isVariableStored("SoDState"))
+		if (GlobalVariablesManager.getInstance().hasVariable("SoDState"))
 		{
-			_SoDState = Integer.parseInt(GlobalVariablesManager.getInstance().getStoredVariable("SoDState"));
-			_SoDTiatKilled = Integer.parseInt(GlobalVariablesManager.getInstance().getStoredVariable("SoDTiatKilled"));
-			_SoDLastStateChangeDate.setTimeInMillis(Long.parseLong(GlobalVariablesManager.getInstance().getStoredVariable("SoDLSCDate")));
+			_SoDState = GlobalVariablesManager.getInstance().getInteger("SoDState");
+			_SoDTiatKilled = GlobalVariablesManager.getInstance().getInteger("SoDTiatKilled");
+			_SoDLastStateChangeDate.setTimeInMillis(GlobalVariablesManager.getInstance().getLong("SoDLSCDate"));
 		}
 		else
 		{
