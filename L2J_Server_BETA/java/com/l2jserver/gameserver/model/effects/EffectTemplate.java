@@ -56,7 +56,6 @@ public class EffectTemplate
 	private List<FuncTemplate> _funcTemplates;
 	private final boolean _showIcon;
 	private final String _name;
-	private final double _effectPower; // to handle chance
 	private final int _triggeredId;
 	private final int _triggeredLevel;
 	private final ChanceCondition _chanceCondition;
@@ -79,7 +78,6 @@ public class EffectTemplate
 		}
 		_eventEffect = AbnormalEffect.getByName(set.getString("event", ""));
 		_showIcon = set.getInteger("noicon", 0) == 0;
-		_effectPower = set.getDouble("effectPower", -1);
 		_triggeredId = set.getInteger("triggeredId", 0);
 		_triggeredLevel = set.getInteger("triggeredLevel", 1);
 		_chanceCondition = ChanceCondition.parse(set.getString("chanceType", null), set.getInteger("activationChance", -1), set.getInteger("activationMinDamage", -1), set.getString("activationElements", null), set.getString("activationSkills", null), set.getBool("pvpChanceOnly", false));
@@ -219,11 +217,6 @@ public class EffectTemplate
 	public boolean isIconDisplay()
 	{
 		return _showIcon;
-	}
-	
-	public double getEffectPower()
-	{
-		return _effectPower;
 	}
 	
 	public int getTriggeredId()
