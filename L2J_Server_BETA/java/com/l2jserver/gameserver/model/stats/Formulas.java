@@ -809,7 +809,7 @@ public final class Formulas
 		if (target.isL2Attackable())
 		{
 			final L2Weapon weapon = attacker.getActiveWeaponItem();
-			if ((weapon.getItemType() == L2WeaponType.BOW) || (weapon.getItemType() == L2WeaponType.CROSSBOW))
+			if ((weapon != null) && ((weapon.getItemType() == L2WeaponType.BOW) || (weapon.getItemType() == L2WeaponType.CROSSBOW)))
 			{
 				if (skill != null)
 				{
