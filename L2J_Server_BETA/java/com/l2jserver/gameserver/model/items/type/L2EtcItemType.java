@@ -76,8 +76,7 @@ public enum L2EtcItemType implements L2ItemType
 	}
 	
 	/**
-	 * Returns the ID of the item after applying the mask.
-	 * @return int : ID of the item
+	 * @return the ID of the item after applying the mask.
 	 */
 	@Override
 	public int mask()
@@ -86,11 +85,10 @@ public enum L2EtcItemType implements L2ItemType
 	}
 	
 	/**
-	 * Returns the name of the EtcItemType
-	 * @return String
+	 * @return the name of the EtcItemType
 	 */
 	@Override
-	public String toString()
+	public String getName()
 	{
 		return _name;
 	}

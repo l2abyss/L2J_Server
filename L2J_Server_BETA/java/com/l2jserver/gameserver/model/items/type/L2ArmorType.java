@@ -40,15 +40,14 @@ public enum L2ArmorType implements L2ItemType
 	 * Constructor of the L2ArmorType.
 	 * @param name : String designating the name of the ArmorType
 	 */
-	L2ArmorType(String name)
+	private L2ArmorType(String name)
 	{
 		_mask = 1 << (ordinal() + L2WeaponType.values().length);
 		_name = name;
 	}
 	
 	/**
-	 * Returns the ID of the ArmorType after applying a mask.
-	 * @return int : ID of the ArmorType after mask
+	 * @return the ID of the ArmorType after applying a mask.
 	 */
 	@Override
 	public int mask()
@@ -57,11 +56,10 @@ public enum L2ArmorType implements L2ItemType
 	}
 	
 	/**
-	 * Returns the name of the ArmorType
-	 * @return String
+	 * @return the name of the ArmorType
 	 */
 	@Override
-	public String toString()
+	public String getName()
 	{
 		return _name;
 	}

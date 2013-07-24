@@ -18,6 +18,8 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.handler.BypassHandler;
+import com.l2jserver.gameserver.handler.IBypassHandler;
 import com.l2jserver.gameserver.model.actor.instance.L2ClassMasterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.quest.QuestState;
@@ -37,18 +39,26 @@ public class RequestTutorialLinkHtml extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance player = getClient().getActiveChar();
+		final L2PcInstance player = getClient().getActiveChar();
 		if (player == null)
 		{
 			return;
 		}
 		
-		L2ClassMasterInstance.onTutorialLink(player, _bypass);
-		
-		QuestState qs = player.getQuestState("255_Tutorial");
-		if (qs != null)
+		final IBypassHandler handler = BypassHandler.getInstance().getHandler(_bypass);
+		if (handler != null)
 		{
-			qs.getQuest().notifyEvent(_bypass, null, player);
+			handler.useBypass(_bypass, player, null);
+		}
+		else
+		{
+			L2ClassMasterInstance.onTutorialLink(player, _bypass);
+			
+			QuestState qs = player.getQuestState("255_Tutorial");
+			if (qs != null)
+			{
+				qs.getQuest().notifyEvent(_bypass, null, player);
+			}
 		}
 	}
 	

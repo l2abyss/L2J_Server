@@ -21,6 +21,7 @@ package com.l2jserver.gameserver.model.actor.templates;
 import java.util.Map;
 
 import com.l2jserver.gameserver.model.StatsSet;
+import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.MoveType;
 
@@ -48,8 +49,9 @@ public class L2CharTemplate
 	private int _basePAtkSpd;
 	private int _baseMAtkSpd;
 	private float _baseMReuseRate;
+	private int _baseAttackRange;
+	private L2WeaponType _baseAttackType;
 	private int _baseShldDef;
-	private int _baseAtkRange;
 	private int _baseShldRate;
 	private int _baseCritRate;
 	private int _baseMCritRate;
@@ -85,6 +87,7 @@ public class L2CharTemplate
 	private double _baseEarthRes;
 	private double _baseHolyRes;
 	private double _baseDarkRes;
+	private double _baseElementRes;
 	
 	private int _baseMpConsumeRate;
 	private int _baseHpConsumeRate;
@@ -129,7 +132,8 @@ public class L2CharTemplate
 		_baseMAtkSpd = set.getInteger("baseMAtkSpd", 333);
 		_baseMReuseRate = set.getFloat("baseMReuseDelay", 1.f);
 		_baseShldDef = set.getInteger("baseShldDef", 0);
-		_baseAtkRange = set.getInteger("baseAtkRange", 0);
+		_baseAttackRange = set.getInteger("baseAtkRange", 40);
+		_baseAttackType = L2WeaponType.findByName(set.getString("baseAtkType", "Fist"));
 		_baseShldRate = set.getInteger("baseShldRate", 0);
 		_baseCritRate = set.getInteger("baseCritRate", 4);
 		_baseMCritRate = set.getInteger("baseMCritRate", 0);
@@ -166,6 +170,7 @@ public class L2CharTemplate
 		_baseEarthRes = set.getInteger("baseEarthRes", 0);
 		_baseHolyRes = set.getInteger("baseHolyRes", 0);
 		_baseDarkRes = set.getInteger("baseDarkRes", 0);
+		_baseElementRes = set.getInteger("baseElementRes", 0);
 		
 		// C4 Stats
 		_baseMpConsumeRate = set.getInteger("baseMpConsumeRate", 0);
@@ -280,6 +285,14 @@ public class L2CharTemplate
 	public double getBaseDarkRes()
 	{
 		return _baseDarkRes;
+	}
+	
+	/**
+	 * @return the _baseElementRes
+	 */
+	public double getBaseElementRes()
+	{
+		return _baseElementRes;
 	}
 	
 	/**
@@ -424,14 +437,6 @@ public class L2CharTemplate
 	public int getBaseShldDef()
 	{
 		return _baseShldDef;
-	}
-	
-	/**
-	 * @return the baseAtkRange
-	 */
-	public int getBaseAtkRange()
-	{
-		return _baseAtkRange;
 	}
 	
 	/**
@@ -749,6 +754,48 @@ public class L2CharTemplate
 	public void setBaseDarkRes(double baseDarkRes)
 	{
 		_baseDarkRes = baseDarkRes;
+	}
+	
+	/**
+	 * @param baseElementRes
+	 */
+	public void setBaseElementRes(double baseElementRes)
+	{
+		_baseElementRes = baseElementRes;
+	}
+	
+	/**
+	 * @return the base attack type (Sword, Fist, Blunt, etc..)
+	 */
+	public L2WeaponType getBaseAttackType()
+	{
+		return _baseAttackType;
+	}
+	
+	/**
+	 * Sets base attack type.
+	 * @param type
+	 */
+	public void setBaseAttackType(L2WeaponType type)
+	{
+		_baseAttackType = type;
+	}
+	
+	/**
+	 * @return the baseAtkRange
+	 */
+	public int getBaseAttackRange()
+	{
+		return _baseAttackRange;
+	}
+	
+	/**
+	 * Sets base attack range.
+	 * @param val
+	 */
+	public void setBaseAttackRange(int val)
+	{
+		_baseAttackRange = val;
 	}
 	
 	/**

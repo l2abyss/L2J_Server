@@ -120,13 +120,13 @@ public class ItemTable
 		// weapon types
 		for (L2WeaponType type : L2WeaponType.values())
 		{
-			_weaponTypes.put(type.toString(), type);
+			_weaponTypes.put(type.getName(), type);
 		}
 		
 		// armor types
 		for (L2ArmorType type : L2ArmorType.values())
 		{
-			_armorTypes.put(type.toString(), type);
+			_armorTypes.put(type.getName(), type);
 		}
 		
 		_slots.put("shirt", L2Item.SLOT_UNDERWEAR);

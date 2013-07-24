@@ -18,50 +18,58 @@
  */
 package com.l2jserver.gameserver.model.items.type;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.l2jserver.gameserver.model.stats.TraitType;
+
 /**
  * @author mkizub <BR>
  *         Description of Weapon Type
  */
 public enum L2WeaponType implements L2ItemType
 {
-	SWORD("Sword"),
-	BLUNT("Blunt"),
-	DAGGER("Dagger"),
-	BOW("Bow"),
-	POLE("Pole"),
-	NONE("None"),
-	DUAL("Dual Sword"),
-	ETC("Etc"),
-	FIST("Fist"),
-	DUALFIST("Dual Fist"),
-	FISHINGROD("Rod"),
-	RAPIER("Rapier"),
-	ANCIENTSWORD("Ancient"),
-	CROSSBOW("Crossbow"),
-	FLAG("Flag"),
-	OWNTHING("Ownthing"),
-	DUALDAGGER("Dual Dagger"),
+	SWORD("Sword", TraitType.SWORD),
+	BLUNT("Blunt", TraitType.BLUNT),
+	DAGGER("Dagger", TraitType.DAGGER),
+	BOW("Bow", TraitType.BOW),
+	POLE("Pole", TraitType.POLE),
+	NONE("None", TraitType.NONE),
+	DUAL("Dual Sword", TraitType.DUAL),
+	ETC("Etc", TraitType.ETC),
+	FIST("Fist", TraitType.FIST),
+	DUALFIST("Dual Fist", TraitType.DUALFIST),
+	FISHINGROD("Rod", TraitType.NONE),
+	RAPIER("Rapier", TraitType.RAPIER),
+	ANCIENTSWORD("Ancient", TraitType.ANCIENTSWORD),
+	CROSSBOW("Crossbow", TraitType.CROSSBOW),
+	FLAG("Flag", TraitType.NONE),
+	OWNTHING("Ownthing", TraitType.NONE),
+	DUALDAGGER("Dual Dagger", TraitType.DUALDAGGER),
 	
 	// L2J CUSTOM, BACKWARD COMPATIBILITY
-	BIGBLUNT("Big Blunt"),
-	BIGSWORD("Big Sword");
+	BIGBLUNT("Big Blunt", TraitType.BLUNT),
+	BIGSWORD("Big Sword", TraitType.SWORD);
 	
+	private static final Logger _log = Logger.getLogger(L2WeaponType.class.getName());
 	private final int _mask;
 	private final String _name;
+	private final TraitType _traitType;
 	
 	/**
 	 * Constructor of the L2WeaponType.
 	 * @param name : String designating the name of the WeaponType
+	 * @param traitType
 	 */
-	private L2WeaponType(String name)
+	private L2WeaponType(String name, TraitType traitType)
 	{
 		_mask = 1 << ordinal();
 		_name = name;
+		_traitType = traitType;
 	}
 	
 	/**
-	 * Returns the ID of the item after applying the mask.
-	 * @return int : ID of the item
+	 * @return the ID of the item after applying the mask.
 	 */
 	@Override
 	public int mask()
@@ -70,13 +78,40 @@ public enum L2WeaponType implements L2ItemType
 	}
 	
 	/**
-	 * Returns the name of the WeaponType
-	 * @return String
+	 * @return the name of the WeaponType
 	 */
 	@Override
-	public String toString()
+	public String getName()
 	{
 		return _name;
 	}
 	
+	/**
+	 * @return L2TraitType the type of the WeaponType
+	 */
+	public TraitType getTraitType()
+	{
+		return _traitType;
+	}
+	
+	public static L2WeaponType findByName(String name)
+	{
+		if (name.equals("DUAL"))
+		{
+			name = "Dual Sword";
+		}
+		else if (name.equals("DUALFIST"))
+		{
+			name = "Dual Fist";
+		}
+		for (L2WeaponType type : values())
+		{
+			if (type.getName().equalsIgnoreCase(name))
+			{
+				return type;
+			}
+		}
+		_log.log(Level.WARNING, L2WeaponType.class.getSimpleName() + ": Requested unexistent enum member: " + name, new IllegalStateException());
+		return FIST;
+	}
 }

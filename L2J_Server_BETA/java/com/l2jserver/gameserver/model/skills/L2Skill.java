@@ -59,6 +59,7 @@ import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.stats.BaseStats;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Formulas;
+import com.l2jserver.gameserver.model.stats.TraitType;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
@@ -95,7 +96,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	/** Operative type: passive, active, toggle. */
 	private final L2SkillOpType _operateType;
 	private final int _magic;
-	private final L2TraitType _traitType;
+	private final TraitType _traitType;
 	private final boolean _staticReuse;
 	/** MP consumption. */
 	private final int _mpConsume;
@@ -146,6 +147,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final double _pvePower;
 	private final int _magicLevel;
 	private final int _lvlBonusRate;
+	private final int _activateRate;
 	private final int _minChance;
 	private final int _maxChance;
 	private final int _blowChance;
@@ -239,7 +241,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_name = set.getString("name", "");
 		_operateType = set.getEnum("operateType", L2SkillOpType.class);
 		_magic = set.getInteger("isMagic", 0);
-		_traitType = set.getEnum("trait", L2TraitType.class, L2TraitType.NONE);
+		_traitType = set.getEnum("trait", TraitType.class, TraitType.NONE);
 		_staticReuse = set.getBool("staticReuse", false);
 		_mpConsume = set.getInteger("mpConsume", 0);
 		_mpInitialConsume = set.getInteger("mpInitialConsume", 0);
@@ -352,6 +354,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_pvePower = set.getFloat("pvePower", (float) getPower());
 		_magicLevel = set.getInteger("magicLvl", 0);
 		_lvlBonusRate = set.getInteger("lvlBonusRate", 0);
+		_activateRate = set.getInteger("activateRate", -1);
 		_minChance = set.getInteger("minChance", Config.MIN_ABNORMAL_STATE_SUCCESS_RATE);
 		_maxChance = set.getInteger("maxChance", Config.MAX_ABNORMAL_STATE_SUCCESS_RATE);
 		_ignoreShield = set.getBool("ignoreShld", false);
@@ -426,7 +429,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		return _skillType;
 	}
 	
-	public final L2TraitType getTraitType()
+	public final TraitType getTraitType()
 	{
 		return _traitType;
 	}
@@ -543,6 +546,11 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final int getLvlBonusRate()
 	{
 		return _lvlBonusRate;
+	}
+	
+	public final int getActivateRate()
+	{
+		return _activateRate;
 	}
 	
 	/**

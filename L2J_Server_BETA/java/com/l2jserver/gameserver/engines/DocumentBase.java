@@ -919,7 +919,7 @@ public abstract class DocumentBase
 					String item = st.nextToken().trim();
 					for (L2WeaponType wt : L2WeaponType.values())
 					{
-						if (wt.toString().equals(item))
+						if (wt.getName().equals(item))
 						{
 							mask |= wt.mask();
 							break;
@@ -927,7 +927,7 @@ public abstract class DocumentBase
 					}
 					for (L2ArmorType at : L2ArmorType.values())
 					{
-						if (at.toString().equals(item))
+						if (at.getName().equals(item))
 						{
 							mask |= at.mask();
 							break;

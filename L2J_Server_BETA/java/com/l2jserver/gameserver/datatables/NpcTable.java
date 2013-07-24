@@ -31,8 +31,12 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2MinionData;
@@ -40,10 +44,11 @@ import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.ClassId;
+import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.BaseStats;
 
-public class NpcTable
+public class NpcTable extends DocumentParser
 {
 	private static final Logger _log = Logger.getLogger(NpcTable.class.getName());
 	
@@ -91,6 +96,99 @@ public class NpcTable
 	{
 		_npcs.clear();
 		restoreNpcData();
+		load();
+	}
+	
+	@Override
+	public synchronized void load()
+	{
+		parseDirectory("data/stats/npcs");
+	}
+	
+	@Override
+	protected void parseDocument()
+	{
+		NamedNodeMap attrs;
+		StatsSet set;
+		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
+		{
+			if ("list".equals(n.getNodeName()))
+			{
+				for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
+				{
+					if ("npc".equals(d.getNodeName()))
+					{
+						attrs = d.getAttributes();
+						int id = parseInt(attrs, "id");
+						if (_npcs.containsKey(id))
+						{
+							L2NpcTemplate template = _npcs.get(id);
+							set = new StatsSet();
+							for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling())
+							{
+								if ((c.getNodeName() == null) || c.getNodeName().startsWith("#"))
+								{
+									continue;
+								}
+								attrs = c.getAttributes();
+								switch (c.getNodeName())
+								{
+									case "base_attack":
+									{
+										final String type = parseString(attrs, "type");
+										final int range = parseInt(attrs, "range");
+										final L2WeaponType weaponType = L2WeaponType.findByName(type);
+										template.setBaseAttackType(weaponType);
+										template.setBaseAttackRange(range);
+										break;
+									}
+									case "base_attribute":
+									{
+										for (Node b = c.getFirstChild(); b != null; b = b.getNextSibling())
+										{
+											attrs = b.getAttributes();
+											if ("attack".equals(b.getNodeName()))
+											{
+												template.setBaseFire(parseInt(attrs, "fire"));
+												template.setBaseWater(parseInt(attrs, "water"));
+												template.setBaseEarth(parseInt(attrs, "earth"));
+												template.setBaseWind(parseInt(attrs, "wind"));
+												template.setBaseHoly(parseInt(attrs, "holy"));
+												template.setBaseDark(parseInt(attrs, "dark"));
+											}
+											else if ("defend".equals(b.getNodeName()))
+											{
+												template.setBaseFireRes(parseInt(attrs, "fire"));
+												template.setBaseWaterRes(parseInt(attrs, "water"));
+												template.setBaseEarthRes(parseInt(attrs, "earth"));
+												template.setBaseWindRes(parseInt(attrs, "wind"));
+												template.setBaseHolyRes(parseInt(attrs, "holy"));
+												template.setBaseDarkRes(parseInt(attrs, "dark"));
+												template.setBaseElementRes(parseInt(attrs, "unknown"));
+											}
+										}
+										break;
+									}
+									case "npc_ai":
+									{
+										for (Node b = c.getFirstChild(); b != null; b = b.getNextSibling())
+										{
+											attrs = b.getAttributes();
+											if ("ai_param".equals(b.getNodeName()))
+											{
+												set.set(parseString(attrs, "name"), parseString(attrs, "val"));
+											}
+										}
+										template.setParameters(set);
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	/**
@@ -685,7 +783,6 @@ public class NpcTable
 					if (skillId == L2Skill.SKILL_NPC_RACE)
 					{
 						npcDat.setRace(level);
-						continue;
 					}
 					
 					npcSkill = SkillTable.getInstance().getInfo(skillId, level);

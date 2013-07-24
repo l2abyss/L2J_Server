@@ -18,6 +18,8 @@
  */
 package com.l2jserver.gameserver.model.actor.stat;
 
+import java.util.Arrays;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.PcCondOverride;
@@ -30,6 +32,7 @@ import com.l2jserver.gameserver.model.stats.Calculator;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.MoveType;
 import com.l2jserver.gameserver.model.stats.Stats;
+import com.l2jserver.gameserver.model.stats.TraitType;
 
 public class CharStat
 {
@@ -37,10 +40,17 @@ public class CharStat
 	private long _exp = 0;
 	private int _sp = 0;
 	private byte _level = 1;
+	private final float[] _attackTraits = new float[TraitType.values().length];
+	private final int[] _attackTraitsCount = new int[TraitType.values().length];
+	private final float[] _defenceTraits = new float[TraitType.values().length];
+	private final int[] _defenceTraitsCount = new int[TraitType.values().length];
+	private final int[] _traitsInvul = new int[TraitType.values().length];
 	
 	public CharStat(L2Character activeChar)
 	{
 		_activeChar = activeChar;
+		Arrays.fill(_attackTraits, 1.0f);
+		Arrays.fill(_defenceTraits, 1.0f);
 	}
 	
 	public final double calcStat(Stats stat, double init)
@@ -64,7 +74,7 @@ public class CharStat
 	 */
 	public final double calcStat(Stats stat, double init, L2Character target, L2Skill skill)
 	{
-		if ((_activeChar == null) || (stat == null))
+		if (stat == null)
 		{
 			return init;
 		}
@@ -120,10 +130,6 @@ public class CharStat
 	 */
 	public int getAccuracy()
 	{
-		if (_activeChar == null)
-		{
-			return 0;
-		}
 		return (int) Math.round(calcStat(Stats.ACCURACY_COMBAT, 0, null, null));
 	}
 	
@@ -137,11 +143,6 @@ public class CharStat
 	 */
 	public final float getAttackSpeedMultiplier()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		return (float) (((1.1) * getPAtkSpd()) / _activeChar.getTemplate().getBasePAtkSpd());
 	}
 	
@@ -150,11 +151,6 @@ public class CharStat
 	 */
 	public final int getCON()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		return (int) calcStat(Stats.STAT_CON, _activeChar.getTemplate().getBaseCON());
 	}
 	
@@ -175,14 +171,14 @@ public class CharStat
 	 */
 	public int getCriticalHit(L2Character target, L2Skill skill)
 	{
-		if (_activeChar == null)
+		int val = (int) calcStat(Stats.CRITICAL_RATE, _activeChar.getTemplate().getBaseCritRate(), target, skill);
+		
+		if (!_activeChar.canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
 		{
-			return 1;
+			val = Math.min(val, Config.MAX_PCRIT_RATE);
 		}
 		
-		int criticalHit = (int) calcStat(Stats.CRITICAL_RATE, _activeChar.getTemplate().getBaseCritRate(), target, skill);
-		// Set a cap of Critical Hit at 500
-		return Math.min(criticalHit, Config.MAX_PCRIT_RATE);
+		return val;
 	}
 	
 	/**
@@ -190,10 +186,6 @@ public class CharStat
 	 */
 	public final int getDEX()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
 		return (int) calcStat(Stats.STAT_DEX, _activeChar.getTemplate().getBaseDEX());
 	}
 	
@@ -203,16 +195,13 @@ public class CharStat
 	 */
 	public int getEvasionRate(L2Character target)
 	{
-		if (_activeChar == null)
+		int val = (int) Math.round(calcStat(Stats.EVASION_RATE, 0, target, null));
+		
+		if (!_activeChar.canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
 		{
-			return 1;
+			val = Math.min(val, Config.MAX_EVASION);
 		}
 		
-		int val = (int) Math.round(calcStat(Stats.EVASION_RATE, 0, target, null));
-		if ((val > Config.MAX_EVASION) && !_activeChar.canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
-		{
-			val = Config.MAX_EVASION;
-		}
 		return val;
 	}
 	
@@ -231,11 +220,6 @@ public class CharStat
 	 */
 	public int getINT()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		return (int) calcStat(Stats.STAT_INT, _activeChar.getTemplate().getBaseINT());
 	}
 	
@@ -255,76 +239,41 @@ public class CharStat
 	 */
 	public final int getMagicalAttackRange(L2Skill skill)
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		if (skill != null)
 		{
 			return (int) calcStat(Stats.MAGIC_ATTACK_RANGE, skill.getCastRange(), null, skill);
 		}
 		
-		return _activeChar.getTemplate().getBaseAtkRange();
+		return _activeChar.getTemplate().getBaseAttackRange();
 	}
 	
 	public int getMaxCp()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		return (int) calcStat(Stats.MAX_CP, _activeChar.getTemplate().getBaseCpMax());
 	}
 	
 	public int getMaxRecoverableCp()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		return (int) calcStat(Stats.MAX_RECOVERABLE_CP, getMaxCp());
 	}
 	
 	public int getMaxHp()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		return (int) calcStat(Stats.MAX_HP, _activeChar.getTemplate().getBaseHpMax());
 	}
 	
 	public int getMaxRecoverableHp()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		return (int) calcStat(Stats.MAX_RECOVERABLE_HP, getMaxHp());
 	}
 	
 	public int getMaxMp()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		return (int) calcStat(Stats.MAX_MP, _activeChar.getTemplate().getBaseMpMax());
 	}
 	
 	public int getMaxRecoverableMp()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		return (int) calcStat(Stats.MAX_RECOVERABLE_MP, getMaxMp());
 	}
 	
@@ -337,11 +286,6 @@ public class CharStat
 	 */
 	public int getMAtk(L2Character target, L2Skill skill)
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		float bonusAtk = 1;
 		if (Config.L2JMOD_CHAMPION_ENABLE && _activeChar.isChampion())
 		{
@@ -361,20 +305,19 @@ public class CharStat
 	 */
 	public int getMAtkSpd()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
 		float bonusSpdAtk = 1;
 		if (Config.L2JMOD_CHAMPION_ENABLE && _activeChar.isChampion())
 		{
 			bonusSpdAtk = Config.L2JMOD_CHAMPION_SPD_ATK;
 		}
+		
 		double val = calcStat(Stats.MAGIC_ATTACK_SPEED, _activeChar.getTemplate().getBaseMAtkSpd() * bonusSpdAtk);
-		if ((val > Config.MAX_MATK_SPEED) && !_activeChar.canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
+		
+		if (!_activeChar.canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
 		{
-			val = Config.MAX_MATK_SPEED;
+			val = Math.min(val, Config.MAX_MATK_SPEED);
 		}
+		
 		return (int) val;
 	}
 	
@@ -385,14 +328,14 @@ public class CharStat
 	 */
 	public final int getMCriticalHit(L2Character target, L2Skill skill)
 	{
-		if (_activeChar == null)
+		int val = (int) calcStat(Stats.MCRITICAL_RATE, 1, target, skill) * 10;
+		
+		if (!_activeChar.canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
 		{
-			return 1;
+			val = Math.min(val, Config.MAX_MCRIT_RATE);
 		}
 		
-		double mrate = calcStat(Stats.MCRITICAL_RATE, 1, target, skill) * 10;
-		// Set a cap of Magical Critical Hit at 200
-		return (int) Math.min(mrate, Config.MAX_MCRIT_RATE);
+		return val;
 	}
 	
 	/**
@@ -403,11 +346,6 @@ public class CharStat
 	 */
 	public int getMDef(L2Character target, L2Skill skill)
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		// Get the base MDef of the L2Character
 		double defence = _activeChar.getTemplate().getBaseMDef();
 		
@@ -426,20 +364,11 @@ public class CharStat
 	 */
 	public final int getMEN()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		return (int) calcStat(Stats.STAT_MEN, _activeChar.getTemplate().getBaseMEN());
 	}
 	
 	public float getMovementSpeedMultiplier()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
 		final float baseSpeed = _activeChar.getTemplate().getBaseMoveSpd(_activeChar.isRunning() ? MoveType.RUN : MoveType.WALK);
 		return (getMoveSpeed() / baseSpeed);
 	}
@@ -458,11 +387,6 @@ public class CharStat
 	 */
 	public float getMoveSpeed()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		return _activeChar.isRunning() ? getRunSpeed() : getWalkSpeed();
 	}
 	
@@ -472,11 +396,6 @@ public class CharStat
 	 */
 	public final double getMReuseRate(L2Skill skill)
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		return calcStat(Stats.MAGIC_REUSE_RATE, _activeChar.getTemplate().getBaseMReuseRate(), null, skill);
 	}
 	
@@ -486,10 +405,6 @@ public class CharStat
 	 */
 	public int getPAtk(L2Character target)
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
 		float bonusAtk = 1;
 		if (Config.L2JMOD_CHAMPION_ENABLE && _activeChar.isChampion())
 		{
@@ -503,77 +418,10 @@ public class CharStat
 	}
 	
 	/**
-	 * @param target
-	 * @return the PAtk Modifier against animals.
-	 */
-	public final double getPAtkAnimals(L2Character target)
-	{
-		return calcStat(Stats.PATK_ANIMALS, 1, target, null);
-	}
-	
-	/**
-	 * @param target
-	 * @return the PAtk Modifier against dragons.
-	 */
-	public final double getPAtkDragons(L2Character target)
-	{
-		return calcStat(Stats.PATK_DRAGONS, 1, target, null);
-	}
-	
-	/**
-	 * @param target
-	 * @return the PAtk Modifier against insects.
-	 */
-	public final double getPAtkInsects(L2Character target)
-	{
-		return calcStat(Stats.PATK_INSECTS, 1, target, null);
-	}
-	
-	/**
-	 * @param target
-	 * @return the PAtk Modifier against monsters.
-	 */
-	public final double getPAtkMonsters(L2Character target)
-	{
-		return calcStat(Stats.PATK_MONSTERS, 1, target, null);
-	}
-	
-	/**
-	 * @param target
-	 * @return the PAtk Modifier against plants.
-	 */
-	public final double getPAtkPlants(L2Character target)
-	{
-		return calcStat(Stats.PATK_PLANTS, 1, target, null);
-	}
-	
-	/**
-	 * @param target
-	 * @return the PAtk Modifier against giants.
-	 */
-	public final double getPAtkGiants(L2Character target)
-	{
-		return calcStat(Stats.PATK_GIANTS, 1, target, null);
-	}
-	
-	/**
-	 * @param target
-	 * @return the PAtk Modifier against magic creatures.
-	 */
-	public final double getPAtkMagicCreatures(L2Character target)
-	{
-		return calcStat(Stats.PATK_MCREATURES, 1, target, null);
-	}
-	
-	/**
 	 * @return the PAtk Speed (base+modifier) of the L2Character in function of the Armour Expertise Penalty.
 	 */
 	public int getPAtkSpd()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
 		float bonusAtk = 1;
 		if (Config.L2JMOD_CHAMPION_ENABLE && _activeChar.isChampion())
 		{
@@ -585,78 +433,10 @@ public class CharStat
 	
 	/**
 	 * @param target
-	 * @return the PDef Modifier against animals.
-	 */
-	public final double getPDefAnimals(L2Character target)
-	{
-		return calcStat(Stats.PDEF_ANIMALS, 1, target, null);
-	}
-	
-	/**
-	 * @param target
-	 * @return the PDef Modifier against dragons.
-	 */
-	public final double getPDefDragons(L2Character target)
-	{
-		return calcStat(Stats.PDEF_DRAGONS, 1, target, null);
-	}
-	
-	/**
-	 * @param target
-	 * @return the PDef Modifier against insects.
-	 */
-	public final double getPDefInsects(L2Character target)
-	{
-		return calcStat(Stats.PDEF_INSECTS, 1, target, null);
-	}
-	
-	/**
-	 * @param target
-	 * @return the PDef Modifier against monsters.
-	 */
-	public final double getPDefMonsters(L2Character target)
-	{
-		return calcStat(Stats.PDEF_MONSTERS, 1, target, null);
-	}
-	
-	/**
-	 * @param target
-	 * @return the PDef Modifier against plants.
-	 */
-	public final double getPDefPlants(L2Character target)
-	{
-		return calcStat(Stats.PDEF_PLANTS, 1, target, null);
-	}
-	
-	/**
-	 * @param target
-	 * @return the PDef Modifier against giants.
-	 */
-	public final double getPDefGiants(L2Character target)
-	{
-		return calcStat(Stats.PDEF_GIANTS, 1, target, null);
-	}
-	
-	/**
-	 * @param target
-	 * @return the PDef Modifier against giants.
-	 */
-	public final double getPDefMagicCreatures(L2Character target)
-	{
-		return calcStat(Stats.PDEF_MCREATURES, 1, target, null);
-	}
-	
-	/**
-	 * @param target
 	 * @return the PDef (base+modifier) of the L2Character.
 	 */
 	public int getPDef(L2Character target)
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		return (int) calcStat(Stats.POWER_DEFENCE, (_activeChar.isRaid()) ? _activeChar.getTemplate().getBasePDef() * Config.RAID_PDEFENCE_MULTIPLIER : _activeChar.getTemplate().getBasePDef(), target, null);
 	}
 	
@@ -665,24 +445,19 @@ public class CharStat
 	 */
 	public final int getPhysicalAttackRange()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		if (_activeChar.isTransformed())
 		{
-			return _activeChar.getTemplate().getBaseAtkRange();
+			return _activeChar.getTemplate().getBaseAttackRange();
 		}
 		// Polearm handled here for now. Basically L2PcInstance could have a function
 		// similar to FuncBowAtkRange and NPC are defined in DP.
-		L2Weapon weaponItem = _activeChar.getActiveWeaponItem();
+		final L2Weapon weaponItem = _activeChar.getActiveWeaponItem();
 		if ((weaponItem != null) && (weaponItem.getItemType() == L2WeaponType.POLE))
 		{
 			return (int) calcStat(Stats.POWER_ATTACK_RANGE, 66);
 		}
 		
-		return (int) calcStat(Stats.POWER_ATTACK_RANGE, _activeChar.getTemplate().getBaseAtkRange());
+		return (int) calcStat(Stats.POWER_ATTACK_RANGE, _activeChar.getTemplate().getBaseAttackRange());
 	}
 	
 	/**
@@ -699,11 +474,6 @@ public class CharStat
 	 */
 	public int getRunSpeed()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		// err we should be adding TO the persons run speed
 		// not making it a constant
 		double baseRunSpd = getBaseMoveSpeed(MoveType.RUN);
@@ -739,11 +509,6 @@ public class CharStat
 	 */
 	public final int getSTR()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		return (int) calcStat(Stats.STAT_STR, _activeChar.getTemplate().getBaseSTR());
 	}
 	
@@ -752,11 +517,6 @@ public class CharStat
 	 */
 	public int getWalkSpeed()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		double baseWalkSpd = getBaseMoveSpeed(MoveType.WALK);
 		
 		if (baseWalkSpd == 0)
@@ -772,11 +532,6 @@ public class CharStat
 	 */
 	public final int getWIT()
 	{
-		if (_activeChar == null)
-		{
-			return 1;
-		}
-		
 		return (int) calcStat(Stats.STAT_WIT, _activeChar.getTemplate().getBaseWIT());
 	}
 	
@@ -926,7 +681,57 @@ public class CharStat
 			case Elementals.DARK:
 				return (int) calcStat(Stats.DARK_RES, _activeChar.getTemplate().getBaseDarkRes());
 			default:
-				return 0;
+				return (int) _activeChar.getTemplate().getBaseElementRes();
 		}
+	}
+	
+	public float getAttackTrait(TraitType traitType)
+	{
+		return _attackTraits[traitType.getId()];
+	}
+	
+	public float[] getAttackTraits()
+	{
+		return _attackTraits;
+	}
+	
+	public boolean hasAttackTrait(TraitType traitType)
+	{
+		return _attackTraitsCount[traitType.getId()] > 0;
+	}
+	
+	public int[] getAttackTraitsCount()
+	{
+		return _attackTraitsCount;
+	}
+	
+	public float getDefenceTrait(TraitType traitType)
+	{
+		return _defenceTraits[traitType.getId()];
+	}
+	
+	public float[] getDefenceTraits()
+	{
+		return _defenceTraits;
+	}
+	
+	public boolean hasDefenceTrait(TraitType traitType)
+	{
+		return _defenceTraitsCount[traitType.getId()] > 0;
+	}
+	
+	public int[] getDefenceTraitsCount()
+	{
+		return _defenceTraitsCount;
+	}
+	
+	public boolean isTraitInvul(TraitType traitType)
+	{
+		return _traitsInvul[traitType.getId()] > 0;
+	}
+	
+	public int[] getTraitsInvul()
+	{
+		return _traitsInvul;
 	}
 }

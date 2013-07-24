@@ -110,25 +110,14 @@ public enum Stats
 	FALL("fall"),
 	
 	// VULNERABILITIES
-	BLEED_VULN("bleedVuln"),
-	POISON_VULN("poisonVuln"),
-	STUN_VULN("stunVuln"),
-	PARALYZE_VULN("paralyzeVuln"),
-	ROOT_VULN("rootVuln"),
-	SLEEP_VULN("sleepVuln"),
-	PHYSICALBLOCKADE_VULN("physicalBlockadeVuln"),
-	BOSS_VULN("bossVuln"),
-	GUST_VULN("gustVuln"),
 	DAMAGE_ZONE_VULN("damageZoneVuln"),
 	MOVEMENT_VULN("movementVuln"),
 	CANCEL_VULN("cancelVuln"), // Resistance for cancel type skills
-	DERANGEMENT_VULN("derangementVuln"),
 	DEBUFF_VULN("debuffVuln"),
 	BUFF_VULN("buffVuln"),
 	CRIT_VULN("critVuln"), // Resistance to critical damage in percent.
 	CRIT_ADD_VULN("critAddVuln"), // Resistance to critical damage in value (Example: +100 will be 100 more critical damage, NOT 100% more).
 	MAGIC_DAMAGE_VULN("magicDamVul"),
-	VALAKAS_VULN("valakasVuln"),
 	
 	// RESISTANCES
 	FIRE_RES("fireRes"),
@@ -150,35 +139,9 @@ public enum Stats
 	DARK_POWER("darkPower"),
 	
 	// PROFICIENCY
-	BLEED_PROF("bleedProf"),
-	POISON_PROF("poisonProf"),
-	STUN_PROF("stunProf"),
-	PARALYZE_PROF("paralyzeProf"),
-	ROOT_PROF("rootProf"),
-	SLEEP_PROF("sleepProf"),
 	PROF("movementProf"),
 	CANCEL_PROF("cancelProf"),
-	DERANGEMENT_PROF("derangementProf"),
 	DEBUFF_PROF("debuffProf"),
-	VALAKAS_PROF("valakasProf"),
-	
-	// WEAPONS VULNERABILITIES
-	SWORD_WPN_VULN("swordWpnVuln"),
-	BLUNT_WPN_VULN("bluntWpnVuln"),
-	DAGGER_WPN_VULN("daggerWpnVuln"),
-	BOW_WPN_VULN("bowWpnVuln"),
-	CROSSBOW_WPN_VULN("crossbowWpnVuln"),
-	POLE_WPN_VULN("poleWpnVuln"),
-	ETC_WPN_VULN("etcWpnVuln"),
-	FIST_WPN_VULN("fistWpnVuln"),
-	DUAL_WPN_VULN("dualWpnVuln"),
-	DUALFIST_WPN_VULN("dualFistWpnVuln"),
-	BIGSWORD_WPN_VULN("bigSwordWpnVuln"),
-	BIGBLUNT_WPN_VULN("bigBluntWpnVuln"),
-	DUALDAGGER_WPN_VULN("dualDaggerWpnVuln"),
-	RAPIER_WPN_VULN("rapierWpnVuln"),
-	ANCIENT_WPN_VULN("ancientWpnVuln"),
-	PET_WPN_VULN("petWpnVuln"),
 	
 	REFLECT_DAMAGE_PERCENT("reflectDam"),
 	REFLECT_SKILL_MAGIC("reflectSkillMagic"),
@@ -193,22 +156,6 @@ public enum Stats
 	
 	WEIGHT_LIMIT("weightLimit"),
 	WEIGHT_PENALTY("weightPenalty"),
-	
-	PATK_PLANTS("pAtk-plants"),
-	PATK_INSECTS("pAtk-insects"),
-	PATK_ANIMALS("pAtk-animals"),
-	PATK_MONSTERS("pAtk-monsters"),
-	PATK_DRAGONS("pAtk-dragons"),
-	PATK_GIANTS("pAtk-giants"),
-	PATK_MCREATURES("pAtk-magicCreature"),
-	
-	PDEF_PLANTS("pDef-plants"),
-	PDEF_INSECTS("pDef-insects"),
-	PDEF_ANIMALS("pDef-animals"),
-	PDEF_MONSTERS("pDef-monsters"),
-	PDEF_DRAGONS("pDef-dragons"),
-	PDEF_GIANTS("pDef-giants"),
-	PDEF_MCREATURES("pDef-magicCreature"),
 	
 	// ExSkill
 	INV_LIM("inventoryLimit"),

@@ -6871,76 +6871,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		return getStat().getPAtk(target);
 	}
 	
-	public double getPAtkAnimals(L2Character target)
-	{
-		return getStat().getPAtkAnimals(target);
-	}
-	
-	public double getPAtkDragons(L2Character target)
-	{
-		return getStat().getPAtkDragons(target);
-	}
-	
-	public double getPAtkInsects(L2Character target)
-	{
-		return getStat().getPAtkInsects(target);
-	}
-	
-	public double getPAtkMonsters(L2Character target)
-	{
-		return getStat().getPAtkMonsters(target);
-	}
-	
-	public double getPAtkPlants(L2Character target)
-	{
-		return getStat().getPAtkPlants(target);
-	}
-	
-	public double getPAtkGiants(L2Character target)
-	{
-		return getStat().getPAtkGiants(target);
-	}
-	
-	public double getPAtkMagicCreatures(L2Character target)
-	{
-		return getStat().getPAtkMagicCreatures(target);
-	}
-	
-	public double getPDefAnimals(L2Character target)
-	{
-		return getStat().getPDefAnimals(target);
-	}
-	
-	public double getPDefDragons(L2Character target)
-	{
-		return getStat().getPDefDragons(target);
-	}
-	
-	public double getPDefInsects(L2Character target)
-	{
-		return getStat().getPDefInsects(target);
-	}
-	
-	public double getPDefMonsters(L2Character target)
-	{
-		return getStat().getPDefMonsters(target);
-	}
-	
-	public double getPDefPlants(L2Character target)
-	{
-		return getStat().getPDefPlants(target);
-	}
-	
-	public double getPDefGiants(L2Character target)
-	{
-		return getStat().getPDefGiants(target);
-	}
-	
-	public double getPDefMagicCreatures(L2Character target)
-	{
-		return getStat().getPDefMagicCreatures(target);
-	}
-	
 	public int getPAtkSpd()
 	{
 		return getStat().getPAtkSpd();
@@ -7377,19 +7307,49 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		return false;
 	}
 	
+	/**
+	 * Dummy method overriden in {@link L2PcInstance}
+	 * @return the clan id of current character.
+	 */
 	public int getClanId()
 	{
 		return 0;
 	}
 	
+	/**
+	 * Dummy method overriden in {@link L2PcInstance}
+	 * @return the alliance id of current character.
+	 */
 	public int getAllyId()
 	{
 		return 0;
 	}
 	
+	/**
+	 * Notifies to listeners that current character received damage.
+	 * @param damage
+	 * @param attacker
+	 * @param skill
+	 * @param critical
+	 */
 	public void notifyDamageReceived(double damage, L2Character attacker, L2Skill skill, boolean critical)
 	{
 		getEvents().onDamageReceived(damage, attacker, skill, critical);
 		attacker.getEvents().onDamageDealt(damage, this, skill, critical);
+	}
+	
+	public L2WeaponType getAttackType()
+	{
+		final L2Weapon weapon = getActiveWeaponItem();
+		if (weapon != null)
+		{
+			return weapon.getItemType();
+		}
+		else if (isTransformed())
+		{
+			// TODO: implement me.
+			// return getTransform().getBaseAttackType();
+		}
+		return getTemplate().getBaseAttackType();
 	}
 }
