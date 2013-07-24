@@ -836,10 +836,6 @@ public final class Config
 	// --------------------------------------------------
 	// PvP Settings
 	// --------------------------------------------------
-	public static int KARMA_MIN_KARMA;
-	public static int KARMA_MAX_KARMA;
-	public static int KARMA_XP_DIVIDER;
-	public static int KARMA_LOST_BASE;
 	public static boolean KARMA_DROP_GM;
 	public static boolean KARMA_AWARD_PK_KILL;
 	public static int KARMA_PK_LIMIT;
@@ -3906,18 +3902,6 @@ public final class Config
 				break;
 			case "antifeedinterval":
 				L2JMOD_ANTIFEED_INTERVAL = 1000 * Integer.parseInt(pValue);
-				break;
-			case "minkarma":
-				KARMA_MIN_KARMA = Integer.parseInt(pValue);
-				break;
-			case "maxkarma":
-				KARMA_MAX_KARMA = Integer.parseInt(pValue);
-				break;
-			case "xpdivider":
-				KARMA_XP_DIVIDER = Integer.parseInt(pValue);
-				break;
-			case "basekarmalost":
-				KARMA_LOST_BASE = Integer.parseInt(pValue);
 				break;
 			case "cangmdropequipment":
 				KARMA_DROP_GM = Boolean.parseBoolean(pValue);
