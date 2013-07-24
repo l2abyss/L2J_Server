@@ -660,30 +660,31 @@ public final class Formulas
 		switch (shld)
 		{
 			case Formulas.SHIELD_DEFENSE_SUCCEED:
+			{
 				defence += target.getShldDef();
 				break;
+			}
 			case Formulas.SHIELD_DEFENSE_PERFECT_BLOCK: // perfect block
+			{
 				return 1;
+			}
 		}
 		
 		boolean isPvP = attacker.isPlayable() && target.isPlayer();
 		boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
 		double damage = 0;
-		double proximityBonus = 1;
+		double proximityBonus = attacker.isBehindTarget() ? 1.2 : attacker.isInFrontOfTarget() ? 1 : 1.1; // Behind: +20% - Side: +10% (TODO: values are unconfirmed, possibly custom, remove or update when confirmed)
 		double graciaPhysSkillBonus = skill.isMagic() ? 1 : 1.10113; // Gracia final physical skill bonus 10.113%
 		double ssboost = ss ? 1.5 : 1; // 50% bonus with SS
 		double pvpBonus = 1;
 		
 		if (attacker.isPlayable() && target.isPlayable())
 		{
-			// Dmg bonuses in PvP fight
-			pvpBonus *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);
-			// Def bonuses in PvP fight
+			// Damage bonuses in PvP fight
+			pvpBonus = attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);
+			// Defense bonuses in PvP fight
 			defence *= target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);
 		}
-		
-		// Behind: +20% - Side: +10% (TODO: values are unconfirmed, possibly custom, remove or update when confirmed)
-		proximityBonus = attacker.isBehindTarget() ? 1.2 : attacker.isInFrontOfTarget() ? 1 : 1.1;
 		
 		damage = (((70. * graciaPhysSkillBonus * (skill.getPower(isPvP, isPvE) + attacker.getPAtk(target))) / defence) * ssboost * (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill)) * (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * proximityBonus * pvpBonus) + (((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70) / defence) * graciaPhysSkillBonus);
 		damage += target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill) * 6.1;
@@ -705,9 +706,7 @@ public final class Formulas
 			}
 			
 		}
-		
-		// TODO: Formulas.calcStunBreak(target, damage);
-		return damage < 1 ? 1. : damage;
+		return Math.max(damage, 1);
 	}
 	
 	/**
@@ -727,7 +726,7 @@ public final class Formulas
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
 		
-		// Def bonuses in PvP fight
+		// Defense bonuses in PvP fight
 		if (isPvP)
 		{
 			defence *= (skill == null) ? target.calcStat(Stats.PVP_PHYSICAL_DEF, 1, null, null) : target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);
@@ -868,11 +867,25 @@ public final class Formulas
 	
 	public static final double calcMagicDam(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean sps, boolean bss, boolean mcrit)
 	{
-		int mAtk = attacker.getMAtk(target, skill);
 		int mDef = target.getMDef(attacker, skill);
+		switch (shld)
+		{
+			case SHIELD_DEFENSE_SUCCEED:
+			{
+				mDef += target.getShldDef();
+				break;
+			}
+			case SHIELD_DEFENSE_PERFECT_BLOCK:
+			{
+				return 1;
+			}
+		}
+		
+		int mAtk = attacker.getMAtk(target, skill);
 		final boolean isPvP = attacker.isPlayable() && target.isPlayable();
 		final boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
-		// Pvp bonuses for def
+		
+		// PvP bonuses for defense
 		if (isPvP)
 		{
 			if (skill.isMagic())
@@ -885,16 +898,7 @@ public final class Formulas
 			}
 		}
 		
-		switch (shld)
-		{
-			case SHIELD_DEFENSE_SUCCEED:
-				mDef += target.getShldDef();
-				break;
-			case SHIELD_DEFENSE_PERFECT_BLOCK:
-				return 1;
-		}
-		
-		// Bonus Spiritshot
+		// Bonus Spirit shot
 		mAtk *= bss ? 4 : sps ? 2 : 1;
 		// MDAM Formula.
 		double damage = ((91 * Math.sqrt(mAtk)) / mDef) * skill.getPower(attacker, target, isPvP, isPvE);
@@ -941,12 +945,14 @@ public final class Formulas
 		
 		// Weapon random damage
 		damage *= attacker.getRandomDamageMultiplier();
-		// Pvp bonuses for dmg
+		
+		// PvP bonuses for damage
 		if (isPvP)
 		{
 			Stats stat = skill.isMagic() ? Stats.PVP_MAGICAL_DMG : Stats.PVP_PHYS_SKILL_DMG;
 			damage *= attacker.calcStat(stat, 1, null, null);
 		}
+		
 		// CT2.3 general magic vuln
 		damage *= target.calcStat(Stats.MAGIC_DAMAGE_VULN, 1, null, null);
 		damage *= calcAttributeBonus(attacker, target, skill);
@@ -972,11 +978,7 @@ public final class Formulas
 	
 	public static final double calcMagicDam(L2CubicInstance attacker, L2Character target, L2Skill skill, boolean mcrit, byte shld)
 	{
-		int mAtk = attacker.getCubicPower();
 		int mDef = target.getMDef(attacker.getOwner(), skill);
-		final boolean isPvP = target.isPlayable();
-		final boolean isPvE = target.isL2Attackable();
-		
 		switch (shld)
 		{
 			case SHIELD_DEFENSE_SUCCEED:
@@ -985,6 +987,11 @@ public final class Formulas
 			case SHIELD_DEFENSE_PERFECT_BLOCK: // perfect block
 				return 1;
 		}
+		
+		int mAtk = attacker.getCubicPower();
+		final boolean isPvP = target.isPlayable();
+		final boolean isPvE = target.isL2Attackable();
+		
 		// Cubics MDAM Formula (similar to PDAM formula, but using 91 instead of 70, also resisted by mDef).
 		double damage = 91 * ((mAtk + skill.getPower(isPvP, isPvE)) / mDef);
 		
@@ -1066,25 +1073,18 @@ public final class Formulas
 	 */
 	public static final boolean calcCrit(double rate, boolean skill, L2Character target)
 	{
-		final boolean success = rate > Rnd.get(1000);
-		
-		// support for critical damage evasion
-		if (success)
+		// support for critical damage evade
+		if (rate > Rnd.get(1000))
 		{
-			if (target == null)
+			if ((target == null) || skill)
 			{
 				return true; // no effect
-			}
-			
-			if (skill)
-			{
-				return success;
 			}
 			
 			// little weird, but remember what CRIT_DAMAGE_EVASION > 1 increase chances to _evade_ crit hits
 			return Rnd.get((int) target.getStat().calcStat(Stats.CRIT_DAMAGE_EVASION, 100, null, null)) < 100;
 		}
-		return success;
+		return false;
 	}
 	
 	public static final boolean calcMCrit(double mRate)
