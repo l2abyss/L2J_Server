@@ -30,6 +30,7 @@ import javolution.util.FastMap;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Object.InstanceType;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
@@ -355,6 +356,16 @@ public abstract class L2ZoneType
 	public boolean isInsideZone(int x, int y)
 	{
 		return _zone.isInsideZone(x, y, _zone.getHighZ());
+	}
+	
+	/**
+	 * Checks if the given coordinates are within the zone, ignores instanceId check
+	 * @param loc
+	 * @return
+	 */
+	public boolean isInsideZone(Location loc)
+	{
+		return _zone.isInsideZone(loc.getX(), loc.getY(), loc.getZ());
 	}
 	
 	/**

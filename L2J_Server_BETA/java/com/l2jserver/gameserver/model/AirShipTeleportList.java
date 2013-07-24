@@ -18,32 +18,35 @@
  */
 package com.l2jserver.gameserver.model;
 
-public final class VehiclePathPoint extends Location
+/**
+ * Holds a list of all AirShip teleports.
+ * @author xban1x
+ */
+public final class AirShipTeleportList
 {
-	private final int _moveSpeed;
-	private final int _rotationSpeed;
+	private final int _location;
+	private final int[] _fuel;
+	private final VehiclePathPoint[][] _routes;
 	
-	public VehiclePathPoint(int x, int y, int z)
+	public AirShipTeleportList(int loc, int[] f, VehiclePathPoint[][] r)
 	{
-		super(x, y, z);
-		_moveSpeed = 350;
-		_rotationSpeed = 4000;
+		_location = loc;
+		_fuel = f;
+		_routes = r;
 	}
 	
-	public VehiclePathPoint(int x, int y, int z, int moveSpeed, int rotationSpeed)
+	public int getLocation()
 	{
-		super(x, y, z);
-		_moveSpeed = moveSpeed;
-		_rotationSpeed = rotationSpeed;
+		return _location;
 	}
 	
-	public int getMoveSpeed()
+	public int[] getFuel()
 	{
-		return _moveSpeed;
+		return _fuel;
 	}
 	
-	public int getRotationSpeed()
+	public VehiclePathPoint[][] getRoute()
 	{
-		return _rotationSpeed;
+		return _routes;
 	}
 }

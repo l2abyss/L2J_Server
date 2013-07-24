@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 import java.util.List;
 
 import com.l2jserver.gameserver.datatables.ManorData;
-import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
+import com.l2jserver.gameserver.model.CropProcure;
 
 /**
  * @author l3x

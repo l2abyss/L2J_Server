@@ -24,7 +24,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
-import com.l2jserver.gameserver.instancemanager.FortSiegeManager.SiegeSpawn;
+import com.l2jserver.gameserver.model.FortSiegeSpawn;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
@@ -123,8 +123,8 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 		L2Spawn spawn = getSpawn();
 		if ((spawn != null) && canTalk())
 		{
-			FastList<SiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getFortId());
-			for (SiegeSpawn spawn2 : commanders)
+			FastList<FortSiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getFortId());
+			for (FortSiegeSpawn spawn2 : commanders)
 			{
 				if (spawn2.getNpcId() == spawn.getNpcid())
 				{

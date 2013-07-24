@@ -23,7 +23,7 @@ import java.util.List;
 import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
-import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
+import com.l2jserver.gameserver.model.CropProcure;
 import com.l2jserver.gameserver.model.entity.Castle;
 
 /**

@@ -316,7 +316,7 @@ public class DimensionalRift
 				}
 				_choosenRoom = emptyRooms.get(Rnd.get(1, emptyRooms.size()) - 1);
 			}
-			while (DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).ispartyInside());
+			while (DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).isPartyInside());
 		}
 		
 		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).setPartyInside(true);
@@ -475,7 +475,7 @@ public class DimensionalRift
 	
 	public int[] getRoomCoord(byte room)
 	{
-		return DimensionalRiftManager.getInstance().getRoom(_type, room).getTeleportCoords();
+		return DimensionalRiftManager.getInstance().getRoom(_type, room).getTeleportCoorinates();
 	}
 	
 	public byte getMaxJumps()

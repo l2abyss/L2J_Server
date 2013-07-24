@@ -719,7 +719,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			{
 				player.getParty().getDimensionalRift().usedTeleport(player);
 			}
-			int[] newCoords = DimensionalRiftManager.getInstance().getRoom((byte) 0, (byte) 0).getTeleportCoords();
+			int[] newCoords = DimensionalRiftManager.getInstance().getRoom((byte) 0, (byte) 0).getTeleportCoorinates();
 			x = newCoords[0];
 			y = newCoords[1];
 			z = newCoords[2];

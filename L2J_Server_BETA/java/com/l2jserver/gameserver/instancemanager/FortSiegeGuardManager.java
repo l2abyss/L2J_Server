@@ -34,13 +34,13 @@ import com.l2jserver.gameserver.model.actor.instance.L2FortBallistaInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Fort;
 
-public class FortSiegeGuardManager
+public final class FortSiegeGuardManager
 {
 	private static final Logger _log = Logger.getLogger(FortSiegeGuardManager.class.getName());
 	
 	private final Fort _fort;
-	protected FastMap<Integer, FastList<L2Spawn>> _siegeGuards = new FastMap<>();
-	protected FastList<L2Spawn> _siegeGuardsSpawns;
+	private final FastMap<Integer, FastList<L2Spawn>> _siegeGuards = new FastMap<>();
+	private FastList<L2Spawn> _siegeGuardsSpawns;
 	
 	public FortSiegeGuardManager(Fort fort)
 	{
@@ -54,7 +54,7 @@ public class FortSiegeGuardManager
 	{
 		try
 		{
-			FastList<L2Spawn> monsterList = getSiegeGuardSpawn().get(getFort().getFortId());
+			final FastList<L2Spawn> monsterList = getSiegeGuardSpawn().get(getFort().getFortId());
 			if (monsterList != null)
 			{
 				for (L2Spawn spawnDat : monsterList)
@@ -84,7 +84,7 @@ public class FortSiegeGuardManager
 	{
 		try
 		{
-			FastList<L2Spawn> monsterList = getSiegeGuardSpawn().get(getFort().getFortId());
+			final FastList<L2Spawn> monsterList = getSiegeGuardSpawn().get(getFort().getFortId());
 			
 			if (monsterList != null)
 			{

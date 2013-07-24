@@ -35,8 +35,10 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.ManorData;
+import com.l2jserver.gameserver.model.CropProcure;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.SeedProduction;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.itemcontainer.ClanWarehouse;
@@ -48,7 +50,7 @@ import com.l2jserver.util.Rnd;
  * Class for Castle Manor Manager load manor data from DB update/reload/delete, handles all schedule for manor.
  * @author l3x
  */
-public class CastleManorManager
+public final class CastleManorManager
 {
 	protected static final Logger _log = Logger.getLogger(CastleManorManager.class.getName());
 	
@@ -73,112 +75,6 @@ public class CastleManorManager
 	protected ScheduledFuture<?> _scheduledManorRefresh;
 	protected ScheduledFuture<?> _scheduledMaintenanceEnd;
 	protected ScheduledFuture<?> _scheduledNextPeriodapprove;
-	
-	public static class CropProcure
-	{
-		final int _cropId;
-		long _buyResidual;
-		final int _rewardType;
-		final long _buy;
-		final long _price;
-		
-		public CropProcure(int id)
-		{
-			_cropId = id;
-			_buyResidual = 0;
-			_rewardType = 0;
-			_buy = 0;
-			_price = 0;
-		}
-		
-		public CropProcure(int id, long amount, int type, long buy, long price)
-		{
-			_cropId = id;
-			_buyResidual = amount;
-			_rewardType = type;
-			_buy = buy;
-			_price = price;
-		}
-		
-		public int getReward()
-		{
-			return _rewardType;
-		}
-		
-		public int getId()
-		{
-			return _cropId;
-		}
-		
-		public long getAmount()
-		{
-			return _buyResidual;
-		}
-		
-		public long getStartAmount()
-		{
-			return _buy;
-		}
-		
-		public long getPrice()
-		{
-			return _price;
-		}
-		
-		public void setAmount(long amount)
-		{
-			_buyResidual = amount;
-		}
-	}
-	
-	public static class SeedProduction
-	{
-		final int _seedId;
-		long _residual;
-		final long _price;
-		final long _sales;
-		
-		public SeedProduction(int id)
-		{
-			_seedId = id;
-			_residual = 0;
-			_price = 0;
-			_sales = 0;
-		}
-		
-		public SeedProduction(int id, long amount, long price, long sales)
-		{
-			_seedId = id;
-			_residual = amount;
-			_price = price;
-			_sales = sales;
-		}
-		
-		public int getId()
-		{
-			return _seedId;
-		}
-		
-		public long getCanProduce()
-		{
-			return _residual;
-		}
-		
-		public long getPrice()
-		{
-			return _price;
-		}
-		
-		public long getStartProduce()
-		{
-			return _sales;
-		}
-		
-		public void setCanProduce(long amount)
-		{
-			_residual = amount;
-		}
-	}
 	
 	protected CastleManorManager()
 	{

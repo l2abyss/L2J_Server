@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.util.L2FastMap;
 import com.l2jserver.util.L2HashMap;
 
-public class AntiFeedManager
+public final class AntiFeedManager
 {
 	public static final int GAME_ID = 0;
 	public static final int OLYMPIAD_ID = 1;

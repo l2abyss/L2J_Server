@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.entity.Duel;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
-public class DuelManager
+public final class DuelManager
 {
 	private final FastList<Duel> _duels;
 	private int _currentDuelId = 0x90;
@@ -112,7 +112,7 @@ public class DuelManager
 			}
 		}
 		
-		Duel duel = new Duel(playerA, playerB, partyDuel, getNextDuelId());
+		final Duel duel = new Duel(playerA, playerB, partyDuel, getNextDuelId());
 		_duels.add(duel);
 	}
 	
@@ -127,7 +127,7 @@ public class DuelManager
 		{
 			return;
 		}
-		Duel duel = getDuel(player.getDuelId());
+		final Duel duel = getDuel(player.getDuelId());
 		duel.doSurrender(player);
 	}
 	
@@ -141,7 +141,7 @@ public class DuelManager
 		{
 			return;
 		}
-		Duel duel = getDuel(player.getDuelId());
+		final Duel duel = getDuel(player.getDuelId());
 		if (duel != null)
 		{
 			duel.onPlayerDefeat(player);
@@ -159,7 +159,7 @@ public class DuelManager
 		{
 			return;
 		}
-		Duel duel = getDuel(player.getDuelId());
+		final Duel duel = getDuel(player.getDuelId());
 		if (duel != null)
 		{
 			duel.onBuff(player, buff);
@@ -176,7 +176,7 @@ public class DuelManager
 		{
 			return;
 		}
-		Duel duel = getDuel(player.getDuelId());
+		final Duel duel = getDuel(player.getDuelId());
 		if (duel != null)
 		{
 			duel.onRemoveFromParty(player);
@@ -194,7 +194,7 @@ public class DuelManager
 		{
 			return;
 		}
-		Duel duel = getDuel(player.getDuelId());
+		final Duel duel = getDuel(player.getDuelId());
 		if (duel == null)
 		{
 			return;

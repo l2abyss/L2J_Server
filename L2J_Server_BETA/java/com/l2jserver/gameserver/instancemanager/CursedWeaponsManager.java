@@ -59,7 +59,7 @@ import com.l2jserver.gameserver.util.Broadcast;
  * UnAfraid: TODO: Rewrite with DocumentParser
  * @author Micht
  */
-public class CursedWeaponsManager
+public final class CursedWeaponsManager
 {
 	private static final Logger _log = Logger.getLogger(CursedWeaponsManager.class.getName());
 	

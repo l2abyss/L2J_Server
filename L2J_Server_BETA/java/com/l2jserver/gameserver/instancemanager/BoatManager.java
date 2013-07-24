@@ -197,8 +197,8 @@ public class BoatManager
 		{
 			if (player != null)
 			{
-				double dx = (double) player.getX() - _point1.x;
-				double dy = (double) player.getY() - _point1.y;
+				double dx = (double) player.getX() - _point1.getX();
+				double dy = (double) player.getY() - _point1.getY();
 				if (Math.sqrt((dx * dx) + (dy * dy)) < Config.BOAT_BROADCAST_RADIUS)
 				{
 					for (L2GameServerPacket p : _packets)
@@ -208,8 +208,8 @@ public class BoatManager
 				}
 				else
 				{
-					dx = (double) player.getX() - _point2.x;
-					dy = (double) player.getY() - _point2.y;
+					dx = (double) player.getX() - _point2.getX();
+					dy = (double) player.getY() - _point2.getY();
 					if (Math.sqrt((dx * dx) + (dy * dy)) < Config.BOAT_BROADCAST_RADIUS)
 					{
 						for (L2GameServerPacket p : _packets)

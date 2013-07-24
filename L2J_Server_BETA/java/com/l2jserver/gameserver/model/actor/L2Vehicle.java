@@ -102,16 +102,16 @@ public abstract class L2Vehicle extends L2Character
 		if ((_currentPath != null) && (_currentPath.length > 0))
 		{
 			final VehiclePathPoint point = _currentPath[0];
-			if (point.moveSpeed > 0)
+			if (point.getMoveSpeed() > 0)
 			{
-				getStat().setMoveSpeed(point.moveSpeed);
+				getStat().setMoveSpeed(point.getMoveSpeed());
 			}
-			if (point.rotationSpeed > 0)
+			if (point.getRotationSpeed() > 0)
 			{
-				getStat().setRotationSpeed(point.rotationSpeed);
+				getStat().setRotationSpeed(point.getRotationSpeed());
 			}
 			
-			getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new Location(point.x, point.y, point.z, 0));
+			getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new Location(point.getX(), point.getY(), point.getZ(), 0));
 			return;
 		}
 		getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
@@ -130,36 +130,36 @@ public abstract class L2Vehicle extends L2Character
 				final VehiclePathPoint point = _currentPath[_runState];
 				if (!isMovementDisabled())
 				{
-					if (point.moveSpeed == 0)
+					if (point.getMoveSpeed() == 0)
 					{
-						teleToLocation(point.x, point.y, point.z, point.rotationSpeed, false);
+						teleToLocation(point.getX(), point.getY(), point.getZ(), point.getRotationSpeed(), false);
 						_currentPath = null;
 					}
 					else
 					{
-						if (point.moveSpeed > 0)
+						if (point.getMoveSpeed() > 0)
 						{
-							getStat().setMoveSpeed(point.moveSpeed);
+							getStat().setMoveSpeed(point.getMoveSpeed());
 						}
-						if (point.rotationSpeed > 0)
+						if (point.getRotationSpeed() > 0)
 						{
-							getStat().setRotationSpeed(point.rotationSpeed);
+							getStat().setRotationSpeed(point.getRotationSpeed());
 						}
 						
 						MoveData m = new MoveData();
 						m.disregardingGeodata = false;
 						m.onGeodataPathIndex = -1;
-						m._xDestination = point.x;
-						m._yDestination = point.y;
-						m._zDestination = point.z;
+						m._xDestination = point.getX();
+						m._yDestination = point.getY();
+						m._zDestination = point.getZ();
 						m._heading = 0;
 						
-						final double dx = point.x - getX();
-						final double dy = point.y - getY();
+						final double dx = point.getX() - getX();
+						final double dy = point.getY() - getY();
 						final double distance = Math.sqrt((dx * dx) + (dy * dy));
 						if (distance > 1)
 						{
-							setHeading(Util.calculateHeadingFrom(getX(), getY(), point.x, point.y));
+							setHeading(Util.calculateHeadingFrom(getX(), getY(), point.getX(), point.getY()));
 						}
 						
 						m._moveStartTime = GameTimeController.getInstance().getGameTicks();

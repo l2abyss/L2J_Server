@@ -18,8 +18,6 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import java.awt.Polygon;
-import java.awt.Shape;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -39,6 +37,7 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
+import com.l2jserver.gameserver.model.DimensionalRiftRoom;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -54,7 +53,7 @@ import gnu.trove.map.hash.TByteObjectHashMap;
 /**
  * @author kombat
  */
-public class DimensionalRiftManager
+public final class DimensionalRiftManager
 {
 	private static Logger _log = Logger.getLogger(DimensionalRiftManager.class.getName());
 	private final TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>> _rooms = new TByteObjectHashMap<>(7);
@@ -190,10 +189,10 @@ public class DimensionalRiftManager
 											
 											for (int i = 0; i < count; i++)
 											{
-												DimensionalRiftRoom riftRoom = _rooms.get(type).get(roomId);
+												final DimensionalRiftRoom riftRoom = _rooms.get(type).get(roomId);
 												x = riftRoom.getRandomX();
 												y = riftRoom.getRandomY();
-												z = riftRoom.getTeleportCoords()[2];
+												z = riftRoom.getTeleportCoorinates()[2];
 												
 												if ((template != null) && _rooms.containsKey(type) && _rooms.get(type).containsKey(roomId))
 												{
@@ -261,7 +260,7 @@ public class DimensionalRiftManager
 	
 	public void teleportToWaitingRoom(L2PcInstance player)
 	{
-		int[] coords = getRoom((byte) 0, (byte) 0).getTeleportCoords();
+		int[] coords = getRoom((byte) 0, (byte) 0).getTeleportCoorinates();
 		player.teleToLocation(coords[0], coords[1], coords[2]);
 	}
 	
@@ -377,7 +376,7 @@ public class DimensionalRiftManager
 			room = emptyRooms.get(Rnd.get(1, emptyRooms.size()) - 1);
 		}
 		// find empty room
-		while (_rooms.get(type).get(room).ispartyInside());
+		while (_rooms.get(type).get(room).isPartyInside());
 		new DimensionalRift(player.getParty(), type, room);
 	}
 	
@@ -406,123 +405,6 @@ public class DimensionalRiftManager
 			d.getSpawnTimer().cancel();
 		}
 		d.setSpawnTimer(null);
-	}
-	
-	public static class DimensionalRiftRoom
-	{
-		protected final byte _type;
-		protected final byte _room;
-		private final int _xMin;
-		private final int _xMax;
-		private final int _yMin;
-		private final int _yMax;
-		private final int _zMin;
-		private final int _zMax;
-		private final int[] _teleportCoords;
-		private final Shape _s;
-		private final boolean _isBossRoom;
-		private final FastList<L2Spawn> _roomSpawns;
-		protected final FastList<L2Npc> _roomMobs;
-		private boolean _partyInside = false;
-		
-		public DimensionalRiftRoom(byte type, byte room, int xMin, int xMax, int yMin, int yMax, int zMin, int zMax, int xT, int yT, int zT, boolean isBossRoom)
-		{
-			_type = type;
-			_room = room;
-			_xMin = (xMin + 128);
-			_xMax = (xMax - 128);
-			_yMin = (yMin + 128);
-			_yMax = (yMax - 128);
-			_zMin = zMin;
-			_zMax = zMax;
-			_teleportCoords = new int[]
-			{
-				xT,
-				yT,
-				zT
-			};
-			_isBossRoom = isBossRoom;
-			_roomSpawns = new FastList<>();
-			_roomMobs = new FastList<>();
-			_s = new Polygon(new int[]
-			{
-				xMin,
-				xMax,
-				xMax,
-				xMin
-			}, new int[]
-			{
-				yMin,
-				yMin,
-				yMax,
-				yMax
-			}, 4);
-		}
-		
-		public int getRandomX()
-		{
-			return Rnd.get(_xMin, _xMax);
-		}
-		
-		public int getRandomY()
-		{
-			return Rnd.get(_yMin, _yMax);
-		}
-		
-		public int[] getTeleportCoords()
-		{
-			return _teleportCoords;
-		}
-		
-		public boolean checkIfInZone(int x, int y, int z)
-		{
-			return _s.contains(x, y) && (z >= _zMin) && (z <= _zMax);
-		}
-		
-		public boolean isBossRoom()
-		{
-			return _isBossRoom;
-		}
-		
-		public FastList<L2Spawn> getSpawns()
-		{
-			return _roomSpawns;
-		}
-		
-		public void spawn()
-		{
-			for (L2Spawn spawn : _roomSpawns)
-			{
-				spawn.doSpawn();
-				spawn.startRespawn();
-			}
-		}
-		
-		public DimensionalRiftRoom unspawn()
-		{
-			for (L2Spawn spawn : _roomSpawns)
-			{
-				spawn.stopRespawn();
-				if (spawn.getLastSpawn() != null)
-				{
-					spawn.getLastSpawn().deleteMe();
-				}
-			}
-			return this;
-		}
-		
-		/**
-		 * @return the _partyInside
-		 */
-		public boolean ispartyInside()
-		{
-			return _partyInside;
-		}
-		
-		public void setPartyInside(boolean partyInside)
-		{
-			_partyInside = partyInside;
-		}
 	}
 	
 	private int getNeededItems(byte type)
@@ -569,7 +451,7 @@ public class DimensionalRiftManager
 		int count = 0;
 		for (DimensionalRiftRoom room : _rooms.get(type).valueCollection())
 		{
-			if (room.ispartyInside())
+			if (room.isPartyInside())
 			{
 				count++;
 			}
@@ -582,9 +464,9 @@ public class DimensionalRiftManager
 		FastList<Byte> list = new FastList<>();
 		for (DimensionalRiftRoom room : _rooms.get(type).valueCollection())
 		{
-			if (!room.ispartyInside())
+			if (!room.isPartyInside())
 			{
-				list.add(room._room);
+				list.add(room.getRoom());
 			}
 		}
 		return list;

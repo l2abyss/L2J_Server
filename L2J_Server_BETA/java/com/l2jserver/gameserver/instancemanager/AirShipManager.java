@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.idfactory.IdFactory;
+import com.l2jserver.gameserver.model.AirShipTeleportList;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.VehiclePathPoint;
 import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
@@ -230,7 +231,7 @@ public class AirShipManager
 		}
 		
 		final AirShipTeleportList all = _teleports.get(dockId);
-		player.sendPacket(new ExAirShipTeleportList(all.location, all.routes, all.fuel));
+		player.sendPacket(new ExAirShipTeleportList(all.getLocation(), all.getRoute(), all.getFuel()));
 	}
 	
 	public VehiclePathPoint[] getTeleportDestination(int dockId, int index)
@@ -241,12 +242,12 @@ public class AirShipManager
 			return null;
 		}
 		
-		if ((index < -1) || (index >= all.routes.length))
+		if ((index < -1) || (index >= all.getRoute().length))
 		{
 			return null;
 		}
 		
-		return all.routes[index + 1];
+		return all.getRoute()[index + 1];
 	}
 	
 	public int getFuelConsumption(int dockId, int index)
@@ -257,12 +258,12 @@ public class AirShipManager
 			return 0;
 		}
 		
-		if ((index < -1) || (index >= all.fuel.length))
+		if ((index < -1) || (index >= all.getFuel().length))
 		{
 			return 0;
 		}
 		
-		return all.fuel[index + 1];
+		return all.getFuel()[index + 1];
 	}
 	
 	private void load()
@@ -312,20 +313,6 @@ public class AirShipManager
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while save: " + e.getMessage(), e);
-		}
-	}
-	
-	private static class AirShipTeleportList
-	{
-		public int location;
-		public int[] fuel;
-		public VehiclePathPoint[][] routes;
-		
-		public AirShipTeleportList(int loc, int[] f, VehiclePathPoint[][] r)
-		{
-			location = loc;
-			fuel = f;
-			routes = r;
 		}
 	}
 	

@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.model.entity.Auction;
 /**
  * Zoey76: TODO: Rewrite it and unharcode it.
  */
-public class AuctionManager
+public final class AuctionManager
 {
 	protected static final Logger _log = Logger.getLogger(AuctionManager.class.getName());
 	private final List<Auction> _auctions = new ArrayList<>();

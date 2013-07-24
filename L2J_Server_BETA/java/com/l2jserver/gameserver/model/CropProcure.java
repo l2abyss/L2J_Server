@@ -18,32 +18,63 @@
  */
 package com.l2jserver.gameserver.model;
 
-public final class VehiclePathPoint extends Location
+/**
+ * @author xban1x
+ */
+public final class CropProcure
 {
-	private final int _moveSpeed;
-	private final int _rotationSpeed;
+	final int _cropId;
+	long _buyResidual;
+	final int _rewardType;
+	final long _buy;
+	final long _price;
 	
-	public VehiclePathPoint(int x, int y, int z)
+	public CropProcure(int id)
 	{
-		super(x, y, z);
-		_moveSpeed = 350;
-		_rotationSpeed = 4000;
+		_cropId = id;
+		_buyResidual = 0;
+		_rewardType = 0;
+		_buy = 0;
+		_price = 0;
 	}
 	
-	public VehiclePathPoint(int x, int y, int z, int moveSpeed, int rotationSpeed)
+	public CropProcure(int id, long amount, int type, long buy, long price)
 	{
-		super(x, y, z);
-		_moveSpeed = moveSpeed;
-		_rotationSpeed = rotationSpeed;
+		_cropId = id;
+		_buyResidual = amount;
+		_rewardType = type;
+		_buy = buy;
+		_price = price;
 	}
 	
-	public int getMoveSpeed()
+	public int getReward()
 	{
-		return _moveSpeed;
+		return _rewardType;
 	}
 	
-	public int getRotationSpeed()
+	public int getId()
 	{
-		return _rotationSpeed;
+		return _cropId;
 	}
+	
+	public long getAmount()
+	{
+		return _buyResidual;
+	}
+	
+	public long getStartAmount()
+	{
+		return _buy;
+	}
+	
+	public long getPrice()
+	{
+		return _price;
+	}
+	
+	public void setAmount(long amount)
+	{
+		_buyResidual = amount;
+	}
+	
 }

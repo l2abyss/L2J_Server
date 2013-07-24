@@ -22,7 +22,7 @@ import java.util.List;
 
 import javolution.util.FastList;
 
-import com.l2jserver.gameserver.instancemanager.CastleManorManager.SeedProduction;
+import com.l2jserver.gameserver.model.SeedProduction;
 
 /**
  * @author l3x

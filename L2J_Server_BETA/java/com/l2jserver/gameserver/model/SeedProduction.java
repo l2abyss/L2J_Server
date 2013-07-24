@@ -18,32 +18,54 @@
  */
 package com.l2jserver.gameserver.model;
 
-public final class VehiclePathPoint extends Location
+/**
+ * @author xban1x
+ */
+public final class SeedProduction
 {
-	private final int _moveSpeed;
-	private final int _rotationSpeed;
+	final int _seedId;
+	long _residual;
+	final long _price;
+	final long _sales;
 	
-	public VehiclePathPoint(int x, int y, int z)
+	public SeedProduction(int id)
 	{
-		super(x, y, z);
-		_moveSpeed = 350;
-		_rotationSpeed = 4000;
+		_seedId = id;
+		_residual = 0;
+		_price = 0;
+		_sales = 0;
 	}
 	
-	public VehiclePathPoint(int x, int y, int z, int moveSpeed, int rotationSpeed)
+	public SeedProduction(int id, long amount, long price, long sales)
 	{
-		super(x, y, z);
-		_moveSpeed = moveSpeed;
-		_rotationSpeed = rotationSpeed;
+		_seedId = id;
+		_residual = amount;
+		_price = price;
+		_sales = sales;
 	}
 	
-	public int getMoveSpeed()
+	public int getId()
 	{
-		return _moveSpeed;
+		return _seedId;
 	}
 	
-	public int getRotationSpeed()
+	public long getCanProduce()
 	{
-		return _rotationSpeed;
+		return _residual;
+	}
+	
+	public long getPrice()
+	{
+		return _price;
+	}
+	
+	public long getStartProduce()
+	{
+		return _sales;
+	}
+	
+	public void setCanProduce(long amount)
+	{
+		_residual = amount;
 	}
 }

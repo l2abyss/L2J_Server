@@ -29,6 +29,7 @@ import org.w3c.dom.Node;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.engines.DocumentParser;
+import com.l2jserver.gameserver.instancemanager.tasks.StartMovingTask;
 import com.l2jserver.gameserver.model.L2NpcWalkerNode;
 import com.l2jserver.gameserver.model.L2WalkRoute;
 import com.l2jserver.gameserver.model.Location;
@@ -47,7 +48,7 @@ import com.l2jserver.gameserver.util.Broadcast;
  * This class manages walking monsters.
  * @author GKR
  */
-public class WalkingManager extends DocumentParser
+public final class WalkingManager extends DocumentParser
 {
 	// Repeat style:
 	// 0 - go back
@@ -206,7 +207,7 @@ public class WalkingManager extends DocumentParser
 			return false;
 		}
 		
-		WalkInfo walk = monster != null ? _activeRoutes.get(monster.getObjectId()) : _activeRoutes.get(npc.getObjectId());
+		final WalkInfo walk = monster != null ? _activeRoutes.get(monster.getObjectId()) : _activeRoutes.get(npc.getObjectId());
 		if (walk.isStoppedByAttack() || walk.isSuspended())
 		{
 			return false;
@@ -251,7 +252,7 @@ public class WalkingManager extends DocumentParser
 				// only if not already moved / not engaged in battle... should not happens if called on spawn
 				if ((npc.getAI().getIntention() == CtrlIntention.AI_INTENTION_ACTIVE) || (npc.getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE))
 				{
-					WalkInfo walk = new WalkInfo(routeName);
+					final WalkInfo walk = new WalkInfo(routeName);
 					
 					if (npc.isDebug())
 					{
@@ -270,7 +271,7 @@ public class WalkingManager extends DocumentParser
 					
 					if (!npc.isInsideRadius(node, 3000, true, false))
 					{
-						String message = "Route '" + routeName + "': NPC (id=" + npc.getNpcId() + ", x=" + npc.getX() + ", y=" + npc.getY() + ", z=" + npc.getZ() + ") is too far from starting point (node x=" + node.getX() + ", y=" + node.getY() + ", z=" + node.getZ() + ", range=" + npc.getDistanceSq(node.getX(), node.getY(), node.getZ()) + "), walking will not start";
+						final String message = "Route '" + routeName + "': NPC (id=" + npc.getNpcId() + ", x=" + npc.getX() + ", y=" + npc.getY() + ", z=" + npc.getZ() + ") is too far from starting point (node x=" + node.getX() + ", y=" + node.getY() + ", z=" + node.getZ() + ", range=" + npc.getDistanceSq(node.getX(), node.getY(), node.getZ()) + "), walking will not start";
 						_log.warning(getClass().getSimpleName() + ": " + message);
 						npc.sendDebugMessage(message);
 						return;
@@ -279,14 +280,7 @@ public class WalkingManager extends DocumentParser
 					npc.sendDebugMessage("Starting to move at route '" + routeName + "'");
 					npc.setIsRunning(node.runToLocation());
 					npc.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, node);
-					walk.setWalkCheckTask(ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							startMoving(npc, routeName);
-						}
-					}, 60000, 60000)); // start walk check task, for resuming walk after fight
+					walk.setWalkCheckTask(ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new StartMovingTask(npc, routeName), 60000, 60000)); // start walk check task, for resuming walk after fight
 					
 					npc.getKnownList().startTrackingTask();
 					
@@ -295,14 +289,7 @@ public class WalkingManager extends DocumentParser
 				else
 				{
 					npc.sendDebugMessage("Failed to start moving along route '" + routeName + "', scheduled");
-					ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							startMoving(npc, routeName);
-						}
-					}, 60000);
+					ThreadPoolManager.getInstance().scheduleGeneral(new StartMovingTask(npc, routeName), 60000);
 				}
 			}
 			else
@@ -310,7 +297,7 @@ public class WalkingManager extends DocumentParser
 			{
 				if (_activeRoutes.containsKey(npc.getObjectId()) && ((npc.getAI().getIntention() == CtrlIntention.AI_INTENTION_ACTIVE) || (npc.getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)))
 				{
-					WalkInfo walk = _activeRoutes.get(npc.getObjectId());
+					final WalkInfo walk = _activeRoutes.get(npc.getObjectId());
 					if (walk == null)
 					{
 						return;
@@ -324,7 +311,7 @@ public class WalkingManager extends DocumentParser
 					}
 					
 					walk.setBlocked(true);
-					L2NpcWalkerNode node = walk.getCurrentNode();
+					final L2NpcWalkerNode node = walk.getCurrentNode();
 					npc.sendDebugMessage("Route '" + routeName + "', continuing to node " + walk.getCurrentNodeId());
 					npc.setIsRunning(node.runToLocation());
 					npc.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, node);
@@ -364,7 +351,7 @@ public class WalkingManager extends DocumentParser
 			return;
 		}
 		
-		WalkInfo walk = _activeRoutes.get(npc.getObjectId());
+		final WalkInfo walk = _activeRoutes.get(npc.getObjectId());
 		walk.setSuspended(false);
 		walk.setStoppedByAttack(false);
 		startMoving(npc, walk.getRoute().getName());
@@ -397,7 +384,7 @@ public class WalkingManager extends DocumentParser
 			return;
 		}
 		
-		WalkInfo walk = monster != null ? _activeRoutes.get(monster.getObjectId()) : _activeRoutes.get(npc.getObjectId());
+		final WalkInfo walk = monster != null ? _activeRoutes.get(monster.getObjectId()) : _activeRoutes.get(npc.getObjectId());
 		
 		walk.setSuspended(suspend);
 		walk.setStoppedByAttack(stoppedByAttack);
@@ -431,12 +418,12 @@ public class WalkingManager extends DocumentParser
 				}
 			}
 			
-			WalkInfo walk = _activeRoutes.get(npc.getObjectId());
+			final WalkInfo walk = _activeRoutes.get(npc.getObjectId());
 			
 			// Opposite should not happen... but happens sometime
 			if ((walk.getCurrentNodeId() >= 0) && (walk.getCurrentNodeId() < walk.getRoute().getNodesCount()))
 			{
-				L2NpcWalkerNode node = walk.getRoute().getNodeList().get(walk.getCurrentNodeId());
+				final L2NpcWalkerNode node = walk.getRoute().getNodeList().get(walk.getCurrentNodeId());
 				if (npc.isInsideRadius(node, 10, false, false))
 				{
 					npc.sendDebugMessage("Route '" + walk.getRoute().getName() + "', arrived to node " + walk.getCurrentNodeId());

@@ -37,9 +37,9 @@ import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeGuardManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
-import com.l2jserver.gameserver.instancemanager.FortSiegeManager.SiegeSpawn;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.CombatFlag;
+import com.l2jserver.gameserver.model.FortSiegeSpawn;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2SiegeClan;
@@ -638,8 +638,8 @@ public class FortSiege implements Siegable
 			L2Spawn spawn = instance.getSpawn();
 			if (spawn != null)
 			{
-				FastList<SiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getFortId());
-				for (SiegeSpawn spawn2 : commanders)
+				FastList<FortSiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getFortId());
+				for (FortSiegeSpawn spawn2 : commanders)
 				{
 					if (spawn2.getNpcId() == spawn.getNpcid())
 					{
@@ -1160,7 +1160,7 @@ public class FortSiege implements Siegable
 			_commanders.clear();
 			L2Spawn spawnDat;
 			L2NpcTemplate template1;
-			for (SiegeSpawn _sp : FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getFortId()))
+			for (FortSiegeSpawn _sp : FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getFortId()))
 			{
 				template1 = NpcTable.getInstance().getTemplate(_sp.getNpcId());
 				if (template1 != null)

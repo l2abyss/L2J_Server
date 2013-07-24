@@ -38,7 +38,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-public class CastleManager implements InstanceListManager
+public final class CastleManager implements InstanceListManager
 {
 	private static final Logger _log = Logger.getLogger(CastleManager.class.getName());
 	
@@ -207,11 +207,9 @@ public class CastleManager implements InstanceListManager
 		}
 	}
 	
-	int _castleId = 1; // from this castle
-	
 	public int getCirclet()
 	{
-		return getCircletByCastleId(_castleId);
+		return getCircletByCastleId(1);
 	}
 	
 	public int getCircletByCastleId(int castleId)

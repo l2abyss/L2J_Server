@@ -23,7 +23,7 @@ import java.util.List;
 import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.datatables.ManorData;
-import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
+import com.l2jserver.gameserver.model.CropProcure;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 

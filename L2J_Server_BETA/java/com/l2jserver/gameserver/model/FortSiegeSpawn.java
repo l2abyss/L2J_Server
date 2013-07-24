@@ -18,32 +18,36 @@
  */
 package com.l2jserver.gameserver.model;
 
-public final class VehiclePathPoint extends Location
+/**
+ * Fort Siege Spawn.
+ * @author xban1x
+ */
+public final class FortSiegeSpawn extends Location
 {
-	private final int _moveSpeed;
-	private final int _rotationSpeed;
+	private final int _npcId;
+	private final int _fortId;
+	private final int _id;
 	
-	public VehiclePathPoint(int x, int y, int z)
+	public FortSiegeSpawn(int fort_id, int x, int y, int z, int heading, int npc_id, int id)
 	{
-		super(x, y, z);
-		_moveSpeed = 350;
-		_rotationSpeed = 4000;
+		super(x, y, z, heading);
+		_fortId = fort_id;
+		_npcId = npc_id;
+		_id = id;
 	}
 	
-	public VehiclePathPoint(int x, int y, int z, int moveSpeed, int rotationSpeed)
+	public int getFortId()
 	{
-		super(x, y, z);
-		_moveSpeed = moveSpeed;
-		_rotationSpeed = rotationSpeed;
+		return _fortId;
 	}
 	
-	public int getMoveSpeed()
+	public int getNpcId()
 	{
-		return _moveSpeed;
+		return _npcId;
 	}
 	
-	public int getRotationSpeed()
+	public int getId()
 	{
-		return _rotationSpeed;
+		return _id;
 	}
 }

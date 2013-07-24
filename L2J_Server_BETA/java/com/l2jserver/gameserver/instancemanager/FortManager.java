@@ -33,7 +33,7 @@ import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.entity.Fort;
 
-public class FortManager implements InstanceListManager
+public final class FortManager implements InstanceListManager
 {
 	protected static final Logger _log = Logger.getLogger(FortManager.class.getName());
 	

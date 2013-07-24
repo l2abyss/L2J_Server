@@ -16,34 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model;
+package com.l2jserver.gameserver.instancemanager.tasks;
 
-public final class VehiclePathPoint extends Location
+import com.l2jserver.gameserver.instancemanager.WalkingManager;
+import com.l2jserver.gameserver.model.actor.L2Npc;
+
+/**
+ * Task which starts npc movement.
+ * @author xban1x
+ */
+public final class StartMovingTask implements Runnable
 {
-	private final int _moveSpeed;
-	private final int _rotationSpeed;
+	final L2Npc _npc;
+	final String _routeName;
 	
-	public VehiclePathPoint(int x, int y, int z)
+	public StartMovingTask(L2Npc npc, String routeName)
 	{
-		super(x, y, z);
-		_moveSpeed = 350;
-		_rotationSpeed = 4000;
+		_npc = npc;
+		_routeName = routeName;
 	}
 	
-	public VehiclePathPoint(int x, int y, int z, int moveSpeed, int rotationSpeed)
+	@Override
+	public void run()
 	{
-		super(x, y, z);
-		_moveSpeed = moveSpeed;
-		_rotationSpeed = rotationSpeed;
-	}
-	
-	public int getMoveSpeed()
-	{
-		return _moveSpeed;
-	}
-	
-	public int getRotationSpeed()
-	{
-		return _rotationSpeed;
+		if (_npc != null)
+		{
+			WalkingManager.getInstance().startMoving(_npc, _routeName);
+		}
 	}
 }
