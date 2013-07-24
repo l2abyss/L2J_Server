@@ -592,10 +592,14 @@ public final class Formulas
 		switch (shld)
 		{
 			case Formulas.SHIELD_DEFENSE_SUCCEED:
+			{
 				defence += target.getShldDef();
 				break;
+			}
 			case Formulas.SHIELD_DEFENSE_PERFECT_BLOCK: // perfect block
+			{
 				return 1;
+			}
 		}
 		
 		final boolean isPvP = attacker.isPlayable() && target.isPlayable();
@@ -609,9 +613,9 @@ public final class Formulas
 		
 		if (isPvP)
 		{
-			// Dmg bonusses in PvP fight
-			pvpBonus *= attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);
-			// Def bonusses in PvP fight
+			// Damage bonuses in PvP fight
+			pvpBonus = attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);
+			// Defense bonuses in PvP fight
 			defence *= target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);
 		}
 		
@@ -636,7 +640,7 @@ public final class Formulas
 		if ((target instanceof L2Attackable) && !target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2))
 		{
 			int lvlDiff = target.getLevel() - attacker.getActingPlayer().getLevel() - 1;
-			if (lvlDiff > Config.NPC_SKILL_DMG_PENALTY.size())
+			if (lvlDiff >= Config.NPC_SKILL_DMG_PENALTY.size())
 			{
 				damage *= Config.NPC_SKILL_DMG_PENALTY.get(Config.NPC_SKILL_DMG_PENALTY.size() - 1);
 			}
@@ -644,10 +648,9 @@ public final class Formulas
 			{
 				damage *= Config.NPC_SKILL_DMG_PENALTY.get(lvlDiff);
 			}
-			
 		}
 		
-		return damage < 1 ? 1. : damage;
+		return Math.max(damage, 1);
 	}
 	
 	public static double calcBackstabDamage(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss)
