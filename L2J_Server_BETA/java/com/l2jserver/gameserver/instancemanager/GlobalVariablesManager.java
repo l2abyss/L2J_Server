@@ -40,7 +40,7 @@ public final class GlobalVariablesManager extends AbstractVariables
 	// SQL Queries.
 	private static final String SELECT_QUERY = "SELECT * FROM global_variables";
 	private static final String DELETE_QUERY = "DELETE FROM global_variables";
-	private static final String INSERT_QUERY = "INSERT INTO global_variables (var, val) VALUES (?, ?)";
+	private static final String INSERT_QUERY = "INSERT INTO global_variables (var, value) VALUES (?, ?)";
 	
 	protected GlobalVariablesManager()
 	{
@@ -82,25 +82,20 @@ public final class GlobalVariablesManager extends AbstractVariables
 			return;
 		}
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement st = con.prepareStatement(INSERT_QUERY))
 		{
 			// Clear previous entries.
-			try (PreparedStatement st = con.prepareStatement(DELETE_QUERY))
-			{
-				st.execute();
-			}
+			con.prepareStatement(DELETE_QUERY).execute();
 			
 			// Insert all variables.
-			try (PreparedStatement st = con.prepareStatement(INSERT_QUERY))
+			for (Entry<String, Object> entry : getSet().entrySet())
 			{
-				for (Entry<String, Object> entry : getSet().entrySet())
-				{
-					st.setString(1, entry.getKey());
-					st.setString(2, String.valueOf(entry.getValue()));
-					st.addBatch();
-				}
-				st.executeBatch();
+				st.setString(1, entry.getKey());
+				st.setString(2, String.valueOf(entry.getValue()));
+				st.addBatch();
 			}
+			st.executeBatch();
 		}
 		catch (SQLException e)
 		{
