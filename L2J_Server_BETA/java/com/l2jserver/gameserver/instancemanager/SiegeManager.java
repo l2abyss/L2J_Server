@@ -45,7 +45,7 @@ import com.l2jserver.gameserver.model.entity.Siege;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.util.L2Properties;
 
-public class SiegeManager
+public final class SiegeManager
 {
 	private static final Logger _log = Logger.getLogger(SiegeManager.class.getName());
 	

@@ -34,7 +34,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Castle;
 
-public class SiegeGuardManager
+public final class SiegeGuardManager
 {
 	private static Logger _log = Logger.getLogger(SiegeGuardManager.class.getName());
 	

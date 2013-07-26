@@ -45,7 +45,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
  * Finally, we provide auxiliary functions to identify the castle in which each item (and its corresponding NPC) belong to, in order to help avoid mixing them up.
  * @author yellowperil, Fulminus
  */
-public class MercTicketManager
+public final class MercTicketManager
 {
 	private static final Logger _log = Logger.getLogger(MercTicketManager.class.getName());
 	
@@ -423,6 +423,10 @@ public class MercTicketManager
 		return _droppedTickets;
 	}
 	
+	/**
+	 * Gets the single instance of {@code MercTicketManager}.
+	 * @return single instance of {@code MercTicketManager}
+	 */
 	public static final MercTicketManager getInstance()
 	{
 		return SingletonHolder._instance;

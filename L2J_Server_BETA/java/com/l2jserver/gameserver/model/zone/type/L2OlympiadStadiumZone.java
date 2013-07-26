@@ -20,9 +20,9 @@ package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.PcCondOverride;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
@@ -288,7 +288,7 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 					_player.getSummon().unSummon(_player);
 				}
 				
-				_player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
+				_player.teleToLocation(TeleportWhereType.TOWN);
 				_player.setInstanceId(0);
 				_player = null;
 			}

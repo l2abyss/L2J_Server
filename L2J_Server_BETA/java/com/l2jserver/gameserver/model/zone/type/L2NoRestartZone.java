@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
@@ -131,7 +131,7 @@ public class L2NoRestartZone extends L2ZoneType
 		@Override
 		public void run()
 		{
-			_player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
+			_player.teleToLocation(TeleportWhereType.TOWN);
 		}
 	}
 }

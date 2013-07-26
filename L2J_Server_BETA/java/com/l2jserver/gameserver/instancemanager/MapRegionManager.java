@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.model.L2MapRegion;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -47,24 +48,10 @@ import com.l2jserver.gameserver.model.zone.type.L2RespawnZone;
 /**
  * @author Nyaran
  */
-public class MapRegionManager extends DocumentParser
+public final class MapRegionManager extends DocumentParser
 {
 	private static final Map<String, L2MapRegion> _regions = new HashMap<>();
 	private static final String defaultRespawn = "talking_island_town";
-	
-	public static enum TeleportWhereType
-	{
-		Castle,
-		Castle_banish,
-		ClanHall,
-		ClanHall_banish,
-		SiegeFlag,
-		Town,
-		Fortress,
-		Fortress_banish,
-		Territory,
-		Territory_banish
-	}
 	
 	protected MapRegionManager()
 	{
@@ -272,7 +259,7 @@ public class MapRegionManager extends DocumentParser
 			if ((player.getClan() != null) && !player.isFlyingMounted() && !player.isFlying()) // flying players in gracia cant use teleports to aden continent
 			{
 				// If teleport to clan hall
-				if (teleportWhere == TeleportWhereType.ClanHall)
+				if (teleportWhere == TeleportWhereType.CLANHALL)
 				{
 					clanhall = ClanHallManager.getInstance().getAbstractHallByOwner(player.getClan());
 					if (clanhall != null)
@@ -290,7 +277,7 @@ public class MapRegionManager extends DocumentParser
 				}
 				
 				// If teleport to castle
-				if (teleportWhere == TeleportWhereType.Castle)
+				if (teleportWhere == TeleportWhereType.CASTLE)
 				{
 					castle = CastleManager.getInstance().getCastleByOwner(player.getClan());
 					// Otherwise check if player is on castle or fortress ground
@@ -315,7 +302,7 @@ public class MapRegionManager extends DocumentParser
 				}
 				
 				// If teleport to fortress
-				if (teleportWhere == TeleportWhereType.Fortress)
+				if (teleportWhere == TeleportWhereType.FORTRESS)
 				{
 					fort = FortManager.getInstance().getFortByOwner(player.getClan());
 					// Otherwise check if player is on castle or fortress ground
@@ -340,7 +327,7 @@ public class MapRegionManager extends DocumentParser
 				}
 				
 				// If teleport to SiegeHQ
-				if (teleportWhere == TeleportWhereType.SiegeFlag)
+				if (teleportWhere == TeleportWhereType.SIEGEFLAG)
 				{
 					castle = CastleManager.getInstance().getCastle(player);
 					fort = FortManager.getInstance().getFort(player);
@@ -389,7 +376,7 @@ public class MapRegionManager extends DocumentParser
 				}
 			}
 			
-			if (teleportWhere == TeleportWhereType.Castle_banish)
+			if (teleportWhere == TeleportWhereType.CASTLE_BANISH)
 			{
 				castle = CastleManager.getInstance().getCastle(player);
 				if (castle != null)
@@ -397,7 +384,7 @@ public class MapRegionManager extends DocumentParser
 					return castle.getCastleZone().getBanishSpawnLoc();
 				}
 			}
-			else if (teleportWhere == TeleportWhereType.Fortress_banish)
+			else if (teleportWhere == TeleportWhereType.FORTRESS_BANISH)
 			{
 				fort = FortManager.getInstance().getFort(activeChar);
 				if (fort != null)
@@ -405,7 +392,7 @@ public class MapRegionManager extends DocumentParser
 					return fort.getFortZone().getBanishSpawnLoc();
 				}
 			}
-			else if (teleportWhere == TeleportWhereType.ClanHall_banish)
+			else if (teleportWhere == TeleportWhereType.CLANHALL_BANISH)
 			{
 				clanhall = ClanHallManager.getInstance().getClanHall(activeChar);
 				if (clanhall != null)
@@ -515,6 +502,10 @@ public class MapRegionManager extends DocumentParser
 		return _regions.get(regionName);
 	}
 	
+	/**
+	 * Gets the single instance of {@code MapRegionManager}.
+	 * @return single instance of {@code MapRegionManager}
+	 */
 	public static MapRegionManager getInstance()
 	{
 		return SingletonHolder._instance;

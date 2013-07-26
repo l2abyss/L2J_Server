@@ -35,7 +35,7 @@ import com.l2jserver.gameserver.model.punishment.PunishmentType;
 /**
  * @author UnAfraid
  */
-public class PunishmentManager
+public final class PunishmentManager
 {
 	private static final Logger _log = Logger.getLogger(PunishmentManager.class.getName());
 	
@@ -124,6 +124,10 @@ public class PunishmentManager
 		return _tasks.get(affect).getPunishment(String.valueOf(key), type);
 	}
 	
+	/**
+	 * Gets the single instance of {@code PunishmentManager}.
+	 * @return single instance of {@code PunishmentManager}
+	 */
 	public static final PunishmentManager getInstance()
 	{
 		return SingletonHolder._instance;

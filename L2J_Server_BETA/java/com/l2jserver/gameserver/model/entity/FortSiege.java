@@ -37,7 +37,6 @@ import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeGuardManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.CombatFlag;
 import com.l2jserver.gameserver.model.FortSiegeSpawn;
 import com.l2jserver.gameserver.model.L2Clan;
@@ -46,6 +45,7 @@ import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.L2SiegeClan.SiegeClanType;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.PcCondOverride;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FortCommanderInstance;
@@ -344,7 +344,7 @@ public class FortSiege implements Siegable
 			
 			loadSiegeClan(); // Load siege clan from db
 			updatePlayerSiegeStateFlags(false);
-			teleportPlayer(FortSiege.TeleportWhoType.Attacker, MapRegionManager.TeleportWhereType.Town); // Teleport to the closest town
+			teleportPlayer(FortSiege.TeleportWhoType.Attacker, TeleportWhereType.TOWN); // Teleport to the closest town
 			
 			getFort().despawnNpcCommanders(); // Despawn NPC commanders
 			spawnCommanders(); // Spawn commanders
@@ -908,7 +908,7 @@ public class FortSiege implements Siegable
 	 * @param teleportWho
 	 * @param teleportWhere
 	 */
-	public void teleportPlayer(TeleportWhoType teleportWho, MapRegionManager.TeleportWhereType teleportWhere)
+	public void teleportPlayer(TeleportWhoType teleportWho, TeleportWhereType teleportWhere)
 	{
 		List<L2PcInstance> players;
 		switch (teleportWho)

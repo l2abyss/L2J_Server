@@ -68,7 +68,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.L2Properties;
 
-public class TerritoryWarManager implements Siegable
+public final class TerritoryWarManager implements Siegable
 {
 	private static final Logger _log = Logger.getLogger(TerritoryWarManager.class.getName());
 	

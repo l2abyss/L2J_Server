@@ -25,9 +25,10 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.FourSepulchersManager;
 
 /**
+ * Four Sepulchers manager say task.
  * @author xban1x
  */
-public final class FourSepulchersManagerSay implements Runnable
+public final class FourSepulchersManagerSayTask implements Runnable
 {
 	@Override
 	public void run()
@@ -44,7 +45,7 @@ public final class FourSepulchersManagerSay implements Runnable
 				// cannot be
 				// more than
 				// 59
-				ThreadPoolManager.getInstance().scheduleGeneral(new FourSepulchersManagerSay(), 5 * 60000);
+				ThreadPoolManager.getInstance().scheduleGeneral(new FourSepulchersManagerSayTask(), 5 * 60000);
 			}
 			// attack time ending chat
 			else if ((tmp.get(Calendar.MINUTE) + 5) >= Config.FS_TIME_ATTACK)

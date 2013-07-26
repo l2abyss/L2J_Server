@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.scripting.L2ScriptEngineManager;
 import com.l2jserver.gameserver.scripting.ScriptManager;
 import com.l2jserver.util.L2FastMap;
 
-public class QuestManager extends ScriptManager<Quest>
+public final class QuestManager extends ScriptManager<Quest>
 {
 	protected static final Logger _log = Logger.getLogger(QuestManager.class.getName());
 	
@@ -42,7 +42,7 @@ public class QuestManager extends ScriptManager<Quest>
 	
 	public final boolean reload(String questFolder)
 	{
-		Quest q = getQuest(questFolder);
+		final Quest q = getQuest(questFolder);
 		if (q == null)
 		{
 			return false;
@@ -58,7 +58,7 @@ public class QuestManager extends ScriptManager<Quest>
 	 */
 	public final boolean reload(int questId)
 	{
-		Quest q = getQuest(questId);
+		final Quest q = getQuest(questId);
 		if (q == null)
 		{
 			return false;
@@ -127,7 +127,7 @@ public class QuestManager extends ScriptManager<Quest>
 		{
 			throw new IllegalArgumentException("Quest argument cannot be null");
 		}
-		Quest old = _quests.get(newQuest.getName());
+		final Quest old = _quests.get(newQuest.getName());
 		
 		// FIXME: unloading the old quest at this point is a tad too late.
 		// the new quest has already initialized itself and read the data, starting
@@ -171,6 +171,10 @@ public class QuestManager extends ScriptManager<Quest>
 		return getClass().getSimpleName();
 	}
 	
+	/**
+	 * Gets the single instance of {@code QuestManager}.
+	 * @return single instance of {@code QuestManager}
+	 */
 	public static final QuestManager getInstance()
 	{
 		return SingletonHolder._instance;

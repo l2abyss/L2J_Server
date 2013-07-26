@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,14 +53,12 @@ public final class GlobalVariablesManager extends AbstractVariables
 	{
 		// Restore previous variables.
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement st = con.prepareStatement(SELECT_QUERY))
+			Statement st = con.createStatement();
+			ResultSet rset = st.executeQuery(SELECT_QUERY))
 		{
-			try (ResultSet rset = st.executeQuery())
+			while (rset.next())
 			{
-				while (rset.next())
-				{
-					set(rset.getString("var"), rset.getString("value"));
-				}
+				set(rset.getString("var"), rset.getString("value"));
 			}
 		}
 		catch (SQLException e)
@@ -83,10 +82,11 @@ public final class GlobalVariablesManager extends AbstractVariables
 		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement del = con.createStatement();
 			PreparedStatement st = con.prepareStatement(INSERT_QUERY))
 		{
 			// Clear previous entries.
-			con.prepareStatement(DELETE_QUERY).execute();
+			del.execute(DELETE_QUERY);
 			
 			// Insert all variables.
 			for (Entry<String, Object> entry : getSet().entrySet())

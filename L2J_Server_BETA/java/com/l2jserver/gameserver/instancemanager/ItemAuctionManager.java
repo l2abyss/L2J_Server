@@ -160,6 +160,10 @@ public final class ItemAuctionManager
 		}
 	}
 	
+	/**
+	 * Gets the single instance of {@code ItemAuctionManager}.
+	 * @return single instance of {@code ItemAuctionManager}
+	 */
 	public static final ItemAuctionManager getInstance()
 	{
 		return SingletonHolder._instance;

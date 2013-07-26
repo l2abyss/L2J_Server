@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.FourSepulchersManager;
 
 /**
+ * Four Sepulchers change warm up time task.
  * @author xban1x
  */
 public final class FourSepulchersChangeWarmUpTimeTask implements Runnable

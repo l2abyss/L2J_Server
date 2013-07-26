@@ -40,11 +40,11 @@ import com.l2jserver.util.L2FastList;
  * This class manage all items on ground.
  * @author Enforcer
  */
-public class ItemsOnGroundManager implements Runnable
+public final class ItemsOnGroundManager implements Runnable
 {
 	private static final Logger _log = Logger.getLogger(ItemsOnGroundManager.class.getName());
 	
-	protected List<L2ItemInstance> _items = new L2FastList<>(true);
+	private final List<L2ItemInstance> _items = new L2FastList<>(true);
 	
 	protected ItemsOnGroundManager()
 	{
@@ -249,6 +249,10 @@ public class ItemsOnGroundManager implements Runnable
 		}
 	}
 	
+	/**
+	 * Gets the single instance of {@code ItemsOnGroundManager}.
+	 * @return single instance of {@code ItemsOnGroundManager}
+	 */
 	public static final ItemsOnGroundManager getInstance()
 	{
 		return SingletonHolder._instance;

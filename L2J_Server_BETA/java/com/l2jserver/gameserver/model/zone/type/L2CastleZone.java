@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.instancemanager.CastleManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager.TeleportWhereType;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
@@ -87,7 +87,7 @@ public class L2CastleZone extends L2ZoneRespawn
 	 */
 	public void banishForeigners(int owningClanId)
 	{
-		TeleportWhereType type = TeleportWhereType.Town;
+		TeleportWhereType type = TeleportWhereType.TOWN;
 		for (L2PcInstance temp : getPlayersInside())
 		{
 			if ((temp.getClanId() == owningClanId) && (owningClanId != 0))

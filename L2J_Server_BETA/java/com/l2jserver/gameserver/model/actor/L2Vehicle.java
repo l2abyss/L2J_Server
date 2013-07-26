@@ -34,6 +34,7 @@ import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.VehiclePathPoint;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.VehicleKnownList;
@@ -220,7 +221,7 @@ public abstract class L2Vehicle extends L2Character
 	
 	public Location getOustLoc()
 	{
-		return _oustLoc != null ? _oustLoc : MapRegionManager.getInstance().getTeleToLocation(this, MapRegionManager.TeleportWhereType.Town);
+		return _oustLoc != null ? _oustLoc : MapRegionManager.getInstance().getTeleToLocation(this, TeleportWhereType.TOWN);
 	}
 	
 	public void oustPlayers()

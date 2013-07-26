@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.FourSepulchersManager;
 
 /**
+ * Four Sepulchers change attack time task.
  * @author xban1x
  */
 public final class FourSepulchersChangeAttackTimeTask implements Runnable
@@ -62,14 +63,14 @@ public final class FourSepulchersChangeAttackTimeTask implements Runnable
 				{
 					final Calendar inter = Calendar.getInstance();
 					inter.set(Calendar.MINUTE, (int) min);
-					ThreadPoolManager.getInstance().scheduleGeneral(new FourSepulchersManagerSay(), inter.getTimeInMillis() - Calendar.getInstance().getTimeInMillis());
+					ThreadPoolManager.getInstance().scheduleGeneral(new FourSepulchersManagerSayTask(), inter.getTimeInMillis() - Calendar.getInstance().getTimeInMillis());
 					break;
 				}
 			}
 		}
 		else
 		{
-			ThreadPoolManager.getInstance().scheduleGeneral(new FourSepulchersManagerSay(), 5 * 60400);
+			ThreadPoolManager.getInstance().scheduleGeneral(new FourSepulchersManagerSayTask(), 5 * 60400);
 		}
 		// searching time when attack time will be ended:
 		// counting difference between time when attack time ends and

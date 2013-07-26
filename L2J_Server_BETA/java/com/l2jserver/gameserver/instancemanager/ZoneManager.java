@@ -50,7 +50,7 @@ import com.l2jserver.gameserver.model.zone.type.L2RespawnZone;
  * This class manages the zones
  * @author durgus
  */
-public class ZoneManager extends DocumentParser
+public final class ZoneManager extends DocumentParser
 {
 	private static final Map<String, AbstractZoneSettings> _settings = new HashMap<>();
 	
@@ -73,7 +73,7 @@ public class ZoneManager extends DocumentParser
 	{
 		// Get the world regions
 		int count = 0;
-		L2WorldRegion[][] worldRegions = L2World.getInstance().getAllWorldRegions();
+		final L2WorldRegion[][] worldRegions = L2World.getInstance().getAllWorldRegions();
 		
 		// Backup old zone settings
 		for (Map<Integer, ? extends L2ZoneType> map : _classZones.values())
@@ -117,14 +117,14 @@ public class ZoneManager extends DocumentParser
 	protected void parseDocument()
 	{
 		// Get the world regions
-		L2WorldRegion[][] worldRegions = L2World.getInstance().getAllWorldRegions();
+		final L2WorldRegion[][] worldRegions = L2World.getInstance().getAllWorldRegions();
 		NamedNodeMap attrs;
 		Node attribute;
 		String zoneName;
 		int[][] coords;
 		int zoneId, minZ, maxZ;
 		String zoneType, zoneShape;
-		List<int[]> rs = new ArrayList<>();
+		final List<int[]> rs = new ArrayList<>();
 		
 		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
@@ -412,7 +412,7 @@ public class ZoneManager extends DocumentParser
 	@Deprecated
 	public Collection<L2ZoneType> getAllZones()
 	{
-		List<L2ZoneType> zones = new ArrayList<>();
+		final List<L2ZoneType> zones = new ArrayList<>();
 		for (Map<Integer, ? extends L2ZoneType> map : _classZones.values())
 		{
 			zones.addAll(map.values());
@@ -497,8 +497,8 @@ public class ZoneManager extends DocumentParser
 	 */
 	public List<L2ZoneType> getZones(int x, int y)
 	{
-		L2WorldRegion region = L2World.getInstance().getRegion(x, y);
-		List<L2ZoneType> temp = new ArrayList<>();
+		final L2WorldRegion region = L2World.getInstance().getRegion(x, y);
+		final List<L2ZoneType> temp = new ArrayList<>();
 		for (L2ZoneType zone : region.getZones())
 		{
 			if (zone.isInsideZone(x, y))
@@ -518,8 +518,8 @@ public class ZoneManager extends DocumentParser
 	 */
 	public List<L2ZoneType> getZones(int x, int y, int z)
 	{
-		L2WorldRegion region = L2World.getInstance().getRegion(x, y);
-		List<L2ZoneType> temp = new ArrayList<>();
+		final L2WorldRegion region = L2World.getInstance().getRegion(x, y);
+		final List<L2ZoneType> temp = new ArrayList<>();
 		for (L2ZoneType zone : region.getZones())
 		{
 			if (zone.isInsideZone(x, y, z))
@@ -542,7 +542,7 @@ public class ZoneManager extends DocumentParser
 	@SuppressWarnings("unchecked")
 	public <T extends L2ZoneType> T getZone(int x, int y, int z, Class<T> type)
 	{
-		L2WorldRegion region = L2World.getInstance().getRegion(x, y);
+		final L2WorldRegion region = L2World.getInstance().getRegion(x, y);
 		for (L2ZoneType zone : region.getZones())
 		{
 			if (zone.isInsideZone(x, y, z) && type.isInstance(zone))
@@ -645,10 +645,10 @@ public class ZoneManager extends DocumentParser
 	{
 		if (_debugItems != null)
 		{
-			Iterator<L2ItemInstance> it = _debugItems.iterator();
+			final Iterator<L2ItemInstance> it = _debugItems.iterator();
 			while (it.hasNext())
 			{
-				L2ItemInstance item = it.next();
+				final L2ItemInstance item = it.next();
 				if (item != null)
 				{
 					item.decayMe();

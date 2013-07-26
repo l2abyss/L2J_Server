@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import com.l2jserver.gameserver.instancemanager.MapRegionManager.TeleportWhereType;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
@@ -82,7 +82,7 @@ public class L2FortZone extends L2ZoneRespawn
 	 */
 	public void banishForeigners(int owningClanId)
 	{
-		TeleportWhereType type = TeleportWhereType.Fortress_banish;
+		TeleportWhereType type = TeleportWhereType.FORTRESS_BANISH;
 		for (L2PcInstance temp : getPlayersInside())
 		{
 			if ((temp.getClanId() == owningClanId) && (owningClanId != 0))

@@ -36,13 +36,13 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.AutoSpawnHandler;
 import com.l2jserver.gameserver.model.AutoSpawnHandler.AutoSpawnInstance;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.StatsSet;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.quest.Quest;
@@ -1456,7 +1456,7 @@ public class SevenSigns
 				{
 					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && ((currPlayer == null) || !currPlayer.getString("cabal").equals(_cmpWinner)))
 					{
-						onlinePlayer.teleToLocation(MapRegionManager.TeleportWhereType.Town);
+						onlinePlayer.teleToLocation(TeleportWhereType.TOWN);
 						onlinePlayer.setIsIn7sDungeon(false);
 						onlinePlayer.sendMessage("You have been teleported to the nearest town due to the beginning of the Seal Validation period.");
 					}
@@ -1465,7 +1465,7 @@ public class SevenSigns
 				{
 					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && ((currPlayer == null) || !currPlayer.getString("cabal").isEmpty()))
 					{
-						onlinePlayer.teleToLocation(MapRegionManager.TeleportWhereType.Town);
+						onlinePlayer.teleToLocation(TeleportWhereType.TOWN);
 						onlinePlayer.setIsIn7sDungeon(false);
 						onlinePlayer.sendMessage("You have been teleported to the nearest town because you have not signed for any cabal.");
 					}

@@ -47,7 +47,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 /**
  * @author DaRkRaGe Revised by Emperorc
  */
-public class GrandBossManager
+public final class GrandBossManager
 {
 	// SQL queries
 	private static final String DELETE_GRAND_BOSS_LIST = "DELETE FROM grandboss_list";
@@ -438,6 +438,10 @@ public class GrandBossManager
 		return _zones;
 	}
 	
+	/**
+	 * Gets the single instance of {@code GrandBossManager}.
+	 * @return single instance of {@code GrandBossManager}
+	 */
 	public static GrandBossManager getInstance()
 	{
 		return SingletonHolder._instance;

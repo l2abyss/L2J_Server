@@ -41,7 +41,6 @@ import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Party.messageType;
@@ -50,6 +49,7 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.SpawnListener;
 import com.l2jserver.gameserver.model.StatsSet;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2FestivalMonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -2423,7 +2423,7 @@ public class SevenSignsFestival implements SpawnListener
 				// If an exception occurs, just move the player to the nearest town.
 				try
 				{
-					participant.teleToLocation(MapRegionManager.TeleportWhereType.Town);
+					participant.teleToLocation(TeleportWhereType.TOWN);
 					participant.sendMessage("You have been removed from the festival arena.");
 				}
 				catch (NullPointerException e2)

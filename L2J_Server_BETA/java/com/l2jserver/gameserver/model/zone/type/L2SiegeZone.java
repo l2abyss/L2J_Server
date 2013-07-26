@@ -23,8 +23,8 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager.TeleportWhereType;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
@@ -353,7 +353,7 @@ public class L2SiegeZone extends L2ZoneType
 	 */
 	public void banishForeigners(int owningClanId)
 	{
-		TeleportWhereType type = TeleportWhereType.Town;
+		TeleportWhereType type = TeleportWhereType.TOWN;
 		for (L2PcInstance temp : getPlayersInside())
 		{
 			if (temp.getClanId() == owningClanId)

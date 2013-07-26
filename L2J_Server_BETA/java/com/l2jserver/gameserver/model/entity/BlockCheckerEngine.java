@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager;
-import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager.ArenaParticipantsHolder;
+import com.l2jserver.gameserver.model.ArenaParticipantsHolder;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2BlockInstance;
@@ -60,7 +60,7 @@ public final class BlockCheckerEngine
 {
 	protected static final Logger _log = Logger.getLogger(BlockCheckerEngine.class.getName());
 	// The object which holds all basic members info
-	protected HandysBlockCheckerManager.ArenaParticipantsHolder _holder;
+	protected ArenaParticipantsHolder _holder;
 	// Maps to hold player of each team and his points
 	protected FastMap<L2PcInstance, Integer> _redTeamPoints = new FastMap<>();
 	protected FastMap<L2PcInstance, Integer> _blueTeamPoints = new FastMap<>();
@@ -129,7 +129,7 @@ public final class BlockCheckerEngine
 	// Preserve from exploit reward by logging out
 	protected boolean _abnormalEnd = false;
 	
-	public BlockCheckerEngine(HandysBlockCheckerManager.ArenaParticipantsHolder holder, int arena)
+	public BlockCheckerEngine(ArenaParticipantsHolder holder, int arena)
 	{
 		_holder = holder;
 		if ((arena > -1) && (arena < 4))
