@@ -1356,10 +1356,10 @@ public final class Formulas
 				break;
 		}
 		
-		double baseMod = ((((((magicLevel - target.getLevel()) + 3) * skill.getLvlBonusRate()) + activateRate) + 30.0) - targetBaseStat);
-		double elementMod = calcAttributeBonus(attacker, target, skill);
-		double traitMod = calcGeneralTraitBonus(attacker, target, skill.getTraitType(), false);
-		double buffDebuffMod = target.calcStat(skill.isDebuff() ? Stats.DEBUFF_VULN : Stats.BUFF_VULN, 1, null, null);
+		final double baseMod = ((((((magicLevel - target.getLevel()) + 3) * skill.getLvlBonusRate()) + activateRate) + 30.0) - targetBaseStat);
+		final double elementMod = calcAttributeBonus(attacker, target, skill);
+		final double traitMod = calcGeneralTraitBonus(attacker, target, skill.getTraitType(), false);
+		final double buffDebuffMod = 1 + (target.calcStat(skill.isDebuff() ? Stats.DEBUFF_VULN : Stats.BUFF_VULN, 1, null, null) / 100);
 		double mAtkMod = 1;
 		
 		if (skill.isMagic())
@@ -1375,8 +1375,8 @@ public final class Formulas
 			mAtkMod = val;
 		}
 		
-		double rate = baseMod * elementMod * traitMod * mAtkMod * buffDebuffMod;
-		double finalRate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
+		final double rate = baseMod * elementMod * traitMod * mAtkMod * buffDebuffMod;
+		final double finalRate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
 		
 		if (attacker.isDebug())
 		{
