@@ -108,6 +108,24 @@ public enum L2SkillOpType
 	}
 	
 	/**
+	 * @return {@code true} if the operative skill type is continuous, {@code false} otherwise.
+	 */
+	public boolean isContinuous()
+	{
+		switch (this)
+		{
+			case A2:
+			case A3:
+			case A4:
+			case CA5:
+			case DA2:
+				return true;
+			default:
+				return false;
+		}
+	}
+	
+	/**
 	 * @return {@code true} if the operative skill type is passive, {@code false} otherwise.
 	 */
 	public boolean isPassive()
