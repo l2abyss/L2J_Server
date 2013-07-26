@@ -1376,6 +1376,7 @@ public final class Formulas
 		}
 		
 		double rate = baseMod * elementMod * traitMod * mAtkMod * buffDebuffMod;
+		double finalRate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
 		
 		if (attacker.isDebug())
 		{
@@ -1386,12 +1387,11 @@ public final class Formulas
 			set.set("mAtkMod", mAtkMod);
 			set.set("buffDebuffMod", buffDebuffMod);
 			set.set("rate", rate);
+			set.set("finalRate", finalRate);
 			Debug.sendSkillDebug(attacker, target, skill, set);
 		}
 		
-		rate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
-		
-		if (rate < Rnd.get(100))
+		if (finalRate < Rnd.get(100))
 		{
 			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
 			sm.addCharName(env.getTarget());
@@ -1445,7 +1445,7 @@ public final class Formulas
 		rate *= elementMod;
 		
 		// Add Matk/Mdef Bonus (TODO: Pending)
-		
+		double finalRate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
 		if (attacker.isDebug())
 		{
 			final StatsSet set = new StatsSet();
@@ -1453,12 +1453,13 @@ public final class Formulas
 			set.set("elementMod", elementMod);
 			set.set("lvlBonusMod", lvlBonusMod);
 			set.set("rate", rate);
+			set.set("finalRate", finalRate);
 			Debug.sendSkillDebug(attacker, target, skill, set);
 		}
 		
 		// Check the Rate Limits.
-		rate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
-		return (Rnd.get(100) < rate);
+		
+		return (Rnd.get(100) < finalRate);
 	}
 	
 	public static boolean calcCubicSkillSuccess(L2CubicInstance attacker, L2Character target, L2Skill skill, byte shld)
@@ -1506,6 +1507,9 @@ public final class Formulas
 		
 		// Add Matk/Mdef Bonus (TODO: Pending)
 		
+		// Check the Rate Limits.
+		double finalRate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
+		
 		if (attacker.getOwner().isDebug())
 		{
 			final StatsSet set = new StatsSet();
@@ -1515,12 +1519,11 @@ public final class Formulas
 			set.set("elementMod", elementMod);
 			set.set("lvlBonusMod", lvlBonusMod);
 			set.set("rate", rate);
+			set.set("finalRate", finalRate);
 			Debug.sendSkillDebug(attacker.getOwner(), target, skill, set);
 		}
 		
-		// Check the Rate Limits.
-		rate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
-		return (Rnd.get(100) < rate);
+		return (Rnd.get(100) < finalRate);
 	}
 	
 	public static boolean calcMagicSuccess(L2Character attacker, L2Character target, L2Skill skill)

@@ -51,7 +51,7 @@ public class PetFeedTask implements Runnable
 		{
 			try
 			{
-				if (!_player.isMounted() || (_player.getMountNpcId() == 0))
+				if (!_player.isMounted() || (_player.getMountNpcId() == 0) || (_player.getPetData(_player.getMountNpcId()) == null))
 				{
 					_player.stopFeed();
 					return;
