@@ -20,8 +20,10 @@ package com.l2jserver.gameserver.model.actor.stat;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
+import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
+import com.l2jserver.gameserver.model.L2PetLevelData;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2ClassMasterInstance;
@@ -508,6 +510,7 @@ public class PcStat extends PlayableStat
 		L2PcInstance player = getActiveChar();
 		int val = 0;
 		
+		final L2PetLevelData data = PetDataTable.getInstance().getPetLevelData(getActiveChar().getMountNpcId(), getActiveChar().getMountLevel());
 		if (player.isInsideZone(ZoneId.WATER))
 		{
 			if (player.isMounted())
@@ -515,10 +518,10 @@ public class PcStat extends PlayableStat
 				switch (mt)
 				{
 					case WALK:
-						val = PetDataTable.getInstance().getPetLevelData(player.getMountNpcId(), player.getMountLevel()).getSpeedOnRide(MoveType.SLOW_SWIM);
+						val = data != null ? data.getSpeedOnRide(MoveType.SLOW_SWIM) : NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseMoveSpd(MoveType.SLOW_SWIM);
 						break;
 					case RUN:
-						val = PetDataTable.getInstance().getPetLevelData(player.getMountNpcId(), player.getMountLevel()).getSpeedOnRide(MoveType.FAST_SWIM);
+						val = data != null ? data.getSpeedOnRide(MoveType.FAST_SWIM) : NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseMoveSpd(MoveType.FAST_SWIM);
 						break;
 				}
 			}
@@ -537,7 +540,7 @@ public class PcStat extends PlayableStat
 		}
 		else
 		{
-			val = player.isMounted() ? PetDataTable.getInstance().getPetLevelData(player.getMountNpcId(), player.getMountLevel()).getSpeedOnRide(mt) : player.getTemplate().getBaseMoveSpd(mt);
+			val = player.isMounted() ? data != null ? data.getSpeedOnRide(mt) : NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseMoveSpd(mt) : player.getTemplate().getBaseMoveSpd(mt);
 			
 			if (player.isInsideZone(ZoneId.SWAMP))
 			{
@@ -648,14 +651,10 @@ public class PcStat extends PlayableStat
 	@Override
 	public float getMovementSpeedMultiplier()
 	{
-		if (getActiveChar() == null)
-		{
-			return 1;
-		}
-		
 		if (getActiveChar().isMounted())
 		{
-			float baseSpeed = PetDataTable.getInstance().getPetLevelData(getActiveChar().getMountNpcId(), getActiveChar().getMountLevel()).getSpeedOnRide(MoveType.RUN);
+			final L2PetLevelData data = PetDataTable.getInstance().getPetLevelData(getActiveChar().getMountNpcId(), getActiveChar().getMountLevel());
+			float baseSpeed = data != null ? data.getSpeedOnRide(MoveType.RUN) : NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseMoveSpd(MoveType.RUN);
 			return (getMoveSpeed() / baseSpeed);
 		}
 		
