@@ -510,7 +510,7 @@ public class PcStat extends PlayableStat
 		L2PcInstance player = getActiveChar();
 		int val = 0;
 		
-		final L2PetLevelData data = PetDataTable.getInstance().getPetLevelData(getActiveChar().getMountNpcId(), getActiveChar().getMountLevel());
+		final L2PetLevelData data = getActiveChar().isMounted() ? PetDataTable.getInstance().getPetLevelData(getActiveChar().getMountNpcId(), getActiveChar().getMountLevel()) : null;
 		if (player.isInsideZone(ZoneId.WATER))
 		{
 			if (player.isMounted())
