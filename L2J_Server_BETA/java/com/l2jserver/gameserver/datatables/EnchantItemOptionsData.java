@@ -32,11 +32,11 @@ import com.l2jserver.gameserver.util.Util;
 /**
  * @author UnAfraid
  */
-public class EnchantOptionsData extends DocumentParser
+public class EnchantItemOptionsData extends DocumentParser
 {
 	private final Map<Integer, Map<Integer, EnchantOptions>> _data = new HashMap<>();
 	
-	protected EnchantOptionsData()
+	protected EnchantItemOptionsData()
 	{
 		load();
 	}
@@ -118,13 +118,13 @@ public class EnchantOptionsData extends DocumentParser
 	 * Gets the single instance of EnchantOptionsData.
 	 * @return single instance of EnchantOptionsData
 	 */
-	public static final EnchantOptionsData getInstance()
+	public static final EnchantItemOptionsData getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder
 	{
-		protected static final EnchantOptionsData _instance = new EnchantOptionsData();
+		protected static final EnchantItemOptionsData _instance = new EnchantItemOptionsData();
 	}
 }

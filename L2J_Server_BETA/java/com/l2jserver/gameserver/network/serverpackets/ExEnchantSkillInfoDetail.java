@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.EnchantGroupsData;
+import com.l2jserver.gameserver.datatables.EnchantSkillGroupsData;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -48,7 +48,7 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 	public ExEnchantSkillInfoDetail(int type, int skillid, int skilllvl, L2PcInstance ply)
 	{
 		
-		L2EnchantSkillLearn enchantLearn = EnchantGroupsData.getInstance().getSkillEnchantmentBySkillId(skillid);
+		L2EnchantSkillLearn enchantLearn = EnchantSkillGroupsData.getInstance().getSkillEnchantmentBySkillId(skillid);
 		EnchantSkillHolder esd = null;
 		// do we have this skill?
 		if (enchantLearn != null)
@@ -70,11 +70,11 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 		
 		if (type == 0)
 		{
-			multi = EnchantGroupsData.NORMAL_ENCHANT_COST_MULTIPLIER;
+			multi = EnchantSkillGroupsData.NORMAL_ENCHANT_COST_MULTIPLIER;
 		}
 		else if (type == 1)
 		{
-			multi = EnchantGroupsData.SAFE_ENCHANT_COST_MULTIPLIER;
+			multi = EnchantSkillGroupsData.SAFE_ENCHANT_COST_MULTIPLIER;
 		}
 		_chance = esd.getRate(ply);
 		_sp = esd.getSpCost();
@@ -90,19 +90,19 @@ public class ExEnchantSkillInfoDetail extends L2GameServerPacket
 		switch (type)
 		{
 			case TYPE_NORMAL_ENCHANT:
-				bookId = EnchantGroupsData.NORMAL_ENCHANT_BOOK;
+				bookId = EnchantSkillGroupsData.NORMAL_ENCHANT_BOOK;
 				reqCount = (((_skilllvl % 100) > 1) ? 0 : 1);
 				break;
 			case TYPE_SAFE_ENCHANT:
-				bookId = EnchantGroupsData.SAFE_ENCHANT_BOOK;
+				bookId = EnchantSkillGroupsData.SAFE_ENCHANT_BOOK;
 				reqCount = 1;
 				break;
 			case TYPE_UNTRAIN_ENCHANT:
-				bookId = EnchantGroupsData.UNTRAIN_ENCHANT_BOOK;
+				bookId = EnchantSkillGroupsData.UNTRAIN_ENCHANT_BOOK;
 				reqCount = 1;
 				break;
 			case TYPE_CHANGE_ENCHANT:
-				bookId = EnchantGroupsData.CHANGE_ENCHANT_BOOK;
+				bookId = EnchantSkillGroupsData.CHANGE_ENCHANT_BOOK;
 				reqCount = 1;
 				break;
 			default:

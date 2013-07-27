@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model.skills.funcs;
 
-import com.l2jserver.gameserver.datatables.EnchantHPBonusData;
+import com.l2jserver.gameserver.datatables.EnchantItemHPBonusData;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Stats;
@@ -44,7 +44,7 @@ public class FuncEnchantHp extends Func
 		final L2ItemInstance item = (L2ItemInstance) funcOwner;
 		if (item.getEnchantLevel() > 0)
 		{
-			env.addValue(EnchantHPBonusData.getInstance().getHPBonus(item));
+			env.addValue(EnchantItemHPBonusData.getInstance().getHPBonus(item));
 		}
 	}
 }

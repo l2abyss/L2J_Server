@@ -23,7 +23,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.EnchantGroupsData;
+import com.l2jserver.gameserver.datatables.EnchantSkillGroupsData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
@@ -97,10 +97,10 @@ public final class RequestExEnchantSkillSafe extends L2GameClientPacket
 			return;
 		}
 		
-		int costMultiplier = EnchantGroupsData.SAFE_ENCHANT_COST_MULTIPLIER;
-		int reqItemId = EnchantGroupsData.SAFE_ENCHANT_BOOK;
+		int costMultiplier = EnchantSkillGroupsData.SAFE_ENCHANT_COST_MULTIPLIER;
+		int reqItemId = EnchantSkillGroupsData.SAFE_ENCHANT_BOOK;
 		
-		L2EnchantSkillLearn s = EnchantGroupsData.getInstance().getSkillEnchantmentBySkillId(_skillId);
+		L2EnchantSkillLearn s = EnchantSkillGroupsData.getInstance().getSkillEnchantmentBySkillId(_skillId);
 		if (s == null)
 		{
 			return;

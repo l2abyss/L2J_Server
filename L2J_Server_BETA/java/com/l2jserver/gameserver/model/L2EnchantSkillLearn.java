@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model;
 
-import com.l2jserver.gameserver.datatables.EnchantGroupsData;
+import com.l2jserver.gameserver.datatables.EnchantSkillGroupsData;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 
 import gnu.trove.map.hash.TIntIntHashMap;
@@ -77,7 +77,7 @@ public final class L2EnchantSkillLearn
 	
 	public L2EnchantSkillGroup getFirstRouteGroup()
 	{
-		return EnchantGroupsData.getInstance().getEnchantSkillGroupById(_enchantRoutes.values()[0]);
+		return EnchantSkillGroupsData.getInstance().getEnchantSkillGroupById(_enchantRoutes.values()[0]);
 	}
 	
 	public int[] getAllRoutes()
@@ -103,7 +103,7 @@ public final class L2EnchantSkillLearn
 		}
 		int index = L2EnchantSkillLearn.getEnchantIndex(level);
 		
-		if ((index + 1) >= EnchantGroupsData.getInstance().getEnchantSkillGroupById(_enchantRoutes.get(enchantType)).getEnchantGroupDetails().size())
+		if ((index + 1) >= EnchantSkillGroupsData.getInstance().getEnchantSkillGroupById(_enchantRoutes.get(enchantType)).getEnchantGroupDetails().size())
 		{
 			return true;
 		}
@@ -118,7 +118,7 @@ public final class L2EnchantSkillLearn
 			return null;
 		}
 		int index = L2EnchantSkillLearn.getEnchantIndex(level);
-		L2EnchantSkillGroup group = EnchantGroupsData.getInstance().getEnchantSkillGroupById(_enchantRoutes.get(enchantType));
+		L2EnchantSkillGroup group = EnchantSkillGroupsData.getInstance().getEnchantSkillGroupById(_enchantRoutes.get(enchantType));
 		
 		if (index < 0)
 		{
@@ -126,7 +126,7 @@ public final class L2EnchantSkillLearn
 		}
 		else if (index >= group.getEnchantGroupDetails().size())
 		{
-			return group.getEnchantGroupDetails().get(EnchantGroupsData.getInstance().getEnchantSkillGroupById(_enchantRoutes.get(enchantType)).getEnchantGroupDetails().size() - 1);
+			return group.getEnchantGroupDetails().get(EnchantSkillGroupsData.getInstance().getEnchantSkillGroupById(_enchantRoutes.get(enchantType)).getEnchantGroupDetails().size() - 1);
 		}
 		return group.getEnchantGroupDetails().get(index);
 	}

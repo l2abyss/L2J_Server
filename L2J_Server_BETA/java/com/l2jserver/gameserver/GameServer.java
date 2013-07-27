@@ -49,11 +49,11 @@ import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.ClassListData;
 import com.l2jserver.gameserver.datatables.CrestTable;
 import com.l2jserver.gameserver.datatables.DoorTable;
-import com.l2jserver.gameserver.datatables.EnchantGroupsData;
-import com.l2jserver.gameserver.datatables.EnchantHPBonusData;
+import com.l2jserver.gameserver.datatables.EnchantSkillGroupsData;
+import com.l2jserver.gameserver.datatables.EnchantItemHPBonusData;
 import com.l2jserver.gameserver.datatables.EnchantItemData;
 import com.l2jserver.gameserver.datatables.EnchantItemGroupsData;
-import com.l2jserver.gameserver.datatables.EnchantOptionsData;
+import com.l2jserver.gameserver.datatables.EnchantItemOptionsData;
 import com.l2jserver.gameserver.datatables.EventDroplist;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.FishData;
@@ -219,7 +219,7 @@ public class GameServer
 		
 		printSection("Skills");
 		EffectHandler.getInstance().executeScript();
-		EnchantGroupsData.getInstance();
+		EnchantSkillGroupsData.getInstance();
 		SkillTreesData.getInstance();
 		SkillTable.getInstance();
 		SummonSkillsTable.getInstance();
@@ -228,9 +228,9 @@ public class GameServer
 		ItemTable.getInstance();
 		EnchantItemGroupsData.getInstance();
 		EnchantItemData.getInstance();
-		EnchantOptionsData.getInstance();
+		EnchantItemOptionsData.getInstance();
 		OptionsData.getInstance();
-		EnchantHPBonusData.getInstance();
+		EnchantItemHPBonusData.getInstance();
 		MerchantPriceConfigTable.getInstance().loadInstances();
 		BuyListData.getInstance();
 		MultisellData.getInstance();

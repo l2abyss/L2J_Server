@@ -23,7 +23,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.EnchantGroupsData;
+import com.l2jserver.gameserver.datatables.EnchantSkillGroupsData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
@@ -90,7 +90,7 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 			return;
 		}
 		
-		L2EnchantSkillLearn s = EnchantGroupsData.getInstance().getSkillEnchantmentBySkillId(_skillId);
+		L2EnchantSkillLearn s = EnchantSkillGroupsData.getInstance().getSkillEnchantmentBySkillId(_skillId);
 		if (s == null)
 		{
 			return;
@@ -107,7 +107,7 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 			return;
 		}
 		
-		int reqItemId = EnchantGroupsData.UNTRAIN_ENCHANT_BOOK;
+		int reqItemId = EnchantSkillGroupsData.UNTRAIN_ENCHANT_BOOK;
 		
 		final int beforeUntrainSkillLevel = player.getSkillLevel(_skillId);
 		if (((beforeUntrainSkillLevel - 1) != _skillLvl) && (((beforeUntrainSkillLevel % 100) != 1) || (_skillLvl != s.getBaseLevel())))

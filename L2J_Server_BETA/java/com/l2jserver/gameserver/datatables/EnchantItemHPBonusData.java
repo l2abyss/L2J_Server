@@ -37,7 +37,7 @@ import com.l2jserver.gameserver.model.stats.Stats;
  * This class holds the Enchant HP Bonus Data.
  * @author MrPoke, Zoey76
  */
-public class EnchantHPBonusData extends DocumentParser
+public class EnchantItemHPBonusData extends DocumentParser
 {
 	private final Map<Integer, List<Integer>> _armorHPBonuses = new HashMap<>();
 	
@@ -46,7 +46,7 @@ public class EnchantHPBonusData extends DocumentParser
 	/**
 	 * Instantiates a new enchant hp bonus data.
 	 */
-	protected EnchantHPBonusData()
+	protected EnchantItemHPBonusData()
 	{
 		load();
 	}
@@ -159,13 +159,13 @@ public class EnchantHPBonusData extends DocumentParser
 	 * Gets the single instance of EnchantHPBonusData.
 	 * @return single instance of EnchantHPBonusData
 	 */
-	public static final EnchantHPBonusData getInstance()
+	public static final EnchantItemHPBonusData getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder
 	{
-		protected static final EnchantHPBonusData _instance = new EnchantHPBonusData();
+		protected static final EnchantItemHPBonusData _instance = new EnchantItemHPBonusData();
 	}
 }

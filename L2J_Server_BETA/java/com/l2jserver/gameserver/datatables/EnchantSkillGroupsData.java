@@ -38,7 +38,7 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
  * This class holds the Enchant Groups information.
  * @author Micr0
  */
-public class EnchantGroupsData extends DocumentParser
+public class EnchantSkillGroupsData extends DocumentParser
 {
 	public static final int NORMAL_ENCHANT_COST_MULTIPLIER = Config.NORMAL_ENCHANT_COST_MULTIPLIER;
 	public static final int SAFE_ENCHANT_COST_MULTIPLIER = Config.SAFE_ENCHANT_COST_MULTIPLIER;
@@ -54,7 +54,7 @@ public class EnchantGroupsData extends DocumentParser
 	/**
 	 * Instantiates a new enchant groups table.
 	 */
-	protected EnchantGroupsData()
+	protected EnchantSkillGroupsData()
 	{
 		load();
 	}
@@ -244,13 +244,13 @@ public class EnchantGroupsData extends DocumentParser
 	 * Gets the single instance of EnchantGroupsData.
 	 * @return single instance of EnchantGroupsData
 	 */
-	public static EnchantGroupsData getInstance()
+	public static EnchantSkillGroupsData getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder
 	{
-		protected static final EnchantGroupsData _instance = new EnchantGroupsData();
+		protected static final EnchantSkillGroupsData _instance = new EnchantSkillGroupsData();
 	}
 }
