@@ -20,9 +20,12 @@ package com.l2jserver.gameserver.network;
 
 import java.util.Map.Entry;
 
+import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.TutorialShowHtml;
@@ -74,5 +77,37 @@ public class Debug
 		msg.replace("%skill%", skill.toString());
 		msg.replace("%details%", sb.toString());
 		attacker.sendPacket(new TutorialShowHtml(msg.getHtml()));
+	}
+	
+	public static void sendItemDebug(L2PcInstance player, L2ItemInstance item, StatsSet set)
+	{
+		final StringBuilder sb = new StringBuilder();
+		for (Entry<String, Object> entry : set.getSet().entrySet())
+		{
+			sb.append("<tr><td>" + entry.getKey() + "</td><td><font color=\"LEVEL\">" + entry.getValue() + "</font></td></tr>");
+		}
+		
+		final NpcHtmlMessage msg = new NpcHtmlMessage(0);
+		msg.setFile(player.getHtmlPrefix(), "data/html/admin/itemdebug.htm");
+		msg.replace("%itemName%", item.getName());
+		msg.replace("%itemSlot%", getBodyPart(item.getItem().getBodyPart()));
+		msg.replace("%itemType%", item.isArmor() ? "Armor" : item.isWeapon() ? "Weapon" : "Etc");
+		msg.replace("%enchantLevel%", item.getEnchantLevel());
+		msg.replace("%isMagicWeapon%", item.getItem().isMagicWeapon());
+		msg.replace("%item%", item.toString());
+		msg.replace("%details%", sb.toString());
+		player.sendPacket(new TutorialShowHtml(msg.getHtml()));
+	}
+	
+	private static String getBodyPart(int bodyPart)
+	{
+		for (Entry<String, Integer> entry : ItemTable._slots.entrySet())
+		{
+			if ((entry.getValue() & bodyPart) == bodyPart)
+			{
+				return entry.getKey();
+			}
+		}
+		return "Unknown";
 	}
 }

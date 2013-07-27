@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model;
+package com.l2jserver.gameserver.model.enchant;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
@@ -30,30 +32,57 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
  */
 public class EnchantItem
 {
-	protected final int _id;
-	protected final boolean _isWeapon;
-	protected final int _grade;
-	protected final int _maxEnchantLevel;
-	protected final double _chanceAdd;
-	protected final List<Integer> _itemIds;
+	protected static final Logger _log = Logger.getLogger(EnchantItem.class.getName());
 	
-	/**
-	 * @param set
-	 * @param items
-	 */
-	public EnchantItem(StatsSet set, List<Integer> items)
+	private final int _id;
+	private final boolean _isWeapon;
+	private final int _grade;
+	private final int _maxEnchantLevel;
+	private final double _bonusRate;
+	private List<Integer> _itemIds;
+	
+	public EnchantItem(StatsSet set)
 	{
 		_id = set.getInteger("id");
 		_isWeapon = set.getBool("isWeapon", true);
 		_grade = ItemTable._crystalTypes.get(set.getString("targetGrade", "none"));
-		_maxEnchantLevel = set.getInteger("maxEnchant", Config.MAX_ENCHANT_LEVEL);
-		_chanceAdd = set.getDouble("successRate", Config.ENCHANT_CHANCE);
-		_itemIds = items;
+		_maxEnchantLevel = set.getInteger("maxEnchant", 65535);
+		_bonusRate = set.getDouble("bonusRate", 0);
+	}
+	
+	/**
+	 * @return id of current item.
+	 */
+	public final int getId()
+	{
+		return _id;
+	}
+	
+	/**
+	 * @return bonus chance that would be added.
+	 */
+	public final double getBonusRate()
+	{
+		return _bonusRate;
+	}
+	
+	public void addItem(int id)
+	{
+		if (_itemIds == null)
+		{
+			_itemIds = new ArrayList<>();
+		}
+		_itemIds.add(id);
+	}
+	
+	public boolean verifyItemId(int itemId)
+	{
+		return _itemIds != null ? _itemIds.contains(itemId) : true;
 	}
 	
 	/**
 	 * @param enchantItem
-	 * @return true if support item can be used for this item
+	 * @return {@code true} if current item is valid to be enchanted, {@code false} otherwise.
 	 */
 	public final boolean isValid(L2ItemInstance enchantItem)
 	{
@@ -77,7 +106,7 @@ public class EnchantItem
 		{
 			return false;
 		}
-		else if (((enchantItem.isEnchantable() > 1) && (_itemIds.isEmpty() || !_itemIds.contains(enchantItem.getItemId()))) || (!_itemIds.isEmpty() && !_itemIds.contains(enchantItem.getItemId())))
+		else if ((enchantItem.isEnchantable() > 1) && !verifyItemId(enchantItem.getItemId()))
 		{
 			return false;
 		}
@@ -85,6 +114,10 @@ public class EnchantItem
 		return true;
 	}
 	
+	/**
+	 * @param type2
+	 * @return {@code true} if current type2 is valid to be enchanted, {@code false} otherwise.
+	 */
 	private boolean isValidItemType(int type2)
 	{
 		if (type2 == L2Item.TYPE2_WEAPON)
@@ -96,18 +129,5 @@ public class EnchantItem
 			return !_isWeapon;
 		}
 		return false;
-	}
-	
-	/**
-	 * @return chance increase
-	 */
-	public final double getChanceAdd()
-	{
-		return _chanceAdd;
-	}
-	
-	public int getScrollId()
-	{
-		return _id;
 	}
 }

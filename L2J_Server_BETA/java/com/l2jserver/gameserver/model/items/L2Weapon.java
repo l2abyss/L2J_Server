@@ -206,6 +206,7 @@ public final class L2Weapon extends L2Item
 	/**
 	 * @return {@code true} if the weapon is magic, {@code false} otherwise.
 	 */
+	@Override
 	public boolean isMagicWeapon()
 	{
 		return _isMagicWeapon;

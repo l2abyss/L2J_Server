@@ -1008,14 +1008,10 @@ public final class Config
 	public static IdFactoryType IDFACTORY_TYPE;
 	public static boolean BAD_ID_CHECKING;
 	
-	public static double ENCHANT_CHANCE;
-	public static int MAX_ENCHANT_LEVEL;
 	public static double ENCHANT_CHANCE_ELEMENT_STONE;
 	public static double ENCHANT_CHANCE_ELEMENT_CRYSTAL;
 	public static double ENCHANT_CHANCE_ELEMENT_JEWEL;
 	public static double ENCHANT_CHANCE_ELEMENT_ENERGY;
-	public static int ENCHANT_SAFE_MAX;
-	public static int ENCHANT_SAFE_MAX_FULL;
 	public static int[] ENCHANT_BLACKLIST;
 	public static int AUGMENTATION_NG_SKILL_CHANCE;
 	public static int AUGMENTATION_NG_GLOW_CHANCE;
@@ -1619,14 +1615,10 @@ public final class Config
 			WAREHOUSE_SLOTS_CLAN = Integer.parseInt(Character.getProperty("MaximumWarehouseSlotsForClan", "150"));
 			ALT_FREIGHT_SLOTS = Integer.parseInt(Character.getProperty("MaximumFreightSlots", "200"));
 			ALT_FREIGHT_PRICE = Integer.parseInt(Character.getProperty("FreightPrice", "1000"));
-			ENCHANT_CHANCE = Double.parseDouble(Character.getProperty("EnchantChance", "66.66"));
-			MAX_ENCHANT_LEVEL = Integer.parseInt(Character.getProperty("MaxEnchantLevel", "0"));
 			ENCHANT_CHANCE_ELEMENT_STONE = Double.parseDouble(Character.getProperty("EnchantChanceElementStone", "50"));
 			ENCHANT_CHANCE_ELEMENT_CRYSTAL = Double.parseDouble(Character.getProperty("EnchantChanceElementCrystal", "30"));
 			ENCHANT_CHANCE_ELEMENT_JEWEL = Double.parseDouble(Character.getProperty("EnchantChanceElementJewel", "20"));
 			ENCHANT_CHANCE_ELEMENT_ENERGY = Double.parseDouble(Character.getProperty("EnchantChanceElementEnergy", "10"));
-			ENCHANT_SAFE_MAX = Integer.parseInt(Character.getProperty("EnchantSafeMax", "3"));
-			ENCHANT_SAFE_MAX_FULL = Integer.parseInt(Character.getProperty("EnchantSafeMaxFull", "4"));
 			String[] notenchantable = Character.getProperty("EnchantBlackList", "7816,7817,7818,7819,7820,7821,7822,7823,7824,7825,7826,7827,7828,7829,7830,7831,13293,13294,13296").split(",");
 			ENCHANT_BLACKLIST = new int[notenchantable.length];
 			for (int i = 0; i < notenchantable.length; i++)
@@ -3496,12 +3488,6 @@ public final class Config
 				break;
 			case "enchantchanceelementenergy":
 				ENCHANT_CHANCE_ELEMENT_ENERGY = Double.parseDouble(pValue);
-				break;
-			case "enchantsafemax":
-				ENCHANT_SAFE_MAX = Integer.parseInt(pValue);
-				break;
-			case "enchantsafemaxfull":
-				ENCHANT_SAFE_MAX_FULL = Integer.parseInt(pValue);
 				break;
 			case "augmentationngskillchance":
 				AUGMENTATION_NG_SKILL_CHANCE = Integer.parseInt(pValue);

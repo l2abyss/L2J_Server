@@ -20,6 +20,8 @@ package com.l2jserver.gameserver.util;
 
 import java.io.File;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -422,6 +424,17 @@ public final class Util
 		{
 			return ADENA_FORMATTER.format(amount);
 		}
+	}
+	
+	/**
+	 * @param val
+	 * @param format
+	 * @return formatted double value by specified format.
+	 */
+	public static String formatDouble(double val, String format)
+	{
+		final DecimalFormat formatter = new DecimalFormat(format, new DecimalFormatSymbols(Locale.ENGLISH));
+		return formatter.format(val);
 	}
 	
 	/**

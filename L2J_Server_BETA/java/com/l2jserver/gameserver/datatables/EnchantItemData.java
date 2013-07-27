@@ -18,18 +18,16 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.engines.DocumentParser;
-import com.l2jserver.gameserver.model.EnchantItem;
-import com.l2jserver.gameserver.model.EnchantScroll;
 import com.l2jserver.gameserver.model.StatsSet;
+import com.l2jserver.gameserver.model.enchant.EnchantItem;
+import com.l2jserver.gameserver.model.enchant.EnchantScroll;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
@@ -50,7 +48,7 @@ public class EnchantItemData extends DocumentParser
 	}
 	
 	@Override
-	public void load()
+	public synchronized void load()
 	{
 		_scrolls.clear();
 		_supports.clear();
@@ -64,7 +62,6 @@ public class EnchantItemData extends DocumentParser
 	{
 		StatsSet set;
 		Node att;
-		Map<Integer, Double> enchantSteps;
 		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
 			if ("list".equalsIgnoreCase(n.getNodeName()))
@@ -75,27 +72,21 @@ public class EnchantItemData extends DocumentParser
 					{
 						NamedNodeMap attrs = d.getAttributes();
 						set = new StatsSet();
-						enchantSteps = new HashMap<>();
 						for (int i = 0; i < attrs.getLength(); i++)
 						{
 							att = attrs.item(i);
 							set.set(att.getNodeName(), att.getNodeValue());
 						}
 						
-						List<Integer> items = new ArrayList<>();
+						final EnchantScroll item = new EnchantScroll(set);
 						for (Node cd = d.getFirstChild(); cd != null; cd = cd.getNextSibling())
 						{
 							if ("item".equalsIgnoreCase(cd.getNodeName()))
 							{
-								items.add(parseInteger(cd.getAttributes(), "id"));
-							}
-							else if ("step".equalsIgnoreCase(cd.getNodeName()))
-							{
-								enchantSteps.put(parseInt(cd.getAttributes(), "level"), parseDouble(cd.getAttributes(), "successRate"));
+								item.addItem(parseInteger(cd.getAttributes(), "id"));
 							}
 						}
-						EnchantScroll item = new EnchantScroll(set, items, enchantSteps);
-						_scrolls.put(item.getScrollId(), item);
+						_scrolls.put(item.getId(), item);
 					}
 					else if ("support".equalsIgnoreCase(d.getNodeName()))
 					{
@@ -108,16 +99,15 @@ public class EnchantItemData extends DocumentParser
 							set.set(att.getNodeName(), att.getNodeValue());
 						}
 						
-						List<Integer> items = new ArrayList<>();
+						final EnchantItem item = new EnchantItem(set);
 						for (Node cd = d.getFirstChild(); cd != null; cd = cd.getNextSibling())
 						{
 							if ("item".equalsIgnoreCase(cd.getNodeName()))
 							{
-								items.add(parseInteger(cd.getAttributes(), "id"));
+								item.addItem(parseInteger(cd.getAttributes(), "id"));
 							}
 						}
-						EnchantItem item = new EnchantItem(set, items);
-						_supports.put(item.getScrollId(), item);
+						_supports.put(item.getId(), item);
 					}
 				}
 			}

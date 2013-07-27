@@ -52,6 +52,7 @@ import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.EnchantGroupsData;
 import com.l2jserver.gameserver.datatables.EnchantHPBonusData;
 import com.l2jserver.gameserver.datatables.EnchantItemData;
+import com.l2jserver.gameserver.datatables.EnchantItemGroupsData;
 import com.l2jserver.gameserver.datatables.EnchantOptionsData;
 import com.l2jserver.gameserver.datatables.EventDroplist;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
@@ -225,6 +226,7 @@ public class GameServer
 		
 		printSection("Items");
 		ItemTable.getInstance();
+		EnchantItemGroupsData.getInstance();
 		EnchantItemData.getInstance();
 		EnchantOptionsData.getInstance();
 		OptionsData.getInstance();

@@ -406,6 +406,14 @@ public abstract class L2Item
 	public abstract L2ItemType getItemType();
 	
 	/**
+	 * @return {@code true} if the weapon is magic, {@code false} otherwise.
+	 */
+	public boolean isMagicWeapon()
+	{
+		return false;
+	}
+	
+	/**
 	 * @return the _equipReuseDelay
 	 */
 	public int getEquipReuseDelay()
