@@ -1287,7 +1287,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		env.setTarget(effected);
 		env.setSkill(this);
 		
-		boolean addContinuousEffects = _operateType.isContinuous() && Formulas.calcEffectSuccess(env);
+		boolean addContinuousEffects = _operateType.isToggle() || (_operateType.isContinuous() && Formulas.calcEffectSuccess(env));
 		
 		final List<L2Effect> effects = new ArrayList<>(_effectTemplates.size());
 		for (EffectTemplate et : _effectTemplates)
@@ -1346,7 +1346,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		env.setTarget(effected);
 		env.setSkill(this);
 		
-		boolean addContinuousEffects = _operateType.isContinuous() && Formulas.calcEffectSuccess(env);
+		boolean addContinuousEffects = _operateType.isToggle() || (_operateType.isContinuous() && Formulas.calcEffectSuccess(env));
 		
 		final List<L2Effect> effects = new ArrayList<>(_effectTemplates.size());
 		for (EffectTemplate et : _effectTemplates)
@@ -1376,7 +1376,7 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		env.setTarget(effector);
 		env.setSkill(this);
 		
-		boolean addContinuousEffects = _operateType.isContinuous() && Formulas.calcEffectSuccess(env);
+		boolean addContinuousEffects = _operateType.isToggle() || (_operateType.isContinuous() && Formulas.calcEffectSuccess(env));
 		
 		final List<L2Effect> effects = new ArrayList<>(_effectTemplatesSelf.size());
 		for (EffectTemplate et : _effectTemplatesSelf)
