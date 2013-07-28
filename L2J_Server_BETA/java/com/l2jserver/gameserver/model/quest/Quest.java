@@ -46,7 +46,6 @@ import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
-import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Spawn;
@@ -3292,92 +3291,112 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * Drop Quest item using Config.RATE_QUEST_DROP
-	 * @param player
-	 * @param itemId int Item Identifier of the item to be dropped
-	 * @param count (minCount, maxCount) long Quantity of items to be dropped
-	 * @param neededCount Quantity of items needed for quest
-	 * @param dropChance int Base chance of drop, same as in droplist
-	 * @param sound boolean indicating whether to play sound
-	 * @return boolean indicating whether player has requested number of items
+	 * Give the specified player a set amount of items if he is lucky enough.<br>
+	 * Not recommended to use this for non-stacking items.
+	 * @param player : the player to give the item(s) to
+	 * @param itemId : the ID of the item to give
+	 * @param amountToGive : the amount of items to give
+	 * @param limit : the maximum amount of items the player can have. Won't give more if this limit is reached. 0 - no limit.
+	 * @param dropChance : the drop chance as a decimal digit from 0 to 1
+	 * @param playSound : if true, plays ItemSound.quest_itemget when items are given and ItemSound.quest_middle when the limit is reached
+	 * @return {@code true} if the player has collected {@code limit} of the specified item, {@code false} otherwise
 	 */
-	public boolean dropQuestItems(L2PcInstance player, int itemId, int count, long neededCount, int dropChance, boolean sound)
+	public static boolean giveItemRandomly(L2PcInstance player, int itemId, long amountToGive, long limit, double dropChance, boolean playSound)
 	{
-		return dropQuestItems(player, itemId, count, count, neededCount, dropChance, sound);
+		return giveItemRandomly(player, null, itemId, amountToGive, amountToGive, limit, dropChance, playSound);
 	}
 	
 	/**
-	 * @param player
-	 * @param itemId
-	 * @param minCount
-	 * @param maxCount
-	 * @param neededCount
-	 * @param dropChance
-	 * @param sound
-	 * @return
+	 * Give the specified player a set amount of items if he is lucky enough.<br>
+	 * Not recommended to use this for non-stacking items.
+	 * @param player : the player to give the item(s) to
+	 * @param npc : the NPC that "dropped" the item (can be null)
+	 * @param itemId : the ID of the item to give
+	 * @param amountToGive : the amount of items to give
+	 * @param limit : the maximum amount of items the player can have. Won't give more if this limit is reached. 0 - no limit.
+	 * @param dropChance : the drop chance as a decimal digit from 0 to 1
+	 * @param playSound : if true, plays ItemSound.quest_itemget when items are given and ItemSound.quest_middle when the limit is reached
+	 * @return {@code true} if the player has collected {@code limit} of the specified item, {@code false} otherwise
 	 */
-	public static boolean dropQuestItems(L2PcInstance player, int itemId, int minCount, int maxCount, long neededCount, int dropChance, boolean sound)
+	public static boolean giveItemRandomly(L2PcInstance player, L2Npc npc, int itemId, long amountToGive, long limit, double dropChance, boolean playSound)
 	{
-		dropChance *= Config.RATE_QUEST_DROP / ((player.getParty() != null) ? player.getParty().getMemberCount() : 1);
-		long currentCount = getQuestItemsCount(player, itemId);
+		return giveItemRandomly(player, npc, itemId, amountToGive, amountToGive, limit, dropChance, playSound);
+	}
+	
+	/**
+	 * Give the specified player a random amount of items if he is lucky enough.<br>
+	 * Not recommended to use this for non-stacking items.
+	 * @param player : the player to give the item(s) to
+	 * @param npc : the NPC that "dropped" the item (can be null)
+	 * @param itemId : the ID of the item to give
+	 * @param minAmount : the minimum amount of items to give
+	 * @param maxAmount : the maximum amount of items to give (will give a random amount between min/maxAmount multiplied by quest rates)
+	 * @param limit : the maximum amount of items the player can have. Won't give more if this limit is reached. 0 - no limit.
+	 * @param dropChance : the drop chance as a decimal digit from 0 to 1
+	 * @param playSound : if true, plays ItemSound.quest_itemget when items are given and ItemSound.quest_middle when the limit is reached
+	 * @return {@code true} if the player has collected {@code limit} of the specified item, {@code false} otherwise
+	 */
+	public static boolean giveItemRandomly(L2PcInstance player, L2Npc npc, int itemId, long minAmount, long maxAmount, long limit, double dropChance, boolean playSound)
+	{
+		final long currentCount = getQuestItemsCount(player, itemId);
 		
-		if ((neededCount > 0) && (currentCount >= neededCount))
+		if ((limit > 0) && (currentCount >= limit))
 		{
 			return true;
 		}
 		
-		if (currentCount >= neededCount)
-		{
-			return true;
-		}
+		minAmount *= Config.RATE_QUEST_DROP;
+		maxAmount *= Config.RATE_QUEST_DROP;
+		dropChance *= Config.RATE_QUEST_DROP; // TODO separate configs for rate and amount
 		
-		long itemCount = 0;
-		int random = Rnd.get(L2DropData.MAX_CHANCE);
-		
-		while (random < dropChance)
+		if ((npc != null) && Config.L2JMOD_CHAMPION_ENABLE && npc.isChampion())
 		{
-			// Get the item quantity dropped
-			if (minCount < maxCount)
+			dropChance *= Config.L2JMOD_CHAMPION_REWARDS;
+			
+			if ((itemId == PcInventory.ADENA_ID) || (itemId == PcInventory.ANCIENT_ADENA_ID))
 			{
-				itemCount += Rnd.get(minCount, maxCount);
-			}
-			else if (minCount == maxCount)
-			{
-				itemCount += minCount;
+				minAmount *= Config.L2JMOD_CHAMPION_ADENAS_REWARDS;
+				maxAmount *= Config.L2JMOD_CHAMPION_ADENAS_REWARDS;
 			}
 			else
 			{
-				itemCount++;
+				minAmount *= Config.L2JMOD_CHAMPION_REWARDS;
+				maxAmount *= Config.L2JMOD_CHAMPION_REWARDS;
 			}
-			
-			// Prepare for next iteration if dropChance > L2DropData.MAX_CHANCE
-			dropChance -= L2DropData.MAX_CHANCE;
 		}
 		
-		if (itemCount > 0)
+		long amountToGive = ((minAmount == maxAmount) ? minAmount : Rnd.get(minAmount, maxAmount));
+		final double random = Rnd.nextDouble();
+		
+		// Inventory slot check (almost useless for non-stacking items)
+		if ((dropChance >= random) && (amountToGive > 0) && player.getInventory().validateCapacityByItemId(itemId))
 		{
-			// if over neededCount, just fill the gap
-			if ((neededCount > 0) && ((currentCount + itemCount) > neededCount))
+			if ((limit > 0) && ((currentCount + amountToGive) > limit))
 			{
-				itemCount = neededCount - currentCount;
+				amountToGive = limit - currentCount;
 			}
+			// Give the item to player
+			L2ItemInstance item = player.addItem("Quest", itemId, amountToGive, npc, true);
 			
-			// Inventory slot check
-			if (!player.getInventory().validateCapacityByItemId(itemId))
+			if (item != null)
 			{
-				return false;
-			}
-			
-			// Give the item to Player
-			player.addItem("Quest", itemId, itemCount, player.getTarget(), true);
-			
-			if (sound)
-			{
-				playSound(player, ((currentCount + itemCount) < neededCount) ? QuestSound.ITEMSOUND_QUEST_ITEMGET : QuestSound.ITEMSOUND_QUEST_MIDDLE);
+				// limit reached
+				if ((currentCount + amountToGive) == limit)
+				{
+					if (playSound)
+					{
+						playSound(player, QuestSound.ITEMSOUND_QUEST_MIDDLE);
+					}
+					return true;
+				}
+				
+				if (playSound)
+				{
+					playSound(player, QuestSound.ITEMSOUND_QUEST_ITEMGET);
+				}
 			}
 		}
-		
-		return ((neededCount > 0) && ((currentCount + itemCount) >= neededCount));
+		return false;
 	}
 	
 	/**

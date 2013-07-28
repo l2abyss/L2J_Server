@@ -695,23 +695,19 @@ public final class QuestState
 		Quest.giveItems(_player, itemId, count, attributeId, attributeLevel);
 	}
 	
-	/**
-	 * Drop Quest item using Config.RATE_QUEST_DROP
-	 * @param itemId int Item Identifier of the item to be dropped
-	 * @param count (minCount, maxCount) long Quantity of items to be dropped
-	 * @param neededCount Quantity of items needed for quest
-	 * @param dropChance int Base chance of drop, same as in droplist
-	 * @param sound boolean indicating whether to play sound
-	 * @return boolean indicating whether player has requested number of items
-	 */
-	public boolean dropQuestItems(int itemId, int count, long neededCount, int dropChance, boolean sound)
+	public boolean giveItemRandomly(int itemId, long amount, long limit, double dropChance, boolean playSound)
 	{
-		return Quest.dropQuestItems(_player, itemId, count, count, neededCount, dropChance, sound);
+		return Quest.giveItemRandomly(_player, null, itemId, amount, amount, limit, dropChance, playSound);
 	}
 	
-	public boolean dropQuestItems(int itemId, int minCount, int maxCount, long neededCount, int dropChance, boolean sound)
+	public boolean giveItemRandomly(L2Npc npc, int itemId, long amount, long limit, double dropChance, boolean playSound)
 	{
-		return Quest.dropQuestItems(_player, itemId, minCount, maxCount, neededCount, dropChance, sound);
+		return Quest.giveItemRandomly(_player, npc, itemId, amount, amount, limit, dropChance, playSound);
+	}
+	
+	public boolean giveItemRandomly(L2Npc npc, int itemId, long minAmount, long maxAmount, long limit, double dropChance, boolean playSound)
+	{
+		return Quest.giveItemRandomly(_player, npc, itemId, minAmount, maxAmount, limit, dropChance, playSound);
 	}
 	
 	// TODO: More radar functions need to be added when the radar class is complete.
