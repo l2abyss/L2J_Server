@@ -117,11 +117,11 @@ public final class EnchantItemGroupsData extends DocumentParser
 										{
 											rateGroup.addSlot(ItemTable._slots.get(parseString(attrs, "slot")));
 										}
-										else if (attrs.getNamedItem("magicWeapon") != null)
+										if (attrs.getNamedItem("magicWeapon") != null)
 										{
 											rateGroup.setMagicWeapon(parseBoolean(attrs, "magicWeapon"));
 										}
-										else if (attrs.getNamedItem("id") != null)
+										if (attrs.getNamedItem("id") != null)
 										{
 											rateGroup.setItemId(parseInt(attrs, "id"));
 										}
