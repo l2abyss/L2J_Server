@@ -96,20 +96,20 @@ public final class EnchantScroll extends EnchantItem
 	{
 		if (!isValid(enchantItem, supportItem))
 		{
-			return EnchantResultType.FAILURE;
+			return EnchantResultType.ERROR;
 		}
 		
 		if (EnchantItemGroupsData.getInstance().getScrollGroup(_scrollGroupId) == null)
 		{
 			_log.log(Level.WARNING, getClass().getSimpleName() + ": Unexistent enchant scroll group specified for enchant scroll: " + getId());
-			return EnchantResultType.FAILURE;
+			return EnchantResultType.ERROR;
 		}
 		
 		final EnchantItemGroup group = EnchantItemGroupsData.getInstance().getItemGroup(enchantItem.getItem(), _scrollGroupId);
 		if (group == null)
 		{
 			_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't find enchant item group for scroll: " + getId() + " requested by: " + player);
-			return EnchantResultType.FAILURE;
+			return EnchantResultType.ERROR;
 		}
 		
 		final double chance = group.getChance(enchantItem.getEnchantLevel());
