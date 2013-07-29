@@ -8294,11 +8294,11 @@ public final class L2PcInstance extends L2Playable
 				}
 			}
 			// Remove previously restored skills
-			try (PreparedStatement delelete = con.prepareStatement(DELETE_SKILL_SAVE))
+			try (PreparedStatement delete = con.prepareStatement(DELETE_SKILL_SAVE))
 			{
-				delelete.setInt(1, getObjectId());
-				delelete.setInt(2, getClassIndex());
-				delelete.executeUpdate();
+				delete.setInt(1, getObjectId());
+				delete.setInt(2, getClassIndex());
+				delete.executeUpdate();
 			}
 		}
 		catch (Exception e)
@@ -8314,7 +8314,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(RESTORE_ITEM_REUSE_SAVE);
-			PreparedStatement delelete = con.prepareStatement(DELETE_ITEM_REUSE_SAVE);)
+			PreparedStatement delete = con.prepareStatement(DELETE_ITEM_REUSE_SAVE);)
 		{
 			statement.setInt(1, getObjectId());
 			try (ResultSet rset = statement.executeQuery())
@@ -8364,8 +8364,8 @@ public final class L2PcInstance extends L2Playable
 			}
 			
 			// Delete item reuse.
-			delelete.setInt(1, getObjectId());
-			delelete.executeUpdate();
+			delete.setInt(1, getObjectId());
+			delete.executeUpdate();
 		}
 		catch (Exception e)
 		{
