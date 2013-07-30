@@ -44,7 +44,7 @@ public class L2WaterZone extends L2ZoneType
 		if (character.isPlayer())
 		{
 			L2PcInstance player = character.getActingPlayer();
-			if (player.isTransformed() && !player.isCursedWeaponEquipped())
+			if (player.isTransformed() && !player.getTransformation().canSwim())
 			{
 				character.stopTransformation(true);
 			}

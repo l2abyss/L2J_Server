@@ -96,11 +96,11 @@ public enum L2WeaponType implements L2ItemType
 	
 	public static L2WeaponType findByName(String name)
 	{
-		if (name.equals("DUAL"))
+		if (name.equalsIgnoreCase("DUAL"))
 		{
 			name = "Dual Sword";
 		}
-		else if (name.equals("DUALFIST"))
+		else if (name.equalsIgnoreCase("DUALFIST"))
 		{
 			name = "Dual Fist";
 		}

@@ -29,8 +29,9 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillTable.FrequentSkill;
+import com.l2jserver.gameserver.datatables.TransformData;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
-import com.l2jserver.gameserver.instancemanager.TransformationManager;
 import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -82,12 +83,6 @@ public class CursedWeapon
 	private int _playerKarma = 0;
 	private int _playerPkKills = 0;
 	protected int transformationId = 0;
-	
-	private static final int[] TRANSFORM_IDS = new int[]
-	{
-		3630,
-		3631
-	};
 	
 	public CursedWeapon(int itemId, int skillId, String name)
 	{
@@ -342,15 +337,12 @@ public class CursedWeapon
 		_player.addSkill(skill, false);
 		
 		// Void Burst, Void Flow
-		skill = SkillTable.FrequentSkill.VOID_BURST.getSkill();
+		skill = FrequentSkill.VOID_BURST.getSkill();
 		_player.addSkill(skill, false);
-		skill = SkillTable.FrequentSkill.VOID_FLOW.getSkill();
+		skill = FrequentSkill.VOID_FLOW.getSkill();
 		_player.addSkill(skill, false);
-		_player.setTransformAllowedSkills(TRANSFORM_IDS);
-		if (Config.DEBUG)
-		{
-			_log.info("Player " + _player.getName() + " has been awarded with skill " + skill);
-		}
+		_player.addTransformSkill(FrequentSkill.VOID_BURST.getId());
+		_player.addTransformSkill(FrequentSkill.VOID_FLOW.getId());
 		_player.sendSkillList();
 	}
 	
@@ -374,13 +366,13 @@ public class CursedWeapon
 				@Override
 				public void run()
 				{
-					TransformationManager.getInstance().transformPlayer(transformationId, _player);
+					TransformData.getInstance().transformPlayer(transformationId, _player);
 				}
 			}, 500);
 		}
 		else
 		{
-			TransformationManager.getInstance().transformPlayer(transformationId, _player);
+			TransformData.getInstance().transformPlayer(transformationId, _player);
 		}
 	}
 	

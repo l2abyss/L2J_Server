@@ -998,7 +998,7 @@ public final class RequestActionUse extends L2GameClientPacket
 			sendPacket(sm);
 		}
 		
-		if (requester.isMounted() || requester.isRidingStrider() || requester.isFlyingMounted() || requester.isInBoat() || requester.isInAirShip())
+		if (requester.isMounted() || requester.isFlyingMounted() || requester.isInBoat() || requester.isInAirShip())
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_IS_RIDING_A_SHIP_STEED_OR_STRIDER_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION);
 			sm.addPcName(requester);
@@ -1088,7 +1088,7 @@ public final class RequestActionUse extends L2GameClientPacket
 			return;
 		}
 		
-		if (partner.isMounted() || partner.isRidingStrider() || partner.isFlyingMounted() || partner.isInBoat() || partner.isInAirShip())
+		if (partner.isMounted() || partner.isFlyingMounted() || partner.isInBoat() || partner.isInAirShip())
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.C1_IS_RIDING_A_SHIP_STEED_OR_STRIDER_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION);
 			sm.addPcName(partner);

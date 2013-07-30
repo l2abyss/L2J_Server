@@ -18,8 +18,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-
 /**
  * @author KenM
  */
@@ -90,17 +88,11 @@ public final class ExBasicActionList extends L2GameServerPacket
 		}
 	}
 	
-	private static final ExBasicActionList STATIC_PACKET_TRANSFORMED = new ExBasicActionList(ACTIONS_ON_TRANSFORM);
-	private static final ExBasicActionList STATIC_PACKET = new ExBasicActionList(DEFAULT_ACTION_LIST);
-	
-	public static final ExBasicActionList getStaticPacket(final L2PcInstance player)
-	{
-		return player.isTransformed() ? STATIC_PACKET_TRANSFORMED : STATIC_PACKET;
-	}
+	public static final ExBasicActionList STATIC_PACKET = new ExBasicActionList(DEFAULT_ACTION_LIST);
 	
 	private final int[] _actionIds;
 	
-	private ExBasicActionList(final int[] actionIds)
+	public ExBasicActionList(final int[] actionIds)
 	{
 		_actionIds = actionIds;
 	}

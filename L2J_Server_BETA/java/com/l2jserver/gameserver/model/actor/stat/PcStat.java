@@ -292,7 +292,7 @@ public class PcStat extends PlayableStat
 		
 		if (getActiveChar().isTransformed() || getActiveChar().isInStance())
 		{
-			getActiveChar().getTransformation().onLevelUp();
+			getActiveChar().getTransformation().onLevelUp(getActiveChar());
 		}
 		
 		// Synchronize level with pet if possible.
@@ -505,7 +505,7 @@ public class PcStat extends PlayableStat
 	 * @return the base move speed of given movement type.
 	 */
 	@Override
-	protected double getBaseMoveSpeed(MoveType mt)
+	protected float getBaseMoveSpeed(MoveType mt)
 	{
 		L2PcInstance player = getActiveChar();
 		int val = 0;

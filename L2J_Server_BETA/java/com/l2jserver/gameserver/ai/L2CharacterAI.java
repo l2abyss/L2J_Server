@@ -1083,7 +1083,7 @@ public class L2CharacterAI extends AbstractAI
 			// while flying there is no move to cast
 			if ((_actor.getAI().getIntention() == CtrlIntention.AI_INTENTION_CAST) && (_actor instanceof L2PcInstance) && ((L2PcInstance) _actor).isTransformed())
 			{
-				if (!((L2PcInstance) _actor).getTransformation().canStartFollowToCast())
+				if (!((L2PcInstance) _actor).getTransformation().isCombat())
 				{
 					_actor.sendPacket(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED);
 					_actor.sendPacket(ActionFailed.STATIC_PACKET);

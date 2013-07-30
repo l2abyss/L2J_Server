@@ -239,9 +239,9 @@ public class PlayableStat extends CharStat
 	 * @return the base move speed of given movement type.
 	 */
 	@Override
-	protected double getBaseMoveSpeed(MoveType mt)
+	protected float getBaseMoveSpeed(MoveType mt)
 	{
-		double val = super.getBaseMoveSpeed(mt);
+		float val = super.getBaseMoveSpeed(mt);
 		
 		if (getActiveChar().isInsideZone(ZoneId.SWAMP))
 		{

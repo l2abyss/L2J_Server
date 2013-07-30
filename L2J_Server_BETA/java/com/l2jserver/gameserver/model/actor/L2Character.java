@@ -81,6 +81,8 @@ import com.l2jserver.gameserver.model.actor.tasks.character.QueuedMagicUseTask;
 import com.l2jserver.gameserver.model.actor.tasks.character.UsePotionTask;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.actor.transform.Transform;
+import com.l2jserver.gameserver.model.actor.transform.TransformTemplate;
 import com.l2jserver.gameserver.model.effects.AbnormalEffect;
 import com.l2jserver.gameserver.model.effects.EffectFlag;
 import com.l2jserver.gameserver.model.effects.L2Effect;
@@ -341,6 +343,11 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	public boolean isTransformed()
 	{
 		return false;
+	}
+	
+	public Transform getTransformation()
+	{
+		return null;
 	}
 	
 	/**
@@ -801,7 +808,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 				
 				L2PcInstance actor = getActingPlayer();
 				// Players riding wyvern or with special (flying) transformations can do melee attacks, only with skills
-				if ((actor.isMounted() && (actor.getMountNpcId() == 12621)) || (actor.isTransformed() && !actor.getTransformation().canDoMeleeAttack()))
+				if ((actor.isMounted() && (actor.getMountNpcId() == 12621)) || (actor.isTransformed() && !actor.getTransformation().canAttack()))
 				{
 					sendPacket(ActionFailed.STATIC_PACKET);
 					return;
@@ -1047,36 +1054,41 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		
 		// Get the Attack Reuse Delay of the L2Weapon
 		int reuse = calculateReuseTime(target, weaponItem);
-		boolean hitted;
-		// Select the type of attack to start
-		if ((weaponItem == null) || isTransformed())
+		
+		boolean hitted = false;
+		switch (getAttackType())
 		{
-			hitted = doAttackHitSimple(attack, target, timeToHit);
-		}
-		else if (weaponItem.getItemType() == L2WeaponType.BOW)
-		{
-			hitted = doAttackHitByBow(attack, target, timeAtk, reuse);
-		}
-		else if (weaponItem.getItemType() == L2WeaponType.CROSSBOW)
-		{
-			hitted = doAttackHitByCrossBow(attack, target, timeAtk, reuse);
-		}
-		else if (weaponItem.getItemType() == L2WeaponType.POLE)
-		{
-			hitted = doAttackHitByPole(attack, target, timeToHit);
-		}
-		else if (isUsingDualWeapon())
-		{
-			hitted = doAttackHitByDual(attack, target, timeToHit);
-		}
-		else
-		{
-			hitted = doAttackHitSimple(attack, target, timeToHit);
+			case BOW:
+			{
+				hitted = doAttackHitByBow(attack, target, timeAtk, reuse);
+				break;
+			}
+			case CROSSBOW:
+			{
+				hitted = doAttackHitByCrossBow(attack, target, timeAtk, reuse);
+				break;
+			}
+			case POLE:
+			{
+				hitted = doAttackHitByPole(attack, target, timeToHit);
+				break;
+			}
+			case DUAL:
+			case DUALFIST:
+			case DUALDAGGER:
+			{
+				doAttackHitByDual(attack, target, timeToHit);
+				break;
+			}
+			default:
+			{
+				hitted = doAttackHitSimple(attack, target, timeToHit);
+				break;
+			}
 		}
 		
 		// Flag the attacker if it's a L2PcInstance outside a PvP area
-		L2PcInstance player = getActingPlayer();
-		
+		final L2PcInstance player = getActingPlayer();
 		if (player != null)
 		{
 			AttackStanceTaskManager.getInstance().addAttackStanceTask(player);
@@ -7338,7 +7350,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		attacker.getEvents().onDamageDealt(damage, this, skill, critical);
 	}
 	
-	public L2WeaponType getAttackType()
+	public final L2WeaponType getAttackType()
 	{
 		final L2Weapon weapon = getActiveWeaponItem();
 		if (weapon != null)
@@ -7347,8 +7359,11 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		}
 		else if (isTransformed())
 		{
-			// TODO: implement me.
-			// return getTransform().getBaseAttackType();
+			final TransformTemplate template = getTransformation().getTemplate(getActingPlayer());
+			if (template != null)
+			{
+				return template.getBaseAttackType();
+			}
 		}
 		return getTemplate().getBaseAttackType();
 	}

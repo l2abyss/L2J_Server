@@ -29,6 +29,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -123,7 +124,6 @@ import com.l2jserver.gameserver.model.L2RecipeList;
 import com.l2jserver.gameserver.model.L2Request;
 import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2SkillLearn;
-import com.l2jserver.gameserver.model.L2Transformation;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
@@ -175,6 +175,7 @@ import com.l2jserver.gameserver.model.actor.tasks.player.VitalityTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.WarnUserTakeBreakTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.WaterTask;
 import com.l2jserver.gameserver.model.actor.templates.L2PcTemplate;
+import com.l2jserver.gameserver.model.actor.transform.Transform;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.ClassLevel;
 import com.l2jserver.gameserver.model.base.PlayerClass;
@@ -248,7 +249,6 @@ import com.l2jserver.gameserver.network.serverpackets.CharInfo;
 import com.l2jserver.gameserver.network.serverpackets.ConfirmDlg;
 import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ExAutoSoulShot;
-import com.l2jserver.gameserver.network.serverpackets.ExBasicActionList;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExDominionWarStart;
 import com.l2jserver.gameserver.network.serverpackets.ExDuelUpdateUserInfo;
@@ -558,7 +558,7 @@ public final class L2PcInstance extends L2Playable
 	
 	private long _offlineShopStart = 0;
 	
-	private L2Transformation _transformation;
+	private Transform _transformation;
 	private int _transformationId = 0;
 	
 	/** The table containing all L2RecipeList of the L2PcInstance */
@@ -791,7 +791,7 @@ public final class L2PcInstance extends L2Playable
 	private int _fishy = 0;
 	private int _fishz = 0;
 	
-	private int[] _transformAllowedSkills = {};
+	private Set<Integer> _transformAllowedSkills;
 	private ScheduledFuture<?> _taskRentPet;
 	private ScheduledFuture<?> _taskWater;
 	
@@ -822,9 +822,6 @@ public final class L2PcInstance extends L2Playable
 	private double _mpUpdateIncCheck = .0;
 	private double _mpUpdateDecCheck = .0;
 	private double _mpUpdateInterval = .0;
-	
-	private boolean _isRidingStrider = false;
-	private boolean _isFlyingMounted = false;
 	
 	/** Char Coords from Client */
 	private int _clientX;
@@ -1254,6 +1251,20 @@ public final class L2PcInstance extends L2Playable
 	public final int getLevel()
 	{
 		return getStat().getLevel();
+	}
+	
+	@Override
+	public double getLevelMod()
+	{
+		if (isTransformed())
+		{
+			double levelMod = getTransformation().getLevelMod(this);
+			if (levelMod > -1)
+			{
+				return levelMod;
+			}
+		}
+		return super.getLevelMod();
 	}
 	
 	/**
@@ -5020,7 +5031,7 @@ public final class L2PcInstance extends L2Playable
 		return (_transformation != null) && _transformation.isStance();
 	}
 	
-	public void transform(L2Transformation transformation)
+	public void transform(Transform transformation)
 	{
 		if (_transformation != null)
 		{
@@ -5029,6 +5040,7 @@ public final class L2PcInstance extends L2Playable
 			sendPacket(msg);
 			return;
 		}
+		
 		if (!fireTransformListeners(transformation, true))
 		{
 			return;
@@ -5043,15 +5055,14 @@ public final class L2PcInstance extends L2Playable
 		
 		_transformation = transformation;
 		stopAllToggles();
-		transformation.onTransform();
+		transformation.onTransform(this);
 		sendSkillList();
 		sendPacket(new SkillCoolTime(this));
-		sendPacket(ExBasicActionList.getStaticPacket(this));
 		broadcastUserInfo();
 	}
 	
 	@Override
-	public synchronized void untransform()
+	public void untransform()
 	{
 		if (_transformation != null)
 		{
@@ -5060,18 +5071,17 @@ public final class L2PcInstance extends L2Playable
 				return;
 			}
 			setQueuedSkill(null, false, false);
-			setTransformAllowedSkills(new int[] {});
-			_transformation.onUntransform();
+			_transformation.onUntransform(this);
 			_transformation = null;
 			stopEffects(L2EffectType.TRANSFORMATION);
 			sendSkillList();
 			sendPacket(new SkillCoolTime(this));
-			sendPacket(ExBasicActionList.getStaticPacket(this));
 			broadcastUserInfo();
 		}
 	}
 	
-	public L2Transformation getTransformation()
+	@Override
+	public Transform getTransformation()
 	{
 		return _transformation;
 	}
@@ -5082,16 +5092,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public int getTransformationId()
 	{
-		return (_transformation == null ? 0 : _transformation.getId());
-	}
-	
-	/**
-	 * This returns the transformation Id stored inside the character table, selected by the method: transformSelectInfo() For example, if a player is transformed as a Buffalo, and then picks up the Zariche, the transform Id returned will be that of the Buffalo, and NOT the Zariche.
-	 * @return Transformation Id
-	 */
-	public int transformId()
-	{
-		return _transformationId;
+		return (isTransformed() ? getTransformation().getId() : 0);
 	}
 	
 	/**
@@ -5099,13 +5100,12 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void transformInsertInfo()
 	{
-		_transformationId = getTransformationId();
-		
-		if ((_transformationId == L2Transformation.TRANSFORM_AKAMANAH) || (_transformationId == L2Transformation.TRANSFORM_ZARICHE))
+		if (isTransformed() && getTransformation().isCursed())
 		{
 			return;
 		}
 		
+		_transformationId = getTransformationId();
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(UPDATE_CHAR_TRANSFORM))
 		{
@@ -6744,12 +6744,11 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		stopAllToggles();
-		Ride mount = new Ride(this, true, pet.getTemplate().getNpcId());
-		setMount(pet.getNpcId(), pet.getLevel(), mount.getMountType());
+		setMount(pet.getNpcId(), pet.getLevel(), pet.getMountType());
 		setMountObjectID(pet.getControlObjectId());
 		clearPetData();
 		startFeed(pet.getNpcId());
-		broadcastPacket(mount);
+		broadcastPacket(new Ride(this));
 		
 		// Notify self and others about speed change
 		broadcastUserInfo();
@@ -6759,7 +6758,7 @@ public final class L2PcInstance extends L2Playable
 		return true;
 	}
 	
-	public boolean mount(int npcId, int controlItemObjId, boolean useFood)
+	public boolean mount(int npcId, int type, int controlItemObjId, boolean useFood)
 	{
 		if (!disarmWeapons())
 		{
@@ -6775,22 +6774,18 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		stopAllToggles();
-		Ride mount = new Ride(this, true, npcId);
-		if (setMount(npcId, getLevel(), mount.getMountType()))
+		setMount(npcId, getLevel(), type);
+		clearPetData();
+		setMountObjectID(controlItemObjId);
+		broadcastPacket(new Ride(this));
+		
+		// Notify self and others about speed change
+		broadcastUserInfo();
+		if (useFood)
 		{
-			clearPetData();
-			setMountObjectID(controlItemObjId);
-			broadcastPacket(mount);
-			
-			// Notify self and others about speed change
-			broadcastUserInfo();
-			if (useFood)
-			{
-				startFeed(npcId);
-			}
-			return true;
+			startFeed(npcId);
 		}
-		return false;
+		return true;
 	}
 	
 	public boolean mountPlayer(L2Summon pet)
@@ -6902,23 +6897,19 @@ public final class L2PcInstance extends L2Playable
 		
 		sendPacket(new SetupGauge(3, 0, 0));
 		int petId = _mountNpcId;
-		if (setMount(0, 0, 0))
+		setMount(0, 0, 0);
+		stopFeed();
+		clearPetData();
+		if (wasFlying)
 		{
-			stopFeed();
-			clearPetData();
-			if (wasFlying)
-			{
-				removeSkill(SkillTable.FrequentSkill.WYVERN_BREATH.getSkill());
-			}
-			Ride dismount = new Ride(this, false, 0);
-			broadcastPacket(dismount);
-			setMountObjectID(0);
-			storePetFood(petId);
-			// Notify self and others about speed change
-			broadcastUserInfo();
-			return true;
+			removeSkill(SkillTable.FrequentSkill.WYVERN_BREATH.getSkill());
 		}
-		return false;
+		broadcastPacket(new Ride(this));
+		setMountObjectID(0);
+		storePetFood(petId);
+		// Notify self and others about speed change
+		broadcastUserInfo();
+		return true;
 	}
 	
 	public void setUptime(long time)
@@ -8107,7 +8098,7 @@ public final class L2PcInstance extends L2Playable
 			}
 		}
 		
-		if ((transformId() > 0) || isCursedWeaponEquipped())
+		if ((getTransformationId() > 0) || isCursedWeaponEquipped())
 		{
 			return oldSkill;
 		}
@@ -9453,10 +9444,6 @@ public final class L2PcInstance extends L2Playable
 		return _mountType > 0;
 	}
 	
-	/**
-	 * Set the type of Pet mounted (0 : none, 1 : Strider, 2 : Wyvern) and send a Server->Client packet InventoryUpdate to the L2PcInstance.
-	 * @return
-	 */
 	public boolean checkLandingState()
 	{
 		// Check if char is in a no landing zone
@@ -9477,40 +9464,33 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	// returns false if the change of mount type fails.
-	public boolean setMount(int npcId, int npcLevel, int mountType)
+	public void setMount(int npcId, int npcLevel, int mountType)
 	{
 		switch (mountType)
 		{
-			case 0:
+			case 0: // None
+			{
 				setIsFlying(false);
-				/*
-				 * not used any more setIsRidingFenrirWolf(false); setIsRidingWFenrirWolf(false); setIsRidingGreatSnowWolf(false);
-				 */
-				setIsRidingStrider(false);
-				break; // Dismounted
-			case 1:
-				setIsRidingStrider(true);
+				break;
+			}
+			case 1: // Strider
+			{
 				if (isNoble())
 				{
-					L2Skill striderAssaultSkill = SkillTable.FrequentSkill.STRIDER_SIEGE_ASSAULT.getSkill();
-					addSkill(striderAssaultSkill, false); // not saved to DB
+					addSkill(FrequentSkill.STRIDER_SIEGE_ASSAULT.getSkill(), false);
 				}
 				break;
-			case 2:
+			}
+			case 2: // Wyvern
+			{
 				setIsFlying(true);
-				break; // Flying Wyvern
-			case 3:
-				/*
-				 * not used any more switch (npcId) { case 16041: setIsRidingFenrirWolf(true); break; case 16042: setIsRidingWFenrirWolf(true); break; case 16037: setIsRidingGreatSnowWolf(true); break; }
-				 */
 				break;
+			}
 		}
 		
 		_mountType = mountType;
 		_mountNpcId = npcId;
 		_mountLevel = npcLevel;
-		
-		return true;
 	}
 	
 	/**
@@ -10380,7 +10360,7 @@ public final class L2PcInstance extends L2Playable
 				continue;
 			}
 			
-			if ((_transformation != null) && (!containsAllowedTransformSkill(s.getId()) && !s.allowOnTransform()))
+			if ((_transformation != null) && (!hasTransformSkill(s.getId()) && !s.allowOnTransform()))
 			{
 				continue;
 			}
@@ -12709,16 +12689,6 @@ public final class L2PcInstance extends L2Playable
 		_combatFlagEquippedId = value;
 	}
 	
-	public final void setIsRidingStrider(boolean mode)
-	{
-		_isRidingStrider = mode;
-	}
-	
-	public final boolean isRidingStrider()
-	{
-		return _isRidingStrider;
-	}
-	
 	/**
 	 * Returns the Number of Souls this L2PcInstance got.
 	 * @return
@@ -13147,21 +13117,23 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	public void setTransformAllowedSkills(int[] ids)
+	public void addTransformSkill(int id)
 	{
-		_transformAllowedSkills = ids;
+		if (_transformAllowedSkills == null)
+		{
+			_transformAllowedSkills = new HashSet<>();
+		}
+		_transformAllowedSkills.add(id);
 	}
 	
-	public boolean containsAllowedTransformSkill(int id)
+	public boolean hasTransformSkill(int id)
 	{
-		for (int _transformAllowedSkill : _transformAllowedSkills)
-		{
-			if (_transformAllowedSkill == id)
-			{
-				return true;
-			}
-		}
-		return false;
+		return (_transformAllowedSkills != null) && _transformAllowedSkills.contains(id);
+	}
+	
+	public synchronized void removeAllTransformSkills()
+	{
+		_transformAllowedSkills = null;
 	}
 	
 	protected void startFeed(int npcId)
@@ -13353,13 +13325,7 @@ public final class L2PcInstance extends L2Playable
 	
 	public boolean isFlyingMounted()
 	{
-		return _isFlyingMounted;
-	}
-	
-	public void setIsFlyingMounted(boolean val)
-	{
-		_isFlyingMounted = val;
-		setIsFlying(val);
+		return (isTransformed() && (getTransformation().isFlying()));
 	}
 	
 	/**
@@ -13746,12 +13712,6 @@ public final class L2PcInstance extends L2Playable
 				}
 			}
 		}
-		if (getMountType() == 4)
-		{
-			// TODO: Remove when horse mounts fixed
-			activeChar.sendPacket(new Ride(this, false, 0));
-			activeChar.sendPacket(new Ride(this, true, getMountNpcId()));
-		}
 		
 		switch (getPrivateStoreType())
 		{
@@ -14016,12 +13976,12 @@ public final class L2PcInstance extends L2Playable
 	
 	public double getCollisionRadius()
 	{
-		return isMounted() ? (NpcTable.getInstance().getTemplate(getMountNpcId()).getfCollisionRadius()) : (isTransformed() && !getTransformation().isStance() ? getTransformation().getCollisionRadius() : (getAppearance().getSex() ? getBaseTemplate().getFCollisionRadiusFemale() : getBaseTemplate().getfCollisionRadius()));
+		return isMounted() ? (NpcTable.getInstance().getTemplate(getMountNpcId()).getfCollisionRadius()) : (isTransformed() && !getTransformation().isStance() ? getTransformation().getCollisionRadius(this) : (getAppearance().getSex() ? getBaseTemplate().getFCollisionRadiusFemale() : getBaseTemplate().getfCollisionRadius()));
 	}
 	
 	public double getCollisionHeight()
 	{
-		return isMounted() ? (NpcTable.getInstance().getTemplate(getMountNpcId()).getfCollisionHeight()) : (isTransformed() && !getTransformation().isStance() ? getTransformation().getCollisionHeight() : (getAppearance().getSex() ? getBaseTemplate().getFCollisionHeightFemale() : getBaseTemplate().getfCollisionHeight()));
+		return isMounted() ? (NpcTable.getInstance().getTemplate(getMountNpcId()).getfCollisionHeight()) : (isTransformed() && !getTransformation().isStance() ? getTransformation().getCollisionHeight(this) : (getAppearance().getSex() ? getBaseTemplate().getFCollisionHeightFemale() : getBaseTemplate().getfCollisionHeight()));
 	}
 	
 	public final int getClientX()
@@ -14739,7 +14699,7 @@ public final class L2PcInstance extends L2Playable
 	 * @param isTransforming
 	 * @return
 	 */
-	private boolean fireTransformListeners(L2Transformation transformation, boolean isTransforming)
+	private boolean fireTransformListeners(Transform transformation, boolean isTransforming)
 	{
 		if ((transformation != null) && !_transformListeners.isEmpty())
 		{

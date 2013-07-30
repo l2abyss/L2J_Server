@@ -47,34 +47,34 @@ public class FuncPDefMod extends Func
 	{
 		if (env.getCharacter().isPlayer())
 		{
-			L2PcInstance p = env.getPlayer();
+			final L2PcInstance p = env.getPlayer();
 			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_CHEST))
 			{
-				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_CHEST));
+				env.subValue(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_CHEST) : p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_CHEST));
 			}
 			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_LEGS) || (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_CHEST) && (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_CHEST).getItem().getBodyPart() == L2Item.SLOT_FULL_ARMOR)))
 			{
-				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_LEGS));
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_LEGS) : Inventory.PAPERDOLL_LEGS));
 			}
 			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_HEAD))
 			{
-				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_HEAD));
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_HEAD) : Inventory.PAPERDOLL_HEAD));
 			}
 			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_FEET))
 			{
-				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_FEET));
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_FEET) : Inventory.PAPERDOLL_FEET));
 			}
 			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_GLOVES))
 			{
-				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_GLOVES));
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_GLOVES) : Inventory.PAPERDOLL_GLOVES));
 			}
 			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_UNDER))
 			{
-				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_UNDER));
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_UNDER) : Inventory.PAPERDOLL_UNDER));
 			}
 			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_CLOAK))
 			{
-				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_CLOAK));
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_CLOAK) : Inventory.PAPERDOLL_CLOAK));
 			}
 			env.mulValue(p.getLevelMod());
 		}

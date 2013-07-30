@@ -24,6 +24,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.transform.TransformTemplate;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
@@ -33,6 +34,7 @@ import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.MoveType;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.model.stats.TraitType;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 
 public class CharStat
 {
@@ -79,9 +81,9 @@ public class CharStat
 			return init;
 		}
 		
-		int id = stat.ordinal();
+		final int id = stat.ordinal();
 		
-		Calculator c = _activeChar.getCalculators()[id];
+		final Calculator c = _activeChar.getCalculators()[id];
 		
 		// If no Func object found, no modifier is applied
 		if ((c == null) || (c.size() == 0))
@@ -89,8 +91,18 @@ public class CharStat
 			return init;
 		}
 		
+		// Apply transformation stats.
+		if (getActiveChar().isPlayer() && getActiveChar().isTransformed())
+		{
+			double val = getActiveChar().getTransformation().getStat(getActiveChar().getActingPlayer(), stat);
+			if (val > 0)
+			{
+				init = val;
+			}
+		}
+		
 		// Create and init an Env object to pass parameters to the Calculator
-		Env env = new Env();
+		final Env env = new Env();
 		env.setCharacter(_activeChar);
 		env.setTarget(target);
 		env.setSkill(skill);
@@ -98,6 +110,7 @@ public class CharStat
 		
 		// Launch the calculation
 		c.calc(env);
+		
 		// avoid some troubles with negative stats (some stats should never be negative)
 		if (env.getValue() <= 0)
 		{
@@ -369,17 +382,30 @@ public class CharStat
 	
 	public float getMovementSpeedMultiplier()
 	{
-		final float baseSpeed = _activeChar.getTemplate().getBaseMoveSpd(_activeChar.isRunning() ? MoveType.RUN : MoveType.WALK);
-		return (getMoveSpeed() / baseSpeed);
+		return (getMoveSpeed() / getBaseMoveSpeed(getMoveType()));
 	}
 	
 	/**
 	 * @param mt movement type
 	 * @return the base move speed of given movement type.
 	 */
-	protected double getBaseMoveSpeed(MoveType mt)
+	protected float getBaseMoveSpeed(MoveType mt)
 	{
-		return _activeChar.getTemplate().getBaseMoveSpd(mt);
+		final TransformTemplate template = _activeChar.isTransformed() ? _activeChar.getTransformation().getTemplate(_activeChar.getActingPlayer()) : null;
+		return (float) (template != null ? template.getSpeed(mt) : _activeChar.getTemplate().getBaseMoveSpd(mt));
+	}
+	
+	public MoveType getMoveType()
+	{
+		if (_activeChar.isFlying())
+		{
+			return _activeChar.isRunning() ? MoveType.FAST_FLY : MoveType.SLOW_FLY;
+		}
+		else if (_activeChar.isInsideZone(ZoneId.WATER))
+		{
+			return _activeChar.isRunning() ? MoveType.FAST_SWIM : MoveType.SLOW_SWIM;
+		}
+		return _activeChar.isRunning() ? MoveType.RUN : MoveType.WALK;
 	}
 	
 	/**

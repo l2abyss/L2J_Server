@@ -412,8 +412,7 @@ public final class BlockCheckerEngine
 				player.sendPacket(initialPoints);
 				player.sendPacket(_closeUserInterface);
 				// ExBasicActionList
-				final ExBasicActionList actionList = ExBasicActionList.getStaticPacket(player);
-				player.sendPacket(actionList);
+				player.sendPacket(ExBasicActionList.STATIC_PACKET);
 				broadcastRelationChanged(player);
 			}
 		}

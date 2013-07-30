@@ -50,23 +50,23 @@ public class FuncMDefMod extends Func
 			L2PcInstance p = env.getPlayer();
 			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_LFINGER))
 			{
-				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_LFINGER));
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_LFINGER) : Inventory.PAPERDOLL_LFINGER));
 			}
 			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_RFINGER))
 			{
-				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_RFINGER));
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_RFINGER) : Inventory.PAPERDOLL_RFINGER));
 			}
 			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_LEAR))
 			{
-				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_LEAR));
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_LEAR) : Inventory.PAPERDOLL_LEAR));
 			}
 			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_REAR))
 			{
-				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_REAR));
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_REAR) : Inventory.PAPERDOLL_REAR));
 			}
 			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_NECK))
 			{
-				env.subValue(p.getTemplate().getBaseDefBySlot(Inventory.PAPERDOLL_NECK));
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_NECK) : Inventory.PAPERDOLL_NECK));
 			}
 			env.mulValue(BaseStats.MEN.calcBonus(env.getPlayer()) * env.getPlayer().getLevelMod());
 		}

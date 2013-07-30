@@ -18,7 +18,8 @@
  */
 package com.l2jserver.gameserver.scripting.scriptengine.events;
 
-import com.l2jserver.gameserver.model.L2Transformation;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.transform.Transform;
 import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
@@ -26,23 +27,40 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
  */
 public class TransformEvent implements L2Event
 {
-	private L2Transformation transformation;
-	private boolean transforming; // false = untransforming
+	private L2PcInstance _player;
+	private Transform _transformation;
+	private boolean _transforming; // false = untransforming
+	
+	/**
+	 * @return
+	 */
+	public L2PcInstance getPlayer()
+	{
+		return _player;
+	}
+	
+	/**
+	 * @param player
+	 */
+	public void setPlayer(L2PcInstance player)
+	{
+		_player = player;
+	}
 	
 	/**
 	 * @return the transformation
 	 */
-	public L2Transformation getTransformation()
+	public Transform getTransformation()
 	{
-		return transformation;
+		return _transformation;
 	}
 	
 	/**
 	 * @param transformation the transformation to set
 	 */
-	public void setTransformation(L2Transformation transformation)
+	public void setTransformation(Transform transformation)
 	{
-		this.transformation = transformation;
+		_transformation = transformation;
 	}
 	
 	/**
@@ -50,7 +68,7 @@ public class TransformEvent implements L2Event
 	 */
 	public boolean isTransforming()
 	{
-		return transforming;
+		return _transforming;
 	}
 	
 	/**
@@ -58,6 +76,6 @@ public class TransformEvent implements L2Event
 	 */
 	public void setTransforming(boolean transforming)
 	{
-		this.transforming = transforming;
+		this._transforming = transforming;
 	}
 }

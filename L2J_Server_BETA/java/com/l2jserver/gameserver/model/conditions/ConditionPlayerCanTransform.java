@@ -59,7 +59,7 @@ public class ConditionPlayerCanTransform extends Condition
 			player.sendPacket(SystemMessageId.YOU_CANNOT_POLYMORPH_INTO_THE_DESIRED_FORM_IN_WATER);
 			canTransform = false;
 		}
-		else if (player.isFlyingMounted() || player.isMounted() || player.isRidingStrider())
+		else if (player.isFlyingMounted() || player.isMounted())
 		{
 			player.sendPacket(SystemMessageId.YOU_CANNOT_POLYMORPH_WHILE_RIDING_A_PET);
 			canTransform = false;
