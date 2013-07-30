@@ -21,9 +21,7 @@ package com.l2jserver.gameserver.model.skills;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -120,8 +118,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final AbnormalType _abnormalType;
 	/** Abnormal time: global effect duration time. */
 	private final int _abnormalTime;
-	/** Abnormal type set for abnormal types that this effect skill blocks. */
-	private final Set<AbnormalType> _blockBuffSlots;
 	/** If {@code true} this skill's effect should stay after death. */
 	private final boolean _stayAfterDeath;
 	/** If {@code true} this skill's effect should stay after class-subclass change. */
@@ -271,20 +267,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		
 		_abnormalTime = abnormalTime;
 		_attribute = set.getString("attribute", "");
-		
-		String blockBuffSlots = set.getString("blockBuffSlot", null);
-		if ((blockBuffSlots != null) && !blockBuffSlots.isEmpty())
-		{
-			_blockBuffSlots = new HashSet<>();
-			for (String slot : blockBuffSlots.split(";"))
-			{
-				_blockBuffSlots.add(AbnormalType.getAbnormalType(slot));
-			}
-		}
-		else
-		{
-			_blockBuffSlots = Collections.<AbnormalType> emptySet();
-		}
 		
 		_stayAfterDeath = set.getBool("stayAfterDeath", false);
 		_stayOnSubclassChange = set.getBool("stayOnSubclassChange", true);
@@ -508,11 +490,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final double getPower(boolean isPvP, boolean isPvE)
 	{
 		return isPvE ? _pvePower : isPvP ? _pvpPower : _power;
-	}
-	
-	public final Set<AbnormalType> getBlockBuffSlots()
-	{
-		return _blockBuffSlots;
 	}
 	
 	/**
