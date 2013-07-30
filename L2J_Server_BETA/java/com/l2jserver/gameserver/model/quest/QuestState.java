@@ -662,6 +662,15 @@ public final class QuestState
 	
 	/**
 	 * Give reward to player using multiplier's
+	 * @param item
+	 */
+	public void rewardItems(ItemHolder item)
+	{
+		Quest.rewardItems(_player, item);
+	}
+	
+	/**
+	 * Give reward to player using multiplier's
 	 * @param itemId
 	 * @param count
 	 */

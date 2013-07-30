@@ -3097,6 +3097,16 @@ public class Quest extends ManagedScript
 	/**
 	 * Give a reward to player using multipliers.
 	 * @param player the player to whom to give the item
+	 * @param holder
+	 */
+	public static void rewardItems(L2PcInstance player, ItemHolder holder)
+	{
+		rewardItems(player, holder.getId(), holder.getCount());
+	}
+	
+	/**
+	 * Give a reward to player using multipliers.
+	 * @param player the player to whom to give the item
 	 * @param itemId the Id of the item to give
 	 * @param count the amount of items to give
 	 */
