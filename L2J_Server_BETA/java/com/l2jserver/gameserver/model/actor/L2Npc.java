@@ -30,6 +30,7 @@ import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.SevenSignsFestival;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.cache.HtmCache;
+import com.l2jserver.gameserver.datatables.CategoryData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.handler.BypassHandler;
 import com.l2jserver.gameserver.handler.IBypassHandler;
@@ -38,6 +39,7 @@ import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.TownManager;
 import com.l2jserver.gameserver.instancemanager.WalkingManager;
+import com.l2jserver.gameserver.model.CategoryType;
 import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Spawn;
@@ -1898,5 +1900,11 @@ public class L2Npc extends L2Character
 				}
 			}
 		}
+	}
+	
+	@Override
+	public boolean isInCategory(CategoryType type)
+	{
+		return CategoryData.getInstance().isInCategory(type, getNpcId());
 	}
 }

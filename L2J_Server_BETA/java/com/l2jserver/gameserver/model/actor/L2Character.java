@@ -53,6 +53,7 @@ import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.TownManager;
+import com.l2jserver.gameserver.model.CategoryType;
 import com.l2jserver.gameserver.model.ChanceSkillList;
 import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.FusionSkill;
@@ -7358,5 +7359,10 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			}
 		}
 		return getTemplate().getBaseAttackType();
+	}
+	
+	public boolean isInCategory(CategoryType type)
+	{
+		return false;
 	}
 }

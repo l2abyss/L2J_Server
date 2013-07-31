@@ -331,17 +331,13 @@ public class CursedWeapon
 			level = _skillMaxLevel;
 		}
 		
-		L2Skill skill = SkillTable.getInstance().getInfo(_skillId, level);
-		// Yesod:
-		// To properly support subclasses this skill can not be stored.
+		final L2Skill skill = SkillTable.getInstance().getInfo(_skillId, level);
 		_player.addSkill(skill, false);
 		
 		// Void Burst, Void Flow
-		skill = FrequentSkill.VOID_BURST.getSkill();
-		_player.addSkill(skill, false);
-		skill = FrequentSkill.VOID_FLOW.getSkill();
-		_player.addSkill(skill, false);
+		_player.addSkill(FrequentSkill.VOID_BURST.getSkill(), false);
 		_player.addTransformSkill(FrequentSkill.VOID_BURST.getId());
+		_player.addSkill(FrequentSkill.VOID_FLOW.getSkill(), false);
 		_player.addTransformSkill(FrequentSkill.VOID_FLOW.getId());
 		_player.sendSkillList();
 	}

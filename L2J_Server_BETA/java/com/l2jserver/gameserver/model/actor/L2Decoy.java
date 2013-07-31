@@ -20,6 +20,8 @@ package com.l2jserver.gameserver.model.actor;
 
 import java.util.Collection;
 
+import com.l2jserver.gameserver.datatables.CategoryData;
+import com.l2jserver.gameserver.model.CategoryType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -177,5 +179,11 @@ public abstract class L2Decoy extends L2Character
 		{
 			getOwner().sendPacket(id);
 		}
+	}
+	
+	@Override
+	public boolean isInCategory(CategoryType type)
+	{
+		return CategoryData.getInstance().isInCategory(type, getNpcId());
 	}
 }
