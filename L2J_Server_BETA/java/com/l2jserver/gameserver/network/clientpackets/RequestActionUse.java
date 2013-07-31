@@ -31,6 +31,7 @@ import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SummonSkillsTable;
 import com.l2jserver.gameserver.instancemanager.AirShipManager;
 import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.MountType;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2BabyPetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -763,7 +764,7 @@ public final class RequestActionUse extends L2GameClientPacket
 	 */
 	protected boolean useSit(L2PcInstance activeChar, L2Object target)
 	{
-		if (activeChar.getMountType() != 0)
+		if (activeChar.getMountType() != MountType.NONE)
 		{
 			return false;
 		}

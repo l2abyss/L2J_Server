@@ -54,6 +54,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.MountType;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
@@ -461,7 +462,7 @@ public class Fort
 				L2PcInstance oldleader = oldowner.getLeader().getPlayerInstance();
 				if (oldleader != null)
 				{
-					if (oldleader.getMountType() == 2)
+					if (oldleader.getMountType() == MountType.WYVERN)
 					{
 						oldleader.dismount();
 					}

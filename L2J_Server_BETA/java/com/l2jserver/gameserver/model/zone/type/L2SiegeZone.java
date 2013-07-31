@@ -24,6 +24,7 @@ import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
+import com.l2jserver.gameserver.model.MountType;
 import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -177,7 +178,7 @@ public class L2SiegeZone extends L2ZoneType
 				}
 				
 				character.sendPacket(SystemMessageId.ENTERED_COMBAT_ZONE);
-				if (!Config.ALLOW_WYVERN_DURING_SIEGE && (plyer.getMountType() == 2))
+				if (!Config.ALLOW_WYVERN_DURING_SIEGE && (plyer.getMountType() == MountType.WYVERN))
 				{
 					plyer.sendPacket(SystemMessageId.AREA_CANNOT_BE_ENTERED_WHILE_MOUNTED_WYVERN);
 					plyer.enteredNoLanding(DISMOUNT_DELAY);
@@ -198,7 +199,7 @@ public class L2SiegeZone extends L2ZoneType
 			{
 				L2PcInstance player = character.getActingPlayer();
 				character.sendPacket(SystemMessageId.LEFT_COMBAT_ZONE);
-				if (player.getMountType() == 2)
+				if (player.getMountType() == MountType.WYVERN)
 				{
 					player.exitedNoLanding();
 				}
@@ -298,7 +299,7 @@ public class L2SiegeZone extends L2ZoneType
 					player = character.getActingPlayer();
 					character.sendPacket(SystemMessageId.LEFT_COMBAT_ZONE);
 					player.stopFameTask();
-					if (player.getMountType() == 2)
+					if (player.getMountType() == MountType.WYVERN)
 					{
 						player.exitedNoLanding();
 					}

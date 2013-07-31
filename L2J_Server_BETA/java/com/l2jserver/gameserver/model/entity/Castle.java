@@ -50,6 +50,7 @@ import com.l2jserver.gameserver.model.CropProcure;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2SkillLearn;
+import com.l2jserver.gameserver.model.MountType;
 import com.l2jserver.gameserver.model.SeedProduction;
 import com.l2jserver.gameserver.model.TowerSpawn;
 import com.l2jserver.gameserver.model.actor.instance.L2ArtefactInstance;
@@ -556,7 +557,7 @@ public class Castle
 					L2PcInstance oldleader = oldOwner.getLeader().getPlayerInstance();
 					if (oldleader != null)
 					{
-						if (oldleader.getMountType() == 2)
+						if (oldleader.getMountType() == MountType.WYVERN)
 						{
 							oldleader.dismount();
 						}

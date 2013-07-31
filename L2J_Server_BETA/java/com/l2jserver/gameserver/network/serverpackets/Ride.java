@@ -33,7 +33,7 @@ public final class Ride extends L2GameServerPacket
 	{
 		_objectId = player.getObjectId();
 		_mounted = player.isMounted() ? 1 : 0;
-		_rideType = player.getMountType();
+		_rideType = player.getMountType().ordinal();
 		_rideNpcId = player.getMountNpcId() + 1000000;
 		_loc = player.getLocation();
 	}

@@ -23,13 +23,11 @@ import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.ai.L2SummonAI;
-import com.l2jserver.gameserver.datatables.CategoryData;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
-import com.l2jserver.gameserver.model.CategoryType;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2WorldRegion;
@@ -1222,22 +1220,5 @@ public abstract class L2Summon extends L2Playable
 	public int getAllyId()
 	{
 		return (getOwner() != null) ? getOwner().getAllyId() : 0;
-	}
-	
-	public final int getMountType()
-	{
-		if (CategoryData.getInstance().isInCategory(CategoryType.STRIDER, getNpcId()))
-		{
-			return 1;
-		}
-		else if (CategoryData.getInstance().isInCategory(CategoryType.WYVERN_GROUP, getNpcId()))
-		{
-			return 2;
-		}
-		else if (CategoryData.getInstance().isInCategory(CategoryType.WOLF_GROUP, getNpcId()))
-		{
-			return 3;
-		}
-		return 0;
 	}
 }
