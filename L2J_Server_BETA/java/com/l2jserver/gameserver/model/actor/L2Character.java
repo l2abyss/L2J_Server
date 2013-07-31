@@ -807,9 +807,8 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 					return;
 				}
 				
-				L2PcInstance actor = getActingPlayer();
-				// Players riding wyvern or with special (flying) transformations can do melee attacks, only with skills
-				if ((actor.isMounted() && (actor.getMountNpcId() == 12621)) || (actor.isTransformed() && !actor.getTransformation().canAttack()))
+				final L2PcInstance actor = getActingPlayer();
+				if (actor.isTransformed() && !actor.getTransformation().canAttack())
 				{
 					sendPacket(ActionFailed.STATIC_PACKET);
 					return;
@@ -1078,7 +1077,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			case DUALFIST:
 			case DUALDAGGER:
 			{
-				doAttackHitByDual(attack, target, timeToHit);
+				hitted = doAttackHitByDual(attack, target, timeToHit);
 				break;
 			}
 			default:
