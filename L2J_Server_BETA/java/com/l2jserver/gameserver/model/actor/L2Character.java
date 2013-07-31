@@ -5560,14 +5560,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	}
 	
 	/**
-	 * @return True if the L2Character use a dual weapon.
-	 */
-	public boolean isUsingDualWeapon()
-	{
-		return false;
-	}
-	
-	/**
 	 * Add a skill to the L2Character _skills and its Func objects to the calculator set of the L2Character.<br>
 	 * <B><U>Concept</U>:</B><br>
 	 * All skills own by a L2Character are identified in <B>_skills</B><br>

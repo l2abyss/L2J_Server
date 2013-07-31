@@ -319,7 +319,7 @@ public final class UserInfo extends L2GameServerPacket
 		writeD(_activeChar.isCursedWeaponEquipped() ? CursedWeaponsManager.getInstance().getLevel(_activeChar.getCursedWeaponEquippedId()) : 0);
 		
 		// T1 Starts
-		writeD(_activeChar.getTransformationId());
+		writeD(_activeChar.getTransformationDisplayId());
 		
 		byte attackAttribute = _activeChar.getAttackElement();
 		writeH(attackAttribute);

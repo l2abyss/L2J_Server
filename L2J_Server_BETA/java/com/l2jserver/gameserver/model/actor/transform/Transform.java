@@ -35,10 +35,13 @@ import com.l2jserver.gameserver.network.serverpackets.ExBasicActionList;
 public final class Transform
 {
 	private final int _id;
+	private final int _displayId;
 	private final TransformType _type;
 	private final boolean _canSwim;
 	private final int _spawnHeight;
 	private final boolean _canAttack;
+	private final String _name;
+	private final String _title;
 	
 	private TransformTemplate _maleTemplate;
 	private TransformTemplate _femaleTemplate;
@@ -46,15 +49,23 @@ public final class Transform
 	public Transform(StatsSet set)
 	{
 		_id = set.getInteger("id");
+		_displayId = set.getInteger("displayId", _id);
 		_type = set.getEnum("type", TransformType.class, TransformType.COMBAT);
 		_canSwim = set.getInteger("can_swim", 0) == 1;
 		_canAttack = set.getInteger("normal_attackable", 1) == 1;
 		_spawnHeight = set.getInteger("spawn_height", 0);
+		_name = set.getString("setName", null);
+		_title = set.getString("setTitle", null);
 	}
 	
 	public int getId()
 	{
 		return _id;
+	}
+	
+	public int getDisplayId()
+	{
+		return _displayId;
 	}
 	
 	public TransformType getType()
@@ -75,6 +86,22 @@ public final class Transform
 	public int getSpawnHeight()
 	{
 		return _spawnHeight;
+	}
+	
+	/**
+	 * @return name that's going to be set to the player while is transformed with current transformation.
+	 */
+	public String getName()
+	{
+		return _name;
+	}
+	
+	/**
+	 * @return title that's going to be set to the player while is transformed with current transformation.
+	 */
+	public String getTitle()
+	{
+		return _title;
 	}
 	
 	public TransformTemplate getTemplate(L2PcInstance player)
@@ -168,9 +195,18 @@ public final class Transform
 		if (template != null)
 		{
 			// Start flying.
-			if (getType() == TransformType.FLYING)
+			if (isFlying())
 			{
 				player.setIsFlying(true);
+			}
+			
+			if (getName() != null)
+			{
+				player.getAppearance().setVisibleName(getName());
+			}
+			if (getTitle() != null)
+			{
+				player.getAppearance().setVisibleTitle(getTitle());
 			}
 			
 			// Add common skills.
@@ -254,9 +290,18 @@ public final class Transform
 		if (template != null)
 		{
 			// Stop flying.
-			if (getType() == TransformType.FLYING)
+			if (isFlying())
 			{
 				player.setIsFlying(false);
+			}
+			
+			if (getName() != null)
+			{
+				player.getAppearance().setVisibleName(null);
+			}
+			if (getTitle() != null)
+			{
+				player.getAppearance().setVisibleTitle(null);
 			}
 			
 			// Remove common skills.

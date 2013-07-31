@@ -5096,6 +5096,11 @@ public final class L2PcInstance extends L2Playable
 		return (isTransformed() ? getTransformation().getId() : 0);
 	}
 	
+	public int getTransformationDisplayId()
+	{
+		return (isTransformed() ? getTransformation().getDisplayId() : 0);
+	}
+	
 	/**
 	 * This is a simple query that inserts the transform Id into the character table for future reference.
 	 */

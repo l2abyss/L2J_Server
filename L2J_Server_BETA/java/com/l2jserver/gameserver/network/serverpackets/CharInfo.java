@@ -359,7 +359,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_activeChar.getClanId() > 0 ? _activeChar.getClan().getReputationScore() : 0);
 			
 			// T1
-			writeD(_activeChar.getTransformationId());
+			writeD(_activeChar.getTransformationDisplayId());
 			writeD(_activeChar.getAgathionId());
 			
 			// T2
