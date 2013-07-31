@@ -122,8 +122,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	private final boolean _stayAfterDeath;
 	/** If {@code true} this skill's effect should stay after class-subclass change. */
 	private final boolean _stayOnSubclassChange;
-	/** If {@code true} this skill might kill by damage over time. */
-	private final boolean _killByDOT;
 	
 	private final int _refId;
 	// all times in milliseconds
@@ -271,7 +269,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 		_stayAfterDeath = set.getBool("stayAfterDeath", false);
 		_stayOnSubclassChange = set.getBool("stayOnSubclassChange", true);
 		
-		_killByDOT = set.getBool("killByDOT", false);
 		_hitTime = set.getInteger("hitTime", 0);
 		String hitTimings = set.getString("hitTimings", null);
 		if (hitTimings != null)
@@ -438,11 +435,6 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	public final boolean isOverhit()
 	{
 		return _overhit;
-	}
-	
-	public final boolean killByDOT()
-	{
-		return _killByDOT;
 	}
 	
 	public final boolean isSuicideAttack()
