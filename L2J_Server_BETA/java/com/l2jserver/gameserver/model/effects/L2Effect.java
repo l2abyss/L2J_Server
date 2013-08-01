@@ -308,7 +308,7 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		if (_template.getTotalTickCount() > 0)
 		{
 			// TODO: If default abnormal time is changed to 0, the first check below must be updated as well.
-			final int period = ((_abnormalTime > 1) ? (_abnormalTime / _template.getTotalTickCount()) : _template.getTotalTickCount()) * 1000;
+			final int period = ((_abnormalTime > 1) ? Math.max(_abnormalTime / _template.getTotalTickCount(), 1) : _template.getTotalTickCount()) * 1000;
 			_currentFuture = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(new EffectTask(), delay / period, period);
 		}
 		else

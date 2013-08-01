@@ -840,7 +840,14 @@ public final class CharEffectList
 						}
 						pos++;
 					}
-					_buffs.add(pos, effect);
+					if (pos >= _buffs.size())
+					{
+						_buffs.add(effect);
+					}
+					else
+					{
+						_buffs.add(pos, effect);
+					}
 				}
 			}
 		}
