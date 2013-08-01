@@ -22,17 +22,10 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 
 public final class L2FlyNpcInstance extends L2NpcInstance
 {
-	
 	public L2FlyNpcInstance(int objectId, L2NpcTemplate template)
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2FlyNpcInstance);
-	}
-	
-	@Override
-	public void onSpawn()
-	{
 		setIsFlying(true);
-		super.onSpawn();
 	}
 }
