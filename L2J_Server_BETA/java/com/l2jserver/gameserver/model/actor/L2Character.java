@@ -1046,8 +1046,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		// Create a Server->Client packet Attack
 		Attack attack = new Attack(this, target, wasSSCharged, ssGrade);
 		
-		// Set the Attacking Body part to CHEST
-		setAttackingBodypart();
 		// Make sure that char is facing selected target
 		// also works: setHeading(Util.convertDegreeToClientHeading(Util.calculateAngleFrom(this, target)));
 		setHeading(Util.calculateHeadingFrom(this, target));
@@ -3520,7 +3518,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	
 	// set by the start of attack, in game ticks
 	private int _attackEndTime;
-	private int _attacking;
 	private int _disableBowAttackEndTime;
 	private int _disableCrossBowAttackEndTime;
 	
@@ -4009,31 +4006,14 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	}
 	
 	/**
-	 * @return True if the L2Character has aborted its attack.
-	 */
-	public final boolean isAttackAborted()
-	{
-		return _attacking <= 0;
-	}
-	
-	/**
 	 * Abort the attack of the L2Character and send Server->Client ActionFailed packet.
 	 */
 	public final void abortAttack()
 	{
 		if (isAttackingNow())
 		{
-			_attacking = 0;
 			sendPacket(ActionFailed.STATIC_PACKET);
 		}
-	}
-	
-	/**
-	 * @return body part (paperdoll slot) we are targeting right now
-	 */
-	public final int getAttackingBodyPart()
-	{
-		return _attacking;
 	}
 	
 	/**
@@ -5004,14 +4984,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	//
 	
 	/**
-	 * Set _attacking corresponding to Attacking Body part to CHEST.
-	 */
-	public void setAttackingBodypart()
-	{
-		_attacking = Inventory.PAPERDOLL_CHEST;
-	}
-	
-	/**
 	 * <B><U> Overridden in </U> :</B> <li>L2PcInstance</li>
 	 * @return True if arrows are available.
 	 */
@@ -5117,190 +5089,180 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		// Send message about damage/crit or miss
 		sendDamageMessage(target, damage, false, crit, miss);
 		
-		// If attack isn't aborted, send a message system (critical hit, missed...) to attacker/target if they are L2PcInstance
-		if (!isAttackAborted())
+		// Check Raidboss attack
+		// Character will be petrified if attacking a raid that's more
+		// than 8 levels lower
+		if (target.isRaid() && target.giveRaidCurse() && !Config.RAID_DISABLE_CURSE)
 		{
-			// Check Raidboss attack
-			// Character will be petrified if attacking a raid that's more
-			// than 8 levels lower
-			if (target.isRaid() && target.giveRaidCurse() && !Config.RAID_DISABLE_CURSE)
+			if (getLevel() > (target.getLevel() + 8))
 			{
-				if (getLevel() > (target.getLevel() + 8))
+				L2Skill skill = SkillTable.FrequentSkill.RAID_CURSE2.getSkill();
+				
+				if (skill != null)
 				{
-					L2Skill skill = SkillTable.FrequentSkill.RAID_CURSE2.getSkill();
-					
-					if (skill != null)
-					{
-						abortAttack();
-						abortCast();
-						getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-						skill.getEffects(target, this);
-					}
-					else
-					{
-						_log.warning("Skill 4515 at level 1 is missing in DP.");
-					}
-					
-					damage = 0; // prevents messing up drop calculation
+					abortAttack();
+					abortCast();
+					getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
+					skill.getEffects(target, this);
 				}
+				else
+				{
+					_log.warning("Skill 4515 at level 1 is missing in DP.");
+				}
+				
+				damage = 0; // prevents messing up drop calculation
 			}
-			
-			// If L2Character target is a L2PcInstance, send a system message
-			if (target.isPlayer())
-			{
-				L2PcInstance enemy = target.getActingPlayer();
-				enemy.getAI().clientStartAutoAttack();
-				
-				/*
-				 * if (shld && 100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100)) { if (100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100)) { damage = 1; enemy.sendPacket(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS); //SHIELD_DEFENCE faultless } else
-				 * enemy.sendPacket(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL); }
-				 */
-			}
-			
-			if (!miss && (damage > 0))
-			{
-				L2Weapon weapon = getActiveWeaponItem();
-				boolean isBow = ((weapon != null) && ((weapon.getItemType() == L2WeaponType.BOW) || (weapon.getItemType() == L2WeaponType.CROSSBOW)));
-				int reflectedDamage = 0;
-				
-				if (!isBow && !target.isInvul()) // Do not reflect if weapon is of type bow or target is invunlerable
-				{
-					// quick fix for no drop from raid if boss attack high-level char with damage reflection
-					if (!target.isRaid() || (getActingPlayer() == null) || (getActingPlayer().getLevel() <= (target.getLevel() + 8)))
-					{
-						// Reduce HP of the target and calculate reflection damage to reduce HP of attacker if necessary
-						double reflectPercent = target.getStat().calcStat(Stats.REFLECT_DAMAGE_PERCENT, 0, null, null);
-						
-						if (reflectPercent > 0)
-						{
-							reflectedDamage = (int) ((reflectPercent / 100.) * damage);
-							
-							if (reflectedDamage > target.getMaxHp())
-							{
-								reflectedDamage = target.getMaxHp();
-							}
-						}
-					}
-				}
-				
-				// reduce targets HP
-				target.reduceCurrentHp(damage, this, null);
-				target.notifyDamageReceived(damage, this, null, crit);
-				
-				if (reflectedDamage > 0)
-				{
-					reduceCurrentHp(reflectedDamage, target, true, false, null);
-					notifyDamageReceived(reflectedDamage, target, null, crit);
-				}
-				
-				if (!isBow) // Do not absorb if weapon is of type bow
-				{
-					// Absorb HP from the damage inflicted
-					double absorbPercent = getStat().calcStat(Stats.ABSORB_DAMAGE_PERCENT, 0, null, null);
-					
-					if (absorbPercent > 0)
-					{
-						int maxCanAbsorb = (int) (getMaxRecoverableHp() - getCurrentHp());
-						int absorbDamage = (int) ((absorbPercent / 100.) * damage);
-						
-						if (absorbDamage > maxCanAbsorb)
-						{
-							absorbDamage = maxCanAbsorb; // Can't absord more than max hp
-						}
-						
-						if (absorbDamage > 0)
-						{
-							setCurrentHp(getCurrentHp() + absorbDamage);
-						}
-					}
-					
-					// Absorb MP from the damage inflicted
-					absorbPercent = getStat().calcStat(Stats.ABSORB_MANA_DAMAGE_PERCENT, 0, null, null);
-					
-					if (absorbPercent > 0)
-					{
-						int maxCanAbsorb = (int) (getMaxRecoverableMp() - getCurrentMp());
-						int absorbDamage = (int) ((absorbPercent / 100.) * damage);
-						
-						if (absorbDamage > maxCanAbsorb)
-						{
-							absorbDamage = maxCanAbsorb; // Can't absord more than max hp
-						}
-						
-						if (absorbDamage > 0)
-						{
-							setCurrentMp(getCurrentMp() + absorbDamage);
-						}
-					}
-					
-				}
-				
-				// Notify AI with EVT_ATTACKED
-				if (target.hasAI())
-				{
-					target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, this);
-				}
-				getAI().clientStartAutoAttack();
-				if (isSummon())
-				{
-					L2PcInstance owner = ((L2Summon) this).getOwner();
-					if (owner != null)
-					{
-						owner.getAI().clientStartAutoAttack();
-					}
-				}
-				
-				// Manage attack or cast break of the target (calculating rate, sending message...)
-				if (!target.isRaid() && Formulas.calcAtkBreak(target, damage))
-				{
-					target.breakAttack();
-					target.breakCast();
-				}
-				
-				// Maybe launch chance skills on us
-				if (_chanceSkills != null)
-				{
-					_chanceSkills.onHit(target, damage, false, crit);
-					// Reflect triggers onHit
-					if (reflectedDamage > 0)
-					{
-						_chanceSkills.onHit(target, reflectedDamage, true, false);
-					}
-				}
-				
-				if (_triggerSkills != null)
-				{
-					for (OptionsSkillHolder holder : _triggerSkills.values())
-					{
-						if ((!crit && (holder.getSkillType() == OptionsSkillType.ATTACK)) || ((holder.getSkillType() == OptionsSkillType.CRITICAL) && crit))
-						{
-							if (Rnd.get(100) < holder.getChance())
-							{
-								makeTriggerCast(holder.getSkill(), target);
-							}
-						}
-					}
-				}
-				
-				// Maybe launch chance skills on target
-				if (target.getChanceSkills() != null)
-				{
-					target.getChanceSkills().onHit(this, damage, true, crit);
-				}
-			}
-			
-			// Launch weapon Special ability effect if available
-			L2Weapon activeWeapon = getActiveWeaponItem();
-			if (activeWeapon != null)
-			{
-				activeWeapon.getSkillEffects(this, target, crit);
-			}
-			return;
 		}
 		
-		if (!isCastingNow() && !isCastingSimultaneouslyNow())
+		// If L2Character target is a L2PcInstance, send a system message
+		if (target.isPlayer())
 		{
-			getAI().notifyEvent(CtrlEvent.EVT_CANCEL);
+			L2PcInstance enemy = target.getActingPlayer();
+			enemy.getAI().clientStartAutoAttack();
+			
+			/*
+			 * if (shld && 100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100)) { if (100 - Config.ALT_PERFECT_SHLD_BLOCK < Rnd.get(100)) { damage = 1; enemy.sendPacket(SystemMessageId.YOUR_EXCELLENT_SHIELD_DEFENSE_WAS_A_SUCCESS); //SHIELD_DEFENCE faultless } else
+			 * enemy.sendPacket(SystemMessageId.SHIELD_DEFENCE_SUCCESSFULL); }
+			 */
+		}
+		
+		if (!miss && (damage > 0))
+		{
+			L2Weapon weapon = getActiveWeaponItem();
+			boolean isBow = ((weapon != null) && ((weapon.getItemType() == L2WeaponType.BOW) || (weapon.getItemType() == L2WeaponType.CROSSBOW)));
+			int reflectedDamage = 0;
+			
+			if (!isBow && !target.isInvul()) // Do not reflect if weapon is of type bow or target is invunlerable
+			{
+				// quick fix for no drop from raid if boss attack high-level char with damage reflection
+				if (!target.isRaid() || (getActingPlayer() == null) || (getActingPlayer().getLevel() <= (target.getLevel() + 8)))
+				{
+					// Reduce HP of the target and calculate reflection damage to reduce HP of attacker if necessary
+					double reflectPercent = target.getStat().calcStat(Stats.REFLECT_DAMAGE_PERCENT, 0, null, null);
+					
+					if (reflectPercent > 0)
+					{
+						reflectedDamage = (int) ((reflectPercent / 100.) * damage);
+						
+						if (reflectedDamage > target.getMaxHp())
+						{
+							reflectedDamage = target.getMaxHp();
+						}
+					}
+				}
+			}
+			
+			// reduce targets HP
+			target.reduceCurrentHp(damage, this, null);
+			target.notifyDamageReceived(damage, this, null, crit);
+			
+			if (reflectedDamage > 0)
+			{
+				reduceCurrentHp(reflectedDamage, target, true, false, null);
+				notifyDamageReceived(reflectedDamage, target, null, crit);
+			}
+			
+			if (!isBow) // Do not absorb if weapon is of type bow
+			{
+				// Absorb HP from the damage inflicted
+				double absorbPercent = getStat().calcStat(Stats.ABSORB_DAMAGE_PERCENT, 0, null, null);
+				
+				if (absorbPercent > 0)
+				{
+					int maxCanAbsorb = (int) (getMaxRecoverableHp() - getCurrentHp());
+					int absorbDamage = (int) ((absorbPercent / 100.) * damage);
+					
+					if (absorbDamage > maxCanAbsorb)
+					{
+						absorbDamage = maxCanAbsorb; // Can't absord more than max hp
+					}
+					
+					if (absorbDamage > 0)
+					{
+						setCurrentHp(getCurrentHp() + absorbDamage);
+					}
+				}
+				
+				// Absorb MP from the damage inflicted
+				absorbPercent = getStat().calcStat(Stats.ABSORB_MANA_DAMAGE_PERCENT, 0, null, null);
+				
+				if (absorbPercent > 0)
+				{
+					int maxCanAbsorb = (int) (getMaxRecoverableMp() - getCurrentMp());
+					int absorbDamage = (int) ((absorbPercent / 100.) * damage);
+					
+					if (absorbDamage > maxCanAbsorb)
+					{
+						absorbDamage = maxCanAbsorb; // Can't absord more than max hp
+					}
+					
+					if (absorbDamage > 0)
+					{
+						setCurrentMp(getCurrentMp() + absorbDamage);
+					}
+				}
+				
+			}
+			
+			// Notify AI with EVT_ATTACKED
+			if (target.hasAI())
+			{
+				target.getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, this);
+			}
+			getAI().clientStartAutoAttack();
+			if (isSummon())
+			{
+				L2PcInstance owner = ((L2Summon) this).getOwner();
+				if (owner != null)
+				{
+					owner.getAI().clientStartAutoAttack();
+				}
+			}
+			
+			// Manage attack or cast break of the target (calculating rate, sending message...)
+			if (!target.isRaid() && Formulas.calcAtkBreak(target, damage))
+			{
+				target.breakAttack();
+				target.breakCast();
+			}
+			
+			// Maybe launch chance skills on us
+			if (_chanceSkills != null)
+			{
+				_chanceSkills.onHit(target, damage, false, crit);
+				// Reflect triggers onHit
+				if (reflectedDamage > 0)
+				{
+					_chanceSkills.onHit(target, reflectedDamage, true, false);
+				}
+			}
+			
+			if (_triggerSkills != null)
+			{
+				for (OptionsSkillHolder holder : _triggerSkills.values())
+				{
+					if ((!crit && (holder.getSkillType() == OptionsSkillType.ATTACK)) || ((holder.getSkillType() == OptionsSkillType.CRITICAL) && crit))
+					{
+						if (Rnd.get(100) < holder.getChance())
+						{
+							makeTriggerCast(holder.getSkill(), target);
+						}
+					}
+				}
+			}
+			
+			// Maybe launch chance skills on target
+			if (target.getChanceSkills() != null)
+			{
+				target.getChanceSkills().onHit(this, damage, true, crit);
+			}
+		}
+		
+		// Launch weapon Special ability effect if available
+		L2Weapon activeWeapon = getActiveWeaponItem();
+		if (activeWeapon != null)
+		{
+			activeWeapon.getSkillEffects(this, target, crit);
 		}
 	}
 	
