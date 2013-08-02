@@ -508,34 +508,18 @@ public class PcStat extends PlayableStat
 	protected float getBaseMoveSpeed(MoveType mt)
 	{
 		L2PcInstance player = getActiveChar();
-		int val = 0;
+		float val = 0;
 		
 		final L2PetLevelData data = getActiveChar().isMounted() ? PetDataTable.getInstance().getPetLevelData(getActiveChar().getMountNpcId(), getActiveChar().getMountLevel()) : null;
 		if (player.isInsideZone(ZoneId.WATER))
 		{
 			if (player.isMounted())
 			{
-				switch (mt)
-				{
-					case WALK:
-						val = data != null ? data.getSpeedOnRide(MoveType.SLOW_SWIM) : NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseMoveSpd(MoveType.SLOW_SWIM);
-						break;
-					case RUN:
-						val = data != null ? data.getSpeedOnRide(MoveType.FAST_SWIM) : NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseMoveSpd(MoveType.FAST_SWIM);
-						break;
-				}
+				val = data != null ? data.getSpeedOnRide(mt) : NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseMoveSpd(mt);
 			}
 			else
 			{
-				switch (mt)
-				{
-					case WALK:
-						val = player.getTemplate().getBaseSlowSwimSpd();
-						break;
-					case RUN:
-						val = player.getTemplate().getBaseFastSwimSpd();
-						break;
-				}
+				val = player.getTemplate().getBaseMoveSpd(mt);
 			}
 		}
 		else

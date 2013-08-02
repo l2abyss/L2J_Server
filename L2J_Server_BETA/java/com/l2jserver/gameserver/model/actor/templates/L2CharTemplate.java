@@ -18,6 +18,7 @@
  */
 package com.l2jserver.gameserver.model.actor.templates;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import com.l2jserver.gameserver.model.StatsSet;
@@ -55,8 +56,6 @@ public class L2CharTemplate
 	private int _baseShldRate;
 	private int _baseCritRate;
 	private int _baseMCritRate;
-	private int _baseWalkSpd;
-	private int _baseRunSpd;
 	// SpecialStats
 	private int _baseBreath;
 	private int _baseAggression;
@@ -105,6 +104,8 @@ public class L2CharTemplate
 	private double _fCollisionRadius;
 	private double _fCollisionHeight;
 	
+	private final float[] _moveType = new float[MoveType.values().length];
+	
 	public L2CharTemplate(StatsSet set)
 	{
 		set(set);
@@ -137,8 +138,6 @@ public class L2CharTemplate
 		_baseShldRate = set.getInteger("baseShldRate", 0);
 		_baseCritRate = set.getInteger("baseCritRate", 4);
 		_baseMCritRate = set.getInteger("baseMCritRate", 0);
-		_baseWalkSpd = set.getInteger("baseWalkSpd", 0);
-		_baseRunSpd = set.getInteger("baseRunSpd", 0);
 		
 		// SpecialStats
 		_baseBreath = set.getInteger("baseBreath", 100);
@@ -181,6 +180,13 @@ public class L2CharTemplate
 		_fCollisionRadius = set.getDouble("collision_radius", 0);
 		_collisionRadius = (int) _fCollisionRadius;
 		_collisionHeight = (int) _fCollisionHeight;
+		
+		// speed.
+		Arrays.fill(_moveType, 1);
+		_moveType[MoveType.RUN.ordinal()] = set.getInteger("baseRunSpd", 1);
+		_moveType[MoveType.WALK.ordinal()] = set.getInteger("baseWalkSpd", 1);
+		_moveType[MoveType.FAST_SWIM.ordinal()] = set.getInteger("baseSwimRunSpd", 1);
+		_moveType[MoveType.SLOW_SWIM.ordinal()] = set.getInteger("baseSwimWalkSpd", 1);
 	}
 	
 	/**
@@ -463,17 +469,9 @@ public class L2CharTemplate
 		return _baseMCritRate;
 	}
 	
-	public int getBaseMoveSpd(MoveType mt)
+	public float getBaseMoveSpd(MoveType mt)
 	{
-		switch (mt)
-		{
-			case WALK:
-				return _baseWalkSpd;
-			case RUN:
-				return _baseRunSpd;
-		}
-		
-		return 0;
+		return _moveType[mt.ordinal()];
 	}
 	
 	/**

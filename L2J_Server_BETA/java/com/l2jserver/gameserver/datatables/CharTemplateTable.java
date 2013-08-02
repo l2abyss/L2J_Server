@@ -117,6 +117,14 @@ public final class CharTemplateTable extends DocumentParser
 									{
 										set.set("baseRunSpd", cnd.getTextContent());
 									}
+									else if ("slowSwim".equals(cnd.getNodeName()))
+									{
+										set.set("baseSwimWalkSpd", cnd.getTextContent());
+									}
+									else if ("fastSwim".equals(cnd.getNodeName()))
+									{
+										set.set("baseSwimRunSpd", cnd.getTextContent());
+									}
 									else if (!cnd.getNodeName().equals("#text"))
 									{
 										set.set((nd.getNodeName() + cnd.getNodeName()), cnd.getTextContent());

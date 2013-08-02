@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.items.PcItemTemplate;
-import com.l2jserver.gameserver.model.stats.MoveType;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -52,8 +51,6 @@ public class L2PcTemplate extends L2CharTemplate
 	private final double _fCollisionRadiusFemale;
 	
 	private final int _baseSafeFallHeight;
-	private final int _baseSlowSwimSpd;
-	private final int _baseFastSwimSpd;
 	
 	private final List<PcItemTemplate> _initialEquipment;
 	private final List<Location> _creationPoints;
@@ -89,8 +86,6 @@ public class L2PcTemplate extends L2CharTemplate
 		_fCollisionHeightFemale = set.getDouble("collisionFemaleheight");
 		
 		_baseSafeFallHeight = set.getInteger("baseSafeFall", 333);
-		_baseSlowSwimSpd = set.getInteger("baseMoveSpdslowSwim", (super.getBaseMoveSpd(MoveType.WALK) / 2));
-		_baseFastSwimSpd = set.getInteger("baseMoveSpdfastSwim", (super.getBaseMoveSpd(MoveType.RUN) / 2));
 		
 		_initialEquipment = InitialEquipmentData.getInstance().getEquipmentList(_classId);
 		_creationPoints = creationPoints;
@@ -248,22 +243,6 @@ public class L2PcTemplate extends L2CharTemplate
 	public int getSafeFallHeight()
 	{
 		return _baseSafeFallHeight;
-	}
-	
-	/**
-	 * @return the base slow (walk) swim speed.
-	 */
-	public int getBaseSlowSwimSpd()
-	{
-		return _baseSlowSwimSpd;
-	}
-	
-	/**
-	 * @return the base fast (run) swim speed.
-	 */
-	public int getBaseFastSwimSpd()
-	{
-		return _baseFastSwimSpd;
 	}
 	
 	/**
