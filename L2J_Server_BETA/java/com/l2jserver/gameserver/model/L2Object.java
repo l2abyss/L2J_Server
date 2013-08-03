@@ -592,11 +592,6 @@ public abstract class L2Object implements IPositionable
 	
 	public abstract boolean isAutoAttackable(L2Character attacker);
 	
-	public boolean isMarker()
-	{
-		return false;
-	}
-	
 	/**
 	 * Return the visibility state of the L2Object. <B><U> Concept</U> :</B><BR>
 	 * <BR>
@@ -692,9 +687,20 @@ public abstract class L2Object implements IPositionable
 	}
 	
 	/**
-	 * Sends the Server->Client info packet for the object.<br>
-	 * <br>
-	 * Is Overridden in: <li>L2AirShipInstance</li> <li>L2BoatInstance</li> <li>L2DoorInstance</li> <li>L2PcInstance</li> <li>L2StaticObjectInstance</li> <li>L2Decoy</li> <li>L2Npc</li> <li>L2Summon</li> <li>L2Trap</li> <li>L2ItemInstance</li>
+	 * Sends the Server->Client info packet for the object. <br>
+	 * Is Overridden in:
+	 * <ul>
+	 * <li>L2AirShipInstance</li>
+	 * <li>L2BoatInstance</li>
+	 * <li>L2DoorInstance</li>
+	 * <li>L2PcInstance</li>
+	 * <li>L2StaticObjectInstance</li>
+	 * <li>L2Decoy</li>
+	 * <li>L2Npc</li>
+	 * <li>L2Summon</li>
+	 * <li>L2Trap</li>
+	 * <li>L2ItemInstance</li>
+	 * </ul>
 	 * @param activeChar
 	 */
 	public void sendInfo(L2PcInstance activeChar)

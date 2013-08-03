@@ -20,13 +20,16 @@ package com.l2jserver.gameserver.model.actor.events;
 
 import java.util.logging.Level;
 
+import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.model.actor.events.annotations.Message;
+import com.l2jserver.gameserver.model.actor.events.annotations.UseAntiFeed;
 import com.l2jserver.gameserver.model.actor.events.listeners.IDlgAnswerEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.IFamePointsChangeEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.IKarmaChangeEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.IPKPointsChangeEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.IPlayerLoginEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.IPlayerLogoutEventListener;
+import com.l2jserver.gameserver.model.actor.events.listeners.IPvPKillEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.IPvPPointsEventChange;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.util.Util;
@@ -160,7 +163,11 @@ public class PlayerEvents extends PlayableEvents
 	}
 	
 	/**
-	 * Fired whenever player answer on a dialog yes/no.
+	 * Fired whenever player answer on a dialog yes/no.<br>
+	 * Supported annotations:<br>
+	 * <ul>
+	 * <li>{@link Message}</li>
+	 * </ul>
 	 * @param messageId
 	 * @param answer
 	 * @param requesterId
@@ -227,6 +234,38 @@ public class PlayerEvents extends PlayableEvents
 				try
 				{
 					listener.onPlayerLogout(getActingPlayer());
+				}
+				catch (Exception e)
+				{
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": Exception caught: ", e);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Fired whenever player kills another player.<br>
+	 * Supported annotations:<br>
+	 * <ul>
+	 * <li>{@link UseAntiFeed}</li>
+	 * </ul>
+	 * @param target
+	 */
+	public void onPvPKill(L2PcInstance target)
+	{
+		if (hasListeners())
+		{
+			for (IPvPKillEventListener listener : getEventListeners(IPvPKillEventListener.class))
+			{
+				try
+				{
+					final UseAntiFeed useAntiFeed = listener.getClass().getAnnotation(UseAntiFeed.class);
+					if ((useAntiFeed != null) && !AntiFeedManager.getInstance().check(getActingPlayer(), target))
+					{
+						continue;
+					}
+					
+					listener.onPvPKill(getActingPlayer(), target);
 				}
 				catch (Exception e)
 				{

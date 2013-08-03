@@ -36,7 +36,11 @@ public class PlayableEvents extends CharEvents
 	}
 	
 	/**
-	 * Fired whenever current char receives any exp.
+	 * Fired whenever current char receives any exp.<br>
+	 * Supported annotations:<br>
+	 * <ul>
+	 * <li>{@link PlayerOnly}</li>
+	 * </ul>
 	 * @param exp
 	 * @return {@code true} if experience can be received, {@code false} otherwise.
 	 */
@@ -68,7 +72,11 @@ public class PlayableEvents extends CharEvents
 	}
 	
 	/**
-	 * Fired whenever current playable's level has change.
+	 * Fired whenever current playable's level has change.<br>
+	 * Supported annotations:<br>
+	 * <ul>
+	 * <li>{@link PlayerOnly}</li>
+	 * </ul>
 	 * @param levels
 	 * @return {@code true} if level change is possible, {@code false} otherwise.
 	 */

@@ -5460,47 +5460,52 @@ public final class L2PcInstance extends L2Playable
 		
 		if (killer != null)
 		{
-			L2PcInstance pk = killer.getActingPlayer();
-			
-			TvTEvent.onKill(killer, this);
-			
-			if (L2Event.isParticipant(pk) && (pk != null))
+			final L2PcInstance pk = killer.getActingPlayer();
+			if (pk != null)
 			{
-				pk.getEventStatus().kills.add(this);
-			}
-			
-			// announce pvp/pk
-			if (Config.ANNOUNCE_PK_PVP && (pk != null) && !pk.isGM())
-			{
-				String msg = "";
-				if (getPvpFlag() == 0)
+				pk.getEvents().onPvPKill(this);
+				
+				TvTEvent.onKill(killer, this);
+				
+				if (L2Event.isParticipant(pk))
 				{
-					msg = Config.ANNOUNCE_PK_MSG.replace("$killer", pk.getName()).replace("$target", getName());
-					if (Config.ANNOUNCE_PK_PVP_NORMAL_MESSAGE)
+					pk.getEventStatus().kills.add(this);
+				}
+				
+				// announce pvp/pk
+				if (Config.ANNOUNCE_PK_PVP && !pk.isGM())
+				{
+					String msg = "";
+					if (getPvpFlag() == 0)
 					{
-						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1);
-						sm.addString(msg);
-						Announcements.getInstance().announceToAll(sm);
+						msg = Config.ANNOUNCE_PK_MSG.replace("$killer", pk.getName()).replace("$target", getName());
+						if (Config.ANNOUNCE_PK_PVP_NORMAL_MESSAGE)
+						{
+							SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1);
+							sm.addString(msg);
+							Announcements.getInstance().announceToAll(sm);
+						}
+						else
+						{
+							Announcements.getInstance().announceToAll(msg);
+						}
 					}
-					else
+					else if (getPvpFlag() != 0)
 					{
-						Announcements.getInstance().announceToAll(msg);
+						msg = Config.ANNOUNCE_PVP_MSG.replace("$killer", pk.getName()).replace("$target", getName());
+						if (Config.ANNOUNCE_PK_PVP_NORMAL_MESSAGE)
+						{
+							SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1);
+							sm.addString(msg);
+							Announcements.getInstance().announceToAll(sm);
+						}
+						else
+						{
+							Announcements.getInstance().announceToAll(msg);
+						}
 					}
 				}
-				else if (getPvpFlag() != 0)
-				{
-					msg = Config.ANNOUNCE_PVP_MSG.replace("$killer", pk.getName()).replace("$target", getName());
-					if (Config.ANNOUNCE_PK_PVP_NORMAL_MESSAGE)
-					{
-						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1);
-						sm.addString(msg);
-						Announcements.getInstance().announceToAll(sm);
-					}
-					else
-					{
-						Announcements.getInstance().announceToAll(msg);
-					}
-				}
+				
 			}
 			
 			broadcastStatusUpdate();

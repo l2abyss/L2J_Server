@@ -50,7 +50,11 @@ public class CharEvents extends AbstractCharEvents
 	}
 	
 	/**
-	 * Fired whenever current char attacks someone.
+	 * Fired whenever current char attacks someone.<br>
+	 * Supported annotations:<br>
+	 * <ul>
+	 * <li>{@link PlayerOnly}</li>
+	 * </ul>
 	 * @param target
 	 * @return {@code true} if current attack is possible, {@code false} otherwise.
 	 */
@@ -82,7 +86,13 @@ public class CharEvents extends AbstractCharEvents
 	}
 	
 	/**
-	 * Fired whenever current char cast a magic.
+	 * Fired whenever current char cast a magic.<br>
+	 * Supported annotations:<br>
+	 * <ul>
+	 * <li>{@link PlayerOnly}</li>
+	 * <li>{@link SkillId}</li>
+	 * <li>{@link SkillLevel}</li>
+	 * </ul>
 	 * @param skill
 	 * @param simultaneously
 	 * @param target
@@ -129,7 +139,11 @@ public class CharEvents extends AbstractCharEvents
 	}
 	
 	/**
-	 * Fired whenever current char dies.
+	 * Fired whenever current char dies.<br>
+	 * Supported annotations:<br>
+	 * <ul>
+	 * <li>{@link PlayerOnly}</li>
+	 * </ul>
 	 * @param killer
 	 * @return {@code true} if current char can die, {@code false} otherwise.
 	 */
@@ -161,7 +175,11 @@ public class CharEvents extends AbstractCharEvents
 	}
 	
 	/**
-	 * Fired whenever current char deal damage.
+	 * Fired whenever current char deal damage.<br>
+	 * Supported annotations:<br>
+	 * <ul>
+	 * <li>{@link PlayerOnly}</li>
+	 * </ul>
 	 * @param damage
 	 * @param target
 	 * @param skill
@@ -191,7 +209,11 @@ public class CharEvents extends AbstractCharEvents
 	}
 	
 	/**
-	 * Fired whenever current char receive damage.
+	 * Fired whenever current char receive damage.<br>
+	 * Supported annotations:<br>
+	 * <ul>
+	 * <li>{@link PlayerOnly}</li>
+	 * </ul>
 	 * @param damage
 	 * @param attacker
 	 * @param skill
