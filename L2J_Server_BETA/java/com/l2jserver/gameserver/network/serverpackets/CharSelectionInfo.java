@@ -31,7 +31,6 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
-import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.model.CharSelectInfoPackage;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
@@ -219,7 +218,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 		List<CharSelectInfoPackage> characterList = new FastList<>();
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT account_name, charId, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, accesslevel, online, char_slot, lastAccess, base_class, transform_id, language, vitality_points FROM characters WHERE account_name=? ORDER BY createDate"))
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM characters WHERE account_name=? ORDER BY createDate"))
 		{
 			statement.setString(1, loginName);
 			try (ResultSet charList = statement.executeQuery())
@@ -339,33 +338,6 @@ public class CharSelectionInfo extends L2GameServerPacket
 		if (weaponObjId < 1)
 		{
 			weaponObjId = charInfopackage.getPaperdollObjectId(Inventory.PAPERDOLL_RHAND);
-		}
-		
-		// Check Transformation
-		int cursedWeaponId = CursedWeaponsManager.getInstance().checkOwnsWeaponId(objectId);
-		if (cursedWeaponId > 0)
-		{
-			// cursed weapon transformations
-			if (cursedWeaponId == 8190)
-			{
-				charInfopackage.setTransformId(301);
-			}
-			else if (cursedWeaponId == 8689)
-			{
-				charInfopackage.setTransformId(302);
-			}
-			else
-			{
-				charInfopackage.setTransformId(0);
-			}
-		}
-		else if (chardata.getInt("transform_id") > 0)
-		{
-			charInfopackage.setTransformId(chardata.getInt("transform_id"));
-		}
-		else
-		{
-			charInfopackage.setTransformId(0);
 		}
 		
 		if (weaponObjId > 0)
