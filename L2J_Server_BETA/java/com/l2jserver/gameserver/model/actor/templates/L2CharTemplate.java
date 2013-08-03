@@ -183,10 +183,10 @@ public class L2CharTemplate
 		
 		// speed.
 		Arrays.fill(_moveType, 1);
-		_moveType[MoveType.RUN.ordinal()] = set.getInteger("baseRunSpd", 1);
-		_moveType[MoveType.WALK.ordinal()] = set.getInteger("baseWalkSpd", 1);
-		_moveType[MoveType.FAST_SWIM.ordinal()] = set.getInteger("baseSwimRunSpd", 1);
-		_moveType[MoveType.SLOW_SWIM.ordinal()] = set.getInteger("baseSwimWalkSpd", 1);
+		setBaseMoveSpeed(MoveType.RUN, set.getInteger("baseRunSpd", 1));
+		setBaseMoveSpeed(MoveType.WALK, set.getInteger("baseWalkSpd", 1));
+		setBaseMoveSpeed(MoveType.FAST_SWIM, set.getInteger("baseSwimRunSpd", 1));
+		setBaseMoveSpeed(MoveType.SLOW_SWIM, set.getInteger("baseSwimWalkSpd", 1));
 	}
 	
 	/**
@@ -469,7 +469,12 @@ public class L2CharTemplate
 		return _baseMCritRate;
 	}
 	
-	public float getBaseMoveSpd(MoveType mt)
+	public void setBaseMoveSpeed(MoveType type, float val)
+	{
+		_moveType[type.ordinal()] = val;
+	}
+	
+	public float getBaseMoveSpeed(MoveType mt)
 	{
 		return _moveType[mt.ordinal()];
 	}

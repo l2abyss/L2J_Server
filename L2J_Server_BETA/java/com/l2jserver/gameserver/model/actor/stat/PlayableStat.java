@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.stats.MoveType;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.model.zone.type.L2SwampZone;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
@@ -234,23 +233,29 @@ public class PlayableStat extends CharStat
 		return level;
 	}
 	
-	/**
-	 * @param mt movement type
-	 * @return the base move speed of given movement type.
-	 */
 	@Override
-	protected float getBaseMoveSpeed(MoveType mt)
+	public int getRunSpeed()
 	{
-		float val = super.getBaseMoveSpeed(mt);
-		
+		int val = super.getRunSpeed();
 		if (getActiveChar().isInsideZone(ZoneId.SWAMP))
 		{
-			L2SwampZone zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
+			final L2SwampZone zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
 			int bonus = zone == null ? 0 : zone.getMoveBonus();
-			double dbonus = bonus / 100.0; // %
-			val += val * dbonus;
+			val += val * (bonus / 100.0f);
 		}
-		
+		return val;
+	}
+	
+	@Override
+	public int getWalkSpeed()
+	{
+		int val = super.getWalkSpeed();
+		if (getActiveChar().isInsideZone(ZoneId.SWAMP))
+		{
+			final L2SwampZone zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
+			int bonus = zone == null ? 0 : zone.getMoveBonus();
+			val += val * (bonus / 100.0f);
+		}
 		return val;
 	}
 	

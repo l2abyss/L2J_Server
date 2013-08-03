@@ -39,16 +39,14 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 	protected int _idTemplate;
 	protected boolean _isAttackable, _isSummoned;
 	protected int _mAtkSpd, _pAtkSpd;
+	protected final int _runSpd, _walkSpd;
+	protected final int _swimRunSpd;
+	protected final int _swimWalkSpd;
+	protected final int _flRunSpd = 0;
+	protected final int _flWalkSpd = 0;
+	protected final int _flyRunSpd;
+	protected final int _flyWalkSpd;
 	protected float _moveMultiplier;
-	/**
-	 * Run speed, swimming run speed and flying run speed
-	 */
-	protected int _runSpd;
-	
-	/**
-	 * Walking speed, swimming walking speed and flying walking speed
-	 */
-	protected int _walkSpd;
 	
 	protected int _rhand, _lhand, _chest, _enchantEffect;
 	protected double _collisionHeight, _collisionRadius;
@@ -67,6 +65,10 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 		_moveMultiplier = cha.getMovementSpeedMultiplier();
 		_runSpd = Math.round(cha.getRunSpeed() / _moveMultiplier);
 		_walkSpd = Math.round(cha.getWalkSpeed() / _moveMultiplier);
+		_swimRunSpd = cha.getSwimRunSpeed();
+		_swimWalkSpd = cha.getSwimWalkSpeed();
+		_flyRunSpd = cha.isFlying() ? _runSpd : 0;
+		_flyWalkSpd = cha.isFlying() ? _walkSpd : 0;
 	}
 	
 	/**
@@ -154,12 +156,12 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_pAtkSpd);
 			writeD(_runSpd);
 			writeD(_walkSpd);
-			writeD(_runSpd); // swim run speed
-			writeD(_walkSpd); // swim walk speed
-			writeD(_runSpd); // swim run speed
-			writeD(_walkSpd); // swim walk speed
-			writeD(_runSpd); // fly run speed
-			writeD(_walkSpd); // fly run speed
+			writeD(_swimRunSpd);
+			writeD(_swimWalkSpd);
+			writeD(_flRunSpd);
+			writeD(_flWalkSpd);
+			writeD(_flyRunSpd);
+			writeD(_flyWalkSpd);
 			writeF(_moveMultiplier);
 			writeF(_npc.getAttackSpeedMultiplier());
 			writeF(_collisionRadius);
@@ -222,9 +224,6 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 				_name = cha.getName();
 			}
 			_title = cha.getOwner() != null ? cha.getOwner().getName() : "";
-			_moveMultiplier = cha.getMovementSpeedMultiplier();
-			_runSpd = Math.round(cha.getRunSpeed() / _moveMultiplier);
-			_walkSpd = Math.round(cha.getWalkSpeed() / _moveMultiplier);
 		}
 		
 		@Override
@@ -243,12 +242,12 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_pAtkSpd);
 			writeD(_runSpd);
 			writeD(_walkSpd);
-			writeD(_runSpd); // swim run speed
-			writeD(_walkSpd); // swim walk speed
-			writeD(_runSpd); // fly run speed
-			writeD(_walkSpd); // fly walk speed
-			writeD(_runSpd); // fly run speed
-			writeD(_walkSpd); // fly walk speed
+			writeD(_swimRunSpd);
+			writeD(_swimWalkSpd);
+			writeD(_flRunSpd);
+			writeD(_flWalkSpd);
+			writeD(_flyRunSpd);
+			writeD(_flyWalkSpd);
 			writeF(_moveMultiplier);
 			writeF(_trap.getAttackSpeedMultiplier());
 			writeF(_collisionRadius);
@@ -355,9 +354,6 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_collisionHeight = cha.getTemplate().getfCollisionHeight();
 			_collisionRadius = cha.getTemplate().getfCollisionRadius();
 			_invisible = cha.getOwner() != null ? cha.getOwner().getAppearance().getInvisible() : false;
-			_moveMultiplier = cha.getMovementSpeedMultiplier();
-			_runSpd = Math.round(cha.getRunSpeed() / _moveMultiplier);
-			_walkSpd = Math.round(cha.getWalkSpeed() / _moveMultiplier);
 		}
 		
 		@Override
@@ -386,12 +382,12 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_pAtkSpd);
 			writeD(_runSpd);
 			writeD(_walkSpd);
-			writeD(_runSpd); // swim run speed
-			writeD(_walkSpd); // swim walk speed
-			writeD(_runSpd); // fly run speed
-			writeD(_walkSpd); // fly walk speed
-			writeD(_runSpd); // fly run speed
-			writeD(_walkSpd); // fly walk speed
+			writeD(_swimRunSpd);
+			writeD(_swimWalkSpd);
+			writeD(_flRunSpd);
+			writeD(_flWalkSpd);
+			writeD(_flyRunSpd);
+			writeD(_flyWalkSpd);
 			writeF(_moveMultiplier);
 			writeF(_summon.getAttackSpeedMultiplier());
 			writeF(_collisionRadius);

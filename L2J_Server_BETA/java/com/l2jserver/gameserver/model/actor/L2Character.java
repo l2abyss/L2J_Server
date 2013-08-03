@@ -6858,6 +6858,11 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		return getStat().getRunSpeed();
 	}
 	
+	public int getSwimRunSpeed()
+	{
+		return getStat().getSwimRunSpeed();
+	}
+	
 	public final int getShldDef()
 	{
 		return getStat().getShldDef();
@@ -6871,6 +6876,11 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	public final int getWalkSpeed()
 	{
 		return getStat().getWalkSpeed();
+	}
+	
+	public final int getSwimWalkSpeed()
+	{
+		return getStat().getSwimWalkSpeed();
 	}
 	
 	public int getWIT()

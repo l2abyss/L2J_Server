@@ -26,22 +26,30 @@ import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 public class GMViewCharacterInfo extends L2GameServerPacket
 {
 	private final L2PcInstance _activeChar;
+	private final int _runSpd, _walkSpd;
+	private final int _swimRunSpd;
+	private final int _swimWalkSpd;
+	private final int _flRunSpd = 0;
+	private final int _flWalkSpd = 0;
+	private final int _flyRunSpd;
+	private final int _flyWalkSpd;
+	private final float _moveMultiplier;
 	
-	/**
-	 * @param character
-	 */
-	public GMViewCharacterInfo(L2PcInstance character)
+	public GMViewCharacterInfo(L2PcInstance cha)
 	{
-		_activeChar = character;
+		_activeChar = cha;
+		_moveMultiplier = cha.getMovementSpeedMultiplier();
+		_runSpd = Math.round(cha.getRunSpeed() / _moveMultiplier);
+		_walkSpd = Math.round(cha.getWalkSpeed() / _moveMultiplier);
+		_swimRunSpd = cha.getSwimRunSpeed();
+		_swimWalkSpd = cha.getSwimWalkSpeed();
+		_flyRunSpd = cha.isFlying() ? _runSpd : 0;
+		_flyWalkSpd = cha.isFlying() ? _walkSpd : 0;
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
-		float moveMultiplier = _activeChar.getMovementSpeedMultiplier();
-		int _runSpd = (int) (_activeChar.getRunSpeed() / moveMultiplier);
-		int _walkSpd = (int) (_activeChar.getWalkSpeed() / moveMultiplier);
-		
 		writeC(0x95);
 		
 		writeD(_activeChar.getX());
@@ -206,13 +214,13 @@ public class GMViewCharacterInfo extends L2GameServerPacket
 		
 		writeD(_runSpd);
 		writeD(_walkSpd);
-		writeD(_runSpd); // swimspeed
-		writeD(_walkSpd); // swimspeed
-		writeD(_runSpd);
-		writeD(_walkSpd);
-		writeD(_runSpd);
-		writeD(_walkSpd);
-		writeF(moveMultiplier);
+		writeD(_swimRunSpd);
+		writeD(_swimWalkSpd);
+		writeD(_flRunSpd);
+		writeD(_flWalkSpd);
+		writeD(_flyRunSpd);
+		writeD(_flyWalkSpd);
+		writeF(_moveMultiplier);
 		writeF(_activeChar.getAttackSpeedMultiplier()); // 2.9);//
 		writeF(_activeChar.getCollisionRadius()); // scale
 		writeF(_activeChar.getCollisionHeight()); // y offset ??!? fem dwarf 4033

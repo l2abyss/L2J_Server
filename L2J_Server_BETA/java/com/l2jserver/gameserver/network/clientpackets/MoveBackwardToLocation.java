@@ -126,7 +126,8 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 			return;
 		}
 		
-		if ((_moveMovement == 0) && (Config.GEODATA < 1)) // cursor movement without geodata is disabled
+		// Disable keyboard movement when geodata is not enabled and player is not flying.
+		if ((_moveMovement == 0) && (Config.GEODATA < 1) && !activeChar.isFlying())
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 		}
@@ -141,10 +142,6 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 				return;
 			}
 			activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new Location(_targetX, _targetY, _targetZ));
-			
-			/*
-			 * if (activeChar.getParty() != null) activeChar.getParty().broadcastToPartyMembers(activeChar, new PartyMemberPosition(activeChar));
-			 */
 		}
 	}
 	

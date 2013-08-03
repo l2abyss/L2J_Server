@@ -24,10 +24,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.transform.TransformTemplate;
-import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.Calculator;
 import com.l2jserver.gameserver.model.stats.Env;
@@ -382,30 +379,16 @@ public class CharStat
 	
 	public float getMovementSpeedMultiplier()
 	{
-		return (getMoveSpeed() / getBaseMoveSpeed(getMoveType()));
+		return (getRunSpeed() / getBaseMoveSpeed(MoveType.RUN));
 	}
 	
 	/**
-	 * @param mt movement type
+	 * @param type movement type
 	 * @return the base move speed of given movement type.
 	 */
-	protected float getBaseMoveSpeed(MoveType mt)
+	public float getBaseMoveSpeed(MoveType type)
 	{
-		final TransformTemplate template = _activeChar.isTransformed() ? _activeChar.getTransformation().getTemplate(_activeChar.getActingPlayer()) : null;
-		return (float) (template != null ? template.getSpeed(mt) : _activeChar.getTemplate().getBaseMoveSpd(mt));
-	}
-	
-	public MoveType getMoveType()
-	{
-		if (_activeChar.isFlying())
-		{
-			return _activeChar.isRunning() ? MoveType.FAST_FLY : MoveType.SLOW_FLY;
-		}
-		else if (_activeChar.isInsideZone(ZoneId.WATER))
-		{
-			return _activeChar.isRunning() ? MoveType.FAST_SWIM : MoveType.SLOW_SWIM;
-		}
-		return _activeChar.isRunning() ? MoveType.RUN : MoveType.WALK;
+		return _activeChar.getTemplate().getBaseMoveSpeed(type);
 	}
 	
 	/**
@@ -471,18 +454,6 @@ public class CharStat
 	 */
 	public final int getPhysicalAttackRange()
 	{
-		if (_activeChar.isTransformed())
-		{
-			return _activeChar.getTemplate().getBaseAttackRange();
-		}
-		// Polearm handled here for now. Basically L2PcInstance could have a function
-		// similar to FuncBowAtkRange and NPC are defined in DP.
-		final L2Weapon weaponItem = _activeChar.getActiveWeaponItem();
-		if ((weaponItem != null) && (weaponItem.getItemType() == L2WeaponType.POLE))
-		{
-			return (int) calcStat(Stats.POWER_ATTACK_RANGE, 66);
-		}
-		
 		return (int) calcStat(Stats.POWER_ATTACK_RANGE, _activeChar.getTemplate().getBaseAttackRange());
 	}
 	
@@ -500,10 +471,18 @@ public class CharStat
 	 */
 	public int getRunSpeed()
 	{
-		// err we should be adding TO the persons run speed
-		// not making it a constant
-		double baseRunSpd = getBaseMoveSpeed(MoveType.RUN);
+		final float baseRunSpd = _activeChar.isInsideZone(ZoneId.WATER) ? getSwimRunSpeed() : getBaseMoveSpeed(MoveType.RUN);
+		if (baseRunSpd == 0)
+		{
+			return 0;
+		}
 		
+		return (int) Math.round(calcStat(Stats.MOVE_SPEED, baseRunSpd, null, null));
+	}
+	
+	public int getSwimRunSpeed()
+	{
+		final float baseRunSpd = getBaseMoveSpeed(MoveType.FAST_SWIM);
 		if (baseRunSpd == 0)
 		{
 			return 0;
@@ -543,14 +522,27 @@ public class CharStat
 	 */
 	public int getWalkSpeed()
 	{
-		double baseWalkSpd = getBaseMoveSpeed(MoveType.WALK);
-		
+		final float baseWalkSpd = _activeChar.isInsideZone(ZoneId.WATER) ? getSwimWalkSpeed() : getBaseMoveSpeed(MoveType.WALK);
 		if (baseWalkSpd == 0)
 		{
 			return 0;
 		}
 		
-		return (int) calcStat(Stats.MOVE_SPEED, baseWalkSpd);
+		return (int) Math.round(calcStat(Stats.MOVE_SPEED, baseWalkSpd));
+	}
+	
+	/**
+	 * @return the WalkSpeed (base+modifier) of the L2Character.
+	 */
+	public int getSwimWalkSpeed()
+	{
+		final float baseWalkSpd = getBaseMoveSpeed(MoveType.SLOW_SWIM);
+		if (baseWalkSpd == 0)
+		{
+			return 0;
+		}
+		
+		return (int) Math.round(calcStat(Stats.MOVE_SPEED, baseWalkSpd));
 	}
 	
 	/**

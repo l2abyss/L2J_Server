@@ -29,46 +29,46 @@ public class PetInfo extends L2GameServerPacket
 	private final boolean _isSummoned;
 	private final int _val;
 	private final int _mAtkSpd, _pAtkSpd;
-	private final int _runSpd, _walkSpd, _swimRunSpd, _swimWalkSpd;
-	private int _flRunSpd;
-	private int _flWalkSpd;
-	private int _flyRunSpd;
-	private int _flyWalkSpd;
+	private final int _runSpd, _walkSpd;
+	private final int _swimRunSpd;
+	private final int _swimWalkSpd;
+	private final int _flRunSpd = 0;
+	private final int _flWalkSpd = 0;
+	private final int _flyRunSpd;
+	private final int _flyWalkSpd;
+	private final float _moveMultiplier;
 	private final int _maxHp, _maxMp;
 	private int _maxFed, _curFed;
-	private final float _moveMultiplier;
 	
-	/**
-	 * @param summon
-	 * @param val
-	 */
 	public PetInfo(L2Summon summon, int val)
 	{
 		_summon = summon;
-		_isSummoned = _summon.isShowSummonAnimation();
-		_x = _summon.getX();
-		_y = _summon.getY();
-		_z = _summon.getZ();
-		_heading = _summon.getHeading();
-		_mAtkSpd = _summon.getMAtkSpd();
-		_pAtkSpd = _summon.getPAtkSpd();
-		_moveMultiplier = _summon.getMovementSpeedMultiplier();
-		_runSpd = Math.round(_summon.getRunSpeed() / _moveMultiplier);
-		_walkSpd = Math.round(_summon.getWalkSpeed() / _moveMultiplier);
-		_swimRunSpd = _flRunSpd = _flyRunSpd = _runSpd;
-		_swimWalkSpd = _flWalkSpd = _flyWalkSpd = _walkSpd;
-		_maxHp = _summon.getMaxHp();
-		_maxMp = _summon.getMaxMp();
+		_isSummoned = summon.isShowSummonAnimation();
+		_x = summon.getX();
+		_y = summon.getY();
+		_z = summon.getZ();
+		_heading = summon.getHeading();
+		_mAtkSpd = summon.getMAtkSpd();
+		_pAtkSpd = summon.getPAtkSpd();
+		_moveMultiplier = summon.getMovementSpeedMultiplier();
+		_runSpd = Math.round(summon.getRunSpeed() / _moveMultiplier);
+		_walkSpd = Math.round(summon.getWalkSpeed() / _moveMultiplier);
+		_swimRunSpd = summon.getSwimRunSpeed();
+		_swimWalkSpd = summon.getSwimWalkSpeed();
+		_flyRunSpd = summon.isFlying() ? _runSpd : 0;
+		_flyWalkSpd = summon.isFlying() ? _walkSpd : 0;
+		_maxHp = summon.getMaxHp();
+		_maxMp = summon.getMaxMp();
 		_val = val;
-		if (_summon instanceof L2PetInstance)
+		if (summon.isPet())
 		{
-			L2PetInstance pet = (L2PetInstance) _summon;
+			final L2PetInstance pet = (L2PetInstance) summon;
 			_curFed = pet.getCurrentFed(); // how fed it is
 			_maxFed = pet.getMaxFed(); // max fed it can be
 		}
-		else if (_summon instanceof L2ServitorInstance)
+		else if (summon.isServitor())
 		{
-			L2ServitorInstance sum = (L2ServitorInstance) _summon;
+			final L2ServitorInstance sum = (L2ServitorInstance) _summon;
 			_curFed = sum.getTimeRemaining();
 			_maxFed = sum.getTotalLifeTime();
 		}
@@ -98,8 +98,7 @@ public class PetInfo extends L2GameServerPacket
 		writeD(_flWalkSpd);
 		writeD(_flyRunSpd);
 		writeD(_flyWalkSpd);
-		
-		writeF(_moveMultiplier); // movement multiplier
+		writeF(_moveMultiplier);
 		writeF(_summon.getAttackSpeedMultiplier()); // attack speed multiplier
 		writeF(_summon.getTemplate().getfCollisionRadius());
 		writeF(_summon.getTemplate().getfCollisionHeight());

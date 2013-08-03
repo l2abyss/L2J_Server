@@ -49,7 +49,7 @@ public final class TransformTemplate
 	private List<AdditionalItemHolder> _additionalItems;
 	private Map<Integer, Integer> _baseDefense;
 	private Map<Integer, Double> _baseStats;
-	private Map<Integer, Double> _baseSpeed;
+	private Map<Integer, Float> _baseSpeed;
 	
 	private ExBasicActionList _list;
 	private final Map<Integer, TransformLevelData> _data = new LinkedHashMap<>(100);
@@ -61,12 +61,12 @@ public final class TransformTemplate
 		_baseAttackType = L2WeaponType.findByName(set.getString("attackType", "FIST"));
 		_baseRandomDamage = set.getDouble("randomDamage", 0);
 		
-		addSpeed(MoveType.WALK, set.getDouble("walk", 0));
-		addSpeed(MoveType.RUN, set.getDouble("run", 0));
-		addSpeed(MoveType.SLOW_SWIM, set.getDouble("waterWalk", 0));
-		addSpeed(MoveType.FAST_SWIM, set.getDouble("waterRun", 0));
-		addSpeed(MoveType.SLOW_FLY, set.getDouble("flyWalk", 0));
-		addSpeed(MoveType.FAST_FLY, set.getDouble("flyRun", 0));
+		addSpeed(MoveType.WALK, set.getFloat("walk", 0));
+		addSpeed(MoveType.RUN, set.getFloat("run", 0));
+		addSpeed(MoveType.SLOW_SWIM, set.getFloat("waterWalk", 0));
+		addSpeed(MoveType.FAST_SWIM, set.getFloat("waterRun", 0));
+		addSpeed(MoveType.SLOW_FLY, set.getFloat("flyWalk", 0));
+		addSpeed(MoveType.FAST_FLY, set.getFloat("flyRun", 0));
 		
 		addStats(Stats.POWER_ATTACK, set.getDouble("pAtk", 0));
 		addStats(Stats.MAGIC_ATTACK, set.getDouble("mAtk", 0));
@@ -94,7 +94,7 @@ public final class TransformTemplate
 		addDefense(Inventory.PAPERDOLL_NECK, set.getInteger("neck", 0));
 	}
 	
-	private void addSpeed(MoveType type, double val)
+	private void addSpeed(MoveType type, float val)
 	{
 		if (_baseSpeed == null)
 		{
@@ -103,7 +103,7 @@ public final class TransformTemplate
 		_baseSpeed.put(type.ordinal(), val);
 	}
 	
-	public double getSpeed(MoveType type)
+	public float getBaseMoveSpeed(MoveType type)
 	{
 		if ((_baseSpeed == null) || !_baseSpeed.containsKey(type.ordinal()))
 		{

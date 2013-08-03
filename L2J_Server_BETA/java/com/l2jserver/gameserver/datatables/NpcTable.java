@@ -47,6 +47,7 @@ import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.BaseStats;
+import com.l2jserver.gameserver.model.stats.MoveType;
 
 public class NpcTable extends DocumentParser
 {
@@ -180,6 +181,26 @@ public class NpcTable extends DocumentParser
 											}
 										}
 										template.setParameters(set);
+										break;
+									}
+									case "speed":
+									{
+										for (Node b = c.getFirstChild(); b != null; b = b.getNextSibling())
+										{
+											attrs = b.getAttributes();
+											if ("run".equals(b.getNodeName()))
+											{
+												template.setBaseMoveSpeed(MoveType.RUN, parseFloat(attrs, "ground"));
+												template.setBaseMoveSpeed(MoveType.FAST_SWIM, parseFloat(attrs, "underWater"));
+												template.setBaseMoveSpeed(MoveType.FAST_FLY, parseFloat(attrs, "flying"));
+											}
+											else if ("walk".equals(b.getNodeName()))
+											{
+												template.setBaseMoveSpeed(MoveType.WALK, parseFloat(attrs, "ground"));
+												template.setBaseMoveSpeed(MoveType.SLOW_SWIM, parseFloat(attrs, "underWater"));
+												template.setBaseMoveSpeed(MoveType.SLOW_FLY, parseFloat(attrs, "flying"));
+											}
+										}
 										break;
 									}
 								}

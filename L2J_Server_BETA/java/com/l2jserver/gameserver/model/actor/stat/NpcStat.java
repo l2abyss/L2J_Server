@@ -19,8 +19,6 @@
 package com.l2jserver.gameserver.model.actor.stat;
 
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.stats.MoveType;
-import com.l2jserver.gameserver.model.stats.Stats;
 
 public class NpcStat extends CharStat
 {
@@ -39,11 +37,5 @@ public class NpcStat extends CharStat
 	public L2Npc getActiveChar()
 	{
 		return (L2Npc) super.getActiveChar();
-	}
-	
-	@Override
-	public int getWalkSpeed()
-	{
-		return (int) calcStat(Stats.MOVE_SPEED, getActiveChar().getTemplate().getBaseMoveSpd(MoveType.WALK), null, null);
 	}
 }

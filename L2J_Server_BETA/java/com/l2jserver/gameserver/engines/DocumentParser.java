@@ -251,6 +251,17 @@ public abstract class DocumentParser
 	}
 	
 	/**
+	 * Parses the float.
+	 * @param n the named node map.
+	 * @param name the attribute name.
+	 * @return a parsed float.
+	 */
+	protected static float parseFloat(NamedNodeMap n, String name)
+	{
+		return Float.parseFloat(n.getNamedItem(name).getNodeValue());
+	}
+	
+	/**
 	 * Parses the double.
 	 * @param n the named node map.
 	 * @param name the attribute name.
