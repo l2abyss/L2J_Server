@@ -25,6 +25,7 @@ import org.mmocore.network.SendablePacket;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.network.L2GameClient;
 
 /**
@@ -35,6 +36,36 @@ public abstract class L2GameServerPacket extends SendablePacket<L2GameClient>
 	protected static final Logger _log = Logger.getLogger(L2GameServerPacket.class.getName());
 	
 	protected boolean _invisible = false;
+	
+	private static final int[] PAPERDOLL_ORDER = new int[]
+	{
+		Inventory.PAPERDOLL_UNDER,
+		Inventory.PAPERDOLL_REAR,
+		Inventory.PAPERDOLL_LEAR,
+		Inventory.PAPERDOLL_NECK,
+		Inventory.PAPERDOLL_RFINGER,
+		Inventory.PAPERDOLL_LFINGER,
+		Inventory.PAPERDOLL_HEAD,
+		Inventory.PAPERDOLL_RHAND,
+		Inventory.PAPERDOLL_LHAND,
+		Inventory.PAPERDOLL_GLOVES,
+		Inventory.PAPERDOLL_CHEST,
+		Inventory.PAPERDOLL_LEGS,
+		Inventory.PAPERDOLL_FEET,
+		Inventory.PAPERDOLL_CLOAK,
+		Inventory.PAPERDOLL_RHAND,
+		Inventory.PAPERDOLL_HAIR,
+		Inventory.PAPERDOLL_HAIR2,
+		Inventory.PAPERDOLL_RBRACELET,
+		Inventory.PAPERDOLL_LBRACELET,
+		Inventory.PAPERDOLL_DECO1,
+		Inventory.PAPERDOLL_DECO2,
+		Inventory.PAPERDOLL_DECO3,
+		Inventory.PAPERDOLL_DECO4,
+		Inventory.PAPERDOLL_DECO5,
+		Inventory.PAPERDOLL_DECO6,
+		Inventory.PAPERDOLL_BELT
+	};
 	
 	/**
 	 * @return True if packet originated from invisible character.
@@ -63,6 +94,11 @@ public abstract class L2GameServerPacket extends SendablePacket<L2GameClient>
 		writeD(loc.getX());
 		writeD(loc.getY());
 		writeD(loc.getZ());
+	}
+	
+	protected int[] getPaperdollOrder()
+	{
+		return PAPERDOLL_ORDER;
 	}
 	
 	@Override

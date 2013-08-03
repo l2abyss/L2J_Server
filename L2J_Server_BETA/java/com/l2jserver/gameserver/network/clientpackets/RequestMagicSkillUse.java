@@ -84,13 +84,6 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.isDebug())
-		{
-			_log.fine("Skill:" + skill.getName() + " level:" + skill.getLevel() + " passive:" + skill.isPassive());
-			_log.fine("Range:" + skill.getCastRange() + " targettype:" + skill.getTargetType() + " power:" + skill.getPower());
-			_log.fine("Reusedelay:" + skill.getReuseDelay() + " hittime:" + skill.getHitTime());
-		}
-		
 		// If Alternate rule Karma punishment is set to true, forbid skill Return to player with Karma
 		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && (activeChar.getKarma() > 0) && skill.hasEffectType(L2EffectType.TELEPORT))
 		{

@@ -89,11 +89,6 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			}
 		}
 		
-		if (activeChar.isDebug())
-		{
-			activeChar.sendDebugMessage("Pet tries to use item: " + item);
-		}
-		
 		if (!item.isEquipped() && !item.getItem().checkCondition(pet, pet, true))
 		{
 			return;
