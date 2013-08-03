@@ -379,10 +379,6 @@ public final class L2PcInstance extends L2Playable
 	// Character Shortcut SQL String Definitions:
 	private static final String DELETE_CHAR_SHORTCUTS = "DELETE FROM character_shortcuts WHERE charId=? AND class_index=?";
 	
-	// Character Transformation SQL String Definitions:
-	private static final String SELECT_CHAR_TRANSFORM = "SELECT transform_id FROM characters WHERE charId=?";
-	private static final String UPDATE_CHAR_TRANSFORM = "UPDATE characters SET transform_id=? WHERE charId=?";
-	
 	// Character zone restart time SQL String Definitions - L2Master mod
 	private static final String DELETE_ZONE_RESTART_LIMIT = "DELETE FROM character_norestart_zone_time WHERE charId = ?";
 	private static final String LOAD_ZONE_RESTART_LIMIT = "SELECT time_limit FROM character_norestart_zone_time WHERE charId = ?";
@@ -562,7 +558,6 @@ public final class L2PcInstance extends L2Playable
 	private long _offlineShopStart = 0;
 	
 	private Transform _transformation;
-	private int _transformationId = 0;
 	
 	/** The table containing all L2RecipeList of the L2PcInstance */
 	private final Map<Integer, L2RecipeList> _dwarvenRecipeBook = new FastMap<>();
@@ -5104,55 +5099,6 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * This is a simple query that inserts the transform Id into the character table for future reference.
-	 */
-	public void transformInsertInfo()
-	{
-		if (isTransformed() && getTransformation().isCursed())
-		{
-			return;
-		}
-		
-		_transformationId = getTransformationId();
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(UPDATE_CHAR_TRANSFORM))
-		{
-			statement.setInt(1, _transformationId);
-			statement.setInt(2, getObjectId());
-			statement.execute();
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "Transformation insert info: ", e);
-		}
-	}
-	
-	/**
-	 * This selects the current
-	 * @return transformation Id
-	 */
-	public int transformSelectInfo()
-	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement(SELECT_CHAR_TRANSFORM))
-		{
-			statement.setInt(1, getObjectId());
-			try (ResultSet rset = statement.executeQuery())
-			{
-				if (rset.next())
-				{
-					_transformationId = rset.getInt("transform_id");
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "Transformation select info: ", e);
-		}
-		return _transformationId;
-	}
-	
-	/**
 	 * Set a target. <B><U> Actions</U> :</B>
 	 * <ul>
 	 * <li>Remove the L2PcInstance from the _statusListener of the old target if it was a L2Character</li>
@@ -7721,7 +7667,6 @@ public final class L2PcInstance extends L2Playable
 		storeCharSub();
 		storeEffect(storeActiveEffects);
 		storeItemReuseDelay();
-		transformInsertInfo();
 		if (Config.STORE_RECIPE_SHOPLIST)
 		{
 			storeRecipeShopList();
