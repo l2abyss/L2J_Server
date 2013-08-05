@@ -348,7 +348,7 @@ public final class FortSiegeManager
 	
 	public boolean checkIfCanPickup(L2PcInstance player)
 	{
-		final SystemMessage sm = SystemMessageId.THE_FORTRESS_BATTLE_OF_S1_HAS_FINISHED.getStaticSystemMessage();
+		final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THE_FORTRESS_BATTLE_OF_S1_HAS_FINISHED);
 		sm.addItemName(9819);
 		// Cannot own 2 combat flag
 		if (player.isCombatFlagEquipped())
