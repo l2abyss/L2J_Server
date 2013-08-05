@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.RecoBonus;
 
 /**
- * ExVoteSystemInfo packet implemetation.
+ * ExVoteSystemInfo packet implementation.
  * @author Gnacik
  */
 public class ExVoteSystemInfo extends L2GameServerPacket

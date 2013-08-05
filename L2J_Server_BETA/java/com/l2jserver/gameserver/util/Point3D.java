@@ -19,49 +19,78 @@
 package com.l2jserver.gameserver.util;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.interfaces.IPositionable;
 
 /**
- * This class ...
- * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
+ * @author Unknown, UnAfraid
  */
-public class Point3D implements Serializable
+public class Point3D implements Serializable, IPositionable
 {
-	/**
-	 * Comment for <code>serialVersionUID</code>
-	 */
 	private static final long serialVersionUID = 4638345252031872576L;
 	
-	private volatile int _x, _y, _z;
+	private final AtomicInteger _x = new AtomicInteger();
+	private final AtomicInteger _y = new AtomicInteger();
+	private final AtomicInteger _z = new AtomicInteger();
 	
-	public Point3D(int pX, int pY, int pZ)
+	public Point3D(int x, int y, int z)
 	{
-		_x = pX;
-		_y = pY;
-		_z = pZ;
+		_x.set(x);
+		_y.set(y);
+		_z.set(z);
 	}
 	
-	public Point3D(int pX, int pY)
+	public boolean equals(int x, int y, int z)
 	{
-		_x = pX;
-		_y = pY;
-		_z = 0;
+		return (getX() == x) && (getY() == y) && (getZ() == z);
 	}
 	
-	/**
-	 * @param worldPosition
-	 */
-	public Point3D(Point3D worldPosition)
+	@Override
+	public int getX()
 	{
-		_x = worldPosition._x;
-		_y = worldPosition._y;
-		_z = worldPosition._z;
+		return _x.get();
 	}
 	
-	public synchronized void setTo(Point3D point)
+	public void setX(int x)
 	{
-		_x = point._x;
-		_y = point._y;
-		_z = point._z;
+		_x.set(x);
+	}
+	
+	@Override
+	public int getY()
+	{
+		return _y.get();
+	}
+	
+	public void setY(int y)
+	{
+		_y.set(y);
+	}
+	
+	@Override
+	public int getZ()
+	{
+		return _z.get();
+	}
+	
+	public void setZ(int z)
+	{
+		_z.set(z);
+	}
+	
+	public void setXYZ(int x, int y, int z)
+	{
+		_x.set(x);
+		_y.set(y);
+		_z.set(z);
+	}
+	
+	@Override
+	public Location getLocation()
+	{
+		return new Location(getX(), getY(), getZ());
 	}
 	
 	@Override
@@ -73,7 +102,7 @@ public class Point3D implements Serializable
 	@Override
 	public int hashCode()
 	{
-		return _x ^ _y ^ _z;
+		return getX() ^ getY() ^ getZ();
 	}
 	
 	@Override
@@ -85,73 +114,9 @@ public class Point3D implements Serializable
 		}
 		if (o instanceof Point3D)
 		{
-			Point3D point3D = (Point3D) o;
-			boolean ret = (point3D._x == _x) && (point3D._y == _y) && (point3D._z == _z);
-			return ret;
+			final Point3D point3D = (Point3D) o;
+			return (point3D.getX() == getX()) && (point3D.getY() == getY()) && (point3D.getZ() == getZ());
 		}
 		return false;
-	}
-	
-	public boolean equals(int pX, int pY, int pZ)
-	{
-		return (_x == pX) && (_y == pY) && (_z == pZ);
-	}
-	
-	public long distanceSquaredTo(Point3D point)
-	{
-		long dx, dy;
-		dx = _x - point._x;
-		dy = _y - point._y;
-		return (dx * dx) + (dy * dy);
-	}
-	
-	public static long distanceSquared(Point3D point1, Point3D point2)
-	{
-		long dx, dy;
-		dx = point1._x - point2._x;
-		dy = point1._y - point2._y;
-		return (dx * dx) + (dy * dy);
-	}
-	
-	public static boolean distanceLessThan(Point3D point1, Point3D point2, double distance)
-	{
-		return distanceSquared(point1, point2) < (distance * distance);
-	}
-	
-	public int getX()
-	{
-		return _x;
-	}
-	
-	public synchronized void setX(int pX)
-	{
-		_x = pX;
-	}
-	
-	public int getY()
-	{
-		return _y;
-	}
-	
-	public synchronized void setY(int pY)
-	{
-		_y = pY;
-	}
-	
-	public int getZ()
-	{
-		return _z;
-	}
-	
-	public synchronized void setZ(int pZ)
-	{
-		_z = pZ;
-	}
-	
-	public synchronized void setXYZ(int pX, int pY, int pZ)
-	{
-		_x = pX;
-		_y = pY;
-		_z = pZ;
 	}
 }

@@ -25,9 +25,7 @@ import com.l2jserver.gameserver.datatables.AdminTable;
  */
 public class L2AdminCommandAccessRight
 {
-	/** The admin command */
-	private String _adminCommand = null;
-	/** The access levels which can use the admin command. */
+	private final String _adminCommand;
 	private final int _accessLevel;
 	private final boolean _requireConfirm;
 	
@@ -46,7 +44,6 @@ public class L2AdminCommandAccessRight
 	}
 	
 	/**
-	 * Returns the admin command the access right belongs to
 	 * @return the admin command the access right belongs to
 	 */
 	public String getAdminCommand()
@@ -55,9 +52,8 @@ public class L2AdminCommandAccessRight
 	}
 	
 	/**
-	 * Checks if the given characterAccessLevel is allowed to use the admin command which belongs to this access right.
 	 * @param characterAccessLevel
-	 * @return true if characterAccessLevel is allowed to use the admin command which belongs to this access right, otherwise false<br>
+	 * @return {@code true} if characterAccessLevel is allowed to use the admin command which belongs to this access right, {@code false} otherwise
 	 */
 	public boolean hasAccess(L2AccessLevel characterAccessLevel)
 	{
@@ -65,6 +61,9 @@ public class L2AdminCommandAccessRight
 		return ((accessLevel.getLevel() == characterAccessLevel.getLevel()) || characterAccessLevel.hasChildAccess(accessLevel));
 	}
 	
+	/**
+	 * @return {@code true} if admin command requires confirmation before execution, {@code false} otherwise.
+	 */
 	public boolean getRequireConfirm()
 	{
 		return _requireConfirm;

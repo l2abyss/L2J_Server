@@ -27,7 +27,6 @@ import com.l2jserver.gameserver.model.stats.Stats;
  */
 public class ExStorageMaxCount extends L2GameServerPacket
 {
-	private final L2PcInstance _activeChar;
 	private final int _inventory;
 	private final int _warehouse;
 	private final int _clan;
@@ -38,17 +37,16 @@ public class ExStorageMaxCount extends L2GameServerPacket
 	private final int _inventoryExtraSlots;
 	private final int _inventoryQuestItems;
 	
-	public ExStorageMaxCount(L2PcInstance character)
+	public ExStorageMaxCount(L2PcInstance activeChar)
 	{
-		_activeChar = character;
-		_inventory = _activeChar.getInventoryLimit();
-		_warehouse = _activeChar.getWareHouseLimit();
-		_privateSell = _activeChar.getPrivateSellStoreLimit();
-		_privateBuy = _activeChar.getPrivateBuyStoreLimit();
+		_inventory = activeChar.getInventoryLimit();
+		_warehouse = activeChar.getWareHouseLimit();
+		_privateSell = activeChar.getPrivateSellStoreLimit();
+		_privateBuy = activeChar.getPrivateBuyStoreLimit();
 		_clan = Config.WAREHOUSE_SLOTS_CLAN;
-		_receipeD = _activeChar.getDwarfRecipeLimit();
-		_recipe = _activeChar.getCommonRecipeLimit();
-		_inventoryExtraSlots = (int) _activeChar.getStat().calcStat(Stats.INV_LIM, 0, null, null);
+		_receipeD = activeChar.getDwarfRecipeLimit();
+		_recipe = activeChar.getCommonRecipeLimit();
+		_inventoryExtraSlots = (int) activeChar.getStat().calcStat(Stats.INV_LIM, 0, null, null);
 		_inventoryQuestItems = Config.INVENTORY_MAXIMUM_QUEST_ITEMS;
 	}
 	
