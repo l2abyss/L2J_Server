@@ -76,6 +76,6 @@ public class TransformEvent implements L2Event
 	 */
 	public void setTransforming(boolean transforming)
 	{
-		this._transforming = transforming;
+		_transforming = transforming;
 	}
 }

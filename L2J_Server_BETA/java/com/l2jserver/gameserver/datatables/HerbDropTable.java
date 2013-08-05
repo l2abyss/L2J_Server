@@ -19,8 +19,8 @@
 package com.l2jserver.gameserver.datatables;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,16 +50,8 @@ public class HerbDropTable
 	private void restoreData()
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT " + L2DatabaseFactory.getInstance().safetyString(new String[]
-			{
-				"groupId",
-				"itemId",
-				"min",
-				"max",
-				"category",
-				"chance"
-			}) + " FROM herb_droplist_groups ORDER BY groupId, chance DESC");
-			ResultSet dropData = statement.executeQuery())
+			Statement statement = con.createStatement();
+			ResultSet dropData = statement.executeQuery("SELECT groupId,itemId,min,max,category,chance FROM herb_droplist_groups ORDER BY groupId,chance DESC"))
 		{
 			L2DropData dropDat = null;
 			while (dropData.next())
