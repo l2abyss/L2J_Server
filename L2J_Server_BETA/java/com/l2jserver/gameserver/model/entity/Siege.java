@@ -1477,7 +1477,7 @@ public class Siege implements Siegable
 		{
 			try
 			{
-				final L2Spawn spawn = new L2Spawn(NpcTable.getInstance().getTemplate(ts.getNpcId()));
+				final L2Spawn spawn = new L2Spawn(NpcTable.getInstance().getTemplate(ts.getId()));
 				spawn.setLocation(ts.getLocation());
 				_controlTowers.add((L2ControlTowerInstance) spawn.doSpawn());
 			}
@@ -1498,7 +1498,7 @@ public class Siege implements Siegable
 		{
 			try
 			{
-				final L2Spawn spawn = new L2Spawn(NpcTable.getInstance().getTemplate(ts.getNpcId()));
+				final L2Spawn spawn = new L2Spawn(NpcTable.getInstance().getTemplate(ts.getId()));
 				spawn.setLocation(ts.getLocation());
 				final L2FlameTowerInstance tower = (L2FlameTowerInstance) spawn.doSpawn();
 				tower.setUpgradeLevel(ts.getUpgradeLevel());

@@ -56,7 +56,7 @@ public class ExShowFortressMapInfo extends L2GameServerPacket
 				{
 					for (FortSiegeSpawn spawn : commanders)
 					{
-						if (isSpawned(spawn.getNpcId()))
+						if (isSpawned(spawn.getId()))
 						{
 							writeD(0);
 						}
@@ -77,7 +77,7 @@ public class ExShowFortressMapInfo extends L2GameServerPacket
 						{
 							writeD(1); // TODO: control room emulated
 						}
-						if (isSpawned(spawn.getNpcId()))
+						if (isSpawned(spawn.getId()))
 						{
 							writeD(0);
 						}

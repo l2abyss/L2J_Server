@@ -641,10 +641,10 @@ public class FortSiege implements Siegable
 				FastList<FortSiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getFortId());
 				for (FortSiegeSpawn spawn2 : commanders)
 				{
-					if (spawn2.getNpcId() == spawn.getId())
+					if (spawn2.getId() == spawn.getId())
 					{
 						NpcStringId npcString = null;
-						switch (spawn2.getId())
+						switch (spawn2.getMessageId())
 						{
 							case 1:
 								npcString = NpcStringId.YOU_MAY_HAVE_BROKEN_OUR_ARROWS_BUT_YOU_WILL_NEVER_BREAK_OUR_WILL_ARCHERS_RETREAT;
@@ -1162,7 +1162,7 @@ public class FortSiege implements Siegable
 			L2NpcTemplate template1;
 			for (FortSiegeSpawn _sp : FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getFortId()))
 			{
-				template1 = NpcTable.getInstance().getTemplate(_sp.getNpcId());
+				template1 = NpcTable.getInstance().getTemplate(_sp.getId());
 				if (template1 != null)
 				{
 					spawnDat = new L2Spawn(template1);
@@ -1178,7 +1178,7 @@ public class FortSiege implements Siegable
 				}
 				else
 				{
-					_log.warning("FortSiege.spawnCommander: Data missing in NPC table for ID: " + _sp.getNpcId() + ".");
+					_log.warning("FortSiege.spawnCommander: Data missing in NPC table for ID: " + _sp.getId() + ".");
 				}
 			}
 		}

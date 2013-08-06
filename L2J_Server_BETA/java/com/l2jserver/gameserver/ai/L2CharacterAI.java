@@ -1259,7 +1259,7 @@ public class L2CharacterAI extends AbstractAI
 					break;
 			}
 			// water movement analysis
-			if (_actor instanceof L2Npc)
+			if (_actor.isNpc())
 			{
 				switch (_actor.getId())
 				{

@@ -77,12 +77,6 @@ public class L2DecoyInstance extends L2Decoy
 		setKnownList(new DecoyKnownList(this));
 	}
 	
-	@Override
-	public int getId()
-	{
-		return 0;
-	}
-	
 	static class DecoyLifetime implements Runnable
 	{
 		private final L2PcInstance _activeChar;

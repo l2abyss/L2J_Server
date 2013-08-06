@@ -107,7 +107,8 @@ public abstract class L2Decoy extends L2Character
 		return null;
 	}
 	
-	public final int getNpcId()
+	@Override
+	public final int getId()
 	{
 		return getTemplate().getId();
 	}
@@ -184,6 +185,6 @@ public abstract class L2Decoy extends L2Character
 	@Override
 	public boolean isInCategory(CategoryType type)
 	{
-		return CategoryData.getInstance().isInCategory(type, getNpcId());
+		return CategoryData.getInstance().isInCategory(type, getId());
 	}
 }

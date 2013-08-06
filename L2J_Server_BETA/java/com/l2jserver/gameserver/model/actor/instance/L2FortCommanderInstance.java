@@ -126,10 +126,10 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 			FastList<FortSiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getFortId());
 			for (FortSiegeSpawn spawn2 : commanders)
 			{
-				if (spawn2.getNpcId() == spawn.getId())
+				if (spawn2.getId() == spawn.getId())
 				{
 					NpcStringId npcString = null;
-					switch (spawn2.getId())
+					switch (spawn2.getMessageId())
 					{
 						case 1:
 							npcString = NpcStringId.ATTACKING_THE_ENEMYS_REINFORCEMENTS_IS_NECESSARY_TIME_TO_DIE;

@@ -18,11 +18,13 @@
  */
 package com.l2jserver.gameserver.model;
 
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
+
 /**
  * Fort Siege Spawn.
  * @author xban1x
  */
-public final class FortSiegeSpawn extends Location
+public final class FortSiegeSpawn extends Location implements IIdentifiable
 {
 	private final int _npcId;
 	private final int _fortId;
@@ -41,12 +43,17 @@ public final class FortSiegeSpawn extends Location
 		return _fortId;
 	}
 	
-	public int getNpcId()
+	/**
+	 * Gets the NPC ID.
+	 * @return the NPC ID
+	 */
+	@Override
+	public int getId()
 	{
 		return _npcId;
 	}
 	
-	public int getId()
+	public int getMessageId()
 	{
 		return _id;
 	}

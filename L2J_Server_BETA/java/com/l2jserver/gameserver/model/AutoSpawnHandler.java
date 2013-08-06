@@ -41,6 +41,7 @@ import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -230,7 +231,7 @@ public class AutoSpawnHandler
 		try
 		{
 			// Try to remove from the list of registered spawns if it exists.
-			_registeredSpawns.remove(spawnInst.getNpcId());
+			_registeredSpawns.remove(spawnInst.getId());
 			
 			// Cancel the currently associated running scheduled task.
 			ScheduledFuture<?> respawnTask = _runningSpawns.remove(spawnInst._objectId);
@@ -360,7 +361,7 @@ public class AutoSpawnHandler
 		{
 			for (AutoSpawnInstance spawnInst : _registeredSpawns.values())
 			{
-				if (spawnInst.getNpcId() == id)
+				if (spawnInst.getId() == id)
 				{
 					return spawnInst;
 				}
@@ -375,7 +376,7 @@ public class AutoSpawnHandler
 		
 		for (AutoSpawnInstance spawnInst : _registeredSpawns.values())
 		{
-			if (spawnInst.getNpcId() == npcId)
+			if (spawnInst.getId() == npcId)
 			{
 				spawnInstList.put(spawnInst.getObjectId(), spawnInst);
 			}
@@ -466,10 +467,10 @@ public class AutoSpawnHandler
 				final int heading = locationList[locationIndex].getHeading();
 				
 				// Fetch the template for this NPC ID and create a new spawn.
-				L2NpcTemplate npcTemp = NpcTable.getInstance().getTemplate(spawnInst.getNpcId());
+				L2NpcTemplate npcTemp = NpcTable.getInstance().getTemplate(spawnInst.getId());
 				if (npcTemp == null)
 				{
-					_log.warning("Couldnt find NPC id" + spawnInst.getNpcId() + " Try to update your DP");
+					_log.warning("Couldnt find NPC id" + spawnInst.getId() + " Try to update your DP");
 					return;
 				}
 				
@@ -584,7 +585,7 @@ public class AutoSpawnHandler
 	 * Stores information about a registered auto spawn.
 	 * @author Tempy
 	 */
-	public static class AutoSpawnInstance
+	public static class AutoSpawnInstance implements IIdentifiable
 	{
 		protected int _objectId;
 		
@@ -655,7 +656,12 @@ public class AutoSpawnHandler
 			return _desDelay;
 		}
 		
-		public int getNpcId()
+		/**
+		 * Gets the NPC ID.
+		 * @return the NPC ID
+		 */
+		@Override
+		public int getId()
 		{
 			return _npcId;
 		}

@@ -27,6 +27,7 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.MoveType;
 
 /**
+ * Character template.
  * @author Zoey76
  */
 public class L2CharTemplate

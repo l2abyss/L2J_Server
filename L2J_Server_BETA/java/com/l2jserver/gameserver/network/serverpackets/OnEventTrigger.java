@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.util.Util;
 
 /**
- ** @author Gnacik
+ * @author Gnacik
  */
 public class OnEventTrigger extends L2GameServerPacket
 {
