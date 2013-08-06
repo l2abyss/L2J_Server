@@ -217,8 +217,8 @@ public final class Transform
 					if (player.getSkillLevel(holder.getSkillId()) < holder.getSkillLvl())
 					{
 						player.addSkill(holder.getSkill(), false);
-						player.addTransformSkill(holder.getSkillId());
 					}
+					player.addTransformSkill(holder.getSkillId());
 				}
 			}
 			
@@ -232,8 +232,8 @@ public final class Transform
 						if (player.getSkillLevel(holder.getSkillId()) < holder.getSkillLvl())
 						{
 							player.addSkill(holder.getSkill(), false);
-							player.addTransformSkill(holder.getSkillId());
 						}
+						player.addTransformSkill(holder.getSkillId());
 					}
 				}
 			}
