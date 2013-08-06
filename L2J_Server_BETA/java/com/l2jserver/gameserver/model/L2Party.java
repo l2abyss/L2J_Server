@@ -610,14 +610,14 @@ public class L2Party extends AbstractPlayerGroup
 	 */
 	public void distributeItem(L2PcInstance player, L2ItemInstance item)
 	{
-		if (item.getItemId() == PcInventory.ADENA_ID)
+		if (item.getId() == PcInventory.ADENA_ID)
 		{
 			distributeAdena(player, item.getCount(), player);
 			ItemTable.getInstance().destroyItem("Party", item, player, null);
 			return;
 		}
 		
-		L2PcInstance target = getActualLooter(player, item.getItemId(), false, player);
+		L2PcInstance target = getActualLooter(player, item.getId(), false, player);
 		target.addItem("Party", item, player, true);
 		
 		// Send messages to other party members about reward

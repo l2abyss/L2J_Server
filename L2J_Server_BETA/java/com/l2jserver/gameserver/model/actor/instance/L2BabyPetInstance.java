@@ -73,10 +73,10 @@ public final class L2BabyPetInstance extends L2PetInstance
 		
 		L2Skill skill;
 		double healPower = 0;
-		for (L2PetSkillLearn psl : PetDataTable.getInstance().getPetData(getNpcId()).getAvailableSkills())
+		for (L2PetSkillLearn psl : PetDataTable.getInstance().getPetData(getId()).getAvailableSkills())
 		{
 			int id = psl.getSkillId();
-			int lvl = PetDataTable.getInstance().getPetData(getNpcId()).getAvailableLevel(id, getLevel());
+			int lvl = PetDataTable.getInstance().getPetData(getId()).getAvailableLevel(id, getLevel());
 			if (lvl == 0)
 			{
 				continue;
@@ -261,7 +261,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 					 * If the owner's HP is more than 80% for Baby Pets and 70% for Improved Baby pets, do nothing. If the owner's HP is very low, under 15% for Baby pets and under 30% for Improved Baby Pets, have 75% chances of using a strong heal. Otherwise, have 25% chances for weak heal.
 					 */
 					final double hpPercent = owner.getCurrentHp() / owner.getMaxHp();
-					final boolean isImprovedBaby = PetDataTable.isUpgradeBabyPetGroup(getNpcId());
+					final boolean isImprovedBaby = PetDataTable.isUpgradeBabyPetGroup(getId());
 					if ((isImprovedBaby && (hpPercent < 0.3)) || (!isImprovedBaby && (hpPercent < 0.15)))
 					{
 						skill = _majorHeal.getSkill();

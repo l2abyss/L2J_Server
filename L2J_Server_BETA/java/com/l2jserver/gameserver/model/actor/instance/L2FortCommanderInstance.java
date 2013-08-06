@@ -126,7 +126,7 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 			FastList<FortSiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getFortId());
 			for (FortSiegeSpawn spawn2 : commanders)
 			{
-				if (spawn2.getNpcId() == spawn.getNpcid())
+				if (spawn2.getNpcId() == spawn.getId())
 				{
 					NpcStringId npcString = null;
 					switch (spawn2.getId())
@@ -147,7 +147,7 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 					}
 					if (npcString != null)
 					{
-						NpcSay ns = new NpcSay(getObjectId(), Say2.NPC_SHOUT, getNpcId(), npcString);
+						NpcSay ns = new NpcSay(getObjectId(), Say2.NPC_SHOUT, getId(), npcString);
 						if (npcString.getParamCount() == 1)
 						{
 							ns.addStringParameter(attacker.getName());

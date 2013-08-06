@@ -278,7 +278,7 @@ public final class GrandBossManager
 	{
 		if (boss != null)
 		{
-			_bosses.put(boss.getNpcId(), boss);
+			_bosses.put(boss.getId(), boss);
 		}
 	}
 	

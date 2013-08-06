@@ -92,9 +92,9 @@ public class L2MerchantInstance extends L2NpcInstance
 			return;
 		}
 		
-		if (!buyList.isNpcAllowed(getNpcId()))
+		if (!buyList.isNpcAllowed(getId()))
 		{
-			_log.warning("Npc not allowed in BuyList! BuyListId:" + val + " NpcId:" + getNpcId());
+			_log.warning("Npc not allowed in BuyList! BuyListId:" + val + " NpcId:" + getId());
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}

@@ -108,7 +108,7 @@ public class L2GroupSpawn extends L2Spawn
 			
 			if (Config.DEBUG)
 			{
-				_log.finest("Spawned Mob Id: " + _template.getNpcId() + " ,at: X: " + mob.getX() + " Y: " + mob.getY() + " Z: " + mob.getZ());
+				_log.finest("Spawned Mob Id: " + _template.getId() + " ,at: X: " + mob.getX() + " Y: " + mob.getY() + " Z: " + mob.getZ());
 			}
 			return mob;
 			

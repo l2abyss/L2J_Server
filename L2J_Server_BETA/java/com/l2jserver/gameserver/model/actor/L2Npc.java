@@ -531,11 +531,13 @@ public class L2Npc extends L2Character
 	}
 	
 	/**
-	 * @return the generic Identifier of this L2NpcInstance contained in the L2NpcTemplate.
+	 * Gets the NPC ID.
+	 * @return the NPC ID
 	 */
-	public int getNpcId()
+	@Override
+	public int getId()
 	{
-		return getTemplate().getNpcId();
+		return getTemplate().getId();
 	}
 	
 	@Override
@@ -960,7 +962,7 @@ public class L2Npc extends L2Character
 				}
 				else
 				{
-					_log.info(getClass().getSimpleName() + ": Unknown NPC bypass: \"" + command + "\" NpcId: " + getNpcId());
+					_log.info(getClass().getSimpleName() + ": Unknown NPC bypass: \"" + command + "\" NpcId: " + getId());
 				}
 			}
 		}
@@ -1106,7 +1108,7 @@ public class L2Npc extends L2Character
 	 */
 	private boolean showPkDenyChatWindow(L2PcInstance player, String type)
 	{
-		String html = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), "data/html/" + type + "/" + getNpcId() + "-pk.htm");
+		String html = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), "data/html/" + type + "/" + getId() + "-pk.htm");
 		
 		if (html != null)
 		{
@@ -1133,7 +1135,7 @@ public class L2Npc extends L2Character
 	 */
 	public void showChatWindow(L2PcInstance player, int val)
 	{
-		if (Config.NON_TALKING_NPCS.contains(getNpcId()))
+		if (Config.NON_TALKING_NPCS.contains(getId()))
 		{
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -1180,7 +1182,7 @@ public class L2Npc extends L2Character
 			return;
 		}
 		
-		int npcId = getTemplate().getNpcId();
+		int npcId = getTemplate().getId();
 		
 		/* For use with Seven Signs implementation */
 		String filename = SevenSigns.SEVEN_SIGNS_HTML_PATH;
@@ -1567,7 +1569,7 @@ public class L2Npc extends L2Character
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName() + ":" + getName() + "(" + getNpcId() + ")" + "[" + getObjectId() + "]";
+		return getClass().getSimpleName() + ":" + getName() + "(" + getId() + ")" + "[" + getObjectId() + "]";
 	}
 	
 	public boolean isDecayed()
@@ -1672,7 +1674,7 @@ public class L2Npc extends L2Character
 	
 	public void showNoTeachHtml(L2PcInstance player)
 	{
-		int npcId = getNpcId();
+		int npcId = getId();
 		String html = "";
 		
 		if (this instanceof L2WarehouseInstance)
@@ -1905,6 +1907,6 @@ public class L2Npc extends L2Character
 	@Override
 	public boolean isInCategory(CategoryType type)
 	{
-		return CategoryData.getInstance().isInCategory(type, getNpcId());
+		return CategoryData.getInstance().isInCategory(type, getId());
 	}
 }

@@ -111,7 +111,7 @@ public class EnchantItemOptionsData extends DocumentParser
 	 */
 	public EnchantOptions getOptions(L2ItemInstance item)
 	{
-		return item != null ? getOptions(item.getItemId(), item.getEnchantLevel()) : null;
+		return item != null ? getOptions(item.getId(), item.getEnchantLevel()) : null;
 	}
 	
 	/**

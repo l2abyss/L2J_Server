@@ -226,10 +226,10 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 		}
 		
 		final int grade = item.getItem().getItemGrade();
-		final LifeStone ls = _lifeStones.get(refinerItem.getItemId());
+		final LifeStone ls = _lifeStones.get(refinerItem.getId());
 		
 		// Check for item id
-		if (getGemStoneId(grade) != gemStones.getItemId())
+		if (getGemStoneId(grade) != gemStones.getId())
 		{
 			return false;
 		}
@@ -267,7 +267,7 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 			return false;
 		}
 		
-		final LifeStone ls = _lifeStones.get(refinerItem.getItemId());
+		final LifeStone ls = _lifeStones.get(refinerItem.getId());
 		if (ls == null)
 		{
 			return false;
@@ -382,7 +382,7 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 		}
 		
 		// blacklist check
-		if (Arrays.binarySearch(Config.AUGMENTATION_BLACKLIST, item.getItemId()) >= 0)
+		if (Arrays.binarySearch(Config.AUGMENTATION_BLACKLIST, item.getId()) >= 0)
 		{
 			return false;
 		}

@@ -60,6 +60,7 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.AcquireSkillType;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.L2Item;
@@ -92,7 +93,7 @@ import com.l2jserver.util.Util;
  * Quest main class.
  * @author Luis Arias
  */
-public class Quest extends ManagedScript
+public class Quest extends ManagedScript implements IIdentifiable
 {
 	public static final Logger _log = Logger.getLogger(Quest.class.getName());
 	
@@ -397,9 +398,11 @@ public class Quest extends ManagedScript
 	}
 	
 	/**
-	 * @return the Id of the quest
+	 * Gets the quest ID.
+	 * @return the quest ID
 	 */
-	public int getQuestIntId()
+	@Override
+	public int getId()
 	{
 		return _questId;
 	}
@@ -2566,7 +2569,7 @@ public class Quest extends ManagedScript
 	public String showHtmlFile(L2PcInstance player, String fileName)
 	{
 		boolean questwindow = !fileName.endsWith(".html");
-		int questId = getQuestIntId();
+		int questId = getId();
 		
 		// Create handler to file linked to the quest
 		String content = getHtm(player.getHtmlPrefix(), fileName);
@@ -2998,7 +3001,7 @@ public class Quest extends ManagedScript
 			
 			for (int itemId : itemIds)
 			{
-				if (item.getItemId() == itemId)
+				if (item.getId() == itemId)
 				{
 					if ((count + item.getCount()) > Long.MAX_VALUE)
 					{
@@ -3183,7 +3186,7 @@ public class Quest extends ManagedScript
 	private static void sendItemGetMessage(L2PcInstance player, L2ItemInstance item, long count)
 	{
 		// If item for reward is gold, send message of gold reward to client
-		if (item.getItemId() == PcInventory.ADENA_ID)
+		if (item.getId() == PcInventory.ADENA_ID)
 		{
 			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
 			smsg.addItemNumber(count);

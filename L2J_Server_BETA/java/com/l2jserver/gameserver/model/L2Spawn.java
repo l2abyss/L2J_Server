@@ -35,6 +35,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.util.Rnd;
 
@@ -45,7 +46,7 @@ import com.l2jserver.util.Rnd;
  * The heading of the L2NpcInstance can be a random heading if not defined (value= -1) or an exact heading (ex : merchant...).
  * @author Nightmare
  */
-public class L2Spawn implements IPositionable
+public class L2Spawn implements IPositionable, IIdentifiable
 {
 	protected static final Logger _log = Logger.getLogger(L2Spawn.class.getName());
 	
@@ -235,11 +236,13 @@ public class L2Spawn implements IPositionable
 	}
 	
 	/**
-	 * @return the Identifier of the L2NpcInstance manage by this L2Spawn contained in the L2NpcTemplate.
+	 * Gets the NPC ID.
+	 * @return the NPC ID
 	 */
-	public int getNpcid()
+	@Override
+	public int getId()
 	{
-		return _template.getNpcId();
+		return _template.getId();
 	}
 	
 	/**
@@ -454,7 +457,7 @@ public class L2Spawn implements IPositionable
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, "NPC " + _template.getNpcId() + " class not found", e);
+			_log.log(Level.WARNING, "NPC " + _template.getId() + " class not found", e);
 		}
 		return mob;
 	}
@@ -551,7 +554,7 @@ public class L2Spawn implements IPositionable
 		
 		if (Config.DEBUG)
 		{
-			_log.finest("Spawned Mob Id: " + _template.getNpcId() + " , at: X: " + mob.getX() + " Y: " + mob.getY() + " Z: " + mob.getZ());
+			_log.finest("Spawned Mob Id: " + _template.getId() + " , at: X: " + mob.getX() + " Y: " + mob.getY() + " Z: " + mob.getZ());
 		}
 		// Increase the current number of L2NpcInstance managed by this L2Spawn
 		_currentCount++;
@@ -663,7 +666,7 @@ public class L2Spawn implements IPositionable
 	@Override
 	public String toString()
 	{
-		return "L2Spawn [_template=" + getNpcid() + ", _locX=" + getX() + ", _locY=" + getY() + ", _locZ=" + getZ() + ", _heading=" + getHeading() + "]";
+		return "L2Spawn [_template=" + getId() + ", _locX=" + getX() + ", _locY=" + getY() + ", _locZ=" + getZ() + ", _heading=" + getHeading() + "]";
 	}
 	
 	public final boolean isNoRndWalk()

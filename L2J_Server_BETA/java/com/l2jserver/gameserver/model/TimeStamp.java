@@ -68,7 +68,7 @@ public class TimeStamp
 	 */
 	public TimeStamp(L2ItemInstance item, long reuse)
 	{
-		_id1 = item.getItemId();
+		_id1 = item.getId();
 		_id2 = item.getObjectId();
 		_reuse = reuse;
 		_stamp = System.currentTimeMillis() + reuse;
@@ -82,7 +82,7 @@ public class TimeStamp
 	 */
 	public TimeStamp(L2ItemInstance item, long reuse, long systime)
 	{
-		_id1 = item.getItemId();
+		_id1 = item.getId();
 		_id2 = item.getObjectId();
 		_reuse = reuse;
 		_stamp = systime;

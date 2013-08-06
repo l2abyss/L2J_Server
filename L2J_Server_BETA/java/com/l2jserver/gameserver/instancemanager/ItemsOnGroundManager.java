@@ -128,7 +128,7 @@ public final class ItemsOnGroundManager implements Runnable
 					_items.add(item);
 					count++;
 					// add to ItemsAutoDestroy only items not protected
-					if (!Config.LIST_PROTECTED_ITEMS.contains(item.getItemId()))
+					if (!Config.LIST_PROTECTED_ITEMS.contains(item.getId()))
 					{
 						if (dropTime > -1)
 						{
@@ -218,7 +218,7 @@ public final class ItemsOnGroundManager implements Runnable
 					continue;
 				}
 				
-				if (CursedWeaponsManager.getInstance().isCursed(item.getItemId()))
+				if (CursedWeaponsManager.getInstance().isCursed(item.getId()))
 				{
 					continue; // Cursed Items not saved to ground, prevent double save
 				}
@@ -226,7 +226,7 @@ public final class ItemsOnGroundManager implements Runnable
 				try
 				{
 					statement.setInt(1, item.getObjectId());
-					statement.setInt(2, item.getItemId());
+					statement.setInt(2, item.getId());
 					statement.setLong(3, item.getCount());
 					statement.setInt(4, item.getEnchantLevel());
 					statement.setInt(5, item.getX());

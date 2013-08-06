@@ -136,7 +136,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 			}
 			
 			// Calculate needed adena and slots
-			if (item.getItemId() == ADENA_ID)
+			if (item.getId() == ADENA_ID)
 			{
 				currentAdena -= i.getCount();
 			}
@@ -144,7 +144,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 			{
 				slots += i.getCount();
 			}
-			else if (warehouse.getItemByItemId(item.getItemId()) == null)
+			else if (warehouse.getItemByItemId(item.getId()) == null)
 			{
 				slots++;
 			}

@@ -106,7 +106,7 @@ public class EnchantItem
 		{
 			return false;
 		}
-		else if ((enchantItem.isEnchantable() > 1) && !verifyItemId(enchantItem.getItemId()))
+		else if ((enchantItem.isEnchantable() > 1) && !verifyItemId(enchantItem.getId()))
 		{
 			return false;
 		}

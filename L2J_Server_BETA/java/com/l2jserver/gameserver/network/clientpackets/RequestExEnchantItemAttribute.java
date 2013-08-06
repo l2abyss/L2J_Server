@@ -119,7 +119,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			}
 		}
 		
-		int stoneId = stone.getItemId();
+		int stoneId = stone.getId();
 		byte elementToAdd = Elementals.getItemElement(stoneId);
 		// Armors have the opposite element
 		if (item.isArmor())

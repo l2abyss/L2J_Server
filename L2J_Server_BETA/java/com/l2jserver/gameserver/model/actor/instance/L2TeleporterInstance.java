@@ -79,7 +79,7 @@ public final class L2TeleporterInstance extends L2Npc
 		}
 		else if (actualCommand.equalsIgnoreCase("goto"))
 		{
-			int npcId = getNpcId();
+			int npcId = getId();
 			
 			switch (npcId)
 			{
@@ -181,10 +181,10 @@ public final class L2TeleporterInstance extends L2Npc
 		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		
-		String filename = "data/html/teleporter/free/" + getTemplate().getNpcId() + ".htm";
+		String filename = "data/html/teleporter/free/" + getTemplate().getId() + ".htm";
 		if (!HtmCache.getInstance().isLoadable(filename))
 		{
-			filename = "data/html/teleporter/" + getTemplate().getNpcId() + "-1.htm";
+			filename = "data/html/teleporter/" + getTemplate().getId() + "-1.htm";
 		}
 		
 		html.setFile(player.getHtmlPrefix(), filename);
@@ -202,10 +202,10 @@ public final class L2TeleporterInstance extends L2Npc
 		
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		
-		String filename = "data/html/teleporter/half/" + getNpcId() + ".htm";
+		String filename = "data/html/teleporter/half/" + getId() + ".htm";
 		if (!HtmCache.getInstance().isLoadable(filename))
 		{
-			filename = "data/html/teleporter/" + getNpcId() + "-1.htm";
+			filename = "data/html/teleporter/" + getId() + "-1.htm";
 		}
 		
 		html.setFile(player.getHtmlPrefix(), filename);
@@ -233,7 +233,7 @@ public final class L2TeleporterInstance extends L2Npc
 			}
 			else if (condition == COND_OWNER) // Clan owns castle
 			{
-				filename = getHtmlPath(getNpcId(), 0); // Owner message window
+				filename = getHtmlPath(getId(), 0); // Owner message window
 			}
 		}
 		

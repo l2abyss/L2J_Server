@@ -142,18 +142,18 @@ public class PcInventory extends Inventory
 			{
 				continue;
 			}
-			if ((!allowAdena && (item.getItemId() == ADENA_ID)))
+			if ((!allowAdena && (item.getId() == ADENA_ID)))
 			{
 				continue;
 			}
-			if ((!allowAncientAdena && (item.getItemId() == ANCIENT_ADENA_ID)))
+			if ((!allowAncientAdena && (item.getId() == ANCIENT_ADENA_ID)))
 			{
 				continue;
 			}
 			boolean isDuplicate = false;
 			for (L2ItemInstance litem : list)
 			{
-				if (litem.getItemId() == item.getItemId())
+				if (litem.getId() == item.getId())
 				{
 					isDuplicate = true;
 					break;
@@ -191,11 +191,11 @@ public class PcInventory extends Inventory
 			{
 				continue;
 			}
-			if ((!allowAdena && (item.getItemId() == ADENA_ID)))
+			if ((!allowAdena && (item.getId() == ADENA_ID)))
 			{
 				continue;
 			}
-			if ((!allowAncientAdena && (item.getItemId() == ANCIENT_ADENA_ID)))
+			if ((!allowAncientAdena && (item.getId() == ANCIENT_ADENA_ID)))
 			{
 				continue;
 			}
@@ -203,7 +203,7 @@ public class PcInventory extends Inventory
 			boolean isDuplicate = false;
 			for (L2ItemInstance litem : list)
 			{
-				if ((litem.getItemId() == item.getItemId()) && (litem.getEnchantLevel() == item.getEnchantLevel()))
+				if ((litem.getId() == item.getId()) && (litem.getEnchantLevel() == item.getEnchantLevel()))
 				{
 					isDuplicate = true;
 					break;
@@ -247,7 +247,7 @@ public class PcInventory extends Inventory
 				continue;
 			}
 			
-			if ((item.getItemId() == itemId) && (includeEquipped || !item.isEquipped()))
+			if ((item.getId() == itemId) && (includeEquipped || !item.isEquipped()))
 			{
 				list.add(item);
 			}
@@ -286,7 +286,7 @@ public class PcInventory extends Inventory
 				continue;
 			}
 			
-			if ((item.getItemId() == itemId) && (item.getEnchantLevel() == enchantment) && (includeEquipped || !item.isEquipped()))
+			if ((item.getId() == itemId) && (item.getEnchantLevel() == enchantment) && (includeEquipped || !item.isEquipped()))
 			{
 				list.add(item);
 			}
@@ -309,7 +309,7 @@ public class PcInventory extends Inventory
 		FastList<L2ItemInstance> list = FastList.newInstance();
 		for (L2ItemInstance item : _items)
 		{
-			if ((item == null) || !item.isAvailable(getOwner(), allowAdena, allowNonTradeable) || !canManipulateWithItemId(item.getItemId()))
+			if ((item == null) || !item.isAvailable(getOwner(), allowAdena, allowNonTradeable) || !canManipulateWithItemId(item.getId()))
 			{
 				continue;
 			}
@@ -516,12 +516,12 @@ public class PcInventory extends Inventory
 	{
 		item = super.addItem(process, item, actor, reference);
 		
-		if ((item != null) && (item.getItemId() == ADENA_ID) && !item.equals(_adena))
+		if ((item != null) && (item.getId() == ADENA_ID) && !item.equals(_adena))
 		{
 			_adena = item;
 		}
 		
-		if ((item != null) && (item.getItemId() == ANCIENT_ADENA_ID) && !item.equals(_ancientAdena))
+		if ((item != null) && (item.getId() == ANCIENT_ADENA_ID) && !item.equals(_ancientAdena))
 		{
 			_ancientAdena = item;
 		}
@@ -544,12 +544,12 @@ public class PcInventory extends Inventory
 	{
 		L2ItemInstance item = super.addItem(process, itemId, count, actor, reference);
 		
-		if ((item != null) && (item.getItemId() == ADENA_ID) && !item.equals(_adena))
+		if ((item != null) && (item.getId() == ADENA_ID) && !item.equals(_adena))
 		{
 			_adena = item;
 		}
 		
-		if ((item != null) && (item.getItemId() == ANCIENT_ADENA_ID) && !item.equals(_ancientAdena))
+		if ((item != null) && (item.getId() == ANCIENT_ADENA_ID) && !item.equals(_ancientAdena))
 		{
 			_ancientAdena = item;
 		}
@@ -760,11 +760,11 @@ public class PcInventory extends Inventory
 			getOwner().setActiveEnchantItemId(L2PcInstance.ID_NONE);
 		}
 		
-		if (item.getItemId() == ADENA_ID)
+		if (item.getId() == ADENA_ID)
 		{
 			_adena = null;
 		}
-		else if (item.getItemId() == ANCIENT_ADENA_ID)
+		else if (item.getId() == ANCIENT_ADENA_ID)
 		{
 			_ancientAdena = null;
 		}
@@ -876,7 +876,7 @@ public class PcInventory extends Inventory
 	public boolean validateCapacity(L2ItemInstance item)
 	{
 		int slots = 0;
-		if (!item.isStackable() || (getInventoryItemCount(item.getItemId(), -1) <= 0) || (item.getItemType() != L2EtcItemType.HERB))
+		if (!item.isStackable() || (getInventoryItemCount(item.getId(), -1) <= 0) || (item.getItemType() != L2EtcItemType.HERB))
 		{
 			slots++;
 		}
@@ -1072,7 +1072,7 @@ public class PcInventory extends Inventory
 					event.setPlayer(actor);
 					for (ItemTracker tracker : itemTrackers)
 					{
-						if (tracker.containsItemId(item.getItemId()))
+						if (tracker.containsItemId(item.getId()))
 						{
 							tracker.onAddToInventory(event);
 						}
@@ -1087,7 +1087,7 @@ public class PcInventory extends Inventory
 					event.setLocation(actor.getLocation());
 					for (ItemTracker tracker : itemTrackers)
 					{
-						if (tracker.containsItemId(item.getItemId()))
+						if (tracker.containsItemId(item.getId()))
 						{
 							tracker.onDrop(event);
 						}
@@ -1101,7 +1101,7 @@ public class PcInventory extends Inventory
 					event.setPlayer(actor);
 					for (ItemTracker tracker : itemTrackers)
 					{
-						if (tracker.containsItemId(item.getItemId()))
+						if (tracker.containsItemId(item.getId()))
 						{
 							tracker.onDestroy(event);
 						}
@@ -1118,7 +1118,7 @@ public class PcInventory extends Inventory
 						event.setTarget(target);
 						for (ItemTracker tracker : itemTrackers)
 						{
-							if (tracker.containsItemId(item.getItemId()))
+							if (tracker.containsItemId(item.getId()))
 							{
 								tracker.onTransfer(event);
 							}

@@ -864,7 +864,7 @@ public class NpcTable extends DocumentParser
 		{
 			for (L2NpcTemplate template : _npcs.values())
 			{
-				final List<ClassId> teachInfo = SkillLearnData.getInstance().getSkillLearnData(template.getNpcId());
+				final List<ClassId> teachInfo = SkillLearnData.getInstance().getSkillLearnData(template.getId());
 				if (teachInfo != null)
 				{
 					template.addTeachInfo(teachInfo);

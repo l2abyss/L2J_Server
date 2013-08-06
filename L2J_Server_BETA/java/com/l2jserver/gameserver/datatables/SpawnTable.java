@@ -192,7 +192,7 @@ public final class SpawnTable
 				PreparedStatement insert = con.prepareStatement("INSERT INTO " + spawnTable + "(count,npc_templateid,locx,locy,locz,heading,respawn_delay,respawn_random,loc_id) values(?,?,?,?,?,?,?,?,?)"))
 			{
 				insert.setInt(1, spawn.getAmount());
-				insert.setInt(2, spawn.getNpcid());
+				insert.setInt(2, spawn.getId());
 				insert.setInt(3, spawn.getX());
 				insert.setInt(4, spawn.getY());
 				insert.setInt(5, spawn.getZ());
@@ -229,7 +229,7 @@ public final class SpawnTable
 				delete.setInt(1, spawn.getX());
 				delete.setInt(2, spawn.getY());
 				delete.setInt(3, spawn.getZ());
-				delete.setInt(4, spawn.getNpcid());
+				delete.setInt(4, spawn.getId());
 				delete.setInt(5, spawn.getHeading());
 				delete.execute();
 			}
@@ -246,11 +246,11 @@ public final class SpawnTable
 	 */
 	private void addSpawn(L2Spawn spawn)
 	{
-		if (!_spawnTable.containsKey(spawn.getNpcid()))
+		if (!_spawnTable.containsKey(spawn.getId()))
 		{
-			_spawnTable.put(spawn.getNpcid(), new FastSet<L2Spawn>().shared());
+			_spawnTable.put(spawn.getId(), new FastSet<L2Spawn>().shared());
 		}
-		_spawnTable.get(spawn.getNpcid()).add(spawn);
+		_spawnTable.get(spawn.getId()).add(spawn);
 	}
 	
 	/**
@@ -260,13 +260,13 @@ public final class SpawnTable
 	 */
 	private boolean removeSpawn(L2Spawn spawn)
 	{
-		if (_spawnTable.containsKey(spawn.getNpcid()))
+		if (_spawnTable.containsKey(spawn.getId()))
 		{
-			final Set<L2Spawn> set = _spawnTable.get(spawn.getNpcid());
+			final Set<L2Spawn> set = _spawnTable.get(spawn.getId());
 			boolean removed = set.remove(spawn);
 			if (set.isEmpty())
 			{
-				_spawnTable.remove(spawn.getNpcid());
+				_spawnTable.remove(spawn.getId());
 			}
 			return removed;
 		}

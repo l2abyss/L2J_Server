@@ -152,7 +152,7 @@ public class TradeList
 		{
 			for (TradeItem exclItem : _items)
 			{
-				if (exclItem.getItem().getItemId() == item.getItemId())
+				if (exclItem.getItem().getItemId() == item.getId())
 				{
 					if (item.getCount() <= exclItem.getCount())
 					{
@@ -225,7 +225,7 @@ public class TradeList
 			return null;
 		}
 		
-		if (!getOwner().getInventory().canManipulateWithItemId(item.getItemId()))
+		if (!getOwner().getInventory().canManipulateWithItemId(item.getId()))
 		{
 			_log.warning(_owner.getName() + ": Attempt to add an item that can't manipualte!");
 			return null;
@@ -989,7 +989,7 @@ public class TradeList
 					continue;
 				}
 			}
-			if (oldItem.getItemId() != item.getItemId())
+			if (oldItem.getId() != item.getItemId())
 			{
 				Util.handleIllegalPlayerAction(player, player + " is cheating with sell items", Config.DEFAULT_PUNISH);
 				return false;

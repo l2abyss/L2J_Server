@@ -1261,9 +1261,7 @@ public class L2CharacterAI extends AbstractAI
 			// water movement analysis
 			if (_actor instanceof L2Npc)
 			{
-				int npcId = ((L2Npc) _actor).getNpcId();
-				
-				switch (npcId)
+				switch (_actor.getId())
 				{
 					case 20314: // great white shark
 					case 20849: // Light Worm

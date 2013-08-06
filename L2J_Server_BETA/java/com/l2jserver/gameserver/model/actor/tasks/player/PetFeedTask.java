@@ -94,7 +94,7 @@ public class PetFeedTask implements Runnable
 					{
 						handler.useItem(_player, food, false);
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PET_TOOK_S1_BECAUSE_HE_WAS_HUNGRY);
-						sm.addItemName(food.getItemId());
+						sm.addItemName(food.getId());
 						_player.sendPacket(sm);
 					}
 				}

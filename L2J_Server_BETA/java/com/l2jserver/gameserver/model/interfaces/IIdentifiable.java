@@ -16,35 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.conditions;
-
-import com.l2jserver.gameserver.model.stats.Env;
+package com.l2jserver.gameserver.model.interfaces;
 
 /**
- * The Class ConditionItemId.
- * @author mkizub
+ * Identifiable objects interface.
+ * @author Zoey76
  */
-public final class ConditionItemId extends Condition
+public interface IIdentifiable
 {
-	private final int _itemId;
-	
-	/**
-	 * Instantiates a new condition item id.
-	 * @param itemId the item id
-	 */
-	public ConditionItemId(int itemId)
-	{
-		_itemId = itemId;
-	}
-	
-	/**
-	 * Test impl.
-	 * @param env the env
-	 * @return true, if successful
-	 */
-	@Override
-	public boolean testImpl(Env env)
-	{
-		return (env.getItem() != null) && (env.getItem().getId() == _itemId);
-	}
+	public int getId();
 }

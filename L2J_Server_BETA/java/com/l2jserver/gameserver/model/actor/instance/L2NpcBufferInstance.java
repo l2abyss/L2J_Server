@@ -103,7 +103,7 @@ public class L2NpcBufferInstance extends L2Npc
 			target = player.getSummon();
 		}
 		
-		int npcId = getNpcId();
+		int npcId = getId();
 		if (command.startsWith("Chat"))
 		{
 			int val = Integer.parseInt(command.substring(5));

@@ -126,7 +126,7 @@ public final class RequestRefundItem extends L2GameClientPacket
 		
 		if (merchant instanceof L2MerchantInstance)
 		{
-			if (!buyList.isNpcAllowed(((L2MerchantInstance) merchant).getNpcId()))
+			if (!buyList.isNpcAllowed(merchant.getId()))
 			{
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
@@ -134,7 +134,7 @@ public final class RequestRefundItem extends L2GameClientPacket
 		}
 		else
 		{
-			if (!buyList.isNpcAllowed(((L2MerchantSummonInstance) merchant).getNpcId()))
+			if (!buyList.isNpcAllowed(merchant.getId()))
 			{
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;

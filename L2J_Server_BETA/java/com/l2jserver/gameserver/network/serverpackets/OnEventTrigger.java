@@ -40,7 +40,7 @@ public class OnEventTrigger extends L2GameServerPacket
 	{
 		_emitterId = door.getEmitter();
 		// XXX: Check this out!
-		if (Util.contains(REVERSE_DOORS, door.getDoorId()))
+		if (Util.contains(REVERSE_DOORS, door.getId()))
 		{
 			_opened = !opened;
 		}

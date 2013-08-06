@@ -98,7 +98,7 @@ public class L2SignsPriestInstance extends L2Npc
 						}
 						catch (Exception e3)
 						{
-							_log.warning("Failed to retrieve cabal from bypass command. NpcId: " + getNpcId() + "; Command: " + command);
+							_log.warning("Failed to retrieve cabal from bypass command. NpcId: " + getId() + "; Command: " + command);
 						}
 					}
 				}

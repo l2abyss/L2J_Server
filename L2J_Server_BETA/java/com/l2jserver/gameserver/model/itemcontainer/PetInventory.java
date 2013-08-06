@@ -70,7 +70,7 @@ public class PetInventory extends Inventory
 	{
 		int slots = 0;
 		
-		if (!(item.isStackable() && (getItemByItemId(item.getItemId()) != null)) && (item.getItemType() != L2EtcItemType.HERB))
+		if (!(item.isStackable() && (getItemByItemId(item.getId()) != null)) && (item.getItemType() != L2EtcItemType.HERB))
 		{
 			slots++;
 		}
@@ -87,7 +87,7 @@ public class PetInventory extends Inventory
 	public boolean validateWeight(L2ItemInstance item, long count)
 	{
 		int weight = 0;
-		L2Item template = ItemTable.getInstance().getTemplate(item.getItemId());
+		L2Item template = ItemTable.getInstance().getTemplate(item.getId());
 		if (template == null)
 		{
 			return false;

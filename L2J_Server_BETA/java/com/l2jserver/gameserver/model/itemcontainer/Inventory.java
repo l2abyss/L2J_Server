@@ -514,15 +514,15 @@ public abstract class Inventory extends ItemContainer
 			}
 			
 			// Checks for armor set for the equipped chest.
-			if (!ArmorSetsData.getInstance().isArmorSet(chestItem.getItemId()))
+			if (!ArmorSetsData.getInstance().isArmorSet(chestItem.getId()))
 			{
 				return;
 			}
-			final L2ArmorSet armorSet = ArmorSetsData.getInstance().getSet(chestItem.getItemId());
+			final L2ArmorSet armorSet = ArmorSetsData.getInstance().getSet(chestItem.getId());
 			boolean update = false;
 			boolean updateTimeStamp = false;
 			// Checks if equipped item is part of set
-			if (armorSet.containItem(slot, item.getItemId()))
+			if (armorSet.containItem(slot, item.getId()))
 			{
 				if (armorSet.containAll(player))
 				{
@@ -594,7 +594,7 @@ public abstract class Inventory extends ItemContainer
 					}
 				}
 			}
-			else if (armorSet.containShield(item.getItemId()))
+			else if (armorSet.containShield(item.getId()))
 			{
 				for (SkillHolder holder : armorSet.getShieldSkillId())
 				{
@@ -639,11 +639,11 @@ public abstract class Inventory extends ItemContainer
 			
 			if (slot == PAPERDOLL_CHEST)
 			{
-				if (!ArmorSetsData.getInstance().isArmorSet(item.getItemId()))
+				if (!ArmorSetsData.getInstance().isArmorSet(item.getId()))
 				{
 					return;
 				}
-				final L2ArmorSet armorSet = ArmorSetsData.getInstance().getSet(item.getItemId());
+				final L2ArmorSet armorSet = ArmorSetsData.getInstance().getSet(item.getId());
 				remove = true;
 				skills = armorSet.getSkills();
 				shieldSkill = armorSet.getShieldSkillId();
@@ -657,20 +657,20 @@ public abstract class Inventory extends ItemContainer
 					return;
 				}
 				
-				L2ArmorSet armorSet = ArmorSetsData.getInstance().getSet(chestItem.getItemId());
+				L2ArmorSet armorSet = ArmorSetsData.getInstance().getSet(chestItem.getId());
 				if (armorSet == null)
 				{
 					return;
 				}
 				
-				if (armorSet.containItem(slot, item.getItemId())) // removed part of set
+				if (armorSet.containItem(slot, item.getId())) // removed part of set
 				{
 					remove = true;
 					skills = armorSet.getSkills();
 					shieldSkill = armorSet.getShieldSkillId();
 					skillId6 = armorSet.getEnchant6skillId();
 				}
-				else if (armorSet.containShield(item.getItemId())) // removed shield
+				else if (armorSet.containShield(item.getId())) // removed shield
 				{
 					remove = true;
 					shieldSkill = armorSet.getShieldSkillId();
@@ -860,7 +860,7 @@ public abstract class Inventory extends ItemContainer
 				item.setLastChange(L2ItemInstance.MODIFIED);
 				item.updateDatabase();
 				
-				item = ItemTable.getInstance().createItem(process, item.getItemId(), count, actor, reference);
+				item = ItemTable.getInstance().createItem(process, item.getId(), count, actor, reference);
 				item.updateDatabase();
 				refreshWeight();
 				return item;
@@ -998,7 +998,7 @@ public abstract class Inventory extends ItemContainer
 		L2ItemInstance item = _paperdoll[slot];
 		if (item != null)
 		{
-			return item.getItemId();
+			return item.getId();
 		}
 		return 0;
 	}
@@ -1400,7 +1400,7 @@ public abstract class Inventory extends ItemContainer
 		
 		// Check if player is using Formal Wear and item isn't Wedding Bouquet.
 		L2ItemInstance formal = getPaperdollItem(PAPERDOLL_CHEST);
-		if ((item.getItemId() != 21163) && (formal != null) && (formal.getItem().getBodyPart() == L2Item.SLOT_ALLDRESS))
+		if ((item.getId() != 21163) && (formal != null) && (formal.getItem().getBodyPart() == L2Item.SLOT_ALLDRESS))
 		{
 			// only chest target can pass this
 			switch (targetSlot)
@@ -1569,7 +1569,7 @@ public abstract class Inventory extends ItemContainer
 				setPaperdollItem(PAPERDOLL_CHEST, item);
 				break;
 			default:
-				_log.warning("Unknown body slot " + targetSlot + " for Item ID:" + item.getItemId());
+				_log.warning("Unknown body slot " + targetSlot + " for Item ID:" + item.getId());
 		}
 	}
 	
@@ -1684,7 +1684,7 @@ public abstract class Inventory extends ItemContainer
 					L2World.getInstance().storeObject(item);
 					
 					// If stackable item is found in inventory just add to current quantity
-					if (item.isStackable() && (getItemByItemId(item.getItemId()) != null))
+					if (item.isStackable() && (getItemByItemId(item.getId()) != null))
 					{
 						addItem("Restore", item, getOwner().getActingPlayer(), null);
 					}
@@ -1719,7 +1719,7 @@ public abstract class Inventory extends ItemContainer
 		{
 			if (_paperdoll[i] != null)
 			{
-				if (getPaperdollItemId(i) == item.getItemId())
+				if (getPaperdollItemId(i) == item.getId())
 				{
 					// overwtite
 					setPaperdollItem(i, item);

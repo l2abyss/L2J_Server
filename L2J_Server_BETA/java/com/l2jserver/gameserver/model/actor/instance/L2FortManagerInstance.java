@@ -62,7 +62,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 	private void sendHtmlMessage(L2PcInstance player, NpcHtmlMessage html)
 	{
 		html.replace("%objectId%", String.valueOf(getObjectId()));
-		html.replace("%npcId%", String.valueOf(getNpcId()));
+		html.replace("%npcId%", String.valueOf(getId()));
 		player.sendPacket(html);
 	}
 	
@@ -213,7 +213,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 					else
 					{
 						NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-						html.setFile(player.getHtmlPrefix(), "data/html/fortress/" + getTemplate().getNpcId() + "-d.htm");
+						html.setFile(player.getHtmlPrefix(), "data/html/fortress/" + getTemplate().getId() + "-d.htm");
 						html.replace("%objectId%", String.valueOf(getObjectId()));
 						html.replace("%npcname%", getName());
 						player.sendPacket(html);
@@ -301,7 +301,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 					}
 					else
 					{
-						html.setFile(player.getHtmlPrefix(), "data/html/fortress/" + getNpcId() + "-t" + getFort().getFunction(Fort.FUNC_TELEPORT).getLvl() + ".htm");
+						html.setFile(player.getHtmlPrefix(), "data/html/fortress/" + getId() + "-t" + getFort().getFunction(Fort.FUNC_TELEPORT).getLvl() + ".htm");
 					}
 					sendHtmlMessage(player, html);
 				}

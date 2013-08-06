@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * Flying airships. Very similar to Maktakien boats (see L2BoatInstance) but these do fly :P
- * @author DrHouse, reworked by DS
+ * @author DrHouse, DS
  */
 public class L2AirShipInstance extends L2Vehicle
 {
@@ -102,6 +102,12 @@ public class L2AirShipInstance extends L2Vehicle
 	public void setMaxFuel(int mf)
 	{
 		
+	}
+	
+	@Override
+	public int getId()
+	{
+		return 0;
 	}
 	
 	@Override

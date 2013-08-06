@@ -61,6 +61,6 @@ public class ConditionPlayerHasPet extends Condition
 		}
 		
 		final L2ItemInstance controlItem = ((L2PetInstance) env.getPlayer().getSummon()).getControlItem();
-		return (controlItem != null) && _controlItemIds.contains(controlItem.getItemId());
+		return (controlItem != null) && _controlItemIds.contains(controlItem.getId());
 	}
 }

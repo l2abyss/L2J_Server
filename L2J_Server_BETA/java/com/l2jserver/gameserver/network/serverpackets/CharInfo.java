@@ -134,7 +134,7 @@ public class CharInfo extends L2GameServerPacket
 		{
 			writeC(0x0C);
 			writeD(_objId);
-			writeD(template.getNpcId() + 1000000); // npctype id
+			writeD(template.getId() + 1000000); // npctype id
 			writeD(_activeChar.getKarma() > 0 ? 1 : 0);
 			writeD(_x);
 			writeD(_y);

@@ -399,9 +399,9 @@ public final class RequestActionUse extends L2GameClientPacket
 				}
 				break;
 			case 1001: // Sin Eater - Ultimate Bombastic Buster
-				if (validateSummon(summon, true) && (summon.getNpcId() == SIN_EATER_ID))
+				if (validateSummon(summon, true) && (summon.getId() == SIN_EATER_ID))
 				{
-					summon.broadcastPacket(new NpcSay(summon.getObjectId(), Say2.NPC_ALL, summon.getNpcId(), NPC_STRINGS[Rnd.get(NPC_STRINGS.length)]));
+					summon.broadcastPacket(new NpcSay(summon.getObjectId(), Say2.NPC_ALL, summon.getId(), NPC_STRINGS[Rnd.get(NPC_STRINGS.length)]));
 				}
 				break;
 			case 1003: // Wind Hatchling/Strider - Wild Stun
@@ -771,7 +771,7 @@ public final class RequestActionUse extends L2GameClientPacket
 		
 		if (!activeChar.isSitting() && (target instanceof L2StaticObjectInstance) && (((L2StaticObjectInstance) target).getType() == 1) && activeChar.isInsideRadius(target, L2StaticObjectInstance.INTERACTION_DISTANCE, false, false))
 		{
-			final ChairSit cs = new ChairSit(activeChar, ((L2StaticObjectInstance) target).getStaticObjectId());
+			final ChairSit cs = new ChairSit(activeChar, target.getId());
 			sendPacket(cs);
 			activeChar.sitDown();
 			activeChar.broadcastPacket(cs);
@@ -831,7 +831,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				sendPacket(SystemMessageId.PET_TOO_HIGH_TO_CONTROL);
 				return;
 			}
-			lvl = PetDataTable.getInstance().getPetData(summon.getNpcId()).getAvailableLevel(skillId, summon.getLevel());
+			lvl = PetDataTable.getInstance().getPetData(summon.getId()).getAvailableLevel(skillId, summon.getLevel());
 		}
 		else
 		{

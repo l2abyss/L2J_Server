@@ -5629,7 +5629,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			if (isPlayer())
 			{
 				// TODO: Unhardcode it!
-				if ((oldSkill instanceof L2SkillSummon) && (oldSkill.getId() == 710) && hasSummon() && (getSummon().getNpcId() == 14870))
+				if ((oldSkill instanceof L2SkillSummon) && (oldSkill.getId() == 710) && hasSummon() && (getSummon().getId() == 14870))
 				{
 					getActingPlayer().getSummon().unSummon(getActingPlayer());
 				}

@@ -288,7 +288,7 @@ public final class CursedWeaponsManager
 	
 	public void activate(L2PcInstance player, L2ItemInstance item)
 	{
-		CursedWeapon cw = _cursedWeapons.get(item.getItemId());
+		CursedWeapon cw = _cursedWeapons.get(item.getId());
 		if (player.isCursedWeaponEquipped()) // cannot own 2 cursed swords
 		{
 			CursedWeapon cw2 = _cursedWeapons.get(player.getCursedWeaponEquippedId());

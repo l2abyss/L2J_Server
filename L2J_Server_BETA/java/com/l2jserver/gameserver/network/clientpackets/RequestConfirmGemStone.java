@@ -76,7 +76,7 @@ public final class RequestConfirmGemStone extends AbstractRefinePacket
 		}
 		
 		// Check for gemstone count
-		final LifeStone ls = getLifeStone(refinerItem.getItemId());
+		final LifeStone ls = getLifeStone(refinerItem.getId());
 		if (ls == null)
 		{
 			return;
@@ -88,7 +88,7 @@ public final class RequestConfirmGemStone extends AbstractRefinePacket
 			return;
 		}
 		
-		activeChar.sendPacket(new ExPutCommissionResultForVariationMake(_gemstoneItemObjId, _gemStoneCount, gemStoneItem.getItemId()));
+		activeChar.sendPacket(new ExPutCommissionResultForVariationMake(_gemstoneItemObjId, _gemStoneCount, gemStoneItem.getId()));
 	}
 	
 	@Override

@@ -282,7 +282,7 @@ public final class RequestSendPost extends L2GameClientPacket
 				
 				fee += MESSAGE_FEE_PER_SLOT;
 				
-				if (item.getItemId() == ADENA_ID)
+				if (item.getId() == ADENA_ID)
 				{
 					currentAdena -= i.getCount();
 				}

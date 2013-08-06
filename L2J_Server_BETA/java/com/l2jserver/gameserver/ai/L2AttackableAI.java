@@ -101,7 +101,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	public L2AttackableAI(L2Character.AIAccessor accessor)
 	{
 		super(accessor);
-		_skillrender = NpcTable.getInstance().getTemplate(getActiveChar().getTemplate().getNpcId());
+		_skillrender = NpcTable.getInstance().getTemplate(getActiveChar().getTemplate().getId());
 		_attackTimeout = Integer.MAX_VALUE;
 		_globalAggro = -10; // 10 seconds timeout of ATTACK after respawn
 	}

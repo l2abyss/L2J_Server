@@ -43,22 +43,22 @@ public final class L2ObservationInstance extends L2Npc
 		{
 			if (val == 0)
 			{
-				filename = "data/html/observation/" + getNpcId() + "-Oracle.htm";
+				filename = "data/html/observation/" + getId() + "-Oracle.htm";
 			}
 			else
 			{
-				filename = "data/html/observation/" + getNpcId() + "-Oracle-" + val + ".htm";
+				filename = "data/html/observation/" + getId() + "-Oracle-" + val + ".htm";
 			}
 		}
 		else
 		{
 			if (val == 0)
 			{
-				filename = "data/html/observation/" + getNpcId() + ".htm";
+				filename = "data/html/observation/" + getId() + ".htm";
 			}
 			else
 			{
-				filename = "data/html/observation/" + getNpcId() + "-" + val + ".htm";
+				filename = "data/html/observation/" + getId() + "-" + val + ".htm";
 			}
 		}
 		

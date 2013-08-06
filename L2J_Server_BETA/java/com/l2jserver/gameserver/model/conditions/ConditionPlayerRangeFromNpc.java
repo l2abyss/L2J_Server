@@ -19,7 +19,6 @@
 package com.l2jserver.gameserver.model.conditions;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.util.Util;
 
@@ -51,7 +50,7 @@ public class ConditionPlayerRangeFromNpc extends Condition
 		{
 			for (L2Character target : env.getCharacter().getKnownList().getKnownCharactersInRadius(_radius))
 			{
-				if (target.isNpc() && Util.contains(_npcIds, ((L2Npc) target).getNpcId()))
+				if (target.isNpc() && Util.contains(_npcIds, target.getId()))
 				{
 					existNpc = true;
 					break;

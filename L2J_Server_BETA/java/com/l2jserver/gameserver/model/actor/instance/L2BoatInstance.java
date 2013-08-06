@@ -29,7 +29,7 @@ import com.l2jserver.gameserver.network.serverpackets.VehicleInfo;
 import com.l2jserver.gameserver.network.serverpackets.VehicleStarted;
 
 /**
- * @author Maktakien, reworked by DS
+ * @author Maktakien, DS
  */
 public class L2BoatInstance extends L2Vehicle
 {
@@ -46,6 +46,12 @@ public class L2BoatInstance extends L2Vehicle
 	public boolean isBoat()
 	{
 		return true;
+	}
+	
+	@Override
+	public int getId()
+	{
+		return 0;
 	}
 	
 	@Override

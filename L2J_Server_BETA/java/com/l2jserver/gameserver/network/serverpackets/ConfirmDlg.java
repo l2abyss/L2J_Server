@@ -115,7 +115,7 @@ public class ConfirmDlg extends L2GameServerPacket
 	
 	public ConfirmDlg addNpcName(L2Summon npc)
 	{
-		return addNpcName(npc.getNpcId());
+		return addNpcName(npc.getId());
 	}
 	
 	public ConfirmDlg addNpcName(L2NpcTemplate tpl)
@@ -124,7 +124,7 @@ public class ConfirmDlg extends L2GameServerPacket
 		{
 			return addString(tpl.getName());
 		}
-		return addNpcName(tpl.getNpcId());
+		return addNpcName(tpl.getId());
 	}
 	
 	public ConfirmDlg addNpcName(int id)

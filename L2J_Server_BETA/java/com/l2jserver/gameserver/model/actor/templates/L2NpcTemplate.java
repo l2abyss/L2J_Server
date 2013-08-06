@@ -35,14 +35,16 @@ import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**
+ * NPC template.
  * @author Zoey76
  */
-public final class L2NpcTemplate extends L2CharTemplate
+public final class L2NpcTemplate extends L2CharTemplate implements IIdentifiable
 {
 	private static final Logger _log = Logger.getLogger(L2NpcTemplate.class.getName());
 	
@@ -174,7 +176,7 @@ public final class L2NpcTemplate extends L2CharTemplate
 		final int herbGroup = set.getInteger("dropHerbGroup");
 		if ((herbGroup > 0) && (HerbDropTable.getInstance().getHerbDroplist(herbGroup) == null))
 		{
-			_log.warning("Missing Herb Drop Group for npcId: " + getNpcId());
+			_log.warning("Missing Herb Drop Group for npcId: " + getId());
 			_dropHerbGroup = 0;
 		}
 		else
@@ -681,9 +683,11 @@ public final class L2NpcTemplate extends L2CharTemplate
 	}
 	
 	/**
-	 * @return the npc Id.
+	 * Gets the NPC ID.
+	 * @return the NPC ID
 	 */
-	public int getNpcId()
+	@Override
+	public int getId()
 	{
 		return _npcId;
 	}

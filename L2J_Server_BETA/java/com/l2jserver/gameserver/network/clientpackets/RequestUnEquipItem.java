@@ -94,7 +94,7 @@ public class RequestUnEquipItem extends L2GameClientPacket
 			return;
 		}
 		
-		if (!activeChar.getInventory().canManipulateWithItemId(item.getItemId()))
+		if (!activeChar.getInventory().canManipulateWithItemId(item.getId()))
 		{
 			activeChar.sendPacket(SystemMessageId.ITEM_CANNOT_BE_TAKEN_OFF);
 			return;

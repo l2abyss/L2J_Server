@@ -118,7 +118,7 @@ public class L2SkillSummon extends L2Skill
 		if (summon.getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
 		{
 			summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(ExperienceTable.getInstance().getMaxPetLevel() - 1));
-			_log.warning("Summon (" + summon.getName() + ") NpcID: " + summon.getNpcId() + " has a level above " + ExperienceTable.getInstance().getMaxPetLevel() + ". Please rectify.");
+			_log.warning("Summon (" + summon.getName() + ") NpcID: " + summon.getId() + " has a level above " + ExperienceTable.getInstance().getMaxPetLevel() + ". Please rectify.");
 		}
 		else
 		{

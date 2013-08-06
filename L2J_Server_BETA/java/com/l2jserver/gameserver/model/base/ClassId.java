@@ -18,6 +18,8 @@
  */
 package com.l2jserver.gameserver.model.base;
 
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
+
 /**
  * This class defines all classes (ex : human fighter, darkFighter...) that a player can chose.<br>
  * Data:
@@ -29,7 +31,7 @@ package com.l2jserver.gameserver.model.base;
  * </ul>
  * @version $Revision: 1.4.4.4 $ $Date: 2005/03/27 15:29:33 $
  */
-public enum ClassId
+public enum ClassId implements IIdentifiable
 {
 	fighter(0x00, false, Race.Human, null),
 	
@@ -244,8 +246,10 @@ public enum ClassId
 	}
 	
 	/**
-	 * @return the Id of the Class.
+	 * Gets the ID of the class.
+	 * @return the ID of the class
 	 */
+	@Override
 	public final int getId()
 	{
 		return _id;

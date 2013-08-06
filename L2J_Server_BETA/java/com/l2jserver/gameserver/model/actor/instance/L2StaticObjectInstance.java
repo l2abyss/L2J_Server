@@ -87,9 +87,11 @@ public final class L2StaticObjectInstance extends L2Character
 	}
 	
 	/**
-	 * @return Returns the StaticObjectId.
+	 * Gets the static object ID.
+	 * @return the static object ID
 	 */
-	public int getStaticObjectId()
+	@Override
+	public int getId()
 	{
 		return _staticObjectId;
 	}

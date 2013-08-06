@@ -62,7 +62,7 @@ public class MonsterRace
 			{
 				for (int j = i - 1; j >= 0; j--)
 				{
-					if (_monsters[j].getTemplate().getNpcId() == (id + random))
+					if (_monsters[j].getTemplate().getId() == (id + random))
 					{
 						random = Rnd.get(24);
 						continue;

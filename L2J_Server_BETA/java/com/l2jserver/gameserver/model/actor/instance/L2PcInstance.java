@@ -1532,7 +1532,7 @@ public final class L2PcInstance extends L2Playable
 			{
 				continue;
 			}
-			final int questId = qs.getQuest().getQuestIntId();
+			final int questId = qs.getQuest().getId();
 			if ((questId > 19999) || (questId < 1))
 			{
 				continue;
@@ -1680,7 +1680,7 @@ public final class L2PcInstance extends L2Playable
 				if ((object instanceof L2Npc) && isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
 				{
 					L2Npc npc = (L2Npc) object;
-					QuestState[] states = getQuestsForTalk(npc.getNpcId());
+					QuestState[] states = getQuestsForTalk(npc.getId());
 					
 					if (states != null)
 					{
@@ -3535,13 +3535,13 @@ public final class L2PcInstance extends L2Playable
 			{
 				dropItem("InvDrop", newitem, null, true, true);
 			}
-			else if (CursedWeaponsManager.getInstance().isCursed(newitem.getItemId()))
+			else if (CursedWeaponsManager.getInstance().isCursed(newitem.getId()))
 			{
 				CursedWeaponsManager.getInstance().activate(this, newitem);
 			}
 			
 			// Combat Flag
-			else if (FortSiegeManager.getInstance().isCombat(item.getItemId()))
+			else if (FortSiegeManager.getInstance().isCombat(item.getId()))
 			{
 				if (FortSiegeManager.getInstance().activateCombatFlag(this, item))
 				{
@@ -3550,9 +3550,9 @@ public final class L2PcInstance extends L2Playable
 				}
 			}
 			// Territory Ward
-			else if ((item.getItemId() >= 13560) && (item.getItemId() <= 13568))
+			else if ((item.getId() >= 13560) && (item.getId() <= 13568))
 			{
-				TerritoryWard ward = TerritoryWarManager.getInstance().getTerritoryWard(item.getItemId() - 13479);
+				TerritoryWard ward = TerritoryWarManager.getInstance().getTerritoryWard(item.getId() - 13479);
 				if (ward != null)
 				{
 					ward.activate(this, item);
@@ -3629,7 +3629,7 @@ public final class L2PcInstance extends L2Playable
 					IItemHandler handler = ItemHandler.getInstance().getHandler(herb.getEtcItem());
 					if (handler == null)
 					{
-						_log.warning("No item handler registered for Herb - item ID " + herb.getItemId() + ".");
+						_log.warning("No item handler registered for Herb - item ID " + herb.getId() + ".");
 					}
 					else
 					{
@@ -3656,11 +3656,11 @@ public final class L2PcInstance extends L2Playable
 				{
 					dropItem("InvDrop", createdItem, null, true);
 				}
-				else if (CursedWeaponsManager.getInstance().isCursed(createdItem.getItemId()))
+				else if (CursedWeaponsManager.getInstance().isCursed(createdItem.getId()))
 				{
 					CursedWeaponsManager.getInstance().activate(this, createdItem);
 				}
-				else if (FortSiegeManager.getInstance().isCombat(createdItem.getItemId()))
+				else if (FortSiegeManager.getInstance().isCombat(createdItem.getId()))
 				{
 					if (FortSiegeManager.getInstance().activateCombatFlag(this, item))
 					{
@@ -3669,9 +3669,9 @@ public final class L2PcInstance extends L2Playable
 					}
 				}
 				// Territory Ward
-				else if ((createdItem.getItemId() >= 13560) && (createdItem.getItemId() <= 13568))
+				else if ((createdItem.getId() >= 13560) && (createdItem.getId() <= 13568))
 				{
-					TerritoryWard ward = TerritoryWarManager.getInstance().getTerritoryWard(createdItem.getItemId() - 13479);
+					TerritoryWard ward = TerritoryWarManager.getInstance().getTerritoryWard(createdItem.getId() - 13479);
 					if (ward != null)
 					{
 						ward.activate(this, createdItem);
@@ -4048,7 +4048,7 @@ public final class L2PcInstance extends L2Playable
 		
 		item.dropMe(this, (getX() + Rnd.get(50)) - 25, (getY() + Rnd.get(50)) - 25, getZ() + 20);
 		
-		if ((Config.AUTODESTROY_ITEM_AFTER > 0) && Config.DESTROY_DROPPED_PLAYER_ITEM && !Config.LIST_PROTECTED_ITEMS.contains(item.getItemId()))
+		if ((Config.AUTODESTROY_ITEM_AFTER > 0) && Config.DESTROY_DROPPED_PLAYER_ITEM && !Config.LIST_PROTECTED_ITEMS.contains(item.getId()))
 		{
 			if ((item.isEquipable() && Config.DESTROY_EQUIPABLE_PLAYER_ITEM) || !item.isEquipable())
 			{
@@ -4142,7 +4142,7 @@ public final class L2PcInstance extends L2Playable
 		
 		item.dropMe(this, x, y, z);
 		
-		if ((Config.AUTODESTROY_ITEM_AFTER > 0) && Config.DESTROY_DROPPED_PLAYER_ITEM && !Config.LIST_PROTECTED_ITEMS.contains(item.getItemId()))
+		if ((Config.AUTODESTROY_ITEM_AFTER > 0) && Config.DESTROY_DROPPED_PLAYER_ITEM && !Config.LIST_PROTECTED_ITEMS.contains(item.getId()))
 		{
 			if ((item.isEquipable() && Config.DESTROY_EQUIPABLE_PLAYER_ITEM) || !item.isEquipable())
 			{
@@ -4821,7 +4821,7 @@ public final class L2PcInstance extends L2Playable
 			
 			if ((target.getOwnerId() != 0) && (target.getOwnerId() != getObjectId()) && !isInLooterParty(target.getOwnerId()))
 			{
-				if (target.getItemId() == PcInventory.ADENA_ID)
+				if (target.getId() == PcInventory.ADENA_ID)
 				{
 					smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1_ADENA);
 					smsg.addItemNumber(target.getCount());
@@ -4843,7 +4843,7 @@ public final class L2PcInstance extends L2Playable
 			}
 			
 			// You can pickup only 1 combat flag
-			if (FortSiegeManager.getInstance().isCombat(target.getItemId()))
+			if (FortSiegeManager.getInstance().isCombat(target.getId()))
 			{
 				if (!FortSiegeManager.getInstance().checkIfCanPickup(this))
 				{
@@ -4870,7 +4870,7 @@ public final class L2PcInstance extends L2Playable
 			IItemHandler handler = ItemHandler.getInstance().getHandler(target.getEtcItem());
 			if (handler == null)
 			{
-				_log.fine("No item handler registered for item ID " + target.getItemId() + ".");
+				_log.fine("No item handler registered for item ID " + target.getId() + ".");
 			}
 			else
 			{
@@ -4879,11 +4879,11 @@ public final class L2PcInstance extends L2Playable
 			ItemTable.getInstance().destroyItem("Consume", target, this, null);
 		}
 		// Cursed Weapons are not distributed
-		else if (CursedWeaponsManager.getInstance().isCursed(target.getItemId()))
+		else if (CursedWeaponsManager.getInstance().isCursed(target.getId()))
 		{
 			addItem("Pickup", target, null, true);
 		}
-		else if (FortSiegeManager.getInstance().isCombat(target.getItemId()))
+		else if (FortSiegeManager.getInstance().isCombat(target.getId()))
 		{
 			addItem("Pickup", target, null, true);
 		}
@@ -4897,14 +4897,14 @@ public final class L2PcInstance extends L2Playable
 					smsg = SystemMessage.getSystemMessage(SystemMessageId.ANNOUNCEMENT_C1_PICKED_UP_S2_S3);
 					smsg.addPcName(this);
 					smsg.addNumber(target.getEnchantLevel());
-					smsg.addItemName(target.getItemId());
+					smsg.addItemName(target.getId());
 					broadcastPacket(smsg, 1400);
 				}
 				else
 				{
 					smsg = SystemMessage.getSystemMessage(SystemMessageId.ANNOUNCEMENT_C1_PICKED_UP_S2);
 					smsg.addPcName(this);
-					smsg.addItemName(target.getItemId());
+					smsg.addItemName(target.getId());
 					broadcastPacket(smsg, 1400);
 				}
 			}
@@ -4914,7 +4914,7 @@ public final class L2PcInstance extends L2Playable
 			{
 				getParty().distributeItem(this, target);
 			}
-			else if ((target.getItemId() == PcInventory.ADENA_ID) && (getInventory().getAdenaInstance() != null))
+			else if ((target.getId() == PcInventory.ADENA_ID) && (getInventory().getAdenaInstance() != null))
 			{
 				addAdena("Pickup", target.getCount(), null, true);
 				ItemTable.getInstance().destroyItem("Pickup", target, this, null);
@@ -5690,11 +5690,11 @@ public final class L2PcInstance extends L2Playable
 					// Don't drop
 					if (itemDrop.isShadowItem() || // Dont drop Shadow Items
 					itemDrop.isTimeLimitedItem() || // Dont drop Time Limited Items
-					!itemDrop.isDropable() || (itemDrop.getItemId() == PcInventory.ADENA_ID) || // Adena
+					!itemDrop.isDropable() || (itemDrop.getId() == PcInventory.ADENA_ID) || // Adena
 					(itemDrop.getItem().getType2() == L2Item.TYPE2_QUEST) || // Quest Items
-					(hasSummon() && (getSummon().getControlObjectId() == itemDrop.getItemId())) || // Control Item of active pet
-					(Arrays.binarySearch(Config.KARMA_LIST_NONDROPPABLE_ITEMS, itemDrop.getItemId()) >= 0) || // Item listed in the non droppable item list
-					(Arrays.binarySearch(Config.KARMA_LIST_NONDROPPABLE_PET_ITEMS, itemDrop.getItemId()) >= 0 // Item listed in the non droppable pet item list
+					(hasSummon() && (getSummon().getControlObjectId() == itemDrop.getId())) || // Control Item of active pet
+					(Arrays.binarySearch(Config.KARMA_LIST_NONDROPPABLE_ITEMS, itemDrop.getId()) >= 0) || // Item listed in the non droppable item list
+					(Arrays.binarySearch(Config.KARMA_LIST_NONDROPPABLE_PET_ITEMS, itemDrop.getId()) >= 0 // Item listed in the non droppable pet item list
 					))
 					{
 						continue;
@@ -5718,11 +5718,11 @@ public final class L2PcInstance extends L2Playable
 						
 						if (isKarmaDrop)
 						{
-							_log.warning(getName() + " has karma and dropped id = " + itemDrop.getItemId() + ", count = " + itemDrop.getCount());
+							_log.warning(getName() + " has karma and dropped id = " + itemDrop.getId() + ", count = " + itemDrop.getCount());
 						}
 						else
 						{
-							_log.warning(getName() + " dropped id = " + itemDrop.getItemId() + ", count = " + itemDrop.getCount());
+							_log.warning(getName() + " dropped id = " + itemDrop.getId() + ", count = " + itemDrop.getCount());
 						}
 						
 						if (++dropCount >= dropLimit)
@@ -6695,10 +6695,10 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		stopAllToggles();
-		setMount(pet.getNpcId(), pet.getLevel());
+		setMount(pet.getId(), pet.getLevel());
 		setMountObjectID(pet.getControlObjectId());
 		clearPetData();
-		startFeed(pet.getNpcId());
+		startFeed(pet.getId());
 		broadcastPacket(new Ride(this));
 		
 		// Notify self and others about speed change
@@ -8274,7 +8274,7 @@ public final class L2PcInstance extends L2Playable
 						isInInventory = false;
 					}
 					
-					if ((item != null) && (item.getItemId() == itemId) && (item.getReuseDelay() > 0))
+					if ((item != null) && (item.getId() == itemId) && (item.getReuseDelay() > 0))
 					{
 						remainingTime = systime - System.currentTimeMillis();
 						// Hardcoded to 10 seconds.
@@ -11370,7 +11370,7 @@ public final class L2PcInstance extends L2Playable
 			return false;
 		}
 		
-		if (CursedWeaponsManager.getInstance().isCursed(item.getItemId()))
+		if (CursedWeaponsManager.getInstance().isCursed(item.getId()))
 		{
 			// can not trade a cursed weapon
 			return false;
@@ -12003,7 +12003,7 @@ public final class L2PcInstance extends L2Playable
 			
 			if (_lure != null)
 			{
-				int lureid = _lure.getItemId();
+				int lureid = _lure.getId();
 				isNoob = _fish.getFishGrade() == 0;
 				isUpperGrade = _fish.getFishGrade() == 2;
 				if ((lureid == 6519) || (lureid == 6522) || (lureid == 6525) || (lureid == 8505) || (lureid == 8508) || (lureid == 8511))
@@ -12025,7 +12025,7 @@ public final class L2PcInstance extends L2Playable
 	
 	private int getRandomFishGrade()
 	{
-		switch (_lure.getItemId())
+		switch (_lure.getId())
 		{
 			case 7807: // green for beginners
 			case 7808: // purple for beginners
@@ -12049,7 +12049,7 @@ public final class L2PcInstance extends L2Playable
 		switch (group)
 		{
 			case 0: // fish for novices
-				switch (_lure.getItemId())
+				switch (_lure.getId())
 				{
 					case 7807: // green lure, preferred by fast-moving (nimble) fish (type 5)
 						if (check <= 54)
@@ -12110,7 +12110,7 @@ public final class L2PcInstance extends L2Playable
 				}
 				break;
 			case 1: // normal fish
-				switch (_lure.getItemId())
+				switch (_lure.getId())
 				{
 					case 7610:
 					case 7611:
@@ -12201,7 +12201,7 @@ public final class L2PcInstance extends L2Playable
 				}
 				break;
 			case 2: // upper grade fish, luminous lure
-				switch (_lure.getItemId())
+				switch (_lure.getId())
 				{
 					case 8506: // green lure, preferred by fast-moving (nimble) fish (type 8)
 						if (check <= 54)
@@ -14986,5 +14986,11 @@ public final class L2PcInstance extends L2Playable
 	public boolean isInCategory(CategoryType type)
 	{
 		return CategoryData.getInstance().isInCategory(type, getClassId().getId());
+	}
+	
+	@Override
+	public int getId()
+	{
+		return 0;
 	}
 }

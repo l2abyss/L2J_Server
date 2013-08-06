@@ -1755,7 +1755,7 @@ public class SevenSignsFestival implements SpawnListener
 			return;
 		}
 		
-		int npcId = npc.getNpcId();
+		int npcId = npc.getId();
 		
 		// If the spawned NPC ID matches the ones we need, assign their instances.
 		if (npcId == 31127)

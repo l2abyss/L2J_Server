@@ -217,9 +217,9 @@ public class L2MerchantSummonInstance extends L2ServitorInstance
 			return;
 		}
 		
-		if (!buyList.isNpcAllowed(getNpcId()))
+		if (!buyList.isNpcAllowed(getId()))
 		{
-			_log.warning("Npc not allowed in BuyList! BuyListId:" + val + " NpcId:" + getNpcId());
+			_log.warning("Npc not allowed in BuyList! BuyListId:" + val + " NpcId:" + getId());
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
@@ -253,7 +253,7 @@ public class L2MerchantSummonInstance extends L2ServitorInstance
 	private void showMessageWindow(L2PcInstance player)
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
-		final String filename = "data/html/merchant/" + getNpcId() + ".htm";
+		final String filename = "data/html/merchant/" + getId() + ".htm";
 		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));

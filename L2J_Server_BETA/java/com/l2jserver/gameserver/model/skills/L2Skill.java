@@ -51,6 +51,7 @@ import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
@@ -63,7 +64,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
-public abstract class L2Skill implements IChanceSkillTrigger
+public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 {
 	protected static final Logger _log = Logger.getLogger(L2Skill.class.getName());
 	
@@ -609,8 +610,10 @@ public abstract class L2Skill implements IChanceSkillTrigger
 	}
 	
 	/**
-	 * @return Returns the id.
+	 * Gets the skill ID.
+	 * @return the skill ID
 	 */
+	@Override
 	public final int getId()
 	{
 		return _id;

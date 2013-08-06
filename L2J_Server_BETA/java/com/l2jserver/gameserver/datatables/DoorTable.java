@@ -141,7 +141,7 @@ public class DoorTable extends DocumentParser
 	
 	public void putDoor(L2DoorInstance door, int region)
 	{
-		_doors.put(door.getDoorId(), door);
+		_doors.put(door.getId(), door);
 		
 		if (!_regions.containsKey(region))
 		{

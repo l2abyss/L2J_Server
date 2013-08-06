@@ -238,7 +238,7 @@ public final class MercTicketManager
 		int count = 0;
 		for (L2ItemInstance ticket : _droppedTickets)
 		{
-			if ((ticket != null) && (ticket.getItemId() == itemId))
+			if ((ticket != null) && (ticket.getId() == itemId))
 			{
 				count++;
 			}
@@ -271,7 +271,7 @@ public final class MercTicketManager
 		int count = 0;
 		for (L2ItemInstance ticket : _droppedTickets)
 		{
-			if ((ticket != null) && (getTicketCastleId(ticket.getItemId()) == castleId))
+			if ((ticket != null) && (getTicketCastleId(ticket.getId()) == castleId))
 			{
 				count++;
 			}
@@ -375,7 +375,7 @@ public final class MercTicketManager
 		while (it.hasNext())
 		{
 			L2ItemInstance item = it.next();
-			if ((item != null) && (getTicketCastleId(item.getItemId()) == castleId))
+			if ((item != null) && (getTicketCastleId(item.getId()) == castleId))
 			{
 				item.decayMe();
 				L2World.getInstance().removeObject(item);
@@ -390,7 +390,7 @@ public final class MercTicketManager
 	 */
 	public void removeTicket(L2ItemInstance item)
 	{
-		int itemId = item.getItemId();
+		int itemId = item.getId();
 		int npcId = -1;
 		
 		// find the FIRST ticket itemId with spawns the saved NPC in the saved location

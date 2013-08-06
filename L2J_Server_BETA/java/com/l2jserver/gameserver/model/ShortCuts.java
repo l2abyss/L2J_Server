@@ -125,9 +125,9 @@ public class ShortCuts
 			
 			if ((item != null) && (item.getItemType() == L2EtcItemType.SHOT))
 			{
-				if (_owner.removeAutoSoulShot(item.getItemId()))
+				if (_owner.removeAutoSoulShot(item.getId()))
 				{
-					_owner.sendPacket(new ExAutoSoulShot(item.getItemId(), 0));
+					_owner.sendPacket(new ExAutoSoulShot(item.getId(), 0));
 				}
 			}
 		}

@@ -159,7 +159,7 @@ public final class RequestPostAttachment extends L2GameClientPacket
 			{
 				slots += item.getCount();
 			}
-			else if (activeChar.getInventory().getItemByItemId(item.getItemId()) == null)
+			else if (activeChar.getInventory().getItemByItemId(item.getId()) == null)
 			{
 				slots++;
 			}
@@ -220,7 +220,7 @@ public final class RequestPostAttachment extends L2GameClientPacket
 				}
 			}
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_ACQUIRED_S2_S1);
-			sm.addItemName(item.getItemId());
+			sm.addItemName(item.getId());
 			sm.addItemNumber(count);
 			activeChar.sendPacket(sm);
 		}

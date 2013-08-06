@@ -229,11 +229,11 @@ public class MultisellData extends DocumentParser
 		ListContainer template = _entries.get(listId);
 		if (template == null)
 		{
-			_log.warning(getClass().getSimpleName() + ": can't find list id: " + listId + " requested by player: " + player.getName() + ", npcId:" + (npc != null ? npc.getNpcId() : 0));
+			_log.warning(getClass().getSimpleName() + ": can't find list id: " + listId + " requested by player: " + player.getName() + ", npcId:" + (npc != null ? npc.getId() : 0));
 			return;
 		}
 		
-		if (((npc != null) && !template.isNpcAllowed(npc.getNpcId())) || ((npc == null) && template.isNpcOnly()))
+		if (((npc != null) && !template.isNpcAllowed(npc.getId())) || ((npc == null) && template.isNpcOnly()))
 		{
 			_log.warning(getClass().getSimpleName() + ": player " + player + " attempted to open multisell " + listId + " from npc " + npc + " which is not allowed!");
 			return;

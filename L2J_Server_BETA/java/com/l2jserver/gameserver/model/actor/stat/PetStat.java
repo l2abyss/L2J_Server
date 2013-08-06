@@ -104,13 +104,13 @@ public class PetStat extends SummonStat
 	{
 		try
 		{
-			return PetDataTable.getInstance().getPetLevelData(getActiveChar().getNpcId(), level).getPetMaxExp();
+			return PetDataTable.getInstance().getPetLevelData(getActiveChar().getId(), level).getPetMaxExp();
 		}
 		catch (NullPointerException e)
 		{
 			if (getActiveChar() != null)
 			{
-				_log.warning("Pet objectId:" + getActiveChar().getObjectId() + ", NpcId:" + getActiveChar().getNpcId() + ", level:" + level + " is missing data from pets_stats table!");
+				_log.warning("Pet objectId:" + getActiveChar().getObjectId() + ", NpcId:" + getActiveChar().getId() + ", level:" + level + " is missing data from pets_stats table!");
 			}
 			throw e;
 		}
@@ -135,10 +135,10 @@ public class PetStat extends SummonStat
 	@Override
 	public void setLevel(byte value)
 	{
-		getActiveChar().setPetData(PetDataTable.getInstance().getPetLevelData(getActiveChar().getTemplate().getNpcId(), value));
+		getActiveChar().setPetData(PetDataTable.getInstance().getPetLevelData(getActiveChar().getTemplate().getId(), value));
 		if (getActiveChar().getPetLevelData() == null)
 		{
-			throw new IllegalArgumentException("No pet data for npc: " + getActiveChar().getTemplate().getNpcId() + " level: " + value);
+			throw new IllegalArgumentException("No pet data for npc: " + getActiveChar().getTemplate().getId() + " level: " + value);
 		}
 		getActiveChar().stopFeed();
 		super.setLevel(value);

@@ -287,7 +287,7 @@ public final class L2ItemInstance extends L2Object
 		}
 		
 		// if this item is a mercenary ticket, remove the spawns!
-		int itemId = getItemId();
+		int itemId = getId();
 		
 		if (MercTicketManager.getInstance().getTicketCastleId(itemId) > 0)
 		{
@@ -357,7 +357,7 @@ public final class L2ItemInstance extends L2Object
 				String targetName = (creator.getTarget() != null ? creator.getTarget().getName() : "no-target");
 				if (Config.GMAUDIT)
 				{
-					GMAudit.auditGMAction(creator.getName() + " [" + creator.getObjectId() + "]", process + "(id: " + getItemId() + " name: " + getName() + ")", targetName, "L2Object referencing this action is: " + referenceName);
+					GMAudit.auditGMAction(creator.getName() + " [" + creator.getObjectId() + "]", process + "(id: " + getId() + " name: " + getName() + ")", targetName, "L2Object referencing this action is: " + referenceName);
 				}
 			}
 		}
@@ -474,7 +474,7 @@ public final class L2ItemInstance extends L2Object
 			return;
 		}
 		long old = getCount();
-		long max = getItemId() == ADENA_ID ? MAX_ADENA : Integer.MAX_VALUE;
+		long max = getId() == ADENA_ID ? MAX_ADENA : Integer.MAX_VALUE;
 		
 		if ((count > 0) && (getCount() > (max - count)))
 		{
@@ -525,7 +525,7 @@ public final class L2ItemInstance extends L2Object
 				String targetName = (creator.getTarget() != null ? creator.getTarget().getName() : "no-target");
 				if (Config.GMAUDIT)
 				{
-					GMAudit.auditGMAction(creator.getName() + " [" + creator.getObjectId() + "]", process + "(id: " + getItemId() + " objId: " + getObjectId() + " name: " + getName() + " count: " + count + ")", targetName, "L2Object referencing this action is: " + referenceName);
+					GMAudit.auditGMAction(creator.getName() + " [" + creator.getObjectId() + "]", process + "(id: " + getId() + " objId: " + getObjectId() + " name: " + getName() + " count: " + count + ")", targetName, "L2Object referencing this action is: " + referenceName);
 				}
 			}
 		}
@@ -626,9 +626,11 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	/**
-	 * @return the Id of the item.
+	 * Gets the item ID.
+	 * @return the item ID
 	 */
-	public int getItemId()
+	@Override
+	public int getId()
 	{
 		return _itemId;
 	}
@@ -884,8 +886,8 @@ public final class L2ItemInstance extends L2Object
 			&& (player.getActiveEnchantItemId() != getObjectId()) // Not momentarily used enchant scroll
 			&& (player.getActiveEnchantSupportItemId() != getObjectId()) // Not momentarily used enchant support item
 			&& (player.getActiveEnchantAttrItemId() != getObjectId()) // Not momentarily used enchant attribute item
-			&& (allowAdena || (getItemId() != PcInventory.ADENA_ID)) // Not Adena
-			&& ((player.getCurrentSkill() == null) || (player.getCurrentSkill().getSkill().getItemConsumeId() != getItemId())) && (!player.isCastingSimultaneouslyNow() || (player.getLastSimultaneousSkillCast() == null) || (player.getLastSimultaneousSkillCast().getItemConsumeId() != getItemId())) && (allowNonTradeable || (isTradeable() && (!((getItem().getItemType() == L2EtcItemType.PET_COLLAR) && player.havePetInvItems())))));
+			&& (allowAdena || (getId() != PcInventory.ADENA_ID)) // Not Adena
+			&& ((player.getCurrentSkill() == null) || (player.getCurrentSkill().getSkill().getItemConsumeId() != getId())) && (!player.isCastingSimultaneouslyNow() || (player.getLastSimultaneousSkillCast() == null) || (player.getLastSimultaneousSkillCast().getItemConsumeId() != getId())) && (allowNonTradeable || (isTradeable() && (!((getItem().getItemType() == L2EtcItemType.PET_COLLAR) && player.havePetInvItems())))));
 	}
 	
 	/**
@@ -2144,7 +2146,7 @@ public final class L2ItemInstance extends L2Object
 			
 			if (q != null)
 			{
-				if (((q.getQuestIntId() >= 1) && (q.getQuestIntId() < 20000)) && ((activeChar.getWeightPenalty() >= 3) || !activeChar.isInventoryUnder90(true)))
+				if (((q.getId() >= 1) && (q.getId() < 20000)) && ((activeChar.getWeightPenalty() >= 3) || !activeChar.isInventoryUnder90(true)))
 				{
 					activeChar.sendPacket(SystemMessage.getSystemMessage(SystemMessageId.INVENTORY_LESS_THAN_80_PERCENT));
 					return;
@@ -2152,7 +2154,7 @@ public final class L2ItemInstance extends L2Object
 				
 				if (qs == null)
 				{
-					if ((q.getQuestIntId() >= 1) && (q.getQuestIntId() < 20000))
+					if ((q.getId() >= 1) && (q.getId() < 20000))
 					{
 						if (activeChar.getAllActiveQuests().length > 40)
 						{
@@ -2201,7 +2203,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public void showChatWindow(L2PcInstance activeChar, String content)
 	{
-		NpcHtmlMessage html = new NpcHtmlMessage(0, getItemId());
+		NpcHtmlMessage html = new NpcHtmlMessage(0, getId());
 		html.setHtml(content);
 		html.replace("%itemId%", String.valueOf(getObjectId()));
 		activeChar.sendPacket(html);

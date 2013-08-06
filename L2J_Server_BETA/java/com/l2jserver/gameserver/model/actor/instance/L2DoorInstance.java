@@ -94,7 +94,7 @@ public class L2DoorInstance extends L2Character
 		
 		if (getGroupName() != null)
 		{
-			DoorTable.addDoorGroup(getGroupName(), getDoorId());
+			DoorTable.addDoorGroup(getGroupName(), getId());
 		}
 		
 		if (isOpenableByTime())
@@ -267,11 +267,13 @@ public class L2DoorInstance extends L2Character
 	}
 	
 	/**
-	 * @return Returns the doorId.
+	 * Gets the door ID.
+	 * @return the door ID
 	 */
-	public int getDoorId()
+	@Override
+	public int getId()
 	{
-		return getTemplate().getDoorId();
+		return getTemplate().getId();
 	}
 	
 	/**
@@ -596,7 +598,7 @@ public class L2DoorInstance extends L2Character
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName() + "[" + getTemplate().getDoorId() + "](" + getObjectId() + ")";
+		return getClass().getSimpleName() + "[" + getTemplate().getId() + "](" + getObjectId() + ")";
 	}
 	
 	public String getDoorName()

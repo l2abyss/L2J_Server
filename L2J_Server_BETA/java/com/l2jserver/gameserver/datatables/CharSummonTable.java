@@ -127,7 +127,7 @@ public class CharSummonTable
 			_log.warning(getClass().getSimpleName() + ": Null pet summoning item for: " + activeChar);
 			return;
 		}
-		final L2PetData petData = PetDataTable.getInstance().getPetDataByItemId(item.getItemId());
+		final L2PetData petData = PetDataTable.getInstance().getPetDataByItemId(item.getId());
 		if (petData == null)
 		{
 			_log.warning(getClass().getSimpleName() + ": Null pet data for: " + activeChar + " and summoning item: " + item);
@@ -245,7 +245,7 @@ public class CharSummonTable
 					if (summon.getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
 					{
 						summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(ExperienceTable.getInstance().getMaxPetLevel() - 1));
-						_log.warning(getClass().getSimpleName() + ": Summon (" + summon.getName() + ") NpcID: " + summon.getNpcId() + " has a level above " + ExperienceTable.getInstance().getMaxPetLevel() + ". Please rectify.");
+						_log.warning(getClass().getSimpleName() + ": Summon (" + summon.getName() + ") NpcID: " + summon.getId() + " has a level above " + ExperienceTable.getInstance().getMaxPetLevel() + ". Please rectify.");
 					}
 					else
 					{

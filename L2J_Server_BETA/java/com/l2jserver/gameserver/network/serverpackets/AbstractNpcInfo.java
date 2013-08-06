@@ -309,7 +309,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 				_val = 2; // override for spawn
 			}
 			
-			int npcId = cha.getTemplate().getNpcId();
+			int npcId = cha.getTemplate().getId();
 			
 			if ((npcId == 16041) || (npcId == 16042))
 			{

@@ -34,6 +34,7 @@ import com.l2jserver.gameserver.model.actor.knownlist.ObjectKnownList;
 import com.l2jserver.gameserver.model.actor.poly.ObjectPoly;
 import com.l2jserver.gameserver.model.actor.position.ObjectPosition;
 import com.l2jserver.gameserver.model.entity.Instance;
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -48,7 +49,7 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
  * <BR>
  * <li>L2Character</li> <li>L2ItemInstance</li>
  */
-public abstract class L2Object implements IPositionable
+public abstract class L2Object implements IPositionable, IIdentifiable
 {
 	private boolean _isVisible; // Object visibility
 	private ObjectKnownList _knownList;

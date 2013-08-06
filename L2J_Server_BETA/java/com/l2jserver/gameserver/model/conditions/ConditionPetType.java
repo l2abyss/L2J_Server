@@ -19,7 +19,6 @@
 package com.l2jserver.gameserver.model.conditions;
 
 import com.l2jserver.gameserver.datatables.PetDataTable;
-import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.stats.Env;
@@ -44,33 +43,32 @@ public class ConditionPetType extends Condition
 			return false;
 		}
 		
-		int npcid = ((L2Summon) env.getCharacter()).getNpcId();
-		
-		if (PetDataTable.isStrider(npcid) && (petType == L2Item.STRIDER))
+		int npcId = env.getCharacter().getId();
+		if (PetDataTable.isStrider(npcId) && (petType == L2Item.STRIDER))
 		{
 			return true;
 		}
-		else if (PetDataTable.isGrowUpWolfGroup(npcid) && (petType == L2Item.GROWN_UP_WOLF_GROUP))
+		else if (PetDataTable.isGrowUpWolfGroup(npcId) && (petType == L2Item.GROWN_UP_WOLF_GROUP))
 		{
 			return true;
 		}
-		else if (PetDataTable.isHatchlingGroup(npcid) && (petType == L2Item.HATCHLING_GROUP))
+		else if (PetDataTable.isHatchlingGroup(npcId) && (petType == L2Item.HATCHLING_GROUP))
 		{
 			return true;
 		}
-		else if (PetDataTable.isAllWolfGroup(npcid) && (petType == L2Item.ALL_WOLF_GROUP))
+		else if (PetDataTable.isAllWolfGroup(npcId) && (petType == L2Item.ALL_WOLF_GROUP))
 		{
 			return true;
 		}
-		else if (PetDataTable.isBabyPetGroup(npcid) && (petType == L2Item.BABY_PET_GROUP))
+		else if (PetDataTable.isBabyPetGroup(npcId) && (petType == L2Item.BABY_PET_GROUP))
 		{
 			return true;
 		}
-		else if (PetDataTable.isUpgradeBabyPetGroup(npcid) && (petType == L2Item.UPGRADE_BABY_PET_GROUP))
+		else if (PetDataTable.isUpgradeBabyPetGroup(npcId) && (petType == L2Item.UPGRADE_BABY_PET_GROUP))
 		{
 			return true;
 		}
-		else if (PetDataTable.isItemEquipPetGroup(npcid) && (petType == L2Item.ITEM_EQUIP_PET_GROUP))
+		else if (PetDataTable.isItemEquipPetGroup(npcId) && (petType == L2Item.ITEM_EQUIP_PET_GROUP))
 		{
 			return true;
 		}

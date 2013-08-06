@@ -330,7 +330,7 @@ public class ItemTable
 		
 		if (Config.LOG_ITEMS && !process.equals("Reset"))
 		{
-			if (!Config.LOG_ITEMS_SMALL_LOG || (Config.LOG_ITEMS_SMALL_LOG && (item.isEquipable() || (item.getItemId() == ADENA_ID))))
+			if (!Config.LOG_ITEMS_SMALL_LOG || (Config.LOG_ITEMS_SMALL_LOG && (item.isEquipable() || (item.getId() == ADENA_ID))))
 			{
 				LogRecord record = new LogRecord(Level.INFO, "CREATE:" + process);
 				record.setLoggerName("item");
@@ -419,7 +419,7 @@ public class ItemTable
 			
 			if (Config.LOG_ITEMS)
 			{
-				if (!Config.LOG_ITEMS_SMALL_LOG || (Config.LOG_ITEMS_SMALL_LOG && (item.isEquipable() || (item.getItemId() == ADENA_ID))))
+				if (!Config.LOG_ITEMS_SMALL_LOG || (Config.LOG_ITEMS_SMALL_LOG && (item.isEquipable() || (item.getId() == ADENA_ID))))
 				{
 					LogRecord record = new LogRecord(Level.INFO, "DELETE:" + process);
 					record.setLoggerName("item");
@@ -450,7 +450,7 @@ public class ItemTable
 					String targetName = (actor.getTarget() != null ? actor.getTarget().getName() : "no-target");
 					if (Config.GMAUDIT)
 					{
-						GMAudit.auditGMAction(actor.getName() + " [" + actor.getObjectId() + "]", process + "(id: " + item.getItemId() + " count: " + item.getCount() + " itemObjId: " + item.getObjectId() + ")", targetName, "L2Object referencing this action is: " + referenceName);
+						GMAudit.auditGMAction(actor.getName() + " [" + actor.getObjectId() + "]", process + "(id: " + item.getId() + " count: " + item.getCount() + " itemObjId: " + item.getObjectId() + ")", targetName, "L2Object referencing this action is: " + referenceName);
 					}
 				}
 			}

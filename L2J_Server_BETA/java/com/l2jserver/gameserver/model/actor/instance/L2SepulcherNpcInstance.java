@@ -181,7 +181,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 			return;
 		}
 		
-		switch (getNpcId())
+		switch (getId())
 		{
 			case 31468:
 			case 31469:
@@ -209,7 +209,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 				{
 					_spawnMonsterTask.cancel(true);
 				}
-				_spawnMonsterTask = ThreadPoolManager.getInstance().scheduleEffect(new SpawnMonster(getNpcId()), 3500);
+				_spawnMonsterTask = ThreadPoolManager.getInstance().scheduleEffect(new SpawnMonster(getId()), 3500);
 				break;
 			
 			case 31455:
@@ -276,7 +276,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 	@Override
 	public void showChatWindow(L2PcInstance player, int val)
 	{
-		String filename = getHtmlPath(getNpcId(), val);
+		String filename = getHtmlPath(getId(), val);
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
@@ -320,16 +320,16 @@ public class L2SepulcherNpcInstance extends L2Npc
 			}
 			else if (FourSepulchersManager.getInstance().isAttackTime())
 			{
-				switch (getNpcId())
+				switch (getId())
 				{
 					case 31929:
 					case 31934:
 					case 31939:
 					case 31944:
-						FourSepulchersManager.getInstance().spawnShadow(getNpcId());
+						FourSepulchersManager.getInstance().spawnShadow(getId());
 					default:
 					{
-						openNextDoor(getNpcId());
+						openNextDoor(getId());
 						if (player.getParty() != null)
 						{
 							for (L2PcInstance mem : player.getParty().getMembers())

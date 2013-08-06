@@ -52,6 +52,6 @@ public class ConditionPlayerServitorNpcId extends Condition
 		{
 			return false;
 		}
-		return (_npcIds == null) || _npcIds.contains(env.getPlayer().getSummon().getNpcId());
+		return (_npcIds == null) || _npcIds.contains(env.getPlayer().getSummon().getId());
 	}
 }

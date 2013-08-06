@@ -66,7 +66,7 @@ public final class PartySmallWindowAll extends L2GameServerPacket
 				if (member.hasSummon())
 				{
 					writeD(member.getSummon().getObjectId());
-					writeD(member.getSummon().getNpcId() + 1000000);
+					writeD(member.getSummon().getId() + 1000000);
 					writeD(member.getSummon().getSummonType());
 					writeS(member.getSummon().getName());
 					writeD((int) member.getSummon().getCurrentHp());

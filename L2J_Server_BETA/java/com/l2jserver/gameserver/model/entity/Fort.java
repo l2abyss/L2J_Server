@@ -616,7 +616,7 @@ public class Fort
 	public void upgradeDoor(int doorId, int hp, int pDef, int mDef)
 	{
 		L2DoorInstance door = getDoor(doorId);
-		if ((door != null) && (door.getDoorId() == doorId))
+		if ((door != null) && (door.getId() == doorId))
 		{
 			door.setCurrentHp(door.getMaxHp() + hp);
 			
@@ -960,7 +960,7 @@ public class Fort
 		
 		for (L2DoorInstance door : getDoors())
 		{
-			if (door.getDoorId() == doorId)
+			if (door.getId() == doorId)
 			{
 				return door;
 			}

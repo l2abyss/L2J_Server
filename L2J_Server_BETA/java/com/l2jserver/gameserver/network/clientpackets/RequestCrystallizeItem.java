@@ -124,7 +124,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 			return;
 		}
 		
-		if (!activeChar.getInventory().canManipulateWithItemId(itemToRemove.getItemId()))
+		if (!activeChar.getInventory().canManipulateWithItemId(itemToRemove.getId()))
 		{
 			activeChar.sendMessage("You cannot use this item.");
 			return;

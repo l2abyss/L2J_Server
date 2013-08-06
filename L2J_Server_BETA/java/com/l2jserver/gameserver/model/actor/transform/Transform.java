@@ -26,13 +26,14 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.holders.AdditionalItemHolder;
 import com.l2jserver.gameserver.model.holders.AdditionalSkillHolder;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.serverpackets.ExBasicActionList;
 
 /**
  * @author UnAfraid
  */
-public final class Transform
+public final class Transform implements IIdentifiable
 {
 	private final int _id;
 	private final int _displayId;
@@ -58,6 +59,11 @@ public final class Transform
 		_title = set.getString("setTitle", null);
 	}
 	
+	/**
+	 * Gets the transformation ID.
+	 * @return the transformation ID
+	 */
+	@Override
 	public int getId()
 	{
 		return _id;

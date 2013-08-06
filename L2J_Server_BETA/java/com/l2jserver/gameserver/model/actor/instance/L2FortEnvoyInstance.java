@@ -66,7 +66,7 @@ public class L2FortEnvoyInstance extends L2Npc
 		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filePath);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
-		html.replace("%castleName%", String.valueOf(fortress.getCastleByAmbassador(getNpcId()).getName()));
+		html.replace("%castleName%", String.valueOf(fortress.getCastleByAmbassador(getId()).getName()));
 		player.sendPacket(html);
 	}
 	
@@ -77,7 +77,7 @@ public class L2FortEnvoyInstance extends L2Npc
 		{
 			String param = command.substring(7);
 			Fort fortress = getFort();
-			Castle castle = fortress.getCastleByAmbassador(getNpcId());
+			Castle castle = fortress.getCastleByAmbassador(getId());
 			String filePath;
 			
 			if (castle.getOwnerId() == 0)

@@ -329,7 +329,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 								{
 									for (ItemHolder itemIdCount : s.getRequiredItems())
 									{
-										if (item.getItemId() == itemIdCount.getId())
+										if (item.getId() == itemIdCount.getId())
 										{
 											if (checkPlayerSkill(activeChar, trainer, s))
 											{

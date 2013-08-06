@@ -84,7 +84,7 @@ public class QuestList extends L2GameServerPacket
 			writeH(_quests.length);
 			for (Quest q : _quests)
 			{
-				writeD(q.getQuestIntId());
+				writeD(q.getId());
 				QuestState qs = _activeChar.getQuestState(q.getName());
 				if (qs == null)
 				{

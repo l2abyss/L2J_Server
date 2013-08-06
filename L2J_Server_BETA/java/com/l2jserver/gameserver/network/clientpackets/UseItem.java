@@ -141,7 +141,7 @@ public final class UseItem extends L2GameClientPacket
 		}
 		
 		// Char cannot use item when dead
-		if (activeChar.isDead() || !activeChar.getInventory().canManipulateWithItemId(item.getItemId()))
+		if (activeChar.isDead() || !activeChar.getInventory().canManipulateWithItemId(item.getId()))
 		{
 			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addItemName(item);
@@ -154,7 +154,7 @@ public final class UseItem extends L2GameClientPacket
 			return;
 		}
 		
-		_itemId = item.getItemId();
+		_itemId = item.getId();
 		if (activeChar.isFishing() && ((_itemId < 6535) || (_itemId > 6540)))
 		{
 			// You cannot do anything else while fishing

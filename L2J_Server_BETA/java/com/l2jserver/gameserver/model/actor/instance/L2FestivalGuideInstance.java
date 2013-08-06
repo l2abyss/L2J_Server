@@ -48,7 +48,7 @@ public final class L2FestivalGuideInstance extends L2Npc
 		super(objectId, template);
 		setInstanceType(InstanceType.L2FestivalGiudeInstance);
 		
-		switch (getNpcId())
+		switch (getId())
 		{
 			case 31127:
 			case 31132:

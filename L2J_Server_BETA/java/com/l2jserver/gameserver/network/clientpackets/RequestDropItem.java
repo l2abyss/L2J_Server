@@ -139,7 +139,7 @@ public final class RequestDropItem extends L2GameClientPacket
 		// Cannot discard item that the skill is consuming
 		if (activeChar.isCastingNow())
 		{
-			if ((activeChar.getCurrentSkill() != null) && (activeChar.getCurrentSkill().getSkill().getItemConsumeId() == item.getItemId()))
+			if ((activeChar.getCurrentSkill() != null) && (activeChar.getCurrentSkill().getSkill().getItemConsumeId() == item.getId()))
 			{
 				activeChar.sendPacket(SystemMessageId.CANNOT_DISCARD_THIS_ITEM);
 				return;
@@ -149,7 +149,7 @@ public final class RequestDropItem extends L2GameClientPacket
 		// Cannot discard item that the skill is consuming
 		if (activeChar.isCastingSimultaneouslyNow())
 		{
-			if ((activeChar.getLastSimultaneousSkillCast() != null) && (activeChar.getLastSimultaneousSkillCast().getItemConsumeId() == item.getItemId()))
+			if ((activeChar.getLastSimultaneousSkillCast() != null) && (activeChar.getLastSimultaneousSkillCast().getItemConsumeId() == item.getId()))
 			{
 				activeChar.sendPacket(SystemMessageId.CANNOT_DISCARD_THIS_ITEM);
 				return;
@@ -176,7 +176,7 @@ public final class RequestDropItem extends L2GameClientPacket
 			return;
 		}
 		
-		if (!activeChar.getInventory().canManipulateWithItemId(item.getItemId()))
+		if (!activeChar.getInventory().canManipulateWithItemId(item.getId()))
 		{
 			activeChar.sendMessage("You cannot use this item.");
 			return;
@@ -215,10 +215,10 @@ public final class RequestDropItem extends L2GameClientPacket
 		if (activeChar.isGM())
 		{
 			String target = (activeChar.getTarget() != null ? activeChar.getTarget().getName() : "no-target");
-			GMAudit.auditGMAction(activeChar.getName() + " [" + activeChar.getObjectId() + "]", "Drop", target, "(id: " + dropedItem.getItemId() + " name: " + dropedItem.getItemName() + " objId: " + dropedItem.getObjectId() + " x: " + activeChar.getX() + " y: " + activeChar.getY() + " z: " + activeChar.getZ() + ")");
+			GMAudit.auditGMAction(activeChar.getName() + " [" + activeChar.getObjectId() + "]", "Drop", target, "(id: " + dropedItem.getId() + " name: " + dropedItem.getItemName() + " objId: " + dropedItem.getObjectId() + " x: " + activeChar.getX() + " y: " + activeChar.getY() + " z: " + activeChar.getZ() + ")");
 		}
 		
-		if ((dropedItem != null) && (dropedItem.getItemId() == PcInventory.ADENA_ID) && (dropedItem.getCount() >= 1000000))
+		if ((dropedItem != null) && (dropedItem.getId() == PcInventory.ADENA_ID) && (dropedItem.getCount() >= 1000000))
 		{
 			String msg = "Character (" + activeChar.getName() + ") has dropped (" + dropedItem.getCount() + ")adena at (" + _x + "," + _y + "," + _z + ")";
 			_log.warning(msg);
