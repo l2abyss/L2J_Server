@@ -172,15 +172,15 @@ public class PetInfo extends L2GameServerPacket
 		final int npcId = _summon.getId();
 		if ((npcId == 16041) || (npcId == 16042))
 		{
-			if (_summon.getLevel() > 84)
+			if (_summon.getLevel() > 69)
 			{
 				form = 3;
 			}
-			else if (_summon.getLevel() > 79)
+			else if (_summon.getLevel() > 64)
 			{
 				form = 2;
 			}
-			else if (_summon.getLevel() > 74)
+			else if (_summon.getLevel() > 59)
 			{
 				form = 1;
 			}

@@ -313,15 +313,15 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			
 			if ((npcId == 16041) || (npcId == 16042))
 			{
-				if (cha.getLevel() > 84)
+				if (cha.getLevel() > 69)
 				{
 					_form = 3;
 				}
-				else if (cha.getLevel() > 79)
+				else if (cha.getLevel() > 64)
 				{
 					_form = 2;
 				}
-				else if (cha.getLevel() > 74)
+				else if (cha.getLevel() > 59)
 				{
 					_form = 1;
 				}
@@ -413,9 +413,9 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			
 			writeD(0x00); // clan id
 			writeD(0x00); // crest id
-			writeD(0000); // C2
-			writeD(0000); // C2
-			writeC(0000); // C2
+			writeD(0x00); // C2
+			writeD(0x00); // C2
+			writeC(0x00); // C2
 			
 			writeC(_summon.getTeam()); // team color 0=none, 1 = blue, 2 = red
 			
