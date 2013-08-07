@@ -802,7 +802,7 @@ public final class Formulas
 		// Physical skill dmg boost
 		if (skill != null)
 		{
-			damage *= attacker.calcStat(Stats.PHYSICAL_SKILL_POWER, 1, null, null);
+			damage = attacker.calcStat(Stats.PHYSICAL_SKILL_POWER, damage, null, null);
 		}
 		
 		damage *= calcAttributeBonus(attacker, target, skill);
