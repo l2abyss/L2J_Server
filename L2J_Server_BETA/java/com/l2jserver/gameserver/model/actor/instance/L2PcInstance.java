@@ -386,6 +386,8 @@ public final class L2PcInstance extends L2Playable
 	
 	private static final String COND_OVERRIDE_KEY = "cond_override";
 	
+	public static final String NEWBIE_KEY = "NEWBIE";
+	
 	public static final int ID_NONE = -1;
 	
 	public static final int REQUEST_TIMEOUT = 15;
