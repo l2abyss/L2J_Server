@@ -93,7 +93,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 		}
 		
 		// template for scroll
-		EnchantScroll scrollTemplate = EnchantItemData.getInstance().getEnchantScroll(scroll);
+		final EnchantScroll scrollTemplate = EnchantItemData.getInstance().getEnchantScroll(scroll);
 		
 		// scroll not found in list
 		if (scrollTemplate == null)
@@ -180,9 +180,12 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				{
 					L2Skill enchant4Skill = null;
 					L2Item it = item.getItem();
-					
-					item.setEnchantLevel(item.getEnchantLevel() + 1);
-					item.updateDatabase();
+					// Increase enchant level only if scroll's base template has chance, some armors can success over +20 but they shouldn't have increased.
+					if (scrollTemplate.getChance(activeChar, item) > 0)
+					{
+						item.setEnchantLevel(item.getEnchantLevel() + 1);
+						item.updateDatabase();
+					}
 					activeChar.sendPacket(new EnchantResult(0, 0, 0));
 					
 					if (Config.LOG_ITEM_ENCHANTS)

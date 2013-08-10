@@ -24,6 +24,8 @@ import com.l2jserver.gameserver.datatables.EnchantItemGroupsData;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
+import com.l2jserver.gameserver.model.items.type.L2ItemType;
 import com.l2jserver.gameserver.network.Debug;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
@@ -40,14 +42,16 @@ public final class EnchantScroll extends EnchantItem
 	public EnchantScroll(StatsSet set)
 	{
 		super(set);
-		
-		_isBlessed = set.getBool("isBlessed", false);
-		_isSafe = set.getBool("isSafe", false);
 		_scrollGroupId = set.getInteger("scrollGroupId", 0);
+		
+		final L2ItemType type = getItem().getItemType();
+		_isWeapon = (type == L2EtcItemType.ANCIENT_CRYSTAL_ENCHANT_WP) || (type == L2EtcItemType.BLESS_SCRL_ENCHANT_WP) || (type == L2EtcItemType.SCRL_ENCHANT_WP);
+		_isBlessed = (type == L2EtcItemType.BLESS_SCRL_ENCHANT_AM) || (type == L2EtcItemType.BLESS_SCRL_ENCHANT_WP);
+		_isSafe = (type == L2EtcItemType.ANCIENT_CRYSTAL_ENCHANT_AM) || (type == L2EtcItemType.ANCIENT_CRYSTAL_ENCHANT_WP);
 	}
 	
 	/**
-	 * @return {@code true} for blessed scrolls (enchanted item will remain on failure), {@code false} otherwise.
+	 * @return {@code true} for blessed scrolls (enchanted item will remain on failure), {@code false} otherwise
 	 */
 	public boolean isBlessed()
 	{
@@ -55,7 +59,7 @@ public final class EnchantScroll extends EnchantItem
 	}
 	
 	/**
-	 * @return {@code true} for safe-enchant scrolls (enchant level will remain on failure), {@code false} otherwise.
+	 * @return {@code true} for safe-enchant scrolls (enchant level will remain on failure), {@code false} otherwise
 	 */
 	public boolean isSafe()
 	{
@@ -63,7 +67,7 @@ public final class EnchantScroll extends EnchantItem
 	}
 	
 	/**
-	 * @return id of scroll group that should be used.
+	 * @return id of scroll group that should be used
 	 */
 	public int getScrollGroupId()
 	{
@@ -73,14 +77,25 @@ public final class EnchantScroll extends EnchantItem
 	/**
 	 * @param enchantItem
 	 * @param supportItem
-	 * @return {@code true} if current scroll is valid to be used with support item, {@code false} otherwise.
+	 * @return {@code true} if current scroll is valid to be used with support item, {@code false} otherwise
 	 */
 	public boolean isValid(L2ItemInstance enchantItem, EnchantItem supportItem)
 	{
-		// blessed scrolls can't use support items
-		if ((supportItem != null) && (!supportItem.isValid(enchantItem) || isBlessed()))
+		if ((supportItem != null))
 		{
-			return false;
+			// blessed scrolls can't use support items
+			if (isBlessed())
+			{
+				return false;
+			}
+			if (!supportItem.isValid(enchantItem))
+			{
+				return false;
+			}
+			else if (supportItem.isWeapon() != _isWeapon)
+			{
+				return false;
+			}
 		}
 		
 		return super.isValid(enchantItem);
@@ -89,8 +104,30 @@ public final class EnchantScroll extends EnchantItem
 	/**
 	 * @param player
 	 * @param enchantItem
+	 * @return the chance of current scroll's group.
+	 */
+	public double getChance(L2PcInstance player, L2ItemInstance enchantItem)
+	{
+		if (EnchantItemGroupsData.getInstance().getScrollGroup(_scrollGroupId) == null)
+		{
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Unexistent enchant scroll group specified for enchant scroll: " + getId());
+			return -1;
+		}
+		
+		final EnchantItemGroup group = EnchantItemGroupsData.getInstance().getItemGroup(enchantItem.getItem(), _scrollGroupId);
+		if (group == null)
+		{
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't find enchant item group for scroll: " + getId() + " requested by: " + player);
+			return -1;
+		}
+		return group.getChance(enchantItem.getEnchantLevel());
+	}
+	
+	/**
+	 * @param player
+	 * @param enchantItem
 	 * @param supportItem
-	 * @return the total chance for success rate of this scroll.
+	 * @return the total chance for success rate of this scroll
 	 */
 	public EnchantResultType calculateSuccess(L2PcInstance player, L2ItemInstance enchantItem, EnchantItem supportItem)
 	{
@@ -99,33 +136,40 @@ public final class EnchantScroll extends EnchantItem
 			return EnchantResultType.ERROR;
 		}
 		
-		if (EnchantItemGroupsData.getInstance().getScrollGroup(_scrollGroupId) == null)
+		final double chance = getChance(player, enchantItem);
+		if (chance == -1)
 		{
-			_log.log(Level.WARNING, getClass().getSimpleName() + ": Unexistent enchant scroll group specified for enchant scroll: " + getId());
 			return EnchantResultType.ERROR;
 		}
 		
-		final EnchantItemGroup group = EnchantItemGroupsData.getInstance().getItemGroup(enchantItem.getItem(), _scrollGroupId);
-		if (group == null)
-		{
-			_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't find enchant item group for scroll: " + getId() + " requested by: " + player);
-			return EnchantResultType.ERROR;
-		}
-		
-		final double chance = group.getChance(enchantItem.getEnchantLevel());
 		final double bonusRate = getBonusRate();
-		final double supportBonusRate = ((supportItem != null) && !_isBlessed) ? supportItem.getBonusRate() : 0;
-		final double finalChance = chance + bonusRate + supportBonusRate;
+		final double supportBonusRate = (supportItem != null) ? supportItem.getBonusRate() : 0;
+		final double finalChance = Math.min(chance + bonusRate + supportBonusRate, 100);
 		
 		final double random = 100 * Rnd.nextDouble();
 		final boolean success = (random < finalChance);
 		
 		if (player.isDebug())
 		{
+			final EnchantItemGroup group = EnchantItemGroupsData.getInstance().getItemGroup(enchantItem.getItem(), _scrollGroupId);
 			final StatsSet set = new StatsSet();
+			if (isBlessed())
+			{
+				set.set("isBlessed", isBlessed());
+			}
+			if (isSafe())
+			{
+				set.set("isSafe", isSafe());
+			}
 			set.set("chance", Util.formatDouble(chance, "#.##"));
-			set.set("bonusRate", Util.formatDouble(bonusRate, "#.##"));
-			set.set("supportBonusRate", Util.formatDouble(supportBonusRate, "#.##"));
+			if (bonusRate > 0)
+			{
+				set.set("bonusRate", Util.formatDouble(bonusRate, "#.##"));
+			}
+			if (supportBonusRate > 0)
+			{
+				set.set("supportBonusRate", Util.formatDouble(supportBonusRate, "#.##"));
+			}
 			set.set("finalChance", Util.formatDouble(finalChance, "#.##"));
 			set.set("random", Util.formatDouble(random, "#.##"));
 			set.set("success", success);
