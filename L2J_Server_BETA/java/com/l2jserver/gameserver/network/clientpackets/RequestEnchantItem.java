@@ -27,11 +27,11 @@ import com.l2jserver.gameserver.datatables.EnchantItemData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.enchant.EnchantItem;
-import com.l2jserver.gameserver.model.enchant.EnchantResultType;
-import com.l2jserver.gameserver.model.enchant.EnchantScroll;
 import com.l2jserver.gameserver.model.items.L2Armor;
 import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.enchant.EnchantResultType;
+import com.l2jserver.gameserver.model.items.enchant.EnchantScroll;
+import com.l2jserver.gameserver.model.items.enchant.EnchantSupportItem;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -49,7 +49,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 	
 	private static final String _C__5F_REQUESTENCHANTITEM = "[C] 5F RequestEnchantItem";
 	
-	private int _objectId = 0;
+	private int _objectId;
 	private int _supportId;
 	
 	@Override
@@ -62,8 +62,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
-		
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if ((activeChar == null) || (_objectId == 0))
 		{
 			return;
@@ -82,7 +81,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			return;
 		}
 		
-		final L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
+		L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_objectId);
 		L2ItemInstance scroll = activeChar.getInventory().getItemByObjectId(activeChar.getActiveEnchantItemId());
 		L2ItemInstance support = activeChar.getInventory().getItemByObjectId(activeChar.getActiveEnchantSupportItemId());
 		
@@ -102,7 +101,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 		}
 		
 		// template for support item, if exist
-		EnchantItem supportTemplate = null;
+		EnchantSupportItem supportTemplate = null;
 		if (support != null)
 		{
 			if (support.getObjectId() != _supportId)
@@ -156,6 +155,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			}
 		}
 		
+		final InventoryUpdate iu = new InventoryUpdate();
 		synchronized (item)
 		{
 			// last validation check
@@ -166,6 +166,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 				activeChar.sendPacket(new EnchantResult(2, 0, 0));
 				return;
 			}
+			
 			final EnchantResultType resultType = scrollTemplate.calculateSuccess(activeChar, item, supportTemplate);
 			switch (resultType)
 			{
@@ -220,7 +221,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 						}
 					}
 					
-					if ((it instanceof L2Armor) && (item.getEnchantLevel() == 4) && activeChar.getInventory().getItemByObjectId(item.getObjectId()).isEquipped())
+					if ((item.isArmor()) && (item.getEnchantLevel() == 4) && item.isEquipped())
 					{
 						enchant4Skill = ((L2Armor) it).getEnchant4Skill();
 						if (enchant4Skill != null)
@@ -274,7 +275,6 @@ public final class RequestEnchantItem extends L2GameClientPacket
 							}
 							
 							L2ItemInstance[] unequiped = activeChar.getInventory().unEquipItemInSlotAndRecord(item.getLocationSlot());
-							InventoryUpdate iu = new InventoryUpdate();
 							for (L2ItemInstance itm : unequiped)
 							{
 								iu.addModifiedItem(itm);
@@ -317,8 +317,8 @@ public final class RequestEnchantItem extends L2GameClientPacket
 								count = 1;
 							}
 							
-							L2ItemInstance destroyItem = activeChar.getInventory().destroyItem("Enchant", item, activeChar, null);
-							if (destroyItem == null)
+							item = activeChar.getInventory().destroyItem("Enchant", item, activeChar, null);
+							if (item == null)
 							{
 								// unable to destroy item, cheater ?
 								Util.handleIllegalPlayerAction(activeChar, "Unable to delete item on enchant failure from player " + activeChar.getName() + ", possible cheater !", Config.DEFAULT_PUNISH);
@@ -341,10 +341,11 @@ public final class RequestEnchantItem extends L2GameClientPacket
 								return;
 							}
 							
+							L2World.getInstance().removeObject(item);
 							L2ItemInstance crystals = null;
 							if (crystalId != 0)
 							{
-								crystals = activeChar.getInventory().addItem("Enchant", crystalId, count, activeChar, destroyItem);
+								crystals = activeChar.getInventory().addItem("Enchant", crystalId, count, activeChar, item);
 								
 								SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
 								sm.addItemName(crystals);
@@ -354,39 +355,12 @@ public final class RequestEnchantItem extends L2GameClientPacket
 							
 							if (!Config.FORCE_INVENTORY_UPDATE)
 							{
-								InventoryUpdate iu = new InventoryUpdate();
-								if (destroyItem.getCount() == 0)
-								{
-									iu.addRemovedItem(destroyItem);
-								}
-								else
-								{
-									iu.addModifiedItem(destroyItem);
-								}
-								
 								if (crystals != null)
 								{
 									iu.addItem(crystals);
 								}
-								
-								if (scroll.getCount() == 0)
-								{
-									iu.addRemovedItem(scroll);
-								}
-								else
-								{
-									iu.addModifiedItem(scroll);
-								}
-								
-								activeChar.sendPacket(iu);
-							}
-							else
-							{
-								activeChar.sendPacket(new ItemList(activeChar, true));
 							}
 							
-							L2World world = L2World.getInstance();
-							world.removeObject(destroyItem);
 							if (crystalId == 0)
 							{
 								activeChar.sendPacket(new EnchantResult(4, 0, 0));
@@ -418,26 +392,45 @@ public final class RequestEnchantItem extends L2GameClientPacket
 			final StatusUpdate su = new StatusUpdate(activeChar);
 			su.addAttribute(StatusUpdate.CUR_LOAD, activeChar.getCurrentLoad());
 			activeChar.sendPacket(su);
-			
-			final InventoryUpdate iu = new InventoryUpdate();
-			if (scroll.getCount() == 0)
+			if (!Config.FORCE_INVENTORY_UPDATE)
 			{
-				iu.addRemovedItem(scroll);
+				if (scroll.getCount() == 0)
+				{
+					iu.addRemovedItem(scroll);
+				}
+				else
+				{
+					iu.addModifiedItem(scroll);
+				}
+				
+				if (item.getCount() == 0)
+				{
+					iu.addRemovedItem(item);
+				}
+				else
+				{
+					iu.addModifiedItem(item);
+				}
+				
+				if (support != null)
+				{
+					if (support.getCount() == 0)
+					{
+						iu.addRemovedItem(support);
+					}
+					else
+					{
+						iu.addModifiedItem(support);
+					}
+				}
+				
+				activeChar.sendPacket(iu);
 			}
 			else
 			{
-				iu.addModifiedItem(scroll);
+				activeChar.sendPacket(new ItemList(activeChar, true));
 			}
 			
-			if (item.getCount() == 0)
-			{
-				iu.addRemovedItem(item);
-			}
-			else
-			{
-				iu.addModifiedItem(item);
-			}
-			activeChar.sendPacket(iu);
 			activeChar.broadcastUserInfo();
 			activeChar.setActiveEnchantItemId(L2PcInstance.ID_NONE);
 		}

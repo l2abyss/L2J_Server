@@ -16,14 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.enchant;
+package com.l2jserver.gameserver.model.items.enchant;
+
+import com.l2jserver.gameserver.model.StatsSet;
+import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 
 /**
  * @author UnAfraid
  */
-public enum EnchantResultType
+public final class EnchantSupportItem extends AbstractEnchantItem
 {
-	ERROR,
-	SUCCESS,
-	FAILURE
+	private final boolean _isWeapon;
+	
+	public EnchantSupportItem(StatsSet set)
+	{
+		super(set);
+		_isWeapon = getItem().getItemType() == L2EtcItemType.SCRL_INC_ENCHANT_PROP_WP;
+	}
+	
+	@Override
+	public boolean isWeapon()
+	{
+		return _isWeapon;
+	}
 }

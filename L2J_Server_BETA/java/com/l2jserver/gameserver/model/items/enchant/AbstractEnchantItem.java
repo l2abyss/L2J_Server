@@ -16,10 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.enchant;
+package com.l2jserver.gameserver.model.items.enchant;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.datatables.ItemTable;
@@ -33,9 +31,9 @@ import com.l2jserver.gameserver.util.Util;
 /**
  * @author UnAfraid
  */
-public class EnchantItem
+public abstract class AbstractEnchantItem
 {
-	protected static final Logger _log = Logger.getLogger(EnchantItem.class.getName());
+	protected static final Logger _log = Logger.getLogger(AbstractEnchantItem.class.getName());
 	
 	private static final L2ItemType[] ENCHANT_TYPES = new L2ItemType[]
 	{
@@ -50,13 +48,11 @@ public class EnchantItem
 	};
 	
 	private final int _id;
-	protected boolean _isWeapon;
 	private final int _grade;
 	private final int _maxEnchantLevel;
 	private final double _bonusRate;
-	private List<Integer> _itemIds;
 	
-	public EnchantItem(StatsSet set)
+	public AbstractEnchantItem(StatsSet set)
 	{
 		_id = set.getInteger("id");
 		if (getItem() == null)
@@ -67,7 +63,6 @@ public class EnchantItem
 		{
 			throw new IllegalAccessError();
 		}
-		_isWeapon = getItem().getItemType() == L2EtcItemType.SCRL_INC_ENCHANT_PROP_WP;
 		_grade = ItemTable._crystalTypes.get(set.getString("targetGrade", "none"));
 		_maxEnchantLevel = set.getInteger("maxEnchant", 65535);
 		_bonusRate = set.getDouble("bonusRate", 0);
@@ -108,55 +103,43 @@ public class EnchantItem
 	/**
 	 * @return {@code true} if scroll is for weapon, {@code false} for armor
 	 */
-	public boolean isWeapon()
+	public abstract boolean isWeapon();
+	
+	/**
+	 * @return the maximum enchant level that this scroll/item can be used with
+	 */
+	public int getMaxEnchantLevel()
 	{
-		return _isWeapon;
+		return _maxEnchantLevel;
 	}
 	
 	/**
-	 * Enforces current scroll to use only those items as possible items to enchant
-	 * @param id
+	 * @param itemToEnchant the item to be enchanted
+	 * @param supportItem
+	 * @return {@code true} if this support item can be used with the item to be enchanted, {@code false} otherwise
 	 */
-	public final void addItem(int id)
+	public boolean isValid(L2ItemInstance itemToEnchant, EnchantSupportItem supportItem)
 	{
-		if (_itemIds == null)
-		{
-			_itemIds = new ArrayList<>();
-		}
-		_itemIds.add(id);
-	}
-	
-	/**
-	 * @param enchantItem
-	 * @return {@code true} if current item is valid to be enchanted, {@code false} otherwise
-	 */
-	public final boolean isValid(L2ItemInstance enchantItem)
-	{
-		if (enchantItem == null)
+		if (itemToEnchant == null)
 		{
 			return false;
 		}
-		else if (enchantItem.isEnchantable() == 0)
+		else if (itemToEnchant.isEnchantable() == 0)
 		{
 			return false;
 		}
-		else if (!isValidItemType(enchantItem.getItem().getType2()))
+		else if (!isValidItemType(itemToEnchant.getItem().getType2()))
 		{
 			return false;
 		}
-		else if ((_maxEnchantLevel != 0) && (enchantItem.getEnchantLevel() >= _maxEnchantLevel))
+		else if ((_maxEnchantLevel != 0) && (itemToEnchant.getEnchantLevel() >= _maxEnchantLevel))
 		{
 			return false;
 		}
-		else if (_grade != enchantItem.getItem().getItemGradeSPlus())
+		else if (_grade != itemToEnchant.getItem().getItemGradeSPlus())
 		{
 			return false;
 		}
-		else if ((_itemIds != null) && !_itemIds.contains(enchantItem.getId()))
-		{
-			return false;
-		}
-		
 		return true;
 	}
 	
@@ -168,11 +151,11 @@ public class EnchantItem
 	{
 		if (type2 == L2Item.TYPE2_WEAPON)
 		{
-			return _isWeapon;
+			return isWeapon();
 		}
 		else if ((type2 == L2Item.TYPE2_SHIELD_ARMOR) || (type2 == L2Item.TYPE2_ACCESSORY))
 		{
-			return !_isWeapon;
+			return !isWeapon();
 		}
 		return false;
 	}

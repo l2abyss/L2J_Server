@@ -26,11 +26,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.engines.DocumentParser;
-import com.l2jserver.gameserver.model.enchant.EnchantItemGroup;
-import com.l2jserver.gameserver.model.enchant.EnchantRateItem;
-import com.l2jserver.gameserver.model.enchant.EnchantScrollGroup;
 import com.l2jserver.gameserver.model.holders.RangeChanceHolder;
 import com.l2jserver.gameserver.model.items.L2Item;
+import com.l2jserver.gameserver.model.items.enchant.EnchantItemGroup;
+import com.l2jserver.gameserver.model.items.enchant.EnchantRateItem;
+import com.l2jserver.gameserver.model.items.enchant.EnchantScrollGroup;
 import com.l2jserver.gameserver.util.Util;
 
 /**

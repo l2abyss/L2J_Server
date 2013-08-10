@@ -27,8 +27,8 @@ import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.model.StatsSet;
-import com.l2jserver.gameserver.model.enchant.EnchantItem;
-import com.l2jserver.gameserver.model.enchant.EnchantScroll;
+import com.l2jserver.gameserver.model.items.enchant.EnchantSupportItem;
+import com.l2jserver.gameserver.model.items.enchant.EnchantScroll;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
@@ -38,7 +38,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 public class EnchantItemData extends DocumentParser
 {
 	public static final Map<Integer, EnchantScroll> _scrolls = new HashMap<>();
-	public static final Map<Integer, EnchantItem> _supports = new HashMap<>();
+	public static final Map<Integer, EnchantSupportItem> _supports = new HashMap<>();
 	
 	/**
 	 * Instantiates a new enchant item data.
@@ -113,14 +113,7 @@ public class EnchantItemData extends DocumentParser
 						
 						try
 						{
-							final EnchantItem item = new EnchantItem(set);
-							for (Node cd = d.getFirstChild(); cd != null; cd = cd.getNextSibling())
-							{
-								if ("item".equalsIgnoreCase(cd.getNodeName()))
-								{
-									item.addItem(parseInteger(cd.getAttributes(), "id"));
-								}
-							}
+							final EnchantSupportItem item = new EnchantSupportItem(set);
 							_supports.put(item.getId(), item);
 						}
 						catch (NullPointerException e)
@@ -152,7 +145,7 @@ public class EnchantItemData extends DocumentParser
 	 * @param item the item
 	 * @return enchant template for support item
 	 */
-	public final EnchantItem getSupportItem(L2ItemInstance item)
+	public final EnchantSupportItem getSupportItem(L2ItemInstance item)
 	{
 		return _supports.get(item.getId());
 	}

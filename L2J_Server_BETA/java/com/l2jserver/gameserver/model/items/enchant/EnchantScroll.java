@@ -16,8 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.enchant;
+package com.l2jserver.gameserver.model.items.enchant;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 import com.l2jserver.gameserver.datatables.EnchantItemGroupsData;
@@ -33,11 +35,13 @@ import com.l2jserver.util.Rnd;
 /**
  * @author UnAfraid
  */
-public final class EnchantScroll extends EnchantItem
+public final class EnchantScroll extends AbstractEnchantItem
 {
+	private final boolean _isWeapon;
 	private final boolean _isBlessed;
 	private final boolean _isSafe;
 	private final int _scrollGroupId;
+	private Set<Integer> _items;
 	
 	public EnchantScroll(StatsSet set)
 	{
@@ -48,6 +52,12 @@ public final class EnchantScroll extends EnchantItem
 		_isWeapon = (type == L2EtcItemType.ANCIENT_CRYSTAL_ENCHANT_WP) || (type == L2EtcItemType.BLESS_SCRL_ENCHANT_WP) || (type == L2EtcItemType.SCRL_ENCHANT_WP);
 		_isBlessed = (type == L2EtcItemType.BLESS_SCRL_ENCHANT_AM) || (type == L2EtcItemType.BLESS_SCRL_ENCHANT_WP);
 		_isSafe = (type == L2EtcItemType.ANCIENT_CRYSTAL_ENCHANT_AM) || (type == L2EtcItemType.ANCIENT_CRYSTAL_ENCHANT_WP);
+	}
+	
+	@Override
+	public boolean isWeapon()
+	{
+		return _isWeapon;
 	}
 	
 	/**
@@ -75,30 +85,46 @@ public final class EnchantScroll extends EnchantItem
 	}
 	
 	/**
-	 * @param enchantItem
-	 * @param supportItem
-	 * @return {@code true} if current scroll is valid to be used with support item, {@code false} otherwise
+	 * Enforces current scroll to use only those items as possible items to enchant
+	 * @param itemId
 	 */
-	public boolean isValid(L2ItemInstance enchantItem, EnchantItem supportItem)
+	public void addItem(int itemId)
 	{
-		if ((supportItem != null))
+		if (_items == null)
 		{
-			// blessed scrolls can't use support items
+			_items = new HashSet<>();
+		}
+		_items.add(itemId);
+	}
+	
+	/**
+	 * @param itemToEnchant the item to be enchanted
+	 * @param supportItem the support item used when enchanting (can be null)
+	 * @return {@code true} if this scroll can be used with the specified support item and the item to be enchanted, {@code false} otherwise
+	 */
+	@Override
+	public boolean isValid(L2ItemInstance itemToEnchant, EnchantSupportItem supportItem)
+	{
+		if ((_items != null) && !_items.contains(itemToEnchant.getId()))
+		{
+			return false;
+		}
+		else if ((supportItem != null))
+		{
 			if (isBlessed())
 			{
 				return false;
 			}
-			if (!supportItem.isValid(enchantItem))
+			else if (!supportItem.isValid(itemToEnchant, supportItem))
 			{
 				return false;
 			}
-			else if (supportItem.isWeapon() != _isWeapon)
+			else if (supportItem.isWeapon() != isWeapon())
 			{
 				return false;
 			}
 		}
-		
-		return super.isValid(enchantItem);
+		return super.isValid(itemToEnchant, supportItem);
 	}
 	
 	/**
@@ -129,7 +155,7 @@ public final class EnchantScroll extends EnchantItem
 	 * @param supportItem
 	 * @return the total chance for success rate of this scroll
 	 */
-	public EnchantResultType calculateSuccess(L2PcInstance player, L2ItemInstance enchantItem, EnchantItem supportItem)
+	public EnchantResultType calculateSuccess(L2PcInstance player, L2ItemInstance enchantItem, EnchantSupportItem supportItem)
 	{
 		if (!isValid(enchantItem, supportItem))
 		{
