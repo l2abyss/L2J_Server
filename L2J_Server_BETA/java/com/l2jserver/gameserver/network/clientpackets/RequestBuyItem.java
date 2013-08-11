@@ -140,24 +140,20 @@ public final class RequestBuyItem extends L2GameClientPacket
 		
 		if (merchant != null)
 		{
+			if (!buyList.isNpcAllowed(merchant.getId()))
+			{
+				sendPacket(ActionFailed.STATIC_PACKET);
+				return;
+			}
+			
 			if (merchant instanceof L2MerchantInstance)
 			{
-				if (!buyList.isNpcAllowed(merchant.getId()))
-				{
-					sendPacket(ActionFailed.STATIC_PACKET);
-					return;
-				}
 				castleTaxRate = ((L2MerchantInstance) merchant).getMpc().getCastleTaxRate();
 				baseTaxRate = ((L2MerchantInstance) merchant).getMpc().getBaseTaxRate();
 			}
 			else
 			{
-				if (!buyList.isNpcAllowed(merchant.getId()))
-				{
-					sendPacket(ActionFailed.STATIC_PACKET);
-					return;
-				}
-				baseTaxRate = 50;
+				baseTaxRate = 0.5;
 			}
 		}
 		

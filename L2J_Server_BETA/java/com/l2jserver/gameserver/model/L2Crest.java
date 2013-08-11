@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.model;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.network.serverpackets.AllyCrest;
 import com.l2jserver.gameserver.network.serverpackets.ExPledgeCrestLarge;
 import com.l2jserver.gameserver.network.serverpackets.PledgeCrest;
@@ -27,7 +28,7 @@ import com.l2jserver.gameserver.network.serverpackets.PledgeCrest;
 /**
  * @author Nos
  */
-public final class L2Crest
+public final class L2Crest implements IIdentifiable
 {
 	public enum CrestType
 	{
@@ -71,6 +72,7 @@ public final class L2Crest
 		_type = type;
 	}
 	
+	@Override
 	public int getId()
 	{
 		return _id;

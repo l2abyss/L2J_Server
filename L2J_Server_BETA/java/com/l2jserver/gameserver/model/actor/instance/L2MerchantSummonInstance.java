@@ -224,7 +224,7 @@ public class L2MerchantSummonInstance extends L2ServitorInstance
 			return;
 		}
 		
-		double taxRate = 50;
+		double taxRate = 0.50;
 		
 		player.setInventoryBlockingStatus(true);
 		

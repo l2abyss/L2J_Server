@@ -146,21 +146,10 @@ public final class RequestSellItem extends L2GameClientPacket
 		
 		if (merchant != null)
 		{
-			if (merchant instanceof L2MerchantInstance)
+			if (!buyList.isNpcAllowed(merchant.getId()))
 			{
-				if (!buyList.isNpcAllowed(merchant.getId()))
-				{
-					sendPacket(ActionFailed.STATIC_PACKET);
-					return;
-				}
-			}
-			else
-			{
-				if (!buyList.isNpcAllowed(merchant.getId()))
-				{
-					sendPacket(ActionFailed.STATIC_PACKET);
-					return;
-				}
+				sendPacket(ActionFailed.STATIC_PACKET);
+				return;
 			}
 		}
 		

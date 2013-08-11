@@ -124,21 +124,10 @@ public final class RequestRefundItem extends L2GameClientPacket
 			return;
 		}
 		
-		if (merchant instanceof L2MerchantInstance)
+		if (!buyList.isNpcAllowed(merchant.getId()))
 		{
-			if (!buyList.isNpcAllowed(merchant.getId()))
-			{
-				sendPacket(ActionFailed.STATIC_PACKET);
-				return;
-			}
-		}
-		else
-		{
-			if (!buyList.isNpcAllowed(merchant.getId()))
-			{
-				sendPacket(ActionFailed.STATIC_PACKET);
-				return;
-			}
+			sendPacket(ActionFailed.STATIC_PACKET);
+			return;
 		}
 		
 		long weight = 0;
