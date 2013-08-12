@@ -227,7 +227,7 @@ public final class UseItem extends L2GameClientPacket
 				case L2Item.SLOT_R_HAND:
 				{
 					// Prevent players to equip weapon while wearing combat flag
-					if ((activeChar.getActiveWeaponItem() != null) && (activeChar.getActiveWeaponItem().getItemId() == 9819))
+					if ((activeChar.getActiveWeaponItem() != null) && (activeChar.getActiveWeaponItem().getId() == 9819))
 					{
 						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 						return;

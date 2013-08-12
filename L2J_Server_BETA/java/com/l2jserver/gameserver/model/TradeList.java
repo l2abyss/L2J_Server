@@ -152,7 +152,7 @@ public class TradeList
 		{
 			for (TradeItem exclItem : _items)
 			{
-				if (exclItem.getItem().getItemId() == item.getId())
+				if (exclItem.getItem().getId() == item.getId())
 				{
 					if (item.getCount() <= exclItem.getCount())
 					{
@@ -330,7 +330,7 @@ public class TradeList
 		
 		for (TradeItem titem : _items)
 		{
-			if ((titem.getObjectId() == objectId) || (titem.getItem().getItemId() == itemId))
+			if ((titem.getObjectId() == objectId) || (titem.getItem().getId() == itemId))
 			{
 				// If Partner has already confirmed this trade, invalidate the confirmation
 				if (_partner != null)
@@ -564,7 +564,7 @@ public class TradeList
 			{
 				continue;
 			}
-			L2Item template = ItemTable.getInstance().getTemplate(item.getItem().getItemId());
+			L2Item template = ItemTable.getInstance().getTemplate(item.getItem().getId());
 			if (template == null)
 			{
 				continue;
@@ -573,7 +573,7 @@ public class TradeList
 			{
 				slots += item.getCount();
 			}
-			else if (partner.getInventory().getItemByItemId(item.getItem().getItemId()) == null)
+			else if (partner.getInventory().getItemByItemId(item.getItem().getId()) == null)
 			{
 				slots++;
 			}
@@ -595,7 +595,7 @@ public class TradeList
 			{
 				continue;
 			}
-			L2Item template = ItemTable.getInstance().getTemplate(item.getItem().getItemId());
+			L2Item template = ItemTable.getInstance().getTemplate(item.getItem().getId());
 			if (template == null)
 			{
 				continue;
@@ -928,7 +928,7 @@ public class TradeList
 			
 			for (TradeItem ti : _items)
 			{
-				if (ti.getItem().getItemId() == item.getItemId())
+				if (ti.getItem().getId() == item.getItemId())
 				{
 					// price should be the same
 					if (ti.getPrice() == item.getPrice())

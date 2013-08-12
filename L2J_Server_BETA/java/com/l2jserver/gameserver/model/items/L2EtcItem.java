@@ -71,7 +71,7 @@ public final class L2EtcItem extends L2Item
 		{
 			_type2 = L2Item.TYPE2_QUEST;
 		}
-		else if ((getItemId() == PcInventory.ADENA_ID) || (getItemId() == PcInventory.ANCIENT_ADENA_ID))
+		else if ((getId() == PcInventory.ADENA_ID) || (getId() == PcInventory.ANCIENT_ADENA_ID))
 		{
 			_type2 = L2Item.TYPE2_MONEY;
 		}

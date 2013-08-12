@@ -177,7 +177,7 @@ public final class RequestRefundItem extends L2GameClientPacket
 			{
 				slots += count;
 			}
-			else if (player.getInventory().getItemByItemId(template.getItemId()) == null)
+			else if (player.getInventory().getItemByItemId(template.getId()) == null)
 			{
 				slots++;
 			}

@@ -235,7 +235,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 		
 		/**
 		 * Get a {@link PlaySound} packet by its name.
-		 * @param soundName : the name of the sound to look for
+		 * @param soundName the name of the sound to look for
 		 * @return the {@link PlaySound} packet with the specified sound or {@code null} if one was not found
 		 */
 		public static PlaySound getSound(String soundName)
@@ -3306,12 +3306,12 @@ public class Quest extends ManagedScript implements IIdentifiable
 	/**
 	 * Give the specified player a set amount of items if he is lucky enough.<br>
 	 * Not recommended to use this for non-stacking items.
-	 * @param player : the player to give the item(s) to
-	 * @param itemId : the ID of the item to give
-	 * @param amountToGive : the amount of items to give
-	 * @param limit : the maximum amount of items the player can have. Won't give more if this limit is reached. 0 - no limit.
-	 * @param dropChance : the drop chance as a decimal digit from 0 to 1
-	 * @param playSound : if true, plays ItemSound.quest_itemget when items are given and ItemSound.quest_middle when the limit is reached
+	 * @param player the player to give the item(s) to
+	 * @param itemId the ID of the item to give
+	 * @param amountToGive the amount of items to give
+	 * @param limit the maximum amount of items the player can have. Won't give more if this limit is reached. 0 - no limit.
+	 * @param dropChance the drop chance as a decimal digit from 0 to 1
+	 * @param playSound if true, plays ItemSound.quest_itemget when items are given and ItemSound.quest_middle when the limit is reached
 	 * @return {@code true} if the player has collected {@code limit} of the specified item, {@code false} otherwise
 	 */
 	public static boolean giveItemRandomly(L2PcInstance player, int itemId, long amountToGive, long limit, double dropChance, boolean playSound)
@@ -3322,13 +3322,13 @@ public class Quest extends ManagedScript implements IIdentifiable
 	/**
 	 * Give the specified player a set amount of items if he is lucky enough.<br>
 	 * Not recommended to use this for non-stacking items.
-	 * @param player : the player to give the item(s) to
-	 * @param npc : the NPC that "dropped" the item (can be null)
-	 * @param itemId : the ID of the item to give
-	 * @param amountToGive : the amount of items to give
-	 * @param limit : the maximum amount of items the player can have. Won't give more if this limit is reached. 0 - no limit.
-	 * @param dropChance : the drop chance as a decimal digit from 0 to 1
-	 * @param playSound : if true, plays ItemSound.quest_itemget when items are given and ItemSound.quest_middle when the limit is reached
+	 * @param player the player to give the item(s) to
+	 * @param npc the NPC that "dropped" the item (can be null)
+	 * @param itemId the ID of the item to give
+	 * @param amountToGive the amount of items to give
+	 * @param limit the maximum amount of items the player can have. Won't give more if this limit is reached. 0 - no limit.
+	 * @param dropChance the drop chance as a decimal digit from 0 to 1
+	 * @param playSound if true, plays ItemSound.quest_itemget when items are given and ItemSound.quest_middle when the limit is reached
 	 * @return {@code true} if the player has collected {@code limit} of the specified item, {@code false} otherwise
 	 */
 	public static boolean giveItemRandomly(L2PcInstance player, L2Npc npc, int itemId, long amountToGive, long limit, double dropChance, boolean playSound)
@@ -3339,14 +3339,14 @@ public class Quest extends ManagedScript implements IIdentifiable
 	/**
 	 * Give the specified player a random amount of items if he is lucky enough.<br>
 	 * Not recommended to use this for non-stacking items.
-	 * @param player : the player to give the item(s) to
-	 * @param npc : the NPC that "dropped" the item (can be null)
-	 * @param itemId : the ID of the item to give
-	 * @param minAmount : the minimum amount of items to give
-	 * @param maxAmount : the maximum amount of items to give (will give a random amount between min/maxAmount multiplied by quest rates)
-	 * @param limit : the maximum amount of items the player can have. Won't give more if this limit is reached. 0 - no limit.
-	 * @param dropChance : the drop chance as a decimal digit from 0 to 1
-	 * @param playSound : if true, plays ItemSound.quest_itemget when items are given and ItemSound.quest_middle when the limit is reached
+	 * @param player the player to give the item(s) to
+	 * @param npc the NPC that "dropped" the item (can be null)
+	 * @param itemId the ID of the item to give
+	 * @param minAmount the minimum amount of items to give
+	 * @param maxAmount the maximum amount of items to give (will give a random amount between min/maxAmount multiplied by quest rates)
+	 * @param limit the maximum amount of items the player can have. Won't give more if this limit is reached. 0 - no limit.
+	 * @param dropChance the drop chance as a decimal digit from 0 to 1
+	 * @param playSound if true, plays ItemSound.quest_itemget when items are given and ItemSound.quest_middle when the limit is reached
 	 * @return {@code true} if the player has collected {@code limit} of the specified item, {@code false} otherwise
 	 */
 	public static boolean giveItemRandomly(L2PcInstance player, L2Npc npc, int itemId, long minAmount, long maxAmount, long limit, double dropChance, boolean playSound)

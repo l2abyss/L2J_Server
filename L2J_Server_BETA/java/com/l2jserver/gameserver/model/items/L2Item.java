@@ -39,6 +39,7 @@ import com.l2jserver.gameserver.model.conditions.ConditionPetType;
 import com.l2jserver.gameserver.model.effects.EffectTemplate;
 import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2ActionType;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
@@ -62,7 +63,7 @@ import com.l2jserver.util.StringUtil;
  * </ul>
  * @version $Revision: 1.7.2.2.2.5 $ $Date: 2005/04/06 18:25:18 $
  */
-public abstract class L2Item
+public abstract class L2Item implements IIdentifiable
 {
 	protected static final Logger _log = Logger.getLogger(L2Item.class.getName());
 	
@@ -451,7 +452,8 @@ public abstract class L2Item
 	 * Returns the ID of the item
 	 * @return int
 	 */
-	public final int getItemId()
+	@Override
+	public final int getId()
 	{
 		return _itemId;
 	}
@@ -746,7 +748,7 @@ public abstract class L2Item
 	 */
 	public final int isEnchantable()
 	{
-		return Arrays.binarySearch(Config.ENCHANT_BLACKLIST, getItemId()) < 0 ? _enchantable : 0;
+		return Arrays.binarySearch(Config.ENCHANT_BLACKLIST, getId()) < 0 ? _enchantable : 0;
 	}
 	
 	/**

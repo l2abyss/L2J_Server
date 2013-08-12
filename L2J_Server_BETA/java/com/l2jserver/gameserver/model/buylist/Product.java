@@ -70,7 +70,7 @@ public final class Product
 	
 	public int getItemId()
 	{
-		return getItem().getItemId();
+		return getItem().getId();
 	}
 	
 	public long getPrice()

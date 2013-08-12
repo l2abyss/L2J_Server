@@ -76,7 +76,7 @@ public final class EnchantRateItem
 	 */
 	public boolean validate(L2Item item)
 	{
-		if ((_itemId != 0) && (_itemId != item.getItemId()))
+		if ((_itemId != 0) && (_itemId != item.getId()))
 		{
 			return false;
 		}

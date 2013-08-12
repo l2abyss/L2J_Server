@@ -407,7 +407,7 @@ public class PcInventory extends Inventory
 	public void adjustAvailableItem(TradeItem item)
 	{
 		boolean notAllEquipped = false;
-		for (L2ItemInstance adjItem : getItemsByItemId(item.getItem().getItemId()))
+		for (L2ItemInstance adjItem : getItemsByItemId(item.getItem().getId()))
 		{
 			if (adjItem.isEquipable())
 			{
@@ -424,7 +424,7 @@ public class PcInventory extends Inventory
 		}
 		if (notAllEquipped)
 		{
-			L2ItemInstance adjItem = getItemByItemId(item.getItem().getItemId());
+			L2ItemInstance adjItem = getItemByItemId(item.getItem().getId());
 			item.setObjectId(adjItem.getObjectId());
 			item.setEnchant(adjItem.getEnchantLevel());
 			
@@ -848,7 +848,7 @@ public class PcInventory extends Inventory
 			for (L2Item item : itemList)
 			{
 				// If the item is not stackable or is stackable and not present in inventory, will need a slot.
-				if (!item.isStackable() || (getInventoryItemCount(item.getItemId(), -1) <= 0))
+				if (!item.isStackable() || (getInventoryItemCount(item.getId(), -1) <= 0))
 				{
 					requiredSlots++;
 				}

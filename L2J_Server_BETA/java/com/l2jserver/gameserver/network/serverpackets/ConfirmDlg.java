@@ -135,13 +135,13 @@ public class ConfirmDlg extends L2GameServerPacket
 	
 	public ConfirmDlg addItemName(L2ItemInstance item)
 	{
-		return addItemName(item.getItem().getItemId());
+		return addItemName(item.getItem().getId());
 	}
 	
 	public ConfirmDlg addItemName(L2Item item)
 	{
 		// TODO: template id for items
-		return addItemName(item.getItemId());
+		return addItemName(item.getId());
 	}
 	
 	public ConfirmDlg addItemName(int id)

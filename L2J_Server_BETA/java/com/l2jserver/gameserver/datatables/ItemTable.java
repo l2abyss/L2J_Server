@@ -204,21 +204,21 @@ public class ItemTable
 		_weapons.clear();
 		for (L2Item item : DocumentEngine.getInstance().loadItems())
 		{
-			if (highest < item.getItemId())
+			if (highest < item.getId())
 			{
-				highest = item.getItemId();
+				highest = item.getId();
 			}
 			if (item instanceof L2EtcItem)
 			{
-				_etcItems.put(item.getItemId(), (L2EtcItem) item);
+				_etcItems.put(item.getId(), (L2EtcItem) item);
 			}
 			else if (item instanceof L2Armor)
 			{
-				_armors.put(item.getItemId(), (L2Armor) item);
+				_armors.put(item.getId(), (L2Armor) item);
 			}
 			else
 			{
-				_weapons.put(item.getItemId(), (L2Weapon) item);
+				_weapons.put(item.getId(), (L2Weapon) item);
 			}
 		}
 		buildFastLookupTable(highest);
@@ -241,19 +241,19 @@ public class ItemTable
 		// Insert armor item in Fast Look Up Table
 		for (L2Armor item : _armors.values())
 		{
-			_allTemplates[item.getItemId()] = item;
+			_allTemplates[item.getId()] = item;
 		}
 		
 		// Insert weapon item in Fast Look Up Table
 		for (L2Weapon item : _weapons.values())
 		{
-			_allTemplates[item.getItemId()] = item;
+			_allTemplates[item.getId()] = item;
 		}
 		
 		// Insert etcItem item in Fast Look Up Table
 		for (L2EtcItem item : _etcItems.values())
 		{
-			_allTemplates[item.getItemId()] = item;
+			_allTemplates[item.getId()] = item;
 		}
 	}
 	

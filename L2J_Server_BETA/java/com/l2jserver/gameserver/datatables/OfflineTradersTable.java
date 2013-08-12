@@ -83,7 +83,7 @@ public class OfflineTradersTable
 								for (TradeItem i : pc.getBuyList().getItems())
 								{
 									stm_items.setInt(1, pc.getObjectId());
-									stm_items.setInt(2, i.getItem().getItemId());
+									stm_items.setInt(2, i.getItem().getId());
 									stm_items.setLong(3, i.getCount());
 									stm_items.setLong(4, i.getPrice());
 									stm_items.executeUpdate();
