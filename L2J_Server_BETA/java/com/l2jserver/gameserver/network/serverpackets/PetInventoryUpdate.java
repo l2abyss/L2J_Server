@@ -18,96 +18,34 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.gameserver.model.ItemInfo;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
- * @author Yme, Advi
+ * @author Yme, Advi, UnAfraid
  */
-public class PetInventoryUpdate extends L2GameServerPacket
+public class PetInventoryUpdate extends AbstractInventoryUpdate
 {
-	private final List<ItemInfo> _items;
-	
-	public PetInventoryUpdate(List<ItemInfo> items)
-	{
-		_items = items;
-	}
-	
 	public PetInventoryUpdate()
 	{
-		this(new ArrayList<ItemInfo>());
 	}
 	
 	public PetInventoryUpdate(L2ItemInstance item)
 	{
-		this(new ArrayList<ItemInfo>());
-		addItem(item);
+		super(item);
 	}
 	
-	public void addItem(L2ItemInstance item)
+	public PetInventoryUpdate(List<ItemInfo> items)
 	{
-		_items.add(new ItemInfo(item));
-	}
-	
-	public void addNewItem(L2ItemInstance item)
-	{
-		_items.add(new ItemInfo(item, 1));
-	}
-	
-	public void addModifiedItem(L2ItemInstance item)
-	{
-		_items.add(new ItemInfo(item, 2));
-	}
-	
-	public void addRemovedItem(L2ItemInstance item)
-	{
-		_items.add(new ItemInfo(item, 3));
-	}
-	
-	public void addItems(List<L2ItemInstance> items)
-	{
-		for (L2ItemInstance item : items)
-		{
-			_items.add(new ItemInfo(item));
-		}
+		super(items);
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0xB4);
-		int count = _items.size();
-		writeH(count);
-		for (ItemInfo item : _items)
-		{
-			writeH(item.getChange()); // Update type : 01-add, 02-modify, 03-remove
-			writeD(item.getObjectId());
-			writeD(item.getItem().getDisplayId());
-			writeD(item.getLocation());
-			writeQ(item.getCount());
-			writeH(item.getItem().getType2());
-			writeH(item.getCustomType1());
-			writeH(item.getEquipped());
-			writeD(item.getItem().getBodyPart());
-			writeH(item.getEnchant());
-			writeH(item.getCustomType2());
-			writeD(item.getAugmentationBonus());
-			writeD(item.getMana());
-			writeD(item.getTime());
-			writeH(item.getAttackElementType());
-			writeH(item.getAttackElementPower());
-			for (byte i = 0; i < 6; i++)
-			{
-				writeH(item.getElementDefAttr(i));
-			}
-			// Enchant Effects
-			for (int op : item.getEnchantOptions())
-			{
-				writeH(op);
-			}
-		}
+		writeItems();
 	}
 }
