@@ -31,9 +31,6 @@ public class PetInventoryUpdate extends L2GameServerPacket
 {
 	private final List<ItemInfo> _items;
 	
-	/**
-	 * @param items
-	 */
 	public PetInventoryUpdate(List<ItemInfo> items)
 	{
 		_items = items;
@@ -42,6 +39,12 @@ public class PetInventoryUpdate extends L2GameServerPacket
 	public PetInventoryUpdate()
 	{
 		this(new ArrayList<ItemInfo>());
+	}
+	
+	public PetInventoryUpdate(L2ItemInstance item)
+	{
+		this(new ArrayList<ItemInfo>());
+		addItem(item);
 	}
 	
 	public void addItem(L2ItemInstance item)

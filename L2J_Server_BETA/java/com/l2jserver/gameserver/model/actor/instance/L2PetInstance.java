@@ -44,6 +44,7 @@ import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
+import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
@@ -71,7 +72,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.PetInventoryUpdate;
-import com.l2jserver.gameserver.network.serverpackets.PetItemList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.StopMove;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -515,20 +515,13 @@ public class L2PetInstance extends L2Summon
 	@Override
 	protected void doPickupItem(L2Object object)
 	{
-		boolean follow = getFollowStatus();
 		if (isDead())
 		{
 			return;
 		}
+		
 		getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-		StopMove sm = new StopMove(getObjectId(), getX(), getY(), getZ(), getHeading());
-		
-		if (Config.DEBUG)
-		{
-			_logPet.fine("Pet pickup pos: " + object.getX() + " " + object.getY() + " " + object.getZ());
-		}
-		
-		broadcastPacket(sm);
+		broadcastPacket(new StopMove(this));
 		
 		if (!(object instanceof L2ItemInstance))
 		{
@@ -538,7 +531,8 @@ public class L2PetInstance extends L2Summon
 			return;
 		}
 		
-		L2ItemInstance target = (L2ItemInstance) object;
+		boolean follow = getFollowStatus();
+		final L2ItemInstance target = (L2ItemInstance) object;
 		
 		// Cursed weapons
 		if (CursedWeaponsManager.getInstance().isCursed(target.getId()))
@@ -548,72 +542,68 @@ public class L2PetInstance extends L2Summon
 			sendPacket(smsg);
 			return;
 		}
+		else if (FortSiegeManager.getInstance().isCombat(target.getId()))
+		{
+			return;
+		}
 		
+		SystemMessage smsg = null;
 		synchronized (target)
 		{
+			// Check if the target to pick up is visible
 			if (!target.isVisible())
 			{
+				// Send a Server->Client packet ActionFailed to this L2PcInstance
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
+			
 			if (!target.getDropProtection().tryPickUp(this))
 			{
 				sendPacket(ActionFailed.STATIC_PACKET);
-				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1);
+				smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1);
 				smsg.addItemName(target);
 				sendPacket(smsg);
 				return;
 			}
-			if (!_inventory.validateCapacity(target))
+			
+			if (((isInParty() && (getParty().getLootDistribution() == L2Party.ITEM_LOOTER)) || !isInParty()) && !_inventory.validateCapacity(target))
 			{
+				sendPacket(ActionFailed.STATIC_PACKET);
 				sendPacket(SystemMessageId.YOUR_PET_CANNOT_CARRY_ANY_MORE_ITEMS);
 				return;
 			}
-			if (!_inventory.validateWeight(target, target.getCount()))
-			{
-				sendPacket(SystemMessageId.UNABLE_TO_PLACE_ITEM_YOUR_PET_IS_TOO_ENCUMBERED);
-				return;
-			}
+			
 			if ((target.getOwnerId() != 0) && (target.getOwnerId() != getOwner().getObjectId()) && !getOwner().isInLooterParty(target.getOwnerId()))
 			{
-				sendPacket(ActionFailed.STATIC_PACKET);
-				
 				if (target.getId() == PcInventory.ADENA_ID)
 				{
-					SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1_ADENA);
+					smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1_ADENA);
 					smsg.addItemNumber(target.getCount());
-					sendPacket(smsg);
 				}
 				else if (target.getCount() > 1)
 				{
-					SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S2_S1_S);
-					smsg.addItemName(target.getId());
+					smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S2_S1_S);
+					smsg.addItemName(target);
 					smsg.addItemNumber(target.getCount());
-					sendPacket(smsg);
 				}
 				else
 				{
-					SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1);
-					smsg.addItemName(target.getId());
-					sendPacket(smsg);
+					smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1);
+					smsg.addItemName(target);
 				}
-				
+				sendPacket(ActionFailed.STATIC_PACKET);
+				sendPacket(smsg);
 				return;
 			}
+			
 			if ((target.getItemLootShedule() != null) && ((target.getOwnerId() == getOwner().getObjectId()) || getOwner().isInLooterParty(target.getOwnerId())))
 			{
 				target.resetOwnerTimer();
 			}
 			
-			// If owner is in party and it isnt finders keepers, distribute the item instead of stealing it -.-
-			if (getOwner().isInParty() && (getOwner().getParty().getLootDistribution() != L2Party.ITEM_LOOTER))
-			{
-				getOwner().getParty().distributeItem(getOwner(), target);
-			}
-			else
-			{
-				target.pickupMe(this);
-			}
+			// Remove from the ground!
+			target.pickupMe(this);
 			
 			if (Config.SAVE_DROPPED_ITEM)
 			{
@@ -635,40 +625,48 @@ public class L2PetInstance extends L2Summon
 			}
 			
 			ItemTable.getInstance().destroyItem("Consume", target, getOwner(), null);
-			
 			broadcastStatusUpdate();
 		}
 		else
 		{
 			if (target.getId() == PcInventory.ADENA_ID)
 			{
-				SystemMessage sm2 = SystemMessage.getSystemMessage(SystemMessageId.PET_PICKED_S1_ADENA);
-				sm2.addItemNumber(target.getCount());
-				sendPacket(sm2);
+				smsg = SystemMessage.getSystemMessage(SystemMessageId.PET_PICKED_S1_ADENA);
+				smsg.addItemNumber(target.getCount());
+				sendPacket(smsg);
 			}
 			else if (target.getEnchantLevel() > 0)
 			{
-				SystemMessage sm2 = SystemMessage.getSystemMessage(SystemMessageId.PET_PICKED_S1_S2);
-				sm2.addNumber(target.getEnchantLevel());
-				sm2.addString(target.getName());
-				sendPacket(sm2);
+				smsg = SystemMessage.getSystemMessage(SystemMessageId.PET_PICKED_S1_S2);
+				smsg.addNumber(target.getEnchantLevel());
+				smsg.addItemName(target);
+				sendPacket(smsg);
 			}
 			else if (target.getCount() > 1)
 			{
-				SystemMessage sm2 = SystemMessage.getSystemMessage(SystemMessageId.PET_PICKED_S2_S1_S);
-				sm2.addItemNumber(target.getCount());
-				sm2.addString(target.getName());
-				sendPacket(sm2);
+				smsg = SystemMessage.getSystemMessage(SystemMessageId.PET_PICKED_S2_S1_S);
+				smsg.addItemNumber(target.getCount());
+				smsg.addItemName(target);
+				sendPacket(smsg);
 			}
 			else
 			{
-				SystemMessage sm2 = SystemMessage.getSystemMessage(SystemMessageId.PET_PICKED_S1);
-				sm2.addString(target.getName());
-				sendPacket(sm2);
+				smsg = SystemMessage.getSystemMessage(SystemMessageId.PET_PICKED_S1);
+				smsg.addItemName(target);
+				sendPacket(smsg);
 			}
-			getInventory().addItem("Pickup", target, getOwner(), this);
-			// FIXME Just send the updates if possible (old way wasn't working though)
-			sendPacket(new PetItemList(getInventory().getItems()));
+			
+			// If owner is in party and it isnt finders keepers, distribute the item instead of stealing it -.-
+			if (getOwner().isInParty() && (getOwner().getParty().getLootDistribution() != L2Party.ITEM_LOOTER))
+			{
+				getOwner().getParty().distributeItem(getOwner(), target);
+			}
+			else
+			{
+				final L2ItemInstance item = getInventory().addItem("Pickup", target, getOwner(), this);
+				// sendPacket(new PetItemList(getInventory().getItems()));
+				sendPacket(new PetInventoryUpdate(item));
+			}
 		}
 		
 		getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);

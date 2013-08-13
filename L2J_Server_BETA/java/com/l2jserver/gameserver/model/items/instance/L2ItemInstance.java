@@ -277,8 +277,7 @@ public final class L2ItemInstance extends L2Object
 		L2WorldRegion oldregion = getPosition().getWorldRegion();
 		
 		// Create a server->client GetItem packet to pick up the L2ItemInstance
-		GetItem gi = new GetItem(this, player.getObjectId());
-		player.broadcastPacket(gi);
+		player.broadcastPacket(new GetItem(this, player.getObjectId()));
 		
 		synchronized (this)
 		{
