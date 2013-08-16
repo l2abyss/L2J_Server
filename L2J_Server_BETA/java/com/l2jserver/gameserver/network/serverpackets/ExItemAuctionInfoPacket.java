@@ -18,7 +18,6 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.ItemInfo;
 import com.l2jserver.gameserver.model.itemauction.ItemAuction;
 import com.l2jserver.gameserver.model.itemauction.ItemAuctionBid;
 import com.l2jserver.gameserver.model.itemauction.ItemAuctionState;
@@ -26,7 +25,7 @@ import com.l2jserver.gameserver.model.itemauction.ItemAuctionState;
 /**
  * @author Forsaiken
  */
-public final class ExItemAuctionInfoPacket extends L2GameServerPacket
+public final class ExItemAuctionInfoPacket extends AbstractItemPacket
 {
 	private final boolean _refresh;
 	private final int _timeRemaining;
@@ -66,41 +65,13 @@ public final class ExItemAuctionInfoPacket extends L2GameServerPacket
 		writeQ(highestBid != null ? highestBid.getLastBid() : _currentAuction.getAuctionInitBid());
 		
 		writeD(_timeRemaining);
-		writeItemInfo(_currentAuction.getItemInfo());
+		writeItem(_currentAuction.getItemInfo(), false);
 		
 		if (_nextAuction != null)
 		{
 			writeQ(_nextAuction.getAuctionInitBid());
 			writeD((int) (_nextAuction.getStartingTime() / 1000)); // unix time in seconds
-			writeItemInfo(_nextAuction.getItemInfo());
+			writeItem(_nextAuction.getItemInfo(), false);
 		}
-	}
-	
-	private final void writeItemInfo(final ItemInfo item)
-	{
-		writeD(item.getItem().getId());
-		writeD(item.getItem().getId());
-		writeD(item.getLocation());
-		writeQ(item.getCount());
-		writeH(item.getItem().getType2());
-		writeH(item.getCustomType1());
-		writeH(0x00); // Equipped ? ON AUCTION?
-		writeD(item.getItem().getBodyPart());
-		writeH(item.getEnchant());
-		writeH(item.getCustomType2());
-		writeD(item.getAugmentationBonus());
-		writeD(item.getMana());
-		writeD(item.getTime());
-		
-		writeH(item.getAttackElementType());
-		writeH(item.getAttackElementPower());
-		for (byte i = 0; i < 6; i++)
-		{
-			writeH(item.getElementDefAttr(i));
-		}
-		
-		writeH(0x00); // enchant effect 1
-		writeH(0x00); // enchant effect 2
-		writeH(0x00); // enchant effect 3
 	}
 }

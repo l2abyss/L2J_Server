@@ -24,7 +24,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 /**
  * @author ShanSoft
  */
-public class ExBuySellList extends L2GameServerPacket
+public class ExBuySellList extends AbstractItemPacket
 {
 	private L2ItemInstance[] _sellList = null;
 	private L2ItemInstance[] _refundList = null;
@@ -47,37 +47,12 @@ public class ExBuySellList extends L2GameServerPacket
 		writeH(0xB7);
 		writeD(0x01);
 		
-		if ((_sellList != null) && (_sellList.length > 0))
+		if ((_sellList != null))
 		{
 			writeH(_sellList.length);
 			for (L2ItemInstance item : _sellList)
 			{
-				writeD(item.getObjectId());
-				writeD(item.getDisplayId());
-				writeD(item.getLocationSlot());
-				writeQ(item.getCount());
-				writeH(item.getItem().getType2());
-				writeH(item.getCustomType1());
-				writeH(0x00);
-				writeD(item.getItem().getBodyPart());
-				writeH(item.getEnchantLevel());
-				writeH(item.getCustomType2());
-				// Augment, Mana, Time - hardcode for now
-				writeD(0x00);
-				writeD(-1);
-				writeD(-9999);
-				writeH(item.getAttackElementType());
-				writeH(item.getAttackElementPower());
-				for (byte i = 0; i < 6; i++)
-				{
-					writeH(item.getElementDefAttr(i));
-				}
-				// Enchant Effects
-				for (int op : item.getEnchantOptions())
-				{
-					writeH(op);
-				}
-				
+				writeItem(item);
 				writeQ(item.getItem().getReferencePrice() / 2);
 			}
 		}
@@ -89,34 +64,11 @@ public class ExBuySellList extends L2GameServerPacket
 		if ((_refundList != null) && (_refundList.length > 0))
 		{
 			writeH(_refundList.length);
-			int idx = 0;
+			int i = 0;
 			for (L2ItemInstance item : _refundList)
 			{
-				writeD(item.getObjectId());
-				writeD(item.getDisplayId());
-				writeD(0x00);
-				writeQ(item.getCount());
-				writeH(item.getItem().getType2());
-				writeH(item.getCustomType1());
-				writeH(0x00);
-				writeD(item.getItem().getBodyPart());
-				writeH(item.getEnchantLevel());
-				writeH(item.getCustomType2());
-				// Augment, Mana, Time - hardcode for now
-				writeD(0x00);
-				writeD(-1);
-				writeD(-9999);
-				writeH(item.getAttackElementType());
-				writeH(item.getAttackElementPower());
-				for (byte i = 0; i < 6; i++)
-				{
-					writeH(item.getElementDefAttr(i));
-				}
-				// Enchant Effects
-				writeH(0x00);
-				writeH(0x00);
-				writeH(0x00);
-				writeD(idx++);
+				writeItem(item);
+				writeD(i++);
 				writeQ((item.getItem().getReferencePrice() / 2) * item.getCount());
 			}
 		}

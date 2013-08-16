@@ -18,23 +18,30 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import javolution.util.FastList;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * @author JIV
  */
-public class ExQuestItemList extends L2GameServerPacket
+public class ExQuestItemList extends AbstractItemPacket
 {
-	private final FastList<L2ItemInstance> _items;
-	private final PcInventory _inventory;
+	private final L2PcInstance _activeChar;
+	private final List<L2ItemInstance> _items = new ArrayList<>();
 	
-	public ExQuestItemList(FastList<L2ItemInstance> items, PcInventory inv)
+	public ExQuestItemList(L2PcInstance activeChar)
 	{
-		_items = items;
-		_inventory = inv;
+		_activeChar = activeChar;
+		for (L2ItemInstance item : activeChar.getInventory().getItems())
+		{
+			if (item.isQuestItem())
+			{
+				_items.add(item);
+			}
+		}
 	}
 	
 	@Override
@@ -45,51 +52,8 @@ public class ExQuestItemList extends L2GameServerPacket
 		writeH(_items.size());
 		for (L2ItemInstance item : _items)
 		{
-			writeD(item.getObjectId());
-			writeD(item.getDisplayId());
-			writeD(item.getLocationSlot());
-			writeQ(item.getCount());
-			writeD(item.getItem().getType2());
-			writeH(item.getCustomType1()); // item type3
-			// writeH(item.isEquipped() ? 0x01 : 0x00);
-			writeD(item.getItem().getBodyPart());
-			writeH(item.getEnchantLevel()); // enchant level
-			writeH(item.getCustomType2()); // item type3
-			if (item.isAugmented())
-			{
-				writeD(item.getAugmentation().getAugmentationId());
-			}
-			else
-			{
-				writeD(0x00);
-			}
-			writeD(item.getMana());
-			writeD(item.isTimeLimitedItem() ? (int) (item.getRemainingTime() / 1000) : -9999);
-			writeH(item.getAttackElementType());
-			writeH(item.getAttackElementPower());
-			for (byte i = 0; i < 6; i++)
-			{
-				writeH(item.getElementDefAttr(i));
-			}
-			// Enchant Effects
-			for (int op : item.getEnchantOptions())
-			{
-				writeH(op);
-			}
+			writeItem(item, true);
 		}
-		if (_inventory.hasInventoryBlock())
-		{
-			writeH(_inventory.getBlockItems().length);
-			writeC(_inventory.getBlockMode());
-			for (int i : _inventory.getBlockItems())
-			{
-				writeD(i);
-			}
-		}
-		else
-		{
-			writeH(0x00);
-		}
-		FastList.recycle(_items);
+		writeInventoryBlock(_activeChar.getInventory());
 	}
 }

@@ -18,12 +18,13 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import com.l2jserver.gameserver.model.ItemInfo;
 import com.l2jserver.gameserver.model.TradeItem;
 
 /**
  * @author Yme
  */
-public final class TradeOwnAdd extends L2GameServerPacket
+public final class TradeOwnAdd extends AbstractItemPacket
 {
 	private final TradeItem _item;
 	
@@ -35,7 +36,7 @@ public final class TradeOwnAdd extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0x1a);
+		writeC(0x1A);
 		
 		writeH(1); // items added count
 		writeH(0);
@@ -51,15 +52,6 @@ public final class TradeOwnAdd extends L2GameServerPacket
 		writeH(_item.getCustomType2());
 		
 		// T1
-		writeH(_item.getAttackElementType());
-		writeH(_item.getAttackElementPower());
-		for (byte i = 0; i < 6; i++)
-		{
-			writeH(_item.getElementDefAttr(i));
-		}
-		
-		writeH(0x00); // Enchant effect 1
-		writeH(0x00); // Enchant effect 2
-		writeH(0x00); // Enchant effect 3
+		writeItemElementalAndEnchant(new ItemInfo(_item));
 	}
 }
