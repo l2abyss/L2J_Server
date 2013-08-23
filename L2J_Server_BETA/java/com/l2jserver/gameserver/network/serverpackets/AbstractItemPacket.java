@@ -30,30 +30,15 @@ public abstract class AbstractItemPacket extends L2GameServerPacket
 {
 	protected void writeItem(TradeItem item)
 	{
-		writeItem(new ItemInfo(item), false);
-	}
-	
-	protected void writeItem(ItemInfo item)
-	{
-		writeItem(item, false);
-	}
-	
-	protected void writeItem(TradeItem item, boolean questItem)
-	{
-		writeItem(new ItemInfo(item), questItem);
+		writeItem(new ItemInfo(item));
 	}
 	
 	protected void writeItem(L2ItemInstance item)
 	{
-		writeItem(new ItemInfo(item), false);
+		writeItem(new ItemInfo(item));
 	}
 	
-	protected void writeItem(L2ItemInstance item, boolean questItem)
-	{
-		writeItem(new ItemInfo(item), questItem);
-	}
-	
-	protected void writeItem(ItemInfo item, boolean questItem)
+	protected void writeItem(ItemInfo item)
 	{
 		writeD(item.getObjectId()); // ObjectId
 		writeD(item.getItem().getDisplayId()); // ItemId
@@ -61,10 +46,7 @@ public abstract class AbstractItemPacket extends L2GameServerPacket
 		writeQ(item.getCount()); // Quantity
 		writeH(item.getItem().getType2()); // Item Type 2 : 00-weapon, 01-shield/armor, 02-ring/earring/necklace, 03-questitem, 04-adena, 05-item
 		writeH(item.getCustomType1()); // Filler (always 0)
-		if (!questItem)
-		{
-			writeH(item.getEquipped()); // Equipped : 00-No, 01-yes
-		}
+		writeH(item.getEquipped()); // Equipped : 00-No, 01-yes
 		writeD(item.getItem().getBodyPart()); // Slot : 0006-lr.ear, 0008-neck, 0030-lr.finger, 0040-head, 0100-l.hand, 0200-gloves, 0400-chest, 0800-pants, 1000-feet, 4000-r.hand, 8000-r.hand
 		writeH(item.getEnchant()); // Enchant level (pet level shown in control item)
 		writeH(item.getCustomType2()); // Pet name exists or not shown in control item

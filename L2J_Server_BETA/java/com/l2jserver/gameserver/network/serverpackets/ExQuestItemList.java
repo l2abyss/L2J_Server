@@ -52,7 +52,7 @@ public class ExQuestItemList extends AbstractItemPacket
 		writeH(_items.size());
 		for (L2ItemInstance item : _items)
 		{
-			writeItem(item, true);
+			writeItem(item);
 		}
 		writeInventoryBlock(_activeChar.getInventory());
 	}

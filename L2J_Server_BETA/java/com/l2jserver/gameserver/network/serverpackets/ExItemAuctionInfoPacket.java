@@ -65,13 +65,13 @@ public final class ExItemAuctionInfoPacket extends AbstractItemPacket
 		writeQ(highestBid != null ? highestBid.getLastBid() : _currentAuction.getAuctionInitBid());
 		
 		writeD(_timeRemaining);
-		writeItem(_currentAuction.getItemInfo(), false);
+		writeItem(_currentAuction.getItemInfo());
 		
 		if (_nextAuction != null)
 		{
 			writeQ(_nextAuction.getAuctionInitBid());
 			writeD((int) (_nextAuction.getStartingTime() / 1000)); // unix time in seconds
-			writeItem(_nextAuction.getItemInfo(), false);
+			writeItem(_nextAuction.getItemInfo());
 		}
 	}
 }
