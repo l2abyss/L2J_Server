@@ -58,7 +58,7 @@ public class AttackStanceTaskManager
 		if ((actor != null) && actor.isPlayable())
 		{
 			final L2PcInstance player = actor.getActingPlayer();
-			for (L2CubicInstance cubic : player.getCubics())
+			for (L2CubicInstance cubic : player.getCubics().values())
 			{
 				if (cubic.getId() != L2CubicInstance.LIFE_CUBIC)
 				{
