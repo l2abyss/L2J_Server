@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.model.actor;
 
 import com.l2jserver.gameserver.ai.CtrlEvent;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.actor.events.PlayableEvents;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;

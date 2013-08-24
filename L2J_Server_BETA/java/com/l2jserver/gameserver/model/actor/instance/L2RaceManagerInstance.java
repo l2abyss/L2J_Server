@@ -24,6 +24,7 @@ import javolution.util.FastList;
 
 import com.l2jserver.gameserver.MonsterRace;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.knownlist.RaceManagerKnownList;

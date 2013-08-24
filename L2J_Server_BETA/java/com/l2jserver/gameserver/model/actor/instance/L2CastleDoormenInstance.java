@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.StringTokenizer;
 
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;

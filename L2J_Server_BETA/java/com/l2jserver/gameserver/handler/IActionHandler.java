@@ -20,8 +20,8 @@ package com.l2jserver.gameserver.handler;
 
 import java.util.logging.Logger;
 
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public interface IActionHandler

@@ -16,21 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model;
+package com.l2jserver.gameserver.enums;
 
 /**
- * Enum with petition types.
+ * Enum with petition states.
  * @author xban1x
  */
-public enum PetitionType
+public enum PetitionState
 {
-	IMMOBILITY,
-	RECOVERY_RELATED,
-	BUG_REPORT,
-	QUEST_RELATED,
-	BAD_USER,
-	SUGGESTIONS,
-	GAME_TIP,
-	OPERATION_RELATED,
-	OTHER
+	PENDING,
+	RESPONDER_CANCEL,
+	RESPONDER_MISSING,
+	RESPONDER_REJECT,
+	RESPONDER_COMPLETE,
+	PETITIONER_CANCEL,
+	PETITIONER_MISSING,
+	IN_PROCESS,
+	COMPLETED
 }

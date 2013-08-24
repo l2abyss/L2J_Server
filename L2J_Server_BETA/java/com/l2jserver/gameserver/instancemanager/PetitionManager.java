@@ -26,8 +26,8 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.AdminTable;
+import com.l2jserver.gameserver.enums.PetitionState;
 import com.l2jserver.gameserver.model.Petition;
-import com.l2jserver.gameserver.model.PetitionState;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;

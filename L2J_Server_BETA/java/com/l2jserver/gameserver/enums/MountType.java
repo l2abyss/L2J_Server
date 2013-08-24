@@ -16,27 +16,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model;
+package com.l2jserver.gameserver.enums;
+
+import com.l2jserver.gameserver.datatables.CategoryData;
 
 /**
  * @author UnAfraid
  */
-public enum ShotType
+public enum MountType
 {
-	SOULSHOTS,
-	SPIRITSHOTS,
-	BLESSED_SPIRITSHOTS,
-	FISH_SOULSHOTS;
+	NONE,
+	STRIDER,
+	WYVERN,
+	WOLF;
 	
-	private final int _mask;
-	
-	private ShotType()
+	public static MountType findByNpcId(int npcId)
 	{
-		_mask = (1 << ordinal());
-	}
-	
-	public int getMask()
-	{
-		return _mask;
+		if (CategoryData.getInstance().isInCategory(CategoryType.STRIDER, npcId))
+		{
+			return STRIDER;
+		}
+		else if (CategoryData.getInstance().isInCategory(CategoryType.WYVERN_GROUP, npcId))
+		{
+			return WYVERN;
+		}
+		else if (CategoryData.getInstance().isInCategory(CategoryType.WOLF_GROUP, npcId))
+		{
+			return WOLF;
+		}
+		return NONE;
 	}
 }

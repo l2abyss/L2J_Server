@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.List;
 
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Tower;

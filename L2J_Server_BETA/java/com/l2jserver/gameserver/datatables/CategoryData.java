@@ -29,7 +29,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.engines.DocumentParser;
-import com.l2jserver.gameserver.model.CategoryType;
+import com.l2jserver.gameserver.enums.CategoryType;
 
 /**
  * This class holds different categories containing class ids or npc ids.

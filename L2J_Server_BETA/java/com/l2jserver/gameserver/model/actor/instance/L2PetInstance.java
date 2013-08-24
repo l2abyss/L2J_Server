@@ -40,6 +40,7 @@ import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SummonEffectsTable;
 import com.l2jserver.gameserver.datatables.SummonEffectsTable.SummonEffect;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.idfactory.IdFactory;

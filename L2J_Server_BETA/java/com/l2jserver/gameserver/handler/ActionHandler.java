@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.handler;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.l2jserver.gameserver.model.L2Object.InstanceType;
+import com.l2jserver.gameserver.enums.InstanceType;
 
 /**
  * @author UnAfraid

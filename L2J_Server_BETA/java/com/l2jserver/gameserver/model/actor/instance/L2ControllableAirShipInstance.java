@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.stat.ControllableAirShipStat;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;

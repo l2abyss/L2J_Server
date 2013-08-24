@@ -16,21 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model;
+package com.l2jserver.gameserver.enums;
 
 /**
- * Enum with petition states.
- * @author xban1x
+ * @author UnAfraid
  */
-public enum PetitionState
+public enum ShotType
 {
-	PENDING,
-	RESPONDER_CANCEL,
-	RESPONDER_MISSING,
-	RESPONDER_REJECT,
-	RESPONDER_COMPLETE,
-	PETITIONER_CANCEL,
-	PETITIONER_MISSING,
-	IN_PROCESS,
-	COMPLETED
+	SOULSHOTS,
+	SPIRITSHOTS,
+	BLESSED_SPIRITSHOTS,
+	FISH_SOULSHOTS;
+	
+	private final int _mask;
+	
+	private ShotType()
+	{
+		_mask = (1 << ordinal());
+	}
+	
+	public int getMask()
+	{
+		return _mask;
+	}
 }

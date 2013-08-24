@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.L2Object.InstanceType;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**

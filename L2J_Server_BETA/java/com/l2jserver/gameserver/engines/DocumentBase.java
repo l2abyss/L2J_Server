@@ -35,7 +35,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.model.L2Object.InstanceType;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.PlayerState;
 import com.l2jserver.gameserver.model.base.Race;

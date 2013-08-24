@@ -22,6 +22,8 @@ import java.util.List;
 
 import javolution.util.FastList;
 
+import com.l2jserver.gameserver.enums.PetitionState;
+import com.l2jserver.gameserver.enums.PetitionType;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.PetitionManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;

@@ -20,11 +20,11 @@ package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.enums.MountType;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
-import com.l2jserver.gameserver.model.MountType;
 import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;

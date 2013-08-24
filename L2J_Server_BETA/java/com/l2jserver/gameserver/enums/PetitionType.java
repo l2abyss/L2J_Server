@@ -16,34 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model;
-
-import com.l2jserver.gameserver.datatables.CategoryData;
+package com.l2jserver.gameserver.enums;
 
 /**
- * @author UnAfraid
+ * Enum with petition types.
+ * @author xban1x
  */
-public enum MountType
+public enum PetitionType
 {
-	NONE,
-	STRIDER,
-	WYVERN,
-	WOLF;
-	
-	public static MountType findByNpcId(int npcId)
-	{
-		if (CategoryData.getInstance().isInCategory(CategoryType.STRIDER, npcId))
-		{
-			return STRIDER;
-		}
-		else if (CategoryData.getInstance().isInCategory(CategoryType.WYVERN_GROUP, npcId))
-		{
-			return WYVERN;
-		}
-		else if (CategoryData.getInstance().isInCategory(CategoryType.WOLF_GROUP, npcId))
-		{
-			return WOLF;
-		}
-		return NONE;
-	}
+	IMMOBILITY,
+	RECOVERY_RELATED,
+	BUG_REPORT,
+	QUEST_RELATED,
+	BAD_USER,
+	SUGGESTIONS,
+	GAME_TIP,
+	OPERATION_RELATED,
+	OTHER
 }
