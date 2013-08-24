@@ -450,7 +450,7 @@ public class Hero
 		if (_herodiary.containsKey(charid))
 		{
 			List<StatsSet> _mainlist = _herodiary.get(charid);
-			NpcHtmlMessage DiaryReply = new NpcHtmlMessage(5);
+			final NpcHtmlMessage DiaryReply = new NpcHtmlMessage();
 			final String htmContent = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(), "data/html/olympiad/herodiary.htm");
 			if ((htmContent != null) && _heroMessage.containsKey(charid))
 			{
@@ -539,13 +539,12 @@ public class Hero
 		{
 			List<StatsSet> _list = _herofights.get(charid);
 			
-			NpcHtmlMessage FightReply = new NpcHtmlMessage(5);
+			final NpcHtmlMessage FightReply = new NpcHtmlMessage();
 			final String htmContent = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(), "data/html/olympiad/herohistory.htm");
 			if (htmContent != null)
 			{
 				FightReply.setHtml(htmContent);
 				FightReply.replace("%heroname%", CharNameTable.getInstance().getNameById(charid));
-				FightReply.disableValidation();
 				
 				if (!_list.isEmpty())
 				{

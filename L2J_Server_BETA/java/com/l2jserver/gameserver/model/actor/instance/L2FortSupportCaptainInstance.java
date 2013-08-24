@@ -210,7 +210,7 @@ public class L2FortSupportCaptainInstance extends L2MerchantInstance implements 
 			filename = "data/html/fortress/supportunit-" + val + ".htm";
 		}
 		
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcId%", String.valueOf(getId()));

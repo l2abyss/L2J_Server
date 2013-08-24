@@ -442,7 +442,6 @@ public final class Config
 	public static boolean GM_CRITANNOUNCER_NAME;
 	public static boolean GM_GIVE_SPECIAL_SKILLS;
 	public static boolean GM_GIVE_SPECIAL_AURA_SKILLS;
-	public static boolean BYPASS_VALIDATION;
 	public static boolean GAMEGUARD_ENFORCE;
 	public static boolean GAMEGUARD_PROHIBITACTION;
 	public static boolean LOG_CHAT;
@@ -1904,7 +1903,6 @@ public final class Config
 			GM_CRITANNOUNCER_NAME = Boolean.parseBoolean(General.getProperty("GMShowCritAnnouncerName", "False"));
 			GM_GIVE_SPECIAL_SKILLS = Boolean.parseBoolean(General.getProperty("GMGiveSpecialSkills", "False"));
 			GM_GIVE_SPECIAL_AURA_SKILLS = Boolean.parseBoolean(General.getProperty("GMGiveSpecialAuraSkills", "False"));
-			BYPASS_VALIDATION = Boolean.parseBoolean(General.getProperty("BypassValidation", "True"));
 			GAMEGUARD_ENFORCE = Boolean.parseBoolean(General.getProperty("GameGuardEnforce", "False"));
 			GAMEGUARD_PROHIBITACTION = Boolean.parseBoolean(General.getProperty("GameGuardProhibitAction", "False"));
 			LOG_CHAT = Boolean.parseBoolean(General.getProperty("LogChat", "false"));
@@ -3392,9 +3390,6 @@ public final class Config
 				break;
 			case "allowpetwalkers":
 				ALLOW_PET_WALKERS = Boolean.parseBoolean(pValue);
-				break;
-			case "bypassvalidation":
-				BYPASS_VALIDATION = Boolean.parseBoolean(pValue);
 				break;
 			case "communitytype":
 				COMMUNITY_TYPE = Integer.parseInt(pValue);

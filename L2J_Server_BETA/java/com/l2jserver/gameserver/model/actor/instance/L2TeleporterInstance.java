@@ -68,7 +68,7 @@ public final class L2TeleporterInstance extends L2Npc
 		
 		if ((player.getFirstEffect(6201) != null) || (player.getFirstEffect(6202) != null) || (player.getFirstEffect(6203) != null))
 		{
-			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+			final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 			
 			String filename = "data/html/teleporter/epictransformed.htm";
 			
@@ -180,7 +180,7 @@ public final class L2TeleporterInstance extends L2Npc
 			return;
 		}
 		
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		
 		String filename = "data/html/teleporter/free/" + getTemplate().getId() + ".htm";
 		if (!HtmCache.getInstance().isLoadable(filename))
@@ -201,7 +201,7 @@ public final class L2TeleporterInstance extends L2Npc
 			return;
 		}
 		
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		
 		String filename = "data/html/teleporter/half/" + getId() + ".htm";
 		if (!HtmCache.getInstance().isLoadable(filename))
@@ -238,7 +238,7 @@ public final class L2TeleporterInstance extends L2Npc
 			}
 		}
 		
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcname%", getName());
@@ -274,7 +274,7 @@ public final class L2TeleporterInstance extends L2Npc
 			else if (list.getIsForNoble() && !player.isNoble())
 			{
 				String filename = "data/html/teleporter/nobleteleporter-no.htm";
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				html.setFile(player.getHtmlPrefix(), filename);
 				html.replace("%objectId%", String.valueOf(getObjectId()));
 				html.replace("%npcname%", getName());

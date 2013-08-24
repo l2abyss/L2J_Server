@@ -1175,7 +1175,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 	{
 		if (!player.isClanLeader())
 		{
-			NpcHtmlMessage html = new NpcHtmlMessage(1);
+			final NpcHtmlMessage html = new NpcHtmlMessage();
 			html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/NotClanLeader.htm");
 			player.sendPacket(html);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
@@ -1209,7 +1209,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			}
 			else
 			{
-				NpcHtmlMessage html = new NpcHtmlMessage(1);
+				final NpcHtmlMessage html = new NpcHtmlMessage();
 				html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/NoMoreSkills.htm");
 				player.sendPacket(html);
 			}

@@ -316,7 +316,7 @@ public class L2RaceManagerInstance extends L2Npc
 		}
 		int npcId = getTemplate().getId();
 		String filename, search;
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		filename = getHtmlPath(npcId, 5);
 		html.setFile(player.getHtmlPrefix(), filename);
 		for (int i = 0; i < 8; i++)
@@ -335,7 +335,7 @@ public class L2RaceManagerInstance extends L2Npc
 	{
 		int npcId = getTemplate().getId();
 		String filename, search;
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		filename = getHtmlPath(npcId, 6);
 		html.setFile(player.getHtmlPrefix(), filename);
 		for (int i = 0; i < 8; i++)
@@ -358,7 +358,7 @@ public class L2RaceManagerInstance extends L2Npc
 		int npcId = getTemplate().getId();
 		SystemMessage sm;
 		String filename, search, replace;
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		if (val < 10)
 		{
 			filename = getHtmlPath(npcId, 2);

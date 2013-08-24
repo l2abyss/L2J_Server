@@ -124,7 +124,7 @@ public class L2NpcInstance extends L2Npc
 		
 		if (((L2NpcInstance) npc).getClassesToTeach().isEmpty())
 		{
-			NpcHtmlMessage html = new NpcHtmlMessage(npc.getObjectId());
+			final NpcHtmlMessage html = new NpcHtmlMessage(npc.getObjectId());
 			final String sb = StringUtil.concat("<html><body>I cannot teach you. My class list is empty.<br>Ask admin to fix it. Need add my npcid and classes to skill_learn.sql.<br>NpcId:", String.valueOf(npcId), ", Your classId:", String.valueOf(player.getClassId().getId()), "</body></html>");
 			html.setHtml(sb);
 			player.sendPacket(html);

@@ -1581,7 +1581,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 		}
 		else if (res.startsWith("<html>"))
 		{
-			NpcHtmlMessage npcReply = new NpcHtmlMessage(5);
+			final NpcHtmlMessage npcReply = new NpcHtmlMessage();
 			npcReply.setHtml(res);
 			npcReply.replace("%playername%", player.getName());
 			player.sendPacket(npcReply);
@@ -2591,7 +2591,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 			}
 			else
 			{
-				NpcHtmlMessage npcReply = new NpcHtmlMessage(player.getTargetId());
+				final NpcHtmlMessage npcReply = new NpcHtmlMessage(player.getTargetId());
 				npcReply.setHtml(content);
 				npcReply.replace("%playername%", player.getName());
 				player.sendPacket(npcReply);

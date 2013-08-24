@@ -102,7 +102,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 				player.setNoble(true);
 				player.sendPacket(new UserInfo(player));
 				player.sendPacket(new ExBrExtraUserInfo(player));
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				html.setFile(player.getHtmlPrefix(), "data/html/classmaster/nobleok.htm");
 				player.sendPacket(html);
 			}
@@ -115,13 +115,13 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 		{
 			if (!player.isClanLeader())
 			{
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				html.setFile(player.getHtmlPrefix(), "data/html/classmaster/noclanleader.htm");
 				player.sendPacket(html);
 			}
 			else if (player.getClan().getLevel() >= 5)
 			{
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				html.setFile(player.getHtmlPrefix(), "data/html/classmaster/noclanlevel.htm");
 				player.sendPacket(html);
 			}
@@ -192,7 +192,7 @@ public final class L2ClassMasterInstance extends L2MerchantInstance
 	
 	private static final void showHtmlMenu(L2PcInstance player, int objectId, int level)
 	{
-		NpcHtmlMessage html = new NpcHtmlMessage(objectId);
+		final NpcHtmlMessage html = new NpcHtmlMessage(objectId);
 		
 		if (!Config.ALLOW_CLASS_MASTERS)
 		{

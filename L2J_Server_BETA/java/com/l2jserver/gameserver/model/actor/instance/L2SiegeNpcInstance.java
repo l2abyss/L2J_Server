@@ -63,7 +63,7 @@ public class L2SiegeNpcInstance extends L2NpcInstance
 		}
 		else
 		{
-			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+			final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 			html.setFile(player.getHtmlPrefix(), "data/html/siege/" + getId() + "-busy.htm");
 			html.replace("%castlename%", getConquerableHall() != null ? getConquerableHall().getName() : getCastle().getName());
 			html.replace("%objectId%", String.valueOf(getObjectId()));

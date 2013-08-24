@@ -64,7 +64,7 @@ public class L2FortEnvoyInstance extends L2Npc
 		}
 		
 		player.sendPacket(ActionFailed.STATIC_PACKET);
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filePath);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%castleName%", String.valueOf(fortress.getCastleByAmbassador(getId()).getName()));
@@ -92,7 +92,7 @@ public class L2FortEnvoyInstance extends L2Npc
 				filePath = (choice == 1) ? "data/html/fortress/ambassador-independent.htm" : "data/html/fortress/ambassador-signed.htm";
 			}
 			
-			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+			final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 			html.setFile(player.getHtmlPrefix(), filePath);
 			html.replace("%castleName%", castle.getName());
 			player.sendPacket(html);

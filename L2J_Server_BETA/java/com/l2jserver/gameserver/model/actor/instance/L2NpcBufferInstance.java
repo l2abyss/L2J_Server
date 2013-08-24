@@ -75,7 +75,7 @@ public class L2NpcBufferInstance extends L2Npc
 		
 		if (htmContent != null)
 		{
-			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
+			final NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
 			npcHtmlMessage.setHtml(htmContent);
 			npcHtmlMessage.replace("%objectId%", String.valueOf(getObjectId()));
 			player.sendPacket(npcHtmlMessage);

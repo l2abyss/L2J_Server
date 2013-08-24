@@ -135,7 +135,7 @@ public class L2Event
 			try
 			{
 				final String htmContent;
-				NpcHtmlMessage html = new NpcHtmlMessage(5);
+				final NpcHtmlMessage html = new NpcHtmlMessage(Integer.parseInt(objectid));
 				
 				if (_registeredPlayers.contains(player))
 				{

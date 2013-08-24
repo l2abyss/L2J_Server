@@ -49,7 +49,7 @@ public class L2WeddingManagerInstance extends L2Npc
 		String filename = "data/html/mods/Wedding_start.htm";
 		String replace = String.valueOf(Config.L2JMOD_WEDDING_PRICE);
 		
-		NpcHtmlMessage html = new NpcHtmlMessage(1);
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%replace%", replace);
@@ -243,7 +243,7 @@ public class L2WeddingManagerInstance extends L2Npc
 	
 	private void sendHtmlMessage(L2PcInstance player, String filename, String replace)
 	{
-		NpcHtmlMessage html = new NpcHtmlMessage(1);
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%replace%", replace);

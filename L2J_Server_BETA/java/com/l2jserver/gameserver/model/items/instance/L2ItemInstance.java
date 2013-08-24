@@ -2203,7 +2203,7 @@ public final class L2ItemInstance extends L2Object
 	 */
 	public void showChatWindow(L2PcInstance activeChar, String content)
 	{
-		NpcHtmlMessage html = new NpcHtmlMessage(0, getId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(0, getId());
 		html.setHtml(content);
 		html.replace("%itemId%", String.valueOf(getObjectId()));
 		activeChar.sendPacket(html);

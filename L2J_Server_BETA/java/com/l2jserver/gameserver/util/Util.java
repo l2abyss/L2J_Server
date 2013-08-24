@@ -511,7 +511,7 @@ public final class Util
 	 */
 	public static void sendHtml(L2PcInstance activeChar, String html)
 	{
-		NpcHtmlMessage npcHtml = new NpcHtmlMessage(0);
+		final NpcHtmlMessage npcHtml = new NpcHtmlMessage();
 		npcHtml.setHtml(html);
 		activeChar.sendPacket(npcHtml);
 	}
@@ -539,7 +539,9 @@ public final class Util
 			return;
 		}
 		
-		if (html != null)
+		// @formatter:off
+		// let's disable this for now, nobody was using this method as of now anyway
+/*		if (html != null)
 		{
 			activeChar.clearBypass();
 			int len = html.length();
@@ -572,7 +574,8 @@ public final class Util
 					activeChar.addBypass(html.substring(start, finish).trim());
 				}
 			}
-		}
+		}*/
+		// @formatter:on
 		
 		if (fillMultiEdit != null)
 		{
@@ -651,5 +654,21 @@ public final class Util
 			}
 		}
 		return count;
+	}
+	
+	public static boolean isInsideRangeOfObjectId(L2Object obj, int targetObjId, int radius)
+	{
+		L2Object target = obj.getKnownList().getKnownObjects().get(targetObjId);
+		if (target == null)
+		{
+			return false;
+		}
+		
+		if (Util.calculateDistance(obj, target, false) > radius)
+		{
+			return false;
+		}
+		
+		return true;
 	}
 }

@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -86,6 +87,7 @@ import com.l2jserver.gameserver.datatables.RecipeData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTable.FrequentSkill;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
+import com.l2jserver.gameserver.enums.BypassScope;
 import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.MountType;
@@ -247,6 +249,7 @@ import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.WorldInfo;
+import com.l2jserver.gameserver.network.serverpackets.AbstractHtmlPacket;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ChangeWaitType;
 import com.l2jserver.gameserver.network.serverpackets.CharInfo;
@@ -328,7 +331,6 @@ import com.l2jserver.gameserver.util.FloodProtectors;
 import com.l2jserver.gameserver.util.PlayerEventStatus;
 import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.gameserver.util.Util;
-import com.l2jserver.util.L2FastList;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -794,9 +796,12 @@ public final class L2PcInstance extends L2Playable
 	private ScheduledFuture<?> _taskRentPet;
 	private ScheduledFuture<?> _taskWater;
 	
+	/** Last Html Npcs, 0 = last html was not bound to an npc */
+	private final int[] _htmlActionOriginObjectIds = new int[BypassScope.values().length];
+	
 	/** Bypass validations */
-	private final List<String> _validBypass = new L2FastList<>(true);
-	private final List<String> _validBypass2 = new L2FastList<>(true);
+	@SuppressWarnings("unchecked")
+	private final LinkedList<String>[] _htmlActionCaches = new LinkedList[BypassScope.values().length];
 	
 	private Forum _forumMail;
 	private Forum _forumMemo;
@@ -1120,6 +1125,11 @@ public final class L2PcInstance extends L2Playable
 		setInstanceType(InstanceType.L2PcInstance);
 		super.initCharStatusUpdateValues();
 		initPcStatusUpdateValues();
+		
+		for (int i = 0; i < _htmlActionCaches.length; ++i)
+		{
+			_htmlActionCaches[i] = new LinkedList<>();
+		}
 		
 		_accountName = accountName;
 		app.setOwner(this);
@@ -1700,9 +1710,7 @@ public final class L2PcInstance extends L2Playable
 		
 		if (content != null)
 		{
-			NpcHtmlMessage npcReply = new NpcHtmlMessage(5);
-			npcReply.setHtml(content);
-			sendPacket(npcReply);
+			sendPacket(new NpcHtmlMessage(content));
 		}
 		
 		sendPacket(ActionFailed.STATIC_PACKET);
@@ -11240,61 +11248,60 @@ public final class L2PcInstance extends L2Playable
 		_snoopedPlayer.remove(pci);
 	}
 	
-	public void addBypass(String bypass)
+	public void addHtmlAction(BypassScope scope, String action)
 	{
-		if (bypass == null)
-		{
-			return;
-		}
-		
-		_validBypass.add(bypass);
+		_htmlActionCaches[scope.ordinal()].add(action);
 	}
 	
-	public void addBypass2(String bypass)
+	public void clearHtmlActions(BypassScope scope)
 	{
-		if (bypass == null)
-		{
-			return;
-		}
-		
-		_validBypass2.add(bypass);
+		_htmlActionCaches[scope.ordinal()].clear();
 	}
 	
-	public boolean validateBypass(String cmd)
+	public void setHtmlActionOriginObjectId(BypassScope scope, int objId)
 	{
-		if (!Config.BYPASS_VALIDATION)
+		_htmlActionOriginObjectIds[scope.ordinal()] = objId;
+	}
+	
+	private boolean _validateHtmlAction(LinkedList<String> actionCache, String action)
+	{
+		for (String cachedAction : actionCache)
 		{
-			return true;
-		}
-		
-		for (String bp : _validBypass)
-		{
-			if (bp == null)
+			if (cachedAction.charAt(cachedAction.length() - 1) == AbstractHtmlPacket.VAR_PARAM_START_CHAR)
 			{
-				continue;
+				if (action.startsWith(cachedAction.substring(0, cachedAction.length() - 1).trim()))
+				{
+					return true;
+				}
 			}
-			
-			if (bp.equals(cmd))
+			else if ((cachedAction.length() == action.length()) && cachedAction.equals(action))
 			{
 				return true;
 			}
 		}
 		
-		for (String bp : _validBypass2)
-		{
-			if (bp == null)
-			{
-				continue;
-			}
-			
-			if (cmd.startsWith(bp))
-			{
-				return true;
-			}
-		}
-		
-		_log.warning("[L2PcInstance] player [" + getName() + "] sent invalid bypass '" + cmd + "'.");
 		return false;
+	}
+	
+	/**
+	 * Checks if the bypass was send in a Html packet. If this is the<br>
+	 * case, the npc id or 0 is returned. 0 means that the html bypass was<br>
+	 * not bound to an npc and no npc range checks need to be made.<br>
+	 * A return value of -1 indicates that the bypass is not valid.
+	 * @param action
+	 * @return npc id, 0 or -1 >> for more informations see description
+	 */
+	public int validateHtmlAction(String action)
+	{
+		for (int i = 0; i < _htmlActionCaches.length; ++i)
+		{
+			if (_validateHtmlAction(_htmlActionCaches[i], action))
+			{
+				return _htmlActionOriginObjectIds[i];
+			}
+		}
+		
+		return -1;
 	}
 	
 	/**
@@ -11348,12 +11355,6 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		return true;
-	}
-	
-	public void clearBypass()
-	{
-		_validBypass.clear();
-		_validBypass2.clear();
 	}
 	
 	/**

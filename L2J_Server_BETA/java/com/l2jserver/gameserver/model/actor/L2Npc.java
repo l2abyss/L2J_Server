@@ -947,7 +947,7 @@ public class L2Npc extends L2Character
 			{
 				player.sendPacket(ActionFailed.STATIC_PACKET);
 				
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				html.setFile(player.getHtmlPrefix(), "data/html/npcbusy.htm");
 				html.replace("%busymessage%", getBusyMessage());
 				html.replace("%npcname%", getName());
@@ -1045,7 +1045,7 @@ public class L2Npc extends L2Character
 	{
 		// Send a Server->Client packet NpcHtmlMessage to the L2PcInstance in order to display the message of the L2NpcInstance
 		content = content.replaceAll("%objectId%", String.valueOf(getObjectId()));
-		NpcHtmlMessage npcReply = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage npcReply = new NpcHtmlMessage(getObjectId());
 		npcReply.setHtml(content);
 		player.sendPacket(npcReply);
 	}
@@ -1113,7 +1113,7 @@ public class L2Npc extends L2Character
 		
 		if (html != null)
 		{
-			NpcHtmlMessage pkDenyMsg = new NpcHtmlMessage(getObjectId());
+			final NpcHtmlMessage pkDenyMsg = new NpcHtmlMessage(getObjectId());
 			pkDenyMsg.setHtml(html);
 			player.sendPacket(pkDenyMsg);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
@@ -1346,7 +1346,7 @@ public class L2Npc extends L2Character
 		}
 		
 		// Send a Server->Client NpcHtmlMessage containing the text of the L2NpcInstance to the L2PcInstance
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		
 		if (this instanceof L2MerchantInstance)
@@ -1373,7 +1373,7 @@ public class L2Npc extends L2Character
 	public void showChatWindow(L2PcInstance player, String filename)
 	{
 		// Send a Server->Client NpcHtmlMessage containing the text of the L2NpcInstance to the L2PcInstance
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
@@ -1690,7 +1690,7 @@ public class L2Npc extends L2Character
 		if (html == null)
 		{
 			_log.warning("Npc " + npcId + " missing noTeach html!");
-			NpcHtmlMessage msg = new NpcHtmlMessage(getObjectId());
+			final NpcHtmlMessage msg = new NpcHtmlMessage(getObjectId());
 			msg.setHtml("<html><body>I cannot teach you any skills.<br>You must find your current class teachers.</body></html>");
 			player.sendPacket(msg);
 			return;

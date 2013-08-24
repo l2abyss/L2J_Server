@@ -68,7 +68,7 @@ public class L2TvTEventNpcInstance extends L2Npc
 			if (htmContent != null)
 			{
 				int[] teamsPlayerCounts = TvTEvent.getTeamsPlayerCounts();
-				NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
 				
 				npcHtmlMessage.setHtml(htmContent);
 				npcHtmlMessage.replace("%objectId%", String.valueOf(getObjectId()));
@@ -93,7 +93,7 @@ public class L2TvTEventNpcInstance extends L2Npc
 			{
 				int[] teamsPlayerCounts = TvTEvent.getTeamsPlayerCounts();
 				int[] teamsPointsCounts = TvTEvent.getTeamsPoints();
-				NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
 				
 				npcHtmlMessage.setHtml(htmContent);
 				// npcHtmlMessage.replace("%objectId%", String.valueOf(getObjectId()));

@@ -416,7 +416,7 @@ public class TvTEvent
 			}
 			
 			StatusUpdate statusUpdate = new StatusUpdate(playerInstance);
-			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(0);
+			final NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage();
 			
 			statusUpdate.addAttribute(StatusUpdate.CUR_LOAD, playerInstance.getCurrentLoad());
 			npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath + "Reward.htm"));
@@ -690,7 +690,7 @@ public class TvTEvent
 		
 		if (command.equals("tvt_event_participation"))
 		{
-			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(0);
+			final NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage();
 			int playerLevel = playerInstance.getLevel();
 			
 			if (playerInstance.isCursedWeaponEquipped())
@@ -773,7 +773,7 @@ public class TvTEvent
 				AntiFeedManager.getInstance().removePlayer(AntiFeedManager.TVT_ID, playerInstance);
 			}
 			
-			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(0);
+			final NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage();
 			
 			npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath + "Unregistered.htm"));
 			playerInstance.sendPacket(npcHtmlMessage);

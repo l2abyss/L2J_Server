@@ -87,7 +87,7 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 			
 			if (!canPort)
 			{
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				filename += "necro_no.htm";
 				html.setFile(player.getHtmlPrefix(), filename);
 				player.sendPacket(html);
@@ -132,7 +132,7 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 			
 			if (!canPort)
 			{
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				filename += "cata_no.htm";
 				html.setFile(player.getHtmlPrefix(), filename);
 				player.sendPacket(html);

@@ -16,30 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.network.serverpackets;
-
-import com.l2jserver.gameserver.enums.BypassScope;
+package com.l2jserver.gameserver.enums;
 
 /**
- * @author Unknown, FBIagent
+ * @author FBIagent
  */
-public class TutorialCloseHtml extends L2GameServerPacket
+public enum BypassScope
 {
-	public static final TutorialCloseHtml STATIC_PACKET = new TutorialCloseHtml();
-	
-	private TutorialCloseHtml()
-	{
-	}
-	
-	@Override
-	public void runImpl()
-	{
-		getClient().getActiveChar().clearHtmlActions(BypassScope.TUTORIAL_HTML);
-	}
-	
-	@Override
-	protected void writeImpl()
-	{
-		writeC(0xa9);
-	}
+	NPC_HTML,
+	NPC_ITEM_HTML,
+	NPC_QUEST_HTML,
+	TUTORIAL_HTML
 }

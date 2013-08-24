@@ -34,10 +34,10 @@ public interface IBypassHandler
 	 * This is the worker method that is called when someone uses an bypass command.
 	 * @param command
 	 * @param activeChar
-	 * @param target
+	 * @param bypassOrigin
 	 * @return success
 	 */
-	public boolean useBypass(String command, L2PcInstance activeChar, L2Character target);
+	public boolean useBypass(String command, L2PcInstance activeChar, L2Character bypassOrigin);
 	
 	/**
 	 * This method is called at initialization to register all bypasses automatically.

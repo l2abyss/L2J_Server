@@ -120,7 +120,7 @@ public class Announcements
 	public void listAnnouncements(L2PcInstance activeChar)
 	{
 		String content = HtmCache.getInstance().getHtmForce(activeChar.getHtmlPrefix(), "data/html/admin/announce.htm");
-		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
+		final NpcHtmlMessage adminReply = new NpcHtmlMessage();
 		adminReply.setHtml(content);
 		final StringBuilder replyMSG = StringUtil.startAppend(500, "<br>");
 		for (int i = 0; i < _announcements.size(); i++)
@@ -134,7 +134,7 @@ public class Announcements
 	public void listCritAnnouncements(L2PcInstance activeChar)
 	{
 		String content = HtmCache.getInstance().getHtmForce(activeChar.getHtmlPrefix(), "data/html/admin/critannounce.htm");
-		NpcHtmlMessage adminReply = new NpcHtmlMessage(5);
+		final NpcHtmlMessage adminReply = new NpcHtmlMessage();
 		adminReply.setHtml(content);
 		final StringBuilder replyMSG = StringUtil.startAppend(500, "<br>");
 		for (int i = 0; i < _critAnnouncements.size(); i++)

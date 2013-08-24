@@ -571,7 +571,7 @@ public class L2SignsPriestInstance extends L2Npc
 							contentContr = contentContr.replaceAll("%stoneItemId%", String.valueOf(stoneIdContr));
 							contentContr = contentContr.replaceAll("%objectId%", String.valueOf(getObjectId()));
 							
-							NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+							final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 							html.setHtml(contentContr);
 							player.sendPacket(html);
 						}
@@ -788,7 +788,7 @@ public class L2SignsPriestInstance extends L2Npc
 						content = content.replaceAll("%stoneItemId%", String.valueOf(stoneId));
 						content = content.replaceAll("%objectId%", String.valueOf(getObjectId()));
 						
-						NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+						final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 						html.setHtml(content);
 						player.sendPacket(html);
 					}
@@ -915,7 +915,7 @@ public class L2SignsPriestInstance extends L2Npc
 					
 					contentBuffer.append("<a action=\"bypass -h npc_" + getObjectId() + "_Chat 0\">Go back.</a></body></html>");
 					
-					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+					final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 					html.setHtml(contentBuffer.toString());
 					player.sendPacket(html);
 					break;
