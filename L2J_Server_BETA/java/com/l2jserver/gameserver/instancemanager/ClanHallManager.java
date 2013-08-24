@@ -191,7 +191,7 @@ public final class ClanHallManager
 		{
 			_clanHall.get(chId).free();
 		}
-		ClanTable.getInstance().getClan(clan.getClanId()).setHideoutId(chId);
+		ClanTable.getInstance().getClan(clan.getId()).setHideoutId(chId);
 		_clanHall.get(chId).setOwner(clan);
 	}
 	
@@ -277,7 +277,7 @@ public final class ClanHallManager
 	{
 		for (Map.Entry<Integer, AuctionableHall> ch : _clanHall.entrySet())
 		{
-			if (clan.getClanId() == ch.getValue().getOwnerId())
+			if (clan.getId() == ch.getValue().getOwnerId())
 			{
 				return ch.getValue();
 			}
@@ -290,14 +290,14 @@ public final class ClanHallManager
 		// Separate loops to avoid iterating over free clan halls
 		for (Map.Entry<Integer, AuctionableHall> ch : _clanHall.entrySet())
 		{
-			if (clan.getClanId() == ch.getValue().getOwnerId())
+			if (clan.getId() == ch.getValue().getOwnerId())
 			{
 				return ch.getValue();
 			}
 		}
 		for (Map.Entry<Integer, SiegableHall> ch : CHSiegeManager.getInstance().getConquerableHalls().entrySet())
 		{
-			if (clan.getClanId() == ch.getValue().getOwnerId())
+			if (clan.getId() == ch.getValue().getOwnerId())
 			{
 				return ch.getValue();
 			}

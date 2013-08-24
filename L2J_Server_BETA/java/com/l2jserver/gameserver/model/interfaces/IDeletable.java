@@ -16,29 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.network.serverpackets;
+package com.l2jserver.gameserver.model.interfaces;
 
-import com.l2jserver.gameserver.model.L2Clan;
-
-public final class PledgeStatusChanged extends L2GameServerPacket
+/**
+ * @author UnAfraid
+ */
+public interface IDeletable
 {
-	private final L2Clan _clan;
-	
-	public PledgeStatusChanged(L2Clan clan)
-	{
-		_clan = clan;
-	}
-	
-	@Override
-	protected final void writeImpl()
-	{
-		writeC(0xCD);
-		writeD(_clan.getLeaderId());
-		writeD(_clan.getId());
-		writeD(_clan.getCrestId());
-		writeD(_clan.getAllyId());
-		writeD(_clan.getAllyCrestId());
-		writeD(0x00);
-		writeD(0x00);
-	}
+	public boolean deleteMe();
 }

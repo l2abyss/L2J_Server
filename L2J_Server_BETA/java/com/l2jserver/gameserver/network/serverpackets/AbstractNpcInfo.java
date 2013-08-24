@@ -131,7 +131,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 				{
 					L2Clan clan = ClanTable.getInstance().getClan(cha.getCastle().getOwnerId());
 					_clanCrest = clan.getCrestId();
-					_clanId = clan.getClanId();
+					_clanId = clan.getId();
 					_allyCrest = clan.getAllyCrestId();
 					_allyId = clan.getAllyId();
 				}

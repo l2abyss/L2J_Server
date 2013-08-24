@@ -131,7 +131,7 @@ public final class Evolve
 		petSummon.setTitle(player.getName());
 		petSummon.setName(oldname);
 		petSummon.setRunning();
-		petSummon.store();
+		petSummon.storeMe();
 		
 		player.setPet(petSummon);
 		
@@ -219,7 +219,7 @@ public final class Evolve
 		petSummon.setCurrentFed(petSummon.getMaxFed());
 		petSummon.setTitle(player.getName());
 		petSummon.setRunning();
-		petSummon.store();
+		petSummon.storeMe();
 		
 		player.setPet(petSummon);
 		

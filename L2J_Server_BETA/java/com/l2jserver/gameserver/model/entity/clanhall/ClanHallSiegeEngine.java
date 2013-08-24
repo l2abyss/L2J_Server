@@ -234,7 +234,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 			return false;
 		}
 		
-		return _attackers.containsKey(clan.getClanId());
+		return _attackers.containsKey(clan.getId());
 	}
 	
 	@Override
@@ -252,7 +252,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	@Override
 	public L2SiegeClan getAttackerClan(L2Clan clan)
 	{
-		return getAttackerClan(clan.getClanId());
+		return getAttackerClan(clan.getId());
 	}
 	
 	@Override
@@ -272,7 +272,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		for (L2PcInstance pc : list)
 		{
 			final L2Clan clan = pc.getClan();
-			if ((clan != null) && getAttackers().containsKey(clan.getClanId()))
+			if ((clan != null) && getAttackers().containsKey(clan.getId()))
 			{
 				attackers.add(pc);
 			}

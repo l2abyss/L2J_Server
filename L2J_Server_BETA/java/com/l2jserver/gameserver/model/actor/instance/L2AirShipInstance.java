@@ -159,10 +159,15 @@ public class L2AirShipInstance extends L2Vehicle
 	}
 	
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
-		super.deleteMe();
+		if (!super.deleteMe())
+		{
+			return false;
+		}
+		
 		AirShipManager.getInstance().removeAirShip(this);
+		return true;
 	}
 	
 	@Override

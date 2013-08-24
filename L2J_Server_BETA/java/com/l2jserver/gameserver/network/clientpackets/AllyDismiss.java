@@ -61,7 +61,7 @@ public final class AllyDismiss extends L2GameClientPacket
 			player.sendPacket(SystemMessageId.NO_CURRENT_ALLIANCES);
 			return;
 		}
-		if (!player.isClanLeader() || (leaderClan.getClanId() != leaderClan.getAllyId()))
+		if (!player.isClanLeader() || (leaderClan.getId() != leaderClan.getAllyId()))
 		{
 			player.sendPacket(SystemMessageId.FEATURE_ONLY_FOR_ALLIANCE_LEADER);
 			return;
@@ -72,7 +72,7 @@ public final class AllyDismiss extends L2GameClientPacket
 			player.sendPacket(SystemMessageId.CLAN_DOESNT_EXISTS);
 			return;
 		}
-		if (clan.getClanId() == leaderClan.getClanId())
+		if (clan.getId() == leaderClan.getId())
 		{
 			player.sendPacket(SystemMessageId.ALLIANCE_LEADER_CANT_WITHDRAW);
 			return;

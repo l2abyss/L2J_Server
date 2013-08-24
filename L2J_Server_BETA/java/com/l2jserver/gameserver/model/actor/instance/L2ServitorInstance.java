@@ -324,7 +324,7 @@ public class L2ServitorInstance extends L2Summon
 	}
 	
 	@Override
-	public void store()
+	public void storeMe()
 	{
 		if ((_referenceSkill == 0) || isDead())
 		{

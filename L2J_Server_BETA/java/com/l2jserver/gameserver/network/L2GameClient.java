@@ -372,7 +372,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		{
 			if (getActiveChar() != null)
 			{
-				getActiveChar().store();
+				getActiveChar().storeMe();
 				getActiveChar().storeRecommendations();
 				if (Config.UPDATE_ITEMS_ON_CHAR_STORE)
 				{
@@ -923,7 +923,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 					saveCharToDisk();
 					if (player.hasSummon())
 					{
-						player.getSummon().store();
+						player.getSummon().storeMe();
 					}
 				}
 			}

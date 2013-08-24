@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExManagePartyRoomMember;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -29,7 +30,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 /**
  * @author Gnacik
  */
-public class PartyMatchRoom
+public class PartyMatchRoom implements IIdentifiable
 {
 	private final int _id;
 	private String _title;
@@ -110,6 +111,7 @@ public class PartyMatchRoom
 		}
 	}
 	
+	@Override
 	public int getId()
 	{
 		return _id;

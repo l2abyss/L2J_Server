@@ -92,6 +92,7 @@ import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.holders.SkillUseHolder;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
+import com.l2jserver.gameserver.model.interfaces.IDeletable;
 import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.interfaces.ISkillsHolder;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
@@ -159,7 +160,7 @@ import com.l2jserver.util.Rnd;
  * This link is stored in {@link #_template}
  * @version $Revision: 1.53.2.45.2.34 $ $Date: 2005/04/11 10:06:08 $
  */
-public abstract class L2Character extends L2Object implements ISkillsHolder
+public abstract class L2Character extends L2Object implements ISkillsHolder, IDeletable
 {
 	public static final Logger _log = Logger.getLogger(L2Character.class.getName());
 	
@@ -2364,7 +2365,8 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		return true;
 	}
 	
-	public void deleteMe()
+	@Override
+	public boolean deleteMe()
 	{
 		setDebug(null);
 		
@@ -2372,6 +2374,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		{
 			getAI().stopAITask();
 		}
+		return true;
 	}
 	
 	protected void calculateRewards(L2Character killer)

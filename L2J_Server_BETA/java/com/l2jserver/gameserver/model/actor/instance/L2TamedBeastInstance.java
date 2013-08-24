@@ -303,7 +303,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	}
 	
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
 		if (_buffTask != null)
 		{
@@ -325,7 +325,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 		_remainingTime = 0;
 		
 		// remove the spawn
-		super.deleteMe();
+		return super.deleteMe();
 	}
 	
 	// notification triggered by the owner when the owner is attacked.

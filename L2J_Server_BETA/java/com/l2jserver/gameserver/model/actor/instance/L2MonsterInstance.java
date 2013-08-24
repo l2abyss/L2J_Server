@@ -182,7 +182,7 @@ public class L2MonsterInstance extends L2Attackable
 	}
 	
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
 		if (_maintenanceTask != null)
 		{
@@ -200,7 +200,7 @@ public class L2MonsterInstance extends L2Attackable
 			getLeader().getMinionList().onMinionDie(this, 0);
 		}
 		
-		super.deleteMe();
+		return super.deleteMe();
 	}
 	
 	@Override

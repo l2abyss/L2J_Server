@@ -438,7 +438,7 @@ public class L2DoorInstance extends L2Character
 		else if (isCastle)
 		{
 			L2Clan clan = actingPlayer.getClan();
-			if ((clan != null) && (clan.getClanId() == getCastle().getOwnerId()))
+			if ((clan != null) && (clan.getId() == getCastle().getOwnerId()))
 			{
 				return false;
 			}

@@ -576,7 +576,7 @@ public final class Formulas
 			return 0;
 		}
 		
-		L2SiegeClan siegeClan = siege.getAttackerClan(activeChar.getClan().getClanId());
+		L2SiegeClan siegeClan = siege.getAttackerClan(activeChar.getClan().getId());
 		if ((siegeClan == null) || siegeClan.getFlag().isEmpty() || !Util.checkIfInRange(200, activeChar, siegeClan.getFlag().get(0), true))
 		{
 			return 0;

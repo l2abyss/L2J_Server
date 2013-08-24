@@ -19,7 +19,6 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.concurrent.Future;
-import java.util.logging.Level;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.enums.InstanceType;
@@ -260,9 +259,12 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	}
 	
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
-		super.deleteMe();
+		if (!super.deleteMe())
+		{
+			return false;
+		}
 		
 		if (_checkTask != null)
 		{
@@ -275,14 +277,8 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 			_consumeFuelTask = null;
 		}
 		
-		try
-		{
-			broadcastPacket(new DeleteObject(_helmId));
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "Failed decayMe():" + e.getMessage());
-		}
+		broadcastPacket(new DeleteObject(_helmId));
+		return true;
 	}
 	
 	@Override

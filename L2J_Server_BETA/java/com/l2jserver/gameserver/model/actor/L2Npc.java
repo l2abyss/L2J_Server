@@ -1507,7 +1507,7 @@ public class L2Npc extends L2Character
 	 * UnAfraid: TODO: Add Listener here
 	 */
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
 		L2WorldRegion oldRegion = getWorldRegion();
 		
@@ -1556,7 +1556,7 @@ public class L2Npc extends L2Character
 		// Remove L2Object object from _allObjects of L2World
 		L2World.getInstance().removeObject(this);
 		
-		super.deleteMe();
+		return super.deleteMe();
 	}
 	
 	/**

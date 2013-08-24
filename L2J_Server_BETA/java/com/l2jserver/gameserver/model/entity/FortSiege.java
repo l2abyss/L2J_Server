@@ -276,7 +276,7 @@ public class FortSiege implements Siegable
 			int ownerId = -1;
 			if (getFort().getOwnerClan() != null)
 			{
-				ownerId = getFort().getOwnerClan().getClanId();
+				ownerId = getFort().getOwnerClan().getId();
 			}
 			getFort().getZone().banishForeigners(ownerId);
 			getFort().getZone().setIsActive(false);
@@ -389,7 +389,7 @@ public class FortSiege implements Siegable
 		}
 		if (getFort().getOwnerClan() != null)
 		{
-			clan = ClanTable.getInstance().getClan(getFort().getOwnerClan().getClanId());
+			clan = ClanTable.getInstance().getClan(getFort().getOwnerClan().getId());
 			for (L2PcInstance member : clan.getOnlineMembers(0))
 			{
 				if (member != null)
@@ -441,7 +441,7 @@ public class FortSiege implements Siegable
 		}
 		if (getFort().getOwnerClan() != null)
 		{
-			clan = ClanTable.getInstance().getClan(getFort().getOwnerClan().getClanId());
+			clan = ClanTable.getInstance().getClan(getFort().getOwnerClan().getId());
 			for (L2PcInstance member : clan.getOnlineMembers(0))
 			{
 				if (member == null)
@@ -529,7 +529,7 @@ public class FortSiege implements Siegable
 			{
 				try (PreparedStatement delete = con.prepareStatement("DELETE FROM fortsiege_clans WHERE clan_id=?"))
 				{
-					delete.setInt(1, getFort().getOwnerClan().getClanId());
+					delete.setInt(1, getFort().getOwnerClan().getId());
 					delete.execute();
 				}
 			}
@@ -605,7 +605,7 @@ public class FortSiege implements Siegable
 		L2Clan clan;
 		if (getFort().getOwnerClan() != null)
 		{
-			clan = ClanTable.getInstance().getClan(getFort().getOwnerClan().getClanId());
+			clan = ClanTable.getInstance().getClan(getFort().getOwnerClan().getId());
 			if (clan != getFort().getOwnerClan())
 			{
 				return null;
@@ -813,7 +813,7 @@ public class FortSiege implements Siegable
 			return;
 		}
 		
-		removeSiegeClan(clan.getClanId());
+		removeSiegeClan(clan.getId());
 	}
 	
 	/**
@@ -1139,11 +1139,11 @@ public class FortSiege implements Siegable
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("INSERT INTO fortsiege_clans (clan_id,fort_id) values (?,?)"))
 		{
-			statement.setInt(1, clan.getClanId());
+			statement.setInt(1, clan.getId());
 			statement.setInt(2, getFort().getFortId());
 			statement.execute();
 			
-			addAttacker(clan.getClanId());
+			addAttacker(clan.getId());
 		}
 		catch (Exception e)
 		{
@@ -1227,7 +1227,7 @@ public class FortSiege implements Siegable
 			return null;
 		}
 		
-		return getAttackerClan(clan.getClanId());
+		return getAttackerClan(clan.getId());
 	}
 	
 	@Override

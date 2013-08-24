@@ -38,7 +38,7 @@ public class GMViewPledgeInfo extends L2GameServerPacket
 	{
 		writeC(0x96);
 		writeS(_activeChar.getName());
-		writeD(_clan.getClanId());
+		writeD(_clan.getId());
 		writeD(0x00);
 		writeS(_clan.getName());
 		writeS(_clan.getLeaderName());

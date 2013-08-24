@@ -64,7 +64,7 @@ public final class RequestStopPledgeWar extends L2GameClientPacket
 			return;
 		}
 		
-		if (!playerClan.isAtWarWith(clan.getClanId()))
+		if (!playerClan.isAtWarWith(clan.getId()))
 		{
 			player.sendMessage("You aren't at war with this clan.");
 			player.sendPacket(ActionFailed.STATIC_PACKET);
@@ -110,7 +110,7 @@ public final class RequestStopPledgeWar extends L2GameClientPacket
 			}
 		}
 		
-		ClanTable.getInstance().deleteclanswars(playerClan.getClanId(), clan.getClanId());
+		ClanTable.getInstance().deleteclanswars(playerClan.getId(), clan.getId());
 		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcastUserInfo(clan, player));
 	}
 	

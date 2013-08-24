@@ -37,6 +37,8 @@ import com.l2jserver.gameserver.model.actor.poly.ObjectPoly;
 import com.l2jserver.gameserver.model.actor.position.ObjectPosition;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
+import com.l2jserver.gameserver.model.interfaces.INamable;
+import com.l2jserver.gameserver.model.interfaces.ISpawnable;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -50,7 +52,7 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
  * <BR>
  * <li>L2Character</li> <li>L2ItemInstance</li>
  */
-public abstract class L2Object extends ObjectPosition implements IIdentifiable
+public abstract class L2Object extends ObjectPosition implements IIdentifiable, INamable, ISpawnable
 {
 	private boolean _isVisible; // Object visibility
 	private ObjectKnownList _knownList;
@@ -289,7 +291,8 @@ public abstract class L2Object extends ObjectPosition implements IIdentifiable
 	 * <BR>
 	 * <li>Create Door</li> <li>Spawn : Monster, Minion, CTs, Summon...</li><BR>
 	 */
-	public final void spawnMe()
+	@Override
+	public final boolean spawnMe()
 	{
 		assert (getWorldRegion() == null) && (getWorldPosition().getX() != 0) && (getWorldPosition().getY() != 0) && (getWorldPosition().getZ() != 0);
 		
@@ -306,12 +309,13 @@ public abstract class L2Object extends ObjectPosition implements IIdentifiable
 			getWorldRegion().addVisibleObject(this);
 		}
 		
-		// this can synchronize on others instances, so it's out of
-		// synchronized, to avoid deadlocks
+		// this can synchronize on others instances, so it's out of synchronized, to avoid deadlocks
 		// Add the L2Object spawn in the world as a visible object
 		L2World.getInstance().addVisibleObject(this, getWorldRegion());
 		
 		onSpawn();
+		
+		return true;
 	}
 	
 	public final void spawnMe(int x, int y, int z)
@@ -418,6 +422,7 @@ public abstract class L2Object extends ObjectPosition implements IIdentifiable
 		_knownList = value;
 	}
 	
+	@Override
 	public final String getName()
 	{
 		return _name;

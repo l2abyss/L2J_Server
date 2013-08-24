@@ -126,7 +126,7 @@ public final class CrestTable
 			{
 				if (getCrest(clan.getCrestId()) == null)
 				{
-					_log.info("Removing non-existent crest for clan " + clan.getName() + " [" + clan.getClanId() + "], crestId:" + clan.getCrestId());
+					_log.info("Removing non-existent crest for clan " + clan.getName() + " [" + clan.getId() + "], crestId:" + clan.getCrestId());
 					clan.setCrestId(0);
 					clan.changeClanCrest(0);
 				}
@@ -136,7 +136,7 @@ public final class CrestTable
 			{
 				if (getCrest(clan.getCrestLargeId()) == null)
 				{
-					_log.info("Removing non-existent large crest for clan " + clan.getName() + " [" + clan.getClanId() + "], crestLargeId:" + clan.getCrestLargeId());
+					_log.info("Removing non-existent large crest for clan " + clan.getName() + " [" + clan.getId() + "], crestLargeId:" + clan.getCrestLargeId());
 					clan.setCrestLargeId(0);
 					clan.changeLargeCrest(0);
 				}
@@ -146,7 +146,7 @@ public final class CrestTable
 			{
 				if (getCrest(clan.getAllyCrestId()) == null)
 				{
-					_log.info("Removing non-existent ally crest for clan " + clan.getName() + " [" + clan.getClanId() + "], allyCrestId:" + clan.getAllyCrestId());
+					_log.info("Removing non-existent ally crest for clan " + clan.getName() + " [" + clan.getId() + "], allyCrestId:" + clan.getAllyCrestId());
 					clan.setAllyCrestId(0);
 					clan.changeAllyCrest(0, true);
 				}

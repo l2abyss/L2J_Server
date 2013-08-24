@@ -108,10 +108,10 @@ public class L2ControllableMobInstance extends L2MonsterInstance
 	}
 	
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
 		removeAI();
-		super.deleteMe();
+		return super.deleteMe();
 	}
 	
 	/**

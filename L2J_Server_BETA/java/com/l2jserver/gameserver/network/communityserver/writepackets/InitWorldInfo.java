@@ -72,14 +72,14 @@ public final class InitWorldInfo extends BaseWritePacket
 					{
 						break;
 					}
-					super.writeD(c.getClanId());
+					super.writeD(c.getId());
 					super.writeS(c.getName());
 					super.writeD(c.getLevel());
 					if (c.getLeader() == null)
 					{
 						writeD(0);
 						writeS("");
-						_log.info("Clan Id: " + c.getClanId() + " has null clan leader!");
+						_log.info("Clan Id: " + c.getId() + " has null clan leader!");
 					}
 					else
 					{
@@ -94,7 +94,7 @@ public final class InitWorldInfo extends BaseWritePacket
 					super.writeD(clanAllies.size());
 					for (L2Clan allies : clanAllies)
 					{
-						super.writeD(allies.getClanId());
+						super.writeD(allies.getId());
 					}
 				}
 				break;

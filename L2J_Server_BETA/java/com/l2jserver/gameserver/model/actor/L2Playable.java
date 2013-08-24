@@ -356,7 +356,7 @@ public abstract class L2Playable extends L2Character
 	
 	public abstract boolean useMagic(L2Skill skill, boolean forceUse, boolean dontMove);
 	
-	public abstract void store();
+	public abstract void storeMe();
 	
 	public abstract void storeEffect(boolean storeEffects);
 	

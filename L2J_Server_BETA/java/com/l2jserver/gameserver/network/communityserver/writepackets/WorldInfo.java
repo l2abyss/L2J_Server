@@ -84,7 +84,7 @@ public final class WorldInfo extends BaseWritePacket
 			case TYPE_UPDATE_CLAN_DATA:
 			{
 				super.writeC(0x02);
-				super.writeD(clan.getClanId());
+				super.writeD(clan.getId());
 				super.writeS(clan.getName());
 				super.writeD(clan.getLevel());
 				super.writeD(clan.getLeader().getObjectId());
@@ -97,7 +97,7 @@ public final class WorldInfo extends BaseWritePacket
 				{
 					for (L2Clan c : ClanTable.getInstance().getClanAllies(clan.getAllyId()))
 					{
-						allyClanIdList.add(c.getClanId());
+						allyClanIdList.add(c.getId());
 					}
 				}
 				super.writeD(allyClanIdList.size());
@@ -110,7 +110,7 @@ public final class WorldInfo extends BaseWritePacket
 			}
 			case TYPE_SEND_CLAN_NOTICE:
 				super.writeC(0x03);
-				super.writeD(clan.getClanId());
+				super.writeD(clan.getId());
 				super.writeS(clan.getNotice());
 				break;
 		}

@@ -47,11 +47,11 @@ public class PlayerVariables extends AbstractVariables
 	public PlayerVariables(int objectId)
 	{
 		_objectId = objectId;
-		load();
+		restoreMe();
 	}
 	
 	@Override
-	protected void load()
+	public boolean restoreMe()
 	{
 		// Restore previous variables.
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
@@ -69,20 +69,22 @@ public class PlayerVariables extends AbstractVariables
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't restore variables for: " + getPlayer(), e);
+			return false;
 		}
 		finally
 		{
 			compareAndSetChanges(true, false);
 		}
+		return true;
 	}
 	
 	@Override
-	public void store()
+	public boolean storeMe()
 	{
 		// No changes, nothing to store.
 		if (!hasChanges())
 		{
-			return;
+			return false;
 		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
@@ -110,11 +112,13 @@ public class PlayerVariables extends AbstractVariables
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't update variables for: " + getPlayer(), e);
+			return false;
 		}
 		finally
 		{
 			compareAndSetChanges(true, false);
 		}
+		return true;
 	}
 	
 	public L2PcInstance getPlayer()

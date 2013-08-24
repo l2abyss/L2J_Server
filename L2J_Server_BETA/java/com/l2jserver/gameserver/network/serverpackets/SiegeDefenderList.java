@@ -79,7 +79,7 @@ public final class SiegeDefenderList extends L2GameServerPacket
 					continue;
 				}
 				
-				writeD(clan.getClanId());
+				writeD(clan.getId());
 				writeS(clan.getName());
 				writeS(clan.getLeaderName());
 				writeD(clan.getCrestId());
@@ -107,7 +107,7 @@ public final class SiegeDefenderList extends L2GameServerPacket
 			for (L2SiegeClan siegeclan : _castle.getSiege().getDefenderWaitingClans())
 			{
 				clan = ClanTable.getInstance().getClan(siegeclan.getClanId());
-				writeD(clan.getClanId());
+				writeD(clan.getId());
 				writeS(clan.getName());
 				writeS(clan.getLeaderName());
 				writeD(clan.getCrestId());

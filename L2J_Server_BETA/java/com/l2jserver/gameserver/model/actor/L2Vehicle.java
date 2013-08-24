@@ -410,7 +410,7 @@ public abstract class L2Vehicle extends L2Character
 	}
 	
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
 		_engine = null;
 		
@@ -463,7 +463,7 @@ public abstract class L2Vehicle extends L2Character
 		// Remove L2Object object from _allObjects of L2World
 		L2World.getInstance().removeObject(this);
 		
-		super.deleteMe();
+		return super.deleteMe();
 	}
 	
 	@Override

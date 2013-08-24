@@ -161,7 +161,7 @@ public class ClanBBSManager extends BaseBBSManager
 		}
 		
 		// header
-		final StringBuilder html = StringUtil.startAppend(2000, "<html><body><br><br><center><br1><br1><table border=0 cellspacing=0 cellpadding=0><tr><td FIXWIDTH=15>&nbsp;</td><td width=610 height=30 align=left><a action=\"bypass _bbsclan_clanlist\"> CLAN COMMUNITY </a></td></tr></table><table border=0 cellspacing=0 cellpadding=0 width=610 bgcolor=434343><tr><td height=10></td></tr><tr><td fixWIDTH=5></td><td fixWIDTH=600><a action=\"bypass _bbsclan_clanhome;", String.valueOf((activeChar.getClan() != null) ? activeChar.getClan().getClanId() : 0), "\">[GO TO MY CLAN]</a>&nbsp;&nbsp;</td><td fixWIDTH=5></td></tr><tr><td height=10></td></tr></table><br><table border=0 cellspacing=0 cellpadding=2 bgcolor=5A5A5A width=610><tr><td FIXWIDTH=5></td><td FIXWIDTH=200 align=center>CLAN NAME</td><td FIXWIDTH=200 align=center>CLAN LEADER</td><td FIXWIDTH=100 align=center>CLAN LEVEL</td><td FIXWIDTH=100 align=center>CLAN MEMBERS</td><td FIXWIDTH=5></td></tr></table><img src=\"L2UI.Squareblank\" width=\"1\" height=\"5\">");
+		final StringBuilder html = StringUtil.startAppend(2000, "<html><body><br><br><center><br1><br1><table border=0 cellspacing=0 cellpadding=0><tr><td FIXWIDTH=15>&nbsp;</td><td width=610 height=30 align=left><a action=\"bypass _bbsclan_clanlist\"> CLAN COMMUNITY </a></td></tr></table><table border=0 cellspacing=0 cellpadding=0 width=610 bgcolor=434343><tr><td height=10></td></tr><tr><td fixWIDTH=5></td><td fixWIDTH=600><a action=\"bypass _bbsclan_clanhome;", String.valueOf((activeChar.getClan() != null) ? activeChar.getClan().getId() : 0), "\">[GO TO MY CLAN]</a>&nbsp;&nbsp;</td><td fixWIDTH=5></td></tr><tr><td height=10></td></tr></table><br><table border=0 cellspacing=0 cellpadding=2 bgcolor=5A5A5A width=610><tr><td FIXWIDTH=5></td><td FIXWIDTH=200 align=center>CLAN NAME</td><td FIXWIDTH=200 align=center>CLAN LEADER</td><td FIXWIDTH=100 align=center>CLAN LEVEL</td><td FIXWIDTH=100 align=center>CLAN MEMBERS</td><td FIXWIDTH=5></td></tr></table><img src=\"L2UI.Squareblank\" width=\"1\" height=\"5\">");
 		
 		int i = 0;
 		for (L2Clan cl : ClanTable.getInstance().getClans())
@@ -173,7 +173,7 @@ public class ClanBBSManager extends BaseBBSManager
 			
 			if (i++ >= ((index - 1) * 7))
 			{
-				StringUtil.append(html, "<img src=\"L2UI.SquareBlank\" width=\"610\" height=\"3\"><table border=0 cellspacing=0 cellpadding=0 width=610><tr> <td FIXWIDTH=5></td><td FIXWIDTH=200 align=center><a action=\"bypass _bbsclan_clanhome;", String.valueOf(cl.getClanId()), "\">", cl.getName(), "</a></td><td FIXWIDTH=200 align=center>", cl.getLeaderName(), "</td><td FIXWIDTH=100 align=center>", String.valueOf(cl.getLevel()), "</td><td FIXWIDTH=100 align=center>", String.valueOf(cl.getMembersCount()), "</td><td FIXWIDTH=5></td></tr><tr><td height=5></td></tr></table><img src=\"L2UI.SquareBlank\" width=\"610\" height=\"3\"><img src=\"L2UI.SquareGray\" width=\"610\" height=\"1\">");
+				StringUtil.append(html, "<img src=\"L2UI.SquareBlank\" width=\"610\" height=\"3\"><table border=0 cellspacing=0 cellpadding=0 width=610><tr> <td FIXWIDTH=5></td><td FIXWIDTH=200 align=center><a action=\"bypass _bbsclan_clanhome;", String.valueOf(cl.getId()), "\">", cl.getName(), "</a></td><td FIXWIDTH=200 align=center>", cl.getLeaderName(), "</td><td FIXWIDTH=100 align=center>", String.valueOf(cl.getLevel()), "</td><td FIXWIDTH=100 align=center>", String.valueOf(cl.getMembersCount()), "</td><td FIXWIDTH=5></td></tr><tr><td height=5></td></tr></table><img src=\"L2UI.SquareBlank\" width=\"610\" height=\"3\"><img src=\"L2UI.SquareGray\" width=\"610\" height=\"1\">");
 			}
 		}
 		
@@ -226,7 +226,7 @@ public class ClanBBSManager extends BaseBBSManager
 	 */
 	private void clanhome(L2PcInstance activeChar)
 	{
-		clanhome(activeChar, activeChar.getClan().getClanId());
+		clanhome(activeChar, activeChar.getClan().getId());
 	}
 	
 	private static class SingletonHolder
@@ -270,7 +270,7 @@ public class ClanBBSManager extends BaseBBSManager
 		if (ar1.equals("Set"))
 		{
 			activeChar.getClan().setNotice(ar4);
-			parsecmd("_bbsclan_clanhome;" + activeChar.getClan().getClanId(), activeChar);
+			parsecmd("_bbsclan_clanhome;" + activeChar.getClan().getId(), activeChar);
 		}
 	}
 }

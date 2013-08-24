@@ -50,10 +50,10 @@ public class L2FlameTowerInstance extends L2Tower
 	}
 	
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
 		enableZones(false);
-		super.deleteMe();
+		return super.deleteMe();
 	}
 	
 	public final void enableZones(boolean state)

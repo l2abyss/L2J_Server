@@ -33,7 +33,7 @@ public class PledgeInfo extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x89);
-		writeD(_clan.getClanId());
+		writeD(_clan.getId());
 		writeS(_clan.getName());
 		writeS(_clan.getAllyName());
 	}

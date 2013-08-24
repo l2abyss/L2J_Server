@@ -78,7 +78,7 @@ public final class RequestSetAllyCrest extends L2GameClientPacket
 		
 		final L2Clan leaderClan = ClanTable.getInstance().getClan(activeChar.getAllyId());
 		
-		if ((activeChar.getClanId() != leaderClan.getClanId()) || !activeChar.isClanLeader())
+		if ((activeChar.getClanId() != leaderClan.getId()) || !activeChar.isClanLeader())
 		{
 			activeChar.sendPacket(SystemMessageId.FEATURE_ONLY_FOR_ALLIANCE_LEADER);
 			return;

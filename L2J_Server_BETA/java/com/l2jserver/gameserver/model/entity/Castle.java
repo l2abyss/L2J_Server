@@ -303,12 +303,12 @@ public class Castle
 		{
 			return;
 		}
-		_engrave.put(target.getObjectId(), clan.getClanId());
+		_engrave.put(target.getObjectId(), clan.getId());
 		if (_engrave.size() == _artefacts.size())
 		{
 			for (L2ArtefactInstance art : _artefacts)
 			{
-				if (_engrave.get(art.getObjectId()) != clan.getClanId())
+				if (_engrave.get(art.getObjectId()) != clan.getId())
 				{
 					return;
 				}
@@ -539,7 +539,7 @@ public class Castle
 	public void setOwner(L2Clan clan)
 	{
 		// Remove old owner
-		if ((getOwnerId() > 0) && ((clan == null) || (clan.getClanId() != getOwnerId())))
+		if ((getOwnerId() > 0) && ((clan == null) || (clan.getId() != getOwnerId())))
 		{
 			L2Clan oldOwner = ClanTable.getInstance().getClan(getOwnerId()); // Try to find clan instance
 			if (oldOwner != null)
@@ -906,7 +906,7 @@ public class Castle
 	{
 		if (clan != null)
 		{
-			_ownerId = clan.getClanId(); // Update owner id property
+			_ownerId = clan.getId(); // Update owner id property
 		}
 		else
 		{

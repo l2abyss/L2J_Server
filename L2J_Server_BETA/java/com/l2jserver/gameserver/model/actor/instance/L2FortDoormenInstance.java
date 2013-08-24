@@ -86,7 +86,7 @@ public class L2FortDoormenInstance extends L2DoormenInstance
 	{
 		if ((player.getClan() != null) && (getFort() != null) && (getFort().getOwnerClan() != null))
 		{
-			if (player.getClanId() == getFort().getOwnerClan().getClanId())
+			if (player.getClanId() == getFort().getOwnerClan().getId())
 			{
 				return true;
 			}

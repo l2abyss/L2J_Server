@@ -89,7 +89,7 @@ public final class SiegeAttackerList extends L2GameServerPacket
 						continue;
 					}
 					
-					writeD(clan.getClanId());
+					writeD(clan.getId());
 					writeS(clan.getName());
 					writeS(clan.getLeaderName());
 					writeD(clan.getCrestId());
@@ -126,7 +126,7 @@ public final class SiegeAttackerList extends L2GameServerPacket
 						continue;
 					}
 					
-					writeD(clan.getClanId());
+					writeD(clan.getId());
 					writeS(clan.getName());
 					writeS(clan.getLeaderName());
 					writeD(clan.getCrestId());

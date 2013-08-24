@@ -33,10 +33,11 @@ import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.interfaces.IRestorable;
 import com.l2jserver.gameserver.network.serverpackets.SendMacroList;
 import com.l2jserver.util.StringUtil;
 
-public class MacroList
+public class MacroList implements IRestorable
 {
 	private static final Logger _log = Logger.getLogger(MacroList.class.getName());
 	
@@ -177,7 +178,8 @@ public class MacroList
 		}
 	}
 	
-	public void restore()
+	@Override
+	public boolean restoreMe()
 	{
 		_macroses.clear();
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
@@ -219,6 +221,8 @@ public class MacroList
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "could not store shortcuts:", e);
+			return false;
 		}
+		return true;
 	}
 }

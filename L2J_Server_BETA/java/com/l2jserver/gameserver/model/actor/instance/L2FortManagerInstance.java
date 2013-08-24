@@ -1003,7 +1003,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 				{
 					return COND_BUSY_BECAUSE_OF_SIEGE; // Busy because of siege
 				}
-				else if ((getFort().getOwnerClan() != null) && (getFort().getOwnerClan().getClanId() == player.getClanId()))
+				else if ((getFort().getOwnerClan() != null) && (getFort().getOwnerClan().getId() == player.getClanId()))
 				{
 					return COND_OWNER; // Owner
 				}

@@ -28,13 +28,14 @@ import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.interfaces.IRestorable;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.network.serverpackets.ExAutoSoulShot;
 import com.l2jserver.gameserver.network.serverpackets.ShortCutInit;
 import com.l2jserver.gameserver.network.serverpackets.ShortCutRegister;
 
-public class ShortCuts
+public class ShortCuts implements IRestorable
 {
 	private static Logger _log = Logger.getLogger(ShortCuts.class.getName());
 	private static final int MAX_SHORTCUTS_PER_BAR = 12;
@@ -172,7 +173,8 @@ public class ShortCuts
 		}
 	}
 	
-	public void restore()
+	@Override
+	public boolean restoreMe()
 	{
 		_shortCuts.clear();
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
@@ -198,6 +200,7 @@ public class ShortCuts
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "Could not restore character shortcuts: " + e.getMessage(), e);
+			return false;
 		}
 		
 		// Verify shortcuts
@@ -216,6 +219,8 @@ public class ShortCuts
 				}
 			}
 		}
+		
+		return true;
 	}
 	
 	/**

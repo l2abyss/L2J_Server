@@ -1048,10 +1048,10 @@ public final class L2PcInstance extends L2Playable
 		}
 		if ((getClan() != null) && (target.getClan() != null))
 		{
-			if ((target.getPledgeType() != L2Clan.SUBUNIT_ACADEMY) && (getPledgeType() != L2Clan.SUBUNIT_ACADEMY) && target.getClan().isAtWarWith(getClan().getClanId()))
+			if ((target.getPledgeType() != L2Clan.SUBUNIT_ACADEMY) && (getPledgeType() != L2Clan.SUBUNIT_ACADEMY) && target.getClan().isAtWarWith(getClan().getId()))
 			{
 				result |= RelationChanged.RELATION_1SIDED_WAR;
-				if (getClan().isAtWarWith(target.getClan().getClanId()))
+				if (getClan().isAtWarWith(target.getClan().getId()))
 				{
 					result |= RelationChanged.RELATION_MUTUAL_WAR;
 				}
@@ -5538,7 +5538,7 @@ public final class L2PcInstance extends L2Playable
 					{
 						if ((pk != null) && (pk.getClan() != null) && (getClan() != null) && !isAcademyMember() && !(pk.isAcademyMember()))
 						{
-							if ((_clan.isAtWarWith(pk.getClanId()) && pk.getClan().isAtWarWith(_clan.getClanId())) || (isInSiege() && pk.isInSiege()))
+							if ((_clan.isAtWarWith(pk.getClanId()) && pk.getClan().isAtWarWith(_clan.getId())) || (isInSiege() && pk.isInSiege()))
 							{
 								if (AntiFeedManager.getInstance().check(killer, this))
 								{
@@ -6418,7 +6418,7 @@ public final class L2PcInstance extends L2Playable
 			return;
 		}
 		
-		_clanId = clan.getClanId();
+		_clanId = clan.getId();
 		if (_isOnline)
 		{
 			CommunityServerThread.getInstance().sendPacket(new WorldInfo(this, null, WorldInfo.TYPE_UPDATE_PLAYER_DATA));
@@ -7507,10 +7507,10 @@ public final class L2PcInstance extends L2Playable
 		restoreSkills();
 		
 		// Retrieve from the database all macroses of this L2PcInstance and add them to _macros.
-		_macros.restore();
+		_macros.restoreMe();
 		
 		// Retrieve from the database all shortCuts of this L2PcInstance and add them to _shortCuts.
-		_shortCuts.restore();
+		_shortCuts.restoreMe();
 		
 		// Retrieve from the database all henna of this L2PcInstance and add them to _henna.
 		restoreHenna();
@@ -7674,18 +7674,18 @@ public final class L2PcInstance extends L2Playable
 		final PlayerVariables vars = getScript(PlayerVariables.class);
 		if (vars != null)
 		{
-			vars.store();
+			vars.storeMe();
 		}
 		
 		final AccountVariables aVars = getScript(AccountVariables.class);
 		if (aVars != null)
 		{
-			aVars.store();
+			aVars.storeMe();
 		}
 	}
 	
 	@Override
-	public void store()
+	public void storeMe()
 	{
 		store(true);
 	}
@@ -9347,7 +9347,7 @@ public final class L2PcInstance extends L2Playable
 			{
 				if ((getClan() != null) && (targetPlayer.getClan() != null))
 				{
-					if (getClan().isAtWarWith(targetPlayer.getClan().getClanId()) && targetPlayer.getClan().isAtWarWith(getClan().getClanId()))
+					if (getClan().isAtWarWith(targetPlayer.getClan().getId()) && targetPlayer.getClan().isAtWarWith(getClan().getId()))
 					{
 						return true;
 					}
@@ -10661,7 +10661,7 @@ public final class L2PcInstance extends L2Playable
 			// Clear resurrect xp calculation
 			setExpBeforeDeath(0);
 			
-			_shortCuts.restore();
+			_shortCuts.restoreMe();
 			sendPacket(new ShortCutInit(this));
 			
 			broadcastPacket(new SocialAction(getObjectId(), SocialAction.LEVEL_UP));
@@ -11447,11 +11447,11 @@ public final class L2PcInstance extends L2Playable
 	 * </ul>
 	 */
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
 		cleanup();
-		store();
-		super.deleteMe();
+		storeMe();
+		return super.deleteMe();
 	}
 	
 	private synchronized void cleanup()
@@ -14262,7 +14262,7 @@ public final class L2PcInstance extends L2Playable
 				{
 					return false;
 				}
-				if (getClan().isAtWarWith(target.getClan().getClanId()) && target.getClan().isAtWarWith(getClan().getClanId()))
+				if (getClan().isAtWarWith(target.getClan().getId()) && target.getClan().isAtWarWith(getClan().getId()))
 				{
 					return true;
 				}
@@ -14309,14 +14309,7 @@ public final class L2PcInstance extends L2Playable
 			statement.setInt(1, getObjectId());
 			try (ResultSet rset = statement.executeQuery())
 			{
-				if (rset.next() && (rset.getInt("object_id") > 0))
-				{
-					setPetInvItems(true);
-				}
-				else
-				{
-					setPetInvItems(false);
-				}
+				setPetInvItems(rset.next() && (rset.getInt("object_id") > 0));
 			}
 		}
 		catch (Exception e)

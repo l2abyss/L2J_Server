@@ -143,7 +143,7 @@ public final class CHSiegeManager
 		{
 			player.sendPacket(SystemMessageId.NOT_SIEGE_REGISTRATION_TIME2);
 		}
-		else if (hall.getOwnerId() == clan.getClanId())
+		else if (hall.getOwnerId() == clan.getId())
 		{
 			player.sendPacket(SystemMessageId.CLAN_THAT_OWNS_CASTLE_IS_AUTOMATICALLY_REGISTERED_DEFENDING);
 		}

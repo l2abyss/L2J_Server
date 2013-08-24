@@ -36,6 +36,7 @@ import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.interfaces.INamable;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -51,7 +52,7 @@ import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.Rnd;
 
-public class CursedWeapon
+public class CursedWeapon implements INamable
 {
 	private static final Logger _log = Logger.getLogger(CursedWeapon.class.getName());
 	
@@ -110,7 +111,7 @@ public class CursedWeapon
 				
 				// Remove
 				_player.getInventory().unEquipItemInBodySlot(L2Item.SLOT_LR_HAND);
-				_player.store();
+				_player.storeMe();
 				
 				// Destroy
 				L2ItemInstance removedItem = _player.getInventory().destroyItemByItemId("", _itemId, 1, _player, null);
@@ -645,6 +646,7 @@ public class CursedWeapon
 		return _endTime;
 	}
 	
+	@Override
 	public String getName()
 	{
 		return _name;

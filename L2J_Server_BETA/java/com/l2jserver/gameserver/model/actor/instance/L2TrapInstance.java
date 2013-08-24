@@ -225,14 +225,14 @@ public final class L2TrapInstance extends L2Npc
 	}
 	
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
 		if (_owner != null)
 		{
 			_owner.setTrap(null);
 			_owner = null;
 		}
-		super.deleteMe();
+		return super.deleteMe();
 	}
 	
 	@Override

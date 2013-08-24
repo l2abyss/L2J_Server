@@ -100,7 +100,7 @@ public class ClanTable
 				clan = getClan(clanId);
 				if (clan.getDissolvingExpiryTime() != 0)
 				{
-					scheduleRemoveClan(clan.getClanId());
+					scheduleRemoveClan(clan.getId());
 				}
 				clanCount++;
 			}
@@ -201,7 +201,7 @@ public class ClanTable
 		player.setPledgeClass(L2ClanMember.calculatePledgeClass(player));
 		player.setClanPrivileges(L2Clan.CP_ALL);
 		
-		_clans.put(Integer.valueOf(clan.getClanId()), clan);
+		_clans.put(Integer.valueOf(clan.getId()), clan);
 		
 		// should be update packet only
 		player.sendPacket(new PledgeShowInfoUpdate(clan));
@@ -254,7 +254,7 @@ public class ClanTable
 		Auction auction = AuctionManager.getInstance().getAuction(clan.getAuctionBiddedAt());
 		if (auction != null)
 		{
-			auction.cancelBid(clan.getClanId());
+			auction.cancelBid(clan.getId());
 		}
 		
 		L2ClanMember leaderMember = clan.getLeader();
@@ -478,7 +478,7 @@ public class ClanTable
 			}
 			clan1.deleteEnemyClan(clan2);
 			clan2.deleteEnemyClan(clan1);
-			deleteclanswars(clan1.getClanId(), clan2.getClanId());
+			deleteclanswars(clan1.getId(), clan2.getId());
 		}
 	}
 	
@@ -518,7 +518,7 @@ public class ClanTable
 		for (L2Clan clan : _clans.values())
 		{
 			int allyId = clan.getAllyId();
-			if ((allyId != 0) && (clan.getClanId() != allyId))
+			if ((allyId != 0) && (clan.getId() != allyId))
 			{
 				if (!_clans.containsKey(allyId))
 				{

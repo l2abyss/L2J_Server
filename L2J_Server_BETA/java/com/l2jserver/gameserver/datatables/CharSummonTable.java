@@ -162,7 +162,7 @@ public class CharSummonTable
 		
 		if (!pet.isRespawned())
 		{
-			pet.store();
+			pet.storeMe();
 		}
 		
 		activeChar.setPet(pet);

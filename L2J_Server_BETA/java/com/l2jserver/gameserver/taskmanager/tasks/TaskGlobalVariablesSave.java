@@ -40,7 +40,7 @@ public class TaskGlobalVariablesSave extends Task
 	@Override
 	public void onTimeElapsed(ExecutedTask task)
 	{
-		GlobalVariablesManager.getInstance().store();
+		GlobalVariablesManager.getInstance().storeMe();
 	}
 	
 	@Override

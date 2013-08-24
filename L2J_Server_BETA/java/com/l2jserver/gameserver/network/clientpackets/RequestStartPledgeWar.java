@@ -98,7 +98,7 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
 			sm = null;
 			return;
 		}
-		else if (_clan.isAtWarWith(clan.getClanId()))
+		else if (_clan.isAtWarWith(clan.getId()))
 		{
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.ALREADY_AT_WAR_WITH_S1_WAIT_5_DAYS); // msg id 628
 			sm.addString(clan.getName());
@@ -142,7 +142,7 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
 		// player.setTransactionRequester(leader);
 		// leader.sendPacket(new StartPledgeWar(_clan.getName(),player.getName()));
 		
-		ClanTable.getInstance().storeclanswars(player.getClanId(), clan.getClanId());
+		ClanTable.getInstance().storeclanswars(player.getClanId(), clan.getId());
 		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcastUserInfo(player, clan));
 	}
 	

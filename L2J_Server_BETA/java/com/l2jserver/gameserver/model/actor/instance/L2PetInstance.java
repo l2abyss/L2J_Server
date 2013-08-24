@@ -982,7 +982,7 @@ public class L2PetInstance extends L2Summon
 	}
 	
 	@Override
-	public void store()
+	public void storeMe()
 	{
 		if (getControlObjectId() == 0)
 		{

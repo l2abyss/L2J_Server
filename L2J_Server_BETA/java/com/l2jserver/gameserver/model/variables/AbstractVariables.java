@@ -21,17 +21,15 @@ package com.l2jserver.gameserver.model.variables;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.l2jserver.gameserver.model.StatsSet;
+import com.l2jserver.gameserver.model.interfaces.IRestorable;
+import com.l2jserver.gameserver.model.interfaces.IStorable;
 
 /**
  * @author UnAfraid
  */
-public abstract class AbstractVariables extends StatsSet
+public abstract class AbstractVariables extends StatsSet implements IRestorable, IStorable
 {
 	private final AtomicBoolean _hasChanges = new AtomicBoolean(false);
-	
-	protected abstract void load();
-	
-	public abstract void store();
 	
 	/**
 	 * Overriding following methods to prevent from doing useless database operations if there is no changes since player's login.

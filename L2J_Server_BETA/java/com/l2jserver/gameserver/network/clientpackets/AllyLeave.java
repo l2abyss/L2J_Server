@@ -58,7 +58,7 @@ public final class AllyLeave extends L2GameClientPacket
 			player.sendPacket(SystemMessageId.NO_CURRENT_ALLIANCES);
 			return;
 		}
-		if (clan.getClanId() == clan.getAllyId())
+		if (clan.getId() == clan.getAllyId())
 		{
 			player.sendPacket(SystemMessageId.ALLIANCE_LEADER_CANT_WITHDRAW);
 			return;

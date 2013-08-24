@@ -20,7 +20,10 @@ package com.l2jserver.gameserver.model;
 
 import java.util.List;
 
-public class Macro
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
+import com.l2jserver.gameserver.model.interfaces.INamable;
+
+public class Macro implements IIdentifiable, INamable
 {
 	public static final int CMD_TYPE_SKILL = 1;
 	public static final int CMD_TYPE_ACTION = 3;
@@ -43,6 +46,7 @@ public class Macro
 		_commands = list;
 	}
 	
+	@Override
 	public int getId()
 	{
 		return _id;
@@ -58,6 +62,7 @@ public class Macro
 		return _icon;
 	}
 	
+	@Override
 	public String getName()
 	{
 		return _name;
