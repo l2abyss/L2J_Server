@@ -117,7 +117,7 @@ public final class ItemsOnGroundManager implements Runnable
 					{
 						item.setEnchantLevel(rs.getInt(4));
 					}
-					item.getPosition().setWorldPosition(rs.getInt(5), rs.getInt(6), rs.getInt(7));
+					item.getPosition().setXYZ(rs.getInt(5), rs.getInt(6), rs.getInt(7));
 					item.getPosition().setWorldRegion(L2World.getInstance().getRegion(item.getPosition().getWorldPosition()));
 					item.getPosition().getWorldRegion().addVisibleObject(item);
 					final long dropTime = rs.getLong(8);

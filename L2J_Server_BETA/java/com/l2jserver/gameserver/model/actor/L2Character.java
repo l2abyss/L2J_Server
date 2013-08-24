@@ -71,7 +71,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2RiftInvaderInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.CharKnownList;
-import com.l2jserver.gameserver.model.actor.position.CharPosition;
 import com.l2jserver.gameserver.model.actor.stat.CharStat;
 import com.l2jserver.gameserver.model.actor.status.CharStatus;
 import com.l2jserver.gameserver.model.actor.tasks.character.FlyToLocationTask;
@@ -92,6 +91,7 @@ import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.holders.SkillUseHolder;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
+import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.interfaces.ISkillsHolder;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.items.L2Item;
@@ -500,7 +500,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			{
 				return;
 			}
-			spawnMe(getPosition().getX(), getPosition().getY(), getPosition().getZ());
+			spawnMe(getX(), getY(), getZ());
 			setIsTeleporting(false);
 			getEvents().onTeleported();
 		}
@@ -650,11 +650,27 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 * @param y
 	 * @param z
 	 * @param heading
+	 * @param instanceId
 	 * @param randomOffset
 	 */
-	public void teleToLocation(int x, int y, int z, int heading, int randomOffset)
+	public void teleToLocation(int x, int y, int z, int heading, int instanceId, int randomOffset)
 	{
-		// Stop movement
+		setInstanceId(instanceId);
+		
+		if (isPlayer() && DimensionalRiftManager.getInstance().checkIfInRiftZone(getX(), getY(), getZ(), true)) // true -> ignore waiting room :)
+		{
+			L2PcInstance player = getActingPlayer();
+			player.sendMessage("You have been sent to the waiting room.");
+			if (player.isInParty() && player.getParty().isInDimensionalRift())
+			{
+				player.getParty().getDimensionalRift().usedTeleport(player);
+			}
+			int[] newCoords = DimensionalRiftManager.getInstance().getRoom((byte) 0, (byte) 0).getTeleportCoorinates();
+			x = newCoords[0];
+			y = newCoords[1];
+			z = newCoords[2];
+		}
+		
 		stopMove(null, false);
 		abortAttack();
 		abortCast();
@@ -679,12 +695,12 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		decayMe();
 		
 		// Set the x,y,z position of the L2Object and if necessary modify its _worldRegion
-		getPosition().setXYZ(x, y, z);
+		setXYZ(x, y, z);
 		
 		// temporary fix for heading on teleports
 		if (heading != 0)
 		{
-			getPosition().setHeading(heading);
+			setHeading(heading);
 		}
 		
 		// allow recall of the detached characters
@@ -696,77 +712,54 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		revalidateZone(true);
 	}
 	
+	public void teleToLocation(int x, int y, int z, int heading, int instanceId, boolean randomOffset)
+	{
+		teleToLocation(x, y, z, heading, instanceId, (randomOffset) ? Config.MAX_OFFSET_ON_TELEPORT : 0);
+	}
+	
+	public void teleToLocation(int x, int y, int z, int heading, int instanceId)
+	{
+		teleToLocation(x, y, z, heading, instanceId, 0);
+	}
+	
+	public void teleToLocation(int x, int y, int z, int heading, boolean randomOffset)
+	{
+		teleToLocation(x, y, z, heading, 0, (randomOffset) ? Config.MAX_OFFSET_ON_TELEPORT : 0);
+	}
+	
+	public void teleToLocation(int x, int y, int z, int heading)
+	{
+		teleToLocation(x, y, z, heading, 0, 0);
+	}
+	
+	public void teleToLocation(int x, int y, int z, boolean randomOffset)
+	{
+		teleToLocation(x, y, z, 0, 0, (randomOffset) ? Config.MAX_OFFSET_ON_TELEPORT : 0);
+	}
+	
 	public void teleToLocation(int x, int y, int z)
 	{
-		teleToLocation(x, y, z, getHeading(), 0);
+		teleToLocation(x, y, z, 0, 0, 0);
 	}
 	
-	public void teleToLocation(int x, int y, int z, int randomOffset)
+	public void teleToLocation(IPositionable loc, int randomOffset)
 	{
-		teleToLocation(x, y, z, getHeading(), randomOffset);
+		teleToLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), loc.getInstanceId(), randomOffset);
 	}
 	
-	/**
-	 * Teleports a character to the given location and set its instance Id.
-	 * @param loc the location to teleport the character
-	 * @param randomOffset the random offset for the teleport location
-	 */
-	public void teleToLocation(Location loc, int randomOffset)
+	public void teleToLocation(IPositionable loc, boolean randomOffset)
 	{
-		setInstanceId(loc.getInstanceId());
-		
-		int x = loc.getX();
-		int y = loc.getY();
-		int z = loc.getZ();
-		
-		if (isPlayer() && DimensionalRiftManager.getInstance().checkIfInRiftZone(getX(), getY(), getZ(), true)) // true -> ignore waiting room :)
-		{
-			L2PcInstance player = getActingPlayer();
-			player.sendMessage("You have been sent to the waiting room.");
-			if (player.isInParty() && player.getParty().isInDimensionalRift())
-			{
-				player.getParty().getDimensionalRift().usedTeleport(player);
-			}
-			int[] newCoords = DimensionalRiftManager.getInstance().getRoom((byte) 0, (byte) 0).getTeleportCoorinates();
-			x = newCoords[0];
-			y = newCoords[1];
-			z = newCoords[2];
-		}
-		teleToLocation(x, y, z, getHeading(), randomOffset);
+		teleToLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), loc.getInstanceId(), (randomOffset) ? Config.MAX_OFFSET_ON_TELEPORT : 0);
+	}
+	
+	public void teleToLocation(IPositionable loc)
+	{
+		teleToLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), loc.getInstanceId(), 0);
 	}
 	
 	public void teleToLocation(TeleportWhereType teleportWhere)
 	{
 		teleToLocation(MapRegionManager.getInstance().getTeleToLocation(this, teleportWhere), true);
-	}
-	
-	public void teleToLocation(Location loc, boolean allowRandomOffset)
-	{
-		teleToLocation(loc, (allowRandomOffset ? Config.MAX_OFFSET_ON_TELEPORT : 0));
-	}
-	
-	public void teleToLocation(int x, int y, int z, boolean allowRandomOffset)
-	{
-		if (allowRandomOffset)
-		{
-			teleToLocation(x, y, z, Config.MAX_OFFSET_ON_TELEPORT);
-		}
-		else
-		{
-			teleToLocation(x, y, z, 0);
-		}
-	}
-	
-	public void teleToLocation(int x, int y, int z, int heading, boolean allowRandomOffset)
-	{
-		if (allowRandomOffset)
-		{
-			teleToLocation(x, y, z, heading, Config.MAX_OFFSET_ON_TELEPORT);
-		}
-		else
-		{
-			teleToLocation(x, y, z, heading, 0);
-		}
 	}
 	
 	/**
@@ -2893,18 +2886,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		_status = value;
 	}
 	
-	@Override
-	public CharPosition getPosition()
-	{
-		return (CharPosition) super.getPosition();
-	}
-	
-	@Override
-	public void initPosition()
-	{
-		setObjectPosition(new CharPosition(this));
-	}
-	
 	public void initCharEvents()
 	{
 		_events = new CharEvents(this);
@@ -3885,6 +3866,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	 * Set the orientation of the L2Character.
 	 * @param heading
 	 */
+	@Override
 	public final void setHeading(int heading)
 	{
 		_heading = heading;
@@ -4186,7 +4168,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		if (distFraction > 1)
 		{
 			// Set the position of the L2Character to the destination
-			super.getPosition().setXYZ(m._xDestination, m._yDestination, m._zDestination);
+			super.setXYZ(m._xDestination, m._yDestination, m._zDestination);
 		}
 		else
 		{
@@ -4194,7 +4176,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 			m._yAccurate += dy * distFraction;
 			
 			// Set the position of the L2Character to estimated after parcial move
-			super.getPosition().setXYZ((int) (m._xAccurate), (int) (m._yAccurate), zPrev + (int) ((dz * distFraction) + 0.5));
+			super.setXYZ((int) (m._xAccurate), (int) (m._yAccurate), zPrev + (int) ((dz * distFraction) + 0.5));
 		}
 		revalidateZone(false);
 		
@@ -4261,7 +4243,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 		// All data are contained in a Location object
 		if (loc != null)
 		{
-			getPosition().setXYZ(loc.getX(), loc.getY(), loc.getZ());
+			setXYZ(loc.getX(), loc.getY(), loc.getZ());
 			setHeading(loc.getHeading());
 			revalidateZone(true);
 		}
@@ -7343,5 +7325,11 @@ public abstract class L2Character extends L2Object implements ISkillsHolder
 	public boolean isInCategory(CategoryType type)
 	{
 		return false;
+	}
+	
+	@Override
+	public boolean isCharacter()
+	{
+		return true;
 	}
 }

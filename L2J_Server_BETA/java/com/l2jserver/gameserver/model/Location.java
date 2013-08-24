@@ -71,6 +71,7 @@ public class Location implements IPositionable
 	 * Set the x coordinate.
 	 * @param x the x coordinate
 	 */
+	@Override
 	public void setX(int x)
 	{
 		_x = x;
@@ -90,6 +91,7 @@ public class Location implements IPositionable
 	 * Set the y coordinate.
 	 * @param y the x coordinate
 	 */
+	@Override
 	public void setY(int y)
 	{
 		_y = y;
@@ -109,6 +111,7 @@ public class Location implements IPositionable
 	 * Set the z coordinate.
 	 * @param z the z coordinate
 	 */
+	@Override
 	public void setZ(int z)
 	{
 		_z = z;
@@ -118,6 +121,7 @@ public class Location implements IPositionable
 	 * Get the heading.
 	 * @return the heading
 	 */
+	@Override
 	public int getHeading()
 	{
 		return _heading;
@@ -127,6 +131,7 @@ public class Location implements IPositionable
 	 * Set the heading.
 	 * @param heading the heading
 	 */
+	@Override
 	public void setHeading(int heading)
 	{
 		_heading = heading;
@@ -136,6 +141,7 @@ public class Location implements IPositionable
 	 * Get the instance Id.
 	 * @return the instance Id
 	 */
+	@Override
 	public int getInstanceId()
 	{
 		return _instanceId;
@@ -145,6 +151,7 @@ public class Location implements IPositionable
 	 * Set the instance Id.
 	 * @param instanceId the instance Id to set
 	 */
+	@Override
 	public void setInstanceId(int instanceId)
 	{
 		_instanceId = instanceId;
@@ -156,6 +163,7 @@ public class Location implements IPositionable
 		return this;
 	}
 	
+	@Override
 	public void setLocation(Location loc)
 	{
 		_x = loc.getX();

@@ -275,6 +275,11 @@ public final class SiegeManager
 		return _flagMaxCount;
 	}
 	
+	public final Siege getSiege(Location loc)
+	{
+		return getSiege(loc.getX(), loc.getY(), loc.getZ());
+	}
+	
 	public final Siege getSiege(L2Object activeObject)
 	{
 		return getSiege(activeObject.getX(), activeObject.getY(), activeObject.getZ());

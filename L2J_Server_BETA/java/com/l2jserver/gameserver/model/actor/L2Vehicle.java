@@ -40,6 +40,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.VehicleKnownList;
 import com.l2jserver.gameserver.model.actor.stat.VehicleStat;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
+import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -133,7 +134,8 @@ public abstract class L2Vehicle extends L2Character
 				{
 					if (point.getMoveSpeed() == 0)
 					{
-						teleToLocation(point.getX(), point.getY(), point.getZ(), point.getRotationSpeed(), false);
+						point.setHeading(point.getRotationSpeed());
+						teleToLocation(point, false);
 						_currentPath = null;
 					}
 					else
@@ -326,7 +328,7 @@ public abstract class L2Vehicle extends L2Character
 						if ((ticket == null) || (player.getInventory().destroyItem("Boat", ticket, count, player, this) == null))
 						{
 							player.sendPacket(SystemMessageId.NOT_CORRECT_BOAT_TICKET);
-							player.teleToLocation(oustX, oustY, oustZ, true);
+							player.teleToLocation(new Location(oustX, oustY, oustZ), true);
 							continue;
 						}
 						iu = new InventoryUpdate();
@@ -348,7 +350,7 @@ public abstract class L2Vehicle extends L2Character
 		{
 			if ((player != null) && (player.getVehicle() == this))
 			{
-				player.getPosition().setXYZ(getX(), getY(), getZ());
+				player.setXYZ(getX(), getY(), getZ());
 				player.revalidateZone(false);
 			}
 		}
@@ -357,7 +359,7 @@ public abstract class L2Vehicle extends L2Character
 	}
 	
 	@Override
-	public void teleToLocation(int x, int y, int z, int heading, boolean allowRandomOffset)
+	public void teleToLocation(IPositionable loc, boolean allowRandomOffset)
 	{
 		if (isMoving())
 		{
@@ -372,17 +374,17 @@ public abstract class L2Vehicle extends L2Character
 		{
 			if (player != null)
 			{
-				player.teleToLocation(x, y, z);
+				player.teleToLocation(loc, false);
 			}
 		}
 		
 		decayMe();
-		setXYZ(x, y, z);
+		setXYZ(loc.getX(), loc.getY(), loc.getZ());
 		
 		// temporary fix for heading on teleports
-		if (heading != 0)
+		if (loc.getHeading() != 0)
 		{
-			getPosition().setHeading(heading);
+			setHeading(loc.getHeading());
 		}
 		
 		onTeleported();

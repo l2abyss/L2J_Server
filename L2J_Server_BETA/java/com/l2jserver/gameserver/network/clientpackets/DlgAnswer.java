@@ -98,7 +98,7 @@ public final class DlgAnswer extends L2GameClientPacket
 			final SummonRequestHolder holder = activeChar.removeScript(SummonRequestHolder.class);
 			if ((_answer == 1) && (holder != null) && (holder.getTarget().getObjectId() == _requesterId))
 			{
-				activeChar.teleToLocation(holder.getTarget().getX(), holder.getTarget().getY(), holder.getTarget().getZ(), true);
+				activeChar.teleToLocation(holder.getTarget().getLocation(), true);
 			}
 		}
 		else if (_messageId == SystemMessageId.WOULD_YOU_LIKE_TO_OPEN_THE_GATE.getId())

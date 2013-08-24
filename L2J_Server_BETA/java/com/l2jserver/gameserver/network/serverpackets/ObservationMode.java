@@ -18,29 +18,24 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import com.l2jserver.gameserver.model.Location;
+
 public class ObservationMode extends L2GameServerPacket
 {
-	private final int _x, _y, _z;
+	private final Location _loc;
 	
-	/**
-	 * @param x
-	 * @param y
-	 * @param z
-	 */
-	public ObservationMode(int x, int y, int z)
+	public ObservationMode(Location loc)
 	{
-		_x = x;
-		_y = y;
-		_z = z;
+		_loc = loc;
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0xEB);
-		writeD(_x);
-		writeD(_y);
-		writeD(_z);
+		writeD(_loc.getX());
+		writeD(_loc.getY());
+		writeD(_loc.getZ());
 		writeC(0x00); // ?
 		writeC(0xc0); // ?
 		writeC(0x00); // ?

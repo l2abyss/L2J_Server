@@ -970,7 +970,7 @@ public abstract class L2Summon extends L2Playable
 	public void onTeleported()
 	{
 		super.onTeleported();
-		sendPacket(new TeleportToLocation(this, getPosition().getX(), getPosition().getY(), getPosition().getZ(), getPosition().getHeading()));
+		sendPacket(new TeleportToLocation(this, getX(), getY(), getZ(), getHeading()));
 	}
 	
 	@Override

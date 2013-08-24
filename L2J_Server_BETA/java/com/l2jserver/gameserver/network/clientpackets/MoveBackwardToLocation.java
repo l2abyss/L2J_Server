@@ -122,7 +122,7 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 				activeChar.setTeleMode(0);
 			}
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
-			activeChar.teleToLocation(_targetX, _targetY, _targetZ, false);
+			activeChar.teleToLocation(new Location(_targetX, _targetY, _targetZ));
 			return;
 		}
 		

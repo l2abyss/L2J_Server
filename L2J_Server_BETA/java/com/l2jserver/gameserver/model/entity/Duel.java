@@ -27,6 +27,7 @@ import javolution.util.FastList;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.instancemanager.DuelManager;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.zone.ZoneId;
@@ -177,7 +178,7 @@ public class Duel
 		{
 			if (_paDuel)
 			{
-				_player.teleToLocation(_x, _y, _z);
+				_player.teleToLocation(new Location(_x, _y, _z));
 			}
 		}
 		
@@ -576,13 +577,13 @@ public class Duel
 		
 		for (L2PcInstance temp : _playerA.getParty().getMembers())
 		{
-			temp.teleToLocation((x + offset) - 180, y - 150, z);
+			temp.teleToLocation(new Location((x + offset) - 180, y - 150, z));
 			offset += 40;
 		}
 		offset = 0;
 		for (L2PcInstance temp : _playerB.getParty().getMembers())
 		{
-			temp.teleToLocation((x + offset) - 180, y + 150, z);
+			temp.teleToLocation(new Location((x + offset) - 180, y + 150, z));
 			offset += 40;
 		}
 	}

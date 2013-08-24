@@ -23,21 +23,20 @@ import java.util.logging.Logger;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.util.Point3D;
 
-public class ObjectPosition
+public class ObjectPosition extends Point3D
 {
 	private static final Logger _log = Logger.getLogger(ObjectPosition.class.getName());
 	
-	private final L2Object _activeObject;
-	private int _heading = 0;
-	private Point3D _worldPosition;
+	private L2Object _activeObject;
 	private L2WorldRegion _worldRegion; // Object localization : Used for items/chars that are seen in the world
 	
-	public ObjectPosition(L2Object activeObject)
+	public ObjectPosition()
 	{
-		_activeObject = activeObject;
+		super(0, 0, 0);
 		setWorldRegion(L2World.getInstance().getRegion(getWorldPosition()));
 	}
 	
@@ -55,11 +54,12 @@ public class ObjectPosition
 	 * @param y
 	 * @param z
 	 */
+	@Override
 	public final void setXYZ(int x, int y, int z)
 	{
 		assert getWorldRegion() != null;
 		
-		setWorldPosition(x, y, z);
+		super.setXYZ(x, y, z);
 		
 		try
 		{
@@ -84,7 +84,15 @@ public class ObjectPosition
 	 */
 	protected void badCoords()
 	{
-		
+		if (_activeObject.isCharacter())
+		{
+			getActiveObject().decayMe();
+		}
+		else if (_activeObject.isPlayer())
+		{
+			((L2Character) getActiveObject()).teleToLocation(new Location(0, 0, 0), false);
+			((L2Character) getActiveObject()).sendMessage("Error with your coords, Please ask a GM for help!");
+		}
 	}
 	
 	/**
@@ -125,8 +133,13 @@ public class ObjectPosition
 			y = L2World.MAP_MIN_Y + 5000;
 		}
 		
-		setWorldPosition(x, y, z);
+		setXYZ(x, y, z);
 		getActiveObject().setIsVisible(false);
+	}
+	
+	public final void setLocationInvisible(Location loc)
+	{
+		setXYZInvisible(loc.getX(), loc.getY(), loc.getZ());
 	}
 	
 	/**
@@ -151,77 +164,19 @@ public class ObjectPosition
 		}
 	}
 	
+	public void setActiveObject(L2Object activeObject)
+	{
+		_activeObject = activeObject;
+	}
+	
 	public L2Object getActiveObject()
 	{
 		return _activeObject;
 	}
 	
-	public final int getHeading()
-	{
-		return _heading;
-	}
-	
-	public final void setHeading(int value)
-	{
-		_heading = value;
-	}
-	
-	/**
-	 * @return the x position of the L2Object.
-	 */
-	public final int getX()
-	{
-		return getWorldPosition().getX();
-	}
-	
-	public final void setX(int value)
-	{
-		getWorldPosition().setX(value);
-	}
-	
-	/**
-	 * @return the y position of the L2Object.
-	 */
-	public final int getY()
-	{
-		return getWorldPosition().getY();
-	}
-	
-	public final void setY(int value)
-	{
-		getWorldPosition().setY(value);
-	}
-	
-	/**
-	 * @return the z position of the L2Object.
-	 */
-	public final int getZ()
-	{
-		return getWorldPosition().getZ();
-	}
-	
-	public final void setZ(int value)
-	{
-		getWorldPosition().setZ(value);
-	}
-	
-	public final Point3D getWorldPosition()
-	{
-		if (_worldPosition == null)
-		{
-			_worldPosition = new Point3D(0, 0, 0);
-		}
-		return _worldPosition;
-	}
-	
-	public final void setWorldPosition(int x, int y, int z)
-	{
-		getWorldPosition().setXYZ(x, y, z);
-	}
-	
 	public final void setWorldPosition(Point3D newPosition)
 	{
-		setWorldPosition(newPosition.getX(), newPosition.getY(), newPosition.getZ());
+		setXYZ(newPosition.getX(), newPosition.getY(), newPosition.getZ());
 	}
 	
 	public final L2WorldRegion getWorldRegion()
@@ -229,17 +184,22 @@ public class ObjectPosition
 		return _worldRegion;
 	}
 	
+	public final ObjectPosition getPosition()
+	{
+		return this;
+	}
+	
 	public void setWorldRegion(L2WorldRegion value)
 	{
-		if ((_worldRegion != null) && (getActiveObject() instanceof L2Character)) // confirm revalidation of old region's zones
+		if ((getWorldRegion() != null) && (getActiveObject() instanceof L2Character)) // confirm revalidation of old region's zones
 		{
 			if (value != null)
 			{
-				_worldRegion.revalidateZones((L2Character) getActiveObject()); // at world region change
+				getWorldRegion().revalidateZones((L2Character) getActiveObject()); // at world region change
 			}
 			else
 			{
-				_worldRegion.removeFromZones((L2Character) getActiveObject()); // at world region change
+				getWorldRegion().removeFromZones((L2Character) getActiveObject()); // at world region change
 			}
 		}
 		

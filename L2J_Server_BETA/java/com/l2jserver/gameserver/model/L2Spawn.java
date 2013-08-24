@@ -174,6 +174,7 @@ public class L2Spawn implements IPositionable, IIdentifiable
 	 * Set the X position of the spawn point.
 	 * @param x the x coordinate
 	 */
+	@Override
 	public void setX(int x)
 	{
 		_location.setX(x);
@@ -189,6 +190,7 @@ public class L2Spawn implements IPositionable, IIdentifiable
 	 * Set the Y position of the spawn point.
 	 * @param y the y coordinate
 	 */
+	@Override
 	public void setY(int y)
 	{
 		_location.setY(y);
@@ -204,6 +206,7 @@ public class L2Spawn implements IPositionable, IIdentifiable
 	 * Set the Z position of the spawn point.
 	 * @param z the z coordinate
 	 */
+	@Override
 	public void setZ(int z)
 	{
 		_location.setZ(z);
@@ -212,6 +215,7 @@ public class L2Spawn implements IPositionable, IIdentifiable
 	/**
 	 * @return the heading of L2NpcInstance when they are spawned.
 	 */
+	@Override
 	public int getHeading()
 	{
 		return _location.getHeading();
@@ -221,6 +225,7 @@ public class L2Spawn implements IPositionable, IIdentifiable
 	 * Set the heading of L2NpcInstance when they are spawned.
 	 * @param heading
 	 */
+	@Override
 	public void setHeading(int heading)
 	{
 		_location.setHeading(heading);
@@ -230,6 +235,7 @@ public class L2Spawn implements IPositionable, IIdentifiable
 	 * Set the XYZ position of the spawn point.
 	 * @param loc
 	 */
+	@Override
 	public void setLocation(Location loc)
 	{
 		_location = loc;
@@ -653,11 +659,13 @@ public class L2Spawn implements IPositionable, IIdentifiable
 		return _template;
 	}
 	
+	@Override
 	public int getInstanceId()
 	{
 		return _instanceId;
 	}
 	
+	@Override
 	public void setInstanceId(int instanceId)
 	{
 		_instanceId = instanceId;

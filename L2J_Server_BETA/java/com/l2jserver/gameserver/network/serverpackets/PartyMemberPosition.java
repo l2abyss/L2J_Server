@@ -23,14 +23,14 @@ import java.util.Map;
 
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.position.PcPosition;
+import com.l2jserver.gameserver.model.actor.position.ObjectPosition;
 
 /**
  * @author zabbix
  */
 public class PartyMemberPosition extends L2GameServerPacket
 {
-	private final Map<Integer, PcPosition> locations = new HashMap<>();
+	private final Map<Integer, ObjectPosition> locations = new HashMap<>();
 	
 	public PartyMemberPosition(L2Party party)
 	{
@@ -55,9 +55,9 @@ public class PartyMemberPosition extends L2GameServerPacket
 	{
 		writeC(0xba);
 		writeD(locations.size());
-		for (Map.Entry<Integer, PcPosition> entry : locations.entrySet())
+		for (Map.Entry<Integer, ObjectPosition> entry : locations.entrySet())
 		{
-			PcPosition loc = entry.getValue();
+			ObjectPosition loc = entry.getValue();
 			writeD(entry.getKey());
 			writeD(loc.getX());
 			writeD(loc.getY());

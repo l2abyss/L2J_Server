@@ -35,7 +35,6 @@ import com.l2jserver.gameserver.model.actor.poly.ObjectPoly;
 import com.l2jserver.gameserver.model.actor.position.ObjectPosition;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
-import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -49,25 +48,24 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
  * <BR>
  * <li>L2Character</li> <li>L2ItemInstance</li>
  */
-public abstract class L2Object implements IPositionable, IIdentifiable
+public abstract class L2Object extends ObjectPosition implements IIdentifiable
 {
 	private boolean _isVisible; // Object visibility
 	private ObjectKnownList _knownList;
 	private String _name;
 	private int _objectId; // Object identifier
 	private ObjectPoly _poly;
-	private ObjectPosition _position;
-	private int _instanceId = 0;
 	
 	private InstanceType _instanceType = null;
 	private volatile Map<String, Object> _scripts;
 	
 	public L2Object(int objectId)
 	{
+		super();
 		setInstanceType(InstanceType.L2Object);
 		_objectId = objectId;
 		initKnownList();
-		initPosition();
+		setActiveObject(this);
 	}
 	
 	public static enum InstanceType
@@ -298,69 +296,19 @@ public abstract class L2Object implements IPositionable, IIdentifiable
 	{
 	}
 	
-	// Position - Should remove to fully move to L2ObjectPosition
-	public final void setXYZ(int x, int y, int z)
-	{
-		getPosition().setXYZ(x, y, z);
-	}
-	
-	public final void setXYZInvisible(int x, int y, int z)
-	{
-		getPosition().setXYZInvisible(x, y, z);
-	}
-	
-	@Override
-	public final int getX()
-	{
-		assert (getPosition().getWorldRegion() != null) || _isVisible;
-		return getPosition().getX();
-	}
-	
-	@Override
-	public final int getY()
-	{
-		assert (getPosition().getWorldRegion() != null) || _isVisible;
-		return getPosition().getY();
-	}
-	
-	@Override
-	public final int getZ()
-	{
-		assert (getPosition().getWorldRegion() != null) || _isVisible;
-		return getPosition().getZ();
-	}
-	
-	@Override
-	public Location getLocation()
-	{
-		return new Location(getX(), getY(), getZ(), getHeading(), getInstanceId());
-	}
-	
-	public int getHeading()
-	{
-		return 0;
-	}
-	
-	/**
-	 * @return The id of the instance zone the object is in - id 0 is global since everything like dropped items, mobs, players can be in a instanciated area, it must be in l2object
-	 */
-	public int getInstanceId()
-	{
-		return _instanceId;
-	}
-	
 	/**
 	 * UnAfraid: TODO: Add listener here.
 	 * @param instanceId The id of the instance zone the object is in - id 0 is global
 	 */
+	@Override
 	public void setInstanceId(int instanceId)
 	{
-		if ((instanceId < 0) || (_instanceId == instanceId))
+		if ((instanceId < 0) || (getInstanceId() == instanceId))
 		{
 			return;
 		}
 		
-		Instance oldI = InstanceManager.getInstance().getInstance(_instanceId);
+		Instance oldI = InstanceManager.getInstance().getInstance(getInstanceId());
 		Instance newI = InstanceManager.getInstance().getInstance(instanceId);
 		
 		if (newI == null)
@@ -371,7 +319,7 @@ public abstract class L2Object implements IPositionable, IIdentifiable
 		if (isPlayer())
 		{
 			L2PcInstance player = getActingPlayer();
-			if ((_instanceId > 0) && (oldI != null))
+			if ((getInstanceId() > 0) && (oldI != null))
 			{
 				oldI.removePlayer(getObjectId());
 				if (oldI.isShowTimer())
@@ -414,7 +362,7 @@ public abstract class L2Object implements IPositionable, IIdentifiable
 		else if (isNpc())
 		{
 			L2Npc npc = (L2Npc) this;
-			if ((_instanceId > 0) && (oldI != null))
+			if ((getInstanceId() > 0) && (oldI != null))
 			{
 				oldI.removeNpc(npc);
 			}
@@ -424,7 +372,7 @@ public abstract class L2Object implements IPositionable, IIdentifiable
 			}
 		}
 		
-		_instanceId = instanceId;
+		super.setInstanceId(instanceId);
 		
 		// If we change it for visible objects, me must clear & revalidates knownlists
 		if (_isVisible && (_knownList != null))
@@ -464,14 +412,14 @@ public abstract class L2Object implements IPositionable, IIdentifiable
 	 */
 	public void decayMe()
 	{
-		assert getPosition().getWorldRegion() != null;
+		assert getWorldRegion() != null;
 		
-		L2WorldRegion reg = getPosition().getWorldRegion();
+		L2WorldRegion reg = getWorldRegion();
 		
 		synchronized (this)
 		{
 			_isVisible = false;
-			getPosition().setWorldRegion(null);
+			setWorldRegion(null);
 		}
 		
 		// this can synchronize on others instances, so it's out of
@@ -505,32 +453,32 @@ public abstract class L2Object implements IPositionable, IIdentifiable
 	 */
 	public final void spawnMe()
 	{
-		assert (getPosition().getWorldRegion() == null) && (getPosition().getWorldPosition().getX() != 0) && (getPosition().getWorldPosition().getY() != 0) && (getPosition().getWorldPosition().getZ() != 0);
+		assert (getWorldRegion() == null) && (getWorldPosition().getX() != 0) && (getWorldPosition().getY() != 0) && (getWorldPosition().getZ() != 0);
 		
 		synchronized (this)
 		{
 			// Set the x,y,z position of the L2Object spawn and update its _worldregion
 			_isVisible = true;
-			getPosition().setWorldRegion(L2World.getInstance().getRegion(getPosition().getWorldPosition()));
+			setWorldRegion(L2World.getInstance().getRegion(getWorldPosition()));
 			
 			// Add the L2Object spawn in the _allobjects of L2World
 			L2World.getInstance().storeObject(this);
 			
 			// Add the L2Object spawn to _visibleObjects and if necessary to _allplayers of its L2WorldRegion
-			getPosition().getWorldRegion().addVisibleObject(this);
+			getWorldRegion().addVisibleObject(this);
 		}
 		
 		// this can synchronize on others instances, so it's out of
 		// synchronized, to avoid deadlocks
 		// Add the L2Object spawn in the world as a visible object
-		L2World.getInstance().addVisibleObject(this, getPosition().getWorldRegion());
+		L2World.getInstance().addVisibleObject(this, getWorldRegion());
 		
 		onSpawn();
 	}
 	
 	public final void spawnMe(int x, int y, int z)
 	{
-		assert getPosition().getWorldRegion() == null;
+		assert getWorldRegion() == null;
 		
 		synchronized (this)
 		{
@@ -554,8 +502,8 @@ public abstract class L2Object implements IPositionable, IIdentifiable
 				y = L2World.MAP_MIN_Y + 5000;
 			}
 			
-			getPosition().setWorldPosition(x, y, z);
-			getPosition().setWorldRegion(L2World.getInstance().getRegion(getPosition().getWorldPosition()));
+			setXYZ(x, y, z);
+			setWorldRegion(L2World.getInstance().getRegion(getWorldPosition()));
 			
 			// Add the L2Object spawn in the _allobjects of L2World
 		}
@@ -566,10 +514,10 @@ public abstract class L2Object implements IPositionable, IIdentifiable
 		// synchronized, to avoid deadlocks
 		
 		// Add the L2Object spawn to _visibleObjects and if necessary to _allplayers of its L2WorldRegion
-		getPosition().getWorldRegion().addVisibleObject(this);
+		getWorldRegion().addVisibleObject(this);
 		
 		// Add the L2Object spawn in the world as a visible object
-		L2World.getInstance().addVisibleObject(this, getPosition().getWorldRegion());
+		L2World.getInstance().addVisibleObject(this, getWorldRegion());
 		
 		onSpawn();
 	}
@@ -602,7 +550,7 @@ public abstract class L2Object implements IPositionable, IIdentifiable
 	 */
 	public final boolean isVisible()
 	{
-		return getPosition().getWorldRegion() != null;
+		return getWorldRegion() != null;
 	}
 	
 	public final void setIsVisible(boolean value)
@@ -610,7 +558,7 @@ public abstract class L2Object implements IPositionable, IIdentifiable
 		_isVisible = value;
 		if (!_isVisible)
 		{
-			getPosition().setWorldRegion(null);
+			setWorldRegion(null);
 		}
 	}
 	
@@ -656,32 +604,6 @@ public abstract class L2Object implements IPositionable, IIdentifiable
 		return _poly;
 	}
 	
-	public ObjectPosition getPosition()
-	{
-		return _position;
-	}
-	
-	/**
-	 * Initializes the Position class of the L2Object, is overwritten in classes that require a different position Type. Removes the need for instanceof checks.
-	 */
-	public void initPosition()
-	{
-		_position = new ObjectPosition(this);
-	}
-	
-	public final void setObjectPosition(ObjectPosition value)
-	{
-		_position = value;
-	}
-	
-	/**
-	 * @return reference to region this object is in.
-	 */
-	public L2WorldRegion getWorldRegion()
-	{
-		return getPosition().getWorldRegion();
-	}
-	
 	public L2PcInstance getActingPlayer()
 	{
 		return null;
@@ -707,12 +629,6 @@ public abstract class L2Object implements IPositionable, IIdentifiable
 	public void sendInfo(L2PcInstance activeChar)
 	{
 		
-	}
-	
-	@Override
-	public String toString()
-	{
-		return (getClass().getSimpleName() + ":" + getName() + "[" + getObjectId() + "]");
 	}
 	
 	/**
@@ -779,6 +695,14 @@ public abstract class L2Object implements IPositionable, IIdentifiable
 	 * @return {@code true} if object is instance of L2ServitorInstance
 	 */
 	public boolean isServitor()
+	{
+		return false;
+	}
+	
+	/**
+	 * @return {@code true} if object is instance of L2Attackable
+	 */
+	public boolean isCharacter()
 	{
 		return false;
 	}
@@ -940,5 +864,11 @@ public abstract class L2Object implements IPositionable, IIdentifiable
 	public void removeStatusListener(L2Character object)
 	{
 		
+	}
+	
+	@Override
+	public String toString()
+	{
+		return (getClass().getSimpleName() + ":" + getName() + "[" + getObjectId() + "]");
 	}
 }

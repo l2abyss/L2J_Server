@@ -154,7 +154,6 @@ import com.l2jserver.gameserver.model.actor.L2Vehicle;
 import com.l2jserver.gameserver.model.actor.appearance.PcAppearance;
 import com.l2jserver.gameserver.model.actor.events.PlayerEvents;
 import com.l2jserver.gameserver.model.actor.knownlist.PcKnownList;
-import com.l2jserver.gameserver.model.actor.position.PcPosition;
 import com.l2jserver.gameserver.model.actor.stat.PcStat;
 import com.l2jserver.gameserver.model.actor.status.PcStatus;
 import com.l2jserver.gameserver.model.actor.tasks.player.DismountTask;
@@ -202,6 +201,7 @@ import com.l2jserver.gameserver.model.fishing.L2Fish;
 import com.l2jserver.gameserver.model.fishing.L2Fishing;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.holders.SkillUseHolder;
+import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 import com.l2jserver.gameserver.model.itemcontainer.PcFreight;
@@ -572,9 +572,7 @@ public final class L2PcInstance extends L2Playable
 	private boolean _waitTypeSitting;
 	
 	/** Location before entering Observer Mode */
-	private int _lastX;
-	private int _lastY;
-	private int _lastZ;
+	private Location _lastLoc;
 	private boolean _observerMode = false;
 	
 	/** Stored from last ValidatePosition **/
@@ -1181,18 +1179,6 @@ public final class L2PcInstance extends L2Playable
 	public PlayerEvents getEvents()
 	{
 		return (PlayerEvents) super.getEvents();
-	}
-	
-	@Override
-	public PcPosition getPosition()
-	{
-		return (PcPosition) super.getPosition();
-	}
-	
-	@Override
-	public void initPosition()
-	{
-		setObjectPosition(new PcPosition(this));
 	}
 	
 	public final PcAppearance getAppearance()
@@ -7724,9 +7710,9 @@ public final class L2PcInstance extends L2Playable
 			statement.setInt(10, getAppearance().getHairColor());
 			statement.setInt(11, getAppearance().getSex() ? 1 : 0);
 			statement.setInt(12, getHeading());
-			statement.setInt(13, _observerMode ? _lastX : getX());
-			statement.setInt(14, _observerMode ? _lastY : getY());
-			statement.setInt(15, _observerMode ? _lastZ : getZ());
+			statement.setInt(13, _observerMode ? _lastLoc.getX() : getX());
+			statement.setInt(14, _observerMode ? _lastLoc.getY() : getY());
+			statement.setInt(15, _observerMode ? _lastLoc.getZ() : getZ());
 			statement.setLong(16, exp);
 			statement.setLong(17, getExpBeforeDeath());
 			statement.setInt(18, sp);
@@ -9820,11 +9806,9 @@ public final class L2PcInstance extends L2Playable
 		sendPacket(SystemMessage.sendString(message));
 	}
 	
-	public void enterObserverMode(int x, int y, int z)
+	public void enterObserverMode(Location loc)
 	{
-		_lastX = getX();
-		_lastY = getY();
-		_lastZ = getZ();
+		_lastLoc = loc;
 		
 		stopEffects(L2EffectType.HIDE);
 		
@@ -9835,17 +9819,15 @@ public final class L2PcInstance extends L2Playable
 		setIsInvul(true);
 		getAppearance().setInvisible();
 		// sendPacket(new GMHide(1));
-		sendPacket(new ObservationMode(x, y, z));
+		sendPacket(new ObservationMode(loc));
 		getKnownList().removeAllKnownObjects(); // reinit knownlist
-		setXYZ(x, y, z);
+		setLocation(loc);
 		broadcastUserInfo();
 	}
 	
-	public void setLastCords(int x, int y, int z)
+	public void setLastLocation(Location loc)
 	{
-		_lastX = getX();
-		_lastY = getY();
-		_lastZ = getZ();
+		_lastLoc = loc;
 	}
 	
 	public void enterOlympiadObserverMode(Location loc, int id)
@@ -9879,9 +9861,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		if (!_observerMode)
 		{
-			_lastX = getX();
-			_lastY = getY();
-			_lastZ = getZ();
+			_lastLoc = loc;
 		}
 		
 		_observerMode = true;
@@ -9898,7 +9878,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		setTarget(null);
 		getKnownList().removeAllKnownObjects(); // reinit knownlist
-		setXYZ(_lastX, _lastY, _lastZ);
+		setLocation(_lastLoc);
 		setIsParalyzed(false);
 		if (!isGM())
 		{
@@ -9912,8 +9892,8 @@ public final class L2PcInstance extends L2Playable
 		
 		setFalling(); // prevent receive falling damage
 		_observerMode = false;
-		setLastCords(0, 0, 0);
-		sendPacket(new ObservationReturn(this));
+		setLastLocation(null);
+		sendPacket(new ObservationReturn(getLastLocation()));
 		broadcastUserInfo();
 	}
 	
@@ -9928,7 +9908,7 @@ public final class L2PcInstance extends L2Playable
 		setTarget(null);
 		sendPacket(new ExOlympiadMode(0));
 		setInstanceId(0);
-		teleToLocation(_lastX, _lastY, _lastZ, true);
+		teleToLocation(_lastLoc, true);
 		if (!isGM())
 		{
 			getAppearance().setVisible();
@@ -9938,7 +9918,7 @@ public final class L2PcInstance extends L2Playable
 		{
 			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 		}
-		setLastCords(0, 0, 0);
+		setLastLocation(null);
 		broadcastUserInfo();
 	}
 	
@@ -9962,19 +9942,9 @@ public final class L2PcInstance extends L2Playable
 		return _olympiadGameId;
 	}
 	
-	public int getLastX()
+	public Location getLastLocation()
 	{
-		return _lastX;
-	}
-	
-	public int getLastY()
-	{
-		return _lastY;
-	}
-	
-	public int getLastZ()
-	{
-		return _lastZ;
+		return _lastLoc;
 	}
 	
 	public boolean inObserverMode()
@@ -11066,19 +11036,19 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	@Override
-	public void teleToLocation(int x, int y, int z, int heading, boolean allowRandomOffset)
+	public void teleToLocation(IPositionable loc, boolean allowRandomOffset)
 	{
 		if ((getVehicle() != null) && !getVehicle().isTeleporting())
 		{
 			setVehicle(null);
 		}
 		
-		if (isFlyingMounted() && (z < -1005))
+		if (isFlyingMounted() && (loc.getZ() < -1005))
 		{
-			z = -1005;
+			loc.setZ(-1005);
 		}
 		
-		super.teleToLocation(x, y, z, heading, allowRandomOffset);
+		super.teleToLocation(loc, allowRandomOffset);
 	}
 	
 	@Override
@@ -11115,7 +11085,7 @@ public final class L2PcInstance extends L2Playable
 		if (hasSummon())
 		{
 			getSummon().setFollowStatus(false);
-			getSummon().teleToLocation(getPosition().getX(), getPosition().getY(), getPosition().getZ(), false);
+			getSummon().teleToLocation(getLocation(), false);
 			((L2SummonAI) getSummon().getAI()).setStartFollowController(true);
 			getSummon().setFollowStatus(true);
 			getSummon().updateAndBroadcastStatus(0);
@@ -11782,7 +11752,7 @@ public final class L2PcInstance extends L2Playable
 			// before entering in observer mode
 			if (inObserverMode())
 			{
-				setXYZInvisible(_lastX, _lastY, _lastZ);
+				setLocationInvisible(_lastLoc);
 			}
 			
 			if (getVehicle() != null)
@@ -13581,7 +13551,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		if (isInBoat())
 		{
-			getPosition().setWorldPosition(getBoat().getPosition().getWorldPosition());
+			setWorldPosition(getBoat().getWorldPosition());
 			
 			activeChar.sendPacket(new CharInfo(this));
 			activeChar.sendPacket(new ExBrExtraUserInfo(this));
@@ -13609,7 +13579,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		else if (isInAirShip())
 		{
-			getPosition().setWorldPosition(getAirShip().getPosition().getWorldPosition());
+			setWorldPosition(getAirShip().getWorldPosition());
 			
 			activeChar.sendPacket(new CharInfo(this));
 			activeChar.sendPacket(new ExBrExtraUserInfo(this));
@@ -14992,10 +14962,5 @@ public final class L2PcInstance extends L2Playable
 	public int getId()
 	{
 		return 0;
-	}
-	
-	public boolean isNewbie()
-	{
-		return getAccountVariables().hasVariable(NEWBIE_KEY) ? getAccountVariables().getInteger(NEWBIE_KEY) == getObjectId() : false;
 	}
 }

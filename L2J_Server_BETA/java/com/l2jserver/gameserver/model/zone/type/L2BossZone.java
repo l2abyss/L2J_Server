@@ -25,6 +25,7 @@ import javolution.util.FastMap;
 import com.l2jserver.gameserver.GameServer;
 import com.l2jserver.gameserver.instancemanager.GrandBossManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
@@ -355,11 +356,9 @@ public class L2BossZone extends L2ZoneType
 	
 	/**
 	 * Some GrandBosses send all players in zone to a specific part of the zone, rather than just removing them all. If this is the case, this command should be used. If this is no the case, then use oustAllPlayers().
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param loc
 	 */
-	public void movePlayersTo(int x, int y, int z)
+	public void movePlayersTo(Location loc)
 	{
 		if (_characterList.isEmpty())
 		{
@@ -373,7 +372,7 @@ public class L2BossZone extends L2ZoneType
 				L2PcInstance player = character.getActingPlayer();
 				if (player.isOnline())
 				{
-					player.teleToLocation(x, y, z);
+					player.teleToLocation(loc);
 				}
 			}
 		}

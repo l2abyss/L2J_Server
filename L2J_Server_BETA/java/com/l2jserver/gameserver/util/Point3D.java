@@ -18,7 +18,6 @@
  */
 package com.l2jserver.gameserver.util;
 
-import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.l2jserver.gameserver.model.Location;
@@ -27,19 +26,36 @@ import com.l2jserver.gameserver.model.interfaces.IPositionable;
 /**
  * @author Unknown, UnAfraid
  */
-public class Point3D implements Serializable, IPositionable
+public class Point3D implements IPositionable
 {
-	private static final long serialVersionUID = 4638345252031872576L;
-	
 	private final AtomicInteger _x = new AtomicInteger();
 	private final AtomicInteger _y = new AtomicInteger();
 	private final AtomicInteger _z = new AtomicInteger();
+	private final AtomicInteger _heading = new AtomicInteger();
+	private final AtomicInteger _instanceId = new AtomicInteger();
 	
 	public Point3D(int x, int y, int z)
 	{
 		_x.set(x);
 		_y.set(y);
 		_z.set(z);
+	}
+	
+	public Point3D(int x, int y, int z, int heading)
+	{
+		_x.set(x);
+		_y.set(y);
+		_z.set(z);
+		_heading.set(heading);
+	}
+	
+	public Point3D(int x, int y, int z, int heading, int instanceId)
+	{
+		_x.set(x);
+		_y.set(y);
+		_z.set(z);
+		_heading.set(heading);
+		_instanceId.set(instanceId);
 	}
 	
 	public boolean equals(int x, int y, int z)
@@ -53,20 +69,10 @@ public class Point3D implements Serializable, IPositionable
 		return _x.get();
 	}
 	
-	public void setX(int x)
-	{
-		_x.set(x);
-	}
-	
 	@Override
 	public int getY()
 	{
 		return _y.get();
-	}
-	
-	public void setY(int y)
-	{
-		_y.set(y);
 	}
 	
 	@Override
@@ -75,9 +81,62 @@ public class Point3D implements Serializable, IPositionable
 		return _z.get();
 	}
 	
+	@Override
+	public int getHeading()
+	{
+		return _heading.get();
+	}
+	
+	@Override
+	public int getInstanceId()
+	{
+		return _instanceId.get();
+	}
+	
+	@Override
+	public Location getLocation()
+	{
+		return new Location(getX(), getY(), getZ(), getHeading(), getInstanceId());
+	}
+	
+	@Override
+	public void setX(int x)
+	{
+		_x.set(x);
+	}
+	
+	@Override
+	public void setY(int y)
+	{
+		_y.set(y);
+	}
+	
+	@Override
 	public void setZ(int z)
 	{
 		_z.set(z);
+	}
+	
+	@Override
+	public void setHeading(int heading)
+	{
+		_heading.set(heading);
+	}
+	
+	@Override
+	public void setInstanceId(int instanceId)
+	{
+		_instanceId.set(instanceId);
+	}
+	
+	@Override
+	public void setLocation(Location loc)
+	{
+		_x.set(loc.getX());
+		_y.set(loc.getY());
+		_z.set(loc.getZ());
+		_heading.set(loc.getHeading());
+		_instanceId.set(loc.getInstanceId());
 	}
 	
 	public void setXYZ(int x, int y, int z)
@@ -87,22 +146,9 @@ public class Point3D implements Serializable, IPositionable
 		_z.set(z);
 	}
 	
-	@Override
-	public Location getLocation()
+	public final Point3D getWorldPosition()
 	{
-		return new Location(getX(), getY(), getZ());
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "(" + _x + ", " + _y + ", " + _z + ")";
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return getX() ^ getY() ^ getZ();
+		return this;
 	}
 	
 	@Override
@@ -115,8 +161,20 @@ public class Point3D implements Serializable, IPositionable
 		if (o instanceof Point3D)
 		{
 			final Point3D point3D = (Point3D) o;
-			return (point3D.getX() == getX()) && (point3D.getY() == getY()) && (point3D.getZ() == getZ());
+			return (point3D.getX() == getX()) && (point3D.getY() == getY()) && ((point3D.getZ() == getZ()) && (point3D.getHeading() == getHeading()) && (point3D.getInstanceId() == getInstanceId()));
 		}
 		return false;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return getX() ^ getY() ^ getZ();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "(" + _x + ", " + _y + ", " + _z + ")";
 	}
 }
