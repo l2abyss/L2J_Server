@@ -150,7 +150,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 		ITEMSOUND_QUEST_JACKPOT(new PlaySound("ItemSound.quest_jackpot")),
 		// Quests 508, 509 and 510
 		ITEMSOUND_QUEST_FANFARE_1(new PlaySound("ItemSound.quest_fanfare_1")),
-		// Played only after class transfer via Test Server Helpers (Id 31756 and 31757)
+		// Played only after class transfer via Test Server Helpers (ID 31756 and 31757)
 		ITEMSOUND_QUEST_FANFARE_2(new PlaySound("ItemSound.quest_fanfare_2")),
 		// Quest 336
 		ITEMSOUND_QUEST_FANFARE_MIDDLE(new PlaySound("ItemSound.quest_fanfare_middle")),
@@ -303,9 +303,9 @@ public class Quest extends ManagedScript implements IIdentifiable
 	/**
 	 * The Quest object constructor.<br>
 	 * Constructing a quest also calls the {@code init_LoadGlobalData} convenience method.
-	 * @param questId int pointing out the Id of the quest.
-	 * @param name String corresponding to the name of the quest.
-	 * @param descr String for the description of the quest.
+	 * @param questId ID of the quest
+	 * @param name String corresponding to the name of the quest
+	 * @param descr String for the description of the quest
 	 */
 	public Quest(int questId, String name, String descr)
 	{
@@ -1613,11 +1613,11 @@ public class Quest extends ManagedScript implements IIdentifiable
 			{
 				while (rs.next())
 				{
-					// Get Id of the quest and Id of its state
+					// Get the ID of the quest and Id of its state
 					String questId = rs.getString("name");
 					String statename = rs.getString("value");
 					
-					// Search quest associated with the Id
+					// Search quest associated with the ID
 					Quest q = QuestManager.getInstance().getQuest(questId);
 					if (q == null)
 					{
@@ -1876,9 +1876,9 @@ public class Quest extends ManagedScript implements IIdentifiable
 	 * Update informations regarding quest in database.<br>
 	 * Actions:<br>
 	 * <ul>
-	 * <li>Get Id state of the quest recorded in object qs</li>
-	 * <li>Test if quest is completed. If true, add a star (*) before the Id state</li>
-	 * <li>Save in database the Id state (with or without the star) for the variable called "&lt;state&gt;" of the quest</li>
+	 * <li>Get ID state of the quest recorded in object qs</li>
+	 * <li>Test if quest is completed. If true, add a star (*) before the ID state</li>
+	 * <li>Save in database the ID state (with or without the star) for the variable called "&lt;state&gt;" of the quest</li>
 	 * </ul>
 	 * @param qs the quest state
 	 */
@@ -1918,7 +1918,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for the specified Event type.
 	 * @param eventType type of event being registered
-	 * @param npcId NPC Id to register
+	 * @param npcId NPC ID to register
 	 */
 	public void addEventId(QuestEventType eventType, int npcId)
 	{
@@ -1940,7 +1940,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for the specified Event type.
 	 * @param eventType type of event being registered
-	 * @param npcIds NPC Ids to register
+	 * @param npcIds NPC IDs to register
 	 */
 	public void addEventId(QuestEventType eventType, int... npcIds)
 	{
@@ -1953,7 +1953,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	/**
 	 * Add this quest to the list of quests that the passed mob will respond to for the specified Event type.
 	 * @param eventType type of event being registered
-	 * @param npcIds NPC Ids to register
+	 * @param npcIds NPC IDs to register
 	 */
 	public void addEventId(QuestEventType eventType, Collection<Integer> npcIds)
 	{
@@ -2071,8 +2071,8 @@ public class Quest extends ManagedScript implements IIdentifiable
 	}
 	
 	/**
-	 * Add this quest event to the collection of NPC Ids that will respond to for on kill events.
-	 * @param killIds the collection of NPC Ids
+	 * Add this quest event to the collection of NPC IDs that will respond to for on kill events.
+	 * @param killIds the collection of NPC IDs
 	 */
 	public void addKillId(Collection<Integer> killIds)
 	{
@@ -2104,7 +2104,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Spawn Events.
-	 * @param npcIds Id of the NPC
+	 * @param npcIds ID of the NPC
 	 */
 	public void addSpawnId(Collection<Integer> npcIds)
 	{
@@ -2113,7 +2113,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Skill-See Events.
-	 * @param npcIds Id of the NPC
+	 * @param npcIds ID of the NPC
 	 */
 	public void addSkillSeeId(int... npcIds)
 	{
@@ -2122,7 +2122,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Skill-See Events.
-	 * @param npcIds Id of the NPC
+	 * @param npcIds ID of the NPC
 	 */
 	public void addSkillSeeId(Collection<Integer> npcIds)
 	{
@@ -2163,7 +2163,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Faction Call Events.
-	 * @param npcIds Id of the NPC
+	 * @param npcIds ID of the NPC
 	 */
 	public void addFactionCallId(int... npcIds)
 	{
@@ -2172,7 +2172,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Faction Call Events.
-	 * @param npcIds Id of the NPC
+	 * @param npcIds ID of the NPC
 	 */
 	public void addFactionCallId(Collection<Integer> npcIds)
 	{
@@ -2181,7 +2181,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Character See Events.
-	 * @param npcIds Id of the NPC
+	 * @param npcIds ID of the NPC
 	 */
 	public void addAggroRangeEnterId(int... npcIds)
 	{
@@ -2190,7 +2190,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	
 	/**
 	 * Add this quest to the list of quests that the passed npc will respond to for Character See Events.
-	 * @param npcIds Id of the NPC
+	 * @param npcIds ID of the NPC
 	 */
 	public void addAggroRangeEnterId(Collection<Integer> npcIds)
 	{
@@ -2198,7 +2198,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	}
 	
 	/**
-	 * @param npcIds NPC Ids to register to on see creature event
+	 * @param npcIds NPC IDs to register to on see creature event
 	 */
 	public void addSeeCreatureId(int... npcIds)
 	{
@@ -2206,7 +2206,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	}
 	
 	/**
-	 * @param npcIds NPC Ids to register to on see creature event
+	 * @param npcIds NPC IDs to register to on see creature event
 	 */
 	public void addSeeCreatureId(Collection<Integer> npcIds)
 	{
@@ -2325,7 +2325,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	
 	/**
 	 * Register onNodeArrived trigger for NPC
-	 * @param npcIds id of NPC to register
+	 * @param npcIds ID of NPC to register
 	 */
 	public void addNodeArrivedId(int... npcIds)
 	{
@@ -2334,7 +2334,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	
 	/**
 	 * Register onNodeArrived trigger for NPC
-	 * @param npcIds id of NPC to register
+	 * @param npcIds ID of NPC to register
 	 */
 	public void addNodeArrivedId(Collection<Integer> npcIds)
 	{
@@ -2343,7 +2343,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	
 	/**
 	 * Register onRouteFinished trigger for NPC
-	 * @param npcIds id of NPC to register
+	 * @param npcIds ID of NPC to register
 	 */
 	public void addRouteFinishedId(int... npcIds)
 	{
@@ -2352,7 +2352,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	
 	/**
 	 * Register onRouteFinished trigger for NPC
-	 * @param npcIds id of NPC to register
+	 * @param npcIds ID of NPC to register
 	 */
 	public void addRouteFinishedId(Collection<Integer> npcIds)
 	{
@@ -2475,7 +2475,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 			return null;
 		}
 		
-		// normal cases...if the player is not in a partym check the player's state
+		// normal cases...if the player is not in a party check the player's state
 		QuestState temp = null;
 		L2Party party = player.getParty();
 		// if this player is not in a party, just check if this player instance matches the conditions itself
@@ -2521,6 +2521,83 @@ public class Quest extends ManagedScript implements IIdentifiable
 		
 		// if a match was found from the party, return one of them at random.
 		return candidates.get(Rnd.get(candidates.size()));
+	}
+	
+	/**
+	 * Get a random party member from the player's party who has this quest at the specified quest progress.<br>
+	 * If the player is not in a party, only the player himself is checked.
+	 * @param player the player whose random party member state to get
+	 * @param condition the quest progress step the random member should be at (-1 = check only if quest is started)
+	 * @param playerChance how many times more chance does the player get compared to other party members (3 - 3x more chance).<br>
+	 *            On retail servers, the killer usually gets 2-3x more chance than other party members
+	 * @param target the NPC to use for the distance check (can be null)
+	 * @return the {@link QuestState} object of the random party member or {@code null} if none matched the condition
+	 */
+	public QuestState getRandomPartyMemberState(L2PcInstance player, int condition, int playerChance, L2Npc target)
+	{
+		if ((player == null) || (playerChance < 1))
+		{
+			return null;
+		}
+		
+		QuestState qs = player.getQuestState(getName());
+		if (!player.isInParty())
+		{
+			if (!checkPartyMemberConditions(qs, condition))
+			{
+				return null;
+			}
+			if (!checkDistanceToTarget(player, target))
+			{
+				return null;
+			}
+			return qs;
+		}
+		
+		final List<QuestState> candidates = new ArrayList<>();
+		if (checkPartyMemberConditions(qs, condition) && (playerChance > 0))
+		{
+			for (int i = 0; i < playerChance; i++)
+			{
+				candidates.add(qs);
+			}
+		}
+		
+		for (L2PcInstance member : player.getParty().getMembers())
+		{
+			if (member == player)
+			{
+				continue;
+			}
+			
+			qs = member.getQuestState(getName());
+			if (checkPartyMemberConditions(qs, condition))
+			{
+				candidates.add(qs);
+			}
+		}
+		
+		if (candidates.isEmpty())
+		{
+			return null;
+		}
+		
+		qs = candidates.get(getRandom(candidates.size()));
+		if (!checkDistanceToTarget(qs.getPlayer(), target))
+		{
+			return null;
+		}
+		return qs;
+	}
+	
+	private static boolean checkPartyMemberConditions(QuestState qs, int condition)
+	{
+		return ((qs != null) && ((condition == -1) ? qs.isStarted() : qs.isCond(condition)));
+	}
+	
+	private static boolean checkDistanceToTarget(L2PcInstance player, L2Npc target)
+	{
+		return ((target == null) || com.l2jserver.gameserver.util.Util.checkIfInRange(1500, player, target, true));
 	}
 	
 	/**
@@ -2825,7 +2902,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	}
 	
 	/**
-	 * @return the registered quest items Ids.
+	 * @return the registered quest items IDs.
 	 */
 	public int[] getRegisteredItemIds()
 	{
@@ -2850,7 +2927,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	@Override
 	public void setActive(boolean status)
 	{
-		// TODO implement me
+		// TODO: Implement me.
 	}
 	
 	@Override
@@ -2975,7 +3052,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	/**
 	 * Get the amount of an item in player's inventory.
 	 * @param player the player whose inventory to check
-	 * @param itemId the Id of the item whose amount to get
+	 * @param itemId the ID of the item whose amount to get
 	 * @return the amount of the specified item in player's inventory
 	 */
 	public static long getQuestItemsCount(L2PcInstance player, int itemId)
@@ -2986,7 +3063,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	/**
 	 * Get the total amount of all specified items in player's inventory.
 	 * @param player the player whose inventory to check
-	 * @param itemIds a list of Ids of items whose amount to get
+	 * @param itemIds a list of IDs of items whose amount to get
 	 * @return the summary amount of all listed items in player's inventory
 	 */
 	public long getQuestItemsCount(L2PcInstance player, int... itemIds)
@@ -3017,7 +3094,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	/**
 	 * Check for an item in player's inventory.
 	 * @param player the player whose inventory to check for quest items
-	 * @param itemId the Id of the item to check for
+	 * @param itemId the ID of the item to check for
 	 * @return {@code true} if the item exists in player's inventory, {@code false} otherwise
 	 */
 	public static boolean hasQuestItems(L2PcInstance player, int itemId)
@@ -3028,7 +3105,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	/**
 	 * Check for multiple items in player's inventory.
 	 * @param player the player whose inventory to check for quest items
-	 * @param itemIds a list of item Ids to check for
+	 * @param itemIds a list of item IDs to check for
 	 * @return {@code true} if all items exist in player's inventory, {@code false} otherwise
 	 */
 	public static boolean hasQuestItems(L2PcInstance player, int... itemIds)
@@ -3047,7 +3124,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	/**
 	 * Check for multiple items in player's inventory.
 	 * @param player the player whose inventory to check for quest items
-	 * @param itemIds a list of item Ids to check for
+	 * @param itemIds a list of item IDs to check for
 	 * @return {@code true} if at least one items exist in player's inventory, {@code false} otherwise
 	 */
 	public boolean hasAtLeastOneQuestItem(L2PcInstance player, int... itemIds)
@@ -3066,7 +3143,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	/**
 	 * Get the enchantment level of an item in player's inventory.
 	 * @param player the player whose item to check
-	 * @param itemId the Id of the item whose enchantment level to get
+	 * @param itemId the ID of the item whose enchantment level to get
 	 * @return the enchantment level of the item or 0 if the item was not found
 	 */
 	public static int getEnchantLevel(L2PcInstance player, int itemId)
@@ -3110,7 +3187,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	/**
 	 * Give a reward to player using multipliers.
 	 * @param player the player to whom to give the item
-	 * @param itemId the Id of the item to give
+	 * @param itemId the ID of the item to give
 	 * @param count the amount of items to give
 	 */
 	public static void rewardItems(L2PcInstance player, int itemId, long count)
@@ -3312,7 +3389,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	 * @param limit the maximum amount of items the player can have. Won't give more if this limit is reached. 0 - no limit.
 	 * @param dropChance the drop chance as a decimal digit from 0 to 1
 	 * @param playSound if true, plays ItemSound.quest_itemget when items are given and ItemSound.quest_middle when the limit is reached
-	 * @return {@code true} if the player has collected {@code limit} of the specified item, {@code false} otherwise
+	 * @return {@code true} if limit > 0 and the limit was reached or if limit <= 0 and items were given; {@code false} in all other cases
 	 */
 	public static boolean giveItemRandomly(L2PcInstance player, int itemId, long amountToGive, long limit, double dropChance, boolean playSound)
 	{
@@ -3329,7 +3406,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	 * @param limit the maximum amount of items the player can have. Won't give more if this limit is reached. 0 - no limit.
 	 * @param dropChance the drop chance as a decimal digit from 0 to 1
 	 * @param playSound if true, plays ItemSound.quest_itemget when items are given and ItemSound.quest_middle when the limit is reached
-	 * @return {@code true} if the player has collected {@code limit} of the specified item, {@code false} otherwise
+	 * @return {@code true} if limit > 0 and the limit was reached or if limit <= 0 and items were given; {@code false} in all other cases
 	 */
 	public static boolean giveItemRandomly(L2PcInstance player, L2Npc npc, int itemId, long amountToGive, long limit, double dropChance, boolean playSound)
 	{
@@ -3347,7 +3424,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	 * @param limit the maximum amount of items the player can have. Won't give more if this limit is reached. 0 - no limit.
 	 * @param dropChance the drop chance as a decimal digit from 0 to 1
 	 * @param playSound if true, plays ItemSound.quest_itemget when items are given and ItemSound.quest_middle when the limit is reached
-	 * @return {@code true} if the player has collected {@code limit} of the specified item, {@code false} otherwise
+	 * @return {@code true} if limit > 0 and the limit was reached or if limit <= 0 and items were given; {@code false} in all other cases
 	 */
 	public static boolean giveItemRandomly(L2PcInstance player, L2Npc npc, int itemId, long minAmount, long maxAmount, long limit, double dropChance, boolean playSound)
 	{
@@ -3361,11 +3438,9 @@ public class Quest extends ManagedScript implements IIdentifiable
 		minAmount *= Config.RATE_QUEST_DROP;
 		maxAmount *= Config.RATE_QUEST_DROP;
 		dropChance *= Config.RATE_QUEST_DROP; // TODO separate configs for rate and amount
-		
 		if ((npc != null) && Config.L2JMOD_CHAMPION_ENABLE && npc.isChampion())
 		{
 			dropChance *= Config.L2JMOD_CHAMPION_REWARDS;
-			
 			if ((itemId == PcInventory.ADENA_ID) || (itemId == PcInventory.ANCIENT_ADENA_ID))
 			{
 				minAmount *= Config.L2JMOD_CHAMPION_ADENAS_REWARDS;
@@ -3380,7 +3455,6 @@ public class Quest extends ManagedScript implements IIdentifiable
 		
 		long amountToGive = ((minAmount == maxAmount) ? minAmount : Rnd.get(minAmount, maxAmount));
 		final double random = Rnd.nextDouble();
-		
 		// Inventory slot check (almost useless for non-stacking items)
 		if ((dropChance >= random) && (amountToGive > 0) && player.getInventory().validateCapacityByItemId(itemId))
 		{
@@ -3388,12 +3462,12 @@ public class Quest extends ManagedScript implements IIdentifiable
 			{
 				amountToGive = limit - currentCount;
 			}
+			
 			// Give the item to player
 			L2ItemInstance item = player.addItem("Quest", itemId, amountToGive, npc, true);
-			
 			if (item != null)
 			{
-				// limit reached
+				// limit reached (if there is no limit, this block doesn't execute)
 				if ((currentCount + amountToGive) == limit)
 				{
 					if (playSound)
@@ -3407,6 +3481,11 @@ public class Quest extends ManagedScript implements IIdentifiable
 				{
 					playSound(player, QuestSound.ITEMSOUND_QUEST_ITEMGET);
 				}
+				// if there is no limit, return true every time an item is given
+				if (limit <= 0)
+				{
+					return true;
+				}
 			}
 		}
 		return false;
@@ -3415,7 +3494,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	/**
 	 * Take an amount of a specified item from player's inventory.
 	 * @param player the player whose item to take
-	 * @param itemId the Id of the item to take
+	 * @param itemId the ID of the item to take
 	 * @param amount the amount to take
 	 * @return {@code true} if any items were taken, {@code false} otherwise
 	 */
@@ -3464,7 +3543,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	 * Take an amount of all specified items from player's inventory.
 	 * @param player the player whose items to take
 	 * @param amount the amount to take of each item
-	 * @param itemIds a list or an array of Ids of the items to take
+	 * @param itemIds a list or an array of IDs of the items to take
 	 * @return {@code true} if all items were taken, {@code false} otherwise
 	 */
 	public static boolean takeItems(L2PcInstance player, int amount, int... itemIds)
@@ -3553,10 +3632,10 @@ public class Quest extends ManagedScript implements IIdentifiable
 	}
 	
 	/**
-	 * Get the Id of the item equipped in the specified inventory slot of the player.
+	 * Get the ID of the item equipped in the specified inventory slot of the player.
 	 * @param player the player whose inventory to check
 	 * @param slot the location in the player's inventory to check
-	 * @return the Id of the item equipped in the specified inventory slot or 0 if the slot is empty or item is {@code null}.
+	 * @return the ID of the item equipped in the specified inventory slot or 0 if the slot is empty or item is {@code null}.
 	 */
 	public static int getItemEquipped(L2PcInstance player, int slot)
 	{
