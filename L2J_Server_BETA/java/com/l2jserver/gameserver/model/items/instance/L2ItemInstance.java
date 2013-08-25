@@ -2002,13 +2002,18 @@ public final class L2ItemInstance extends L2Object
 	}
 	
 	@Override
-	public void decayMe()
+	public boolean decayMe()
 	{
 		if (Config.SAVE_DROPPED_ITEM)
 		{
 			ItemsOnGroundManager.getInstance().removeObject(this);
 		}
-		super.decayMe();
+		
+		if (!super.decayMe())
+		{
+			return false;
+		}
+		return true;
 	}
 	
 	public boolean isQuestItem()

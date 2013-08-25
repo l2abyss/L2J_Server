@@ -36,9 +36,11 @@ import com.l2jserver.gameserver.model.actor.knownlist.ObjectKnownList;
 import com.l2jserver.gameserver.model.actor.poly.ObjectPoly;
 import com.l2jserver.gameserver.model.actor.position.ObjectPosition;
 import com.l2jserver.gameserver.model.entity.Instance;
+import com.l2jserver.gameserver.model.interfaces.IDecayable;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.interfaces.INamable;
 import com.l2jserver.gameserver.model.interfaces.ISpawnable;
+import com.l2jserver.gameserver.model.interfaces.IUniqueId;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -52,7 +54,7 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
  * <BR>
  * <li>L2Character</li> <li>L2ItemInstance</li>
  */
-public abstract class L2Object extends ObjectPosition implements IIdentifiable, INamable, ISpawnable
+public abstract class L2Object extends ObjectPosition implements IIdentifiable, INamable, ISpawnable, IUniqueId, IDecayable
 {
 	private boolean _isVisible; // Object visibility
 	private ObjectKnownList _knownList;
@@ -124,14 +126,6 @@ public abstract class L2Object extends ObjectPosition implements IIdentifiable, 
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 	}
 	
-	/**
-	 * Do Nothing.<BR>
-	 * <BR>
-	 * <B><U> Overridden in </U> :</B><BR>
-	 * <BR>
-	 * <li>L2GuardInstance : Set the home location of its L2GuardInstance</li> <li>L2Attackable : Reset the Spoiled flag</li><BR>
-	 * <BR>
-	 */
 	public void onSpawn()
 	{
 	}
@@ -231,26 +225,8 @@ public abstract class L2Object extends ObjectPosition implements IIdentifiable, 
 		}
 	}
 	
-	/**
-	 * Remove a L2Object from the world.<BR>
-	 * <BR>
-	 * <B><U> Actions</U> :</B><BR>
-	 * <BR>
-	 * <li>Remove the L2Object from the world</li><BR>
-	 * <BR>
-	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T REMOVE the object from _allObjects of L2World </B></FONT><BR>
-	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T SEND Server->Client packets to players</B></FONT><BR>
-	 * <BR>
-	 * <B><U> Assert </U> :</B><BR>
-	 * <BR>
-	 * <li>_worldRegion != null <I>(L2Object is visible at the beginning)</I></li><BR>
-	 * <BR>
-	 * <B><U> Example of use </U> :</B><BR>
-	 * <BR>
-	 * <li>Delete NPC/PC or Unsummon</li><BR>
-	 * <BR>
-	 */
-	public void decayMe()
+	@Override
+	public boolean decayMe()
 	{
 		assert getWorldRegion() != null;
 		
@@ -267,6 +243,8 @@ public abstract class L2Object extends ObjectPosition implements IIdentifiable, 
 		// Remove the L2Object from the world
 		L2World.getInstance().removeVisibleObject(this, reg);
 		L2World.getInstance().removeObject(this);
+		
+		return true;
 	}
 	
 	public void refreshID()
@@ -276,21 +254,6 @@ public abstract class L2Object extends ObjectPosition implements IIdentifiable, 
 		_objectId = IdFactory.getInstance().getNextId();
 	}
 	
-	/**
-	 * Init the position of a L2Object spawn and add it in the world as a visible object.<BR>
-	 * <BR>
-	 * <B><U> Actions</U> :</B><BR>
-	 * <BR>
-	 * <li>Set the x,y,z position of the L2Object spawn and update its _worldregion</li> <li>Add the L2Object spawn in the _allobjects of L2World</li> <li>Add the L2Object spawn to _visibleObjects of its L2WorldRegion</li> <li>Add the L2Object spawn in the world as a <B>visible</B> object</li><BR>
-	 * <BR>
-	 * <B><U> Assert </U> :</B><BR>
-	 * <BR>
-	 * <li>_worldRegion == null <I>(L2Object is invisible at the beginning)</I></li><BR>
-	 * <BR>
-	 * <B><U> Example of use </U> :</B><BR>
-	 * <BR>
-	 * <li>Create Door</li> <li>Spawn : Monster, Minion, CTs, Summon...</li><BR>
-	 */
 	@Override
 	public final boolean spawnMe()
 	{
@@ -364,18 +327,6 @@ public abstract class L2Object extends ObjectPosition implements IIdentifiable, 
 		onSpawn();
 	}
 	
-	public void toggleVisible()
-	{
-		if (isVisible())
-		{
-			decayMe();
-		}
-		else
-		{
-			spawnMe();
-		}
-	}
-	
 	public boolean isAttackable()
 	{
 		return false;
@@ -383,13 +334,6 @@ public abstract class L2Object extends ObjectPosition implements IIdentifiable, 
 	
 	public abstract boolean isAutoAttackable(L2Character attacker);
 	
-	/**
-	 * Return the visibility state of the L2Object. <B><U> Concept</U> :</B><BR>
-	 * <BR>
-	 * A L2Object is visible if <B>__IsVisible</B>=true and <B>_worldregion</B>!=null <BR>
-	 * <BR>
-	 * @return
-	 */
 	public final boolean isVisible()
 	{
 		return getWorldRegion() != null;
@@ -404,14 +348,23 @@ public abstract class L2Object extends ObjectPosition implements IIdentifiable, 
 		}
 	}
 	
+	public void toggleVisible()
+	{
+		if (isVisible())
+		{
+			decayMe();
+		}
+		else
+		{
+			spawnMe();
+		}
+	}
+	
 	public ObjectKnownList getKnownList()
 	{
 		return _knownList;
 	}
 	
-	/**
-	 * Initializes the KnownList of the L2Object, is overwritten in classes that require a different knownlist Type. Removes the need for instanceof checks.
-	 */
 	public void initKnownList()
 	{
 		_knownList = new ObjectKnownList(this);
@@ -433,6 +386,7 @@ public abstract class L2Object extends ObjectPosition implements IIdentifiable, 
 		_name = value;
 	}
 	
+	@Override
 	public final int getObjectId()
 	{
 		return _objectId;
@@ -447,59 +401,19 @@ public abstract class L2Object extends ObjectPosition implements IIdentifiable, 
 		return _poly;
 	}
 	
+	public abstract void sendInfo(L2PcInstance activeChar);
+	
+	public void sendPacket(L2GameServerPacket mov)
+	{
+	}
+	
+	public void sendPacket(SystemMessageId id)
+	{
+	}
+	
 	public L2PcInstance getActingPlayer()
 	{
 		return null;
-	}
-	
-	/**
-	 * Sends the Server->Client info packet for the object. <br>
-	 * Is Overridden in:
-	 * <ul>
-	 * <li>L2AirShipInstance</li>
-	 * <li>L2BoatInstance</li>
-	 * <li>L2DoorInstance</li>
-	 * <li>L2PcInstance</li>
-	 * <li>L2StaticObjectInstance</li>
-	 * <li>L2Decoy</li>
-	 * <li>L2Npc</li>
-	 * <li>L2Summon</li>
-	 * <li>L2Trap</li>
-	 * <li>L2ItemInstance</li>
-	 * </ul>
-	 * @param activeChar
-	 */
-	public void sendInfo(L2PcInstance activeChar)
-	{
-		
-	}
-	
-	/**
-	 * Not Implemented.<BR>
-	 * <BR>
-	 * <B><U> Overridden in </U> :</B><BR>
-	 * <BR>
-	 * <li>L2PcInstance</li><BR>
-	 * <BR>
-	 * @param mov
-	 */
-	public void sendPacket(L2GameServerPacket mov)
-	{
-		// default implementation
-	}
-	
-	/**
-	 * Not Implemented.<BR>
-	 * <BR>
-	 * <B><U> Overridden in </U> :</B><BR>
-	 * <BR>
-	 * <li>L2PcInstance</li><BR>
-	 * <BR>
-	 * @param id
-	 */
-	public void sendPacket(SystemMessageId id)
-	{
-		// default implementation
 	}
 	
 	/**
