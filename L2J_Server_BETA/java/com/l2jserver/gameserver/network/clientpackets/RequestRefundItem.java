@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.datatables.BuyListData;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.buylist.L2BuyList;
 import com.l2jserver.gameserver.model.items.L2Item;
@@ -93,15 +92,14 @@ public final class RequestRefundItem extends L2GameClientPacket
 		}
 		
 		L2Object target = player.getTarget();
-		if (!player.isGM() && ((target == null) // No target (i.e. GM Shop)
-			|| !((target instanceof L2MerchantInstance) || (target instanceof L2MerchantSummonInstance)) || (player.getInstanceId() != target.getInstanceId()) || !player.isInsideRadius(target, INTERACTION_DISTANCE, true, false))) // Distance is too far
+		if (!player.isGM() && ((target == null) || !(target instanceof L2MerchantInstance) || (player.getInstanceId() != target.getInstanceId()) || !player.isInsideRadius(target, INTERACTION_DISTANCE, true, false)))
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
 		L2Character merchant = null;
-		if ((target instanceof L2MerchantInstance) || (target instanceof L2MerchantSummonInstance))
+		if (target instanceof L2MerchantInstance)
 		{
 			merchant = (L2Character) target;
 		}

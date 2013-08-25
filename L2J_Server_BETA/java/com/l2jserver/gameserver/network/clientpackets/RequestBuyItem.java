@@ -29,7 +29,6 @@ import com.l2jserver.gameserver.datatables.BuyListData;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.buylist.L2BuyList;
 import com.l2jserver.gameserver.model.buylist.Product;
@@ -105,21 +104,12 @@ public final class RequestBuyItem extends L2GameClientPacket
 		L2Character merchant = null;
 		if (!player.isGM())
 		{
-			if ((target == null) || (!player.isInsideRadius(target, INTERACTION_DISTANCE, true, false)) // Distance is too far)
-				|| (player.getInstanceId() != target.getInstanceId()))
+			if (!(target instanceof L2MerchantInstance) || (!player.isInsideRadius(target, INTERACTION_DISTANCE, true, false)) || (player.getInstanceId() != target.getInstanceId()))
 			{
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return;
 			}
-			if ((target instanceof L2MerchantInstance) || (target instanceof L2MerchantSummonInstance))
-			{
-				merchant = (L2Character) target;
-			}
-			else
-			{
-				sendPacket(ActionFailed.STATIC_PACKET);
-				return;
-			}
+			merchant = (L2Character) target;
 		}
 		
 		double castleTaxRate = 0;

@@ -41,7 +41,6 @@ public enum InstanceType
 	// Summons, Pets, Decoys and Traps
 	L2ServitorInstance(L2Summon),
 	L2SiegeSummonInstance(L2ServitorInstance),
-	L2MerchantSummonInstance(L2ServitorInstance),
 	L2PetInstance(L2Summon),
 	L2BabyPetInstance(L2PetInstance),
 	L2DecoyInstance(L2Decoy),

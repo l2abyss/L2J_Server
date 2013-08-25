@@ -31,7 +31,6 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2PetData;
-import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
@@ -255,11 +254,7 @@ public class CharSummonTable
 					summon.setCurrentMp(curMp);
 					summon.setHeading(activeChar.getHeading());
 					summon.setRunning();
-					if (!(summon instanceof L2MerchantSummonInstance))
-					{
-						activeChar.setPet(summon);
-					}
-					
+					activeChar.setPet(summon);
 					summon.setTimeRemaining(time);
 					
 					summon.spawnMe(activeChar.getX() + 20, activeChar.getY() + 20, activeChar.getZ());

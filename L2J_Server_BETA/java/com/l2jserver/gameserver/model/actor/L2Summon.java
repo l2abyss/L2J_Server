@@ -37,7 +37,6 @@ import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Attackable.AggroInfo;
 import com.l2jserver.gameserver.model.actor.events.SummonEvents;
-import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
@@ -126,25 +125,23 @@ public abstract class L2Summon extends L2Playable
 	public void onSpawn()
 	{
 		super.onSpawn();
-		if (!(this instanceof L2MerchantSummonInstance))
+		
+		if (Config.SUMMON_STORE_SKILL_COOLTIME && !isTeleporting())
 		{
-			if (Config.SUMMON_STORE_SKILL_COOLTIME && !isTeleporting())
-			{
-				restoreEffects();
-			}
-			
-			setFollowStatus(true);
-			updateAndBroadcastStatus(0);
-			sendPacket(new RelationChanged(this, getOwner().getRelation(getOwner()), false));
-			for (L2PcInstance player : getOwner().getKnownList().getKnownPlayersInRadius(800))
-			{
-				player.sendPacket(new RelationChanged(this, getOwner().getRelation(player), isAutoAttackable(player)));
-			}
-			L2Party party = getOwner().getParty();
-			if (party != null)
-			{
-				party.broadcastToPartyMembers(getOwner(), new ExPartyPetWindowAdd(this));
-			}
+			restoreEffects();
+		}
+		
+		setFollowStatus(true);
+		updateAndBroadcastStatus(0);
+		sendPacket(new RelationChanged(this, getOwner().getRelation(getOwner()), false));
+		for (L2PcInstance player : getOwner().getKnownList().getKnownPlayersInRadius(800))
+		{
+			player.sendPacket(new RelationChanged(this, getOwner().getRelation(player), isAutoAttackable(player)));
+		}
+		L2Party party = getOwner().getParty();
+		if (party != null)
+		{
+			party.broadcastToPartyMembers(getOwner(), new ExPartyPetWindowAdd(this));
 		}
 		setShowSummonAnimation(false); // addVisibleObject created the info packets with summon animation
 		// if someone comes into range now, the animation shouldn't show any more
@@ -348,12 +345,8 @@ public abstract class L2Summon extends L2Playable
 		{
 			return false;
 		}
-		if (this instanceof L2MerchantSummonInstance)
-		{
-			return true;
-		}
-		L2PcInstance owner = getOwner();
 		
+		final L2PcInstance owner = getOwner();
 		if (owner != null)
 		{
 			for (L2Character TgMob : getKnownList().getKnownCharacters())
@@ -918,7 +911,7 @@ public abstract class L2Summon extends L2Playable
 	{
 		for (L2PcInstance player : getKnownList().getKnownPlayers().values())
 		{
-			if ((player == null) || ((player == getOwner()) && !(this instanceof L2MerchantSummonInstance)))
+			if ((player == null) || (player == getOwner()))
 			{
 				continue;
 			}
@@ -951,7 +944,7 @@ public abstract class L2Summon extends L2Playable
 	public void sendInfo(L2PcInstance activeChar)
 	{
 		// Check if the L2PcInstance is the owner of the Pet
-		if (activeChar.equals(getOwner()) && !(this instanceof L2MerchantSummonInstance))
+		if (activeChar == getOwner())
 		{
 			activeChar.sendPacket(new PetInfo(this, 0));
 			// The PetInfo packet wipes the PartySpelled (list of active spells' icons). Re-add them
