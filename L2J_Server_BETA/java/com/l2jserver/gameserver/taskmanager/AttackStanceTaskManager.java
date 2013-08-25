@@ -19,11 +19,11 @@
 package com.l2jserver.gameserver.taskmanager;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -32,20 +32,20 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.AutoAttackStop;
 
 /**
+ * Attack stance task manager.
  * @author Luca Baldi, Zoey76
  */
 public class AttackStanceTaskManager
 {
 	protected static final Logger _log = Logger.getLogger(AttackStanceTaskManager.class.getName());
 	
-	protected static final FastMap<L2Character, Long> _attackStanceTasks = new FastMap<>();
+	protected static final Map<L2Character, Long> _attackStanceTasks = new ConcurrentHashMap<>();
 	
 	/**
 	 * Instantiates a new attack stance task manager.
 	 */
 	protected AttackStanceTaskManager()
 	{
-		_attackStanceTasks.shared();
 		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new FightModeScheduler(), 0, 1000);
 	}
 	
@@ -55,18 +55,21 @@ public class AttackStanceTaskManager
 	 */
 	public void addAttackStanceTask(L2Character actor)
 	{
-		if ((actor != null) && actor.isPlayable())
+		if (actor != null)
 		{
-			final L2PcInstance player = actor.getActingPlayer();
-			for (L2CubicInstance cubic : player.getCubics().values())
+			if (actor.isPlayable())
 			{
-				if (cubic.getId() != L2CubicInstance.LIFE_CUBIC)
+				final L2PcInstance player = actor.getActingPlayer();
+				for (L2CubicInstance cubic : player.getCubics().values())
 				{
-					cubic.doAction();
+					if (cubic.getId() != L2CubicInstance.LIFE_CUBIC)
+					{
+						cubic.doAction();
+					}
 				}
 			}
+			_attackStanceTasks.put(actor, System.currentTimeMillis());
 		}
-		_attackStanceTasks.put(actor, System.currentTimeMillis());
 	}
 	
 	/**
@@ -75,11 +78,14 @@ public class AttackStanceTaskManager
 	 */
 	public void removeAttackStanceTask(L2Character actor)
 	{
-		if ((actor != null) && actor.isSummon())
+		if (actor != null)
 		{
-			actor = actor.getActingPlayer();
+			if (actor.isSummon())
+			{
+				actor = actor.getActingPlayer();
+			}
+			_attackStanceTasks.remove(actor);
 		}
-		_attackStanceTasks.remove(actor);
 	}
 	
 	/**
@@ -89,11 +95,15 @@ public class AttackStanceTaskManager
 	 */
 	public boolean hasAttackStanceTask(L2Character actor)
 	{
-		if ((actor != null) && actor.isSummon())
+		if (actor != null)
 		{
-			actor = actor.getActingPlayer();
+			if (actor.isSummon())
+			{
+				actor = actor.getActingPlayer();
+			}
+			return _attackStanceTasks.containsKey(actor);
 		}
-		return _attackStanceTasks.containsKey(actor);
+		return false;
 	}
 	
 	protected class FightModeScheduler implements Runnable
