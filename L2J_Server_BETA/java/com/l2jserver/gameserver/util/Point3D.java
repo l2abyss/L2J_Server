@@ -152,27 +152,6 @@ public class Point3D implements IPositionable
 	}
 	
 	@Override
-	public boolean equals(Object o)
-	{
-		if (this == o)
-		{
-			return true;
-		}
-		if (o instanceof Point3D)
-		{
-			final Point3D point3D = (Point3D) o;
-			return (point3D.getX() == getX()) && (point3D.getY() == getY()) && ((point3D.getZ() == getZ()) && (point3D.getHeading() == getHeading()) && (point3D.getInstanceId() == getInstanceId()));
-		}
-		return false;
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return getX() ^ getY() ^ getZ();
-	}
-	
-	@Override
 	public String toString()
 	{
 		return "(" + _x + ", " + _y + ", " + _z + ")";
