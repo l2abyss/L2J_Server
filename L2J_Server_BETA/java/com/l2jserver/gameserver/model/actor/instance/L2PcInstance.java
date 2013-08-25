@@ -9108,6 +9108,7 @@ public final class L2PcInstance extends L2Playable
 					case SELF:
 					case GROUND:
 					case AREA_SUMMON:
+					case UNLOCKABLE:
 						break;
 					default: // Send a Server->Client packet ActionFailed to the L2PcInstance
 						sendPacket(ActionFailed.STATIC_PACKET);

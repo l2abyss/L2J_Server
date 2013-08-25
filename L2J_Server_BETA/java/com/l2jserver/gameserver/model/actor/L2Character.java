@@ -1093,10 +1093,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		if (player != null)
 		{
 			AttackStanceTaskManager.getInstance().addAttackStanceTask(player);
-		}
-		
-		if (player != null)
-		{
 			if (player.getSummon() != target)
 			{
 				player.updatePvPStatus(target);
@@ -6146,7 +6142,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				getAI().setIntention(CtrlIntention.AI_INTENTION_ATTACK, target);
 			}
 		}
-		if (skill.isBad() && !(skill.getSkillType() == L2SkillType.UNLOCK) && !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK))
+		if (skill.isBad() && !(skill.getSkillType() == L2SkillType.UNLOCK) && !(skill.getSkillType() == L2SkillType.UNLOCK_SPECIAL) && !(skill.getSkillType() == L2SkillType.DELUXE_KEY_UNLOCK))
 		{
 			getAI().clientStartAutoAttack();
 		}
@@ -6297,8 +6293,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	{
 		try
 		{
-			// Get the skill handler corresponding to the skill type (PDAM, MDAM, SWEEP...) started in gameserver
-			ISkillHandler handler = SkillHandler.getInstance().getHandler(skill.getSkillType());
 			L2Weapon activeWeapon = getActiveWeaponItem();
 			
 			// Check if the toggle skill effects are already in progress on the L2Character
@@ -6415,6 +6409,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			}
 			
 			// Launch the magic skill and calculate its effects
+			final ISkillHandler handler = SkillHandler.getInstance().getHandler(skill.getSkillType());
 			if (handler != null)
 			{
 				handler.useSkill(this, skill, targets);
