@@ -1685,20 +1685,24 @@ public class L2Npc extends L2Character
 		else if (this instanceof L2TrainerInstance)
 		{
 			html = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), "data/html/trainer/" + npcId + "-noteach.htm");
-		}
-		
-		if (html == null)
-		{
-			_log.warning("Npc " + npcId + " missing noTeach html!");
-			final NpcHtmlMessage msg = new NpcHtmlMessage(getObjectId());
-			msg.setHtml("<html><body>I cannot teach you any skills.<br>You must find your current class teachers.</body></html>");
-			player.sendPacket(msg);
-			return;
+			// Trainer Healer?
+			if (html == null)
+			{
+				html = HtmCache.getInstance().getHtm(player.getHtmlPrefix(), "data/scripts/ai/npc/Trainers/HealerTrainer/" + npcId + "-noteach.html");
+			}
 		}
 		
 		final NpcHtmlMessage noTeachMsg = new NpcHtmlMessage(getObjectId());
-		noTeachMsg.setHtml(html);
-		noTeachMsg.replace("%objectId%", String.valueOf(getObjectId()));
+		if (html == null)
+		{
+			_log.warning("Npc " + npcId + " missing noTeach html!");
+			noTeachMsg.setHtml("<html><body>I cannot teach you any skills.<br>You must find your current class teachers.</body></html>");
+		}
+		else
+		{
+			noTeachMsg.setHtml(html);
+			noTeachMsg.replace("%objectId%", String.valueOf(getObjectId()));
+		}
 		player.sendPacket(noTeachMsg);
 	}
 	
