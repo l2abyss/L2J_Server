@@ -340,15 +340,9 @@ public final class ZoneManager extends DocumentParser
 	@Override
 	public final void load()
 	{
-		_log.info(getClass().getSimpleName() + ": Loading zones...");
 		_classZones.clear();
-		
-		long started = System.currentTimeMillis();
-		
-		parseDirectory("data/zones");
-		
-		started = System.currentTimeMillis() - started;
-		_log.info(getClass().getSimpleName() + ": Loaded " + _classZones.size() + " zone classes and " + getSize() + " zones in " + (started / 1000) + " seconds.");
+		parseDatapackDirectory("data/zones", false);
+		_log.info(getClass().getSimpleName() + ": Loaded " + _classZones.size() + " zone classes and " + getSize() + " zones.");
 	}
 	
 	/**

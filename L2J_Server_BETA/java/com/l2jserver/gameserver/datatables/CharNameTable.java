@@ -53,11 +53,6 @@ public class CharNameTable
 		}
 	}
 	
-	public static CharNameTable getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	public final void addName(L2PcInstance player)
 	{
 		if (player != null)
@@ -260,6 +255,11 @@ public class CharNameTable
 			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not load char name: " + e.getMessage(), e);
 		}
 		_log.info(getClass().getSimpleName() + ": Loaded " + _chars.size() + " char names.");
+	}
+	
+	public static CharNameTable getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

@@ -32,10 +32,6 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2DropCategory;
 import com.l2jserver.gameserver.model.L2DropData;
 
-/**
- * This class ...
- * @version $Revision$ $Date$
- */
 public class HerbDropTable
 {
 	private static final Logger _log = Logger.getLogger(HerbDropTable.class.getName());

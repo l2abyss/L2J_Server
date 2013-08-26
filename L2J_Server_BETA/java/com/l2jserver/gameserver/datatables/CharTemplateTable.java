@@ -53,9 +53,10 @@ public final class CharTemplateTable extends DocumentParser
 	@Override
 	public void load()
 	{
-		parseDirectory("data/stats/chars/baseStats/");
-		_log.info(getClass().getSimpleName() + ": Loaded " + _charTemplates.size() + " Character Templates.");
-		_log.info(getClass().getSimpleName() + ": loaded " + _dataCount + " level upgain records");
+		_charTemplates.clear();
+		parseDatapackDirectory("data/stats/chars/baseStats", false);
+		_log.info(getClass().getSimpleName() + ": Loaded " + _charTemplates.size() + " character templates.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _dataCount + " level up gain records.");
 	}
 	
 	@Override

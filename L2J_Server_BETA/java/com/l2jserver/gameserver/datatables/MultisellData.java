@@ -64,14 +64,14 @@ public class MultisellData extends DocumentParser
 	public final void load()
 	{
 		_entries.clear();
-		parseDirectory("data/multisell");
+		parseDatapackDirectory("data/multisell", false);
 		if (Config.CUSTOM_MULTISELL_LOAD)
 		{
-			parseDirectory("data/multisell/custom");
+			parseDatapackDirectory("data/multisell/custom", false);
 		}
 		
 		verify();
-		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded " + _entries.size() + " lists.");
+		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded " + _entries.size() + " multisell lists.");
 	}
 	
 	@Override

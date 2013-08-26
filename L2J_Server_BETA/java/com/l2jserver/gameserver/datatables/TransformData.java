@@ -52,7 +52,7 @@ public final class TransformData extends DocumentParser
 	public synchronized void load()
 	{
 		_transformData.clear();
-		parseDirectory("data/stats/transformations");
+		parseDatapackDirectory("data/stats/transformations", false);
 		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _transformData.size() + " transform templates.");
 	}
 	

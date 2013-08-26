@@ -183,6 +183,17 @@ public abstract class DocumentParser
 	}
 	
 	/**
+	 * Wrapper for {@link #parseDirectory(File, boolean)}.
+	 * @param path the path to the directory where the XML files are
+	 * @param recursive parses all sub folders if there is
+	 * @return {@code false} if it fails to find the directory, {@code true} otherwise
+	 */
+	protected boolean parseDatapackDirectory(String path, boolean recursive)
+	{
+		return parseDirectory(new File(Config.DATAPACK_ROOT, path), recursive);
+	}
+	
+	/**
 	 * Overridable method that could parse a custom document.<br>
 	 * @param doc the document to parse.
 	 */

@@ -95,7 +95,6 @@ public class NpcTable extends DocumentParser
 	 */
 	protected NpcTable()
 	{
-		_npcs.clear();
 		restoreNpcData();
 		load();
 	}
@@ -103,7 +102,8 @@ public class NpcTable extends DocumentParser
 	@Override
 	public synchronized void load()
 	{
-		parseDirectory("data/stats/npcs");
+		_npcs.clear();
+		parseDatapackDirectory("data/stats/npcs", false);
 	}
 	
 	@Override

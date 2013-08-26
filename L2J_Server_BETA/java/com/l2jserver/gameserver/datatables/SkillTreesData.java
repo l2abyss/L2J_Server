@@ -18,7 +18,6 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -127,7 +126,7 @@ public final class SkillTreesData extends DocumentParser
 		_gameMasterAuraSkillTree.clear();
 		
 		// Load files.
-		parseDirectory(new File(Config.DATAPACK_ROOT, "data/skillTrees/"));
+		parseDatapackDirectory("data/skillTrees/", false);
 		
 		// Generate check arrays.
 		generateCheckArrays();

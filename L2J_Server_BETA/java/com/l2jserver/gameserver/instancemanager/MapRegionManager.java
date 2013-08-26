@@ -18,7 +18,6 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,6 @@ import java.util.Map;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.model.L2MapRegion;
@@ -62,7 +60,7 @@ public final class MapRegionManager extends DocumentParser
 	public void load()
 	{
 		_regions.clear();
-		parseDirectory(new File(Config.DATAPACK_ROOT, "data/mapregion/"));
+		parseDatapackDirectory("data/mapregion/", false);
 		_log.info(getClass().getSimpleName() + ": Loaded " + _regions.size() + " map regions.");
 	}
 	

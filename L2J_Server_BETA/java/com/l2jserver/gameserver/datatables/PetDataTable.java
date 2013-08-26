@@ -50,7 +50,7 @@ public final class PetDataTable extends DocumentParser
 	public void load()
 	{
 		_pets.clear();
-		parseDirectory("data/stats/pets/");
+		parseDatapackDirectory("data/stats/pets", false);
 		_log.info(getClass().getSimpleName() + ": Loaded " + _pets.size() + " Pets.");
 	}
 	

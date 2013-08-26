@@ -34,7 +34,7 @@ import com.l2jserver.gameserver.model.holders.SkillHolder;
 
 public class NpcBufferTable
 {
-	private static Logger _log = Logger.getLogger(NpcBufferTable.class.getName());
+	private static final Logger _log = Logger.getLogger(NpcBufferTable.class.getName());
 	
 	private final Map<Integer, NpcBufferSkills> _buffers = new HashMap<>();
 	
