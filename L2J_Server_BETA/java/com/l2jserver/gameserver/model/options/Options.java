@@ -227,16 +227,13 @@ public class Options
 		
 		if (skill.isActive())
 		{
-			if (skill.isActive())
+			final long remainingTime = player.getSkillRemainingReuseTime(skill.getReuseHashCode());
+			if (remainingTime > 0)
 			{
-				final long remainingTime = player.getSkillRemainingReuseTime(skill.getReuseHashCode());
-				if (remainingTime > 0)
-				{
-					player.addTimeStamp(skill, remainingTime);
-					player.disableSkill(skill, remainingTime);
-				}
-				updateTimeStamp = true;
+				player.addTimeStamp(skill, remainingTime);
+				player.disableSkill(skill, remainingTime);
 			}
+			updateTimeStamp = true;
 		}
 		if (updateTimeStamp)
 		{
