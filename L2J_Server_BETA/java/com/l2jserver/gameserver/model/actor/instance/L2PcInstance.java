@@ -7351,12 +7351,6 @@ public final class L2PcInstance extends L2Playable
 			// Retrieve from the database all skills of this L2PcInstance and add them to _skills
 			player.restoreCharData();
 			
-			// Buff and status icons
-			if (Config.STORE_SKILL_COOLTIME)
-			{
-				player.restoreEffects();
-			}
-			
 			// Reward auto-get skills and all available skills if auto-learn skills is true.
 			player.rewardSkills();
 			
@@ -10823,6 +10817,12 @@ public final class L2PcInstance extends L2Playable
 			{
 				sendMessage("Entering world in Silence mode.");
 			}
+		}
+		
+		// Buff and status icons
+		if (Config.STORE_SKILL_COOLTIME)
+		{
+			restoreEffects();
 		}
 		
 		revalidateZone(true);
