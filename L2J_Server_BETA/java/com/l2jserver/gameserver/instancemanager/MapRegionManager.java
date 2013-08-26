@@ -60,7 +60,7 @@ public final class MapRegionManager extends DocumentParser
 	public void load()
 	{
 		_regions.clear();
-		parseDatapackDirectory("data/mapregion/", false);
+		parseDatapackDirectory("data/mapregion", false);
 		_log.info(getClass().getSimpleName() + ": Loaded " + _regions.size() + " map regions.");
 	}
 	
