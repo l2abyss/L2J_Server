@@ -38,6 +38,7 @@ import com.l2jserver.gameserver.instancemanager.RaidBossSpawnManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Hero;
+import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -46,8 +47,6 @@ import com.l2jserver.gameserver.network.gameserverpackets.ServerStatus;
 import com.l2jserver.gameserver.network.serverpackets.ServerClose;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Broadcast;
-
-import gnu.trove.procedure.TObjectProcedure;
 
 /**
  * This class provides the functions for shutting down and restarting the server.<br>
@@ -580,10 +579,10 @@ public class Shutdown extends Thread
 	 */
 	private void disconnectAllCharacters()
 	{
-		L2World.getInstance().getAllPlayers().safeForEachValue(new DisconnectAllCharacters());
+		L2World.getInstance().forEachPlayer(new DisconnectAllCharacters());
 	}
 	
-	protected final class DisconnectAllCharacters implements TObjectProcedure<L2PcInstance>
+	protected final class DisconnectAllCharacters implements IL2Procedure<L2PcInstance>
 	{
 		private final Logger _log = Logger.getLogger(DisconnectAllCharacters.class.getName());
 		

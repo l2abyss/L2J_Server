@@ -54,6 +54,7 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2FestivalMonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -63,8 +64,6 @@ import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
-
-import gnu.trove.procedure.TObjectProcedure;
 
 /**
  * Seven Signs Festival of Darkness Engine.<br>
@@ -2472,7 +2471,7 @@ public class SevenSignsFestival implements SpawnListener
 		}
 	}
 	
-	protected final class ForEachPlayerRemoveUnusedBloodOfferings implements TObjectProcedure<L2PcInstance>
+	protected final class ForEachPlayerRemoveUnusedBloodOfferings implements IL2Procedure<L2PcInstance>
 	{
 		@Override
 		public final boolean execute(final L2PcInstance onlinePlayer)

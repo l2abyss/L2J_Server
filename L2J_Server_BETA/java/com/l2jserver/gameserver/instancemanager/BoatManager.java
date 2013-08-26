@@ -30,9 +30,8 @@ import com.l2jserver.gameserver.model.VehiclePathPoint;
 import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
+import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
-
-import gnu.trove.procedure.TObjectProcedure;
 
 public class BoatManager
 {
@@ -180,7 +179,7 @@ public class BoatManager
 		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcastPackets(point1, point2, packets));
 	}
 	
-	private final class ForEachPlayerBroadcastPackets implements TObjectProcedure<L2PcInstance>
+	private final class ForEachPlayerBroadcastPackets implements IL2Procedure<L2PcInstance>
 	{
 		VehiclePathPoint _point1, _point2;
 		L2GameServerPacket[] _packets;

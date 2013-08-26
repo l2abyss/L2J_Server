@@ -23,11 +23,10 @@ import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
-
-import gnu.trove.procedure.TObjectProcedure;
 
 public final class RequestStopPledgeWar extends L2GameClientPacket
 {
@@ -114,7 +113,7 @@ public final class RequestStopPledgeWar extends L2GameClientPacket
 		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcastUserInfo(clan, player));
 	}
 	
-	private final class ForEachPlayerBroadcastUserInfo implements TObjectProcedure<L2PcInstance>
+	private final class ForEachPlayerBroadcastUserInfo implements IL2Procedure<L2PcInstance>
 	{
 		private final L2PcInstance _player;
 		private final L2Clan _cln;

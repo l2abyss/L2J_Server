@@ -69,7 +69,6 @@ import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
-import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
@@ -100,7 +99,7 @@ public class L2Attackable extends L2Npc
 	
 	private boolean _absorbed;
 	
-	private final L2TIntObjectHashMap<AbsorberInfo> _absorbersList = new L2TIntObjectHashMap<>();
+	private final Map<Integer, AbsorberInfo> _absorbersList = new ConcurrentHashMap<>();
 	
 	private boolean _mustGiveExpSp;
 	
@@ -2161,7 +2160,7 @@ public class L2Attackable extends L2Npc
 		_absorbersList.clear();
 	}
 	
-	public L2TIntObjectHashMap<AbsorberInfo> getAbsorbersList()
+	public Map<Integer, AbsorberInfo> getAbsorbersList()
 	{
 		return _absorbersList;
 	}

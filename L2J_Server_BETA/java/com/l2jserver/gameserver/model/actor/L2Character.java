@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -135,7 +136,6 @@ import com.l2jserver.gameserver.network.serverpackets.TeleportToLocation;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 import com.l2jserver.gameserver.pathfinding.PathFinding;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
-import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
 import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
@@ -3488,7 +3488,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	}
 	
 	/** Table containing all skillId that are disabled */
-	protected L2TIntObjectHashMap<Long> _disabledSkills;
+	protected Map<Integer, Long> _disabledSkills;
 	private boolean _allSkillsDisabled;
 	
 	// private int _flyingRunSpeed;
@@ -6178,7 +6178,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		
 	}
 	
-	public L2TIntObjectHashMap<Long> getDisabledSkills()
+	public Map<Integer, Long> getDisabledSkills()
 	{
 		return _disabledSkills;
 	}
@@ -6213,7 +6213,13 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		
 		if (_disabledSkills == null)
 		{
-			_disabledSkills = new L2TIntObjectHashMap<>();
+			synchronized (this)
+			{
+				if (_disabledSkills == null)
+				{
+					_disabledSkills = new ConcurrentHashMap<>();
+				}
+			}
 		}
 		
 		_disabledSkills.put(Integer.valueOf(skill.getReuseHashCode()), delay > 10 ? System.currentTimeMillis() + delay : Long.MAX_VALUE);

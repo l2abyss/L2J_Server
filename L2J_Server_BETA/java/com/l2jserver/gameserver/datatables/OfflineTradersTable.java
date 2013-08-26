@@ -60,8 +60,7 @@ public class OfflineTradersTable
 			stm2.execute();
 			con.setAutoCommit(false); // avoid halfway done
 			
-			// TextBuilder items = TextBuilder.newInstance();
-			for (L2PcInstance pc : L2World.getInstance().getAllPlayersArray())
+			for (L2PcInstance pc : L2World.getInstance().getPlayers())
 			{
 				try
 				{

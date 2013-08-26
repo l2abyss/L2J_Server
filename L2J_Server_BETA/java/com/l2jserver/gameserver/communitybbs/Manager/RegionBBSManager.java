@@ -18,14 +18,16 @@
  */
 package com.l2jserver.gameserver.communitybbs.Manager;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.Config;
@@ -43,8 +45,6 @@ import com.l2jserver.gameserver.network.serverpackets.ShowBoard;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.StringUtil;
 
-import gnu.trove.iterator.TIntObjectIterator;
-
 public class RegionBBSManager extends BaseBBSManager
 {
 	private static Logger _logChat = Logger.getLogger("chat");
@@ -57,6 +57,11 @@ public class RegionBBSManager extends BaseBBSManager
 			return p1.getName().compareToIgnoreCase(p2.getName());
 		}
 	};
+	
+	private int _onlineCount = 0;
+	private int _onlineCountGm = 0;
+	private static Map<Integer, List<L2PcInstance>> _onlinePlayers = new FastMap<Integer, List<L2PcInstance>>().shared();
+	private static Map<Integer, Map<String, String>> _communityPages = new FastMap<Integer, Map<String, String>>().shared();
 	
 	@Override
 	public void parsecmd(String command, L2PcInstance activeChar)
@@ -270,35 +275,20 @@ public class RegionBBSManager extends BaseBBSManager
 		
 	}
 	
-	private int _onlineCount = 0;
-	private int _onlineCountGm = 0;
-	private static FastMap<Integer, FastList<L2PcInstance>> _onlinePlayers = new FastMap<Integer, FastList<L2PcInstance>>().shared();
-	private static FastMap<Integer, FastMap<String, String>> _communityPages = new FastMap<Integer, FastMap<String, String>>().shared();
-	
-	/**
-	 * Gets the single instance of RegionBBSManager.
-	 * @return single instance of RegionBBSManager
-	 */
-	public static RegionBBSManager getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
 	/**
 	 * Change community board.
 	 */
 	public void changeCommunityBoard()
 	{
-		final FastList<L2PcInstance> sortedPlayers = new FastList<>();
-		final TIntObjectIterator<L2PcInstance> it = L2World.getInstance().getAllPlayers().iterator();
-		while (it.hasNext())
+		final List<L2PcInstance> sortedPlayers = new ArrayList<>();
+		for (L2PcInstance player : L2World.getInstance().getPlayers())
 		{
-			it.advance();
-			if (it.value() != null)
+			if (player != null)
 			{
-				sortedPlayers.add(it.value());
+				sortedPlayers.add(player);
 			}
 		}
+		
 		Collections.sort(sortedPlayers, PLAYER_NAME_COMPARATOR);
 		
 		_onlinePlayers.clear();
@@ -322,7 +312,7 @@ public class RegionBBSManager extends BaseBBSManager
 	{
 		boolean added = false;
 		
-		for (FastList<L2PcInstance> page : _onlinePlayers.values())
+		for (List<L2PcInstance> page : _onlinePlayers.values())
 		{
 			if (page.size() < Config.NAME_PAGE_SIZE_COMMUNITYBOARD)
 			{
@@ -347,7 +337,7 @@ public class RegionBBSManager extends BaseBBSManager
 		
 		if (!added)
 		{
-			FastList<L2PcInstance> temp = new FastList<>();
+			List<L2PcInstance> temp = new ArrayList<>();
 			int page = _onlinePlayers.size() + 1;
 			if (temp.add(player))
 			{
@@ -375,9 +365,9 @@ public class RegionBBSManager extends BaseBBSManager
 		
 		for (int page : _onlinePlayers.keySet())
 		{
-			FastMap<String, String> communityPage = new FastMap<>();
+			Map<String, String> communityPage = new FastMap<>();
 			htmlCode.setLength(0);
-			StringUtil.append(htmlCode, "<html><body><br><table>" + trOpen + "<td align=left valign=top>Server Restarted: ", String.valueOf(GameServer.dateTimeServerStarted.getTime()), tdClose + trClose + "</table><table>" + trOpen + tdOpen + "XP Rate: x", String.valueOf(Config.RATE_XP), tdClose + colSpacer + tdOpen + "Party XP Rate: x", String.valueOf(Config.RATE_XP * Config.RATE_PARTY_XP), tdClose + colSpacer + tdOpen + "XP Exponent: ", String.valueOf(Config.ALT_GAME_EXPONENT_XP), tdClose + trClose + trOpen + tdOpen + "SP Rate: x", String.valueOf(Config.RATE_SP), tdClose + colSpacer + tdOpen + "Party SP Rate: x", String.valueOf(Config.RATE_SP * Config.RATE_PARTY_SP), tdClose + colSpacer + tdOpen + "SP Exponent: ", String.valueOf(Config.ALT_GAME_EXPONENT_SP), tdClose + trClose + trOpen + tdOpen + "Drop Rate: ", String.valueOf(Config.RATE_DROP_ITEMS), tdClose + colSpacer + tdOpen + "Spoil Rate: ", String.valueOf(Config.RATE_DROP_SPOIL), tdClose + colSpacer + tdOpen + "Adena Rate: ", String.valueOf(Config.RATE_DROP_ITEMS_ID.get(PcInventory.ADENA_ID)), tdClose + trClose + "</table><table>" + trOpen + "<td><img src=\"sek.cbui355\" width=600 height=1><br></td>" + trClose + trOpen + tdOpen, String.valueOf(L2World.getInstance().getAllVisibleObjectsCount()), " Object count</td>" + trClose + trOpen + tdOpen, String.valueOf(getOnlineCount("gm")), " Player(s) Online</td>" + trClose + "</table>");
+			StringUtil.append(htmlCode, "<html><body><br><table>" + trOpen + "<td align=left valign=top>Server Restarted: ", String.valueOf(GameServer.dateTimeServerStarted.getTime()), tdClose + trClose + "</table><table>" + trOpen + tdOpen + "XP Rate: x", String.valueOf(Config.RATE_XP), tdClose + colSpacer + tdOpen + "Party XP Rate: x", String.valueOf(Config.RATE_XP * Config.RATE_PARTY_XP), tdClose + colSpacer + tdOpen + "XP Exponent: ", String.valueOf(Config.ALT_GAME_EXPONENT_XP), tdClose + trClose + trOpen + tdOpen + "SP Rate: x", String.valueOf(Config.RATE_SP), tdClose + colSpacer + tdOpen + "Party SP Rate: x", String.valueOf(Config.RATE_SP * Config.RATE_PARTY_SP), tdClose + colSpacer + tdOpen + "SP Exponent: ", String.valueOf(Config.ALT_GAME_EXPONENT_SP), tdClose + trClose + trOpen + tdOpen + "Drop Rate: ", String.valueOf(Config.RATE_DROP_ITEMS), tdClose + colSpacer + tdOpen + "Spoil Rate: ", String.valueOf(Config.RATE_DROP_SPOIL), tdClose + colSpacer + tdOpen + "Adena Rate: ", String.valueOf(Config.RATE_DROP_ITEMS_ID.get(PcInventory.ADENA_ID)), tdClose + trClose + "</table><table>" + trOpen + "<td><img src=\"sek.cbui355\" width=600 height=1><br></td>" + trClose + trOpen + tdOpen, String.valueOf(L2World.getInstance().getVisibleObjectsCount()), " Object count</td>" + trClose + trOpen + tdOpen, String.valueOf(getOnlineCount("gm")), " Player(s) Online</td>" + trClose + "</table>");
 			
 			int cell = 0;
 			if (Config.BBS_SHOW_PLAYERLIST)
@@ -562,7 +552,7 @@ public class RegionBBSManager extends BaseBBSManager
 	 * @param page the page
 	 * @return the online players
 	 */
-	private FastList<L2PcInstance> getOnlinePlayers(int page)
+	private List<L2PcInstance> getOnlinePlayers(int page)
 	{
 		return _onlinePlayers.get(page);
 	}
@@ -581,6 +571,15 @@ public class RegionBBSManager extends BaseBBSManager
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Gets the single instance of RegionBBSManager.
+	 * @return single instance of RegionBBSManager
+	 */
+	public static RegionBBSManager getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

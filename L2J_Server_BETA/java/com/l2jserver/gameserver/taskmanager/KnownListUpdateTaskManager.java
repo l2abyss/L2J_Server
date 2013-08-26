@@ -63,7 +63,7 @@ public class KnownListUpdateTaskManager
 			try
 			{
 				boolean failed;
-				for (L2WorldRegion regions[] : L2World.getInstance().getAllWorldRegions())
+				for (L2WorldRegion regions[] : L2World.getInstance().getWorldRegions())
 				{
 					for (L2WorldRegion r : regions) // go through all world regions
 					{

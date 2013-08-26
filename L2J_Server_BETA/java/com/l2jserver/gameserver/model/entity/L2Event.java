@@ -394,7 +394,7 @@ public class L2Event
 			}
 			
 			List<L2PcInstance> temp = new FastList<>();
-			for (L2PcInstance player : L2World.getInstance().getAllPlayersArray())
+			for (L2PcInstance player : L2World.getInstance().getPlayers())
 			{
 				if (!player.isOnline())
 				{

@@ -45,13 +45,12 @@ import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
+import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SSQInfo;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Broadcast;
-
-import gnu.trove.procedure.TObjectProcedure;
 
 /**
  * Seven Signs engine.
@@ -1436,7 +1435,7 @@ public class SevenSigns
 		L2World.getInstance().forEachPlayer(new TeleLosingCabalFromDungeons(compWinner));
 	}
 	
-	private final class TeleLosingCabalFromDungeons implements TObjectProcedure<L2PcInstance>
+	private final class TeleLosingCabalFromDungeons implements IL2Procedure<L2PcInstance>
 	{
 		private final String _cmpWinner;
 		
@@ -1667,7 +1666,7 @@ public class SevenSigns
 		L2World.getInstance().forEachPlayer(new GiveCPMult(StrifeOwner));
 	}
 	
-	private final class GiveCPMult implements TObjectProcedure<L2PcInstance>
+	private final class GiveCPMult implements IL2Procedure<L2PcInstance>
 	{
 		private final int _strifeOwner;
 		
@@ -1705,7 +1704,7 @@ public class SevenSigns
 		L2World.getInstance().forEachPlayer(new RemoveCPMult());
 	}
 	
-	protected final class RemoveCPMult implements TObjectProcedure<L2PcInstance>
+	protected final class RemoveCPMult implements IL2Procedure<L2PcInstance>
 	{
 		@Override
 		public final boolean execute(final L2PcInstance character)

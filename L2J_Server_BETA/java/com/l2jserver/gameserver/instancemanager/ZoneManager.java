@@ -73,7 +73,7 @@ public final class ZoneManager extends DocumentParser
 	{
 		// Get the world regions
 		int count = 0;
-		final L2WorldRegion[][] worldRegions = L2World.getInstance().getAllWorldRegions();
+		final L2WorldRegion[][] worldRegions = L2World.getInstance().getWorldRegions();
 		
 		// Backup old zone settings
 		for (Map<Integer, ? extends L2ZoneType> map : _classZones.values())
@@ -103,7 +103,7 @@ public final class ZoneManager extends DocumentParser
 		load();
 		
 		// Re-validate all characters in zones
-		for (L2Object obj : L2World.getInstance().getAllVisibleObjectsArray())
+		for (L2Object obj : L2World.getInstance().getVisibleObjects())
 		{
 			if (obj instanceof L2Character)
 			{
@@ -117,7 +117,7 @@ public final class ZoneManager extends DocumentParser
 	protected void parseDocument()
 	{
 		// Get the world regions
-		final L2WorldRegion[][] worldRegions = L2World.getInstance().getAllWorldRegions();
+		final L2WorldRegion[][] worldRegions = L2World.getInstance().getWorldRegions();
 		NamedNodeMap attrs;
 		Node attribute;
 		String zoneName;

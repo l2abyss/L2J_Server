@@ -59,6 +59,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.zone.type.L2FortZone;
@@ -69,7 +70,6 @@ import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 import gnu.trove.map.hash.TIntIntHashMap;
-import gnu.trove.procedure.TObjectProcedure;
 
 public class Fort
 {
@@ -1427,7 +1427,7 @@ public class Fort
 		}
 	}
 	
-	private final class ForEachPlayerSendMessage implements TObjectProcedure<L2PcInstance>
+	private final class ForEachPlayerSendMessage implements IL2Procedure<L2PcInstance>
 	{
 		SystemMessage _sm;
 		

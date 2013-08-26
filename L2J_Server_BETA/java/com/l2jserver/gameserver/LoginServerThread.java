@@ -289,13 +289,12 @@ public class LoginServerThread extends Thread
 							sendPacket(st);
 							if (L2World.getInstance().getAllPlayersCount() > 0)
 							{
-								FastList<String> playerList = new FastList<>();
-								for (L2PcInstance player : L2World.getInstance().getAllPlayersArray())
+								final List<String> playerList = new ArrayList<>();
+								for (L2PcInstance player : L2World.getInstance().getPlayers())
 								{
 									playerList.add(player.getAccountName());
 								}
-								PlayerInGame pig = new PlayerInGame(playerList);
-								sendPacket(pig);
+								sendPacket(new PlayerInGame(playerList));
 							}
 							break;
 						case 0x03:
