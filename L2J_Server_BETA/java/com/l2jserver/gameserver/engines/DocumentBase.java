@@ -36,9 +36,9 @@ import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.enums.InstanceType;
+import com.l2jserver.gameserver.enums.PcRace;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.PlayerState;
-import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.conditions.Condition;
 import com.l2jserver.gameserver.model.conditions.ConditionChangeWeapon;
 import com.l2jserver.gameserver.model.conditions.ConditionGameChance;
@@ -463,12 +463,12 @@ public abstract class DocumentBase
 			if ("races".equalsIgnoreCase(a.getNodeName()))
 			{
 				final String[] racesVal = a.getNodeValue().split(",");
-				final Race[] races = new Race[racesVal.length];
+				final PcRace[] races = new PcRace[racesVal.length];
 				for (int r = 0; r < racesVal.length; r++)
 				{
 					if (racesVal[r] != null)
 					{
-						races[r] = Race.valueOf(racesVal[r]);
+						races[r] = PcRace.valueOf(racesVal[r]);
 					}
 				}
 				cond = joinAnd(cond, new ConditionPlayerRace(races));
@@ -900,12 +900,12 @@ public abstract class DocumentBase
 			else if ("races".equalsIgnoreCase(a.getNodeName()))
 			{
 				final String[] racesVal = a.getNodeValue().split(",");
-				final Race[] races = new Race[racesVal.length];
+				final PcRace[] races = new PcRace[racesVal.length];
 				for (int r = 0; r < racesVal.length; r++)
 				{
 					if (racesVal[r] != null)
 					{
-						races[r] = Race.valueOf(racesVal[r]);
+						races[r] = PcRace.valueOf(racesVal[r]);
 					}
 				}
 				cond = joinAnd(cond, new ConditionTargetRace(races));

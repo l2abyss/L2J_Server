@@ -16,18 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.base;
+package com.l2jserver.gameserver.enums;
 
 /**
- * This class defines all races (human, elf, darkelf, orc, dwarf) that a player can chose.
- * @version $Revision: 1.2.4.2 $ $Date: 2005/03/27 15:29:32 $
+ * @author Zoey76
  */
-public enum Race
+public enum AISkillType
 {
-	Human,
-	Elf,
-	DarkElf,
-	Orc,
-	Dwarf,
-	Kamael;
+	BUFF,
+	DEBUFF,
+	NEGATIVE,
+	ATTACK,
+	IMMOBILIZE,
+	HEAL,
+	RES,
+	COT,
+	UNIVERSAL,
+	LONG_RANGE,
+	SHORT_RANGE,
+	GENERAL,
+	SUICIDE
 }

@@ -16,14 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.base;
+package com.l2jserver.gameserver.enums;
 
 /**
- * This class ...
- * @version $Revision: 1.2.4.1 $ $Date: 2005/03/27 15:29:32 $
+ * This class defines all races (human, elf, darkelf, orc, dwarf) that a player can chose.
+ * @version $Revision: 1.2.4.2 $ $Date: 2005/03/27 15:29:32 $
  */
-public class Sex
+public enum PcRace
 {
-	public static final int MALE = 0;
-	public static final int FEMALE = 1;
+	Human,
+	Elf,
+	DarkElf,
+	Orc,
+	Dwarf,
+	Kamael;
 }

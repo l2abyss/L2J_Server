@@ -24,10 +24,10 @@ import java.util.Map;
 
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.InitialEquipmentData;
+import com.l2jserver.gameserver.enums.PcRace;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.ClassId;
-import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.items.PcItemTemplate;
 import com.l2jserver.util.Rnd;
@@ -102,7 +102,7 @@ public class L2PcTemplate extends L2CharTemplate
 	/**
 	 * @return the template race.
 	 */
-	public Race getRace()
+	public PcRace getRace()
 	{
 		return _classId.getRace();
 	}

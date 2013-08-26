@@ -18,6 +18,12 @@
  */
 package com.l2jserver.gameserver.model.base;
 
+import static com.l2jserver.gameserver.enums.PcRace.DarkElf;
+import static com.l2jserver.gameserver.enums.PcRace.Dwarf;
+import static com.l2jserver.gameserver.enums.PcRace.Elf;
+import static com.l2jserver.gameserver.enums.PcRace.Human;
+import static com.l2jserver.gameserver.enums.PcRace.Kamael;
+import static com.l2jserver.gameserver.enums.PcRace.Orc;
 import static com.l2jserver.gameserver.model.base.ClassLevel.First;
 import static com.l2jserver.gameserver.model.base.ClassLevel.Fourth;
 import static com.l2jserver.gameserver.model.base.ClassLevel.Second;
@@ -25,18 +31,13 @@ import static com.l2jserver.gameserver.model.base.ClassLevel.Third;
 import static com.l2jserver.gameserver.model.base.ClassType.Fighter;
 import static com.l2jserver.gameserver.model.base.ClassType.Mystic;
 import static com.l2jserver.gameserver.model.base.ClassType.Priest;
-import static com.l2jserver.gameserver.model.base.Race.DarkElf;
-import static com.l2jserver.gameserver.model.base.Race.Dwarf;
-import static com.l2jserver.gameserver.model.base.Race.Elf;
-import static com.l2jserver.gameserver.model.base.Race.Human;
-import static com.l2jserver.gameserver.model.base.Race.Kamael;
-import static com.l2jserver.gameserver.model.base.Race.Orc;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Set;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.enums.PcRace;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -196,7 +197,7 @@ public enum PlayerClass
 	inspector(Kamael, Fighter, Third),
 	judicator(Kamael, Fighter, Fourth);
 	
-	private Race _race;
+	private PcRace _race;
 	private ClassLevel _level;
 	private ClassType _type;
 	
@@ -240,7 +241,7 @@ public enum PlayerClass
 		subclassSetMap.put(Spellhowler, subclasseSet5);
 	}
 	
-	PlayerClass(Race pRace, ClassType pType, ClassLevel pLevel)
+	PlayerClass(PcRace pRace, ClassType pType, ClassLevel pLevel)
 	{
 		_race = pRace;
 		_level = pLevel;
@@ -306,7 +307,7 @@ public enum PlayerClass
 		return subclasses;
 	}
 	
-	public static final EnumSet<PlayerClass> getSet(Race race, ClassLevel level)
+	public static final EnumSet<PlayerClass> getSet(PcRace race, ClassLevel level)
 	{
 		EnumSet<PlayerClass> allOf = EnumSet.noneOf(PlayerClass.class);
 		
@@ -323,7 +324,7 @@ public enum PlayerClass
 		return allOf;
 	}
 	
-	public final boolean isOfRace(Race pRace)
+	public final boolean isOfRace(PcRace pRace)
 	{
 		return _race == pRace;
 	}

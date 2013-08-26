@@ -91,6 +91,8 @@ import com.l2jserver.gameserver.enums.BypassScope;
 import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.MountType;
+import com.l2jserver.gameserver.enums.PcRace;
+import com.l2jserver.gameserver.enums.Sex;
 import com.l2jserver.gameserver.enums.ShotType;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
@@ -184,8 +186,6 @@ import com.l2jserver.gameserver.model.actor.transform.Transform;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.ClassLevel;
 import com.l2jserver.gameserver.model.base.PlayerClass;
-import com.l2jserver.gameserver.model.base.Race;
-import com.l2jserver.gameserver.model.base.Sex;
 import com.l2jserver.gameserver.model.base.SubClass;
 import com.l2jserver.gameserver.model.effects.AbnormalEffect;
 import com.l2jserver.gameserver.model.effects.EffectFlag;
@@ -2919,7 +2919,7 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * @return the Race object of the L2PcInstance.
 	 */
-	public Race getRace()
+	public PcRace getRace()
 	{
 		if (!isSubClassActive())
 		{
@@ -7160,7 +7160,7 @@ public final class L2PcInstance extends L2Playable
 				if (rset.next())
 				{
 					final int activeClassId = rset.getInt("classid");
-					final boolean female = rset.getInt("sex") != Sex.MALE;
+					final boolean female = rset.getInt("sex") != Sex.MALE.ordinal();
 					final L2PcTemplate template = CharTemplateTable.getInstance().getTemplate(activeClassId);
 					PcAppearance app = new PcAppearance(rset.getByte("face"), rset.getByte("hairColor"), rset.getByte("hairStyle"), female);
 					
@@ -12338,7 +12338,7 @@ public final class L2PcInstance extends L2Playable
 		{
 			ivlim = Config.INVENTORY_MAXIMUM_GM;
 		}
-		else if (getRace() == Race.Dwarf)
+		else if (getRace() == PcRace.Dwarf)
 		{
 			ivlim = Config.INVENTORY_MAXIMUM_DWARF;
 		}
@@ -12354,7 +12354,7 @@ public final class L2PcInstance extends L2Playable
 	public int getWareHouseLimit()
 	{
 		int whlim;
-		if (getRace() == Race.Dwarf)
+		if (getRace() == PcRace.Dwarf)
 		{
 			whlim = Config.WAREHOUSE_SLOTS_DWARF;
 		}
@@ -12372,7 +12372,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		int pslim;
 		
-		if (getRace() == Race.Dwarf)
+		if (getRace() == PcRace.Dwarf)
 		{
 			pslim = Config.MAX_PVTSTORESELL_SLOTS_DWARF;
 		}
@@ -12390,7 +12390,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		int pblim;
 		
-		if (getRace() == Race.Dwarf)
+		if (getRace() == PcRace.Dwarf)
 		{
 			pblim = Config.MAX_PVTSTOREBUY_SLOTS_DWARF;
 		}

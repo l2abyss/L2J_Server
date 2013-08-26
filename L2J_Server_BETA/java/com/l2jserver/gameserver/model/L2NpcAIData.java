@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model;
 
-import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate.AIType;
+import com.l2jserver.gameserver.enums.AIType;
 
 /**
  * This Data is for NPC Attributes and AI related stuffs.<br>

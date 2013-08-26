@@ -33,6 +33,7 @@ import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.engines.DocumentParser;
+import com.l2jserver.gameserver.enums.PcRace;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2SkillLearn.SubClassData;
@@ -40,7 +41,6 @@ import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.base.AcquireSkillType;
 import com.l2jserver.gameserver.model.base.ClassId;
-import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.base.SocialClass;
 import com.l2jserver.gameserver.model.base.SubClass;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
@@ -208,7 +208,7 @@ public final class SkillTreesData extends DocumentParser
 											skillLearn.addPreReqSkill(new SkillHolder(parseInt(attrs, "id"), parseInt(attrs, "lvl")));
 											break;
 										case "race":
-											skillLearn.addRace(Race.valueOf(b.getTextContent()));
+											skillLearn.addRace(PcRace.valueOf(b.getTextContent()));
 											break;
 										case "residenceId":
 											skillLearn.addResidenceId(Integer.valueOf(b.getTextContent()));
@@ -575,7 +575,7 @@ public final class SkillTreesData extends DocumentParser
 			return result;
 		}
 		
-		final Race race = player.getRace();
+		final PcRace race = player.getRace();
 		for (L2SkillLearn skill : skills.values())
 		{
 			if (!skill.getRaces().isEmpty() && !skill.getRaces().contains(race))
@@ -610,7 +610,7 @@ public final class SkillTreesData extends DocumentParser
 	public List<L2SkillLearn> getAvailableFishingSkills(L2PcInstance player)
 	{
 		final List<L2SkillLearn> result = new ArrayList<>();
-		final Race playerRace = player.getRace();
+		final PcRace playerRace = player.getRace();
 		for (L2SkillLearn skill : _fishingSkillTree.values())
 		{
 			// If skill is Race specific and the player's race isn't allowed, skip it.
@@ -703,7 +703,7 @@ public final class SkillTreesData extends DocumentParser
 	public List<L2SkillLearn> getAvailableTransformSkills(L2PcInstance player)
 	{
 		final List<L2SkillLearn> result = new ArrayList<>();
-		final Race race = player.getRace();
+		final PcRace race = player.getRace();
 		for (L2SkillLearn skill : _transformSkillTree.values())
 		{
 			if ((player.getLevel() >= skill.getGetLevel()) && (skill.getRaces().isEmpty() || skill.getRaces().contains(race)))
@@ -1110,8 +1110,8 @@ public final class SkillTreesData extends DocumentParser
 		
 		// Race specific skills from Fishing and Transformation skill trees.
 		final List<Integer> list = new ArrayList<>();
-		_skillsByRaceHashCodes = new TIntObjectHashMap<>(Race.values().length);
-		for (Race r : Race.values())
+		_skillsByRaceHashCodes = new TIntObjectHashMap<>(PcRace.values().length);
+		for (PcRace r : PcRace.values())
 		{
 			for (L2SkillLearn s : _fishingSkillTree.values())
 			{
@@ -1250,7 +1250,7 @@ public final class SkillTreesData extends DocumentParser
 		int dwarvenOnlyFishingSkillCount = 0;
 		for (L2SkillLearn fishSkill : _fishingSkillTree.values())
 		{
-			if (fishSkill.getRaces().contains(Race.Dwarf))
+			if (fishSkill.getRaces().contains(PcRace.Dwarf))
 			{
 				dwarvenOnlyFishingSkillCount++;
 			}

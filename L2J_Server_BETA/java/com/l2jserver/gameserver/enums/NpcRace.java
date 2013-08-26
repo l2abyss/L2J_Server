@@ -16,27 +16,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.actor.instance;
+package com.l2jserver.gameserver.enums;
 
-import com.l2jserver.gameserver.enums.PcRace;
-import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.base.PlayerClass;
-
-public final class L2VillageMasterOrcInstance extends L2VillageMasterInstance
+/**
+ * @author Zoey76
+ */
+public enum NpcRace
 {
-	public L2VillageMasterOrcInstance(int objectId, L2NpcTemplate template)
-	{
-		super(objectId, template);
-	}
-	
-	@Override
-	protected final boolean checkVillageMasterRace(PlayerClass pclass)
-	{
-		if (pclass == null)
-		{
-			return false;
-		}
-		
-		return pclass.isOfRace(PcRace.Orc);
-	}
+	UNDEAD,
+	MAGICCREATURE,
+	BEAST,
+	ANIMAL,
+	PLANT,
+	HUMANOID,
+	SPIRIT,
+	ANGEL,
+	DEMON,
+	DRAGON,
+	GIANT,
+	BUG,
+	FAIRIE,
+	HUMAN,
+	ELVE,
+	DARKELVE,
+	ORC,
+	DWARVE,
+	OTHER,
+	NONLIVING,
+	SIEGEWEAPON,
+	DEFENDINGARMY,
+	MERCENARIE,
+	UNKNOWN,
+	KAMAEL,
+	NONE
 }
