@@ -309,7 +309,7 @@ public abstract class DocumentBase
 		else if (template instanceof L2Skill)
 		{
 			final L2Skill sk = (L2Skill) template;
-			if (set.getInteger("self", 0) == 1)
+			if (set.getInt("self", 0) == 1)
 			{
 				sk.attachSelf(effectTemplate);
 			}

@@ -142,7 +142,7 @@ public final class TransformData extends DocumentParser
 												transform.setTemplate(isMale, templateData);
 											}
 											set.set("actions", z.getTextContent());
-											final int[] actions = set.getIntegerArray("actions", " ");
+											final int[] actions = set.getIntArray("actions", " ");
 											templateData.setBasicActionList(new ExBasicActionList(actions));
 											break;
 										}

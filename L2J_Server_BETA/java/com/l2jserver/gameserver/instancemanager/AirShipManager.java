@@ -134,7 +134,7 @@ public class AirShipManager
 			_airShips.put(ownerId, airShip);
 			
 			airShip.setMaxFuel(600);
-			airShip.setFuel(info.getInteger("fuel"));
+			airShip.setFuel(info.getInt("fuel"));
 			airShip.getStat().setMoveSpeed(280);
 			airShip.getStat().setRotationSpeed(2000);
 		}
@@ -176,7 +176,7 @@ public class AirShipManager
 				PreparedStatement ps = con.prepareStatement(ADD_DB))
 			{
 				ps.setInt(1, ownerId);
-				ps.setInt(2, info.getInteger("fuel"));
+				ps.setInt(2, info.getInt("fuel"));
 				ps.executeUpdate();
 			}
 			catch (SQLException e)
@@ -302,7 +302,7 @@ public class AirShipManager
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement(UPDATE_DB))
 		{
-			ps.setInt(1, info.getInteger("fuel"));
+			ps.setInt(1, info.getInt("fuel"));
 			ps.setInt(2, ownerId);
 			ps.executeUpdate();
 		}

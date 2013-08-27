@@ -81,7 +81,7 @@ public final class Participant
 	 */
 	public final void updateStat(String statName, int increment)
 	{
-		stats.set(statName, Math.max(stats.getInteger(statName) + increment, 0));
+		stats.set(statName, Math.max(stats.getInt(statName) + increment, 0));
 	}
 	
 	/**

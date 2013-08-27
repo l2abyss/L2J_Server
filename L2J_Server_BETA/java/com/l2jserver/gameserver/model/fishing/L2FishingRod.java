@@ -34,9 +34,9 @@ public class L2FishingRod
 	
 	public L2FishingRod(StatsSet set)
 	{
-		_fishingRodId = set.getInteger("fishingRodId");
-		_fishingRodItemId = set.getInteger("fishingRodItemId");
-		_fishingRodLevel = set.getInteger("fishingRodLevel");
+		_fishingRodId = set.getInt("fishingRodId");
+		_fishingRodItemId = set.getInt("fishingRodItemId");
+		_fishingRodLevel = set.getInt("fishingRodLevel");
 		_fishingRodName = set.getString("fishingRodName");
 		_fishingRodDamage = set.getDouble("fishingRodDamage");
 	}

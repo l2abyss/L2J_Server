@@ -89,11 +89,11 @@ public final class StaticObjects extends DocumentParser
 	 */
 	private void addObject(StatsSet set)
 	{
-		L2StaticObjectInstance obj = new L2StaticObjectInstance(IdFactory.getInstance().getNextId(), new L2CharTemplate(new StatsSet()), set.getInteger("id"));
-		obj.setType(set.getInteger("type", 0));
+		L2StaticObjectInstance obj = new L2StaticObjectInstance(IdFactory.getInstance().getNextId(), new L2CharTemplate(new StatsSet()), set.getInt("id"));
+		obj.setType(set.getInt("type", 0));
 		obj.setName(set.getString("name"));
-		obj.setMap(set.getString("texture", "none"), set.getInteger("map_x", 0), set.getInteger("map_y", 0));
-		obj.spawnMe(set.getInteger("x"), set.getInteger("y"), set.getInteger("z"));
+		obj.setMap(set.getString("texture", "none"), set.getInt("map_x", 0), set.getInt("map_y", 0));
+		obj.spawnMe(set.getInt("x"), set.getInt("y"), set.getInt("z"));
 		_staticObjects.put(obj.getObjectId(), obj);
 	}
 	

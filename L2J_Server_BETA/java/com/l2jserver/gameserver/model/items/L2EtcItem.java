@@ -77,7 +77,7 @@ public final class L2EtcItem extends L2Item
 		}
 		
 		_handler = set.getString("handler", null); // ! null !
-		_isBlessed = set.getBool("blessed", false);
+		_isBlessed = set.getBoolean("blessed", false);
 		
 		// Extractable
 		String capsuled_items = set.getString("capsuled_items", null);

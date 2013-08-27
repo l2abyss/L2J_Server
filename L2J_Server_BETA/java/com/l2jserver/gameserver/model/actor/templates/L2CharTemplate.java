@@ -115,66 +115,66 @@ public class L2CharTemplate
 	public void set(StatsSet set)
 	{
 		// Base stats
-		_baseSTR = set.getInteger("baseSTR", 0);
-		_baseCON = set.getInteger("baseCON", 0);
-		_baseDEX = set.getInteger("baseDEX", 0);
-		_baseINT = set.getInteger("baseINT", 0);
-		_baseWIT = set.getInteger("baseWIT", 0);
-		_baseMEN = set.getInteger("baseMEN", 0);
+		_baseSTR = set.getInt("baseSTR", 0);
+		_baseCON = set.getInt("baseCON", 0);
+		_baseDEX = set.getInt("baseDEX", 0);
+		_baseINT = set.getInt("baseINT", 0);
+		_baseWIT = set.getInt("baseWIT", 0);
+		_baseMEN = set.getInt("baseMEN", 0);
 		_baseHpMax = set.getFloat("baseHpMax", 0);
 		_baseCpMax = set.getFloat("baseCpMax", 0);
 		_baseMpMax = set.getFloat("baseMpMax", 0);
 		_baseHpReg = set.getFloat("baseHpReg", 0);
 		_baseMpReg = set.getFloat("baseMpReg", 0);
-		_basePAtk = set.getInteger("basePAtk", 0);
-		_baseMAtk = set.getInteger("baseMAtk", 0);
-		_basePDef = set.getInteger("basePDef", 0);
-		_baseMDef = set.getInteger("baseMDef", 0);
-		_basePAtkSpd = set.getInteger("basePAtkSpd", 300);
-		_baseMAtkSpd = set.getInteger("baseMAtkSpd", 333);
+		_basePAtk = set.getInt("basePAtk", 0);
+		_baseMAtk = set.getInt("baseMAtk", 0);
+		_basePDef = set.getInt("basePDef", 0);
+		_baseMDef = set.getInt("baseMDef", 0);
+		_basePAtkSpd = set.getInt("basePAtkSpd", 300);
+		_baseMAtkSpd = set.getInt("baseMAtkSpd", 333);
 		_baseMReuseRate = set.getFloat("baseMReuseDelay", 1.f);
-		_baseShldDef = set.getInteger("baseShldDef", 0);
-		_baseAttackRange = set.getInteger("baseAtkRange", 40);
+		_baseShldDef = set.getInt("baseShldDef", 0);
+		_baseAttackRange = set.getInt("baseAtkRange", 40);
 		_baseAttackType = L2WeaponType.findByName(set.getString("baseAtkType", "Fist"));
-		_baseShldRate = set.getInteger("baseShldRate", 0);
-		_baseCritRate = set.getInteger("baseCritRate", 4);
-		_baseMCritRate = set.getInteger("baseMCritRate", 0);
+		_baseShldRate = set.getInt("baseShldRate", 0);
+		_baseCritRate = set.getInt("baseCritRate", 4);
+		_baseMCritRate = set.getInt("baseMCritRate", 0);
 		
 		// SpecialStats
-		_baseBreath = set.getInteger("baseBreath", 100);
-		_baseAggression = set.getInteger("baseAggression", 0);
-		_baseBleed = set.getInteger("baseBleed", 0);
-		_basePoison = set.getInteger("basePoison", 0);
-		_baseStun = set.getInteger("baseStun", 0);
-		_baseRoot = set.getInteger("baseRoot", 0);
-		_baseMovement = set.getInteger("baseMovement", 0);
-		_baseConfusion = set.getInteger("baseConfusion", 0);
-		_baseSleep = set.getInteger("baseSleep", 0);
-		_baseFire = set.getInteger("baseFire", 0);
-		_baseWind = set.getInteger("baseWind", 0);
-		_baseWater = set.getInteger("baseWater", 0);
-		_baseEarth = set.getInteger("baseEarth", 0);
-		_baseHoly = set.getInteger("baseHoly", 0);
-		_baseDark = set.getInteger("baseDark", 0);
-		_baseAggressionVuln = set.getInteger("baseAggressionVuln", 0);
-		_baseBleedVuln = set.getInteger("baseBleedVuln", 0);
-		_basePoisonVuln = set.getInteger("basePoisonVuln", 0);
-		_baseStunVuln = set.getInteger("baseStunVuln", 0);
-		_baseRootVuln = set.getInteger("baseRootVuln", 0);
-		_baseMovementVuln = set.getInteger("baseMovementVuln", 0);
-		_baseSleepVuln = set.getInteger("baseSleepVuln", 0);
-		_baseCritVuln = set.getInteger("baseCritVuln", 1);
-		_baseFireRes = set.getInteger("baseFireRes", 0);
-		_baseWindRes = set.getInteger("baseWindRes", 0);
-		_baseWaterRes = set.getInteger("baseWaterRes", 0);
-		_baseEarthRes = set.getInteger("baseEarthRes", 0);
-		_baseHolyRes = set.getInteger("baseHolyRes", 0);
-		_baseDarkRes = set.getInteger("baseDarkRes", 0);
-		_baseElementRes = set.getInteger("baseElementRes", 0);
+		_baseBreath = set.getInt("baseBreath", 100);
+		_baseAggression = set.getInt("baseAggression", 0);
+		_baseBleed = set.getInt("baseBleed", 0);
+		_basePoison = set.getInt("basePoison", 0);
+		_baseStun = set.getInt("baseStun", 0);
+		_baseRoot = set.getInt("baseRoot", 0);
+		_baseMovement = set.getInt("baseMovement", 0);
+		_baseConfusion = set.getInt("baseConfusion", 0);
+		_baseSleep = set.getInt("baseSleep", 0);
+		_baseFire = set.getInt("baseFire", 0);
+		_baseWind = set.getInt("baseWind", 0);
+		_baseWater = set.getInt("baseWater", 0);
+		_baseEarth = set.getInt("baseEarth", 0);
+		_baseHoly = set.getInt("baseHoly", 0);
+		_baseDark = set.getInt("baseDark", 0);
+		_baseAggressionVuln = set.getInt("baseAggressionVuln", 0);
+		_baseBleedVuln = set.getInt("baseBleedVuln", 0);
+		_basePoisonVuln = set.getInt("basePoisonVuln", 0);
+		_baseStunVuln = set.getInt("baseStunVuln", 0);
+		_baseRootVuln = set.getInt("baseRootVuln", 0);
+		_baseMovementVuln = set.getInt("baseMovementVuln", 0);
+		_baseSleepVuln = set.getInt("baseSleepVuln", 0);
+		_baseCritVuln = set.getInt("baseCritVuln", 1);
+		_baseFireRes = set.getInt("baseFireRes", 0);
+		_baseWindRes = set.getInt("baseWindRes", 0);
+		_baseWaterRes = set.getInt("baseWaterRes", 0);
+		_baseEarthRes = set.getInt("baseEarthRes", 0);
+		_baseHolyRes = set.getInt("baseHolyRes", 0);
+		_baseDarkRes = set.getInt("baseDarkRes", 0);
+		_baseElementRes = set.getInt("baseElementRes", 0);
 		
 		// C4 Stats
-		_baseMpConsumeRate = set.getInteger("baseMpConsumeRate", 0);
-		_baseHpConsumeRate = set.getInteger("baseHpConsumeRate", 0);
+		_baseMpConsumeRate = set.getInt("baseMpConsumeRate", 0);
+		_baseHpConsumeRate = set.getInt("baseHpConsumeRate", 0);
 		
 		// Geometry
 		_fCollisionHeight = set.getDouble("collision_height", 0);
@@ -184,10 +184,10 @@ public class L2CharTemplate
 		
 		// speed.
 		Arrays.fill(_moveType, 1);
-		setBaseMoveSpeed(MoveType.RUN, set.getInteger("baseRunSpd", 1));
-		setBaseMoveSpeed(MoveType.WALK, set.getInteger("baseWalkSpd", 1));
-		setBaseMoveSpeed(MoveType.FAST_SWIM, set.getInteger("baseSwimRunSpd", 1));
-		setBaseMoveSpeed(MoveType.SLOW_SWIM, set.getInteger("baseSwimWalkSpd", 1));
+		setBaseMoveSpeed(MoveType.RUN, set.getInt("baseRunSpd", 1));
+		setBaseMoveSpeed(MoveType.WALK, set.getInt("baseWalkSpd", 1));
+		setBaseMoveSpeed(MoveType.FAST_SWIM, set.getInt("baseSwimRunSpd", 1));
+		setBaseMoveSpeed(MoveType.SLOW_SWIM, set.getInt("baseSwimWalkSpd", 1));
 	}
 	
 	/**

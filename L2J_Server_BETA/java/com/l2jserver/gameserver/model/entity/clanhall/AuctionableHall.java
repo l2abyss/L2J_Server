@@ -48,9 +48,9 @@ public final class AuctionableHall extends ClanHall
 	{
 		super(set);
 		_paidUntil = set.getLong("paidUntil");
-		_grade = set.getInteger("grade");
-		_paid = set.getBool("paid");
-		_lease = set.getInteger("lease");
+		_grade = set.getInt("grade");
+		_paid = set.getBoolean("paid");
+		_lease = set.getInt("lease");
 		
 		if (getOwnerId() != 0)
 		{

@@ -240,8 +240,8 @@ public class HellboundManager
 	{
 		if (GlobalVariablesManager.getInstance().hasVariable("HBLevel"))
 		{
-			_level = GlobalVariablesManager.getInstance().getInteger("HBLevel");
-			_trust = GlobalVariablesManager.getInstance().getInteger("HBTrust");
+			_level = GlobalVariablesManager.getInstance().getInt("HBLevel");
+			_trust = GlobalVariablesManager.getInstance().getInt("HBTrust");
 		}
 		else
 		{

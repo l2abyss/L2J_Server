@@ -367,7 +367,7 @@ public class NpcTable extends DocumentParser
 	 */
 	public void saveNpc(StatsSet npc)
 	{
-		final int npcId = npc.getInteger("npcId");
+		final int npcId = npc.getInt("npcId");
 		
 		final StringBuilder npcAttributes = new StringBuilder();
 		final ArrayList<Object> npcAttributeValues = new ArrayList<>();

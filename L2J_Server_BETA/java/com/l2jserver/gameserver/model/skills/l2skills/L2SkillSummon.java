@@ -58,16 +58,16 @@ public class L2SkillSummon extends L2Skill
 		
 		_expPenalty = set.getFloat("expPenalty", 0.f);
 		
-		_summonTotalLifeTime = set.getInteger("summonTotalLifeTime", 1200000); // 20 minutes default
-		_summonTimeLostIdle = set.getInteger("summonTimeLostIdle", 0);
-		_summonTimeLostActive = set.getInteger("summonTimeLostActive", 0);
+		_summonTotalLifeTime = set.getInt("summonTotalLifeTime", 1200000); // 20 minutes default
+		_summonTimeLostIdle = set.getInt("summonTimeLostIdle", 0);
+		_summonTimeLostActive = set.getInt("summonTimeLostActive", 0);
 		
-		_itemConsumeOT = set.getInteger("itemConsumeCountOT", 0);
-		_itemConsumeIdOT = set.getInteger("itemConsumeIdOT", 0);
-		_itemConsumeTime = set.getInteger("itemConsumeTime", 0);
-		_itemConsumeSteps = set.getInteger("itemConsumeSteps", 0);
+		_itemConsumeOT = set.getInt("itemConsumeCountOT", 0);
+		_itemConsumeIdOT = set.getInt("itemConsumeIdOT", 0);
+		_itemConsumeTime = set.getInt("itemConsumeTime", 0);
+		_itemConsumeSteps = set.getInt("itemConsumeSteps", 0);
 		
-		_inheritElementals = set.getBool("inheritElementals", false);
+		_inheritElementals = set.getBoolean("inheritElementals", false);
 		_elementalSharePercent = set.getDouble("inheritPercent", 1);
 	}
 	

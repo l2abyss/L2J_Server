@@ -45,12 +45,12 @@ public final class AuctionDateGenerator
 	public AuctionDateGenerator(final StatsSet config) throws IllegalArgumentException
 	{
 		_calendar = Calendar.getInstance();
-		_interval = config.getInteger(FIELD_INTERVAL, -1);
+		_interval = config.getInt(FIELD_INTERVAL, -1);
 		// NC week start in Monday.
-		final int fixedDayWeek = config.getInteger(FIELD_DAY_OF_WEEK, -1) + 1;
+		final int fixedDayWeek = config.getInt(FIELD_DAY_OF_WEEK, -1) + 1;
 		_day_of_week = (fixedDayWeek > 7) ? 1 : fixedDayWeek;
-		_hour_of_day = config.getInteger(FIELD_HOUR_OF_DAY, -1);
-		_minute_of_hour = config.getInteger(FIELD_MINUTE_OF_HOUR, -1);
+		_hour_of_day = config.getInt(FIELD_HOUR_OF_DAY, -1);
+		_minute_of_hour = config.getInt(FIELD_MINUTE_OF_HOUR, -1);
 		
 		checkDayOfWeek(-1);
 		checkHourOfDay(-1);

@@ -138,8 +138,8 @@ public final class CharTemplateTable extends DocumentParser
 							}
 						}
 						// calculate total pdef and mdef from parts
-						set.set("basePDef", (set.getInteger("basePDefchest", 0) + set.getInteger("basePDeflegs", 0) + set.getInteger("basePDefhead", 0) + set.getInteger("basePDeffeet", 0) + set.getInteger("basePDefgloves", 0) + set.getInteger("basePDefunderwear", 0) + set.getInteger("basePDefcloak", 0)));
-						set.set("baseMDef", (set.getInteger("baseMDefrear", 0) + set.getInteger("baseMDeflear", 0) + set.getInteger("baseMDefrfinger", 0) + set.getInteger("baseMDefrfinger", 0) + set.getInteger("baseMDefneck", 0)));
+						set.set("basePDef", (set.getInt("basePDefchest", 0) + set.getInt("basePDeflegs", 0) + set.getInt("basePDefhead", 0) + set.getInt("basePDeffeet", 0) + set.getInt("basePDefgloves", 0) + set.getInt("basePDefunderwear", 0) + set.getInt("basePDefcloak", 0)));
+						set.set("baseMDef", (set.getInt("baseMDefrear", 0) + set.getInt("baseMDeflear", 0) + set.getInt("baseMDefrfinger", 0) + set.getInt("baseMDefrfinger", 0) + set.getInt("baseMDefneck", 0)));
 						
 						final L2PcTemplate ct = new L2PcTemplate(set, creationPoints);
 						_charTemplates.put(ClassId.getClassId(classId), ct);

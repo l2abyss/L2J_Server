@@ -16,32 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.items;
-
-import com.l2jserver.gameserver.model.StatsSet;
-import com.l2jserver.gameserver.model.holders.ItemHolder;
+package com.l2jserver.gameserver.model.interfaces;
 
 /**
- * @author Zoey76
+ * More advanced interface for parsers.<br>
+ * Allows usage of get methods without fall back value.<br>
+ * @author xban1x
  */
-public final class PcItemTemplate extends ItemHolder
+public interface IParserAdvUtils extends IParserUtils
 {
-	private final boolean _equipped;
 	
-	/**
-	 * @param set the set containing the values for this object
-	 */
-	public PcItemTemplate(StatsSet set)
-	{
-		super(set.getInt("id"), set.getInt("count"));
-		_equipped = set.getBoolean("equipped", false);
-	}
+	public boolean getBoolean(String key);
 	
-	/**
-	 * @return {@code true} if the items is equipped upon character creation, {@code false} otherwise
-	 */
-	public boolean isEquipped()
-	{
-		return _equipped;
-	}
+	public byte getByte(String key);
+	
+	public short getShort(String key);
+	
+	public int getInt(String key);
+	
+	public long getLong(String key);
+	
+	public float getFloat(String key);
+	
+	public double getDouble(String key);
+	
+	public String getString(String key);
+	
+	public <T extends Enum<T>> T getEnum(String key, Class<T> clazz);
+	
 }

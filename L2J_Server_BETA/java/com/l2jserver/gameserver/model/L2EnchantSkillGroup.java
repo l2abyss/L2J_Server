@@ -58,10 +58,10 @@ public final class L2EnchantSkillGroup
 		
 		public EnchantSkillHolder(StatsSet set)
 		{
-			_level = set.getInteger("level");
-			_adenaCost = set.getInteger("adena");
-			_expCost = set.getInteger("exp");
-			_spCost = set.getInteger("sp");
+			_level = set.getInt("level");
+			_adenaCost = set.getInt("adena");
+			_expCost = set.getInt("exp");
+			_spCost = set.getInt("sp");
 			_rate = new byte[24];
 			for (int i = 0; i < 24; i++)
 			{

@@ -73,11 +73,11 @@ public final class ChanceCondition
 		try
 		{
 			TriggerType trigger = set.getEnum("chanceType", TriggerType.class, null);
-			int chance = set.getInteger("activationChance", -1);
-			int mindmg = set.getInteger("activationMinDamage", -1);
+			int chance = set.getInt("activationChance", -1);
+			int mindmg = set.getInt("activationMinDamage", -1);
 			String elements = set.getString("activationElements", null);
 			String activationSkills = set.getString("activationSkills", null);
-			boolean pvpOnly = set.getBool("pvpChanceOnly", false);
+			boolean pvpOnly = set.getBoolean("pvpChanceOnly", false);
 			
 			if (trigger != null)
 			{

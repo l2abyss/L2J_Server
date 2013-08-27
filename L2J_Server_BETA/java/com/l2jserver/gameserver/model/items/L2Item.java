@@ -246,43 +246,43 @@ public abstract class L2Item implements IIdentifiable
 	 */
 	protected L2Item(StatsSet set)
 	{
-		_itemId = set.getInteger("item_id");
-		_displayId = set.getInteger("displayId", _itemId);
+		_itemId = set.getInt("item_id");
+		_displayId = set.getInt("displayId", _itemId);
 		_name = set.getString("name");
 		_icon = set.getString("icon", null);
-		_weight = set.getInteger("weight", 0);
+		_weight = set.getInt("weight", 0);
 		_materialType = ItemTable._materials.get(set.getString("material", "steel")); // default is steel, yeah and what?
-		_equipReuseDelay = set.getInteger("equip_reuse_delay", 0) * 1000;
-		_duration = set.getInteger("duration", -1);
-		_time = set.getInteger("time", -1);
-		_autoDestroyTime = set.getInteger("auto_destroy_time", -1) * 1000;
+		_equipReuseDelay = set.getInt("equip_reuse_delay", 0) * 1000;
+		_duration = set.getInt("duration", -1);
+		_time = set.getInt("time", -1);
+		_autoDestroyTime = set.getInt("auto_destroy_time", -1) * 1000;
 		_bodyPart = ItemTable._slots.get(set.getString("bodypart", "none"));
-		_referencePrice = set.getInteger("price", 0);
+		_referencePrice = set.getInt("price", 0);
 		_crystalType = ItemTable._crystalTypes.get(set.getString("crystal_type", "none")); // default to none-grade
-		_crystalCount = set.getInteger("crystal_count", 0);
+		_crystalCount = set.getInt("crystal_count", 0);
 		
-		_stackable = set.getBool("is_stackable", false);
-		_sellable = set.getBool("is_sellable", true);
-		_dropable = set.getBool("is_dropable", true);
-		_destroyable = set.getBool("is_destroyable", true);
-		_tradeable = set.getBool("is_tradable", true);
-		_depositable = set.getBool("is_depositable", true);
-		_elementable = set.getBool("element_enabled", false);
-		_enchantable = set.getInteger("enchant_enabled", 0);
-		_questItem = set.getBool("is_questitem", false);
-		_freightable = set.getBool("is_freightable", false);
-		_is_oly_restricted = set.getBool("is_oly_restricted", false);
-		_for_npc = set.getBool("for_npc", false);
+		_stackable = set.getBoolean("is_stackable", false);
+		_sellable = set.getBoolean("is_sellable", true);
+		_dropable = set.getBoolean("is_dropable", true);
+		_destroyable = set.getBoolean("is_destroyable", true);
+		_tradeable = set.getBoolean("is_tradable", true);
+		_depositable = set.getBoolean("is_depositable", true);
+		_elementable = set.getBoolean("element_enabled", false);
+		_enchantable = set.getInt("enchant_enabled", 0);
+		_questItem = set.getBoolean("is_questitem", false);
+		_freightable = set.getBoolean("is_freightable", false);
+		_is_oly_restricted = set.getBoolean("is_oly_restricted", false);
+		_for_npc = set.getBoolean("for_npc", false);
 		
 		// _immediate_effect - herb
-		_ex_immediate_effect = set.getBool("ex_immediate_effect", false);
+		_ex_immediate_effect = set.getBoolean("ex_immediate_effect", false);
 		
 		// used for custom type select
 		_defaultAction = set.getEnum("default_action", L2ActionType.class, L2ActionType.none);
-		_useSkillDisTime = set.getInteger("useSkillDisTime", 0);
-		_defaultEnchantLevel = set.getInteger("enchanted", 0);
-		_reuseDelay = set.getInteger("reuse_delay", 0);
-		_sharedReuseGroup = set.getInteger("shared_reuse_group", 0);
+		_useSkillDisTime = set.getInt("useSkillDisTime", 0);
+		_defaultEnchantLevel = set.getInt("enchanted", 0);
+		_reuseDelay = set.getInt("reuse_delay", 0);
+		_sharedReuseGroup = set.getInt("shared_reuse_group", 0);
 		
 		// TODO: This should be done with proper conditions and a categoryData.xml file.
 		String equip_condition = set.getString("equip_condition", null);

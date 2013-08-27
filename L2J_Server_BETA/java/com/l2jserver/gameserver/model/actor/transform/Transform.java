@@ -51,12 +51,12 @@ public final class Transform implements IIdentifiable
 	
 	public Transform(StatsSet set)
 	{
-		_id = set.getInteger("id");
-		_displayId = set.getInteger("displayId", _id);
+		_id = set.getInt("id");
+		_displayId = set.getInt("displayId", _id);
 		_type = set.getEnum("type", TransformType.class, TransformType.COMBAT);
-		_canSwim = set.getInteger("can_swim", 0) == 1;
-		_canAttack = set.getInteger("normal_attackable", 1) == 1;
-		_spawnHeight = set.getInteger("spawn_height", 0);
+		_canSwim = set.getInt("can_swim", 0) == 1;
+		_canAttack = set.getInt("normal_attackable", 1) == 1;
+		_spawnHeight = set.getInt("spawn_height", 0);
 		_name = set.getString("setName", null);
 		_title = set.getString("setTitle", null);
 	}

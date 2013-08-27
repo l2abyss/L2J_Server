@@ -33,10 +33,10 @@ public class L2FishingMonster
 	
 	public L2FishingMonster(StatsSet set)
 	{
-		_userMinLevel = set.getInteger("userMinLevel");
-		_userMaxLevel = set.getInteger("userMaxLevel");
-		_fishingMonsterId = set.getInteger("fishingMonsterId");
-		_probability = set.getInteger("probability");
+		_userMinLevel = set.getInt("userMinLevel");
+		_userMaxLevel = set.getInt("userMaxLevel");
+		_fishingMonsterId = set.getInt("fishingMonsterId");
+		_probability = set.getInt("probability");
 	}
 	
 	/**

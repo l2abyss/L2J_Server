@@ -70,28 +70,28 @@ public final class TransformTemplate
 		
 		addStats(Stats.POWER_ATTACK, set.getDouble("pAtk", 0));
 		addStats(Stats.MAGIC_ATTACK, set.getDouble("mAtk", 0));
-		addStats(Stats.POWER_ATTACK_RANGE, set.getInteger("range", 0));
-		addStats(Stats.POWER_ATTACK_SPEED, set.getInteger("attackSpeed", 0));
-		addStats(Stats.CRITICAL_RATE, set.getInteger("critRate", 0));
-		addStats(Stats.STAT_STR, set.getInteger("str", 0));
-		addStats(Stats.STAT_INT, set.getInteger("int", 0));
-		addStats(Stats.STAT_CON, set.getInteger("con", 0));
-		addStats(Stats.STAT_DEX, set.getInteger("dex", 0));
-		addStats(Stats.STAT_WIT, set.getInteger("wit", 0));
-		addStats(Stats.STAT_MEN, set.getInteger("men", 0));
+		addStats(Stats.POWER_ATTACK_RANGE, set.getInt("range", 0));
+		addStats(Stats.POWER_ATTACK_SPEED, set.getInt("attackSpeed", 0));
+		addStats(Stats.CRITICAL_RATE, set.getInt("critRate", 0));
+		addStats(Stats.STAT_STR, set.getInt("str", 0));
+		addStats(Stats.STAT_INT, set.getInt("int", 0));
+		addStats(Stats.STAT_CON, set.getInt("con", 0));
+		addStats(Stats.STAT_DEX, set.getInt("dex", 0));
+		addStats(Stats.STAT_WIT, set.getInt("wit", 0));
+		addStats(Stats.STAT_MEN, set.getInt("men", 0));
 		
-		addDefense(Inventory.PAPERDOLL_CHEST, set.getInteger("chest", 0));
-		addDefense(Inventory.PAPERDOLL_LEGS, set.getInteger("legs", 0));
-		addDefense(Inventory.PAPERDOLL_HEAD, set.getInteger("head", 0));
-		addDefense(Inventory.PAPERDOLL_FEET, set.getInteger("feet", 0));
-		addDefense(Inventory.PAPERDOLL_GLOVES, set.getInteger("gloves", 0));
-		addDefense(Inventory.PAPERDOLL_UNDER, set.getInteger("underwear", 0));
-		addDefense(Inventory.PAPERDOLL_CLOAK, set.getInteger("cloak", 0));
-		addDefense(Inventory.PAPERDOLL_REAR, set.getInteger("rear", 0));
-		addDefense(Inventory.PAPERDOLL_LEAR, set.getInteger("lear", 0));
-		addDefense(Inventory.PAPERDOLL_RFINGER, set.getInteger("rfinger", 0));
-		addDefense(Inventory.PAPERDOLL_LFINGER, set.getInteger("lfinger", 0));
-		addDefense(Inventory.PAPERDOLL_NECK, set.getInteger("neck", 0));
+		addDefense(Inventory.PAPERDOLL_CHEST, set.getInt("chest", 0));
+		addDefense(Inventory.PAPERDOLL_LEGS, set.getInt("legs", 0));
+		addDefense(Inventory.PAPERDOLL_HEAD, set.getInt("head", 0));
+		addDefense(Inventory.PAPERDOLL_FEET, set.getInt("feet", 0));
+		addDefense(Inventory.PAPERDOLL_GLOVES, set.getInt("gloves", 0));
+		addDefense(Inventory.PAPERDOLL_UNDER, set.getInt("underwear", 0));
+		addDefense(Inventory.PAPERDOLL_CLOAK, set.getInt("cloak", 0));
+		addDefense(Inventory.PAPERDOLL_REAR, set.getInt("rear", 0));
+		addDefense(Inventory.PAPERDOLL_LEAR, set.getInt("lear", 0));
+		addDefense(Inventory.PAPERDOLL_RFINGER, set.getInt("rfinger", 0));
+		addDefense(Inventory.PAPERDOLL_LFINGER, set.getInt("lfinger", 0));
+		addDefense(Inventory.PAPERDOLL_NECK, set.getInt("neck", 0));
 	}
 	
 	private void addSpeed(MoveType type, float val)

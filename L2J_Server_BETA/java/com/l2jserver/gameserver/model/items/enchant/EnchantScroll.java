@@ -46,7 +46,7 @@ public final class EnchantScroll extends AbstractEnchantItem
 	public EnchantScroll(StatsSet set)
 	{
 		super(set);
-		_scrollGroupId = set.getInteger("scrollGroupId", 0);
+		_scrollGroupId = set.getInt("scrollGroupId", 0);
 		
 		final L2ItemType type = getItem().getItemType();
 		_isWeapon = (type == L2EtcItemType.ANCIENT_CRYSTAL_ENCHANT_WP) || (type == L2EtcItemType.BLESS_SCRL_ENCHANT_WP) || (type == L2EtcItemType.SCRL_ENCHANT_WP);

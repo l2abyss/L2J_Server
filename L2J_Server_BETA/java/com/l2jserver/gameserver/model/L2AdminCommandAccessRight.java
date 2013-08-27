@@ -32,8 +32,8 @@ public class L2AdminCommandAccessRight
 	public L2AdminCommandAccessRight(StatsSet set)
 	{
 		_adminCommand = set.getString("command");
-		_requireConfirm = set.getBool("confirmDlg", false);
-		_accessLevel = set.getInteger("accessLevel", 7);
+		_requireConfirm = set.getBoolean("confirmDlg", false);
+		_accessLevel = set.getInt("accessLevel", 7);
 	}
 	
 	public L2AdminCommandAccessRight(String command, boolean confirm, int level)

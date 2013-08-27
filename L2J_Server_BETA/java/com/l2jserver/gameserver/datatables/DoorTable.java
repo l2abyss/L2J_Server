@@ -86,7 +86,7 @@ public class DoorTable extends DocumentParser
 							set.set(att.getNodeName(), att.getNodeValue());
 						}
 						makeDoor(set);
-						_templates.put(set.getInteger("id"), set);
+						_templates.put(set.getInt("id"), set);
 					}
 				}
 			}
@@ -98,7 +98,7 @@ public class DoorTable extends DocumentParser
 	public void insertCollisionData(StatsSet set)
 	{
 		int posX, posY, nodeX, nodeY, height;
-		height = set.getInteger("height");
+		height = set.getInt("height");
 		String[] pos = set.getString("node1").split(",");
 		nodeX = Integer.parseInt(pos[0]);
 		nodeY = Integer.parseInt(pos[1]);

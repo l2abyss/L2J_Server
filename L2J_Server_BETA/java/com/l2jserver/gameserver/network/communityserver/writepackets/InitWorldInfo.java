@@ -107,18 +107,18 @@ public final class InitWorldInfo extends BaseWritePacket
 					{
 						break;
 					}
-					super.writeD(p.getInteger("charId"));
+					super.writeD(p.getInt("charId"));
 					super.writeS(p.getString("char_name"));
 					super.writeS(p.getString("account_name"));
-					super.writeD(p.getInteger("level"));
-					super.writeD(p.getInteger("clanid"));
-					super.writeD(p.getInteger("accesslevel"));
-					super.writeC(p.getInteger("online"));
+					super.writeD(p.getInt("level"));
+					super.writeD(p.getInt("clanid"));
+					super.writeD(p.getInt("accesslevel"));
+					super.writeC(p.getInt("online"));
 					FastList<Integer> list = FastList.newInstance();
 					try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 						PreparedStatement statement = con.prepareStatement("SELECT friendId FROM character_friends WHERE charId=?"))
 					{
-						statement.setInt(1, p.getInteger("charId"));
+						statement.setInt(1, p.getInt("charId"));
 						try (ResultSet rset = statement.executeQuery())
 						{
 							while (rset.next())

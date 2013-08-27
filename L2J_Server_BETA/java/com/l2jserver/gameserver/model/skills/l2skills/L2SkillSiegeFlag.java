@@ -49,8 +49,8 @@ public class L2SkillSiegeFlag extends L2Skill
 	public L2SkillSiegeFlag(StatsSet set)
 	{
 		super(set);
-		_isAdvanced = set.getBool("isAdvanced", false);
-		_isOutpost = set.getBool("isOutpost", false);
+		_isAdvanced = set.getBoolean("isAdvanced", false);
+		_isOutpost = set.getBoolean("isOutpost", false);
 	}
 	
 	@Override

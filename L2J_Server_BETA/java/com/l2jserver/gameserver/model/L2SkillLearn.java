@@ -84,14 +84,14 @@ public final class L2SkillLearn
 	public L2SkillLearn(StatsSet set)
 	{
 		_skillName = set.getString("skillName");
-		_skillId = set.getInteger("skillId");
-		_skillLvl = set.getInteger("skillLvl");
-		_getLevel = set.getInteger("getLevel");
-		_autoGet = set.getBool("autoGet", false);
-		_levelUpSp = set.getInteger("levelUpSp", 0);
-		_residenceSkill = set.getBool("residenceSkill", false);
-		_learnedByNpc = set.getBool("learnedByNpc", false);
-		_learnedByFS = set.getBool("learnedByFS", false);
+		_skillId = set.getInt("skillId");
+		_skillLvl = set.getInt("skillLvl");
+		_getLevel = set.getInt("getLevel");
+		_autoGet = set.getBoolean("autoGet", false);
+		_levelUpSp = set.getInt("levelUpSp", 0);
+		_residenceSkill = set.getBoolean("residenceSkill", false);
+		_learnedByNpc = set.getBoolean("learnedByNpc", false);
+		_learnedByFS = set.getBoolean("learnedByFS", false);
 	}
 	
 	/**

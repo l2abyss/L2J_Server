@@ -39,7 +39,7 @@ public class Ingredient
 	
 	public Ingredient(StatsSet set)
 	{
-		this(set.getInteger("id"), set.getLong("count"), set.getBool("isTaxIngredient", false), set.getBool("maintainIngredient", false));
+		this(set.getInt("id"), set.getLong("count"), set.getBoolean("isTaxIngredient", false), set.getBoolean("maintainIngredient", false));
 	}
 	
 	public Ingredient(int itemId, long itemCount, boolean isTaxIngredient, boolean maintainIngredient)

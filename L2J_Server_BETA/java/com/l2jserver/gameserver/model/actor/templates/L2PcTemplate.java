@@ -59,7 +59,7 @@ public class L2PcTemplate extends L2CharTemplate
 	public L2PcTemplate(StatsSet set, List<Location> creationPoints)
 	{
 		super(set);
-		_classId = ClassId.getClassId(set.getInteger("classId"));
+		_classId = ClassId.getClassId(set.getInt("classId"));
 		
 		_baseHp = new float[ExperienceTable.getInstance().getMaxLevel()];
 		_baseMp = new float[ExperienceTable.getInstance().getMaxLevel()];
@@ -69,23 +69,23 @@ public class L2PcTemplate extends L2CharTemplate
 		_baseCpReg = new double[ExperienceTable.getInstance().getMaxLevel()];
 		
 		_baseSlotDef = new HashMap<>(12);
-		_baseSlotDef.put(Inventory.PAPERDOLL_CHEST, set.getInteger("basePDefchest", 0));
-		_baseSlotDef.put(Inventory.PAPERDOLL_LEGS, set.getInteger("basePDeflegs", 0));
-		_baseSlotDef.put(Inventory.PAPERDOLL_HEAD, set.getInteger("basePDefhead", 0));
-		_baseSlotDef.put(Inventory.PAPERDOLL_FEET, set.getInteger("basePDeffeet", 0));
-		_baseSlotDef.put(Inventory.PAPERDOLL_GLOVES, set.getInteger("basePDefgloves", 0));
-		_baseSlotDef.put(Inventory.PAPERDOLL_UNDER, set.getInteger("basePDefunderwear", 0));
-		_baseSlotDef.put(Inventory.PAPERDOLL_CLOAK, set.getInteger("basePDefcloak", 0));
-		_baseSlotDef.put(Inventory.PAPERDOLL_REAR, set.getInteger("baseMDefrear", 0));
-		_baseSlotDef.put(Inventory.PAPERDOLL_LEAR, set.getInteger("baseMDeflear", 0));
-		_baseSlotDef.put(Inventory.PAPERDOLL_RFINGER, set.getInteger("baseMDefrfinger", 0));
-		_baseSlotDef.put(Inventory.PAPERDOLL_LFINGER, set.getInteger("baseMDefrfinger", 0));
-		_baseSlotDef.put(Inventory.PAPERDOLL_NECK, set.getInteger("baseMDefneck", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_CHEST, set.getInt("basePDefchest", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_LEGS, set.getInt("basePDeflegs", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_HEAD, set.getInt("basePDefhead", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_FEET, set.getInt("basePDeffeet", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_GLOVES, set.getInt("basePDefgloves", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_UNDER, set.getInt("basePDefunderwear", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_CLOAK, set.getInt("basePDefcloak", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_REAR, set.getInt("baseMDefrear", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_LEAR, set.getInt("baseMDeflear", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_RFINGER, set.getInt("baseMDefrfinger", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_LFINGER, set.getInt("baseMDefrfinger", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_NECK, set.getInt("baseMDefneck", 0));
 		
 		_fCollisionRadiusFemale = set.getDouble("collisionFemaleradius");
 		_fCollisionHeightFemale = set.getDouble("collisionFemaleheight");
 		
-		_baseSafeFallHeight = set.getInteger("baseSafeFall", 333);
+		_baseSafeFallHeight = set.getInt("baseSafeFall", 333);
 		
 		_initialEquipment = InitialEquipmentData.getInstance().getEquipmentList(_classId);
 		_creationPoints = creationPoints;

@@ -35,16 +35,16 @@ public class L2Seed
 	
 	public L2Seed(StatsSet set)
 	{
-		_cropId = set.getInteger("id");
-		_seedId = set.getInteger("seedId");
-		_level = set.getInteger("level");
-		_matureId = set.getInteger("mature_Id");
-		_reward1 = set.getInteger("reward1");
-		_reward2 = set.getInteger("reward2");
-		_castleId = set.getInteger("castleId");
-		_isAlternative = set.getBool("alternative");
-		_limitCrops = set.getInteger("limit_crops");
-		_limitSeeds = set.getInteger("limit_seed");
+		_cropId = set.getInt("id");
+		_seedId = set.getInt("seedId");
+		_level = set.getInt("level");
+		_matureId = set.getInt("mature_Id");
+		_reward1 = set.getInt("reward1");
+		_reward2 = set.getInt("reward2");
+		_castleId = set.getInt("castleId");
+		_isAlternative = set.getBoolean("alternative");
+		_limitCrops = set.getInt("limit_crops");
+		_limitSeeds = set.getInt("limit_seed");
 	}
 	
 	public int getCastleId()

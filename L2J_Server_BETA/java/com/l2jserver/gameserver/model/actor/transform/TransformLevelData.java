@@ -35,7 +35,7 @@ public final class TransformLevelData
 	
 	public TransformLevelData(StatsSet set)
 	{
-		_level = set.getInteger("val");
+		_level = set.getInt("val");
 		_levelMod = set.getDouble("levelMod");
 		addStats(Stats.MAX_HP, set.getDouble("hp"));
 		addStats(Stats.MAX_MP, set.getDouble("mp"));

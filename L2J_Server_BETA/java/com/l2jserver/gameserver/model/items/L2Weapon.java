@@ -85,11 +85,11 @@ public final class L2Weapon extends L2Item
 		_type = L2WeaponType.valueOf(set.getString("weapon_type", "none").toUpperCase());
 		_type1 = L2Item.TYPE1_WEAPON_RING_EARRING_NECKLACE;
 		_type2 = L2Item.TYPE2_WEAPON;
-		_isMagicWeapon = set.getBool("is_magic_weapon", false);
-		_soulShotCount = set.getInteger("soulshots", 0);
-		_spiritShotCount = set.getInteger("spiritshots", 0);
-		_rndDam = set.getInteger("random_damage", 0);
-		_mpConsume = set.getInteger("mp_consume", 0);
+		_isMagicWeapon = set.getBoolean("is_magic_weapon", false);
+		_soulShotCount = set.getInt("soulshots", 0);
+		_spiritShotCount = set.getInt("spiritshots", 0);
+		_rndDam = set.getInt("random_damage", 0);
+		_mpConsume = set.getInt("mp_consume", 0);
 		
 		String[] reduced_soulshots = set.getString("reduced_soulshot", "").split(",");
 		_reducedSoulshotChance = (reduced_soulshots.length == 2) ? Integer.parseInt(reduced_soulshots[0]) : 0;
@@ -129,7 +129,7 @@ public final class L2Weapon extends L2Item
 		if (skill != null)
 		{
 			String[] info = skill.split("-");
-			final int chance = set.getInteger("onmagic_chance", 100);
+			final int chance = set.getInt("onmagic_chance", 100);
 			if ((info != null) && (info.length == 2))
 			{
 				int id = 0;
@@ -156,7 +156,7 @@ public final class L2Weapon extends L2Item
 		if (skill != null)
 		{
 			String[] info = skill.split("-");
-			final int chance = set.getInteger("oncrit_chance", 100);
+			final int chance = set.getInt("oncrit_chance", 100);
 			if ((info != null) && (info.length == 2))
 			{
 				int id = 0;
@@ -179,10 +179,10 @@ public final class L2Weapon extends L2Item
 			}
 		}
 		
-		_changeWeaponId = set.getInteger("change_weaponId", 0);
-		_isForceEquip = set.getBool("isForceEquip", false);
-		_isAttackWeapon = set.getBool("isAttackWeapon", true);
-		_useWeaponSkillsOnly = set.getBool("useWeaponSkillsOnly", false);
+		_changeWeaponId = set.getInt("change_weaponId", 0);
+		_isForceEquip = set.getBoolean("isForceEquip", false);
+		_isAttackWeapon = set.getBoolean("isAttackWeapon", true);
+		_useWeaponSkillsOnly = set.getBoolean("useWeaponSkillsOnly", false);
 	}
 	
 	/**

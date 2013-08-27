@@ -67,8 +67,8 @@ public class EffectTemplate
 		// _applyCond = applyCond;
 		_lambda = lambda;
 		_name = set.getString("name");
-		_totalTickCount = set.getInteger("ticks", 0);
-		_abnormalTime = set.getInteger("abnormalTime", 0);
+		_totalTickCount = set.getInt("ticks", 0);
+		_abnormalTime = set.getInt("abnormalTime", 0);
 		_abnormalEffect = AbnormalEffect.getByName(set.getString("abnormalVisualEffect", ""));
 		final String[] specialEffects = set.getString("special", "").split(",");
 		_specialEffect = new AbnormalEffect[specialEffects.length];
@@ -77,10 +77,10 @@ public class EffectTemplate
 			_specialEffect[i] = AbnormalEffect.getByName(specialEffects[i]);
 		}
 		_eventEffect = AbnormalEffect.getByName(set.getString("event", ""));
-		_showIcon = set.getInteger("noicon", 0) == 0;
-		_triggeredId = set.getInteger("triggeredId", 0);
-		_triggeredLevel = set.getInteger("triggeredLevel", 1);
-		_chanceCondition = ChanceCondition.parse(set.getString("chanceType", null), set.getInteger("activationChance", -1), set.getInteger("activationMinDamage", -1), set.getString("activationElements", null), set.getString("activationSkills", null), set.getBool("pvpChanceOnly", false));
+		_showIcon = set.getInt("noicon", 0) == 0;
+		_triggeredId = set.getInt("triggeredId", 0);
+		_triggeredLevel = set.getInt("triggeredLevel", 1);
+		_chanceCondition = ChanceCondition.parse(set.getString("chanceType", null), set.getInt("activationChance", -1), set.getInt("activationMinDamage", -1), set.getString("activationElements", null), set.getString("activationSkills", null), set.getBoolean("pvpChanceOnly", false));
 		_parameters = params;
 		_handler = EffectHandler.getInstance().getHandler(_name);
 		if (_handler == null)

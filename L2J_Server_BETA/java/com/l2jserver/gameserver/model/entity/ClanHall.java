@@ -209,9 +209,9 @@ public abstract class ClanHall
 	
 	public ClanHall(StatsSet set)
 	{
-		_clanHallId = set.getInteger("id");
+		_clanHallId = set.getInt("id");
 		_name = set.getString("name");
-		_ownerId = set.getInteger("ownerId");
+		_ownerId = set.getInt("ownerId");
 		_desc = set.getString("desc");
 		_location = set.getString("location");
 		_functions = new FastMap<>();

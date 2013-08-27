@@ -75,8 +75,8 @@ public final class GraciaSeedsManager
 		// Seed of Destruction variables
 		if (GlobalVariablesManager.getInstance().hasVariable("SoDState"))
 		{
-			_SoDState = GlobalVariablesManager.getInstance().getInteger("SoDState");
-			_SoDTiatKilled = GlobalVariablesManager.getInstance().getInteger("SoDTiatKilled");
+			_SoDState = GlobalVariablesManager.getInstance().getInt("SoDState");
+			_SoDTiatKilled = GlobalVariablesManager.getInstance().getInt("SoDTiatKilled");
 			_SoDLastStateChangeDate.setTimeInMillis(GlobalVariablesManager.getInstance().getLong("SoDLSCDate"));
 		}
 		else
