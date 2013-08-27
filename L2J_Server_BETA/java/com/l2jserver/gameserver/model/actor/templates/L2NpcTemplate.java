@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import com.l2jserver.gameserver.datatables.HerbDropTable;
 import com.l2jserver.gameserver.enums.AISkillType;
 import com.l2jserver.gameserver.enums.NpcRace;
+import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.model.L2DropCategory;
 import com.l2jserver.gameserver.model.L2DropData;
 import com.l2jserver.gameserver.model.L2MinionData;
@@ -39,7 +40,6 @@ import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
 /**

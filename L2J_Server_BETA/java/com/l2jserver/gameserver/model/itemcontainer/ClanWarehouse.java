@@ -21,10 +21,10 @@ package com.l2jserver.gameserver.model.itemcontainer;
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.enums.ItemLocation;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarehouseAddItemEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarehouseDeleteItemEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarehouseTransferEvent;

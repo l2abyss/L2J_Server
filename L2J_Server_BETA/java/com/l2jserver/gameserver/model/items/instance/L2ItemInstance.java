@@ -44,6 +44,7 @@ import com.l2jserver.gameserver.datatables.EnchantItemOptionsData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.OptionsData;
 import com.l2jserver.gameserver.enums.InstanceType;
+import com.l2jserver.gameserver.enums.ItemLocation;
 import com.l2jserver.gameserver.enums.ShotType;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.instancemanager.MercTicketManager;
@@ -99,22 +100,6 @@ public final class L2ItemInstance extends L2Object
 	
 	private static FastList<AugmentListener> augmentListeners = new FastList<AugmentListener>().shared();
 	private static FastList<DropListener> dropListeners = new FastList<DropListener>().shared();
-	
-	/** Enumeration of locations for item */
-	public static enum ItemLocation
-	{
-		VOID,
-		INVENTORY,
-		PAPERDOLL,
-		WAREHOUSE,
-		CLANWH,
-		PET,
-		PET_EQUIP,
-		LEASE,
-		REFUND,
-		MAIL,
-		FREIGHT
-	}
 	
 	/** ID of the owner */
 	private int _ownerId;

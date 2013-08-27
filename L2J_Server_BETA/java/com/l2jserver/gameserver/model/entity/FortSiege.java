@@ -34,6 +34,7 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.enums.FortTeleportWhoType;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeGuardManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
@@ -65,13 +66,6 @@ public class FortSiege implements Siegable
 	protected static final Logger _log = Logger.getLogger(FortSiege.class.getName());
 	
 	private static FastList<FortSiegeListener> fortSiegeListeners = new FastList<FortSiegeListener>().shared();
-	
-	public static enum TeleportWhoType
-	{
-		All,
-		Attacker,
-		Owner,
-	}
 	
 	// SQL
 	private static final String DELETE_FORT_SIEGECLANS_BY_CLAN_ID = "DELETE FROM fortsiege_clans WHERE fort_id = ? AND clan_id = ?";
@@ -344,7 +338,7 @@ public class FortSiege implements Siegable
 			
 			loadSiegeClan(); // Load siege clan from db
 			updatePlayerSiegeStateFlags(false);
-			teleportPlayer(FortSiege.TeleportWhoType.Attacker, TeleportWhereType.TOWN); // Teleport to the closest town
+			teleportPlayer(FortTeleportWhoType.Attacker, TeleportWhereType.TOWN); // Teleport to the closest town
 			
 			getFort().despawnNpcCommanders(); // Despawn NPC commanders
 			spawnCommanders(); // Spawn commanders
@@ -908,7 +902,7 @@ public class FortSiege implements Siegable
 	 * @param teleportWho
 	 * @param teleportWhere
 	 */
-	public void teleportPlayer(TeleportWhoType teleportWho, TeleportWhereType teleportWhere)
+	public void teleportPlayer(FortTeleportWhoType teleportWho, TeleportWhereType teleportWhere)
 	{
 		List<L2PcInstance> players;
 		switch (teleportWho)

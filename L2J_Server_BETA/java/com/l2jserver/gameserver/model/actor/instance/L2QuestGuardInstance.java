@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.enums.InstanceType;
+import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -48,9 +49,9 @@ public final class L2QuestGuardInstance extends L2GuardInstance
 		
 		if (attacker instanceof L2Attackable)
 		{
-			if (getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK) != null)
+			if (getTemplate().getEventQuests(QuestEventType.ON_ATTACK) != null)
 			{
-				for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK))
+				for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_ATTACK))
 				{
 					quest.notifyAttack(this, null, damage, false, skill);
 				}
@@ -69,9 +70,9 @@ public final class L2QuestGuardInstance extends L2GuardInstance
 		
 		if (killer instanceof L2Attackable)
 		{
-			if (getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL) != null)
+			if (getTemplate().getEventQuests(QuestEventType.ON_KILL) != null)
 			{
-				for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL))
+				for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_KILL))
 				{
 					ThreadPoolManager.getInstance().scheduleEffect(new OnKillNotifyTask(this, quest, null, false), _onKillDelay);
 				}

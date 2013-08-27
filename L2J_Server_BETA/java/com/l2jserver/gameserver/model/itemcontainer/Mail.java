@@ -24,10 +24,10 @@ import java.sql.ResultSet;
 import java.util.logging.Level;
 
 import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.gameserver.enums.ItemLocation;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 
 /**
  * @author DS

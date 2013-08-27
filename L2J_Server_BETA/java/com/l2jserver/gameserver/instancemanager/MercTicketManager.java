@@ -30,6 +30,7 @@ import javolution.util.FastList;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.enums.ItemLocation;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
@@ -191,7 +192,7 @@ public final class MercTicketManager
 							itemId = ITEM_IDS[i];
 							// create the ticket in the gameworld
 							L2ItemInstance dropticket = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
-							dropticket.setItemLocation(L2ItemInstance.ItemLocation.VOID);
+							dropticket.setItemLocation(ItemLocation.VOID);
 							dropticket.dropMe(null, x, y, z);
 							dropticket.setDropTime(0); // avoids it from being removed by the auto item destroyer
 							L2World.getInstance().storeObject(dropticket);
@@ -335,7 +336,7 @@ public final class MercTicketManager
 				
 				// create the ticket in the gameworld
 				L2ItemInstance dropticket = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
-				dropticket.setItemLocation(L2ItemInstance.ItemLocation.VOID);
+				dropticket.setItemLocation(ItemLocation.VOID);
 				dropticket.dropMe(null, x, y, z);
 				dropticket.setDropTime(0); // avoids it from beeing removed by the auto item destroyer
 				L2World.getInstance().storeObject(dropticket); // add to the world

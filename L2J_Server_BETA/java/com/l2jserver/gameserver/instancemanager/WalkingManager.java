@@ -29,6 +29,7 @@ import org.w3c.dom.Node;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.engines.DocumentParser;
+import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.instancemanager.tasks.StartMovingTask;
 import com.l2jserver.gameserver.model.L2NpcWalkerNode;
 import com.l2jserver.gameserver.model.L2WalkRoute;
@@ -410,9 +411,9 @@ public final class WalkingManager extends DocumentParser
 		if (_activeRoutes.containsKey(npc.getObjectId()))
 		{
 			// Notify quest
-			if (npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_NODE_ARRIVED) != null)
+			if (npc.getTemplate().getEventQuests(QuestEventType.ON_NODE_ARRIVED) != null)
 			{
-				for (Quest quest : npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_NODE_ARRIVED))
+				for (Quest quest : npc.getTemplate().getEventQuests(QuestEventType.ON_NODE_ARRIVED))
 				{
 					quest.notifyNodeArrived(npc);
 				}

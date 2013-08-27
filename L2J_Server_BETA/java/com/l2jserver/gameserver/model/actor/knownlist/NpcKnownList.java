@@ -25,6 +25,7 @@ import java.util.concurrent.ScheduledFuture;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.enums.InstanceType;
+import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
@@ -54,7 +55,7 @@ public class NpcKnownList extends CharKnownList
 		if (getActiveObject().isNpc() && (object instanceof L2Character))
 		{
 			final L2Npc npc = (L2Npc) getActiveObject();
-			final List<Quest> quests = npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_SEE_CREATURE);
+			final List<Quest> quests = npc.getTemplate().getEventQuests(QuestEventType.ON_SEE_CREATURE);
 			if (quests != null)
 			{
 				for (Quest quest : quests)

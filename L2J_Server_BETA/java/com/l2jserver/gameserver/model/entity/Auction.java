@@ -34,6 +34,7 @@ import javolution.util.FastMap;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.enums.AuctionItemType;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.AuctionManager;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
@@ -67,11 +68,6 @@ public class Auction
 	{
 		"ClanHall"
 	};
-	
-	public static enum ItemTypeEnum
-	{
-		ClanHall
-	}
 	
 	public static class Bidder
 	{
@@ -244,7 +240,7 @@ public class Auction
 		ThreadPoolManager.getInstance().scheduleGeneral(new AutoEndTask(), taskDelay);
 	}
 	
-	public static String getItemTypeName(ItemTypeEnum value)
+	public static String getItemTypeName(AuctionItemType value)
 	{
 		return ItemTypeName[value.ordinal()];
 	}

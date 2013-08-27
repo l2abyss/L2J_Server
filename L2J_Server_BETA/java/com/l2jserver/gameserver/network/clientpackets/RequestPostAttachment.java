@@ -22,13 +22,13 @@ import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.enums.ItemLocation;
 import com.l2jserver.gameserver.instancemanager.MailManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Message;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExChangePostState;

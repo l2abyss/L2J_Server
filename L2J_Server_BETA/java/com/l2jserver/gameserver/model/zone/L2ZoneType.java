@@ -28,13 +28,13 @@ import java.util.logging.Logger;
 import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.enums.InstanceType;
+import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 /**
@@ -437,7 +437,7 @@ public abstract class L2ZoneType
 			// Was the character not yet inside this zone?
 			if (!_characterList.containsKey(character.getObjectId()))
 			{
-				List<Quest> quests = getQuestByEvent(Quest.QuestEventType.ON_ENTER_ZONE);
+				List<Quest> quests = getQuestByEvent(QuestEventType.ON_ENTER_ZONE);
 				if (quests != null)
 				{
 					for (Quest quest : quests)
@@ -454,7 +454,7 @@ public abstract class L2ZoneType
 			// Was the character inside this zone?
 			if (_characterList.containsKey(character.getObjectId()))
 			{
-				List<Quest> quests = getQuestByEvent(Quest.QuestEventType.ON_EXIT_ZONE);
+				List<Quest> quests = getQuestByEvent(QuestEventType.ON_EXIT_ZONE);
 				if (quests != null)
 				{
 					for (Quest quest : quests)
@@ -476,7 +476,7 @@ public abstract class L2ZoneType
 	{
 		if (_characterList.containsKey(character.getObjectId()))
 		{
-			List<Quest> quests = getQuestByEvent(Quest.QuestEventType.ON_EXIT_ZONE);
+			List<Quest> quests = getQuestByEvent(QuestEventType.ON_EXIT_ZONE);
 			if (quests != null)
 			{
 				for (Quest quest : quests)
@@ -545,7 +545,7 @@ public abstract class L2ZoneType
 		return players;
 	}
 	
-	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)
+	public void addQuestEvent(QuestEventType EventType, Quest q)
 	{
 		if (_questEvents == null)
 		{
@@ -563,7 +563,7 @@ public abstract class L2ZoneType
 		_questEvents.put(EventType, questByEvents);
 	}
 	
-	public List<Quest> getQuestByEvent(Quest.QuestEventType EventType)
+	public List<Quest> getQuestByEvent(QuestEventType EventType)
 	{
 		if (_questEvents == null)
 		{

@@ -23,10 +23,10 @@ import java.util.List;
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.enums.ItemLocation;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 
 public class ItemsAutoDestroy

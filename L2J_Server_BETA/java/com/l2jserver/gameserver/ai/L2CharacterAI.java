@@ -36,6 +36,8 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.enums.ItemLocation;
+import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.Location;
@@ -50,7 +52,6 @@ import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.L2Skill;
@@ -748,9 +749,9 @@ public class L2CharacterAI extends AbstractAI
 			WalkingManager.getInstance().onArrived(npc); // Walking Manager support
 			
 			// Notify quest
-			if (npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_MOVE_FINISHED) != null)
+			if (npc.getTemplate().getEventQuests(QuestEventType.ON_MOVE_FINISHED) != null)
 			{
-				for (Quest quest : npc.getTemplate().getEventQuests(Quest.QuestEventType.ON_MOVE_FINISHED))
+				for (Quest quest : npc.getTemplate().getEventQuests(QuestEventType.ON_MOVE_FINISHED))
 				{
 					quest.notifyMoveFinished(npc);
 				}

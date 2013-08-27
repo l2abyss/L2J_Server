@@ -28,6 +28,7 @@ import javolution.util.FastMap;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.RecipeData;
+import com.l2jserver.gameserver.enums.StatType;
 import com.l2jserver.gameserver.model.L2ManufactureItem;
 import com.l2jserver.gameserver.model.L2RecipeInstance;
 import com.l2jserver.gameserver.model.L2RecipeList;
@@ -512,15 +513,15 @@ public class RecipeController
 			
 			for (L2RecipeStatInstance altStatChange : _recipeList.getAltStatChange())
 			{
-				if (altStatChange.getType() == L2RecipeStatInstance.StatType.XP)
+				if (altStatChange.getType() == StatType.XP)
 				{
 					_exp = altStatChange.getValue();
 				}
-				else if (altStatChange.getType() == L2RecipeStatInstance.StatType.SP)
+				else if (altStatChange.getType() == StatType.SP)
 				{
 					_sp = altStatChange.getValue();
 				}
-				else if (altStatChange.getType() == L2RecipeStatInstance.StatType.GIM)
+				else if (altStatChange.getType() == StatType.GIM)
 				{
 					_itemGrab *= altStatChange.getValue();
 				}
@@ -540,7 +541,7 @@ public class RecipeController
 			for (L2RecipeStatInstance statUse : _recipeList.getStatUse())
 			{
 				double modifiedValue = statUse.getValue() / _creationPasses;
-				if (statUse.getType() == L2RecipeStatInstance.StatType.HP)
+				if (statUse.getType() == StatType.HP)
 				{
 					// we do not want to kill the player, so its CurrentHP must be greater than the reduce value
 					if (_player.getCurrentHp() <= modifiedValue)
@@ -563,7 +564,7 @@ public class RecipeController
 						_player.reduceCurrentHp(modifiedValue, _player, _skill);
 					}
 				}
-				else if (statUse.getType() == L2RecipeStatInstance.StatType.MP)
+				else if (statUse.getType() == StatType.MP)
 				{
 					if (_player.getCurrentMp() < modifiedValue)
 					{

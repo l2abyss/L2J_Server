@@ -41,6 +41,7 @@ import com.l2jserver.gameserver.datatables.HerbDropTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.enums.InstanceType;
+import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.model.L2CommandChannel;
@@ -551,9 +552,9 @@ public class L2Attackable extends L2Npc
 			
 			if (player != null)
 			{
-				if (getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL) != null)
+				if (getTemplate().getEventQuests(QuestEventType.ON_KILL) != null)
 				{
-					for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL))
+					for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_KILL))
 					{
 						ThreadPoolManager.getInstance().scheduleEffect(new OnKillNotifyTask(this, quest, player, (killer != null) && killer.isSummon()), _onKillDelay);
 					}
@@ -893,9 +894,9 @@ public class L2Attackable extends L2Npc
 				L2PcInstance player = attacker.getActingPlayer();
 				if (player != null)
 				{
-					if (getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK) != null)
+					if (getTemplate().getEventQuests(QuestEventType.ON_ATTACK) != null)
 					{
-						for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK))
+						for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_ATTACK))
 						{
 							quest.notifyAttack(this, player, damage, attacker.isSummon(), skill);
 						}
@@ -947,9 +948,9 @@ public class L2Attackable extends L2Npc
 		
 		if ((targetPlayer != null) && (aggro == 0))
 		{
-			if (getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER) != null)
+			if (getTemplate().getEventQuests(QuestEventType.ON_AGGRO_RANGE_ENTER) != null)
 			{
-				for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_AGGRO_RANGE_ENTER))
+				for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_AGGRO_RANGE_ENTER))
 				{
 					quest.notifyAggroRangeEnter(this, targetPlayer, attacker.isSummon());
 				}
