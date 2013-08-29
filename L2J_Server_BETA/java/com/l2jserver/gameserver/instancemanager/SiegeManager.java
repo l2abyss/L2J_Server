@@ -43,7 +43,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Siege;
 import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.util.L2Properties;
+import com.l2jserver.util.PropertiesParser;
 
 public final class SiegeManager
 {
@@ -162,35 +162,29 @@ public final class SiegeManager
 	
 	private final void load()
 	{
-		final L2Properties siegeSettings = new L2Properties();
-		try
-		{
-			siegeSettings.load(Config.SIEGE_CONFIGURATION_FILE);
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while loading Siege settings!", e);
-		}
+		final PropertiesParser siegeSettings = new PropertiesParser(Config.SIEGE_CONFIGURATION_FILE);
 		
 		// Siege setting
-		_attackerMaxClans = Integer.parseInt(siegeSettings.getProperty("AttackerMaxClans", "500"));
-		_attackerRespawnDelay = Integer.parseInt(siegeSettings.getProperty("AttackerRespawn", "0"));
-		_defenderMaxClans = Integer.parseInt(siegeSettings.getProperty("DefenderMaxClans", "500"));
-		_flagMaxCount = Integer.parseInt(siegeSettings.getProperty("MaxFlags", "1"));
-		_siegeClanMinLevel = Integer.parseInt(siegeSettings.getProperty("SiegeClanMinLevel", "5"));
-		_siegeLength = Integer.parseInt(siegeSettings.getProperty("SiegeLength", "120"));
-		_bloodAllianceReward = Integer.parseInt(siegeSettings.getProperty("BloodAllianceReward", "0"));
+		_attackerMaxClans = siegeSettings.getInt("AttackerMaxClans", 500);
+		_attackerRespawnDelay = siegeSettings.getInt("AttackerRespawn", 0);
+		_defenderMaxClans = siegeSettings.getInt("DefenderMaxClans", 500);
+		_flagMaxCount = siegeSettings.getInt("MaxFlags", 1);
+		_siegeClanMinLevel = siegeSettings.getInt("SiegeClanMinLevel", 5);
+		_siegeLength = siegeSettings.getInt("SiegeLength", 120);
+		_bloodAllianceReward = siegeSettings.getInt("BloodAllianceReward", 0);
 		
 		for (Castle castle : CastleManager.getInstance().getCastles())
 		{
 			final List<TowerSpawn> controlTowers = new ArrayList<>();
 			for (int i = 1; i < 0xFF; i++)
 			{
-				if (!siegeSettings.containsKey(castle.getName() + "ControlTower" + i))
+				final String settingsKeyName = castle.getName() + "ControlTower" + i;
+				if (!siegeSettings.containskey(settingsKeyName))
 				{
 					break;
 				}
-				final StringTokenizer st = new StringTokenizer(siegeSettings.getProperty(castle.getName() + "ControlTower" + i).trim(), ",");
+				
+				final StringTokenizer st = new StringTokenizer(siegeSettings.getString(settingsKeyName, ""), ",");
 				try
 				{
 					final int x = Integer.parseInt(st.nextToken());
@@ -209,11 +203,13 @@ public final class SiegeManager
 			final List<TowerSpawn> flameTowers = new ArrayList<>();
 			for (int i = 1; i < 0xFF; i++)
 			{
-				if (!siegeSettings.containsKey(castle.getName() + "FlameTower" + i))
+				final String settingsKeyName = castle.getName() + "FlameTower" + i;
+				if (!siegeSettings.containskey(settingsKeyName))
 				{
 					break;
 				}
-				final StringTokenizer st = new StringTokenizer(siegeSettings.getProperty(castle.getName() + "FlameTower" + i).trim(), ",");
+				
+				final StringTokenizer st = new StringTokenizer(siegeSettings.getString(settingsKeyName, ""), ",");
 				try
 				{
 					final int x = Integer.parseInt(st.nextToken());
@@ -236,7 +232,7 @@ public final class SiegeManager
 			}
 			_controlTowers.put(castle.getCastleId(), controlTowers);
 			_flameTowers.put(castle.getCastleId(), flameTowers);
-			MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getCastleId() - 1] = Integer.parseInt(siegeSettings.getProperty(castle.getName() + "MaxMercenaries", Integer.toString(MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getCastleId() - 1])).trim());
+			MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getCastleId() - 1] = siegeSettings.getInt(castle.getName() + "MaxMercenaries", MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getCastleId() - 1]);
 			
 			if (castle.getOwnerId() != 0)
 			{

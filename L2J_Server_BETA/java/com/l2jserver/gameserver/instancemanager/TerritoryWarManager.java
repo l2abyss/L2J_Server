@@ -18,10 +18,6 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -67,7 +63,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
-import com.l2jserver.util.L2Properties;
+import com.l2jserver.util.PropertiesParser;
 
 public final class TerritoryWarManager implements Siegable
 {
@@ -838,28 +834,20 @@ public final class TerritoryWarManager implements Siegable
 	
 	private final void load()
 	{
-		L2Properties territoryWarSettings = new L2Properties();
-		try (InputStream is = new FileInputStream(new File(Config.TW_CONFIGURATION_FILE)))
-		{
-			territoryWarSettings.load(is);
-		}
-		catch (IOException e)
-		{
-			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while loading Territory War Manager settings!", e);
-		}
+		final PropertiesParser territoryWarSettings = new PropertiesParser(Config.TW_CONFIGURATION_FILE);
 		
 		// Siege setting
-		DEFENDERMAXCLANS = Integer.decode(territoryWarSettings.getProperty("DefenderMaxClans", "500"));
-		DEFENDERMAXPLAYERS = Integer.decode(territoryWarSettings.getProperty("DefenderMaxPlayers", "500"));
-		CLANMINLEVEL = Integer.decode(territoryWarSettings.getProperty("ClanMinLevel", "0"));
-		PLAYERMINLEVEL = Integer.decode(territoryWarSettings.getProperty("PlayerMinLevel", "40"));
-		WARLENGTH = Long.decode(territoryWarSettings.getProperty("WarLength", "120")) * 60000;
-		PLAYER_WITH_WARD_CAN_BE_KILLED_IN_PEACEZONE = Boolean.parseBoolean(territoryWarSettings.getProperty("PlayerWithWardCanBeKilledInPeaceZone", "False"));
-		SPAWN_WARDS_WHEN_TW_IS_NOT_IN_PROGRESS = Boolean.parseBoolean(territoryWarSettings.getProperty("SpawnWardsWhenTWIsNotInProgress", "False"));
-		RETURN_WARDS_WHEN_TW_STARTS = Boolean.parseBoolean(territoryWarSettings.getProperty("ReturnWardsWhenTWStarts", "False"));
-		MINTWBADGEFORNOBLESS = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForNobless", "100"));
-		MINTWBADGEFORSTRIDERS = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForStriders", "50"));
-		MINTWBADGEFORBIGSTRIDER = Integer.decode(territoryWarSettings.getProperty("MinTerritoryBadgeForBigStrider", "80"));
+		DEFENDERMAXCLANS = territoryWarSettings.getInt("DefenderMaxClans", 500);
+		DEFENDERMAXPLAYERS = territoryWarSettings.getInt("DefenderMaxPlayers", 500);
+		CLANMINLEVEL = territoryWarSettings.getInt("ClanMinLevel", 0);
+		PLAYERMINLEVEL = territoryWarSettings.getInt("PlayerMinLevel", 40);
+		WARLENGTH = territoryWarSettings.getLong("WarLength", 120) * 60000;
+		PLAYER_WITH_WARD_CAN_BE_KILLED_IN_PEACEZONE = territoryWarSettings.getBoolean("PlayerWithWardCanBeKilledInPeaceZone", false);
+		SPAWN_WARDS_WHEN_TW_IS_NOT_IN_PROGRESS = territoryWarSettings.getBoolean("SpawnWardsWhenTWIsNotInProgress", false);
+		RETURN_WARDS_WHEN_TW_STARTS = territoryWarSettings.getBoolean("ReturnWardsWhenTWStarts", false);
+		MINTWBADGEFORNOBLESS = territoryWarSettings.getInt("MinTerritoryBadgeForNobless", 100);
+		MINTWBADGEFORSTRIDERS = territoryWarSettings.getInt("MinTerritoryBadgeForStriders", 50);
+		MINTWBADGEFORBIGSTRIDER = territoryWarSettings.getInt("MinTerritoryBadgeForBigStrider", 80);
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			Statement s = con.createStatement();
