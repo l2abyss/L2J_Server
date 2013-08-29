@@ -2343,7 +2343,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 		QuestState qs = player.getQuestState(getName());
 		if (!player.isInParty())
 		{
-			if (!checkPartyMemberConditions(qs, condition))
+			if (!checkPartyMemberConditions(qs, condition, target))
 			{
 				return null;
 			}
@@ -2355,7 +2355,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 		}
 		
 		final List<QuestState> candidates = new ArrayList<>();
-		if (checkPartyMemberConditions(qs, condition) && (playerChance > 0))
+		if (checkPartyMemberConditions(qs, condition, target) && (playerChance > 0))
 		{
 			for (int i = 0; i < playerChance; i++)
 			{
@@ -2371,7 +2371,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 			}
 			
 			qs = member.getQuestState(getName());
-			if (checkPartyMemberConditions(qs, condition))
+			if (checkPartyMemberConditions(qs, condition, target))
 			{
 				candidates.add(qs);
 			}
@@ -2390,14 +2390,28 @@ public class Quest extends ManagedScript implements IIdentifiable
 		return qs;
 	}
 	
-	private static boolean checkPartyMemberConditions(QuestState qs, int condition)
+	private boolean checkPartyMemberConditions(QuestState qs, int condition, L2Npc npc)
 	{
-		return ((qs != null) && ((condition == -1) ? qs.isStarted() : qs.isCond(condition)));
+		return ((qs != null) && ((condition == -1) ? qs.isStarted() : qs.isCond(condition)) && checkPartyMember(qs, npc));
 	}
 	
 	private static boolean checkDistanceToTarget(L2PcInstance player, L2Npc target)
 	{
 		return ((target == null) || com.l2jserver.gameserver.util.Util.checkIfInRange(1500, player, target, true));
+	}
+	
+	/**
+	 * This method is called for every party member in {@link #getRandomPartyMemberState(L2PcInstance, int, int, L2Npc)} if/after all the standard checks are passed.<br>
+	 * It is intended to be overriden by the specific quest implementations.<br>
+	 * It can be used in cases when there are more checks performed than simply a quest condition check,<br>
+	 * for example, if an item is required in the player's inventory.
+	 * @param qs the {@link QuestState} object of the party member
+	 * @param npc the NPC that was passed as the last parameter to {@link #getRandomPartyMemberState(L2PcInstance, int, int, L2Npc)}
+	 * @return {@code true} if this party member passes the check, {@code false} otherwise
+	 */
+	public boolean checkPartyMember(QuestState qs, L2Npc npc)
+	{
+		return true;
 	}
 	
 	/**
