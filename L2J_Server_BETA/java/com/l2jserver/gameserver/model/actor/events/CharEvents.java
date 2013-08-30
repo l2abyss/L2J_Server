@@ -160,7 +160,7 @@ public class CharEvents extends AbstractCharEvents
 						continue;
 					}
 					
-					if (!listener.onDeath(getActingPlayer(), killer))
+					if (!listener.onDeath(killer, getActingPlayer()))
 					{
 						return false;
 					}
