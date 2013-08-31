@@ -72,7 +72,7 @@ public class SummonSkillsTable
 					}
 					ps2.clearParameters();
 					count += map.size();
-					_log.fine(getClass().getSimpleName() + ": skill tree for pet " + npcId + " has " + map.size() + " skills");
+					_log.info(getClass().getSimpleName() + ": skill tree for pet " + npcId + " has " + map.size() + " skills.");
 				}
 			}
 		}

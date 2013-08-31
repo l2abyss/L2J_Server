@@ -1318,8 +1318,8 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 							}
 						}
 					}
-				}
 					break;
+				}
 			}
 		}
 		

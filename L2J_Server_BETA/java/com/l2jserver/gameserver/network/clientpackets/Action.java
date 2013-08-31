@@ -55,7 +55,7 @@ public final class Action extends L2GameClientPacket
 	{
 		if (Config.DEBUG)
 		{
-			_log.fine(getType() + ": Action: " + _actionId + " ObjId: " + _objectId + " orignX: " + _originX + " orignY: " + _originY + " orignZ: " + _originZ);
+			_log.info(getType() + ": " + (_actionId == 0 ? "Simple-click" : "Shift-click") + " Target object ID: " + _objectId + " orignX: " + _originX + " orignY: " + _originY + " orignZ: " + _originZ);
 		}
 		
 		// Get the current L2PcInstance of the player

@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.instancemanager.RaidBossPointsManager;
 import com.l2jserver.gameserver.instancemanager.RaidBossSpawnManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -83,16 +82,7 @@ public class L2RaidBossInstance extends L2MonsterInstance
 			return false;
 		}
 		
-		L2PcInstance player = null;
-		if (killer instanceof L2PcInstance)
-		{
-			player = (L2PcInstance) killer;
-		}
-		else if (killer instanceof L2Summon)
-		{
-			player = ((L2Summon) killer).getOwner();
-		}
-		
+		final L2PcInstance player = killer.getActingPlayer();
 		if (player != null)
 		{
 			broadcastPacket(SystemMessage.getSystemMessage(SystemMessageId.RAID_WAS_SUCCESSFUL));

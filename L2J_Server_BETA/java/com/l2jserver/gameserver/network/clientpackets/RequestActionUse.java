@@ -93,7 +93,7 @@ public final class RequestActionUse extends L2GameClientPacket
 		
 		if (Config.DEBUG)
 		{
-			_log.finest(activeChar + " requested action use Id: " + _actionId + " Ctrl pressed:" + _ctrlPressed + " Shift pressed:" + _shiftPressed);
+			_log.info(getType() + ": " + activeChar + " requested action use ID: " + _actionId + " Ctrl pressed:" + _ctrlPressed + " Shift pressed:" + _shiftPressed);
 		}
 		
 		// Don't do anything if player is dead or confused

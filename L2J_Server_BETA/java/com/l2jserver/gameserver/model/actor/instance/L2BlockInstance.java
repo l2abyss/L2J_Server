@@ -117,12 +117,6 @@ public class L2BlockInstance extends L2MonsterInstance
 	}
 	
 	@Override
-	public boolean isAttackable()
-	{
-		return true;
-	}
-	
-	@Override
 	public boolean doDie(L2Character killer)
 	{
 		return false;

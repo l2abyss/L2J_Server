@@ -619,7 +619,7 @@ public class L2PetInstance extends L2Summon
 			IItemHandler handler = ItemHandler.getInstance().getHandler(target.getEtcItem());
 			if (handler == null)
 			{
-				_log.fine("No item handler registered for item ID " + target.getId() + ".");
+				_log.warning("No item handler registered for item ID: " + target.getId() + ".");
 			}
 			else
 			{

@@ -153,7 +153,7 @@ public class ClanTable
 		
 		if (Config.DEBUG)
 		{
-			_log.fine(getClass().getSimpleName() + ": " + player.getObjectId() + "(" + player.getName() + ") requested a clan creation.");
+			_log.info(getClass().getSimpleName() + ": " + player.getObjectId() + "(" + player.getName() + ") requested a clan creation.");
 		}
 		
 		if (10 > player.getLevel())

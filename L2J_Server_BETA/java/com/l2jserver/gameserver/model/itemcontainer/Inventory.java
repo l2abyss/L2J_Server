@@ -1261,7 +1261,7 @@ public abstract class Inventory extends ItemContainer
 	{
 		if (Config.DEBUG)
 		{
-			_log.fine("--- unequip body slot:" + slot);
+			_log.info(Inventory.class.getSimpleName() + ": Unequip body slot:" + slot);
 		}
 		
 		int pdollSlot = -1;

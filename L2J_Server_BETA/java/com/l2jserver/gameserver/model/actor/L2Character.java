@@ -6570,10 +6570,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				return true;
 			}
 		}
-		else
-		{
-			_log.fine("isBehindTarget's target not an L2 Character.");
-		}
 		return false;
 	}
 	

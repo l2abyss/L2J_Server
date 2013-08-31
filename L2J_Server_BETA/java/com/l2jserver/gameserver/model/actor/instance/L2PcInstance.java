@@ -4867,7 +4867,7 @@ public final class L2PcInstance extends L2Playable
 			IItemHandler handler = ItemHandler.getInstance().getHandler(target.getEtcItem());
 			if (handler == null)
 			{
-				_log.fine("No item handler registered for item ID " + target.getId() + ".");
+				_log.warning("No item handler registered for item ID: " + target.getId() + ".");
 			}
 			else
 			{
