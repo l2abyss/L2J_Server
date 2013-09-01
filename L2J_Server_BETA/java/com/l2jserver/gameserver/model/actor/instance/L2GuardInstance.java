@@ -220,8 +220,9 @@ public class L2GuardInstance extends L2Attackable
 				{
 					// Send a Server->Client packet SocialAction to the all L2PcInstance on the _knownPlayer of the L2NpcInstance
 					// to display a social action of the L2GuardInstance on their client
-					SocialAction sa = new SocialAction(getObjectId(), Rnd.nextInt(8));
-					broadcastPacket(sa);
+					broadcastPacket(new SocialAction(getObjectId(), Rnd.nextInt(8)));
+					
+					player.setLastFolkNPC(this);
 					
 					// Open a chat window on client with the text of the L2GuardInstance
 					List<Quest> qlsa = getTemplate().getEventQuests(QuestEventType.QUEST_START);
