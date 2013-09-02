@@ -19,7 +19,9 @@
 package com.l2jserver.gameserver.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -177,6 +179,18 @@ public final class L2World
 	public Collection<L2PcInstance> getPlayers()
 	{
 		return _allPlayers.values();
+	}
+	
+	/**
+	 * Gets all players sorted by the given comparator.
+	 * @param comparator the comparator
+	 * @return the players sorted by the comparator
+	 */
+	public L2PcInstance[] getPlayersSortedBy(Comparator<L2PcInstance> comparator)
+	{
+		final L2PcInstance[] players = _allPlayers.values().toArray(new L2PcInstance[_allPlayers.values().size()]);
+		Arrays.sort(players, comparator);
+		return players;
 	}
 	
 	public boolean forEachPlayer(IL2Procedure<L2PcInstance> procedure)
