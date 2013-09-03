@@ -554,6 +554,12 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 				ps.execute();
 			}
 			
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_variables WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
+			
 			try (PreparedStatement ps = con.prepareStatement("DELETE FROM characters WHERE charId=?"))
 			{
 				ps.setInt(1, objid);
