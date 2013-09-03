@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.model.entity;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,7 +63,7 @@ public class Duel
 	private int _countdown = 4;
 	private boolean _finished = false;
 	
-	private FastList<PlayerCondition> _playerConditions;
+	private List<PlayerCondition> _playerConditions;
 	
 	public Duel(L2PcInstance playerA, L2PcInstance playerB, int partyDuel, int duelId)
 	{
@@ -489,9 +490,9 @@ public class Duel
 		}
 		
 		// restore player conditions
-		for (FastList.Node<PlayerCondition> e = _playerConditions.head(), end = _playerConditions.tail(); (e = e.getNext()) != end;)
+		for (PlayerCondition cond : _playerConditions)
 		{
-			e.getValue().restoreCondition();
+			cond.restoreCondition();
 		}
 	}
 	
@@ -1021,10 +1022,10 @@ public class Duel
 		// if hes either playerA or playerB cancel the duel and port the players back
 		if ((player == _playerA) || (player == _playerB))
 		{
-			for (FastList.Node<PlayerCondition> e = _playerConditions.head(), end = _playerConditions.tail(); (e = e.getNext()) != end;)
+			for (PlayerCondition cond : _playerConditions)
 			{
-				e.getValue().teleportBack();
-				e.getValue().getPlayer().setIsInDuel(0);
+				cond.teleportBack();
+				cond.getPlayer().setIsInDuel(0);
 			}
 			
 			_playerA = null;
@@ -1033,12 +1034,12 @@ public class Duel
 		else
 		// teleport the player back & delete his PlayerCondition record
 		{
-			for (FastList.Node<PlayerCondition> e = _playerConditions.head(), end = _playerConditions.tail(); (e = e.getNext()) != end;)
+			for (PlayerCondition cond : _playerConditions)
 			{
-				if (e.getValue().getPlayer() == player)
+				if (cond.getPlayer() == player)
 				{
-					e.getValue().teleportBack();
-					_playerConditions.remove(e.getValue());
+					cond.teleportBack();
+					_playerConditions.remove(cond);
 					break;
 				}
 			}
@@ -1048,11 +1049,11 @@ public class Duel
 	
 	public void onBuff(L2PcInstance player, L2Effect debuff)
 	{
-		for (FastList.Node<PlayerCondition> e = _playerConditions.head(), end = _playerConditions.tail(); (e = e.getNext()) != end;)
+		for (PlayerCondition cond : _playerConditions)
 		{
-			if (e.getValue().getPlayer() == player)
+			if (cond.getPlayer() == player)
 			{
-				e.getValue().registerDebuff(debuff);
+				cond.registerDebuff(debuff);
 				return;
 			}
 		}

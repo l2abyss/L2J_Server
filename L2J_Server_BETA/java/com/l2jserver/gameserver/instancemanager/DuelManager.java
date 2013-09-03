@@ -18,6 +18,8 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
+import java.util.List;
+
 import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -27,7 +29,7 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 public final class DuelManager
 {
-	private final FastList<Duel> _duels;
+	private final List<Duel> _duels;
 	private int _currentDuelId = 0x90;
 	
 	protected DuelManager()
@@ -47,11 +49,11 @@ public final class DuelManager
 	
 	public Duel getDuel(int duelId)
 	{
-		for (FastList.Node<Duel> e = _duels.head(), end = _duels.tail(); (e = e.getNext()) != end;)
+		for (Duel duel : _duels)
 		{
-			if (e.getValue().getId() == duelId)
+			if (duel.getId() == duelId)
 			{
-				return e.getValue();
+				return duel;
 			}
 		}
 		return null;
