@@ -18,32 +18,27 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.enums.BypassScope;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.enums.HtmlActionScope;
 
 /**
  * @author Unknown, FBIagent
  */
 public final class TutorialShowHtml extends AbstractHtmlPacket
 {
-	private final int _npcObjectId;
-	
 	public TutorialShowHtml(String html)
 	{
 		super(html);
-		_npcObjectId = 0;
 	}
 	
 	/**
 	 * This constructor is just here to be able to show a tutorial html<br>
 	 * window bound to an npc.
+	 * @param npcObjId
 	 * @param html
-	 * @param npcObjectId
 	 */
-	public TutorialShowHtml(String html, int npcObjectId)
+	public TutorialShowHtml(int npcObjId, String html)
 	{
-		super(html);
-		_npcObjectId = npcObjectId;
+		super(npcObjId, html);
 	}
 	
 	@Override
@@ -54,23 +49,8 @@ public final class TutorialShowHtml extends AbstractHtmlPacket
 	}
 	
 	@Override
-	public void clearHtmlActionCache()
+	public HtmlActionScope getScope()
 	{
-		L2PcInstance player = getClient().getActiveChar();
-		if (_npcObjectId > 0)
-		{
-			player.setHtmlActionOriginObjectId(BypassScope.TUTORIAL_HTML, _npcObjectId);
-		}
-		else
-		{
-			player.setHtmlActionOriginObjectId(BypassScope.TUTORIAL_HTML, 0);
-		}
-		player.clearHtmlActions(BypassScope.TUTORIAL_HTML);
-	}
-	
-	@Override
-	public void addHtmlAction(String action)
-	{
-		getClient().getActiveChar().addHtmlAction(BypassScope.TUTORIAL_HTML, action);
+		return HtmlActionScope.TUTORIAL_HTML;
 	}
 }

@@ -87,8 +87,8 @@ import com.l2jserver.gameserver.datatables.RecipeData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTable.FrequentSkill;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
-import com.l2jserver.gameserver.enums.BypassScope;
 import com.l2jserver.gameserver.enums.CategoryType;
+import com.l2jserver.gameserver.enums.HtmlActionScope;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.MountType;
 import com.l2jserver.gameserver.enums.PcRace;
@@ -797,11 +797,16 @@ public final class L2PcInstance extends L2Playable
 	private ScheduledFuture<?> _taskWater;
 	
 	/** Last Html Npcs, 0 = last html was not bound to an npc */
-	private final int[] _htmlActionOriginObjectIds = new int[BypassScope.values().length];
+	private final int[] _htmlActionOriginObjectIds = new int[HtmlActionScope.values().length];
+	/**
+	 * Origin of the last incoming html action request.<br>
+	 * This can be used for htmls continuing the conversation with an npc.
+	 */
+	private int _lastHtmlActionOriginObjId;
 	
 	/** Bypass validations */
 	@SuppressWarnings("unchecked")
-	private final LinkedList<String>[] _htmlActionCaches = new LinkedList[BypassScope.values().length];
+	private final LinkedList<String>[] _htmlActionCaches = new LinkedList[HtmlActionScope.values().length];
 	
 	private Forum _forumMail;
 	private Forum _forumMemo;
@@ -1673,7 +1678,12 @@ public final class L2PcInstance extends L2Playable
 		}
 		if (qs != null)
 		{
-			if (getLastQuestNpcObject() > 0)
+			/*
+			 * Allow quest events if there was a quest talk event before.<br>
+			 * Since this method is only called for quest bypasses from html,<br>
+			 * getLastHtmlActionOriginId() should be equals getLastQuestNpcObject().
+			 */
+			if ((getLastQuestNpcObject() > 0) && (getLastQuestNpcObject() == getLastHtmlActionOriginId()))
 			{
 				L2Object object = L2World.getInstance().findObject(getLastQuestNpcObject());
 				if ((object instanceof L2Npc) && isInsideRadius(object, L2Npc.INTERACTION_DISTANCE, false, false))
@@ -1689,7 +1699,7 @@ public final class L2PcInstance extends L2Playable
 							{
 								if (qs.getQuest().notifyEvent(event, npc, this))
 								{
-									showQuestWindow(quest, State.getStateName(qs.getState()));
+									showQuestWindow(quest, npc, State.getStateName(qs.getState()));
 								}
 								
 								retval = qs;
@@ -1703,14 +1713,14 @@ public final class L2PcInstance extends L2Playable
 		return retval;
 	}
 	
-	private void showQuestWindow(String questId, String stateId)
+	private void showQuestWindow(String questId, L2Npc npc, String stateId)
 	{
 		String path = "data/scripts/quests/" + questId + "/" + stateId + ".htm";
 		String content = HtmCache.getInstance().getHtm(getHtmlPrefix(), path); // TODO path for quests html
 		
 		if (content != null)
 		{
-			sendPacket(new NpcHtmlMessage(content));
+			sendPacket(new NpcHtmlMessage(npc != null ? npc.getObjectId() : 0, content));
 		}
 		
 		sendPacket(ActionFailed.STATIC_PACKET);
@@ -11261,24 +11271,34 @@ public final class L2PcInstance extends L2Playable
 		_snoopedPlayer.remove(pci);
 	}
 	
-	public void addHtmlAction(BypassScope scope, String action)
+	public void addHtmlAction(HtmlActionScope scope, String action)
 	{
 		_htmlActionCaches[scope.ordinal()].add(action);
 	}
 	
-	public void clearHtmlActions(BypassScope scope)
+	public void clearHtmlActions(HtmlActionScope scope)
 	{
 		_htmlActionCaches[scope.ordinal()].clear();
 	}
 	
-	public void setHtmlActionOriginObjectId(BypassScope scope, int objId)
+	public void setHtmlActionOriginObjectId(HtmlActionScope scope, int npcObjId)
 	{
-		_htmlActionOriginObjectIds[scope.ordinal()] = objId;
+		if (npcObjId < 0)
+		{
+			throw new IllegalArgumentException();
+		}
+		
+		_htmlActionOriginObjectIds[scope.ordinal()] = npcObjId;
 	}
 	
-	private boolean _validateHtmlAction(LinkedList<String> actionCache, String action)
+	public int getLastHtmlActionOriginId()
 	{
-		for (String cachedAction : actionCache)
+		return _lastHtmlActionOriginObjId;
+	}
+	
+	private boolean validateHtmlAction(Iterable<String> actionIter, String action)
+	{
+		for (String cachedAction : actionIter)
 		{
 			if (cachedAction.charAt(cachedAction.length() - 1) == AbstractHtmlPacket.VAR_PARAM_START_CHAR)
 			{
@@ -11287,7 +11307,7 @@ public final class L2PcInstance extends L2Playable
 					return true;
 				}
 			}
-			else if ((cachedAction.length() == action.length()) && cachedAction.equals(action))
+			else if (cachedAction.equals(action))
 			{
 				return true;
 			}
@@ -11297,20 +11317,21 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Checks if the bypass was send in a Html packet. If this is the<br>
-	 * case, the npc id or 0 is returned. 0 means that the html bypass was<br>
-	 * not bound to an npc and no npc range checks need to be made.<br>
-	 * A return value of -1 indicates that the bypass is not valid.
-	 * @param action
-	 * @return npc id, 0 or -1 >> for more informations see description
+	 * Check if the HTML action was sent in a HTML packet.<br>
+	 * If the HTML action was not sent for whatever reason, -1 is returned.<br>
+	 * Otherwise, the NPC object ID or 0 is returned.<br>
+	 * 0 means the HTML action was not bound to an NPC<br>
+	 * and no range checks need to be made.
+	 * @param action the HTML action to check
+	 * @return NPC object ID, 0 or -1
 	 */
 	public int validateHtmlAction(String action)
 	{
 		for (int i = 0; i < _htmlActionCaches.length; ++i)
 		{
-			if (_validateHtmlAction(_htmlActionCaches[i], action))
+			if (validateHtmlAction(_htmlActionCaches[i], action))
 			{
-				return _htmlActionOriginObjectIds[i];
+				return _lastHtmlActionOriginObjId = _htmlActionOriginObjectIds[i];
 			}
 		}
 		

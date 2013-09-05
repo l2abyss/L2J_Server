@@ -21,6 +21,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 import java.util.logging.Level;
 
 import com.l2jserver.gameserver.cache.HtmCache;
+import com.l2jserver.gameserver.enums.HtmlActionScope;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.util.Util;
 
 /**
  * @author FBIagent
@@ -29,15 +32,39 @@ public abstract class AbstractHtmlPacket extends L2GameServerPacket
 {
 	public static final char VAR_PARAM_START_CHAR = '$';
 	
+	private final int _npcObjId;
 	private String _html = null;
 	private boolean _disabledValidation = false;
 	
 	protected AbstractHtmlPacket()
 	{
+		_npcObjId = 0;
+	}
+	
+	protected AbstractHtmlPacket(int npcObjId)
+	{
+		if (npcObjId < 0)
+		{
+			throw new IllegalArgumentException();
+		}
+		
+		_npcObjId = npcObjId;
 	}
 	
 	protected AbstractHtmlPacket(String html)
 	{
+		_npcObjId = 0;
+		setHtml(html);
+	}
+	
+	protected AbstractHtmlPacket(int npcObjId, String html)
+	{
+		if (npcObjId < 0)
+		{
+			throw new IllegalArgumentException();
+		}
+		
+		_npcObjId = npcObjId;
 		setHtml(html);
 	}
 	
@@ -65,7 +92,6 @@ public abstract class AbstractHtmlPacket extends L2GameServerPacket
 	public final boolean setFile(String prefix, String path)
 	{
 		String content = HtmCache.getInstance().getHtm(prefix, path);
-		
 		if (content == null)
 		{
 			setHtml("<html><body>My Text is missing:<br>" + path + "</body></html>");
@@ -102,87 +128,23 @@ public abstract class AbstractHtmlPacket extends L2GameServerPacket
 		replace(pattern, String.valueOf(val));
 	}
 	
-	private final void _buildHtmlBypassCache()
-	{
-		int bypassEnd = 0;
-		int bypassStart = _html.indexOf("=\"bypass ", bypassEnd);
-		int bypassStartEnd;
-		while (bypassStart != -1)
-		{
-			bypassStartEnd = bypassStart + 9;
-			bypassEnd = _html.indexOf("\"", bypassStartEnd);
-			if (bypassEnd == -1)
-			{
-				break;
-			}
-			
-			int hParamPos = _html.indexOf("-h ", bypassStartEnd);
-			String bypass;
-			if ((hParamPos != -1) && (hParamPos < bypassEnd))
-			{
-				bypass = _html.substring(hParamPos + 3, bypassEnd).trim();
-			}
-			else
-			{
-				bypass = _html.substring(bypassStartEnd, bypassEnd).trim();
-			}
-			
-			int firstParameterStart = bypass.indexOf(VAR_PARAM_START_CHAR);
-			if (firstParameterStart != -1)
-			{
-				bypass = bypass.substring(0, firstParameterStart + 1);
-			}
-			
-			addHtmlAction(bypass);
-			bypassStart = _html.indexOf("=\"bypass ", bypassEnd);
-		}
-	}
-	
-	private final void _buildHtmlLinkCache()
-	{
-		int linkEnd = 0;
-		int linkStart = _html.indexOf("=\"link ", linkEnd);
-		int linkStartEnd;
-		while (linkStart != -1)
-		{
-			// we include the char sequence "link " in the cached html action
-			linkStartEnd = linkStart + 2;
-			linkEnd = _html.indexOf("\"", linkStartEnd);
-			if (linkEnd == -1)
-			{
-				break;
-			}
-			
-			String htmlLink = _html.substring(linkStartEnd, linkEnd).trim();
-			if (htmlLink.isEmpty())
-			{
-				_log.warning("Html link path is empty!");
-				continue;
-			}
-			
-			if (htmlLink.contains(".."))
-			{
-				_log.warning("Html link path is invalid: " + htmlLink);
-				continue;
-			}
-			
-			addHtmlAction(htmlLink);
-			linkStart = _html.indexOf("=\"link ", linkEnd);
-		}
-	}
-	
 	@Override
 	public final void runImpl()
 	{
-		clearHtmlActionCache();
+		L2PcInstance player = getClient().getActiveChar();
+		player.clearHtmlActions(getScope());
 		
 		if (_disabledValidation)
 		{
 			return;
 		}
 		
-		_buildHtmlBypassCache();
-		_buildHtmlLinkCache();
+		Util.buildHtmlActionCache(player, getScope(), _npcObjId, _html);
+	}
+	
+	public final int getNpcObjId()
+	{
+		return _npcObjId;
 	}
 	
 	public final String getHtml()
@@ -190,7 +152,5 @@ public abstract class AbstractHtmlPacket extends L2GameServerPacket
 		return _html;
 	}
 	
-	public abstract void clearHtmlActionCache();
-	
-	public abstract void addHtmlAction(String action);
+	public abstract HtmlActionScope getScope();
 }

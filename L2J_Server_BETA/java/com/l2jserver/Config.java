@@ -454,6 +454,7 @@ public final class Config
 	public static boolean SKILL_CHECK_REMOVE;
 	public static boolean SKILL_CHECK_GM;
 	public static boolean DEBUG;
+	public static boolean HTML_ACTION_CACHE_DEBUG;
 	public static boolean PACKET_HANDLER_DEBUG;
 	public static boolean DEVELOPER;
 	public static boolean ACCEPT_GEOEDITOR_CONN;
@@ -1823,6 +1824,7 @@ public final class Config
 			SKILL_CHECK_REMOVE = General.getBoolean("SkillCheckRemove", false);
 			SKILL_CHECK_GM = General.getBoolean("SkillCheckGM", true);
 			DEBUG = General.getBoolean("Debug", false);
+			HTML_ACTION_CACHE_DEBUG = General.getBoolean("HtmlActionCacheDebug", false);
 			PACKET_HANDLER_DEBUG = General.getBoolean("PacketHandlerDebug", false);
 			DEVELOPER = General.getBoolean("Developer", false);
 			ACCEPT_GEOEDITOR_CONN = General.getBoolean("AcceptGeoeditorConn", false);

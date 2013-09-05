@@ -24,20 +24,21 @@ import com.l2jserver.util.StringUtil;
 
 public class ShowBoard extends L2GameServerPacket
 {
-	private final StringBuilder _htmlCode;
+	private final String _content;
 	
 	public ShowBoard(String htmlCode, String id)
 	{
-		_htmlCode = StringUtil.startAppend(500, id, "\u0008", htmlCode);
+		_content = id + "\u0008" + htmlCode;
 	}
 	
 	public ShowBoard(List<String> arg)
 	{
-		_htmlCode = StringUtil.startAppend(500, "1002\u0008");
+		StringBuilder builder = new StringBuilder(5 + StringUtil.getLength(arg) + arg.size()).append("1002\u0008");
 		for (String str : arg)
 		{
-			StringUtil.append(_htmlCode, str, " \u0008");
+			builder.append(str).append("\u0008");
 		}
+		_content = builder.toString();
 	}
 	
 	@Override
@@ -53,6 +54,6 @@ public class ShowBoard extends L2GameServerPacket
 		writeS("bypass _bbsmail"); // mail
 		writeS("bypass _bbsfriends"); // friends
 		writeS("bypass bbs_add_fav"); // add fav.
-		writeS(_htmlCode.toString());
+		writeS(_content);
 	}
 }

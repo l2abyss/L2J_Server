@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import javolution.text.TextBuilder;
 import javolution.util.FastList;
@@ -35,9 +36,11 @@ import javolution.util.FastList;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.enums.HtmlActionScope;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.serverpackets.AbstractHtmlPacket;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.ShowBoard;
 import com.l2jserver.util.file.filter.ExtFilter;
@@ -47,6 +50,7 @@ import com.l2jserver.util.file.filter.ExtFilter;
  */
 public final class Util
 {
+	private static final Logger LOGGER = Logger.getLogger(Util.class.getName());
 	private static final NumberFormat ADENA_FORMATTER = NumberFormat.getIntegerInstance(Locale.ENGLISH);
 	
 	public static void handleIllegalPlayerAction(L2PcInstance actor, String message, int punishment)
@@ -504,6 +508,110 @@ public final class Util
 		return dateFormat.format(date.getTime());
 	}
 	
+	private static final void buildHtmlBypassCache(L2PcInstance player, HtmlActionScope scope, String html)
+	{
+		String htmlLower = html.toLowerCase(Locale.ENGLISH);
+		int bypassEnd = 0;
+		int bypassStart = htmlLower.indexOf("=\"bypass ", bypassEnd);
+		int bypassStartEnd;
+		while (bypassStart != -1)
+		{
+			bypassStartEnd = bypassStart + 9;
+			bypassEnd = htmlLower.indexOf("\"", bypassStartEnd);
+			if (bypassEnd == -1)
+			{
+				break;
+			}
+			
+			int hParamPos = htmlLower.indexOf("-h ", bypassStartEnd);
+			String bypass;
+			if ((hParamPos != -1) && (hParamPos < bypassEnd))
+			{
+				bypass = html.substring(hParamPos + 3, bypassEnd).trim();
+			}
+			else
+			{
+				bypass = html.substring(bypassStartEnd, bypassEnd).trim();
+			}
+			
+			int firstParameterStart = bypass.indexOf(AbstractHtmlPacket.VAR_PARAM_START_CHAR);
+			if (firstParameterStart != -1)
+			{
+				bypass = bypass.substring(0, firstParameterStart + 1);
+			}
+			
+			if (Config.HTML_ACTION_CACHE_DEBUG)
+			{
+				LOGGER.info("Cached html bypass(" + scope.toString() + "): '" + bypass + "'");
+			}
+			player.addHtmlAction(scope, bypass);
+			bypassStart = htmlLower.indexOf("=\"bypass ", bypassEnd);
+		}
+	}
+	
+	private static final void buildHtmlLinkCache(L2PcInstance player, HtmlActionScope scope, String html)
+	{
+		String htmlLower = html.toLowerCase(Locale.ENGLISH);
+		int linkEnd = 0;
+		int linkStart = htmlLower.indexOf("=\"link ", linkEnd);
+		int linkStartEnd;
+		while (linkStart != -1)
+		{
+			linkStartEnd = linkStart + 7;
+			linkEnd = htmlLower.indexOf("\"", linkStartEnd);
+			if (linkEnd == -1)
+			{
+				break;
+			}
+			
+			String htmlLink = html.substring(linkStartEnd, linkEnd).trim();
+			if (htmlLink.isEmpty())
+			{
+				LOGGER.warning("Html link path is empty!");
+				continue;
+			}
+			
+			if (htmlLink.contains(".."))
+			{
+				LOGGER.warning("Html link path is invalid: " + htmlLink);
+				continue;
+			}
+			
+			if (Config.HTML_ACTION_CACHE_DEBUG)
+			{
+				LOGGER.info("Cached html link(" + scope.toString() + "): '" + htmlLink + "'");
+			}
+			// let's keep an action cache with "link " lowercase literal kept
+			player.addHtmlAction(scope, "link " + htmlLink);
+			linkStart = htmlLower.indexOf("=\"link ", linkEnd);
+		}
+	}
+	
+	/**
+	 * Builds the html action cache for the specified scope.<br>
+	 * An {@code npcObjId} of 0 means, the cached actions can be clicked<br>
+	 * without beeing near an npc which is spawned in the world.
+	 * @param player the player to build the html action cache for
+	 * @param scope the scope to build the html action cache for
+	 * @param npcObjId the npc object id the html actions are cached for
+	 * @param html the html code to parse
+	 */
+	public static void buildHtmlActionCache(L2PcInstance player, HtmlActionScope scope, int npcObjId, String html)
+	{
+		if ((player == null) || (scope == null) || (npcObjId < 0) || (html == null))
+		{
+			throw new IllegalArgumentException();
+		}
+		
+		if (Config.HTML_ACTION_CACHE_DEBUG)
+		{
+			LOGGER.info("Set html action npc(" + scope.toString() + "): " + npcObjId);
+		}
+		player.setHtmlActionOriginObjectId(scope, npcObjId);
+		buildHtmlBypassCache(player, scope, html);
+		buildHtmlLinkCache(player, scope, html);
+	}
+	
 	/**
 	 * Sends the given html to the player.
 	 * @param activeChar
@@ -516,14 +624,19 @@ public final class Util
 		activeChar.sendPacket(npcHtml);
 	}
 	
-	/**
-	 * Sends the html using the community board window.
-	 * @param activeChar
-	 * @param html
-	 */
 	public static void sendCBHtml(L2PcInstance activeChar, String html)
 	{
-		sendCBHtml(activeChar, html, "");
+		sendCBHtml(activeChar, html, true);
+	}
+	
+	public static void sendCBHtml(L2PcInstance activeChar, String html, boolean buildActionCache)
+	{
+		sendCBHtml(activeChar, html, null, buildActionCache);
+	}
+	
+	public static void sendCBHtml(L2PcInstance activeChar, String html, String fillMultiEdit)
+	{
+		sendCBHtml(activeChar, html, fillMultiEdit, true);
 	}
 	
 	/**
@@ -531,51 +644,21 @@ public final class Util
 	 * @param activeChar
 	 * @param html
 	 * @param fillMultiEdit fills the multiedit window (if any) inside the community board.
+	 * @param buildActionCache if false, action cache will not be built and players won't be able to click links in the HTML
 	 */
-	public static void sendCBHtml(L2PcInstance activeChar, String html, String fillMultiEdit)
+	public static void sendCBHtml(L2PcInstance activeChar, String html, String fillMultiEdit, boolean buildActionCache)
 	{
 		if (activeChar == null)
 		{
 			return;
 		}
 		
-		// @formatter:off
-		// let's disable this for now, nobody was using this method as of now anyway
-/*		if (html != null)
+		activeChar.clearHtmlActions(HtmlActionScope.COMM_BOARD_HTML);
+		
+		if (buildActionCache)
 		{
-			activeChar.clearBypass();
-			int len = html.length();
-			for (int i = 0; i < len; i++)
-			{
-				int start = html.indexOf("\"bypass ", i);
-				int finish = html.indexOf("\"", start + 1);
-				if ((start < 0) || (finish < 0))
-				{
-					break;
-				}
-				
-				if (html.substring(start + 8, start + 10).equals("-h"))
-				{
-					start += 11;
-				}
-				else
-				{
-					start += 8;
-				}
-				
-				i = finish;
-				int finish2 = html.indexOf("$", start);
-				if ((finish2 < finish) && (finish2 > 0))
-				{
-					activeChar.addBypass2(html.substring(start, finish2).trim());
-				}
-				else
-				{
-					activeChar.addBypass(html.substring(start, finish).trim());
-				}
-			}
-		}*/
-		// @formatter:on
+			buildHtmlActionCache(activeChar, HtmlActionScope.COMM_BOARD_HTML, 0, html);
+		}
 		
 		if (fillMultiEdit != null)
 		{
@@ -584,10 +667,30 @@ public final class Util
 		}
 		else
 		{
-			activeChar.sendPacket(new ShowBoard(null, "101"));
-			activeChar.sendPacket(new ShowBoard(html, "101"));
-			activeChar.sendPacket(new ShowBoard(null, "102"));
-			activeChar.sendPacket(new ShowBoard(null, "103"));
+			if (html.length() < 16250)
+			{
+				activeChar.sendPacket(new ShowBoard(html, "101"));
+				activeChar.sendPacket(new ShowBoard(null, "102"));
+				activeChar.sendPacket(new ShowBoard(null, "103"));
+			}
+			else if (html.length() < (16250 * 2))
+			{
+				activeChar.sendPacket(new ShowBoard(html.substring(0, 16250), "101"));
+				activeChar.sendPacket(new ShowBoard(html.substring(16250), "102"));
+				activeChar.sendPacket(new ShowBoard(null, "103"));
+			}
+			else if (html.length() < (16250 * 3))
+			{
+				activeChar.sendPacket(new ShowBoard(html.substring(0, 16250), "101"));
+				activeChar.sendPacket(new ShowBoard(html.substring(16250, 16250 * 2), "102"));
+				activeChar.sendPacket(new ShowBoard(html.substring(16250 * 2), "103"));
+			}
+			else
+			{
+				activeChar.sendPacket(new ShowBoard("<html><body><br><center>Error: HTML was too long!</center></body></html>", "101"));
+				activeChar.sendPacket(new ShowBoard(null, "102"));
+				activeChar.sendPacket(new ShowBoard(null, "103"));
+			}
 		}
 	}
 	

@@ -528,18 +528,16 @@ public class OlympiadManager
 		final int points = Olympiad.getInstance().getNoblePoints(charId);
 		if (points <= 0)
 		{
-			// FIXME: We have no object id here :(
-			final NpcHtmlMessage message = new NpcHtmlMessage();
+			final NpcHtmlMessage message = new NpcHtmlMessage(player.getLastHtmlActionOriginId());
 			message.setFile(player.getHtmlPrefix(), "data/html/olympiad/noble_nopoints1.htm");
-			message.replace("%objectId%", String.valueOf(noble.getTargetId()));
+			message.replace("%objectId%", String.valueOf(noble.getLastHtmlActionOriginId()));
 			player.sendPacket(message);
 			return false;
 		}
 		
 		if ((Config.L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP > 0) && !AntiFeedManager.getInstance().tryAddPlayer(AntiFeedManager.OLYMPIAD_ID, noble, Config.L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP))
 		{
-			// FIXME: We have no object id here :(
-			final NpcHtmlMessage message = new NpcHtmlMessage();
+			final NpcHtmlMessage message = new NpcHtmlMessage(player.getLastHtmlActionOriginId());
 			message.setFile(player.getHtmlPrefix(), "data/html/mods/OlympiadIPRestriction.htm");
 			message.replace("%max%", String.valueOf(AntiFeedManager.getInstance().getLimit(player, Config.L2JMOD_DUALBOX_CHECK_MAX_OLYMPIAD_PARTICIPANTS_PER_IP)));
 			player.sendPacket(message);

@@ -18,20 +18,18 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.enums.BypassScope;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.enums.HtmlActionScope;
 
 /**
  * @author Unknown, FBIagent
  */
 public final class NpcQuestHtmlMessage extends AbstractHtmlPacket
 {
-	private final int _npcObjId;
 	private final int _questId;
 	
 	public NpcQuestHtmlMessage(int npcObjId, int questId)
 	{
-		_npcObjId = npcObjId;
+		super(npcObjId);
 		_questId = questId;
 	}
 	
@@ -40,29 +38,14 @@ public final class NpcQuestHtmlMessage extends AbstractHtmlPacket
 	{
 		writeC(0xFE);
 		writeH(0x8D);
-		writeD(_npcObjId);
+		writeD(getNpcObjId());
 		writeS(getHtml());
 		writeD(_questId);
 	}
 	
 	@Override
-	public void clearHtmlActionCache()
+	public HtmlActionScope getScope()
 	{
-		L2PcInstance player = getClient().getActiveChar();
-		if (_npcObjId > 0)
-		{
-			player.setHtmlActionOriginObjectId(BypassScope.NPC_QUEST_HTML, _npcObjId);
-		}
-		else
-		{
-			player.setHtmlActionOriginObjectId(BypassScope.NPC_QUEST_HTML, 0);
-		}
-		player.clearHtmlActions(BypassScope.NPC_QUEST_HTML);
-	}
-	
-	@Override
-	public void addHtmlAction(String action)
-	{
-		getClient().getActiveChar().addHtmlAction(BypassScope.NPC_QUEST_HTML, action);
+		return HtmlActionScope.NPC_QUEST_HTML;
 	}
 }

@@ -4309,7 +4309,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		{
 			return _target.getObjectId();
 		}
-		return -1;
+		return 0;
 	}
 	
 	/**

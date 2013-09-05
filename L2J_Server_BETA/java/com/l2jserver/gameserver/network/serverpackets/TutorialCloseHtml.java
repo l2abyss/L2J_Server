@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.enums.BypassScope;
+import com.l2jserver.gameserver.enums.HtmlActionScope;
 
 /**
  * @author Unknown, FBIagent
@@ -34,7 +34,7 @@ public class TutorialCloseHtml extends L2GameServerPacket
 	@Override
 	public void runImpl()
 	{
-		getClient().getActiveChar().clearHtmlActions(BypassScope.TUTORIAL_HTML);
+		getClient().getActiveChar().clearHtmlActions(HtmlActionScope.TUTORIAL_HTML);
 	}
 	
 	@Override

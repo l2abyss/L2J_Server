@@ -540,7 +540,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 		{
 			return showError(player, e);
 		}
-		return showResult(player, res);
+		return showResult(player, res, npc);
 	}
 	
 	/**
@@ -596,7 +596,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 			return showError(qs.getPlayer(), e);
 		}
 		qs.getPlayer().setLastQuestNpcObject(npc.getObjectId());
-		return showResult(qs.getPlayer(), res);
+		return showResult(qs.getPlayer(), res, npc);
 	}
 	
 	/**
@@ -616,7 +616,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 		{
 			showError(player, e);
 		}
-		showResult(player, res);
+		showResult(player, res, npc);
 	}
 	
 	/**
@@ -1356,6 +1356,17 @@ public class Quest extends ManagedScript implements IIdentifiable
 	}
 	
 	/**
+	 * @param player the player to whom to show the result
+	 * @param res the message to show to the player
+	 * @return {@code false} if the message was sent, {@code true} otherwise
+	 * @see #showResult(L2PcInstance, String, L2Npc)
+	 */
+	public boolean showResult(L2PcInstance player, String res)
+	{
+		return showResult(player, res, null);
+	}
+	
+	/**
 	 * Show a message to the specified player.<br>
 	 * <u><i>Concept:</i></u><br>
 	 * Three cases are managed according to the value of the {@code res} parameter:<br>
@@ -1365,10 +1376,11 @@ public class Quest extends ManagedScript implements IIdentifiable
 	 * <li><u>all other cases :</u> the text contained in the parameter is shown in chat</li>
 	 * </ul>
 	 * @param player the player to whom to show the result
+	 * @param npc npc to show the result for
 	 * @param res the message to show to the player
 	 * @return {@code false} if the message was sent, {@code true} otherwise
 	 */
-	public boolean showResult(L2PcInstance player, String res)
+	public boolean showResult(L2PcInstance player, String res, L2Npc npc)
 	{
 		if ((res == null) || res.isEmpty() || (player == null))
 		{
@@ -1377,12 +1389,11 @@ public class Quest extends ManagedScript implements IIdentifiable
 		
 		if (res.endsWith(".htm") || res.endsWith(".html"))
 		{
-			showHtmlFile(player, res);
+			showHtmlFile(player, res, npc);
 		}
 		else if (res.startsWith("<html>"))
 		{
-			final NpcHtmlMessage npcReply = new NpcHtmlMessage();
-			npcReply.setHtml(res);
+			final NpcHtmlMessage npcReply = new NpcHtmlMessage(npc != null ? npc.getObjectId() : 0, res);
 			npcReply.replace("%playername%", player.getName());
 			player.sendPacket(npcReply);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
@@ -2452,38 +2463,51 @@ public class Quest extends ManagedScript implements IIdentifiable
 	}
 	
 	/**
-	 * Show HTML file to client
-	 * @param player
-	 * @param fileName
-	 * @return String message sent to client
+	 * Send an HTML file to the specified player.
+	 * @param player the player to send the HTML to
+	 * @param filename the name of the HTML file to show
+	 * @return the contents of the HTML file that was sent to the player
+	 * @see #showHtmlFile(L2PcInstance, String, L2Npc)
 	 */
-	public String showHtmlFile(L2PcInstance player, String fileName)
+	public String showHtmlFile(L2PcInstance player, String filename)
 	{
-		boolean questwindow = !fileName.endsWith(".html");
+		return showHtmlFile(player, filename, null);
+	}
+	
+	/**
+	 * Send an HTML file to the specified player.
+	 * @param player the player to send the HTML file to
+	 * @param filename the name of the HTML file to show
+	 * @param npc the NPC that is showing the HTML file
+	 * @return the contents of the HTML file that was sent to the player
+	 * @see #showHtmlFile(L2PcInstance, String, L2Npc)
+	 */
+	public String showHtmlFile(L2PcInstance player, String filename, L2Npc npc)
+	{
+		boolean questwindow = !filename.endsWith(".html");
 		int questId = getId();
 		
 		// Create handler to file linked to the quest
-		String content = getHtm(player.getHtmlPrefix(), fileName);
+		String content = getHtm(player.getHtmlPrefix(), filename);
 		
 		// Send message to client if message not empty
 		if (content != null)
 		{
-			if (player.getTarget() != null)
+			if (npc != null)
 			{
-				content = content.replaceAll("%objectId%", Integer.toString(player.getTargetId()));
+				content = content.replaceAll("%objectId%", Integer.toString(npc.getObjectId()));
 			}
 			
 			if (questwindow && (questId > 0) && (questId < 20000) && (questId != 999))
 			{
-				NpcQuestHtmlMessage npcReply = new NpcQuestHtmlMessage(player.getTargetId(), questId);
+				NpcQuestHtmlMessage npcReply = new NpcQuestHtmlMessage(npc != null ? npc.getObjectId() : 0, questId);
 				npcReply.setHtml(content);
 				npcReply.replace("%playername%", player.getName());
 				player.sendPacket(npcReply);
 			}
 			else
 			{
-				final NpcHtmlMessage npcReply = new NpcHtmlMessage(player.getTargetId());
-				npcReply.setHtml(content);
+				final NpcHtmlMessage npcReply = new NpcHtmlMessage(npc != null ? npc.getObjectId() : 0, content);
 				npcReply.replace("%playername%", player.getName());
 				player.sendPacket(npcReply);
 			}

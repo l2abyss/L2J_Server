@@ -57,14 +57,14 @@ public final class RequestLinkHtml extends L2GameClientPacket
 		
 		if (_link.contains(".."))
 		{
-			_log.warning("Player " + actor.getName() + " sent invalid html link: " + _link);
+			_log.warning("Player " + actor.getName() + " sent invalid html link: link " + _link);
 			return;
 		}
 		
 		int htmlObjectId = actor.validateHtmlAction("link " + _link);
 		if (htmlObjectId == -1)
 		{
-			_log.warning("Player " + actor.getName() + " sent non cached link html: " + _link);
+			_log.warning("Player " + actor.getName() + " sent non cached  html link: link " + _link);
 			return;
 		}
 		
