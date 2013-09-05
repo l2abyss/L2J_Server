@@ -41,7 +41,7 @@ public class ConditionTargetNpcId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (((env.getTarget() != null) && env.getTarget().isNpc()) || env.getTarget().isDoor())
+		if ((env.getTarget() != null) && (env.getTarget().isNpc() || env.getTarget().isDoor()))
 		{
 			return _npcIds.contains(env.getTarget().getId());
 		}
