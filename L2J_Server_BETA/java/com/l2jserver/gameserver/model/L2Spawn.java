@@ -33,7 +33,6 @@ import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.interfaces.IPositionable;
@@ -537,11 +536,9 @@ public class L2Spawn implements IPositionable, IIdentifiable
 		if (Config.L2JMOD_CHAMPION_ENABLE)
 		{
 			// Set champion on next spawn
-			if ((mob instanceof L2MonsterInstance) && !getTemplate().isQuestMonster() && !mob.isRaid() && !((L2MonsterInstance) mob).isRaidMinion() && (Config.L2JMOD_CHAMPION_FREQUENCY > 0) && (mob.getLevel() >= Config.L2JMOD_CHAMP_MIN_LVL) && (mob.getLevel() <= Config.L2JMOD_CHAMP_MAX_LVL) && (Config.L2JMOD_CHAMPION_ENABLE_IN_INSTANCES || (getInstanceId() == 0)))
+			if (mob.isMonster() && !getTemplate().isQuestMonster() && !mob.isRaid() && !mob.isRaidMinion() && (Config.L2JMOD_CHAMPION_FREQUENCY > 0) && (mob.getLevel() >= Config.L2JMOD_CHAMP_MIN_LVL) && (mob.getLevel() <= Config.L2JMOD_CHAMP_MAX_LVL) && (Config.L2JMOD_CHAMPION_ENABLE_IN_INSTANCES || (getInstanceId() == 0)))
 			{
-				int random = Rnd.get(100);
-				
-				if (random < Config.L2JMOD_CHAMPION_FREQUENCY)
+				if (Rnd.get(100) < Config.L2JMOD_CHAMPION_FREQUENCY)
 				{
 					((L2Attackable) mob).setChampion(true);
 				}
