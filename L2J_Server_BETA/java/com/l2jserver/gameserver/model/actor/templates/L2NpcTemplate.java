@@ -345,9 +345,6 @@ public final class L2NpcTemplate extends L2CharTemplate implements IIdentifiable
 					case BUFF:
 						addBuffSkill(skill);
 						break;
-					case RESURRECT:
-						addResSkill(skill);
-						break;
 					case DEBUFF:
 						addDebuffSkill(skill);
 						addCOTSkill(skill);
@@ -391,6 +388,10 @@ public final class L2NpcTemplate extends L2CharTemplate implements IIdentifiable
 						else if (skill.hasEffectType(L2EffectType.DMG_OVER_TIME, L2EffectType.DMG_OVER_TIME_PERCENT))
 						{
 							addRangeSkill(skill);
+						}
+						else if (skill.hasEffectType(L2EffectType.RESURRECTION))
+						{
+							addResSkill(skill);
 						}
 						else
 						{

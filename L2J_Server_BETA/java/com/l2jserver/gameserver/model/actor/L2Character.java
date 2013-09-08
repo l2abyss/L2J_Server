@@ -1719,7 +1719,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		}
 		
 		// TODO: Unhardcode using event listeners!
-		if (skill.getSkillType() == L2SkillType.RESURRECT)
+		if (skill.hasEffectType(L2EffectType.RESURRECTION))
 		{
 			if (isResurrectionBlocked() || target.isResurrectionBlocked())
 			{
@@ -2326,18 +2326,18 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		{
 			if (((L2Summon) this).isPhoenixBlessed() && (((L2Summon) this).getOwner() != null))
 			{
-				((L2Summon) this).getOwner().reviveRequest(((L2Summon) this).getOwner(), null, true);
+				((L2Summon) this).getOwner().reviveRequest(((L2Summon) this).getOwner(), null, true, 0);
 			}
 		}
 		if (isPlayer())
 		{
 			if (((L2Playable) this).isPhoenixBlessed())
 			{
-				getActingPlayer().reviveRequest(getActingPlayer(), null, false);
+				getActingPlayer().reviveRequest(getActingPlayer(), null, false, 100);
 			}
 			else if (isAffected(EffectFlag.CHARM_OF_COURAGE) && getActingPlayer().isInSiege())
 			{
-				getActingPlayer().reviveRequest(getActingPlayer(), null, false);
+				getActingPlayer().reviveRequest(getActingPlayer(), null, false, 0);
 			}
 		}
 		try

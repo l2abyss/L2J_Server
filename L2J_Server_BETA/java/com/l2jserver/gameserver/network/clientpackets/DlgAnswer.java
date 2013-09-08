@@ -89,7 +89,7 @@ public final class DlgAnswer extends L2GameClientPacket
 				}
 			}
 		}
-		else if ((_messageId == SystemMessageId.RESSURECTION_REQUEST_BY_C1_FOR_S2_XP.getId()) || (_messageId == SystemMessageId.RESURRECT_USING_CHARM_OF_COURAGE.getId()))
+		else if ((_messageId == SystemMessageId.RESURRECTION_REQUEST_BY_C1_FOR_S2_XP.getId()) || (_messageId == SystemMessageId.RESURRECT_USING_CHARM_OF_COURAGE.getId()))
 		{
 			activeChar.reviveAnswer(_answer);
 		}

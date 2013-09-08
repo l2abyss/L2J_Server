@@ -1290,10 +1290,6 @@ public class L2CharacterAI extends AbstractAI
 					case DEBUFF:
 						debuffSkills.add(sk);
 						break;
-					case RESURRECT:
-						resurrectSkills.add(sk);
-						hasHealOrResurrect = true;
-						break;
 					case NOTDONE:
 					case COREDONE:
 						continue; // won't be considered something for fighting
@@ -1341,6 +1337,11 @@ public class L2CharacterAI extends AbstractAI
 						else if (sk.hasEffectType(L2EffectType.MUTE))
 						{
 							muteSkills.add(sk);
+						}
+						else if (sk.hasEffectType(L2EffectType.RESURRECTION))
+						{
+							resurrectSkills.add(sk);
+							hasHealOrResurrect = true;
 						}
 						else
 						{

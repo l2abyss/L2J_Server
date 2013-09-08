@@ -370,7 +370,7 @@ public abstract class L2Summon extends L2Playable
 		
 		if (isPhoenixBlessed() && (getOwner() != null))
 		{
-			getOwner().reviveRequest(getOwner(), null, true);
+			getOwner().reviveRequest(getOwner(), null, true, 100);
 		}
 		
 		DecayTaskManager.getInstance().addDecayTask(this);

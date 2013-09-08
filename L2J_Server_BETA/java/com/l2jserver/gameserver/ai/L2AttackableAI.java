@@ -1408,76 +1408,6 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				break;
 			}
-			case RESURRECT:
-			{
-				if (!isParty(sk))
-				{
-					if (caster.isMinion() && (sk.getTargetType() != L2TargetType.SELF))
-					{
-						L2Character leader = caster.getLeader();
-						if ((leader != null) && leader.isDead())
-						{
-							if (!Util.checkIfInRange((sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius()), caster, leader, false) && !isParty(sk) && !caster.isMovementDisabled())
-							{
-								moveToPawn(leader, sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius());
-							}
-						}
-						if (GeoData.getInstance().canSeeTarget(caster, leader))
-						{
-							clientStopMoving(null);
-							caster.setTarget(leader);
-							caster.doCast(sk);
-							return true;
-						}
-					}
-					
-					for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getCastRange() + caster.getTemplate().getCollisionRadius()))
-					{
-						if (!(obj instanceof L2Attackable) || !obj.isDead())
-						{
-							continue;
-						}
-						
-						L2Attackable targets = ((L2Attackable) obj);
-						if ((caster.getFactionId() != null) && !caster.getFactionId().equals(targets.getFactionId()))
-						{
-							continue;
-						}
-						if (Rnd.get(100) < 10)
-						{
-							if (GeoData.getInstance().canSeeTarget(caster, targets))
-							{
-								clientStopMoving(null);
-								caster.setTarget(obj);
-								caster.doCast(sk);
-								return true;
-							}
-						}
-					}
-				}
-				else if (isParty(sk))
-				{
-					for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getAffectRange() + caster.getTemplate().getCollisionRadius()))
-					{
-						if (!(obj instanceof L2Attackable))
-						{
-							continue;
-						}
-						L2Npc targets = ((L2Npc) obj);
-						if ((caster.getFactionId() != null) && caster.getFactionId().equals(targets.getFactionId()))
-						{
-							if ((obj.getCurrentHp() < obj.getMaxHp()) && (Rnd.get(100) <= 20))
-							{
-								clientStopMoving(null);
-								caster.setTarget(caster);
-								caster.doCast(sk);
-								return true;
-							}
-						}
-					}
-				}
-				break;
-			}
 			case DEBUFF:
 			{
 				if (GeoData.getInstance().canSeeTarget(caster, attackTarget) && !canAOE(sk) && !attackTarget.isDead() && (dist2 <= srange))
@@ -1780,6 +1710,76 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 							clientStopMoving(null);
 							caster.doCast(sk);
 							return true;
+						}
+					}
+				}
+				
+				if (sk.hasEffectType(L2EffectType.RESURRECTION))
+				{
+					if (!isParty(sk))
+					{
+						if (caster.isMinion() && (sk.getTargetType() != L2TargetType.SELF))
+						{
+							L2Character leader = caster.getLeader();
+							if ((leader != null) && leader.isDead())
+							{
+								if (!Util.checkIfInRange((sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius()), caster, leader, false) && !isParty(sk) && !caster.isMovementDisabled())
+								{
+									moveToPawn(leader, sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius());
+								}
+							}
+							if (GeoData.getInstance().canSeeTarget(caster, leader))
+							{
+								clientStopMoving(null);
+								caster.setTarget(leader);
+								caster.doCast(sk);
+								return true;
+							}
+						}
+						
+						for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getCastRange() + caster.getTemplate().getCollisionRadius()))
+						{
+							if (!(obj instanceof L2Attackable) || !obj.isDead())
+							{
+								continue;
+							}
+							
+							L2Attackable targets = ((L2Attackable) obj);
+							if ((caster.getFactionId() != null) && !caster.getFactionId().equals(targets.getFactionId()))
+							{
+								continue;
+							}
+							if (Rnd.get(100) < 10)
+							{
+								if (GeoData.getInstance().canSeeTarget(caster, targets))
+								{
+									clientStopMoving(null);
+									caster.setTarget(obj);
+									caster.doCast(sk);
+									return true;
+								}
+							}
+						}
+					}
+					else if (isParty(sk))
+					{
+						for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getAffectRange() + caster.getTemplate().getCollisionRadius()))
+						{
+							if (!(obj instanceof L2Attackable))
+							{
+								continue;
+							}
+							L2Npc targets = ((L2Npc) obj);
+							if ((caster.getFactionId() != null) && caster.getFactionId().equals(targets.getFactionId()))
+							{
+								if ((obj.getCurrentHp() < obj.getMaxHp()) && (Rnd.get(100) <= 20))
+								{
+									clientStopMoving(null);
+									caster.setTarget(caster);
+									caster.doCast(sk);
+									return true;
+								}
+							}
 						}
 					}
 				}

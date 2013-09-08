@@ -1679,9 +1679,7 @@ public final class L2PcInstance extends L2Playable
 		if (qs != null)
 		{
 			/*
-			 * Allow quest events if there was a quest talk event before.<br>
-			 * Since this method is only called for quest bypasses from html,<br>
-			 * getLastHtmlActionOriginId() should be equals getLastQuestNpcObject().
+			 * Allow quest events if there was a quest talk event before.<br> Since this method is only called for quest bypasses from html,<br> getLastHtmlActionOriginId() should be equals getLastQuestNpcObject().
 			 */
 			if ((getLastQuestNpcObject() > 0) && (getLastQuestNpcObject() == getLastHtmlActionOriginId()))
 			{
@@ -4404,7 +4402,7 @@ public final class L2PcInstance extends L2Playable
 		
 		// TODO: Should possibly be checked only in L2PcInstance's useMagic
 		// Can't use Hero and resurrect skills during Olympiad
-		if (isInOlympiadMode() && (skill.isHeroSkill() || (skill.getSkillType() == L2SkillType.RESURRECT)))
+		if (isInOlympiadMode() && (skill.isHeroSkill() || (skill.hasEffectType(L2EffectType.RESURRECTION))))
 		{
 			sendPacket(SystemMessageId.THIS_SKILL_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT);
 			return false;
@@ -5636,7 +5634,7 @@ public final class L2PcInstance extends L2Playable
 		
 		if (isPhoenixBlessed() || (isAffected(EffectFlag.CHARM_OF_COURAGE) && isInSiege()))
 		{
-			reviveRequest(this, null, false);
+			reviveRequest(this, null, false, 0);
 		}
 		return true;
 	}
@@ -10912,7 +10910,7 @@ public final class L2PcInstance extends L2Playable
 		doRevive();
 	}
 	
-	public void reviveRequest(L2PcInstance reviver, L2Skill skill, boolean Pet)
+	public void reviveRequest(L2PcInstance reviver, L2Skill skill, boolean Pet, int power)
 	{
 		if (isResurrectionBlocked())
 		{
@@ -10952,7 +10950,7 @@ public final class L2PcInstance extends L2Playable
 			}
 			else
 			{
-				_revivePower = Formulas.calculateSkillResurrectRestorePercent(skill.getPower(), reviver);
+				_revivePower = Formulas.calculateSkillResurrectRestorePercent(power, reviver);
 			}
 			
 			restoreExp = (int) Math.round(((getExpBeforeDeath() - getExp()) * _revivePower) / 100);
@@ -10966,7 +10964,7 @@ public final class L2PcInstance extends L2Playable
 				sendPacket(dlg);
 				return;
 			}
-			ConfirmDlg dlg = new ConfirmDlg(SystemMessageId.RESSURECTION_REQUEST_BY_C1_FOR_S2_XP.getId());
+			ConfirmDlg dlg = new ConfirmDlg(SystemMessageId.RESURRECTION_REQUEST_BY_C1_FOR_S2_XP.getId());
 			dlg.addPcName(reviver);
 			dlg.addString(Integer.toString(restoreExp));
 			sendPacket(dlg);

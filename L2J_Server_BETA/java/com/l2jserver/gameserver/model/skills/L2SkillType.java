@@ -67,7 +67,6 @@ public enum L2SkillType
 	CONT,
 	FUSION,
 	
-	RESURRECT,
 	DETECT_TRAP,
 	REMOVE_TRAP,
 	
