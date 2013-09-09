@@ -22,6 +22,9 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 
 /**
@@ -59,6 +62,14 @@ public final class AttackRequest extends L2GameClientPacket
 		final L2PcInstance activeChar = getActiveChar();
 		if (activeChar == null)
 		{
+			return;
+		}
+		
+		L2Effect ef = null;
+		if (((ef = activeChar.getFirstEffect(L2EffectType.ACTION_BLOCK)) != null) && !ef.checkCondition(-1))
+		{
+			activeChar.sendPacket(SystemMessageId.YOU_HAVE_BEEN_REPORTED_SO_ACTIONS_NOT_ALLOWED);
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		

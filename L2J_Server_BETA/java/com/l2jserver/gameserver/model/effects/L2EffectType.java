@@ -25,10 +25,12 @@ package com.l2jserver.gameserver.model.effects;
 public enum L2EffectType
 {
 	AGGRESSION,
+	ACTION_BLOCK,
 	BLOCK_RESURRECTION,
 	BUFF,
 	CHARM_OF_LUCK,
 	CHARMOFCOURAGE,
+	CHAT_BLOCK,
 	CLAN_GATE,
 	CPDAMPERCENT,
 	CPHEAL,

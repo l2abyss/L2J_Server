@@ -26,6 +26,7 @@ import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2SummonAI;
 import com.l2jserver.gameserver.ai.NextAction;
 import com.l2jserver.gameserver.ai.NextAction.NextActionCallback;
+import com.l2jserver.gameserver.datatables.BotReportTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SummonSkillsTable;
@@ -38,6 +39,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
+import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -100,6 +102,14 @@ public final class RequestActionUse extends L2GameClientPacket
 		if ((activeChar.isFakeDeath() && (_actionId != 0)) || activeChar.isDead() || activeChar.isOutOfControl())
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+		
+		L2Effect ef = null;
+		if (((ef = activeChar.getFirstEffect(L2EffectType.ACTION_BLOCK)) != null) && !ef.checkCondition(_actionId))
+		{
+			activeChar.sendPacket(SystemMessageId.YOU_HAVE_BEEN_REPORTED_SO_ACTIONS_NOT_ALLOWED);
+			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
@@ -347,8 +357,15 @@ public final class RequestActionUse extends L2GameClientPacket
 			case 61: // Private Store Package Sell
 				activeChar.tryOpenPrivateSellStore(true);
 				break;
-			case 65: // TODO: Bot Report Button
-				activeChar.sendMessage("This action is not handled yet.");
+			case 65: // Bot Report Button
+				if (Config.BOTREPORT_ENABLE)
+				{
+					BotReportTable.getInstance().reportBot(activeChar);
+				}
+				else
+				{
+					activeChar.sendMessage("This feature is disabled.");
+				}
 				break;
 			case 67: // Steer
 				if (activeChar.isInAirShip())

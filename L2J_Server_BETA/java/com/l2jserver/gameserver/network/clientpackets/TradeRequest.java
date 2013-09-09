@@ -19,10 +19,13 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.BotReportTable;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.SendTradeRequest;
@@ -58,6 +61,14 @@ public final class TradeRequest extends L2GameClientPacket
 			return;
 		}
 		
+		L2Effect ef = null;
+		if (((ef = player.getFirstEffect(L2EffectType.ACTION_BLOCK)) != null) && !ef.checkCondition(BotReportTable.TRADE_ACTION_BLOCK_ID))
+		{
+			player.sendPacket(SystemMessageId.YOU_HAVE_BEEN_REPORTED_SO_ACTIONS_NOT_ALLOWED);
+			player.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+		
 		final L2Object target = L2World.getInstance().findObject(_objectId);
 		// If there is no target, target is far away or
 		// they are in different instances (except multiverse)
@@ -85,6 +96,15 @@ public final class TradeRequest extends L2GameClientPacket
 		if (partner.isInOlympiadMode() || player.isInOlympiadMode())
 		{
 			player.sendMessage("A user currently participating in the Olympiad cannot accept or request a trade.");
+			return;
+		}
+		
+		if (((ef = partner.getFirstEffect(L2EffectType.ACTION_BLOCK)) != null) && !ef.checkCondition(BotReportTable.TRADE_ACTION_BLOCK_ID))
+		{
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_REPORTED_AND_IS_BEING_INVESTIGATED);
+			sm.addCharName(partner);
+			player.sendPacket(sm);
+			player.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		

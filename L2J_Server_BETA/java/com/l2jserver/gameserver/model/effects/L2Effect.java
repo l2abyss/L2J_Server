@@ -652,6 +652,11 @@ public abstract class L2Effect implements IChanceSkillTrigger
 		
 	}
 	
+	public boolean checkCondition(Object obj)
+	{
+		return true;
+	}
+	
 	@Override
 	public boolean triggersChanceSkill()
 	{

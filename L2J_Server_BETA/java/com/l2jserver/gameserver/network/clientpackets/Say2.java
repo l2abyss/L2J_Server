@@ -30,6 +30,7 @@ import com.l2jserver.gameserver.handler.IChatHandler;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -205,14 +206,21 @@ public final class Say2 extends L2GameClientPacket
 		
 		if (activeChar.isChatBanned() && (_text.charAt(0) != '.'))
 		{
-			for (int chatId : Config.BAN_CHAT_CHANNELS)
+			if (activeChar.getFirstEffect(L2EffectType.CHAT_BLOCK) != null)
 			{
-				if (_type == chatId)
+				activeChar.sendPacket(SystemMessageId.YOU_HAVE_BEEN_REPORTED_SO_CHATTING_NOT_ALLOWED);
+			}
+			else
+			{
+				for (int chatId : Config.BAN_CHAT_CHANNELS)
 				{
-					activeChar.sendPacket(SystemMessageId.CHATTING_IS_CURRENTLY_PROHIBITED);
-					return;
+					if (_type == chatId)
+					{
+						activeChar.sendPacket(SystemMessageId.CHATTING_IS_CURRENTLY_PROHIBITED);
+					}
 				}
 			}
+			return;
 		}
 		
 		if (activeChar.isJailed() && Config.JAIL_DISABLE_CHAT)

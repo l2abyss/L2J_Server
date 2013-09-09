@@ -13666,6 +13666,12 @@ public final class SystemMessageId
 	public static final SystemMessageId TIME_LIMITED_ITEM_DELETED;
 	
 	/**
+	 * ID: 2371<br>
+	 * Message: $c1 was reported as a BOT
+	 */
+	public static final SystemMessageId C1_WAS_REPORTED_AS_BOT;
+	
+	/**
 	 * ID: 2372<br>
 	 * Message: There is not much time remaining until the hunting helper pet leaves.
 	 */
@@ -13688,6 +13694,48 @@ public final class SystemMessageId
 	 * Message: You cannot receive a vitamin item during an exchange.
 	 */
 	public static final SystemMessageId YOU_CANNOT_RECEIVE_A_VITAMIN_ITEM_DURING_AN_EXCHANGE;
+	
+	/**
+	 * ID: 2377<br>
+	 * Message: You cannot report a character who is in a peace zone or a battlefield
+	 */
+	public static final SystemMessageId YOU_CANNOT_REPORT_CHARACTER_IN_PEACE_OR_BATTLE_ZONE;
+	
+	/**
+	 * ID: 2378<br>
+	 * Message: You cannot report when a clan war has been declared
+	 */
+	public static final SystemMessageId YOU_CANNOT_REPORT_CLAN_WAR_ENEMY;
+	
+	/**
+	 * ID: 2379<br>
+	 * Message: You cannot report a character who has not acquired any Exp. after connecting
+	 */
+	public static final SystemMessageId YOU_CANNOT_REPORT_CHAR_WHO_ACQUIRED_XP;
+	
+	/**
+	 * ID 2380<br>
+	 * Message: You cannot report this person again at this time
+	 */
+	public static final SystemMessageId YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_1;
+	
+	/**
+	 * ID 2381<br>
+	 * Message: You cannot report this person again at this time
+	 */
+	public static final SystemMessageId YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_2;
+	
+	/**
+	 * ID 2382<br>
+	 * Message: You cannot report this person again at this time
+	 */
+	public static final SystemMessageId YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_3;
+	
+	/**
+	 * ID 2383<br>
+	 * Message: You cannot report this person again at this time
+	 */
+	public static final SystemMessageId YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_4;
 	
 	/**
 	 * ID: 2390<br>
@@ -13894,6 +13942,126 @@ public final class SystemMessageId
 	public static final SystemMessageId PET_AUXILIARY_MODE_CANNOT_USE_SKILLS;
 	
 	/**
+	 * ID: 2468<br>
+	 * Message: You have used a report point on $c1. You have $s2 points remaining on this account
+	 */
+	public static final SystemMessageId YOU_HAVE_USED_REPORT_POINT_ON_C1_YOU_HAVE_C2_POINTS_LEFT;
+	
+	/**
+	 * ID: 2469<br>
+	 * Message: You have used all available points. Points are reset everyday at noon
+	 */
+	public static final SystemMessageId YOU_HAVE_USED_ALL_POINTS_POINTS_ARE_RESET_AT_NOON;
+	
+	/**
+	 * ID: 2470<br>
+	 * Message: This character cannot make a report. You cannot make a report while located inside a peace zone or a battlefield, while you are an opposing clan member during a clan war, or while participating in the Olympiad
+	 */
+	public static final SystemMessageId TARGET_NOT_REPORT_CANNOT_REPORT_PEACE_PVP_ZONE_OR_OLYMPIAD_OR_CLAN_WAR_ENEMY;
+	
+	/**
+	 * ID: 2471<br>
+	 * Message: This character cannot make a report. The target has already been reported by either your clan or alliance, or has already been reported from your current IP
+	 */
+	public static final SystemMessageId CANNOT_REPORT_TARGET_ALREDY_REPORTED_BY_CLAN_ALLY_MEMBER_OR_SAME_IP;
+	
+	/**
+	 * ID: 2472<br>
+	 * Message: This character cannot make a report because another character from this account has already done so
+	 */
+	public static final SystemMessageId CANNOT_REPORT_ALREDY_REPORED_FROM_THIS_ACCOUNT;
+	
+	/**
+	 * ID: 2473<br>
+	 * Message: You have been reported as an illegal program user, so your chatting will be blocked for 10 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_10_MIN_CHAT_BLOCKED;
+	
+	/**
+	 * ID: 2474<br>
+	 * Message: You have been reported as an illegal program user, so your party participation will be blocked for 60 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_60_MIN_PARTY_BLOCKED;
+	
+	/**
+	 * ID: 2475<br>
+	 * Message: You have been reported as an illegal program user, so your party participation will be blocked for 120 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_120_MIN_PARTY_BLOCKED;
+	
+	/**
+	 * ID: 2476<br>
+	 * Message: You have been reported as an illegal program user, so your party participation will be blocked for 180 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_180_MIN_PARTY_BLOCKED;
+	
+	/**
+	 * ID: 2477<br>
+	 * Message: You have been reported as an illegal program user, so your actions will be restricted for 120 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_120_MIN_ACTION_BLOCKED;
+	
+	/**
+	 * ID: 2478<br>
+	 * Message: You have been reported as an illegal program user, so your actions will be restricted for 180 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_180_MIN_ACTION_BLOCKED;
+	
+	/**
+	 * ID: 2479<br>
+	 * Message: You have been reported as an illegal program user, so your actions will be restricted for 180 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_180_MIN_ACTION_BLOCKED_2;
+	
+	/**
+	 * ID: 2480<br>
+	 * Message: You have been reported as an illegal program user, so movement is prohibited for 120 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_120_MIN_MOVEMENT_BLOCKED;
+	
+	/**
+	 * ID: 2481<br>
+	 * Message: $c1 has been reported as an illegal program user and is currently being investigated
+	 */
+	public static final SystemMessageId C1_REPORTED_AND_IS_BEING_INVESTIGATED;
+	
+	/**
+	 * ID: 2482<br>
+	 * Message: $c1 has been reported as an illegal program user and cannot join a party
+	 */
+	public static final SystemMessageId C1_REPORTED_AND_CANNOT_PARTY;
+	
+	/**
+	 * ID: 2483<br>
+	 * Message: You have been reported as an illegal program user, so chatting is not allowed
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_SO_CHATTING_NOT_ALLOWED;
+	
+	/**
+	 * ID: 2484<br>
+	 * Message: You have been reported as an illegal program user, so participating in a party is not allowed
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_SO_PARTY_NOT_ALLOWED;
+	
+	/**
+	 * ID: 2485<br>
+	 * Message: You have been reported as an illegal program user so your actions have been restricted
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_SO_ACTIONS_NOT_ALLOWED;
+	
+	/**
+	 * ID: 2486<br>
+	 * Message: You have been blocked due to verification that you are using a third party program. Subsequent violations may result in termination of your account rather than a penalty within the game
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_BLOCKED_SUBSEQUENT_VIOLATIONS_RESULT_ACCOUNT_TERMINATION;
+	
+	/**
+	 * ID: 2487<br>
+	 * Message: You have been reported as an illegal program user, and your connection has been ended. Please contact our CS team to confirm your identity.
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_AS_BOT_CONTACT_OUR_CS_TEAM;
+	
+	/**
 	 * ID: 2491<br>
 	 * Message: Your ship cannot teleport because it does not have enough fuel for the trip.
 	 */
@@ -14079,6 +14247,12 @@ public final class SystemMessageId
 	public static final SystemMessageId YOU_CANNOT_CONTROL_THE_HELM_WHILE_HOLDING_A_FLAG;
 	
 	/**
+	 * ID: 2748<br>
+	 * Message: You have been reported as an illegal program user and cannot report other users
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_AND_CANNOT_REPORT;
+	
+	/**
 	 * ID: 2750<br>
 	 * Message: The $s1 ward has been destroyed! $c2 now has the territory ward.
 	 */
@@ -14155,6 +14329,12 @@ public final class SystemMessageId
 	 * Message: Seed of Destruction Defense in Progress.
 	 */
 	public static final SystemMessageId SEED_OF_DESTRUCTION_DEFENSE_IN_PROGRESS;
+	
+	/**
+	 * ID: 2447<br>
+	 * Message: You can make another report in $s1-minute(s). You have $s2 points remaining on this account
+	 */
+	public static final SystemMessageId YOU_CAN_REPORT_IN_S1_MINS_YOU_HAVE_S2_POINTS_LEFT;
 	
 	/**
 	 * ID: 2777<br>
@@ -17291,10 +17471,19 @@ public final class SystemMessageId
 		YOU_CANNOT_TELEPORT_BECAUSE_YOU_DO_NOT_HAVE_A_TELEPORT_ITEM = new SystemMessageId(2359);
 		CURRENT_LOCATION_S1 = new SystemMessageId(2361);
 		TIME_LIMITED_ITEM_DELETED = new SystemMessageId(2366);
+		C1_WAS_REPORTED_AS_BOT = new SystemMessageId(2371);
 		THERE_NOT_MUCH_TIME_REMAINING_UNTIL_HELPER_LEAVES = new SystemMessageId(2372);
 		THE_HELPER_PET_LEAVING = new SystemMessageId(2373);
 		THE_HELPER_PET_CANNOT_BE_RETURNED = new SystemMessageId(2375);
 		YOU_CANNOT_RECEIVE_A_VITAMIN_ITEM_DURING_AN_EXCHANGE = new SystemMessageId(2376);
+		YOU_CANNOT_REPORT_CHARACTER_IN_PEACE_OR_BATTLE_ZONE = new SystemMessageId(2377);
+		YOU_CANNOT_REPORT_CLAN_WAR_ENEMY = new SystemMessageId(2378);
+		YOU_CANNOT_REPORT_CHAR_WHO_ACQUIRED_XP = new SystemMessageId(2379);
+		YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_1 = new SystemMessageId(2380);
+		YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_2 = new SystemMessageId(2381);
+		YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_3 = new SystemMessageId(2382);
+		YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_4 = new SystemMessageId(2383);
+		
 		YOUR_NUMBER_OF_MY_TELEPORTS_SLOTS_HAS_REACHED_ITS_MAXIMUM_LIMIT = new SystemMessageId(2390);
 		PET_SKILL_CANNOT_BE_USED_RECHARCHING = new SystemMessageId(2396);
 		YOU_HAVE_NO_OPEN_MY_TELEPORTS_SLOTS = new SystemMessageId(2398);
@@ -17329,6 +17518,26 @@ public final class SystemMessageId
 		THE_AIRSHIP_FUEL_RUN_OUT = new SystemMessageId(2464);
 		OLYMPIAD_3VS3_CONFIRM = new SystemMessageId(2465);
 		PET_AUXILIARY_MODE_CANNOT_USE_SKILLS = new SystemMessageId(2466);
+		YOU_HAVE_USED_REPORT_POINT_ON_C1_YOU_HAVE_C2_POINTS_LEFT = new SystemMessageId(2468);
+		YOU_HAVE_USED_ALL_POINTS_POINTS_ARE_RESET_AT_NOON = new SystemMessageId(2469);
+		TARGET_NOT_REPORT_CANNOT_REPORT_PEACE_PVP_ZONE_OR_OLYMPIAD_OR_CLAN_WAR_ENEMY = new SystemMessageId(2470);
+		CANNOT_REPORT_TARGET_ALREDY_REPORTED_BY_CLAN_ALLY_MEMBER_OR_SAME_IP = new SystemMessageId(2471);
+		CANNOT_REPORT_ALREDY_REPORED_FROM_THIS_ACCOUNT = new SystemMessageId(2472);
+		YOU_HAVE_BEEN_REPORTED_10_MIN_CHAT_BLOCKED = new SystemMessageId(2473);
+		YOU_HAVE_BEEN_REPORTED_60_MIN_PARTY_BLOCKED = new SystemMessageId(2474);
+		YOU_HAVE_BEEN_REPORTED_120_MIN_PARTY_BLOCKED = new SystemMessageId(2475);
+		YOU_HAVE_BEEN_REPORTED_180_MIN_PARTY_BLOCKED = new SystemMessageId(2476);
+		YOU_HAVE_BEEN_REPORTED_120_MIN_ACTION_BLOCKED = new SystemMessageId(2477);
+		YOU_HAVE_BEEN_REPORTED_180_MIN_ACTION_BLOCKED = new SystemMessageId(2478);
+		YOU_HAVE_BEEN_REPORTED_180_MIN_ACTION_BLOCKED_2 = new SystemMessageId(2479);
+		YOU_HAVE_BEEN_REPORTED_120_MIN_MOVEMENT_BLOCKED = new SystemMessageId(2480);
+		C1_REPORTED_AND_IS_BEING_INVESTIGATED = new SystemMessageId(2481);
+		C1_REPORTED_AND_CANNOT_PARTY = new SystemMessageId(2482);
+		YOU_HAVE_BEEN_REPORTED_SO_CHATTING_NOT_ALLOWED = new SystemMessageId(2483);
+		YOU_HAVE_BEEN_REPORTED_SO_PARTY_NOT_ALLOWED = new SystemMessageId(2484);
+		YOU_HAVE_BEEN_REPORTED_SO_ACTIONS_NOT_ALLOWED = new SystemMessageId(2485);
+		YOU_HAVE_BEEN_BLOCKED_SUBSEQUENT_VIOLATIONS_RESULT_ACCOUNT_TERMINATION = new SystemMessageId(2486);
+		YOU_HAVE_BEEN_REPORTED_AS_BOT_CONTACT_OUR_CS_TEAM = new SystemMessageId(2487);
 		THE_AIRSHIP_CANNOT_TELEPORT = new SystemMessageId(2491);
 		THE_AIRSHIP_SUMMONED = new SystemMessageId(2492);
 		THE_COLLECTION_HAS_SUCCEEDED = new SystemMessageId(2500);
@@ -17360,6 +17569,7 @@ public final class SystemMessageId
 		YOU_CANNOT_CONTROL_THE_HELM_WHILE_USING_A_SKILL = new SystemMessageId(2736);
 		YOU_CANNOT_CONTROL_THE_HELM_WHILE_A_CURSED_WEAPON_IS_EQUIPPED = new SystemMessageId(2737);
 		YOU_CANNOT_CONTROL_THE_HELM_WHILE_HOLDING_A_FLAG = new SystemMessageId(2738);
+		YOU_HAVE_BEEN_REPORTED_AND_CANNOT_REPORT = new SystemMessageId(2748);
 		THE_S1_WARD_HAS_BEEN_DESTROYED_C2_HAS_THE_WARD = new SystemMessageId(2750);
 		THE_CHAR_THAT_ACQUIRED_S1_WARD_HAS_BEEN_KILLED = new SystemMessageId(2751);
 		CANT_CONTROL_TOO_FAR = new SystemMessageId(2762);
@@ -17373,6 +17583,7 @@ public final class SystemMessageId
 		SEED_OF_DESTRUCTION_ATTACK_IN_PROGRESS = new SystemMessageId(2771);
 		SEED_OF_DESTRUCTION_CONQUEST_COMPLETE = new SystemMessageId(2772);
 		SEED_OF_DESTRUCTION_DEFENSE_IN_PROGRESS = new SystemMessageId(2773);
+		YOU_CAN_REPORT_IN_S1_MINS_YOU_HAVE_S2_POINTS_LEFT = new SystemMessageId(2774);
 		THE_AIRSHIP_SUMMON_LICENSE_ENTERED = new SystemMessageId(2777);
 		YOU_CANNOT_TELEPORT_WHILE_IN_POSSESSION_OF_A_WARD = new SystemMessageId(2778);
 		YOU_MUST_HAVE_MINIMUM_OF_S1_PEOPLE_TO_ENTER = new SystemMessageId(2793);

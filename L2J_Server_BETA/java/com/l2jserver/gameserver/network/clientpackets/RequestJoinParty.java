@@ -25,6 +25,7 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.AskJoinParty;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
@@ -66,6 +67,21 @@ public final class RequestJoinParty extends L2GameClientPacket
 		if ((target.getClient() == null) || target.getClient().isDetached())
 		{
 			requestor.sendMessage("Player is in offline mode.");
+			return;
+		}
+		
+		if (requestor.isPartyBanned())
+		{
+			requestor.sendPacket(SystemMessageId.YOU_HAVE_BEEN_REPORTED_SO_PARTY_NOT_ALLOWED);
+			requestor.sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+		
+		if (target.isPartyBanned())
+		{
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_REPORTED_AND_CANNOT_PARTY);
+			sm.addCharName(target);
+			requestor.sendPacket(sm);
 			return;
 		}
 		

@@ -658,6 +658,11 @@ public final class Config
 	public static int PLAYER_MOVEMENT_BLOCK_TIME;
 	public static int NORMAL_ENCHANT_COST_MULTIPLIER;
 	public static int SAFE_ENCHANT_COST_MULTIPLIER;
+	public static boolean BOTREPORT_ENABLE;
+	public static String[] BOTREPORT_RESETPOINT_HOUR;
+	public static long BOTREPORT_REPORT_DELAY;
+	public static boolean BOTREPORT_ALLOW_REPORTS_FROM_SAME_CLAN_MEMBERS;
+	
 	// --------------------------------------------------
 	// FloodProtector Settings
 	// --------------------------------------------------
@@ -2064,6 +2069,11 @@ public final class Config
 			
 			NORMAL_ENCHANT_COST_MULTIPLIER = General.getInt("NormalEnchantCostMultipiler", 1);
 			SAFE_ENCHANT_COST_MULTIPLIER = General.getInt("SafeEnchantCostMultipiler", 5);
+			
+			BOTREPORT_ENABLE = General.getBoolean("EnableBotReportButton", false);
+			BOTREPORT_RESETPOINT_HOUR = General.getString("BotReportPointsResetHour", "00:00").split(":");
+			BOTREPORT_REPORT_DELAY = General.getInt("BotReportDelay", 30) * 60000;
+			BOTREPORT_ALLOW_REPORTS_FROM_SAME_CLAN_MEMBERS = General.getBoolean("AllowReportsFromSameClanMembers", false);
 			
 			// Load FloodProtector L2Properties file
 			final PropertiesParser FloodProtectors = new PropertiesParser(FLOOD_PROTECTOR_FILE);

@@ -40,6 +40,7 @@ import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.datatables.ArmorSetsData;
 import com.l2jserver.gameserver.datatables.AugmentationData;
+import com.l2jserver.gameserver.datatables.BotReportTable;
 import com.l2jserver.gameserver.datatables.BuyListData;
 import com.l2jserver.gameserver.datatables.CategoryData;
 import com.l2jserver.gameserver.datatables.CharNameTable;
@@ -312,6 +313,7 @@ public class GameServer
 		AugmentationData.getInstance();
 		CursedWeaponsManager.getInstance();
 		TransformData.getInstance();
+		BotReportTable.getInstance();
 		
 		printSection("Scripts");
 		QuestManager.getInstance();

@@ -52,6 +52,7 @@ public class PcStat extends PlayableStat
 	private int _oldMaxCp; // stats watch
 	private float _vitalityPoints = 1;
 	private byte _vitalityLevel = 0;
+	private long _startingXp;
 	
 	public static final int VITALITY_LEVELS[] =
 	{
@@ -376,6 +377,19 @@ public class PcStat extends PlayableStat
 		{
 			super.setExp(value);
 		}
+	}
+	
+	public void setStartingExp(long value)
+	{
+		if (Config.BOTREPORT_ENABLE)
+		{
+			_startingXp = value;
+		}
+	}
+	
+	public long getStartingExp()
+	{
+		return _startingXp;
 	}
 	
 	@Override
