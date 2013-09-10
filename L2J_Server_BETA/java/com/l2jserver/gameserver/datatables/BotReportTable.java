@@ -7,13 +7,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
-import javolution.util.FastMap;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
@@ -53,18 +52,18 @@ public final class BotReportTable
 	private static final String SQL_CLEAR_REPORTED_CHAR_DATA = "DELETE FROM bot_reported_char_data";
 	
 	private TIntLongHashMap _ipRegistry;
-	private FastMap<Integer, ReporterCharData> _charRegistry;
-	private FastMap<Integer, ReportedCharData> _reports;
-	private FastMap<Integer, PunishHolder> _punishments;
+	private Map<Integer, ReporterCharData> _charRegistry;
+	private Map<Integer, ReportedCharData> _reports;
+	private Map<Integer, PunishHolder> _punishments;
 	
 	BotReportTable()
 	{
 		if (Config.BOTREPORT_ENABLE)
 		{
 			_ipRegistry = new TIntLongHashMap();
-			_charRegistry = new FastMap<>();
-			_reports = new FastMap<>();
-			_punishments = new FastMap<>();
+			_charRegistry = new ConcurrentHashMap<>();
+			_reports = new ConcurrentHashMap<>();
+			_punishments = new ConcurrentHashMap<>();
 			
 			try
 			{
@@ -427,13 +426,13 @@ public final class BotReportTable
 	{
 		String con = player.getClient().getConnection().getInetAddress().getHostAddress();
 		String[] rawByte = con.split("\\.");
-		byte[] rawIp = new byte[4];
+		int[] rawIp = new int[4];
 		for (int i = 0; i < 4; i++)
 		{
-			rawIp[i] = Byte.parseByte(rawByte[i]);
+			rawIp[i] = Integer.parseInt(rawByte[i]);
 		}
 		
-		return (rawIp[0] & 0xff) | ((rawIp[1] << 8) & 0xff) | ((rawIp[2] << 16) & 0xff) | ((rawIp[3] << 24) & 0xff);
+		return rawIp[0] | (rawIp[1] << 8) | (rawIp[2] << 16) | (rawIp[3] << 24);
 	}
 	
 	/**
