@@ -36,14 +36,13 @@ public class CharSelected extends L2GameServerPacket
 		_sessionId = sessionId;
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x0b);
 		
 		writeS(_activeChar.getName());
-		writeD(_activeChar.getCharId()); // ??
+		writeD(_activeChar.getObjectId());
 		writeS(_activeChar.getTitle());
 		writeD(_sessionId);
 		writeD(_activeChar.getClanId());

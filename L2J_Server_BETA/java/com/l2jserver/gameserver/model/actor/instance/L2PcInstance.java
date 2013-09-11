@@ -480,10 +480,6 @@ public final class L2PcInstance extends L2Playable
 	
 	private final PcAppearance _appearance;
 	
-	/** The Identifier of the L2PcInstance */
-	@Deprecated
-	private final int _charId = 0x00030b7a;
-	
 	/** The Experience of the L2PcInstance before the last Death Penalty */
 	private long _expBeforeDeath;
 	
@@ -1678,8 +1674,10 @@ public final class L2PcInstance extends L2Playable
 		}
 		if (qs != null)
 		{
-			/*
-			 * Allow quest events if there was a quest talk event before.<br> Since this method is only called for quest bypasses from html,<br> getLastHtmlActionOriginId() should be equals getLastQuestNpcObject().
+			/**
+			 * Allow quest events if there was a quest talk event before.<br>
+			 * Since this method is only called for quest bypasses from html,<br>
+			 * getLastHtmlActionOriginId() should be equals getLastQuestNpcObject().
 			 */
 			if ((getLastQuestNpcObject() > 0) && (getLastQuestNpcObject() == getLastHtmlActionOriginId()))
 			{
@@ -3274,15 +3272,6 @@ public final class L2PcInstance extends L2Playable
 			_refund.deleteMe();
 		}
 		_refund = null;
-	}
-	
-	/**
-	 * @return the Identifier of the L2PcInstance.
-	 */
-	@Deprecated
-	public int getCharId()
-	{
-		return _charId;
 	}
 	
 	/**

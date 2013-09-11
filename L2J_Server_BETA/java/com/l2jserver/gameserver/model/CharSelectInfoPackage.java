@@ -30,7 +30,6 @@ public class CharSelectInfoPackage
 {
 	private String _name;
 	private int _objectId = 0;
-	private int _charId = 0x00030b7a;
 	private long _exp = 0;
 	private int _sp = 0;
 	private int _clanId = 0;
@@ -99,16 +98,6 @@ public class CharSelectInfoPackage
 	public void setAccessLevel(int level)
 	{
 		_accessLevel = level;
-	}
-	
-	public int getCharId()
-	{
-		return _charId;
-	}
-	
-	public void setCharId(int charId)
-	{
-		_charId = charId;
 	}
 	
 	public int getClanId()

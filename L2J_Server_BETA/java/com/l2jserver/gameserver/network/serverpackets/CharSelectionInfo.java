@@ -100,7 +100,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 			CharSelectInfoPackage charInfoPackage = _characterPackages[i];
 			
 			writeS(charInfoPackage.getName());
-			writeD(charInfoPackage.getCharId());
+			writeD(charInfoPackage.getObjectId());
 			writeS(_loginName);
 			writeD(_sessionId);
 			writeD(charInfoPackage.getClanId());
