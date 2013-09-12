@@ -51,7 +51,6 @@ public enum L2SkillType
 	SOULSHOT,
 	SPIRITSHOT,
 	SIEGEFLAG(L2SkillSiegeFlag.class),
-	TAKECASTLE,
 	TAKEFORT,
 	DELUXE_KEY_UNLOCK,
 	SOW,

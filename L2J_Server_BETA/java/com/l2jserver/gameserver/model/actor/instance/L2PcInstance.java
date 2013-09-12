@@ -9202,7 +9202,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		// TODO: Unhardcode skillId 844 which is the outpost construct skill
-		if (((sklTargetType == L2TargetType.HOLY) && !checkIfOkToCastSealOfRule(CastleManager.getInstance().getCastle(this), false, skill, target)) || ((sklTargetType == L2TargetType.FLAGPOLE) && !checkIfOkToCastFlagDisplay(FortManager.getInstance().getFort(this), false, skill, target)) || ((sklType == L2SkillType.SIEGEFLAG) && !L2SkillSiegeFlag.checkIfOkToPlaceFlag(this, false, skill.getId() == 844)))
+		if (((sklTargetType == L2TargetType.FLAGPOLE) && !checkIfOkToCastFlagDisplay(FortManager.getInstance().getFort(this), false, skill, target)) || ((sklType == L2SkillType.SIEGEFLAG) && !L2SkillSiegeFlag.checkIfOkToPlaceFlag(this, false, skill.getId() == 844)))
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			abortCast();
@@ -9230,46 +9230,6 @@ public final class L2PcInstance extends L2Playable
 		}
 		// finally, after passing all conditions
 		return true;
-	}
-	
-	public boolean checkIfOkToCastSealOfRule(Castle castle, boolean isCheckOnly, L2Skill skill, L2Object target)
-	{
-		SystemMessage sm;
-		if ((castle == null) || (castle.getCastleId() <= 0))
-		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-			sm.addSkillName(skill);
-		}
-		else if (!castle.getArtefacts().contains(target))
-		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.INCORRECT_TARGET);
-		}
-		else if (!castle.getSiege().getIsInProgress())
-		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-			sm.addSkillName(skill);
-		}
-		else if (!Util.checkIfInRange(200, this, target, true))
-		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED);
-		}
-		else if (castle.getSiege().getAttackerClan(getClan()) == null)
-		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-			sm.addSkillName(skill);
-		}
-		else
-		{
-			if (!isCheckOnly)
-			{
-				sm = SystemMessage.getSystemMessage(SystemMessageId.OPPONENT_STARTED_ENGRAVING);
-				castle.getSiege().announceToPlayer(sm, false);
-			}
-			return true;
-		}
-		
-		sendPacket(sm);
-		return false;
 	}
 	
 	public boolean checkIfOkToCastFlagDisplay(Fort fort, boolean isCheckOnly, L2Skill skill, L2Object target)
