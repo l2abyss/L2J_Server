@@ -50,7 +50,6 @@ public class L2CharTemplate
 	private int _baseMDef;
 	private int _basePAtkSpd;
 	private int _baseMAtkSpd;
-	private float _baseMReuseRate;
 	private int _baseAttackRange;
 	private L2WeaponType _baseAttackType;
 	private int _baseShldDef;
@@ -59,22 +58,6 @@ public class L2CharTemplate
 	private int _baseMCritRate;
 	// SpecialStats
 	private int _baseBreath;
-	private int _baseAggression;
-	private int _baseBleed;
-	private int _basePoison;
-	private int _baseStun;
-	private int _baseRoot;
-	private int _baseMovement;
-	private int _baseConfusion;
-	private int _baseSleep;
-	private double _baseAggressionVuln;
-	private double _baseBleedVuln;
-	private double _basePoisonVuln;
-	private double _baseStunVuln;
-	private double _baseRootVuln;
-	private double _baseMovementVuln;
-	private double _baseSleepVuln;
-	private double _baseCritVuln;
 	private int _baseFire;
 	private int _baseWind;
 	private int _baseWater;
@@ -88,10 +71,6 @@ public class L2CharTemplate
 	private double _baseHolyRes;
 	private double _baseDarkRes;
 	private double _baseElementRes;
-	
-	private int _baseMpConsumeRate;
-	private int _baseHpConsumeRate;
-	
 	/**
 	 * For client info use {@link #_fCollisionRadius}
 	 */
@@ -132,7 +111,6 @@ public class L2CharTemplate
 		_baseMDef = set.getInt("baseMDef", 0);
 		_basePAtkSpd = set.getInt("basePAtkSpd", 300);
 		_baseMAtkSpd = set.getInt("baseMAtkSpd", 333);
-		_baseMReuseRate = set.getFloat("baseMReuseDelay", 1.f);
 		_baseShldDef = set.getInt("baseShldDef", 0);
 		_baseAttackRange = set.getInt("baseAtkRange", 40);
 		_baseAttackType = L2WeaponType.findByName(set.getString("baseAtkType", "Fist"));
@@ -142,28 +120,12 @@ public class L2CharTemplate
 		
 		// SpecialStats
 		_baseBreath = set.getInt("baseBreath", 100);
-		_baseAggression = set.getInt("baseAggression", 0);
-		_baseBleed = set.getInt("baseBleed", 0);
-		_basePoison = set.getInt("basePoison", 0);
-		_baseStun = set.getInt("baseStun", 0);
-		_baseRoot = set.getInt("baseRoot", 0);
-		_baseMovement = set.getInt("baseMovement", 0);
-		_baseConfusion = set.getInt("baseConfusion", 0);
-		_baseSleep = set.getInt("baseSleep", 0);
 		_baseFire = set.getInt("baseFire", 0);
 		_baseWind = set.getInt("baseWind", 0);
 		_baseWater = set.getInt("baseWater", 0);
 		_baseEarth = set.getInt("baseEarth", 0);
 		_baseHoly = set.getInt("baseHoly", 0);
 		_baseDark = set.getInt("baseDark", 0);
-		_baseAggressionVuln = set.getInt("baseAggressionVuln", 0);
-		_baseBleedVuln = set.getInt("baseBleedVuln", 0);
-		_basePoisonVuln = set.getInt("basePoisonVuln", 0);
-		_baseStunVuln = set.getInt("baseStunVuln", 0);
-		_baseRootVuln = set.getInt("baseRootVuln", 0);
-		_baseMovementVuln = set.getInt("baseMovementVuln", 0);
-		_baseSleepVuln = set.getInt("baseSleepVuln", 0);
-		_baseCritVuln = set.getInt("baseCritVuln", 1);
 		_baseFireRes = set.getInt("baseFireRes", 0);
 		_baseWindRes = set.getInt("baseWindRes", 0);
 		_baseWaterRes = set.getInt("baseWaterRes", 0);
@@ -171,10 +133,6 @@ public class L2CharTemplate
 		_baseHolyRes = set.getInt("baseHolyRes", 0);
 		_baseDarkRes = set.getInt("baseDarkRes", 0);
 		_baseElementRes = set.getInt("baseElementRes", 0);
-		
-		// C4 Stats
-		_baseMpConsumeRate = set.getInt("baseMpConsumeRate", 0);
-		_baseHpConsumeRate = set.getInt("baseHpConsumeRate", 0);
 		
 		// Geometry
 		_fCollisionHeight = set.getDouble("collision_height", 0);
@@ -431,14 +389,6 @@ public class L2CharTemplate
 	}
 	
 	/**
-	 * @return the baseMReuseRate
-	 */
-	public float getBaseMReuseRate()
-	{
-		return _baseMReuseRate;
-	}
-	
-	/**
 	 * @return the baseShldDef
 	 */
 	public int getBaseShldDef()
@@ -486,150 +436,6 @@ public class L2CharTemplate
 	public int getBaseBreath()
 	{
 		return _baseBreath;
-	}
-	
-	/**
-	 * @return the baseAggression
-	 */
-	public int getBaseAggression()
-	{
-		return _baseAggression;
-	}
-	
-	/**
-	 * @return the baseBleed
-	 */
-	public int getBaseBleed()
-	{
-		return _baseBleed;
-	}
-	
-	/**
-	 * @return the basePoison
-	 */
-	public int getBasePoison()
-	{
-		return _basePoison;
-	}
-	
-	/**
-	 * @return the baseStun
-	 */
-	public int getBaseStun()
-	{
-		return _baseStun;
-	}
-	
-	/**
-	 * @return the baseRoot
-	 */
-	public int getBaseRoot()
-	{
-		return _baseRoot;
-	}
-	
-	/**
-	 * @return the baseMovement
-	 */
-	public int getBaseMovement()
-	{
-		return _baseMovement;
-	}
-	
-	/**
-	 * @return the baseConfusion
-	 */
-	public int getBaseConfusion()
-	{
-		return _baseConfusion;
-	}
-	
-	/**
-	 * @return the baseSleep
-	 */
-	public int getBaseSleep()
-	{
-		return _baseSleep;
-	}
-	
-	/**
-	 * @return the baseAggressionVuln
-	 */
-	public double getBaseAggressionVuln()
-	{
-		return _baseAggressionVuln;
-	}
-	
-	/**
-	 * @return the baseBleedVuln
-	 */
-	public double getBaseBleedVuln()
-	{
-		return _baseBleedVuln;
-	}
-	
-	/**
-	 * @return the basePoisonVuln
-	 */
-	public double getBasePoisonVuln()
-	{
-		return _basePoisonVuln;
-	}
-	
-	/**
-	 * @return the baseStunVuln
-	 */
-	public double getBaseStunVuln()
-	{
-		return _baseStunVuln;
-	}
-	
-	/**
-	 * @return the baseRootVuln
-	 */
-	public double getBaseRootVuln()
-	{
-		return _baseRootVuln;
-	}
-	
-	/**
-	 * @return the baseMovementVuln
-	 */
-	public double getBaseMovementVuln()
-	{
-		return _baseMovementVuln;
-	}
-	
-	/**
-	 * @return the baseSleepVuln
-	 */
-	public double getBaseSleepVuln()
-	{
-		return _baseSleepVuln;
-	}
-	
-	/**
-	 * @return the baseCritVuln
-	 */
-	public double getBaseCritVuln()
-	{
-		return _baseCritVuln;
-	}
-	
-	/**
-	 * @return the baseMpConsumeRate
-	 */
-	public int getBaseMpConsumeRate()
-	{
-		return _baseMpConsumeRate;
-	}
-	
-	/**
-	 * @return the baseHpConsumeRate
-	 */
-	public int getBaseHpConsumeRate()
-	{
-		return _baseHpConsumeRate;
 	}
 	
 	/**

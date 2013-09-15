@@ -755,7 +755,7 @@ public final class Formulas
 		if (crit)
 		{
 			// Finally retail like formula
-			damage = 2 * attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill) * target.calcStat(Stats.CRIT_VULN, target.getTemplate().getBaseCritVuln(), target, null) * ((70 * damage) / defence);
+			damage = 2 * attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill) * target.calcStat(Stats.CRIT_VULN, 1, target, null) * ((70 * damage) / defence);
 			// Crit dmg add is almost useless in normal hits...
 			damage += ((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 70) / defence);
 		}
