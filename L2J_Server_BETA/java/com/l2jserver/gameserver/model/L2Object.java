@@ -34,7 +34,6 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.ObjectKnownList;
 import com.l2jserver.gameserver.model.actor.poly.ObjectPoly;
-import com.l2jserver.gameserver.model.actor.position.ObjectPosition;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.interfaces.IDecayable;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
@@ -46,32 +45,30 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExSendUIEvent;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
+import com.l2jserver.gameserver.util.Point3D;
 
 /**
- * Mother class of all objects in the world which ones is it possible to interact (PC, NPC, Item...)<BR>
- * <BR>
- * L2Object :<BR>
- * <BR>
- * <li>L2Character</li> <li>L2ItemInstance</li>
+ * Base class for all interactive objects.
+ * @author unknown
  */
-public abstract class L2Object extends ObjectPosition implements IIdentifiable, INamable, ISpawnable, IUniqueId, IDecayable
+public abstract class L2Object extends Point3D implements IIdentifiable, INamable, ISpawnable, IUniqueId, IDecayable
 {
 	private boolean _isVisible; // Object visibility
 	private ObjectKnownList _knownList;
 	private String _name;
 	private int _objectId; // Object identifier
 	private ObjectPoly _poly;
+	private L2WorldRegion _worldRegion;
 	
 	private InstanceType _instanceType = null;
 	private volatile Map<String, Object> _scripts;
 	
 	public L2Object(int objectId)
 	{
-		super();
+		super(0, 0, 0);
 		setInstanceType(InstanceType.L2Object);
 		_objectId = objectId;
 		initKnownList();
-		setActiveObject(this);
 	}
 	
 	protected final void setInstanceType(InstanceType i)
@@ -621,6 +618,114 @@ public abstract class L2Object extends ObjectPosition implements IIdentifiable, 
 	public void removeStatusListener(L2Character object)
 	{
 		
+	}
+	
+	@Override
+	public final void setXYZ(int x, int y, int z)
+	{
+		assert getWorldRegion() != null;
+		
+		super.setXYZ(x, y, z);
+		
+		try
+		{
+			if (L2World.getInstance().getRegion(getWorldPosition()) != getWorldRegion())
+			{
+				updateWorldRegion();
+			}
+		}
+		catch (Exception e)
+		{
+			badCoords();
+		}
+	}
+	
+	protected void badCoords()
+	{
+		if (isCharacter())
+		{
+			this.decayMe();
+		}
+		else if (isPlayer())
+		{
+			((L2Character) this).teleToLocation(new Location(0, 0, 0), false);
+			((L2Character) this).sendMessage("Error with your coords, Please ask a GM for help!");
+		}
+	}
+	
+	public final void setXYZInvisible(int x, int y, int z)
+	{
+		assert getWorldRegion() == null;
+		if (x > L2World.MAP_MAX_X)
+		{
+			x = L2World.MAP_MAX_X - 5000;
+		}
+		if (x < L2World.MAP_MIN_X)
+		{
+			x = L2World.MAP_MIN_X + 5000;
+		}
+		if (y > L2World.MAP_MAX_Y)
+		{
+			y = L2World.MAP_MAX_Y - 5000;
+		}
+		if (y < L2World.MAP_MIN_Y)
+		{
+			y = L2World.MAP_MIN_Y + 5000;
+		}
+		
+		setXYZ(x, y, z);
+		this.setIsVisible(false);
+	}
+	
+	public final void setLocationInvisible(Location loc)
+	{
+		setXYZInvisible(loc.getX(), loc.getY(), loc.getZ());
+	}
+	
+	public void updateWorldRegion()
+	{
+		if (!this.isVisible())
+		{
+			return;
+		}
+		
+		L2WorldRegion newRegion = L2World.getInstance().getRegion(getWorldPosition());
+		if (newRegion != getWorldRegion())
+		{
+			getWorldRegion().removeVisibleObject(this);
+			
+			setWorldRegion(newRegion);
+			
+			// Add the L2Oject spawn to _visibleObjects and if necessary to _allplayers of its L2WorldRegion
+			getWorldRegion().addVisibleObject(this);
+		}
+	}
+	
+	public final void setWorldPosition(Point3D newPosition)
+	{
+		setXYZ(newPosition.getX(), newPosition.getY(), newPosition.getZ());
+	}
+	
+	public final L2WorldRegion getWorldRegion()
+	{
+		return _worldRegion;
+	}
+	
+	public void setWorldRegion(L2WorldRegion value)
+	{
+		if ((getWorldRegion() != null) && isCharacter()) // confirm revalidation of old region's zones
+		{
+			if (value != null)
+			{
+				getWorldRegion().revalidateZones((L2Character) this); // at world region change
+			}
+			else
+			{
+				getWorldRegion().removeFromZones((L2Character) this); // at world region change
+			}
+		}
+		
+		_worldRegion = value;
 	}
 	
 	@Override

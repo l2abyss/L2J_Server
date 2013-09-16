@@ -738,12 +738,12 @@ public class CursedWeapon implements INamable
 	{
 		if (_isActivated && (_player != null))
 		{
-			return _player.getPosition().getWorldPosition();
+			return _player.getWorldPosition();
 		}
 		
 		if (_isDropped && (_item != null))
 		{
-			return _item.getPosition().getWorldPosition();
+			return _item.getWorldPosition();
 		}
 		
 		return null;

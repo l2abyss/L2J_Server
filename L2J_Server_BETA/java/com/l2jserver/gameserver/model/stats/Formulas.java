@@ -570,7 +570,7 @@ public final class Formulas
 			return 0;
 		}
 		
-		Siege siege = SiegeManager.getInstance().getSiege(activeChar.getPosition().getX(), activeChar.getPosition().getY(), activeChar.getPosition().getZ());
+		Siege siege = SiegeManager.getInstance().getSiege(activeChar.getX(), activeChar.getY(), activeChar.getZ());
 		if ((siege == null) || !siege.getIsInProgress())
 		{
 			return 0;

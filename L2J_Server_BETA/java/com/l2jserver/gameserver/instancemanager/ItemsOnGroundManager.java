@@ -117,14 +117,14 @@ public final class ItemsOnGroundManager implements Runnable
 					{
 						item.setEnchantLevel(rs.getInt(4));
 					}
-					item.getPosition().setXYZ(rs.getInt(5), rs.getInt(6), rs.getInt(7));
-					item.getPosition().setWorldRegion(L2World.getInstance().getRegion(item.getPosition().getWorldPosition()));
-					item.getPosition().getWorldRegion().addVisibleObject(item);
+					item.setXYZ(rs.getInt(5), rs.getInt(6), rs.getInt(7));
+					item.setWorldRegion(L2World.getInstance().getRegion(item.getWorldPosition()));
+					item.getWorldRegion().addVisibleObject(item);
 					final long dropTime = rs.getLong(8);
 					item.setDropTime(dropTime);
 					item.setProtected(dropTime == -1);
 					item.setIsVisible(true);
-					L2World.getInstance().addVisibleObject(item, item.getPosition().getWorldRegion());
+					L2World.getInstance().addVisibleObject(item, item.getWorldRegion());
 					_items.add(item);
 					count++;
 					// add to ItemsAutoDestroy only items not protected

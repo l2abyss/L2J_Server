@@ -20,9 +20,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
-import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.position.ObjectPosition;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
@@ -101,8 +99,7 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 		// Stop if use self-buff (except if on AirShip or Boat).
 		if (((skill.getSkillType() == L2SkillType.BUFF) && (skill.getTargetType() == L2TargetType.SELF)) && (!activeChar.isInAirShip() || !activeChar.isInBoat()))
 		{
-			final ObjectPosition charPos = activeChar.getPosition();
-			activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new Location(charPos.getX(), charPos.getY(), charPos.getZ(), charPos.getHeading()));
+			activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, activeChar.getLocation());
 		}
 	}
 	
