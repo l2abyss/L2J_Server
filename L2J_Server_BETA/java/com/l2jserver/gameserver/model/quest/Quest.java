@@ -65,6 +65,7 @@ import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -2538,65 +2539,114 @@ public class Quest extends ManagedScript implements IIdentifiable
 	}
 	
 	/**
-	 * Add a temporary (quest) spawn
-	 * @param npcId
-	 * @param cha
-	 * @return instance of newly spawned npc
+	 * Add a temporary spawn of the specified NPC.
+	 * @param npcId the ID of the NPC to spawn
+	 * @param pos the object containing the spawn location coordinates
+	 * @return the {@link L2Npc} object of the newly spawned NPC or {@code null} if the NPC doesn't exist
+	 * @see #addSpawn(int, IPositionable, boolean, long, boolean, int)
+	 * @see #addSpawn(int, int, int, int, int, boolean, long, boolean, int)
 	 */
-	public static L2Npc addSpawn(int npcId, L2Character cha)
+	public static L2Npc addSpawn(int npcId, IPositionable pos)
 	{
-		return addSpawn(npcId, cha.getX(), cha.getY(), cha.getZ(), cha.getHeading(), false, 0, false, 0);
+		return addSpawn(npcId, pos.getX(), pos.getY(), pos.getZ(), pos.getHeading(), false, 0, false, 0);
 	}
 	
 	/**
-	 * Add a temporary (quest) spawn
-	 * @param npcId
-	 * @param cha
-	 * @param isSummonSpawn
-	 * @return instance of newly spawned npc with summon animation
+	 * Add a temporary spawn of the specified NPC.
+	 * @param npcId the ID of the NPC to spawn
+	 * @param pos the object containing the spawn location coordinates
+	 * @param isSummonSpawn if {@code true}, displays a summon animation on NPC spawn
+	 * @return the {@link L2Npc} object of the newly spawned NPC or {@code null} if the NPC doesn't exist
+	 * @see #addSpawn(int, IPositionable, boolean, long, boolean, int)
+	 * @see #addSpawn(int, int, int, int, int, boolean, long, boolean, int)
 	 */
-	public static L2Npc addSpawn(int npcId, L2Character cha, boolean isSummonSpawn)
+	public static L2Npc addSpawn(int npcId, IPositionable pos, boolean isSummonSpawn)
 	{
-		return addSpawn(npcId, cha.getX(), cha.getY(), cha.getZ(), cha.getHeading(), false, 0, isSummonSpawn, 0);
+		return addSpawn(npcId, pos.getX(), pos.getY(), pos.getZ(), pos.getHeading(), false, 0, isSummonSpawn, 0);
 	}
 	
 	/**
-	 * @param npcId
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param heading
-	 * @param randomOffSet
-	 * @param despawnDelay
-	 * @return
+	 * Add a temporary spawn of the specified NPC.
+	 * @param npcId the ID of the NPC to spawn
+	 * @param pos the object containing the spawn location coordinates
+	 * @param randomOffset if {@code true}, adds +/- 50~100 to X/Y coordinates of the spawn location
+	 * @param despawnDelay time in milliseconds till the NPC is despawned (0 - only despawned on server shutdown)
+	 * @return the {@link L2Npc} object of the newly spawned NPC or {@code null} if the NPC doesn't exist
+	 * @see #addSpawn(int, IPositionable, boolean, long, boolean, int)
+	 * @see #addSpawn(int, int, int, int, int, boolean, long, boolean, int)
 	 */
-	public static L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffSet, long despawnDelay)
+	public static L2Npc addSpawn(int npcId, IPositionable pos, boolean randomOffset, long despawnDelay)
 	{
-		return addSpawn(npcId, x, y, z, heading, randomOffSet, despawnDelay, false, 0);
+		return addSpawn(npcId, pos.getX(), pos.getY(), pos.getZ(), pos.getHeading(), randomOffset, despawnDelay, false, 0);
 	}
 	
 	/**
-	 * @param npcId
-	 * @param loc
-	 * @param randomOffSet
-	 * @param despawnDelay
-	 * @return
+	 * Add a temporary spawn of the specified NPC.
+	 * @param npcId the ID of the NPC to spawn
+	 * @param pos the object containing the spawn location coordinates
+	 * @param randomOffset if {@code true}, adds +/- 50~100 to X/Y coordinates of the spawn location
+	 * @param despawnDelay time in milliseconds till the NPC is despawned (0 - only despawned on server shutdown)
+	 * @param isSummonSpawn if {@code true}, displays a summon animation on NPC spawn
+	 * @return the {@link L2Npc} object of the newly spawned NPC or {@code null} if the NPC doesn't exist
+	 * @see #addSpawn(int, IPositionable, boolean, long, boolean, int)
+	 * @see #addSpawn(int, int, int, int, int, boolean, long, boolean, int)
 	 */
-	public static L2Npc addSpawn(int npcId, Location loc, boolean randomOffSet, long despawnDelay)
+	public static L2Npc addSpawn(int npcId, IPositionable pos, boolean randomOffset, long despawnDelay, boolean isSummonSpawn)
 	{
-		return addSpawn(npcId, loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), randomOffSet, despawnDelay, false, 0);
+		return addSpawn(npcId, pos.getX(), pos.getY(), pos.getZ(), pos.getHeading(), randomOffset, despawnDelay, isSummonSpawn, 0);
 	}
 	
 	/**
-	 * @param npcId
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param heading
-	 * @param randomOffset
-	 * @param despawnDelay
-	 * @param isSummonSpawn
-	 * @return
+	 * Add a temporary spawn of the specified NPC.
+	 * @param npcId the ID of the NPC to spawn
+	 * @param pos the object containing the spawn location coordinates
+	 * @param randomOffset if {@code true}, adds +/- 50~100 to X/Y coordinates of the spawn location
+	 * @param despawnDelay time in milliseconds till the NPC is despawned (0 - only despawned on server shutdown)
+	 * @param isSummonSpawn if {@code true}, displays a summon animation on NPC spawn
+	 * @param instanceId the ID of the instance to spawn the NPC in (0 - the open world)
+	 * @return the {@link L2Npc} object of the newly spawned NPC or {@code null} if the NPC doesn't exist
+	 * @see #addSpawn(int, IPositionable)
+	 * @see #addSpawn(int, IPositionable, boolean)
+	 * @see #addSpawn(int, IPositionable, boolean, long)
+	 * @see #addSpawn(int, IPositionable, boolean, long, boolean)
+	 * @see #addSpawn(int, int, int, int, int, boolean, long, boolean, int)
+	 */
+	public static L2Npc addSpawn(int npcId, IPositionable pos, boolean randomOffset, long despawnDelay, boolean isSummonSpawn, int instanceId)
+	{
+		return addSpawn(npcId, pos.getX(), pos.getY(), pos.getZ(), pos.getHeading(), randomOffset, despawnDelay, isSummonSpawn, instanceId);
+	}
+	
+	/**
+	 * Add a temporary spawn of the specified NPC.
+	 * @param npcId the ID of the NPC to spawn
+	 * @param x the X coordinate of the spawn location
+	 * @param y the Y coordinate of the spawn location
+	 * @param z the Z coordinate (height) of the spawn location
+	 * @param heading the heading of the NPC
+	 * @param randomOffset if {@code true}, adds +/- 50~100 to X/Y coordinates of the spawn location
+	 * @param despawnDelay time in milliseconds till the NPC is despawned (0 - only despawned on server shutdown)
+	 * @return the {@link L2Npc} object of the newly spawned NPC or {@code null} if the NPC doesn't exist
+	 * @see #addSpawn(int, IPositionable, boolean, long, boolean, int)
+	 * @see #addSpawn(int, int, int, int, int, boolean, long, boolean, int)
+	 */
+	public static L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, long despawnDelay)
+	{
+		return addSpawn(npcId, x, y, z, heading, randomOffset, despawnDelay, false, 0);
+	}
+	
+	/**
+	 * Add a temporary spawn of the specified NPC.
+	 * @param npcId the ID of the NPC to spawn
+	 * @param x the X coordinate of the spawn location
+	 * @param y the Y coordinate of the spawn location
+	 * @param z the Z coordinate (height) of the spawn location
+	 * @param heading the heading of the NPC
+	 * @param randomOffset if {@code true}, adds +/- 50~100 to X/Y coordinates of the spawn location
+	 * @param despawnDelay time in milliseconds till the NPC is despawned (0 - only despawned on server shutdown)
+	 * @param isSummonSpawn if {@code true}, displays a summon animation on NPC spawn
+	 * @return the {@link L2Npc} object of the newly spawned NPC or {@code null} if the NPC doesn't exist
+	 * @see #addSpawn(int, IPositionable, boolean, long, boolean, int)
+	 * @see #addSpawn(int, int, int, int, int, boolean, long, boolean, int)
 	 */
 	public static L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, long despawnDelay, boolean isSummonSpawn)
 	{
@@ -2604,82 +2654,51 @@ public class Quest extends ManagedScript implements IIdentifiable
 	}
 	
 	/**
-	 * @param npcId
-	 * @param loc
-	 * @param randomOffset
-	 * @param despawnDelay
-	 * @param isSummonSpawn
-	 * @return
-	 */
-	public static L2Npc addSpawn(int npcId, Location loc, boolean randomOffset, long despawnDelay, boolean isSummonSpawn)
-	{
-		return addSpawn(npcId, loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), randomOffset, despawnDelay, isSummonSpawn, 0);
-	}
-	
-	/**
-	 * @param npcId
-	 * @param loc
-	 * @param randomOffset
-	 * @param despawnDelay
-	 * @param isSummonSpawn
-	 * @param instanceId
-	 * @return
-	 */
-	public static L2Npc addSpawn(int npcId, Location loc, boolean randomOffset, long despawnDelay, boolean isSummonSpawn, int instanceId)
-	{
-		return addSpawn(npcId, loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), randomOffset, despawnDelay, isSummonSpawn, instanceId);
-	}
-	
-	/**
-	 * @param npcId
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param heading
-	 * @param randomOffset
-	 * @param despawnDelay
-	 * @param isSummonSpawn
-	 * @param instanceId
-	 * @return
+	 * Add a temporary spawn of the specified NPC.
+	 * @param npcId the ID of the NPC to spawn
+	 * @param x the X coordinate of the spawn location
+	 * @param y the Y coordinate of the spawn location
+	 * @param z the Z coordinate (height) of the spawn location
+	 * @param heading the heading of the NPC
+	 * @param randomOffset if {@code true}, adds +/- 50~100 to X/Y coordinates of the spawn location
+	 * @param despawnDelay time in milliseconds till the NPC is despawned (0 - only despawned on server shutdown)
+	 * @param isSummonSpawn if {@code true}, displays a summon animation on NPC spawn
+	 * @param instanceId the ID of the instance to spawn the NPC in (0 - the open world)
+	 * @return the {@link L2Npc} object of the newly spawned NPC or {@code null} if the NPC doesn't exist
+	 * @see #addSpawn(int, IPositionable, boolean, long, boolean, int)
+	 * @see #addSpawn(int, int, int, int, int, boolean, long)
+	 * @see #addSpawn(int, int, int, int, int, boolean, long, boolean)
 	 */
 	public static L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, long despawnDelay, boolean isSummonSpawn, int instanceId)
 	{
-		L2Npc result = null;
 		try
 		{
 			L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId);
-			if (template != null)
+			if (template == null)
 			{
-				// Sometimes, even if the quest script specifies some xyz (for example npc.getX() etc) by the time the code
-				// reaches here, xyz have become 0! Also, a questdev might have purposely set xy to 0,0...however,
-				// the spawn code is coded such that if x=y=0, it looks into location for the spawn loc! This will NOT work
-				// with quest spawns! For both of the above cases, we need a fail-safe spawn. For this, we use the
-				// default spawn location, which is at the player's loc.
+				_log.log(Level.SEVERE, "addSpawn(): no NPC template found for NPC #" + npcId + "!");
+			}
+			else
+			{
 				if ((x == 0) && (y == 0))
 				{
-					_log.log(Level.SEVERE, "Failed to adjust bad locks for quest spawn!  Spawn aborted!");
+					_log.log(Level.SEVERE, "addSpawn(): invalid spawn coordinates for NPC #" + npcId + "!");
 					return null;
 				}
 				if (randomOffset)
 				{
-					int offset;
-					
-					offset = Rnd.get(2); // Get the direction of the offset
-					if (offset == 0)
+					int offset = Rnd.get(50, 100);
+					if (Rnd.nextBoolean())
 					{
-						// make offset negative
-						offset = -1;
+						offset *= -1;
 					}
-					offset *= Rnd.get(50, 100);
 					x += offset;
 					
-					offset = Rnd.get(2); // Get the direction of the offset
-					if (offset == 0)
+					offset = Rnd.get(50, 100);
+					if (Rnd.nextBoolean())
 					{
-						// make offset negative
-						offset = -1;
+						offset *= -1;
 					}
-					offset *= Rnd.get(50, 100);
 					y += offset;
 				}
 				L2Spawn spawn = new L2Spawn(template);
@@ -2689,7 +2708,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 				spawn.setY(y);
 				spawn.setZ(z);
 				spawn.stopRespawn();
-				result = spawn.spawnOne(isSummonSpawn);
+				L2Npc result = spawn.spawnOne(isSummonSpawn);
 				
 				if (despawnDelay > 0)
 				{
@@ -2701,7 +2720,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 		}
 		catch (Exception e1)
 		{
-			_log.warning("Could not spawn Npc " + npcId + " Error: " + e1.getMessage());
+			_log.warning("Could not spawn NPC #" + npcId + "; error: " + e1.getMessage());
 		}
 		
 		return null;
