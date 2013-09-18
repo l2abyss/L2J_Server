@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.util.Point3D;
+import com.l2jserver.gameserver.model.interfaces.ILocational;
 
 /**
  * @author -Nemesiss-
@@ -118,7 +118,7 @@ public class GeoData
 	 * @param worldPosition the world position
 	 * @return {@code true} if the character can see the target at the given world position, {@code false} otherwise
 	 */
-	public boolean canSeeTarget(L2Object cha, Point3D worldPosition)
+	public boolean canSeeTarget(L2Object cha, ILocational worldPosition)
 	{
 		// If geodata is off do simple check :]
 		// Don't allow casting on players on different dungeon levels etc

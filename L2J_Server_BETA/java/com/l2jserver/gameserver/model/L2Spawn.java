@@ -212,6 +212,18 @@ public class L2Spawn implements IPositionable, IIdentifiable
 	}
 	
 	/**
+	 * Set the x, y, z position of the spawn point.
+	 * @param z the z coordinate
+	 */
+	@Override
+	public void setXYZ(int x, int y, int z)
+	{
+		setX(x);
+		setY(y);
+		setZ(z);
+	}
+	
+	/**
 	 * @return the heading of L2NpcInstance when they are spawned.
 	 */
 	@Override

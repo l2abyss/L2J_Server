@@ -31,9 +31,9 @@ import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.interfaces.ILocational;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
@@ -363,7 +363,7 @@ public abstract class L2ZoneType
 	 * @param loc
 	 * @return
 	 */
-	public boolean isInsideZone(Location loc)
+	public boolean isInsideZone(ILocational loc)
 	{
 		return _zone.isInsideZone(loc.getX(), loc.getY(), loc.getZ());
 	}

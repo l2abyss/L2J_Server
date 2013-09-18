@@ -139,6 +139,7 @@ public class Point3D implements IPositionable
 		_instanceId.set(loc.getInstanceId());
 	}
 	
+	@Override
 	public void setXYZ(int x, int y, int z)
 	{
 		_x.set(x);

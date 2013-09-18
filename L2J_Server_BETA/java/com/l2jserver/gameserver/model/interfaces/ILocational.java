@@ -18,25 +18,22 @@
  */
 package com.l2jserver.gameserver.model.interfaces;
 
-import com.l2jserver.gameserver.model.Location;
 
 /**
- * Interface for changing location of object.
- * @author Zoey76
+ * Simple interface for location of object.
+ * @author xban1x
  */
-public interface IPositionable extends ILocational
+public interface ILocational
 {
-	public void setX(int x);
+	public int getX();
 	
-	public void setY(int y);
+	public int getY();
 	
-	public void setZ(int z);
+	public int getZ();
 	
-	public void setXYZ(int x, int y, int z);
+	public int getHeading();
 	
-	public void setHeading(int heading);
+	public int getInstanceId();
 	
-	public void setInstanceId(int instanceId);
-	
-	public void setLocation(Location loc);
+	public ILocational getLocation();
 }

@@ -45,7 +45,7 @@ import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.util.Point3D;
+import com.l2jserver.gameserver.model.interfaces.ILocational;
 
 /**
  * Geodata engine implementation.
@@ -99,7 +99,7 @@ public class GeoEngine extends GeoData
 	}
 	
 	@Override
-	public boolean canSeeTarget(L2Object cha, Point3D target)
+	public boolean canSeeTarget(L2Object cha, ILocational target)
 	{
 		if (DoorTable.getInstance().checkIfDoorsBetween(cha.getX(), cha.getY(), cha.getZ(), target.getX(), target.getY(), target.getZ(), cha.getInstanceId(), true))
 		{

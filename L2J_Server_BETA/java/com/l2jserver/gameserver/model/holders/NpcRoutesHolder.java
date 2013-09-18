@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.interfaces.ILocational;
 
 /**
  * Holds depending between NPC's spawn point and route
@@ -65,7 +66,7 @@ public class NpcRoutesHolder
 	 * @param loc
 	 * @return unique text string for given Location.
 	 */
-	private String getUniqueKey(Location loc)
+	private String getUniqueKey(ILocational loc)
 	{
 		return (loc.getX() + "-" + loc.getY() + "-" + loc.getZ());
 	}
