@@ -5757,6 +5757,16 @@ public final class L2PcInstance extends L2Playable
 		// If in Arena, do nothing
 		if (isInsideZone(ZoneId.PVP) || targetPlayer.isInsideZone(ZoneId.PVP))
 		{
+			if ((getSiegeState() > 0) && (targetPlayer.getSiegeState() > 0) && (getSiegeState() != targetPlayer.getSiegeState()))
+			{
+				final L2Clan killerClan = getClan();
+				final L2Clan targetClan = targetPlayer.getClan();
+				if ((killerClan != null) && (targetClan != null))
+				{
+					killerClan.addSiegeKill();
+					targetClan.addSiegeDeath();
+				}
+			}
 			return;
 		}
 		
@@ -5800,7 +5810,6 @@ public final class L2PcInstance extends L2Playable
 	{
 		if ((target instanceof L2PcInstance) && AntiFeedManager.getInstance().check(this, target))
 		{
-			// Add karma to attacker and increase its PK counter
 			setPvpKills(getPvpKills() + 1);
 			
 			// Send a Server->Client UserInfo packet to attacker with its Karma and PK Counter

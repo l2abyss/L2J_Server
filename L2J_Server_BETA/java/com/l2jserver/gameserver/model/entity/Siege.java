@@ -288,6 +288,30 @@ public class Siege implements Siegable
 				Announcements.getInstance().announceToAll(sm);
 			}
 			
+			for (L2SiegeClan attackerClan : getAttackerClans())
+			{
+				final L2Clan clan = ClanTable.getInstance().getClan(attackerClan.getClanId());
+				if (clan == null)
+				{
+					continue;
+				}
+				
+				clan.clearSiegeKills();
+				clan.clearSiegeDeaths();
+			}
+			
+			for (L2SiegeClan defenderClan : getDefenderClans())
+			{
+				final L2Clan clan = ClanTable.getInstance().getClan(defenderClan.getClanId());
+				if (clan == null)
+				{
+					continue;
+				}
+				
+				clan.clearSiegeKills();
+				clan.clearSiegeDeaths();
+			}
+			
 			getCastle().updateClansReputation();
 			removeFlags(); // Removes all flags. Note: Remove flag before teleporting players
 			teleportPlayer(SiegeTeleportWhoType.Attacker, TeleportWhereType.TOWN); // Teleport to the second closest town

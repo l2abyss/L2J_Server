@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -191,6 +192,9 @@ public class L2Clan implements IIdentifiable, INamable
 	private boolean _noticeEnabled = false;
 	private static final int MAX_NOTICE_LENGTH = 8192;
 	private int _newLeaderId;
+	
+	private AtomicInteger _siegeKills;
+	private AtomicInteger _siegeDeaths;
 	
 	/**
 	 * Called if a clan is referenced only by id. In this case all other data needs to be fetched from db
@@ -3118,6 +3122,62 @@ public class L2Clan implements IIdentifiable, INamable
 	public String getNewLeaderName()
 	{
 		return CharNameTable.getInstance().getNameById(_newLeaderId);
+	}
+	
+	public int getSiegeKills()
+	{
+		return _siegeKills != null ? _siegeKills.get() : 0;
+	}
+	
+	public int getSiegeDeaths()
+	{
+		return _siegeDeaths != null ? _siegeDeaths.get() : 0;
+	}
+	
+	public int addSiegeKill()
+	{
+		if (_siegeKills == null)
+		{
+			synchronized (this)
+			{
+				if (_siegeKills == null)
+				{
+					_siegeKills = new AtomicInteger();
+				}
+			}
+		}
+		return _siegeKills.incrementAndGet();
+	}
+	
+	public int addSiegeDeath()
+	{
+		if (_siegeDeaths == null)
+		{
+			synchronized (this)
+			{
+				if (_siegeDeaths == null)
+				{
+					_siegeDeaths = new AtomicInteger();
+				}
+			}
+		}
+		return _siegeDeaths.incrementAndGet();
+	}
+	
+	public void clearSiegeKills()
+	{
+		if (_siegeKills != null)
+		{
+			_siegeKills.set(0);
+		}
+	}
+	
+	public void clearSiegeDeaths()
+	{
+		if (_siegeDeaths != null)
+		{
+			_siegeDeaths.set(0);
+		}
 	}
 	
 	// Listeners
