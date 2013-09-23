@@ -416,17 +416,14 @@ public class L2Party extends AbstractPlayerGroup
 			
 			try
 			{
-				if (player.getFusionSkill() != null)
+				// Channeling a player!
+				if (player.isChanneling() && (player.getSkillChannelizer().hasChannelized()))
 				{
 					player.abortCast();
 				}
-				
-				for (L2Character character : player.getKnownList().getKnownCharacters())
+				else if (player.isChannelized())
 				{
-					if ((character.getFusionSkill() != null) && (character.getFusionSkill().getTarget() == player))
-					{
-						character.abortCast();
-					}
+					player.getSkillChannelized().abortChannelization();
 				}
 			}
 			catch (Exception e)

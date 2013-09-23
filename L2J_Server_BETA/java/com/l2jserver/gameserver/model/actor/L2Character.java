@@ -60,7 +60,6 @@ import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.TownManager;
 import com.l2jserver.gameserver.model.ChanceSkillList;
 import com.l2jserver.gameserver.model.CharEffectList;
-import com.l2jserver.gameserver.model.FusionSkill;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
@@ -107,6 +106,8 @@ import com.l2jserver.gameserver.model.options.OptionsSkillType;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
+import com.l2jserver.gameserver.model.skills.SkillChannelized;
+import com.l2jserver.gameserver.model.skills.SkillChannelizer;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
@@ -205,9 +206,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	/** Map containing the active chance skills on this character */
 	private volatile ChanceSkillList _chanceSkills;
 	
-	/** Current force buff this caster is casting to a target */
-	protected FusionSkill _fusionSkill;
-	
 	private final byte[] _zones = new byte[ZoneId.getZoneCount()];
 	protected byte _zoneValidateCounter = 4;
 	
@@ -224,6 +222,13 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	private volatile Map<Integer, OptionsSkillHolder> _triggerSkills;
 	
 	private final CharEffectList _effectList = new CharEffectList(this);
+	
+	/** The character that summons this character. */
+	private L2Character _summoner = null;
+	
+	private SkillChannelizer _channelizer = null;
+	
+	private SkillChannelized _channelized = null;
 	
 	public final CharEffectList getEffectList()
 	{
@@ -1750,9 +1755,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		// Get the Base Casting Time of the Skills.
 		int skillTime = (skill.getHitTime() + skill.getCoolTime());
 		
-		boolean effectWhileCasting = (skill.getSkillType() == L2SkillType.FUSION) || (skill.getSkillType() == L2SkillType.SIGNET_CASTTIME);
-		// Don't modify the skill time for FORCE_BUFF skills. The skill time for those skills represent the buff time.
-		if (!effectWhileCasting)
+		if (!skill.isChanneling())
 		{
 			// Calculate the Casting Time of the "Non-Static" Skills (with caster PAtk/MAtkSpd).
 			if (!skill.isStatic())
@@ -1860,59 +1863,29 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			setHeading(Util.calculateHeadingFrom(this, target));
 		}
 		
-		// For force buff skills, start the effect as long as the player is casting.
-		if (effectWhileCasting)
+		if (isPlayable())
 		{
-			// Consume Items if necessary and Send the Server->Client packet InventoryUpdate with Item modification to all the L2Character
 			if (skill.getItemConsumeId() > 0)
 			{
 				if (!destroyItemByItemId("Consume", skill.getItemConsumeId(), skill.getItemConsume(), null, true))
 				{
-					sendPacket(SystemMessageId.NOT_ENOUGH_ITEMS);
-					if (simultaneously)
-					{
-						setIsCastingSimultaneouslyNow(false);
-					}
-					else
-					{
-						setIsCastingNow(false);
-					}
-					
-					if (isPlayer())
-					{
-						getAI().setIntention(AI_INTENTION_ACTIVE);
-					}
+					getActingPlayer().sendPacket(SystemMessageId.NOT_ENOUGH_ITEMS);
+					abortCast();
 					return;
 				}
 			}
 			
-			// Consume Souls if necessary
-			if (skill.getMaxSoulConsumeCount() > 0)
+			// reduce talisman mana on skill use
+			if ((skill.getReferenceItemId() > 0) && (ItemTable.getInstance().getTemplate(skill.getReferenceItemId()).getBodyPart() == L2Item.SLOT_DECO))
 			{
-				if (isPlayer())
+				for (L2ItemInstance item : getInventory().getItemsByItemId(skill.getReferenceItemId()))
 				{
-					if (!getActingPlayer().decreaseSouls(skill.getMaxSoulConsumeCount(), skill))
+					if (item.isEquipped())
 					{
-						if (simultaneously)
-						{
-							setIsCastingSimultaneouslyNow(false);
-						}
-						else
-						{
-							setIsCastingNow(false);
-						}
-						return;
+						item.decreaseMana(false, item.useSkillDisTime());
+						break;
 					}
 				}
-			}
-			
-			if (skill.getSkillType() == L2SkillType.FUSION)
-			{
-				startFusionSkill(target, skill);
-			}
-			else
-			{
-				callSkill(skill, targets);
 			}
 		}
 		
@@ -1946,32 +1919,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			sendPacket(sm);
 		}
 		
-		if (isPlayable())
-		{
-			if (!effectWhileCasting && (skill.getItemConsumeId() > 0))
-			{
-				if (!destroyItemByItemId("Consume", skill.getItemConsumeId(), skill.getItemConsume(), null, true))
-				{
-					getActingPlayer().sendPacket(SystemMessageId.NOT_ENOUGH_ITEMS);
-					abortCast();
-					return;
-				}
-			}
-			
-			// reduce talisman mana on skill use
-			if ((skill.getReferenceItemId() > 0) && (ItemTable.getInstance().getTemplate(skill.getReferenceItemId()).getBodyPart() == L2Item.SLOT_DECO))
-			{
-				for (L2ItemInstance item : getInventory().getItemsByItemId(skill.getReferenceItemId()))
-				{
-					if (item.isEquipped())
-					{
-						item.decreaseMana(false, item.useSkillDisTime());
-						break;
-					}
-				}
-			}
-		}
-		
 		// Before start AI Cast Broadcast Fly Effect is Need
 		if (skill.getFlyType() != null)
 		{
@@ -1984,19 +1931,14 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		if (skillTime > 0)
 		{
 			// Send a Server->Client packet SetupGauge with the color of the gauge and the casting time
-			if (isPlayer() && !effectWhileCasting)
+			if (isPlayer())
 			{
 				sendPacket(new SetupGauge(SetupGauge.BLUE, skillTime));
 			}
 			
-			if (skill.getHitCounts() > 0)
+			if (skill.isChanneling())
 			{
-				skillTime = (skillTime * skill.getHitTimings()[0]) / 100;
-			}
-			
-			if (effectWhileCasting)
-			{
-				mut.setPhase(2);
+				getSkillChannelizer().startChanneling(skill);
 			}
 			
 			if (simultaneously)
@@ -2095,7 +2037,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		}
 		
 		// prevent casting signets to peace zone
-		if ((skill.getSkillType() == L2SkillType.SIGNET) || (skill.getSkillType() == L2SkillType.SIGNET_CASTTIME))
+		if (skill.isChanneling())
 		{
 			L2WorldRegion region = getWorldRegion();
 			if (region == null)
@@ -2216,19 +2158,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		return -1;
 	}
 	
-	public void startFusionSkill(L2Character target, L2Skill skill)
-	{
-		if (skill.getSkillType() != L2SkillType.FUSION)
-		{
-			return;
-		}
-		
-		if (_fusionSkill == null)
-		{
-			_fusionSkill = new FusionSkill(this, target, skill);
-		}
-	}
-	
 	/**
 	 * Kill the L2Character.<br>
 	 * <B><U>Actions</U>:</B>
@@ -2324,9 +2253,9 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		// a resurrection popup will show up
 		if (isSummon())
 		{
-			if (((L2Summon) this).isPhoenixBlessed() && (((L2Summon) this).getOwner() != null))
+			if (getSummon().isPhoenixBlessed() && (getActingPlayer() != null))
 			{
-				((L2Summon) this).getOwner().reviveRequest(((L2Summon) this).getOwner(), null, true, 0);
+				getActingPlayer().reviveRequest(getActingPlayer(), null, true, 0);
 			}
 		}
 		if (isPlayer())
@@ -2340,24 +2269,10 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				getActingPlayer().reviveRequest(getActingPlayer(), null, false, 0);
 			}
 		}
-		try
+		
+		if (isChannelized())
 		{
-			if (_fusionSkill != null)
-			{
-				abortCast();
-			}
-			
-			for (L2Character character : getKnownList().getKnownCharacters())
-			{
-				if ((character.getFusionSkill() != null) && (character.getFusionSkill().getTarget() == this))
-				{
-					character.abortCast();
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "deleteMe()", e);
+			getSkillChannelized().abortChannelization();
 		}
 		return true;
 	}
@@ -4028,15 +3943,11 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				_skillCast2 = null;
 			}
 			
-			if (getFusionSkill() != null)
-			{
-				getFusionSkill().onCastAbort();
-			}
+			// TODO: Handle removing spawned npc.
 			
-			L2Effect mog = getFirstEffect(L2EffectType.SIGNET_GROUND);
-			if (mog != null)
+			if (isChanneling())
 			{
-				mog.exit();
+				getSkillChannelizer().stopChanneling();
 			}
 			
 			if (_allSkillsDisabled)
@@ -5897,8 +5808,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			return;
 		}
 		
-		// Send a Server->Client packet MagicSkillLaunched to the L2Character AND to all L2PcInstance in the _KnownPlayers of the L2Character
-		if (!skill.isStatic())
+		if (!skill.isChanneling())
 		{
 			broadcastPacket(new MagicSkillLaunched(this, skill.getDisplayId(), skill.getDisplayLevel(), targets));
 		}
@@ -5923,40 +5833,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		if ((skill == null) || (targets == null))
 		{
 			abortCast();
-			return;
-		}
-		
-		if (getFusionSkill() != null)
-		{
-			if (mut.isSimultaneous())
-			{
-				_skillCast2 = null;
-				setIsCastingSimultaneouslyNow(false);
-			}
-			else
-			{
-				_skillCast = null;
-				setIsCastingNow(false);
-			}
-			getFusionSkill().onCastAbort();
-			notifyQuestEventSkillFinished(skill, targets[0]);
-			return;
-		}
-		L2Effect mog = getFirstEffect(L2EffectType.SIGNET_GROUND);
-		if (mog != null)
-		{
-			if (mut.isSimultaneous())
-			{
-				_skillCast2 = null;
-				setIsCastingSimultaneouslyNow(false);
-			}
-			else
-			{
-				_skillCast = null;
-				setIsCastingNow(false);
-			}
-			mog.exit();
-			notifyQuestEventSkillFinished(skill, targets[0]);
 			return;
 		}
 		
@@ -5994,7 +5870,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				}
 			}
 			
-			StatusUpdate su = new StatusUpdate(this);
+			final StatusUpdate su = new StatusUpdate(this);
 			boolean isSendStatus = false;
 			
 			// Consume MP of the L2Character and Send the Server->Client packet StatusUpdate with current HP and MP to all other L2PcInstance to inform
@@ -6085,19 +5961,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		if (mut.getSkillTime() > 0)
 		{
 			mut.setCount(mut.getCount() + 1);
-			if (mut.getCount() < skill.getHitCounts())
-			{
-				int skillTime = (mut.getSkillTime() * skill.getHitTimings()[mut.getCount()]) / 100;
-				if (mut.isSimultaneous())
-				{
-					_skillCast2 = ThreadPoolManager.getInstance().scheduleEffect(mut, skillTime);
-				}
-				else
-				{
-					_skillCast = ThreadPoolManager.getInstance().scheduleEffect(mut, skillTime);
-				}
-				return;
-			}
 		}
 		
 		mut.setPhase(3);
@@ -6184,6 +6047,11 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				// currPlayer.useMagic(queuedSkill.getSkill(), queuedSkill.isCtrlPressed(), queuedSkill.isShiftPressed());
 				ThreadPoolManager.getInstance().executeTask(new QueuedMagicUseTask(currPlayer, queuedSkill.getSkill(), queuedSkill.isCtrlPressed(), queuedSkill.isShiftPressed()));
 			}
+		}
+		
+		if (isChanneling())
+		{
+			getSkillChannelizer().stopChanneling();
 		}
 	}
 	
@@ -6388,7 +6256,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 					}
 					
 					// Static skills not trigger any chance skills
-					if (!skill.isStatic())
+					if (!skill.isStatic() && (target.getObjectId() != getObjectId()))
 					{
 						// Launch weapon Special ability skill effect if available
 						if ((activeWeapon != null) && !target.isDead())
@@ -7046,16 +6914,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		
 	}
 	
-	public FusionSkill getFusionSkill()
-	{
-		return _fusionSkill;
-	}
-	
-	public void setFusionSkill(FusionSkill fb)
-	{
-		_fusionSkill = fb;
-	}
-	
 	public byte getAttackElement()
 	{
 		return getStat().getAttackElement();
@@ -7167,7 +7025,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			{
 				if (_triggerSkills == null)
 				{
-					_triggerSkills = new FastMap<Integer, OptionsSkillHolder>().shared();
+					_triggerSkills = new ConcurrentHashMap<>();
 				}
 			}
 		}
@@ -7215,7 +7073,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				}
 				
 				final L2Object[] targets = skill.getTargetList(this, false, target);
-				
 				if (targets.length == 0)
 				{
 					return;
@@ -7232,12 +7089,12 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 					}
 				}
 				
-				final ISkillHandler handler = SkillHandler.getInstance().getHandler(skill.getSkillType());
-				
-				broadcastPacket(new MagicSkillLaunched(this, skill.getDisplayId(), skill.getLevel(), targets));
 				broadcastPacket(new MagicSkillUse(this, firstTarget, skill.getDisplayId(), skill.getLevel(), 0, 0));
+				broadcastPacket(new MagicSkillLaunched(this, skill.getDisplayId(), skill.getLevel(), targets));
+				
 				// Launch the magic skill and calculate its effects
 				// TODO: once core will support all possible effects, use effects (not handler)
+				final ISkillHandler handler = SkillHandler.getInstance().getHandler(skill.getSkillType());
 				if (handler != null)
 				{
 					handler.useSkill(this, skill, targets);
@@ -7320,6 +7177,9 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		attacker.getEvents().onDamageDealt(damage, this, skill, critical);
 	}
 	
+	/**
+	 * @return {@link L2WeaponType} of current character's weapon or basic weapon type.
+	 */
 	public final L2WeaponType getAttackType()
 	{
 		final L2Weapon weapon = getActiveWeaponItem();
@@ -7343,9 +7203,59 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		return false;
 	}
 	
+	/**
+	 * @return the character that summoned this NPC.
+	 */
+	public L2Character getSummoner()
+	{
+		return _summoner;
+	}
+	
+	/**
+	 * @param summoner the summoner of this NPC.
+	 */
+	public void setSummoner(L2Character summoner)
+	{
+		_summoner = summoner;
+	}
+	
 	@Override
 	public boolean isCharacter()
 	{
 		return true;
+	}
+	
+	/**
+	 * @return {@code true} if current character is casting channeling skill, {@code false} otherwise.
+	 */
+	public final boolean isChanneling()
+	{
+		return (_channelizer != null) && _channelizer.isChanneling();
+	}
+	
+	public final SkillChannelizer getSkillChannelizer()
+	{
+		if (_channelizer == null)
+		{
+			_channelizer = new SkillChannelizer(this);
+		}
+		return _channelizer;
+	}
+	
+	/**
+	 * @return {@code true} if current character is affected by channeling skill, {@code false} otherwise.
+	 */
+	public final boolean isChannelized()
+	{
+		return (_channelized != null) && !_channelized.isChannelized();
+	}
+	
+	public final SkillChannelized getSkillChannelized()
+	{
+		if (_channelized == null)
+		{
+			_channelized = new SkillChannelized();
+		}
+		return _channelized;
 	}
 }

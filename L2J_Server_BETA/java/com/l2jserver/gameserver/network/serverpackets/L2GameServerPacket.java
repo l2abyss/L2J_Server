@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import org.mmocore.network.SendablePacket;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.network.L2GameClient;
 
@@ -89,7 +89,7 @@ public abstract class L2GameServerPacket extends SendablePacket<L2GameClient>
 	 * Writes 3 D (int32) with current location x, y, z
 	 * @param loc
 	 */
-	protected void writeLoc(Location loc)
+	protected void writeLoc(IPositionable loc)
 	{
 		writeD(loc.getX());
 		writeD(loc.getY());

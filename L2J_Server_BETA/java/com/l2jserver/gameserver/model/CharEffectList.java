@@ -1006,11 +1006,6 @@ public final class CharEffectList
 					continue;
 				}
 				
-				if (e.getEffectType() == L2EffectType.SIGNET_GROUND)
-				{
-					continue;
-				}
-				
 				if (e.isInUse())
 				{
 					if (mi != null)
@@ -1068,12 +1063,6 @@ public final class CharEffectList
 				if (!e.isIconDisplay())
 				{
 					continue;
-				}
-				
-				switch (e.getEffectType())
-				{
-					case SIGNET_GROUND:
-						continue;
 				}
 				
 				if (e.isInUse())

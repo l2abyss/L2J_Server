@@ -502,6 +502,10 @@ public class DocumentSkill extends DocumentBase
 				{
 					parseTemplate(n, _currentSkill.currentSkills.get(i));
 				}
+				else if ("channelingEffects".equalsIgnoreCase(n.getNodeName()))
+				{
+					parseTemplate(n, _currentSkill.currentSkills.get(i), true);
+				}
 			}
 		}
 		for (int i = lastLvl; i < (lastLvl + enchantLevels1); i++)

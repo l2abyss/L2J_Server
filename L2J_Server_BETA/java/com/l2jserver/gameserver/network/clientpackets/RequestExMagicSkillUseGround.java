@@ -23,6 +23,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
+import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.gameserver.util.Util;
 
@@ -56,8 +57,7 @@ public final class RequestExMagicSkillUseGround extends L2GameClientPacket
 	protected void runImpl()
 	{
 		// Get the current L2PcInstance of the player
-		L2PcInstance activeChar = getClient().getActiveChar();
-		
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 		{
 			return;
@@ -81,7 +81,7 @@ public final class RequestExMagicSkillUseGround extends L2GameClientPacket
 			
 			// normally magicskilluse packet turns char client side but for these skills, it doesn't (even with correct target)
 			activeChar.setHeading(Util.calculateHeadingFrom(activeChar.getX(), activeChar.getY(), _x, _y));
-			activeChar.broadcastPacket(new ValidateLocation(activeChar));
+			Broadcast.toKnownPlayers(activeChar, new ValidateLocation(activeChar));
 			
 			activeChar.useMagic(skill, _ctrlPressed, _shiftPressed);
 		}

@@ -5590,17 +5590,9 @@ public final class L2PcInstance extends L2Playable
 			_cubics.clear();
 		}
 		
-		if (_fusionSkill != null)
+		if (isChannelized())
 		{
-			abortCast();
-		}
-		
-		for (L2Character character : getKnownList().getKnownCharacters())
-		{
-			if ((character.getFusionSkill() != null) && (character.getFusionSkill().getTarget() == this))
-			{
-				character.abortCast();
-			}
+			getSkillChannelized().abortChannelization();
 		}
 		
 		if (isInParty() && getParty().isInDimensionalRift())
@@ -10521,13 +10513,9 @@ public final class L2PcInstance extends L2Playable
 			// abort any kind of cast.
 			abortCast();
 			
-			// Stop casting for any player that may be casting a force buff on this l2pcinstance.
-			for (L2Character character : getKnownList().getKnownCharacters())
+			if (isChannelized())
 			{
-				if ((character.getFusionSkill() != null) && (character.getFusionSkill().getTarget() == this))
-				{
-					character.abortCast();
-				}
+				getSkillChannelized().abortChannelization();
 			}
 			
 			// 1. Call store() before modifying _classIndex to avoid skill effects rollover.
@@ -11600,48 +11588,9 @@ public final class L2PcInstance extends L2Playable
 			_log.log(Level.SEVERE, "deleteMe()", e);
 		}
 		
-		try
+		if (isChannelized())
 		{
-			if (_fusionSkill != null)
-			{
-				abortCast();
-			}
-			
-			for (L2Character character : getKnownList().getKnownCharacters())
-			{
-				if ((character.getFusionSkill() != null) && (character.getFusionSkill().getTarget() == this))
-				{
-					character.abortCast();
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "deleteMe()", e);
-		}
-		
-		try
-		{
-			for (L2Effect effect : getAllEffects())
-			{
-				if (effect.getSkill().isToggle())
-				{
-					effect.exit();
-					continue;
-				}
-				
-				switch (effect.getEffectType())
-				{
-					case SIGNET_GROUND:
-					case SIGNET_EFFECT:
-						effect.exit();
-						break;
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "deleteMe()", e);
+			getSkillChannelized().abortChannelization();
 		}
 		
 		// Remove from world regions zones

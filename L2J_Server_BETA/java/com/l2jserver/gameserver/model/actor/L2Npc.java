@@ -129,8 +129,6 @@ public class L2Npc extends L2Character
 	private int _spiritshotamount = 0;
 	private int _displayEffect = 0;
 	private int _scriptVal = 0;
-	/** The character that summons this NPC. */
-	private L2Character _summoner = null;
 	
 	private final L2NpcAIData _staticAIData = getTemplate().getAIDataStatic();
 	
@@ -1519,25 +1517,12 @@ public class L2Npc extends L2Character
 		{
 			_log.log(Level.SEVERE, "Failed decayMe().", e);
 		}
-		try
+		
+		if (isChannelized())
 		{
-			if (_fusionSkill != null)
-			{
-				abortCast();
-			}
-			
-			for (L2Character character : getKnownList().getKnownCharacters())
-			{
-				if ((character.getFusionSkill() != null) && (character.getFusionSkill().getTarget() == this))
-				{
-					character.abortCast();
-				}
-			}
+			getSkillChannelized().abortChannelization();
 		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "deleteMe()", e);
-		}
+		
 		if (oldRegion != null)
 		{
 			oldRegion.removeFromZones(this);
@@ -1776,22 +1761,6 @@ public class L2Npc extends L2Character
 	public int getColorEffect()
 	{
 		return 0;
-	}
-	
-	/**
-	 * @return the character that summoned this NPC.
-	 */
-	public L2Character getSummoner()
-	{
-		return _summoner;
-	}
-	
-	/**
-	 * @param summoner the summoner of this NPC.
-	 */
-	public void setSummoner(L2Character summoner)
-	{
-		_summoner = summoner;
 	}
 	
 	@Override

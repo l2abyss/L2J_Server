@@ -23,8 +23,6 @@ import java.lang.reflect.Constructor;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDefault;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSiegeFlag;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSignet;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSignetCasttime;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
 
 /**
@@ -33,9 +31,6 @@ import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
  */
 public enum L2SkillType
 {
-	// Damage
-	SIGNET(L2SkillSignet.class),
-	SIGNET_CASTTIME(L2SkillSignetCasttime.class),
 	// reco
 	GIVE_RECO,
 	// Fishing
@@ -64,8 +59,6 @@ public enum L2SkillType
 	BUFF,
 	DEBUFF,
 	CONT,
-	FUSION,
-	
 	DETECT_TRAP,
 	REMOVE_TRAP,
 	

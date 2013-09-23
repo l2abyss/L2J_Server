@@ -140,4 +140,19 @@ public enum L2SkillOpType
 	{
 		return (this == T);
 	}
+	
+	/**
+	 * @return {@code true} if the operative skill type is channeling, {@code false} otherwise.
+	 */
+	public boolean isChanneling()
+	{
+		switch (this)
+		{
+			case CA1:
+			case CA5:
+				return true;
+			default:
+				return false;
+		}
+	}
 }
