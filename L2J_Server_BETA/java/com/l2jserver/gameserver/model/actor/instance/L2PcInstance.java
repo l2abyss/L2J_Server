@@ -7237,10 +7237,13 @@ public final class L2PcInstance extends L2Playable
 					}
 					
 					player.setDeleteTimer(rset.getLong("deletetime"));
-					
 					player.setTitle(rset.getString("title"));
-					player.getAppearance().setTitleColor(rset.getInt("title_color"));
 					player.setAccessLevel(rset.getInt("accesslevel"));
+					int titleColor = rset.getInt("title_color");
+					if (titleColor != 0xFFFFFF)
+					{
+						player.getAppearance().setTitleColor(titleColor);
+					}
 					player.setFistsWeaponItem(player.findFistsWeaponItem(activeClassId));
 					player.setUptime(System.currentTimeMillis());
 					
