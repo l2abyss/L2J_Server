@@ -833,20 +833,25 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		}
 		
 		boolean canSetShop = false;
-		if (Config.OFFLINE_TRADE_ENABLE)
+		switch (player.getPrivateStoreType())
 		{
-			switch (player.getPrivateStoreType())
+			case L2PcInstance.STORE_PRIVATE_SELL:
+			case L2PcInstance.STORE_PRIVATE_PACKAGE_SELL:
+			case L2PcInstance.STORE_PRIVATE_BUY:
 			{
-				case L2PcInstance.STORE_PRIVATE_SELL:
-				case L2PcInstance.STORE_PRIVATE_PACKAGE_SELL:
-				case L2PcInstance.STORE_PRIVATE_BUY:
-					canSetShop = true;
-					break;
+				canSetShop = Config.OFFLINE_TRADE_ENABLE;
+				break;
 			}
-		}
-		else if (Config.OFFLINE_CRAFT_ENABLE && (player.isInCraftMode() || (player.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_MANUFACTURE)))
-		{
-			canSetShop = true;
+			case L2PcInstance.STORE_PRIVATE_MANUFACTURE:
+			{
+				canSetShop = Config.OFFLINE_TRADE_ENABLE;
+				break;
+			}
+			default:
+			{
+				canSetShop = Config.OFFLINE_CRAFT_ENABLE && player.isInCraftMode();
+				break;
+			}
 		}
 		
 		if (Config.OFFLINE_MODE_IN_PEACE_ZONE && !player.isInsideZone(ZoneId.PEACE))
