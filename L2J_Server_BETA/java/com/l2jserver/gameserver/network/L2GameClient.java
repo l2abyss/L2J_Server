@@ -827,15 +827,22 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	 */
 	protected boolean offlineMode(L2PcInstance player)
 	{
-		boolean canSetShop = false;
 		if (player.isInOlympiadMode() || player.isFestivalParticipant() || player.isBlockedFromExit() || player.isJailed() || (player.getVehicle() != null))
 		{
 			return false;
 		}
 		
-		if (Config.OFFLINE_TRADE_ENABLE && ((player.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_SELL) || (player.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_BUY)))
+		boolean canSetShop = false;
+		if (Config.OFFLINE_TRADE_ENABLE)
 		{
-			canSetShop = true;
+			switch (player.getPrivateStoreType())
+			{
+				case L2PcInstance.STORE_PRIVATE_SELL:
+				case L2PcInstance.STORE_PRIVATE_PACKAGE_SELL:
+				case L2PcInstance.STORE_PRIVATE_BUY:
+					canSetShop = true;
+					break;
+			}
 		}
 		else if (Config.OFFLINE_CRAFT_ENABLE && (player.isInCraftMode() || (player.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_MANUFACTURE)))
 		{
