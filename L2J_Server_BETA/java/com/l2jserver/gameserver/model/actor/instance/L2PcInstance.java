@@ -571,7 +571,7 @@ public final class L2PcInstance extends L2Playable
 	private boolean _waitTypeSitting;
 	
 	/** Location before entering Observer Mode */
-	private Location _lastLoc;
+	private final Location _lastLoc = new Location(0, 0, 0);
 	private boolean _observerMode = false;
 	
 	/** Stored from last ValidatePosition **/
@@ -9785,7 +9785,7 @@ public final class L2PcInstance extends L2Playable
 	
 	public void enterObserverMode(Location loc)
 	{
-		_lastLoc = loc;
+		setLastLocation();
 		
 		stopEffects(L2EffectType.HIDE);
 		
@@ -9802,9 +9802,14 @@ public final class L2PcInstance extends L2Playable
 		broadcastUserInfo();
 	}
 	
-	public void setLastLocation(Location loc)
+	public void setLastLocation()
 	{
-		_lastLoc = loc;
+		_lastLoc.setXYZ(getX(), getY(), getZ());
+	}
+	
+	public void unsetLastLocation()
+	{
+		_lastLoc.setXYZ(0, 0, 0);
 	}
 	
 	public void enterOlympiadObserverMode(Location loc, int id)
@@ -9838,7 +9843,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		if (!_observerMode)
 		{
-			_lastLoc = loc;
+			setLastLocation();
 		}
 		
 		_observerMode = true;
@@ -9869,8 +9874,8 @@ public final class L2PcInstance extends L2Playable
 		
 		setFalling(); // prevent receive falling damage
 		_observerMode = false;
-		setLastLocation(null);
 		sendPacket(new ObservationReturn(getLastLocation()));
+		unsetLastLocation();
 		broadcastUserInfo();
 	}
 	
@@ -9895,7 +9900,7 @@ public final class L2PcInstance extends L2Playable
 		{
 			getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 		}
-		setLastLocation(null);
+		unsetLastLocation();
 		broadcastUserInfo();
 	}
 	

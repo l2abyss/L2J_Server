@@ -191,7 +191,7 @@ public abstract class AbstractOlympiadGame
 		
 		try
 		{
-			player.setLastLocation(player.getLocation());
+			player.setLastLocation();
 			if (player.isSitting())
 			{
 				player.standUp();
@@ -438,7 +438,7 @@ public abstract class AbstractOlympiadGame
 		
 		player.setInstanceId(0);
 		player.teleToLocation(loc);
-		player.setLastLocation(null);
+		player.unsetLastLocation();
 	}
 	
 	public static final void rewardParticipant(L2PcInstance player, int[][] reward)
