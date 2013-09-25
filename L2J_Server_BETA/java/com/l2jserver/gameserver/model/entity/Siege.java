@@ -744,8 +744,8 @@ public class Siege implements Siegable
 			{
 				try (PreparedStatement delete = con.prepareStatement("DELETE FROM siege_clans WHERE clan_id=?"))
 				{
-					statement.setInt(1, getCastle().getOwnerId());
-					statement.execute();
+					delete.setInt(1, getCastle().getOwnerId());
+					delete.execute();
 				}
 			}
 			
