@@ -23,6 +23,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
@@ -47,7 +49,6 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.L2SiegeClan.SiegeClanType;
 import com.l2jserver.gameserver.model.L2Spawn;
-import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.TowerSpawn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -314,9 +315,7 @@ public class Siege implements Siegable
 			
 			getCastle().updateClansReputation();
 			removeFlags(); // Removes all flags. Note: Remove flag before teleporting players
-			teleportPlayer(SiegeTeleportWhoType.Attacker, TeleportWhereType.TOWN); // Teleport to the second closest town
-			teleportPlayer(SiegeTeleportWhoType.DefenderNotOwner, TeleportWhereType.TOWN); // Teleport to the second closest town
-			teleportPlayer(SiegeTeleportWhoType.Spectator, TeleportWhereType.TOWN); // Teleport to the second closest town
+			teleportPlayer(SiegeTeleportWhoType.NotOwner, TeleportWhereType.TOWN); // Teleport to the second closest town
 			_isInProgress = false; // Flag so that siege instance can be started
 			updatePlayerSiegeStateFlags(true);
 			saveCastleSiege(); // Save castle specific data
@@ -503,8 +502,7 @@ public class Siege implements Siegable
 			
 			loadSiegeClan(); // Load siege clan from db
 			updatePlayerSiegeStateFlags(false);
-			teleportPlayer(SiegeTeleportWhoType.Attacker, TeleportWhereType.TOWN); // Teleport to the closest town
-			// teleportPlayer(SiegeTeleportWhoType.Spectator, MapRegionTable.TeleportWhereType.Town); // Teleport to the second closest town
+			teleportPlayer(SiegeTeleportWhoType.NotOwner, TeleportWhereType.TOWN); // Teleport to the closest town
 			_controlTowerCount = 0;
 			spawnControlTower(); // Spawn control tower
 			spawnFlameTower(); // Spawn control tower
@@ -802,36 +800,6 @@ public class Siege implements Siegable
 	}
 	
 	/**
-	 * @return list of L2PcInstance registered as defender but not owner in the zone.
-	 */
-	public List<L2PcInstance> getDefendersButNotOwnersInZone()
-	{
-		List<L2PcInstance> players = new ArrayList<>();
-		L2Clan clan;
-		for (L2SiegeClan siegeclan : getDefenderClans())
-		{
-			clan = ClanTable.getInstance().getClan(siegeclan.getClanId());
-			if (clan.getId() == getCastle().getOwnerId())
-			{
-				continue;
-			}
-			for (L2PcInstance player : clan.getOnlineMembers(0))
-			{
-				if (player == null)
-				{
-					continue;
-				}
-				
-				if (player.isInSiege())
-				{
-					players.add(player);
-				}
-			}
-		}
-		return players;
-	}
-	
-	/**
 	 * @return list of L2PcInstance in the zone.
 	 */
 	public List<L2PcInstance> getPlayersInZone()
@@ -1067,28 +1035,37 @@ public class Siege implements Siegable
 	 */
 	public void teleportPlayer(SiegeTeleportWhoType teleportWho, TeleportWhereType teleportWhere)
 	{
-		List<L2PcInstance> players;
+		final List<L2PcInstance> players;
 		switch (teleportWho)
 		{
 			case Owner:
 				players = getOwnersInZone();
 				break;
+			case NotOwner:
+				players = getPlayersInZone();
+				final Iterator<L2PcInstance> it = players.iterator();
+				while (it.hasNext())
+				{
+					final L2PcInstance player = it.next();
+					if ((player == null) || player.inObserverMode() || ((player.getClanId() > 0) && (player.getClanId() == getCastle().getOwnerId())))
+					{
+						it.remove();
+					}
+				}
+				break;
 			case Attacker:
 				players = getAttackersInZone();
-				break;
-			case DefenderNotOwner:
-				players = getDefendersButNotOwnersInZone();
 				break;
 			case Spectator:
 				players = getSpectatorsInZone();
 				break;
 			default:
-				players = getPlayersInZone();
+				players = Collections.<L2PcInstance> emptyList();
 		}
 		
 		for (L2PcInstance player : players)
 		{
-			if (player.canOverrideCond(PcCondOverride.CASTLE_CONDITIONS) || player.isJailed())
+			if (player.isGM() || player.isJailed())
 			{
 				continue;
 			}
