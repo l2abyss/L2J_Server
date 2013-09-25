@@ -49,6 +49,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.L2SiegeClan.SiegeClanType;
 import com.l2jserver.gameserver.model.L2Spawn;
+import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.TowerSpawn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -1039,9 +1040,12 @@ public class Siege implements Siegable
 		switch (teleportWho)
 		{
 			case Owner:
+			{
 				players = getOwnersInZone();
 				break;
+			}
 			case NotOwner:
+			{
 				players = getPlayersInZone();
 				final Iterator<L2PcInstance> it = players.iterator();
 				while (it.hasNext())
@@ -1053,19 +1057,26 @@ public class Siege implements Siegable
 					}
 				}
 				break;
+			}
 			case Attacker:
+			{
 				players = getAttackersInZone();
 				break;
+			}
 			case Spectator:
+			{
 				players = getSpectatorsInZone();
 				break;
+			}
 			default:
+			{
 				players = Collections.<L2PcInstance> emptyList();
+			}
 		}
 		
 		for (L2PcInstance player : players)
 		{
-			if (player.isGM() || player.isJailed())
+			if (player.canOverrideCond(PcCondOverride.CASTLE_CONDITIONS) || player.isJailed())
 			{
 				continue;
 			}
