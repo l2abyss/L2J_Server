@@ -174,7 +174,7 @@ public final class CrestTable
 						final int crestId = Integer.parseInt(file.getName().substring(12, file.getName().length() - 4));
 						if (crestsInUse.contains(crestId))
 						{
-							L2Crest crest = createCrest(data, CrestType.PLEDGE_LARGE);
+							final L2Crest crest = createCrest(data, CrestType.PLEDGE_LARGE);
 							if (crest != null)
 							{
 								for (L2Clan clan : ClanTable.getInstance().getClans())
@@ -193,7 +193,7 @@ public final class CrestTable
 						final int crestId = Integer.parseInt(file.getName().substring(6, file.getName().length() - 4));
 						if (crestsInUse.contains(crestId))
 						{
-							L2Crest crest = createCrest(data, CrestType.PLEDGE);
+							final L2Crest crest = createCrest(data, CrestType.PLEDGE);
 							if (crest != null)
 							{
 								for (L2Clan clan : ClanTable.getInstance().getClans())
@@ -212,15 +212,15 @@ public final class CrestTable
 						final int crestId = Integer.parseInt(file.getName().substring(10, file.getName().length() - 4));
 						if (crestsInUse.contains(crestId))
 						{
-							L2Crest crest = createCrest(data, CrestType.ALLY);
+							final L2Crest crest = createCrest(data, CrestType.ALLY);
 							if (crest != null)
 							{
 								for (L2Clan clan : ClanTable.getInstance().getClans())
 								{
-									if (clan.getAllyId() == crestId)
+									if (clan.getAllyCrestId() == crestId)
 									{
 										clan.setAllyCrestId(0);
-										clan.changeAllyCrest(clan.getCrestId(), false);
+										clan.changeAllyCrest(crest.getId(), false);
 									}
 								}
 							}
