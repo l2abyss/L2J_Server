@@ -58,7 +58,6 @@ public enum L2SkillType
 	
 	BUFF,
 	DEBUFF,
-	CONT,
 	DETECT_TRAP,
 	REMOVE_TRAP,
 	
