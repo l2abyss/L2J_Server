@@ -630,7 +630,7 @@ public final class Formulas
 		
 		// Initial damage.
 		damage = (((70. * graciaPhysSkillBonus * (power + (attacker.getPAtk(target) * ssboost))) / defence) * (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill)) * (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * proximityBonus * pvpBonus) + (((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70) / defence) * graciaPhysSkillBonus);
-		
+		damage += target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill);
 		// Traits, elements
 		damage *= calcWeaponTraitBonus(attacker, target) * calcGeneralTraitBonus(attacker, target, skill.getTraitType(), false) * calcAttributeBonus(attacker, target, skill);
 		
@@ -687,7 +687,7 @@ public final class Formulas
 		}
 		
 		damage = (((70. * graciaPhysSkillBonus * (skill.getPower(isPvP, isPvE) + attacker.getPAtk(target))) / defence) * ssboost * (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill)) * (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * proximityBonus * pvpBonus) + (((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70) / defence) * graciaPhysSkillBonus);
-		damage += target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill) * 6.1;
+		damage += target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill);
 		// get the vulnerability for the instance due to skills (buffs, passives, toggles, etc)
 		
 		damage *= calcGeneralTraitBonus(attacker, target, skill.getTraitType(), false) * calcAttributeBonus(attacker, target, skill);
@@ -758,6 +758,7 @@ public final class Formulas
 			damage = 2 * attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill) * target.calcStat(Stats.CRIT_VULN, 1, target, null) * ((70 * damage) / defence);
 			// Crit dmg add is almost useless in normal hits...
 			damage += ((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 70) / defence);
+			damage += target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill);
 		}
 		else
 		{
