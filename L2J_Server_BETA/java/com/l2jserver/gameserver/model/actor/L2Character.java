@@ -82,7 +82,6 @@ import com.l2jserver.gameserver.model.actor.tasks.character.NotifyAITask;
 import com.l2jserver.gameserver.model.actor.tasks.character.QueuedMagicUseTask;
 import com.l2jserver.gameserver.model.actor.tasks.character.UsePotionTask;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
-import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.actor.transform.Transform;
 import com.l2jserver.gameserver.model.actor.transform.TransformTemplate;
 import com.l2jserver.gameserver.model.effects.AbnormalEffect;
@@ -432,14 +431,9 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			// Copy the skills of the L2NPCInstance from its template to the L2Character Instance
 			// The skills list can be affected by spell effects so it's necessary to make a copy
 			// to avoid that a spell affecting a L2NpcInstance, affects others L2NPCInstance of the same type too.
-			if (template.getSkills() != null)
+			for (L2Skill skill : template.getSkills().values())
 			{
-				_skills.putAll(template.getSkills());
-			}
-			
-			for (L2Skill skill : _skills.values())
-			{
-				addStatFuncs(skill.getStatFuncs(null, this));
+				addSkill(skill);
 			}
 		}
 		else
@@ -452,11 +446,9 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				// Copy the skills of the L2Summon from its template to the L2Character Instance
 				// The skills list can be affected by spell effects so it's necessary to make a copy
 				// to avoid that a spell affecting a L2Summon, affects others L2Summon of the same type too.
-				_skills.putAll(((L2NpcTemplate) template).getSkills());
-				
-				for (L2Skill skill : _skills.values())
+				for (L2Skill skill : template.getSkills().values())
 				{
-					addStatFuncs(skill.getStatFuncs(null, this));
+					addSkill(skill);
 				}
 			}
 			

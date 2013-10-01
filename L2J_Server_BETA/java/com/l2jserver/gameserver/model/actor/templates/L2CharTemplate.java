@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.model.actor.templates;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 import com.l2jserver.gameserver.model.StatsSet;
@@ -614,6 +615,6 @@ public class L2CharTemplate
 	 */
 	public Map<Integer, L2Skill> getSkills()
 	{
-		return null;
+		return Collections.emptyMap();
 	}
 }
