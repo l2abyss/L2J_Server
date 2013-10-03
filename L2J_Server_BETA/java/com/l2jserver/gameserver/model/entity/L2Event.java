@@ -45,13 +45,13 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.holders.PlayerEventHolder;
 import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 import com.l2jserver.gameserver.network.serverpackets.CharInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
-import com.l2jserver.gameserver.util.PlayerEventStatus;
 
 /**
  * @since $Revision: 1.3.4.1 $ $Date: 2005/03/27 15:29:32 $ This ancient thingie got reworked by Nik at $Date: 2011/05/17 21:51:39 $ Yeah, for 6 years no one bothered reworking this buggy event engine.
@@ -69,7 +69,7 @@ public class L2Event
 	public static final Map<Integer, List<L2PcInstance>> _teams = new FastMap<>();
 	public static int _npcId = 0;
 	// public static final List<L2Npc> _npcs = new FastList<L2Npc>();
-	private static final Map<L2PcInstance, PlayerEventStatus> _connectionLossData = new FastMap<>();
+	private static final Map<L2PcInstance, PlayerEventHolder> _connectionLossData = new FastMap<>();
 	
 	public enum EventState
 	{
@@ -111,7 +111,7 @@ public class L2Event
 				{
 					continue;
 				}
-				tmp.put(player, player.getEventStatus().kills.size());
+				tmp.put(player, player.getEventStatus().getKills().size());
 			}
 		}
 		
@@ -313,7 +313,7 @@ public class L2Event
 			
 			if (player.getEventStatus() != null)
 			{
-				player.getEventStatus().restoreInits();
+				player.getEventStatus().restorePlayerStats();
 			}
 			
 			player.setEventStatus(null);

@@ -204,6 +204,7 @@ import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.fishing.L2Fish;
 import com.l2jserver.gameserver.model.fishing.L2Fishing;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
+import com.l2jserver.gameserver.model.holders.PlayerEventHolder;
 import com.l2jserver.gameserver.model.holders.SkillUseHolder;
 import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
@@ -328,7 +329,6 @@ import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.Transfor
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.gameserver.util.FloodProtectors;
-import com.l2jserver.gameserver.util.PlayerEventStatus;
 import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
@@ -770,7 +770,7 @@ public final class L2PcInstance extends L2Playable
 	public final ReentrantLock soulShotLock = new ReentrantLock();
 	
 	/** Event parameters */
-	private PlayerEventStatus eventStatus = null;
+	private PlayerEventHolder eventStatus = null;
 	
 	private byte _handysBlockCheckerEventArena = -1;
 	
@@ -3188,7 +3188,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void standUp()
 	{
-		if (L2Event.isParticipant(this) && getEventStatus().eventSitForced)
+		if (L2Event.isParticipant(this) && getEventStatus().isSitForced())
 		{
 			sendMessage("A dark force beyond your mortal understanding makes your knees to shake when you try to stand up...");
 		}
@@ -5463,7 +5463,7 @@ public final class L2PcInstance extends L2Playable
 				
 				if (L2Event.isParticipant(pk))
 				{
-					pk.getEventStatus().kills.add(this);
+					pk.getEventStatus().getKills().add(this);
 				}
 				
 				// announce pvp/pk
@@ -14433,15 +14433,15 @@ public final class L2PcInstance extends L2Playable
 	
 	public void setEventStatus()
 	{
-		eventStatus = new PlayerEventStatus(this);
+		eventStatus = new PlayerEventHolder(this);
 	}
 	
-	public void setEventStatus(PlayerEventStatus pes)
+	public void setEventStatus(PlayerEventHolder pes)
 	{
 		eventStatus = pes;
 	}
 	
-	public PlayerEventStatus getEventStatus()
+	public PlayerEventHolder getEventStatus()
 	{
 		return eventStatus;
 	}
