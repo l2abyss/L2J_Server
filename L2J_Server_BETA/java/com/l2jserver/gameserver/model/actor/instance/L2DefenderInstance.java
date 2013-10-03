@@ -140,7 +140,7 @@ public class L2DefenderInstance extends L2Attackable
 		{
 			return;
 		}
-		if (!isInsideRadius(getSpawn().getX(), getSpawn().getY(), 40, false))
+		if (!isInsideRadius(getSpawn(), 40, false, false))
 		{
 			if (Config.DEBUG)
 			{

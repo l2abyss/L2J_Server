@@ -675,7 +675,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				y1 = npc.getSpawn().getY();
 				z1 = npc.getSpawn().getZ();
 				
-				if (!npc.isInsideRadius(x1, y1, range, false))
+				if (!npc.isInsideRadius(x1, y1, 0, range, false, false))
 				{
 					npc.setisReturningToSpawnPoint(true);
 				}
@@ -885,7 +885,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						newY = mostHate.getY() - newY;
 					}
 					
-					if (!npc.isInsideRadius(newX, newY, collision, false))
+					if (!npc.isInsideRadius(newX, newY, 0, collision, false, false))
 					{
 						int newZ = npc.getZ() + 30;
 						if ((Config.GEODATA == 0) || GeoData.getInstance().canMoveFromToTarget(npc.getX(), npc.getY(), npc.getZ(), newX, newY, newZ, npc.getInstanceId()))

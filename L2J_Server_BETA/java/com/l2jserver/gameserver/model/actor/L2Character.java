@@ -93,6 +93,7 @@ import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.holders.SkillUseHolder;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
 import com.l2jserver.gameserver.model.interfaces.IDeletable;
+import com.l2jserver.gameserver.model.interfaces.ILocational;
 import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.interfaces.ISkillsHolder;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
@@ -4729,35 +4730,16 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	}
 	
 	/**
-	 * Check if this object is inside the given radius around the given object. Warning: doesn't cover collision radius!
-	 * @param object the target
+	 * Check if this object is inside the given radius around the given point.
+	 * @param loc Location of the target
 	 * @param radius the radius around the target
-	 * @param checkZ should we check Z axis also
+	 * @param checkZAxis should we check Z axis also
 	 * @param strictCheck true if (distance < radius), false if (distance <= radius)
-	 * @return true is the L2Character is inside the radius.
-	 * @see #isInsideRadius(int, int, int, int, boolean, boolean)
+	 * @return true if the L2Character is inside the radius.
 	 */
-	public final boolean isInsideRadius(L2Object object, int radius, boolean checkZ, boolean strictCheck)
+	public final boolean isInsideRadius(ILocational loc, int radius, boolean checkZAxis, boolean strictCheck)
 	{
-		return isInsideRadius(object.getX(), object.getY(), object.getZ(), radius, checkZ, strictCheck);
-	}
-	
-	/**
-	 * Check if this object is inside the given plan radius around the given point. Warning: doesn't cover collision radius!
-	 * @param x X position of the target
-	 * @param y Y position of the target
-	 * @param radius the radius around the target
-	 * @param strictCheck true if (distance < radius), false if (distance <= radius)
-	 * @return true is the L2Character is inside the radius.
-	 */
-	public final boolean isInsideRadius(int x, int y, int radius, boolean strictCheck)
-	{
-		return isInsideRadius(x, y, 0, radius, false, strictCheck);
-	}
-	
-	public final boolean isInsideRadius(Location loc, int radius, boolean checkZ, boolean strictCheck)
-	{
-		return isInsideRadius(loc.getX(), loc.getY(), loc.getZ(), radius, checkZ, strictCheck);
+		return isInsideRadius(loc.getX(), loc.getY(), loc.getZ(), radius, checkZAxis, strictCheck);
 	}
 	
 	/**
@@ -4766,39 +4748,17 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	 * @param y Y position of the target
 	 * @param z Z position of the target
 	 * @param radius the radius around the target
-	 * @param checkZ should we check Z axis also
+	 * @param checkZAxis should we check Z axis also
 	 * @param strictCheck true if (distance < radius), false if (distance <= radius)
-	 * @return true is the L2Character is inside the radius.
+	 * @return true if the L2Character is inside the radius.
 	 */
-	public final boolean isInsideRadius(int x, int y, int z, int radius, boolean checkZ, boolean strictCheck)
+	public final boolean isInsideRadius(int x, int y, int z, int radius, boolean checkZAxis, boolean strictCheck)
 	{
-		double dx = x - getX();
-		double dy = y - getY();
-		double dz = z - getZ();
-		boolean isInsideRadius = false;
-		if (strictCheck)
-		{
-			if (checkZ)
-			{
-				isInsideRadius = ((dx * dx) + (dy * dy) + (dz * dz)) < (radius * radius);
-			}
-			else
-			{
-				isInsideRadius = ((dx * dx) + (dy * dy)) < (radius * radius);
-			}
-		}
-		else
-		{
-			if (checkZ)
-			{
-				isInsideRadius = ((dx * dx) + (dy * dy) + (dz * dz)) <= (radius * radius);
-			}
-			else
-			{
-				isInsideRadius = ((dx * dx) + (dy * dy)) <= (radius * radius);
-			}
-		}
-		return isInsideRadius;
+		final double dx = x - getX();
+		final double dy = y - getY();
+		final double dz = z - getZ();
+		final double distance = (dx * dx) + (dy * dy) + (checkZAxis ? (dz * dz) : 0);
+		return (strictCheck) ? (distance < (radius * radius)) : (distance <= (radius * radius));
 	}
 	
 	// /**
