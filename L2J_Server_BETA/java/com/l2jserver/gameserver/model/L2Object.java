@@ -53,13 +53,11 @@ import com.l2jserver.gameserver.util.Point3D;
  */
 public abstract class L2Object extends Point3D implements IIdentifiable, INamable, ISpawnable, IUniqueId, IDecayable
 {
-	private boolean _isVisible; // Object visibility
+	private boolean _isVisible;
 	private ObjectKnownList _knownList;
 	private String _name;
-	private int _objectId; // Object identifier
-	private ObjectPoly _poly;
+	private int _objectId;
 	private L2WorldRegion _worldRegion;
-	
 	private InstanceType _instanceType = null;
 	private volatile Map<String, Object> _scripts;
 	
@@ -141,7 +139,6 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 		
 		Instance oldI = InstanceManager.getInstance().getInstance(getInstanceId());
 		Instance newI = InstanceManager.getInstance().getInstance(instanceId);
-		
 		if (newI == null)
 		{
 			return;
@@ -149,22 +146,13 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 		
 		if (isPlayer())
 		{
-			L2PcInstance player = getActingPlayer();
+			final L2PcInstance player = getActingPlayer();
 			if ((getInstanceId() > 0) && (oldI != null))
 			{
 				oldI.removePlayer(getObjectId());
 				if (oldI.isShowTimer())
 				{
-					int startTime = (int) ((System.currentTimeMillis() - oldI.getInstanceStartTime()) / 1000);
-					int endTime = (int) ((oldI.getInstanceEndTime() - oldI.getInstanceStartTime()) / 1000);
-					if (oldI.isTimerIncrease())
-					{
-						sendPacket(new ExSendUIEvent(getActingPlayer(), true, true, startTime, endTime, oldI.getTimerText()));
-					}
-					else
-					{
-						sendPacket(new ExSendUIEvent(getActingPlayer(), true, false, endTime - startTime, 0, oldI.getTimerText()));
-					}
+					sendInstanceUpdate(oldI, true);
 				}
 			}
 			if (instanceId > 0)
@@ -172,19 +160,9 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 				newI.addPlayer(getObjectId());
 				if (newI.isShowTimer())
 				{
-					int startTime = (int) ((System.currentTimeMillis() - newI.getInstanceStartTime()) / 1000);
-					int endTime = (int) ((newI.getInstanceEndTime() - newI.getInstanceStartTime()) / 1000);
-					if (newI.isTimerIncrease())
-					{
-						sendPacket(new ExSendUIEvent(getActingPlayer(), false, true, startTime, endTime, newI.getTimerText()));
-					}
-					else
-					{
-						sendPacket(new ExSendUIEvent(getActingPlayer(), false, false, endTime - startTime, 0, newI.getTimerText()));
-					}
+					sendInstanceUpdate(newI, false);
 				}
 			}
-			
 			if (player.hasSummon())
 			{
 				player.getSummon().setInstanceId(instanceId);
@@ -192,7 +170,7 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 		}
 		else if (isNpc())
 		{
-			L2Npc npc = (L2Npc) this;
+			final L2Npc npc = (L2Npc) this;
 			if ((getInstanceId() > 0) && (oldI != null))
 			{
 				oldI.removeNpc(npc);
@@ -205,20 +183,30 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 		
 		super.setInstanceId(instanceId);
 		
-		// If we change it for visible objects, me must clear & revalidates knownlists
 		if (_isVisible && (_knownList != null))
 		{
-			if (isPlayer())
-			{
-				// We don't want some ugly looking disappear/appear effects, so don't update
-				// the knownlist here, but players usually enter instancezones through teleporting
-				// and the teleport will do the revalidation for us.
-			}
-			else
+			// We don't want some ugly looking disappear/appear effects, so don't update
+			// the knownlist here, but players usually enter instancezones through teleporting
+			// and the teleport will do the revalidation for us.
+			if (!isPlayer())
 			{
 				decayMe();
 				spawnMe();
 			}
+		}
+	}
+	
+	private final void sendInstanceUpdate(Instance instance, boolean hide)
+	{
+		final int startTime = (int) ((System.currentTimeMillis() - instance.getInstanceStartTime()) / 1000);
+		final int endTime = (int) ((instance.getInstanceEndTime() - instance.getInstanceStartTime()) / 1000);
+		if (instance.isTimerIncrease())
+		{
+			sendPacket(new ExSendUIEvent(getActingPlayer(), hide, true, startTime, endTime, instance.getTimerText()));
+		}
+		else
+		{
+			sendPacket(new ExSendUIEvent(getActingPlayer(), hide, false, endTime - startTime, 0, instance.getTimerText()));
 		}
 	}
 	
@@ -391,11 +379,8 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 	
 	public final ObjectPoly getPoly()
 	{
-		if (_poly == null)
-		{
-			_poly = new ObjectPoly(this);
-		}
-		return _poly;
+		final ObjectPoly poly = getScript(ObjectPoly.class);
+		return (poly == null) ? addScript(new ObjectPoly(this)) : poly;
 	}
 	
 	public abstract void sendInfo(L2PcInstance activeChar);
