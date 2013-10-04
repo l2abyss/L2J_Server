@@ -89,6 +89,7 @@ import com.l2jserver.gameserver.datatables.SkillTable.FrequentSkill;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.HtmlActionScope;
+import com.l2jserver.gameserver.enums.IllegalActionPunishmentType;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.MountType;
 import com.l2jserver.gameserver.enums.PcRace;
@@ -8132,7 +8133,7 @@ public final class L2PcInstance extends L2Playable
 					{
 						if (!SkillTreesData.getInstance().isSkillAllowed(this, skill))
 						{
-							Util.handleIllegalPlayerAction(this, "Player " + getName() + " has invalid skill " + skill.getName() + " (" + skill.getId() + "/" + skill.getLevel() + "), class:" + ClassListData.getInstance().getClass(getClassId()).getClassName(), 1);
+							Util.handleIllegalPlayerAction(this, "Player " + getName() + " has invalid skill " + skill.getName() + " (" + skill.getId() + "/" + skill.getLevel() + "), class:" + ClassListData.getInstance().getClass(getClassId()).getClassName(), IllegalActionPunishmentType.BROADCAST);
 							if (Config.SKILL_CHECK_REMOVE)
 							{
 								removeSkill(skill);

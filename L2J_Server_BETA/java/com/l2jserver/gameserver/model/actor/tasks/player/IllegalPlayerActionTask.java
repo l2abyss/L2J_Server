@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.util;
+package com.l2jserver.gameserver.model.actor.tasks.player;
 
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.AdminTable;
+import com.l2jserver.gameserver.enums.IllegalActionPunishmentType;
 import com.l2jserver.gameserver.instancemanager.PunishmentManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.punishment.PunishmentAffect;
@@ -31,23 +32,17 @@ import com.l2jserver.gameserver.model.punishment.PunishmentTask;
 import com.l2jserver.gameserver.model.punishment.PunishmentType;
 
 /**
- * This class ...
- * @version $Revision: 1.2 $ $Date: 2004/06/27 08:12:59 $
+ * Task that handles illegal player actions.
  */
-public final class IllegalPlayerAction implements Runnable
+public final class IllegalPlayerActionTask implements Runnable
 {
-	private static Logger _logAudit = Logger.getLogger("audit");
+	private static final Logger _log = Logger.getLogger("audit");
 	
 	private final String _message;
-	private final int _punishment;
+	private final IllegalActionPunishmentType _punishment;
 	private final L2PcInstance _actor;
 	
-	public static final int PUNISH_BROADCAST = 1;
-	public static final int PUNISH_KICK = 2;
-	public static final int PUNISH_KICKBAN = 3;
-	public static final int PUNISH_JAIL = 4;
-	
-	public IllegalPlayerAction(L2PcInstance actor, String message, int punishment)
+	public IllegalPlayerActionTask(L2PcInstance actor, String message, IllegalActionPunishmentType punishment)
 	{
 		_message = message;
 		_punishment = punishment;
@@ -55,10 +50,13 @@ public final class IllegalPlayerAction implements Runnable
 		
 		switch (punishment)
 		{
-			case PUNISH_KICK:
+			case KICK:
+			{
 				_actor.sendMessage("You will be kicked for illegal action, GM informed.");
 				break;
-			case PUNISH_KICKBAN:
+			}
+			case KICKBAN:
+			{
 				if (!_actor.isGM())
 				{
 					_actor.setAccessLevel(-1);
@@ -66,10 +64,13 @@ public final class IllegalPlayerAction implements Runnable
 				}
 				_actor.sendMessage("You are banned for illegal action, GM informed.");
 				break;
-			case PUNISH_JAIL:
+			}
+			case JAIL:
+			{
 				_actor.sendMessage("Illegal action performed!");
 				_actor.sendMessage("You will be teleported to GM Consultation Service area and jailed.");
 				break;
+			}
 		}
 	}
 	
@@ -78,29 +79,35 @@ public final class IllegalPlayerAction implements Runnable
 	{
 		LogRecord record = new LogRecord(Level.INFO, "AUDIT:" + _message);
 		record.setLoggerName("audit");
-		record.setParameters(new Object[]
-		{
-			_actor,
-			_punishment
-		});
-		_logAudit.log(record);
+		//@formatter:off
+		record.setParameters(new Object[] { _actor, _punishment	});
+		//@formatter:on
+		_log.log(record);
 		
 		AdminTable.getInstance().broadcastMessageToGMs(_message);
 		if (!_actor.isGM())
 		{
 			switch (_punishment)
 			{
-				case PUNISH_BROADCAST:
+				case BROADCAST:
+				{
 					return;
-				case PUNISH_KICK:
+				}
+				case KICK:
+				{
 					_actor.logout(false);
 					break;
-				case PUNISH_KICKBAN:
+				}
+				case KICKBAN:
+				{
 					PunishmentManager.getInstance().startPunishment(new PunishmentTask(_actor.getObjectId(), PunishmentAffect.CHARACTER, PunishmentType.BAN, System.currentTimeMillis() + (Config.DEFAULT_PUNISH_PARAM * 1000), _message, getClass().getSimpleName()));
 					break;
-				case PUNISH_JAIL:
+				}
+				case JAIL:
+				{
 					PunishmentManager.getInstance().startPunishment(new PunishmentTask(_actor.getObjectId(), PunishmentAffect.CHARACTER, PunishmentType.JAIL, System.currentTimeMillis() + (Config.DEFAULT_PUNISH_PARAM * 1000), _message, getClass().getSimpleName()));
 					break;
+				}
 			}
 		}
 	}

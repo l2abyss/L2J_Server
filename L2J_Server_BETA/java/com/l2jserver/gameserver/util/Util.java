@@ -37,9 +37,11 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.enums.HtmlActionScope;
+import com.l2jserver.gameserver.enums.IllegalActionPunishmentType;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.tasks.player.IllegalPlayerActionTask;
 import com.l2jserver.gameserver.network.serverpackets.AbstractHtmlPacket;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.ShowBoard;
@@ -53,9 +55,9 @@ public final class Util
 	private static final Logger LOGGER = Logger.getLogger(Util.class.getName());
 	private static final NumberFormat ADENA_FORMATTER = NumberFormat.getIntegerInstance(Locale.ENGLISH);
 	
-	public static void handleIllegalPlayerAction(L2PcInstance actor, String message, int punishment)
+	public static void handleIllegalPlayerAction(L2PcInstance actor, String message, IllegalActionPunishmentType punishment)
 	{
-		ThreadPoolManager.getInstance().scheduleGeneral(new IllegalPlayerAction(actor, message, punishment), 5000);
+		ThreadPoolManager.getInstance().scheduleGeneral(new IllegalPlayerActionTask(actor, message, punishment), 5000);
 	}
 	
 	public static String getRelativePath(File base, File file)

@@ -53,6 +53,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.engines.DocumentParser;
+import com.l2jserver.gameserver.enums.IllegalActionPunishmentType;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.util.FloodProtectorConfig;
@@ -631,7 +632,7 @@ public final class Config
 	public static int RIFT_ENTER_COST_CAPTAIN;
 	public static int RIFT_ENTER_COST_COMMANDER;
 	public static int RIFT_ENTER_COST_HERO;
-	public static int DEFAULT_PUNISH;
+	public static IllegalActionPunishmentType DEFAULT_PUNISH;
 	public static int DEFAULT_PUNISH_PARAM;
 	public static boolean ONLY_GM_ITEMS_FREE;
 	public static boolean JAIL_IS_PVP;
@@ -2034,7 +2035,7 @@ public final class Config
 			RIFT_ENTER_COST_CAPTAIN = General.getInt("CaptainCost", 27);
 			RIFT_ENTER_COST_COMMANDER = General.getInt("CommanderCost", 30);
 			RIFT_ENTER_COST_HERO = General.getInt("HeroCost", 33);
-			DEFAULT_PUNISH = General.getInt("DefaultPunish", 2);
+			DEFAULT_PUNISH = IllegalActionPunishmentType.findByName(General.getString("DefaultPunish", "KICK"));
 			DEFAULT_PUNISH_PARAM = General.getInt("DefaultPunishParam", 0);
 			ONLY_GM_ITEMS_FREE = General.getBoolean("OnlyGMItemsFree", true);
 			JAIL_IS_PVP = General.getBoolean("JailIsPvp", false);
