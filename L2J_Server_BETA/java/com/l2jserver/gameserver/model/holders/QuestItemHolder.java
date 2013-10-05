@@ -18,43 +18,27 @@
  */
 package com.l2jserver.gameserver.model.holders;
 
-import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
-
 /**
- * Holder for item id and count.
- * @author UnAfraid
+ * Item Holder storing chance in addition for quests.
+ * @author xban1x
  */
-public class ItemHolder implements IIdentifiable
+public final class QuestItemHolder extends ItemHolder
 {
-	private final int _id;
-	private final long _count;
+	private final int _chance;
 	
-	public ItemHolder(int id, long count)
+	public QuestItemHolder(int id, int chance)
 	{
-		_id = id;
-		_count = count;
+		this(id, chance, 1);
 	}
 	
-	/**
-	 * @return the item/object identifier.
-	 */
-	@Override
-	public int getId()
+	public QuestItemHolder(int id, int chance, long count)
 	{
-		return _id;
+		super(id, count);
+		_chance = chance;
 	}
 	
-	/**
-	 * @return the item count.
-	 */
-	public long getCount()
+	public int getChance()
 	{
-		return _count;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return getClass().getSimpleName() + ": Id: " + _id + " Count: " + _count;
+		return _chance;
 	}
 }

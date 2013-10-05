@@ -18,43 +18,30 @@
  */
 package com.l2jserver.gameserver.model.holders;
 
-import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
+import com.l2jserver.gameserver.model.interfaces.IUniqueId;
 
 /**
- * Holder for item id and count.
- * @author UnAfraid
+ * Unique object id item holder.
+ * @author xban1x
  */
-public class ItemHolder implements IIdentifiable
+public final class UniqueItemHolder extends ItemHolder implements IUniqueId
 {
-	private final int _id;
-	private final long _count;
+	private final int _objectId;
 	
-	public ItemHolder(int id, long count)
+	public UniqueItemHolder(int id, int objectId)
 	{
-		_id = id;
-		_count = count;
+		this(id, objectId, 1);
 	}
 	
-	/**
-	 * @return the item/object identifier.
-	 */
-	@Override
-	public int getId()
+	public UniqueItemHolder(int id, int objectId, long count)
 	{
-		return _id;
-	}
-	
-	/**
-	 * @return the item count.
-	 */
-	public long getCount()
-	{
-		return _count;
+		super(id, count);
+		_objectId = objectId;
 	}
 	
 	@Override
-	public String toString()
+	public int getObjectId()
 	{
-		return getClass().getSimpleName() + ": Id: " + _id + " Count: " + _count;
+		return _objectId;
 	}
 }

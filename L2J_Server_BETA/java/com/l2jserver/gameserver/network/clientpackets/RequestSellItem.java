@@ -31,7 +31,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.buylist.L2BuyList;
-import com.l2jserver.gameserver.model.holders.ItemHolder;
+import com.l2jserver.gameserver.model.holders.UniqueItemHolder;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExBuySellList;
@@ -48,7 +48,7 @@ public final class RequestSellItem extends L2GameClientPacket
 	private static final int BATCH_LENGTH = 16;
 	
 	private int _listId;
-	private List<ItemHolder> _items = null;
+	private List<UniqueItemHolder> _items = null;
 	
 	@Override
 	protected void readImpl()
@@ -71,7 +71,7 @@ public final class RequestSellItem extends L2GameClientPacket
 				_items = null;
 				return;
 			}
-			_items.add(new ItemHolder(itemId, objectId, count));
+			_items.add(new UniqueItemHolder(itemId, objectId, count));
 		}
 	}
 	
@@ -153,7 +153,7 @@ public final class RequestSellItem extends L2GameClientPacket
 		
 		long totalPrice = 0;
 		// Proceed the sell
-		for (ItemHolder i : _items)
+		for (UniqueItemHolder i : _items)
 		{
 			L2ItemInstance item = player.checkItemManipulation(i.getObjectId(), i.getCount(), "sell");
 			if ((item == null) || (!item.isSellable()))
