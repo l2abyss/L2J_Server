@@ -435,7 +435,7 @@ public final class TerritoryWarManager implements Siegable
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_S1_HAS_SUCCEDED_IN_CAPTURING_S2_TERRITORY_WARD);
 					sm.addString(terNew.getOwnerClan().getName());
-					sm.addCastleId(terNew.getTerritoryId());
+					sm.addCastleId(territoryId);
 					announceToParticipants(sm, 135000, 13500);
 				}
 				if (terOld.getOwnerClan() != null)
