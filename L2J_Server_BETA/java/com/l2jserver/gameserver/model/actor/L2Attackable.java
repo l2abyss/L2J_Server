@@ -44,6 +44,9 @@ import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.instancemanager.WalkingManager;
+import com.l2jserver.gameserver.model.AbsorberInfo;
+import com.l2jserver.gameserver.model.AggroInfo;
+import com.l2jserver.gameserver.model.DamageDoneInfo;
 import com.l2jserver.gameserver.model.L2CommandChannel;
 import com.l2jserver.gameserver.model.L2DropCategory;
 import com.l2jserver.gameserver.model.L2DropData;
@@ -56,6 +59,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.AttackableKnownList;
 import com.l2jserver.gameserver.model.actor.status.AttackableStatus;
+import com.l2jserver.gameserver.model.actor.tasks.attackable.CommandChannelTimer;
+import com.l2jserver.gameserver.model.actor.tasks.attackable.OnKillNotifyTask;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
@@ -110,178 +115,6 @@ public class L2Attackable extends L2Npc
 	private int _isSpoiledBy = 0;
 	
 	protected int _onKillDelay = 5000;
-	
-	/**
-	 * This class contains all AggroInfo of the L2Attackable against the attacker L2Character.
-	 */
-	public static final class AggroInfo
-	{
-		/** The attacker L2Character concerned by this AggroInfo of this L2Attackable. */
-		private final L2Character _attacker;
-		/** Hate level of this L2Attackable against the attacker L2Character (hate = damage). */
-		private int _hate = 0;
-		/** Number of damages that the attacker L2Character gave to this L2Attackable. */
-		private int _damage = 0;
-		
-		AggroInfo(L2Character pAttacker)
-		{
-			_attacker = pAttacker;
-		}
-		
-		public final L2Character getAttacker()
-		{
-			return _attacker;
-		}
-		
-		public final int getHate()
-		{
-			return _hate;
-		}
-		
-		public final int checkHate(L2Character owner)
-		{
-			if (_attacker.isAlikeDead() || !_attacker.isVisible() || !owner.getKnownList().knowsObject(_attacker))
-			{
-				_hate = 0;
-			}
-			
-			return _hate;
-		}
-		
-		public final void addHate(int value)
-		{
-			_hate = (int) Math.min(_hate + (long) value, 999999999);
-		}
-		
-		public final void stopHate()
-		{
-			_hate = 0;
-		}
-		
-		public final int getDamage()
-		{
-			return _damage;
-		}
-		
-		public final void addDamage(int value)
-		{
-			_damage = (int) Math.min(_damage + (long) value, 999999999);
-		}
-		
-		@Override
-		public final boolean equals(Object obj)
-		{
-			if (this == obj)
-			{
-				return true;
-			}
-			
-			if (obj instanceof AggroInfo)
-			{
-				return (((AggroInfo) obj).getAttacker() == _attacker);
-			}
-			
-			return false;
-		}
-		
-		@Override
-		public final int hashCode()
-		{
-			return _attacker.getObjectId();
-		}
-	}
-	
-	/**
-	 * This class contains all RewardInfo of the L2Attackable against the any attacker L2Character, based on amount of damage done.
-	 */
-	protected final class RewardInfo
-	{
-		/** The attacker L2Character concerned by this RewardInfo of this L2Attackable. */
-		private final L2PcInstance _attacker;
-		/** Total amount of damage done by the attacker to this L2Attackable (summon + own). */
-		private int _damage = 0;
-		
-		public RewardInfo(L2PcInstance attacker, int damage)
-		{
-			_attacker = attacker;
-			_damage = damage;
-		}
-		
-		public L2PcInstance getAttacker()
-		{
-			return _attacker;
-		}
-		
-		public void addDamage(int damage)
-		{
-			_damage += damage;
-		}
-		
-		public int getDamage()
-		{
-			return _damage;
-		}
-		
-		@Override
-		public boolean equals(Object obj)
-		{
-			if (this == obj)
-			{
-				return true;
-			}
-			
-			if (obj instanceof RewardInfo)
-			{
-				return (((RewardInfo) obj)._attacker == _attacker);
-			}
-			
-			return false;
-		}
-		
-		@Override
-		public int hashCode()
-		{
-			return _attacker.getObjectId();
-		}
-	}
-	
-	/**
-	 * This class contains all AbsorberInfo of the L2Attackable against the absorber L2Character.
-	 */
-	public static final class AbsorberInfo
-	{
-		public int _objId;
-		/** The attacker L2Character concerned by this AbsorberInfo of this L2Attackable. */
-		public double _absorbedHP;
-		
-		AbsorberInfo(int objId, double pAbsorbedHP)
-		{
-			_objId = objId;
-			_absorbedHP = pAbsorbedHP;
-		}
-		
-		@Override
-		public boolean equals(Object obj)
-		{
-			if (this == obj)
-			{
-				return true;
-			}
-			
-			if (obj instanceof AbsorberInfo)
-			{
-				return (((AbsorberInfo) obj)._objId == _objId);
-			}
-			
-			return false;
-		}
-		
-		@Override
-		public int hashCode()
-		{
-			return _objId;
-		}
-	}
 	
 	/**
 	 * Constructor of L2Attackable (use L2Character and L2NpcInstance constructor).<br>
@@ -568,31 +401,6 @@ public class L2Attackable extends L2Npc
 		return true;
 	}
 	
-	protected static class OnKillNotifyTask implements Runnable
-	{
-		private final L2Attackable _attackable;
-		private final Quest _quest;
-		private final L2PcInstance _killer;
-		private final boolean _isSummon;
-		
-		public OnKillNotifyTask(L2Attackable attackable, Quest quest, L2PcInstance killer, boolean isSummon)
-		{
-			_attackable = attackable;
-			_quest = quest;
-			_killer = killer;
-			_isSummon = isSummon;
-		}
-		
-		@Override
-		public void run()
-		{
-			if ((_quest != null) && (_attackable != null) && (_killer != null))
-			{
-				_quest.notifyKill(_attackable, _killer, _isSummon);
-			}
-		}
-	}
-	
 	/**
 	 * Distribute Exp and SP rewards to L2PcInstance (including Summon owner) that hit the L2Attackable and to their Party members.<br>
 	 * Actions:<br>
@@ -613,7 +421,7 @@ public class L2Attackable extends L2Npc
 			}
 			
 			// NOTE: Concurrent-safe map is used because while iterating to verify all conditions sometimes an entry must be removed.
-			final Map<L2PcInstance, RewardInfo> rewards = new ConcurrentHashMap<>();
+			final Map<L2PcInstance, DamageDoneInfo> rewards = new ConcurrentHashMap<>();
 			
 			L2PcInstance maxDealer = null;
 			int maxDamage = 0;
@@ -646,10 +454,10 @@ public class L2Attackable extends L2Npc
 						totalDamage += damage;
 						
 						// Calculate real damages (Summoners should get own damage plus summon's damage)
-						RewardInfo reward = rewards.get(attacker);
+						DamageDoneInfo reward = rewards.get(attacker);
 						if (reward == null)
 						{
-							reward = new RewardInfo(attacker, damage);
+							reward = new DamageDoneInfo(attacker, damage);
 							rewards.put(attacker, reward);
 						}
 						else
@@ -679,7 +487,7 @@ public class L2Attackable extends L2Npc
 			
 			if (!rewards.isEmpty())
 			{
-				for (RewardInfo reward : rewards.values())
+				for (DamageDoneInfo reward : rewards.values())
 				{
 					if (reward == null)
 					{
@@ -764,7 +572,7 @@ public class L2Attackable extends L2Npc
 							}
 							
 							// Get the RewardInfo of this L2PcInstance from L2Attackable rewards
-							final RewardInfo reward2 = rewards.get(partyPlayer);
+							final DamageDoneInfo reward2 = rewards.get(partyPlayer);
 							
 							// If the L2PcInstance is in the L2Attackable rewards add its damages to party damages
 							if (reward2 != null)
@@ -2137,18 +1945,16 @@ public class L2Attackable extends L2Npc
 	public void addAbsorber(L2PcInstance attacker)
 	{
 		// If we have no _absorbersList initiated, do it
-		AbsorberInfo ai = _absorbersList.get(attacker.getObjectId());
+		final AbsorberInfo ai = _absorbersList.get(attacker.getObjectId());
 		
 		// If the L2Character attacker isn't already in the _absorbersList of this L2Attackable, add it
 		if (ai == null)
 		{
-			ai = new AbsorberInfo(attacker.getObjectId(), getCurrentHp());
-			_absorbersList.put(attacker.getObjectId(), ai);
+			_absorbersList.put(attacker.getObjectId(), new AbsorberInfo(attacker.getObjectId(), getCurrentHp()));
 		}
 		else
 		{
-			ai._objId = attacker.getObjectId();
-			ai._absorbedHP = getCurrentHp();
+			ai.setAbsorbedHp(getCurrentHp());
 		}
 		
 		// Set this L2Attackable as absorbed
@@ -2437,7 +2243,7 @@ public class L2Attackable extends L2Npc
 		return true; // This means we use MAX_MONSTER_ANIMATION instead of MAX_NPC_ANIMATION
 	}
 	
-	protected void setCommandChannelTimer(CommandChannelTimer commandChannelTimer)
+	public void setCommandChannelTimer(CommandChannelTimer commandChannelTimer)
 	{
 		_commandChannelTimer = commandChannelTimer;
 	}
@@ -2471,31 +2277,6 @@ public class L2Attackable extends L2Npc
 	public void setCommandChannelLastAttack(long channelLastAttack)
 	{
 		_commandChannelLastAttack = channelLastAttack;
-	}
-	
-	private static class CommandChannelTimer implements Runnable
-	{
-		private final L2Attackable _monster;
-		
-		public CommandChannelTimer(L2Attackable monster)
-		{
-			_monster = monster;
-		}
-		
-		@Override
-		public void run()
-		{
-			if ((System.currentTimeMillis() - _monster.getCommandChannelLastAttack()) > Config.LOOT_RAIDS_PRIVILEGE_INTERVAL)
-			{
-				_monster.setCommandChannelTimer(null);
-				_monster.setFirstCommandChannelAttacked(null);
-				_monster.setCommandChannelLastAttack(0);
-			}
-			else
-			{
-				ThreadPoolManager.getInstance().scheduleGeneral(this, 10000); // 10sec
-			}
-		}
 	}
 	
 	public void returnHome()
