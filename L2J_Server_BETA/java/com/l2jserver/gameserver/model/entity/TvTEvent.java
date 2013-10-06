@@ -585,6 +585,24 @@ public class TvTEvent
 		}
 	}
 	
+	private static L2DoorInstance getDoor(int doorId)
+	{
+		L2DoorInstance door = null;
+		if (_TvTEventInstance <= 0)
+		{
+			door = DoorTable.getInstance().getDoor(doorId);
+		}
+		else
+		{
+			final Instance inst = InstanceManager.getInstance().getInstance(_TvTEventInstance);
+			if (inst != null)
+			{
+				door = inst.getDoor(doorId);
+			}
+		}
+		return door;
+	}
+	
 	/**
 	 * Close doors specified in configs
 	 * @param doors
@@ -593,8 +611,7 @@ public class TvTEvent
 	{
 		for (int doorId : doors)
 		{
-			L2DoorInstance doorInstance = DoorTable.getInstance().getDoor(doorId);
-			
+			final L2DoorInstance doorInstance = getDoor(doorId);
 			if (doorInstance != null)
 			{
 				doorInstance.closeMe();
@@ -610,8 +627,7 @@ public class TvTEvent
 	{
 		for (int doorId : doors)
 		{
-			L2DoorInstance doorInstance = DoorTable.getInstance().getDoor(doorId);
-			
+			final L2DoorInstance doorInstance = getDoor(doorId);
 			if (doorInstance != null)
 			{
 				doorInstance.openMe();
