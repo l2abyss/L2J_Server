@@ -73,4 +73,26 @@ public final class AggroInfo
 	{
 		_damage = (int) Math.min(_damage + (long) value, 999999999);
 	}
+	
+	@Override
+	public final boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		
+		if (obj instanceof AggroInfo)
+		{
+			return (((AggroInfo) obj).getAttacker() == _attacker);
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public final int hashCode()
+	{
+		return _attacker.getObjectId();
+	}
 }

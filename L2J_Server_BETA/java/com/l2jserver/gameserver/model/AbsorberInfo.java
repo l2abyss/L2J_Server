@@ -54,4 +54,26 @@ public final class AbsorberInfo implements IUniqueId
 	{
 		_objectId = objectId;
 	}
+	
+	@Override
+	public final boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		
+		if (obj instanceof DamageDoneInfo)
+		{
+			return (((AbsorberInfo) obj).getObjectId() == _objectId);
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public final int hashCode()
+	{
+		return _objectId;
+	}
 }

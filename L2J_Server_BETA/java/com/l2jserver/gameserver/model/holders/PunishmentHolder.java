@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.model.punishment.PunishmentType;
 /**
  * @author UnAfraid
  */
-public class PunishmentHolder
+public final class PunishmentHolder
 {
 	private final Map<String, Map<PunishmentType, PunishmentTask>> _holder = new ConcurrentHashMap<>();
 	

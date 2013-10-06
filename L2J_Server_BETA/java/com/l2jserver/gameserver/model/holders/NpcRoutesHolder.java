@@ -29,7 +29,7 @@ import com.l2jserver.gameserver.model.interfaces.ILocational;
  * Holds depending between NPC's spawn point and route
  * @author GKR
  */
-public class NpcRoutesHolder
+public final class NpcRoutesHolder
 {
 	private final Map<String, String> _correspondences;
 	

@@ -22,7 +22,7 @@ package com.l2jserver.gameserver.model.holders;
  * Item holder, with additional parameter chance.
  * @author xban1x
  */
-public final class ItemChanceHolder extends ItemHolder
+public class ItemChanceHolder extends ItemHolder
 {
 	private final double _chance;
 	

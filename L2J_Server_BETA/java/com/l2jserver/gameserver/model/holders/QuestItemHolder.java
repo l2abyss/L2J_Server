@@ -22,7 +22,7 @@ package com.l2jserver.gameserver.model.holders;
  * Item Holder storing chance in addition for quests.
  * @author xban1x
  */
-public final class QuestItemHolder extends ItemHolder
+public class QuestItemHolder extends ItemHolder
 {
 	private final int _chance;
 	

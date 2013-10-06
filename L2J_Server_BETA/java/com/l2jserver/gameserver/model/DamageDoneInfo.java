@@ -48,4 +48,26 @@ public final class DamageDoneInfo
 	{
 		return _damage;
 	}
+	
+	@Override
+	public final boolean equals(Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		
+		if (obj instanceof DamageDoneInfo)
+		{
+			return (((DamageDoneInfo) obj).getAttacker() == _attacker);
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public final int hashCode()
+	{
+		return _attacker.getObjectId();
+	}
 }
