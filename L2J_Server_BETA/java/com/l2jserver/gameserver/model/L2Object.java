@@ -37,6 +37,7 @@ import com.l2jserver.gameserver.model.actor.poly.ObjectPoly;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.interfaces.IDecayable;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
+import com.l2jserver.gameserver.model.interfaces.ILocational;
 import com.l2jserver.gameserver.model.interfaces.INamable;
 import com.l2jserver.gameserver.model.interfaces.ISpawnable;
 import com.l2jserver.gameserver.model.interfaces.IUniqueId;
@@ -711,6 +712,33 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 		}
 		
 		_worldRegion = value;
+	}
+	
+	/**
+	 * Calculates distance between this L2Object and given x, y , z.
+	 * @param x - X coordinate.
+	 * @param y - Y coordinate.
+	 * @param z - Z coordinate.
+	 * @param includeZAxis - If set to true, Z coordinate will be included.
+	 * @param squared - If set to true, distance returned will be squared.
+	 * @return {@code double} - Distance between object and given x, y , z.
+	 */
+	public double calculateDistance(int x, int y, int z, boolean includeZAxis, boolean squared)
+	{
+		final double distance = Math.pow(x - getX(), 2) + Math.pow(y - getY(), 2) + (includeZAxis ? Math.pow(z - getZ(), 2) : 0);
+		return (squared) ? distance : Math.sqrt(distance);
+	}
+	
+	/**
+	 * Calculates distance between this L2Object and given location.
+	 * @param loc - Location on map.
+	 * @param includeZAxis - If set to true, Z coordinate will be included.
+	 * @param squared - If set to true, distance returned will be squared.
+	 * @return {@code double} - Distance between object and given location.
+	 */
+	public double calculateDistance(ILocational loc, boolean includeZAxis, boolean squared)
+	{
+		return calculateDistance(loc.getX(), loc.getY(), loc.getZ(), includeZAxis, squared);
 	}
 	
 	@Override

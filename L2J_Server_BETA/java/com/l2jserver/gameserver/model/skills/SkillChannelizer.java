@@ -277,7 +277,7 @@ public class SkillChannelizer implements Runnable
 					}
 					
 					// Target is too far.
-					if (Util.calculateDistance(x, y, z, cha.getX(), cha.getY(), cha.getZ(), true) > _skill.getAffectRange())
+					if (cha.calculateDistance(x, y, z, true, false) > _skill.getAffectRange())
 					{
 						continue;
 					}

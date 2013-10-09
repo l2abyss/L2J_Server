@@ -40,6 +40,6 @@ public class ConditionMinDistance extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return (env.getTarget() != null) && (env.getCharacter().getDistanceSq(env.getTarget()) >= _sqDistance);
+		return (env.getTarget() != null) && (env.getCharacter().calculateDistance(env.getTarget(), true, true) >= _sqDistance);
 	}
 }

@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.util.Util;
 
 /**
  * This packet manages the trade response.
@@ -96,7 +95,7 @@ public final class TradeDone extends L2GameClientPacket
 				return;
 			}
 			
-			if (Util.calculateDistance(player, trade.getPartner(), true) > 150)
+			if (player.calculateDistance(trade.getPartner(), true, false) > 150)
 			{
 				player.cancelActiveTrade();
 				return;

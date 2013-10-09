@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.SendTradeRequest;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.util.Util;
 
 /**
  * This packet manages the trade request.
@@ -170,7 +169,7 @@ public final class TradeRequest extends L2GameClientPacket
 			return;
 		}
 		
-		if (Util.calculateDistance(player, partner, true) > 150)
+		if (player.calculateDistance(partner, true, false) > 150)
 		{
 			player.sendPacket(SystemMessageId.TARGET_TOO_FAR);
 			return;

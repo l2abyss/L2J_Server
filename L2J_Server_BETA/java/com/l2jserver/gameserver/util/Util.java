@@ -42,6 +42,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.tasks.player.IllegalPlayerActionTask;
+import com.l2jserver.gameserver.model.interfaces.ILocational;
 import com.l2jserver.gameserver.network.serverpackets.AbstractHtmlPacket;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.ShowBoard;
@@ -133,54 +134,34 @@ public final class Util
 	}
 	
 	/**
-	 * @param x1
-	 * @param y1
-	 * @param x2
-	 * @param y2
-	 * @return the distance between the two coordinates in 2D plane
+	 * Calculates distance between one set of x, y, z and another set of x, y, z.
+	 * @param x1 - X coordinate of first point.
+	 * @param y1 - Y coordinate of first point.
+	 * @param z1 - Z coordinate of first point.
+	 * @param x2 - X coordinate of second point.
+	 * @param y2 - Y coordinate of second point.
+	 * @param z2 - Z coordinate of second point.
+	 * @param includeZAxis - If set to true, Z coordinates will be included.
+	 * @param squared - If set to true, distance returned will be squared.
+	 * @return {@code double} - Distance between object and given x, y , z.
 	 */
-	public static double calculateDistance(int x1, int y1, int x2, int y2)
+	public static double calculateDistance(int x1, int y1, int z1, int x2, int y2, int z2, boolean includeZAxis, boolean squared)
 	{
-		return calculateDistance(x1, y1, 0, x2, y2, 0, false);
+		final double distance = Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2) + (includeZAxis ? Math.pow(z1 - z2, 2) : 0);
+		return (squared) ? distance : Math.sqrt(distance);
 	}
 	
 	/**
-	 * @param x1
-	 * @param y1
-	 * @param z1
-	 * @param x2
-	 * @param y2
-	 * @param z2
-	 * @param includeZAxis - if true, includes also the Z axis in the calculation
-	 * @return the distance between the two coordinates
+	 * Calculates distance between 2 locations.
+	 * @param loc1 - First location.
+	 * @param loc2 - Second location.
+	 * @param includeZAxis - If set to true, Z coordinates will be included.
+	 * @param squared - If set to true, distance returned will be squared.
+	 * @return {@code double} - Distance between object and given location.
 	 */
-	public static double calculateDistance(int x1, int y1, int z1, int x2, int y2, int z2, boolean includeZAxis)
+	public static double calculateDistance(ILocational loc1, ILocational loc2, boolean includeZAxis, boolean squared)
 	{
-		double dx = (double) x1 - x2;
-		double dy = (double) y1 - y2;
-		
-		if (includeZAxis)
-		{
-			double dz = z1 - z2;
-			return Math.sqrt((dx * dx) + (dy * dy) + (dz * dz));
-		}
-		return Math.sqrt((dx * dx) + (dy * dy));
-	}
-	
-	/**
-	 * @param obj1
-	 * @param obj2
-	 * @param includeZAxis - if true, includes also the Z axis in the calculation
-	 * @return the distance between the two objects
-	 */
-	public static double calculateDistance(L2Object obj1, L2Object obj2, boolean includeZAxis)
-	{
-		if ((obj1 == null) || (obj2 == null))
-		{
-			return 1000000;
-		}
-		
-		return calculateDistance(obj1.getX(), obj1.getY(), obj1.getZ(), obj2.getX(), obj2.getY(), obj2.getZ(), includeZAxis);
+		return calculateDistance(loc1.getX(), loc1.getY(), loc1.getZ(), loc2.getX(), loc2.getY(), loc2.getZ(), includeZAxis, squared);
 	}
 	
 	/**
@@ -769,7 +750,7 @@ public final class Util
 			return false;
 		}
 		
-		if (Util.calculateDistance(obj, target, false) > radius)
+		if (obj.calculateDistance(target, false, false) > radius)
 		{
 			return false;
 		}

@@ -589,7 +589,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				npc.setWalking();
 			}
 			
-			if (npc.getPlanDistanceSq(leader) > (offset * offset))
+			if (npc.calculateDistance(leader, false, true) > (offset * offset))
 			{
 				int x1, y1, z1;
 				x1 = Rnd.get(minRadius * 2, offset * 2); // x
@@ -652,7 +652,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				z1 = p[2];
 				
 				// Calculate the distance between the current position of the L2Character and the target (x,y)
-				double distance2 = npc.getPlanDistanceSq(x1, y1);
+				double distance2 = npc.calculateDistance(x1, y1, 0, false, true);
 				
 				if (distance2 > ((range + range) * (range + range)))
 				{
@@ -903,7 +903,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			if (Rnd.get(100) <= npc.getCanDodge())
 			{
 				// Micht: kepping this one otherwise we should do 2 sqrt
-				double distance2 = npc.getPlanDistanceSq(mostHate.getX(), mostHate.getY());
+				double distance2 = npc.calculateDistance(mostHate, false, true);
 				if (Math.sqrt(distance2) <= (60 + combinedCollision))
 				{
 					int posX = npc.getX();
@@ -1168,7 +1168,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			}
 		}
 		
-		double dist = Math.sqrt(npc.getPlanDistanceSq(mostHate.getX(), mostHate.getY()));
+		double dist = npc.calculateDistance(mostHate, false, false);
 		int dist2 = (int) dist - collision;
 		int range = npc.getPhysicalAttackRange() + combinedCollision;
 		if (mostHate.isMoving())
@@ -1356,7 +1356,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		{
 			return false;
 		}
-		double dist = Math.sqrt(caster.getPlanDistanceSq(attackTarget.getX(), attackTarget.getY()));
+		double dist = caster.calculateDistance(attackTarget, false, false);
 		double dist2 = dist - attackTarget.getTemplate().getCollisionRadius();
 		double range = caster.getPhysicalAttackRange() + caster.getTemplate().getCollisionRadius() + attackTarget.getTemplate().getCollisionRadius();
 		double srange = sk.getCastRange() + caster.getTemplate().getCollisionRadius();
@@ -1832,7 +1832,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			{
 				npc.setTarget(getAttackTarget());
 			}
-			dist = Math.sqrt(npc.getPlanDistanceSq(getAttackTarget().getX(), getAttackTarget().getY()));
+			dist = npc.calculateDistance(getAttackTarget(), false, false);
 			dist2 = dist - npc.getTemplate().getCollisionRadius();
 			range = npc.getPhysicalAttackRange() + npc.getTemplate().getCollisionRadius() + getAttackTarget().getTemplate().getCollisionRadius();
 			if (getAttackTarget().isMoving())
@@ -2083,7 +2083,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					try
 					{
 						actor.setTarget(getAttackTarget());
-						dist = Math.sqrt(actor.getPlanDistanceSq(obj.getX(), obj.getY()));
+						dist = actor.calculateDistance(obj, false, false);
 						dist2 = dist - actor.getTemplate().getCollisionRadius();
 						range = sk.getCastRange() + actor.getTemplate().getCollisionRadius() + obj.getTemplate().getCollisionRadius();
 						if (obj.isMoving())
@@ -2115,7 +2115,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					try
 					{
 						actor.setTarget(getAttackTarget());
-						dist = Math.sqrt(actor.getPlanDistanceSq(obj.getX(), obj.getY()));
+						dist = actor.calculateDistance(obj, false, false);
 						dist2 = dist;
 						range = sk.getCastRange() + actor.getTemplate().getCollisionRadius() + obj.getTemplate().getCollisionRadius();
 						if (obj.isMoving())
@@ -2173,7 +2173,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					try
 					{
 						actor.setTarget(getAttackTarget());
-						dist = Math.sqrt(actor.getPlanDistanceSq(obj.getX(), obj.getY()));
+						dist = actor.calculateDistance(obj, false, false);
 						dist2 = dist - actor.getTemplate().getCollisionRadius();
 						range = sk.getCastRange() + actor.getTemplate().getCollisionRadius() + obj.getTemplate().getCollisionRadius();
 						if (obj.isMoving())
@@ -2210,7 +2210,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				try
 				{
 					actor.setTarget(getAttackTarget());
-					dist = Math.sqrt(actor.getPlanDistanceSq(obj.getX(), obj.getY()));
+					dist = actor.calculateDistance(obj, false, false);
 					dist2 = dist - actor.getTemplate().getCollisionRadius();
 					range = sk.getCastRange() + actor.getTemplate().getCollisionRadius() + obj.getTemplate().getCollisionRadius();
 					if (obj.isMoving())
@@ -2268,7 +2268,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				try
 				{
 					actor.setTarget(getAttackTarget());
-					dist = Math.sqrt(actor.getPlanDistanceSq(obj.getX(), obj.getY()));
+					dist = actor.calculateDistance(obj, false, false);
 					dist2 = dist - actor.getTemplate().getCollisionRadius();
 					range = sk.getCastRange() + actor.getTemplate().getCollisionRadius() + getAttackTarget().getTemplate().getCollisionRadius();
 					// if(obj.isMoving())
@@ -2293,7 +2293,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				try
 				{
 					actor.setTarget(getAttackTarget());
-					dist = Math.sqrt(actor.getPlanDistanceSq(target.getX(), target.getY()));
+					dist = actor.calculateDistance(target, false, false);
 					dist2 = dist;
 					range = sk.getCastRange() + actor.getTemplate().getCollisionRadius() + getAttackTarget().getTemplate().getCollisionRadius();
 					// if(obj.isMoving())
@@ -2359,7 +2359,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				}
 				try
 				{
-					dist = Math.sqrt(actor.getPlanDistanceSq(obj.getX(), obj.getY()));
+					dist = actor.calculateDistance(obj, false, false);
 					dist2 = dist - actor.getTemplate().getCollisionRadius();
 					range = actor.getPhysicalAttackRange() + actor.getTemplate().getCollisionRadius() + obj.getTemplate().getCollisionRadius();
 					if (obj.isMoving())

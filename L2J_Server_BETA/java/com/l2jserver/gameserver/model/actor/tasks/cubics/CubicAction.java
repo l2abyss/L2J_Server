@@ -142,7 +142,7 @@ public final class CubicAction implements Runnable
 						if (Config.DEBUG)
 						{
 							_log.info("L2CubicInstance: Action.run();");
-							_log.info("Cubic ID: " + _cubic.getId() + " Target: " + target.getName() + " distance: " + Math.sqrt(target.getDistanceSq(_cubic.getOwner().getX(), _cubic.getOwner().getY(), _cubic.getOwner().getZ())));
+							_log.info("Cubic ID: " + _cubic.getId() + " Target: " + target.getName() + " distance: " + target.calculateDistance(_cubic.getOwner(), true, false));
 						}
 						
 						_cubic.getOwner().broadcastPacket(new MagicSkillUse(_cubic.getOwner(), target, skill.getId(), skill.getLevel(), 0, 0));

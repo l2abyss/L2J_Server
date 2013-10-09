@@ -190,7 +190,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 		L2ControllableMobAI ctrlAi = (L2ControllableMobAI) theTarget.getAI();
 		ctrlAi.forceAttack(_actor);
 		
-		double dist2 = _actor.getPlanDistanceSq(target.getX(), target.getY());
+		double dist2 = _actor.calculateDistance(target, false, true);
 		int range = _actor.getPhysicalAttackRange() + _actor.getTemplate().getCollisionRadius() + target.getTemplate().getCollisionRadius();
 		int max_range = range;
 		
@@ -230,7 +230,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 		}
 		
 		_actor.setTarget(getForcedTarget());
-		double dist2 = _actor.getPlanDistanceSq(getForcedTarget().getX(), getForcedTarget().getY());
+		double dist2 = _actor.calculateDistance(getForcedTarget(), false, true);
 		int range = _actor.getPhysicalAttackRange() + _actor.getTemplate().getCollisionRadius() + getForcedTarget().getTemplate().getCollisionRadius();
 		int max_range = range;
 		
@@ -305,7 +305,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 			}
 			
 			_actor.setTarget(getAttackTarget());
-			double dist2 = _actor.getPlanDistanceSq(getAttackTarget().getX(), getAttackTarget().getY());
+			double dist2 = _actor.calculateDistance(getAttackTarget(), false, true);
 			int range = _actor.getPhysicalAttackRange() + _actor.getTemplate().getCollisionRadius() + getAttackTarget().getTemplate().getCollisionRadius();
 			int max_range = range;
 			

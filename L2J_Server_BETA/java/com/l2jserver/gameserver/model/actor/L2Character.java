@@ -1187,7 +1187,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			
 			// Bows Ranged Damage Formula (Damage gradually decreases when 60% or lower than full hit range, and increases when 60% or higher).
 			// full hit range is 500 which is the base bow range, and the 60% of this is 800.
-			damage1 *= (Math.sqrt(getDistanceSq(target)) / 4000) + 0.8;
+			damage1 *= (calculateDistance(target, true, false) / 4000) + 0.8;
 		}
 		
 		// Check if the L2Character is a L2PcInstance
@@ -4644,92 +4644,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	}
 	
 	/**
-	 * Return the distance between the current position of the L2Character and the target (x,y).
-	 * @param x X position of the target
-	 * @param y Y position of the target
-	 * @return the plan distance
-	 * @deprecated use getPlanDistanceSq(int x, int y, int z)
-	 */
-	@Deprecated
-	public final double getDistance(int x, int y)
-	{
-		double dx = x - getX();
-		double dy = y - getY();
-		
-		return Math.sqrt((dx * dx) + (dy * dy));
-	}
-	
-	/**
-	 * Return the distance between the current position of the L2Character and the target (x,y).
-	 * @param x X position of the target
-	 * @param y Y position of the target
-	 * @param z
-	 * @return the plan distance
-	 * @deprecated use getPlanDistanceSq(int x, int y, int z)
-	 */
-	@Deprecated
-	public final double getDistance(int x, int y, int z)
-	{
-		double dx = x - getX();
-		double dy = y - getY();
-		double dz = z - getZ();
-		
-		return Math.sqrt((dx * dx) + (dy * dy) + (dz * dz));
-	}
-	
-	/**
-	 * Return the squared distance between the current position of the L2Character and the given object.
-	 * @param object L2Object
-	 * @return the squared distance
-	 */
-	public final double getDistanceSq(L2Object object)
-	{
-		return getDistanceSq(object.getX(), object.getY(), object.getZ());
-	}
-	
-	/**
-	 * Return the squared distance between the current position of the L2Character and the given x, y, z.
-	 * @param x X position of the target
-	 * @param y Y position of the target
-	 * @param z Z position of the target
-	 * @return the squared distance
-	 */
-	public final double getDistanceSq(int x, int y, int z)
-	{
-		double dx = x - getX();
-		double dy = y - getY();
-		double dz = z - getZ();
-		
-		return ((dx * dx) + (dy * dy) + (dz * dz));
-	}
-	
-	/**
-	 * Return the squared plan distance between the current position of the L2Character and the given object.<BR>
-	 * (check only x and y, not z)
-	 * @param object L2Object
-	 * @return the squared plan distance
-	 */
-	public final double getPlanDistanceSq(L2Object object)
-	{
-		return getPlanDistanceSq(object.getX(), object.getY());
-	}
-	
-	/**
-	 * Return the squared plan distance between the current position of the L2Character and the given x, y, z.<BR>
-	 * (check only x and y, not z)
-	 * @param x X position of the target
-	 * @param y Y position of the target
-	 * @return the squared plan distance
-	 */
-	public final double getPlanDistanceSq(int x, int y)
-	{
-		double dx = x - getX();
-		double dy = y - getY();
-		
-		return ((dx * dx) + (dy * dy));
-	}
-	
-	/**
 	 * Check if this object is inside the given radius around the given point.
 	 * @param loc Location of the target
 	 * @param radius the radius around the target
@@ -4754,10 +4668,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	 */
 	public final boolean isInsideRadius(int x, int y, int z, int radius, boolean checkZAxis, boolean strictCheck)
 	{
-		final double dx = x - getX();
-		final double dy = y - getY();
-		final double dz = z - getZ();
-		final double distance = (dx * dx) + (dy * dy) + (checkZAxis ? (dz * dz) : 0);
+		final double distance = calculateDistance(x, y, z, checkZAxis, true);
 		return (strictCheck) ? (distance < (radius * radius)) : (distance <= (radius * radius));
 	}
 	

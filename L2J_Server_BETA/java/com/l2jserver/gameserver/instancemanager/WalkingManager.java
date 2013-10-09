@@ -272,7 +272,7 @@ public final class WalkingManager extends DocumentParser
 					
 					if (!npc.isInsideRadius(node, 3000, true, false))
 					{
-						final String message = "Route '" + routeName + "': NPC (id=" + npc.getId() + ", x=" + npc.getX() + ", y=" + npc.getY() + ", z=" + npc.getZ() + ") is too far from starting point (node x=" + node.getX() + ", y=" + node.getY() + ", z=" + node.getZ() + ", range=" + npc.getDistanceSq(node.getX(), node.getY(), node.getZ()) + "), walking will not start";
+						final String message = "Route '" + routeName + "': NPC (id=" + npc.getId() + ", x=" + npc.getX() + ", y=" + npc.getY() + ", z=" + npc.getZ() + ") is too far from starting point (node x=" + node.getX() + ", y=" + node.getY() + ", z=" + node.getZ() + ", range=" + npc.calculateDistance(node, true, true) + "), walking will not start";
 						_log.warning(getClass().getSimpleName() + ": " + message);
 						npc.sendDebugMessage(message);
 						return;
