@@ -587,6 +587,29 @@ public final class QuestState
 		return this;
 	}
 	
+	public QuestState setMemoState(int value)
+	{
+		set("memoState", String.valueOf(value));
+		return this;
+	}
+	
+	/**
+	 * @return the current Memo State
+	 */
+	public int getMemoState()
+	{
+		if (isStarted())
+		{
+			return getInt("memoState");
+		}
+		return 0;
+	}
+	
+	public boolean isMemoState(int memoState)
+	{
+		return (getInt("memoState") == memoState);
+	}
+	
 	/**
 	 * Add player to get notification of characters death
 	 * @param character the {@link L2Character} object of the character to get notification of death
