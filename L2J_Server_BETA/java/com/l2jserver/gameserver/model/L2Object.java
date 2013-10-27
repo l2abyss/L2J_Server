@@ -738,7 +738,7 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 	 */
 	public double calculateDistance(ILocational loc, boolean includeZAxis, boolean squared)
 	{
-		return calculateDistance(loc.getX(), loc.getY(), loc.getZ(), includeZAxis, squared);
+		return calculateDistance(loc.getLocation(this).getX(), loc.getLocation(this).getY(), loc.getLocation(this).getZ(), includeZAxis, squared);
 	}
 	
 	@Override

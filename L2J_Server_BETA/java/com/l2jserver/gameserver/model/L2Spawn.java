@@ -20,6 +20,8 @@ package com.l2jserver.gameserver.model;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,6 +38,7 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.interfaces.IPositionable;
+import com.l2jserver.gameserver.model.zone.type.NpcSpawnTerritory;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -61,6 +64,8 @@ public class L2Spawn implements IPositionable, IIdentifiable
 	private int _locationId;
 	/** The Location of this NPC spawn. */
 	private Location _location = new Location(0, 0, 0);
+	/** Link to NPC spawn territory */
+	private NpcSpawnTerritory _spawnTerritory = null;
 	/** Minimum respawn delay */
 	private int _respawnMinDelay;
 	/** Maximum respawn delay */
@@ -72,8 +77,9 @@ public class L2Spawn implements IPositionable, IIdentifiable
 	private boolean _doRespawn;
 	/** If true then spawn is custom */
 	private boolean _customSpawn;
-	private L2Npc _lastSpawn;
 	private static List<SpawnListener> _spawnListeners = new FastList<>();
+	private final FastList<L2Npc> _spawnedNpcs = new FastList<>();
+	private Map<Integer, Location> _lastSpawnPoints;
 	private boolean _isNoRndWalk = false; // Is no random walk
 	
 	/** The task launching the function doSpawn() */
@@ -164,9 +170,24 @@ public class L2Spawn implements IPositionable, IIdentifiable
 	}
 	
 	@Override
+	public Location getLocation(L2Object obj)
+	{
+		return ((_lastSpawnPoints == null) || (obj == null) || !_lastSpawnPoints.containsKey(obj.getObjectId())) ? _location : _lastSpawnPoints.get(obj.getObjectId());
+	}
+	
+	@Override
 	public int getX()
 	{
 		return _location.getX();
+	}
+	
+	/**
+	 * @param obj object to check
+	 * @return the X position of the last spawn point of given NPC.
+	 */
+	public int getX(L2Object obj)
+	{
+		return getLocation(obj).getX();
 	}
 	
 	/**
@@ -186,6 +207,15 @@ public class L2Spawn implements IPositionable, IIdentifiable
 	}
 	
 	/**
+	 * @param obj object to check
+	 * @return the Y position of the last spawn point of given NPC.
+	 */
+	public int getY(L2Object obj)
+	{
+		return getLocation(obj).getY();
+	}
+	
+	/**
 	 * Set the Y position of the spawn point.
 	 * @param y the y coordinate
 	 */
@@ -199,6 +229,15 @@ public class L2Spawn implements IPositionable, IIdentifiable
 	public int getZ()
 	{
 		return _location.getZ();
+	}
+	
+	/**
+	 * @param obj object to check
+	 * @return the Z position of the last spawn point of given NPC.
+	 */
+	public int getZ(L2Object obj)
+	{
+		return getLocation(obj).getZ();
 	}
 	
 	/**
@@ -348,6 +387,15 @@ public class L2Spawn implements IPositionable, IIdentifiable
 		// Decrease the current number of L2NpcInstance of this L2Spawn
 		_currentCount--;
 		
+		// Remove this NPC from list of spawned
+		_spawnedNpcs.remove(oldNpc);
+		
+		// Remove spawn point for old NPC
+		if (_lastSpawnPoints != null)
+		{
+			_lastSpawnPoints.remove(oldNpc.getObjectId());
+		}
+		
 		// Check if respawn is possible to prevent multiple respawning caused by lag
 		if (_doRespawn && ((_scheduledCount + _currentCount) < _maximumCount))
 		{
@@ -487,8 +535,17 @@ public class L2Spawn implements IPositionable, IIdentifiable
 	{
 		int newlocx, newlocy, newlocz;
 		
-		// If Locx=0 and Locy=0, the L2NpcInstance must be spawned in an area defined by location
-		if ((getX() == 0) && (getY() == 0))
+		// If Locx and Locy are not defined, the L2NpcInstance must be spawned in an area defined by location or spawn territory
+		// New method
+		if (isTerritoryBased())
+		{
+			int[] p = _spawnTerritory.getRandomPoint();
+			newlocx = p[0];
+			newlocy = p[1];
+			newlocz = p[2];
+		}
+		// Old method (for backward compatibility)
+		else if ((getX() == 0) && (getY() == 0))
 		{
 			if (getLocationId() == 0)
 			{
@@ -565,7 +622,11 @@ public class L2Spawn implements IPositionable, IIdentifiable
 		
 		L2Spawn.notifyNpcSpawned(mob);
 		
-		_lastSpawn = mob;
+		_spawnedNpcs.add(mob);
+		if (_lastSpawnPoints != null)
+		{
+			_lastSpawnPoints.put(mob.getObjectId(), new Location(newlocx, newlocy, newlocz));
+		}
 		
 		if (Config.DEBUG)
 		{
@@ -646,9 +707,35 @@ public class L2Spawn implements IPositionable, IIdentifiable
 		return _respawnMinDelay != _respawnMaxDelay;
 	}
 	
+	public void setSpawnTerritory(NpcSpawnTerritory territory)
+	{
+		_spawnTerritory = territory;
+		_lastSpawnPoints = new ConcurrentHashMap<>();
+	}
+	
+	public NpcSpawnTerritory getSpawnTerritory()
+	{
+		return _spawnTerritory;
+	}
+	
+	public boolean isTerritoryBased()
+	{
+		return (_spawnTerritory != null) && (_location.getX() == 0) && (_location.getY() == 0);
+	}
+	
 	public L2Npc getLastSpawn()
 	{
-		return _lastSpawn;
+		if (!_spawnedNpcs.isEmpty())
+		{
+			return _spawnedNpcs.getLast();
+		}
+		
+		return null;
+	}
+	
+	public final FastList<L2Npc> getSpawnedNpcs()
+	{
+		return _spawnedNpcs;
 	}
 	
 	/**

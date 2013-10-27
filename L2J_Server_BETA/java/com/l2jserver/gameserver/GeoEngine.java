@@ -696,6 +696,10 @@ public class GeoEngine extends GeoData
 	 */
 	private static void nInitGeodata()
 	{
+		if (Config.GEODATA == 0)
+		{
+			return;
+		}
 		final File file = new File(Config.GEODATA_DIR, "geo_index.txt"); // UnAfraid: FIXME: Migrate this TXT to XML and auto port the TXT into XML if it exists but XML doesn't.
 		if (!file.exists())
 		{

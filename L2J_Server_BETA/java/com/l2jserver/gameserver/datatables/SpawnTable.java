@@ -33,16 +33,22 @@ import javolution.util.FastSet;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.instancemanager.DayNightSpawnManager;
+import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2Spawn;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 /**
  * Spawn data retriever.
  * @author Zoey76
  */
-public final class SpawnTable
+public final class SpawnTable extends DocumentParser
 {
 	private static final Logger _log = Logger.getLogger(SpawnTable.class.getName());
 	// SQL
@@ -50,6 +56,8 @@ public final class SpawnTable
 	private static final String SELECT_CUSTOM_SPAWNS = "SELECT count, npc_templateid, locx, locy, locz, heading, respawn_delay, respawn_random, loc_id, periodOfDay FROM custom_spawnlist";
 	
 	private static final Map<Integer, Set<L2Spawn>> _spawnTable = new FastMap<Integer, Set<L2Spawn>>().shared();
+	
+	private int _xmlSpawnCount = 0;
 	
 	protected SpawnTable()
 	{
@@ -59,6 +67,7 @@ public final class SpawnTable
 	/**
 	 * Wrapper to load all spawns.
 	 */
+	@Override
 	public void load()
 	{
 		if (!Config.ALT_DEV_NO_SPAWNS)
@@ -70,6 +79,124 @@ public final class SpawnTable
 			{
 				fillSpawnTable(true);
 				_log.info(getClass().getSimpleName() + ": Loaded " + (_spawnTable.size() - spawnCount) + " custom npc spawns.");
+			}
+			
+			// Load XML list
+			parseDirectory("data/spawnlist");
+			_log.info(getClass().getSimpleName() + ": Loaded " + _xmlSpawnCount + " npc spawns from XML.");
+		}
+	}
+	
+	private boolean checkTemplate(int npcId)
+	{
+		L2NpcTemplate npcTemplate = NpcTable.getInstance().getTemplate(npcId);
+		if (npcTemplate == null)
+		{
+			_log.warning(getClass().getSimpleName() + ": Data missing in NPC table for ID: " + npcId + ".");
+			return false;
+		}
+		
+		if (npcTemplate.isType("L2SiegeGuard") || npcTemplate.isType("L2RaidBoss") || (!Config.ALLOW_CLASS_MASTERS && npcTemplate.isType("L2ClassMaster")))
+		{
+			// Don't spawn
+			return false;
+		}
+		
+		return true;
+	}
+	
+	@Override
+	protected void parseDocument()
+	{
+		NamedNodeMap attrs;
+		for (Node list = getCurrentDocument().getFirstChild(); list != null; list = list.getNextSibling())
+		{
+			if (list.getNodeName().equalsIgnoreCase("list"))
+			{
+				for (Node param = list.getFirstChild(); param != null; param = param.getNextSibling())
+				{
+					attrs = param.getAttributes();
+					if (param.getNodeName().equalsIgnoreCase("spawn"))
+					{
+						String territoryName = null;
+						
+						// Check, if spawn territory specified and exists
+						if (attrs.getNamedItem("zone") != null && ZoneManager.getInstance().getSpawnTerritory(attrs.getNamedItem("zone").getNodeValue()) != null)
+						{
+							territoryName = parseString(attrs, "zone");
+						} 
+						
+						for (Node npctag = param.getFirstChild(); npctag != null; npctag = npctag.getNextSibling())
+						{
+							attrs = npctag.getAttributes();
+							if (npctag.getNodeName().equalsIgnoreCase("npc"))
+							{
+								// mandatory
+								final int templateId = parseInt(attrs, "id");
+								// coordinates are optional, if territory is specified; mandatory otherwise
+								int x = 0;
+								int y = 0;
+								int z = 0;
+								
+								try
+								{
+									 x = parseInt(attrs, "x");
+									 y = parseInt(attrs, "y");
+									 z = parseInt(attrs, "z");
+								}
+								catch (NullPointerException npe)
+								{
+									// x, y, z  can be unspecified, if this spawn is territory based, do nothing
+								}
+								
+								if ((x == 0) && (y == 0) && (territoryName == null)) // Both coordinates and zone are unspecified
+								{
+									_log.warning("XML Spawnlist: Spawn could not be initialized, both coordinates and zone are unspecified for ID " + templateId);
+									continue;
+								}
+								
+								StatsSet spawnInfo = new StatsSet();
+								spawnInfo.set("npcTemplateid", templateId);
+								spawnInfo.set("x", x);
+								spawnInfo.set("y", y);
+								spawnInfo.set("z", z);
+								spawnInfo.set("territoryName", territoryName);
+								
+								// trying to read optional parameters
+								if (attrs.getNamedItem("heading") != null)
+								{
+									spawnInfo.set("heading", parseInt(attrs, "heading"));
+								}
+								
+								if (attrs.getNamedItem("count") != null)
+								{
+									spawnInfo.set("count", parseInt(attrs, "count"));
+								}
+								
+								if (attrs.getNamedItem("respawnDelay") != null)
+								{
+									spawnInfo.set("respawnDelay", parseInt(attrs, "respawnDelay"));
+								}
+      					
+								if (attrs.getNamedItem("respawnRandom") != null)
+								{
+									spawnInfo.set("respawnRandom", parseInt(attrs, "respawnRandom"));
+								}
+								
+								if (attrs.getNamedItem("periodOfDay") != null)
+								{
+									String period = attrs.getNamedItem("periodOfDay").getNodeValue();
+									if (period.equalsIgnoreCase("day") || period.equalsIgnoreCase("night"))
+									{
+										spawnInfo.set("periodOfDay", period.equalsIgnoreCase("day") ? 1 : 2);
+									}
+								}
+								
+								_xmlSpawnCount += addSpawn(spawnInfo);
+							}
+						}									
+					}
+				}
 			}
 		}
 	}
@@ -86,52 +213,30 @@ public final class SpawnTable
 			Statement s = con.createStatement();
 			ResultSet rs = s.executeQuery(isCustom ? SELECT_CUSTOM_SPAWNS : SELECT_SPAWNS))
 		{
-			L2Spawn spawn;
-			L2NpcTemplate npcTemplate;
-			int npcId;
 			while (rs.next())
 			{
-				npcId = rs.getInt("npc_templateid");
-				npcTemplate = NpcTable.getInstance().getTemplate(npcId);
-				if (npcTemplate == null)
-				{
-					_log.warning(getClass().getSimpleName() + ": Data missing in NPC table for ID: " + npcId + ".");
-					continue;
-				}
+				StatsSet spawnInfo = new StatsSet();
+				int npcId = rs.getInt("npc_templateid");				
 				
-				if (npcTemplate.isType("L2SiegeGuard") || npcTemplate.isType("L2RaidBoss") || (!Config.ALLOW_CLASS_MASTERS && npcTemplate.isType("L2ClassMaster")))
+				// Check basic requirements first
+				if (!checkTemplate(npcId))
 				{
 					// Don't spawn
 					continue;
 				}
 				
-				spawn = new L2Spawn(npcTemplate);
-				spawn.setAmount(rs.getInt("count"));
-				spawn.setX(rs.getInt("locx"));
-				spawn.setY(rs.getInt("locy"));
-				spawn.setZ(rs.getInt("locz"));
-				spawn.setHeading(rs.getInt("heading"));
-				spawn.setRespawnDelay(rs.getInt("respawn_delay"), rs.getInt("respawn_random"));
-				spawn.setCustom(isCustom);
-				int loc_id = rs.getInt("loc_id");
-				spawn.setLocationId(loc_id);
-				
-				switch (rs.getInt("periodOfDay"))
-				{
-					case 0: // default
-						npcSpawnCount += spawn.init();
-						break;
-					case 1: // Day
-						DayNightSpawnManager.getInstance().addDayCreature(spawn);
-						npcSpawnCount++;
-						break;
-					case 2: // Night
-						DayNightSpawnManager.getInstance().addNightCreature(spawn);
-						npcSpawnCount++;
-						break;
-				}
-				
-				addSpawn(spawn);
+				spawnInfo.set("npcTemplateid", npcId);
+				spawnInfo.set("count", rs.getInt("count"));
+				spawnInfo.set("x", rs.getInt("locx"));
+				spawnInfo.set("y", rs.getInt("locy"));
+				spawnInfo.set("z", rs.getInt("locz"));
+				spawnInfo.set("heading", rs.getInt("heading"));
+				spawnInfo.set("respawnDelay", rs.getInt("respawn_delay"));
+				spawnInfo.set("respawnRandom", rs.getInt("respawn_random"));
+				spawnInfo.set("locId", rs.getInt("loc_id"));
+				spawnInfo.set("periodOfDay", rs.getInt("periodOfDay"));
+				spawnInfo.set("isCustomSpawn", isCustom);
+				npcSpawnCount += addSpawn(spawnInfo);
 			}
 		}
 		catch (Exception e)
@@ -139,6 +244,52 @@ public final class SpawnTable
 			_log.log(Level.WARNING, getClass().getSimpleName() + ": Spawn could not be initialized: " + e.getMessage(), e);
 		}
 		return npcSpawnCount;
+	}
+	
+	private int addSpawn(StatsSet spawnInfo)
+	{
+		L2Spawn spawnDat;
+		int ret = 0;
+		try
+		{
+			spawnDat = new L2Spawn(NpcTable.getInstance().getTemplate(spawnInfo.getInt("npcTemplateid")));
+			spawnDat.setAmount(spawnInfo.getInt("count", 1));
+			spawnDat.setX(spawnInfo.getInt("x", 0));
+			spawnDat.setY(spawnInfo.getInt("y", 0));
+			spawnDat.setZ(spawnInfo.getInt("z", 0));
+			spawnDat.setHeading(spawnInfo.getInt("heading", -1));
+			spawnDat.setRespawnDelay(spawnInfo.getInt("respawnDelay", 0), spawnInfo.getInt("respawnRandom", 0));
+			spawnDat.setLocationId(spawnInfo.getInt("locId", 0));
+			String territoryName = spawnInfo.getString("territoryName", "");
+			spawnDat.setCustom(spawnInfo.getBoolean("isCustomSpawn", false));
+			if (!territoryName.isEmpty())
+			{
+				spawnDat.setSpawnTerritory(ZoneManager.getInstance().getSpawnTerritory(territoryName));
+			}
+			switch (spawnInfo.getInt("periodOfDay", 0))
+			{
+				case 0: // default
+					ret += spawnDat.init();
+					break;
+				case 1: // Day
+					DayNightSpawnManager.getInstance().addDayCreature(spawnDat);
+					ret = 1;
+					break;
+				case 2: // Night
+					DayNightSpawnManager.getInstance().addNightCreature(spawnDat);
+					ret = 1;
+					break;
+			}
+			
+			addSpawn(spawnDat);
+		}
+		catch (Exception e)
+		{
+			// problem with initializing spawn, go to next one
+			_log.log(Level.WARNING, "Spawn could not be initialized: " + e.getMessage(), e);
+		}
+		
+		return ret;
 	}
 	
 	public Map<Integer, Set<L2Spawn>> getSpawnTable()

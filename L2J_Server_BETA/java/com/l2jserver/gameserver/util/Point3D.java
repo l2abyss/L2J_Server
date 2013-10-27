@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.util;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.interfaces.IPositionable;
 
@@ -99,6 +100,12 @@ public class Point3D implements IPositionable
 		return new Location(getX(), getY(), getZ(), getHeading(), getInstanceId());
 	}
 	
+	@Override
+	public Location getLocation(L2Object obj)
+	{
+		return getLocation();
+	}
+
 	@Override
 	public void setX(int x)
 	{
