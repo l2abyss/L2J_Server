@@ -121,6 +121,7 @@ import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
+import com.l2jserver.gameserver.model.L2CommandChannel;
 import com.l2jserver.gameserver.model.L2ContactList;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.L2ManufactureItem;
@@ -176,7 +177,6 @@ import com.l2jserver.gameserver.model.actor.tasks.player.RecoGiveTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.RentPetTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.ResetChargesTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.ResetSoulsTask;
-import com.l2jserver.gameserver.model.actor.tasks.player.ShortBuffTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.SitDownTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.StandUpTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.TeleportWatchdogTask;
@@ -189,10 +189,8 @@ import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.ClassLevel;
 import com.l2jserver.gameserver.model.base.PlayerClass;
 import com.l2jserver.gameserver.model.base.SubClass;
-import com.l2jserver.gameserver.model.effects.AbnormalEffect;
+import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.effects.EffectFlag;
-import com.l2jserver.gameserver.model.effects.EffectTemplate;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Duel;
@@ -234,6 +232,9 @@ import com.l2jserver.gameserver.model.punishment.PunishmentType;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.quest.State;
+import com.l2jserver.gameserver.model.skills.AbnormalType;
+import com.l2jserver.gameserver.model.skills.AbnormalVisualEffect;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSiegeFlag;
@@ -302,7 +303,6 @@ import com.l2jserver.gameserver.network.serverpackets.RelationChanged;
 import com.l2jserver.gameserver.network.serverpackets.Ride;
 import com.l2jserver.gameserver.network.serverpackets.ServerClose;
 import com.l2jserver.gameserver.network.serverpackets.SetupGauge;
-import com.l2jserver.gameserver.network.serverpackets.ShortBuffStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ShortCutInit;
 import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.gameserver.network.serverpackets.SkillList;
@@ -348,8 +348,8 @@ public final class L2PcInstance extends L2Playable
 	private static final String DELETE_CHAR_SKILLS = "DELETE FROM character_skills WHERE charId=? AND class_index=?";
 	
 	// Character Skill Save SQL String Definitions:
-	private static final String ADD_SKILL_SAVE = "INSERT INTO character_skills_save (charId,skill_id,skill_level,effect_count,effect_cur_time,reuse_delay,systime,restore_type,class_index,buff_index) VALUES (?,?,?,?,?,?,?,?,?,?)";
-	private static final String RESTORE_SKILL_SAVE = "SELECT skill_id,skill_level,effect_count,effect_cur_time, reuse_delay, systime, restore_type FROM character_skills_save WHERE charId=? AND class_index=? ORDER BY buff_index ASC";
+	private static final String ADD_SKILL_SAVE = "INSERT INTO character_skills_save (charId,skill_id,skill_level,remaining_time,reuse_delay,systime,restore_type,class_index,buff_index) VALUES (?,?,?,?,?,?,?,?,?)";
+	private static final String RESTORE_SKILL_SAVE = "SELECT skill_id,skill_level,remaining_time, reuse_delay, systime, restore_type FROM character_skills_save WHERE charId=? AND class_index=? ORDER BY buff_index ASC";
 	private static final String DELETE_SKILL_SAVE = "DELETE FROM character_skills_save WHERE charId=? AND class_index=?";
 	
 	// Character Item Reuse Time String Definition:
@@ -728,6 +728,8 @@ public final class L2PcInstance extends L2Playable
 	// Used for protection after teleport
 	private long _protectEndTime = 0;
 	
+	private L2ItemInstance _lure = null;
+	
 	public boolean isSpawnProtected()
 	{
 		return _protectEndTime > GameTimeController.getInstance().getGameTicks();
@@ -902,9 +904,6 @@ public final class L2PcInstance extends L2Playable
 	
 	/** Herbs Task Time **/
 	private int _herbstask = 0;
-	
-	/** ShortBuff clearing Task */
-	private ScheduledFuture<?> _shortBuffTask = null;
 	
 	// L2JMOD Wedding
 	private boolean _married = false;
@@ -2865,15 +2864,9 @@ public final class L2PcInstance extends L2Playable
 			}
 			
 			// fix when learning toggle skills
-			if (sk.isToggle())
+			if (sk.isToggle() && isAffectedBySkill(sk.getId()))
 			{
-				final L2Effect toggleEffect = getFirstEffect(sk.getId());
-				if (toggleEffect != null)
-				{
-					// stop old toggle skill effect, and give new toggle skill effect back
-					toggleEffect.exit();
-					sk.getEffects(this, this);
-				}
+				stopSkillEffects(true, sk.getId());
 			}
 			
 			addSkill(sk, true);
@@ -2881,7 +2874,7 @@ public final class L2PcInstance extends L2Playable
 		
 		if (Config.AUTO_LEARN_SKILLS && (skillCounter > 0))
 		{
-			sendMessage("You have learned " + skillCounter + " new skills");
+			sendMessage("You have learned " + skillCounter + " new skills.");
 		}
 		return skillCounter;
 	}
@@ -3615,8 +3608,9 @@ public final class L2PcInstance extends L2Playable
 					}
 				}
 			}
-			// Auto use herbs - autoloot
-			if (item.getItemType() == L2EtcItemType.HERB) // If item is herb dont add it to iv :]
+			
+			// Auto-use herbs.
+			if (item.getItemType() == L2EtcItemType.HERB)
 			{
 				if (!isCastingNow())
 				{
@@ -4384,9 +4378,8 @@ public final class L2PcInstance extends L2Playable
 			return false;
 		}
 		
-		if ((skill.getSkillType() == L2SkillType.SUMMON) && (hasSummon() || isMounted() || inObserverMode()))
+		if (isMounted() || inObserverMode())
 		{
-			sendPacket(SystemMessageId.SUMMON_ONLY_ONE);
 			return false;
 		}
 		
@@ -5047,7 +5040,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		_transformation = transformation;
-		stopAllToggles();
+		getEffectList().stopAllToggles();
 		transformation.onTransform(this);
 		sendSkillList();
 		sendPacket(new SkillCoolTime(this));
@@ -5066,7 +5059,7 @@ public final class L2PcInstance extends L2Playable
 			setQueuedSkill(null, false, false);
 			_transformation.onUntransform(this);
 			_transformation = null;
-			stopEffects(L2EffectType.TRANSFORMATION);
+			getEffectList().stopSkillEffects(false, AbnormalType.TRANSFORM);
 			sendSkillList();
 			sendPacket(new SkillCoolTime(this));
 			broadcastUserInfo();
@@ -5886,7 +5879,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean isLucky()
 	{
-		return ((getLevel() <= 9) && (getFirstPassiveEffect(L2EffectType.LUCKY) != null));
+		return (getLevel() <= 9) && isAffectedBySkill(L2Skill.SKILL_LUCKY);
 	}
 	
 	/**
@@ -6690,7 +6683,7 @@ public final class L2PcInstance extends L2Playable
 			return false;
 		}
 		
-		stopAllToggles();
+		getEffectList().stopAllToggles();
 		setMount(pet.getId(), pet.getLevel());
 		setMountObjectID(pet.getControlObjectId());
 		clearPetData();
@@ -6711,7 +6704,7 @@ public final class L2PcInstance extends L2Playable
 			return false;
 		}
 		
-		stopAllToggles();
+		getEffectList().stopAllToggles();
 		setMount(npcId, getLevel());
 		clearPetData();
 		setMountObjectID(controlItemObjId);
@@ -7822,23 +7815,15 @@ public final class L2PcInstance extends L2Playable
 			// reuse delays for matching skills. 'restore_type'= 0.
 			if (storeEffects)
 			{
-				for (L2Effect effect : getAllEffects())
+				for (BuffInfo info : getEffectList().getEffects())
 				{
-					if (effect == null)
+					if (info == null)
 					{
 						continue;
 					}
 					
-					switch (effect.getEffectType())
-					{
-						case HEAL_OVER_TIME:
-						case CPHEAL_OVER_TIME:
-						case HIDE:
-							continue;
-					}
-					
-					L2Skill skill = effect.getSkill();
-					if (storedSkills.contains(skill.getReuseHashCode()))
+					final L2Skill skill = info.getSkill();
+					if (skill.isToggle())
 					{
 						continue;
 					}
@@ -7849,48 +7834,48 @@ public final class L2PcInstance extends L2Playable
 						continue;
 					}
 					
+					if (storedSkills.contains(skill.getReuseHashCode()))
+					{
+						continue;
+					}
+					
 					storedSkills.add(skill.getReuseHashCode());
 					
-					if (effect.isInUse() && !skill.isToggle())
+					statement.setInt(1, getObjectId());
+					statement.setInt(2, skill.getId());
+					statement.setInt(3, skill.getLevel());
+					statement.setInt(4, info.getTime());
+					
+					if (_reuseTimeStampsSkills.containsKey(skill.getReuseHashCode()))
 					{
-						statement.setInt(1, getObjectId());
-						statement.setInt(2, skill.getId());
-						statement.setInt(3, skill.getLevel());
-						statement.setInt(4, effect.getTickCount());
-						statement.setInt(5, effect.getTime());
-						
-						if (_reuseTimeStampsSkills.containsKey(skill.getReuseHashCode()))
-						{
-							TimeStamp t = _reuseTimeStampsSkills.get(skill.getReuseHashCode());
-							statement.setLong(6, t.hasNotPassed() ? t.getReuse() : 0);
-							statement.setDouble(7, t.hasNotPassed() ? t.getStamp() : 0);
-						}
-						else
-						{
-							statement.setLong(6, 0);
-							statement.setDouble(7, 0);
-						}
-						
-						statement.setInt(8, 0);
-						statement.setInt(9, getClassIndex());
-						statement.setInt(10, ++buff_index);
-						statement.execute();
+						TimeStamp t = _reuseTimeStampsSkills.get(skill.getReuseHashCode());
+						statement.setLong(5, t.hasNotPassed() ? t.getReuse() : 0);
+						statement.setDouble(6, t.hasNotPassed() ? t.getStamp() : 0);
 					}
+					else
+					{
+						statement.setLong(5, 0);
+						statement.setDouble(6, 0);
+					}
+					
+					statement.setInt(7, 0);
+					statement.setInt(8, getClassIndex());
+					statement.setInt(9, ++buff_index);
+					statement.execute();
 				}
 			}
 			
 			// Store the reuse delays of remaining skills which
 			// lost effect but still under reuse delay. 'restore_type' 1.
-			int hash;
-			TimeStamp t;
 			for (Entry<Integer, TimeStamp> ts : _reuseTimeStampsSkills.entrySet())
 			{
-				hash = ts.getKey();
+				final int hash = ts.getKey();
 				if (storedSkills.contains(hash))
 				{
 					continue;
 				}
-				t = ts.getValue();
+				
+				final TimeStamp t = ts.getValue();
 				if ((t != null) && t.hasNotPassed())
 				{
 					storedSkills.add(hash);
@@ -7899,12 +7884,11 @@ public final class L2PcInstance extends L2Playable
 					statement.setInt(2, t.getSkillId());
 					statement.setInt(3, t.getSkillLvl());
 					statement.setInt(4, -1);
-					statement.setInt(5, -1);
-					statement.setLong(6, t.getReuse());
-					statement.setDouble(7, t.getStamp());
-					statement.setInt(8, 1);
-					statement.setInt(9, getClassIndex());
-					statement.setInt(10, ++buff_index);
+					statement.setLong(5, t.getReuse());
+					statement.setDouble(6, t.getStamp());
+					statement.setInt(7, 1);
+					statement.setInt(8, getClassIndex());
+					statement.setInt(9, ++buff_index);
 					statement.execute();
 				}
 			}
@@ -8164,8 +8148,7 @@ public final class L2PcInstance extends L2Playable
 			{
 				while (rset.next())
 				{
-					int effectCount = rset.getInt("effect_count");
-					int effectCurTime = rset.getInt("effect_cur_time");
+					int remainingTime = rset.getInt("remaining_time");
 					long reuseDelay = rset.getLong("reuse_delay");
 					long systime = rset.getLong("systime");
 					int restoreType = rset.getInt("restore_type");
@@ -8176,10 +8159,10 @@ public final class L2PcInstance extends L2Playable
 						continue;
 					}
 					
-					final long remainingTime = systime - System.currentTimeMillis();
-					if (remainingTime > 10)
+					final long time = systime - System.currentTimeMillis();
+					if (time > 10)
 					{
-						disableSkill(skill, remainingTime);
+						disableSkill(skill, time);
 						addTimeStamp(skill, reuseDelay, systime);
 					}
 					
@@ -8201,20 +8184,30 @@ public final class L2PcInstance extends L2Playable
 						env.setCharacter(this);
 						env.setTarget(this);
 						env.setSkill(skill);
-						final L2Effect[] effects = new L2Effect[skill.getEffectTemplates().size()];
-						int index = 0;
-						for (EffectTemplate et : skill.getEffectTemplates())
+						
+						final BuffInfo info = new BuffInfo(env);
+						info.setAbnormalTime(remainingTime);
+						for (AbstractEffect effect : skill.getEffectTemplates())
 						{
-							L2Effect effect = et.getEffect(env);
 							if (effect != null)
 							{
-								effect.setCount(effectCount);
-								effect.setFirstTime(effectCurTime);
-								effect.scheduleEffect();
-								effects[index++] = effect;
+								if (effect.isInstant())
+								{
+									if (effect.calcSuccess(info))
+									{
+										effect.onStart(info);
+									}
+								}
+								else
+								{
+									if (effect.onStart(info))
+									{
+										info.addEffect(effect);
+									}
+								}
 							}
 						}
-						getEffectList().add(effects);
+						getEffectList().add(info);
 					}
 				}
 			}
@@ -8875,20 +8868,12 @@ public final class L2PcInstance extends L2Playable
 			return false;
 		}
 		
-		// Check if the skill type is TOGGLE
-		if (skill.isToggle())
+		// Check if the skill type is toggle.
+		if (skill.isToggle() && isAffectedBySkill(skill.getId()))
 		{
-			// Get effects of the skill
-			L2Effect effect = getFirstEffect(skill.getId());
-			
-			if (effect != null)
-			{
-				effect.exit();
-				
-				// Send a Server->Client packet ActionFailed to the L2PcInstance
-				sendPacket(ActionFailed.STATIC_PACKET);
-				return false;
-			}
+			stopSkillEffects(true, skill.getId());
+			sendPacket(ActionFailed.STATIC_PACKET);
+			return false;
 		}
 		
 		// Check if the player uses "Fake Death" skill
@@ -9316,6 +9301,144 @@ public final class L2PcInstance extends L2Playable
 	public boolean checkPvpSkill(L2Object target, L2Skill skill, boolean srcIsSummon)
 	{
 		final L2PcInstance targetPlayer = target != null ? target.getActingPlayer() : null;
+		if (skill.isDebuff())
+		{
+			if (this == targetPlayer)
+			{
+				return false;
+			}
+			
+			final boolean isCtrlPressed = (getCurrentSkill() != null) && getCurrentSkill().isCtrlPressed();
+			final boolean isInsideSiegeZone = isInsideZone(ZoneId.SIEGE);
+			if (targetPlayer != null)
+			{
+				if (isInDuel())
+				{
+					if (!targetPlayer.isInDuel())
+					{
+						return false;
+					}
+					
+					if ((getDuelId() != 0) && (getDuelId() == targetPlayer.getDuelId()))
+					{
+						return true;
+					}
+				}
+				
+				if (isInOlympiadMode())
+				{
+					if (!targetPlayer.isInOlympiadMode())
+					{
+						return false;
+					}
+					
+					if ((getOlympiadGameId() != 0) && (getOlympiadGameId() == targetPlayer.getOlympiadGameId()))
+					{
+						return true;
+					}
+				}
+				
+				if (targetPlayer.isInOlympiadMode())
+				{
+					return false;
+				}
+				
+				if (targetPlayer.isInsideZone(ZoneId.PEACE))
+				{
+					return false;
+				}
+				
+				// On retail, you can't debuff party members at all unless you're in duel.
+				if (isInParty() && targetPlayer.isInParty() && (getParty().getLeader() == targetPlayer.getParty().getLeader()))
+				{
+					return false;
+				}
+				
+				final L2Party activeCharParty = getParty();
+				if (activeCharParty != null)
+				{
+					final L2CommandChannel chan = activeCharParty.getCommandChannel();
+					if ((chan != null) && chan.containsPlayer(targetPlayer))
+					{
+						return false;
+					}
+				}
+				
+				// During Fortress/Castle Sieges, they can't debuff eachothers if they are in the same side.
+				if (isInsideSiegeZone && isInSiege() && (getSiegeState() != 0) && (targetPlayer.getSiegeState() != 0))
+				{
+					final Siege siege = SiegeManager.getInstance().getSiege(getX(), getY(), getZ());
+					if (siege != null)
+					{
+						if ((siege.checkIsDefender(getClan()) && siege.checkIsDefender(targetPlayer.getClan())) || (siege.checkIsAttacker(getClan()) && siege.checkIsAttacker(targetPlayer.getClan())))
+						{
+							sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS));
+							return false;
+						}
+					}
+				}
+				
+				// You can debuff anyone except party members while in an arena...
+				if (isInsideZone(ZoneId.PVP) && targetPlayer.isInsideZone(ZoneId.PVP))
+				{
+					return true;
+				}
+				
+				final L2Clan aClan = getClan();
+				final L2Clan tClan = targetPlayer.getClan();
+				
+				if ((aClan != null) && (tClan != null))
+				{
+					if (aClan.isAtWarWith(tClan.getId()) && tClan.isAtWarWith(aClan.getId()))
+					{
+						return true;
+					}
+				}
+				
+				if ((getClanId() != 0) && (getClanId() == targetPlayer.getClanId()))
+				{
+					return false;
+				}
+				
+				if ((getAllyId() != 0) && (getAllyId() == targetPlayer.getAllyId()))
+				{
+					return false;
+				}
+				
+				// On retail, it is impossible to debuff a "peaceful" player.
+				if ((targetPlayer.getPvpFlag() == 0) && (targetPlayer.getKarma() == 0))
+				{
+					return false;
+				}
+				
+				if ((targetPlayer.getPvpFlag() > 0) || (targetPlayer.getKarma() > 0))
+				{
+					if (!isCtrlPressed)
+					{
+						switch (skill.getTargetType())
+						{
+							case AREA:
+							case AURA:
+							case BEHIND_AREA:
+							case BEHIND_AURA:
+							case FRONT_AREA:
+							case FRONT_AURA:
+							{
+								if ((getPvpFlag() > 0) || (getKarma() > 0))
+								{
+									return true;
+								}
+								return false;
+							}
+							default:
+								return true;
+						}
+					}
+					return true;
+				}
+			}
+		}
+		
 		if ((targetPlayer != null) && (target != this) && !(isInDuel() && (targetPlayer.getDuelId() == getDuelId())) && !isInsideZone(ZoneId.PVP) && !targetPlayer.isInsideZone(ZoneId.PVP))
 		{
 			SkillUseHolder skilldat = getCurrentSkill();
@@ -9425,22 +9548,8 @@ public final class L2PcInstance extends L2Playable
 	
 	public final void stopAllEffectsNotStayOnSubclassChange()
 	{
-		for (L2Effect effect : getEffectList().getAllEffects())
-		{
-			if ((effect != null) && !effect.getSkill().isStayOnSubclassChange())
-			{
-				effect.exit(true);
-			}
-		}
+		getEffectList().stopAllEffectsNotStayOnSubclassChange();
 		updateAndBroadcastStatus(2);
-	}
-	
-	/**
-	 * Stop all toggle-type effects
-	 */
-	public final void stopAllToggles()
-	{
-		getEffectList().stopAllToggles();
 	}
 	
 	public final void stopCubics()
@@ -9788,7 +9897,8 @@ public final class L2PcInstance extends L2Playable
 	{
 		setLastLocation();
 		
-		stopEffects(L2EffectType.HIDE);
+		// Remove Hide.
+		getEffectList().stopSkillEffects(true, AbnormalType.HIDE);
 		
 		_observerMode = true;
 		setTarget(null);
@@ -9820,7 +9930,8 @@ public final class L2PcInstance extends L2Playable
 			getSummon().unSummon(this);
 		}
 		
-		stopEffects(L2EffectType.HIDE);
+		// Remove Hide.
+		getEffectList().stopSkillEffects(true, AbnormalType.HIDE);
 		
 		if (!_cubics.isEmpty())
 		{
@@ -10601,7 +10712,7 @@ public final class L2PcInstance extends L2Playable
 			}
 			
 			restoreEffects();
-			updateEffectIcons();
+			
 			sendPacket(new EtcStatusUpdate(this));
 			
 			// if player has quest 422: Repent Your Sins, remove it
@@ -11602,9 +11713,11 @@ public final class L2PcInstance extends L2Playable
 			getSkillChannelized().abortChannelization();
 		}
 		
+		// Stop all toggles.
+		getEffectList().stopAllToggles();
+		
 		// Remove from world regions zones
 		final L2WorldRegion oldRegion = getWorldRegion();
-		
 		if (oldRegion != null)
 		{
 			oldRegion.removeFromZones(this);
@@ -12187,10 +12300,10 @@ public final class L2PcInstance extends L2Playable
 	private int getRandomFishLvl()
 	{
 		int skilllvl = getSkillLevel(1315);
-		final L2Effect e = getFirstEffect(2274);
-		if (e != null)
+		final BuffInfo info = getEffectList().getBuffInfoBySkillId(2274);
+		if (info != null)
 		{
-			skilllvl = (int) e.getSkill().getPower();
+			skilllvl = (int) info.getSkill().getPower();
 		}
 		if (skilllvl <= 0)
 		{
@@ -12389,9 +12502,6 @@ public final class L2PcInstance extends L2Playable
 	{
 		return _mountObjectID;
 	}
-	
-	private L2ItemInstance _lure = null;
-	private int _shortBuffTaskSkillId = 0;
 	
 	/**
 	 * @return the current skill in use or return null.
@@ -12637,34 +12747,6 @@ public final class L2PcInstance extends L2Playable
 			_soulTask.cancel(false);
 			_soulTask = null;
 		}
-	}
-	
-	/**
-	 * @param magicId
-	 * @param level
-	 * @param time
-	 */
-	public void shortBuffStatusUpdate(int magicId, int level, int time)
-	{
-		if (_shortBuffTask != null)
-		{
-			_shortBuffTask.cancel(false);
-			_shortBuffTask = null;
-		}
-		_shortBuffTask = ThreadPoolManager.getInstance().scheduleGeneral(new ShortBuffTask(this), time * 1000);
-		setShortBuffTaskSkillId(magicId);
-		
-		sendPacket(new ShortBuffStatusUpdate(magicId, level, time));
-	}
-	
-	public int getShortBuffTaskSkillId()
-	{
-		return _shortBuffTaskSkillId;
-	}
-	
-	public void setShortBuffTaskSkillId(int id)
-	{
-		_shortBuffTaskSkillId = id;
 	}
 	
 	public int getDeathPenaltyBuffLevel()
@@ -13148,13 +13230,13 @@ public final class L2PcInstance extends L2Playable
 		return _eventEffectId;
 	}
 	
-	public void startEventEffect(AbnormalEffect mask)
+	public void startEventEffect(AbnormalVisualEffect mask)
 	{
 		_eventEffectId |= mask.getMask();
 		broadcastUserInfo();
 	}
 	
-	public void stopEventEffect(AbnormalEffect mask)
+	public void stopEventEffect(AbnormalVisualEffect mask)
 	{
 		_eventEffectId &= ~mask.getMask();
 		broadcastUserInfo();

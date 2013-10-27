@@ -1395,7 +1395,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 		{
 			case BUFF:
 			{
-				if (caster.getFirstEffect(sk) == null)
+				if (!caster.isAffectedBySkill(sk.getId()))
 				{
 					clientStopMoving(null);
 					// L2Object target = attackTarget;
@@ -1438,7 +1438,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			{
 				if (GeoData.getInstance().canSeeTarget(caster, attackTarget) && !canAOE(sk) && !attackTarget.isDead() && (dist2 <= srange))
 				{
-					if (attackTarget.getFirstEffect(sk) == null)
+					if (!attackTarget.isAffectedBySkill(sk.getId()))
 					{
 						clientStopMoving(null);
 						caster.doCast(sk);
@@ -1478,7 +1478,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				{
 					if (sk.getTargetType() == L2TargetType.ONE)
 					{
-						if ((attackTarget.getFirstEffect(L2EffectType.BUFF) != null) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
+						if ((attackTarget.getEffectList().getFirstEffect(L2EffectType.BUFF) != null) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
 						{
 							clientStopMoving(null);
 							caster.doCast(sk);
@@ -1630,7 +1630,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						{
 							if ((dist2 > range) || attackTarget.isMoving())
 							{
-								if (attackTarget.getFirstEffect(sk) == null)
+								if (!attackTarget.isAffectedBySkill(sk.getId()))
 								{
 									clientStopMoving(null);
 									caster.doCast(sk);
@@ -1668,7 +1668,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				{
 					if (GeoData.getInstance().canSeeTarget(caster, attackTarget) && !canAOE(sk) && (dist2 <= srange))
 					{
-						if (attackTarget.getFirstEffect(sk) == null)
+						if (!attackTarget.isAffectedBySkill(sk.getId()))
 						{
 							clientStopMoving(null);
 							caster.doCast(sk);
@@ -1706,7 +1706,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				{
 					if (GeoData.getInstance().canSeeTarget(caster, attackTarget) && !canAOE(sk) && !attackTarget.isDead() && (dist2 <= srange))
 					{
-						if (attackTarget.getFirstEffect(sk) == null)
+						if (!attackTarget.isAffectedBySkill(sk.getId()))
 						{
 							clientStopMoving(null);
 							caster.doCast(sk);
@@ -1888,7 +1888,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						{
 							continue;
 						}
-						if (getAttackTarget().getFirstEffect(sk) == null)
+						if (!getAttackTarget().isAffectedBySkill(sk.getId()))
 						{
 							clientStopMoving(null);
 							// L2Object target = getAttackTarget();
@@ -1913,7 +1913,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						{
 							continue;
 						}
-						if (getAttackTarget().getFirstEffect(sk) == null)
+						if (!getAttackTarget().isAffectedBySkill(sk.getId()))
 						{
 							clientStopMoving(null);
 							// L2Object target = getAttackTarget();
@@ -1937,7 +1937,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						{
 							continue;
 						}
-						if (getAttackTarget().getFirstEffect(sk) == null)
+						if (!getAttackTarget().isAffectedBySkill(sk.getId()))
 						{
 							clientStopMoving(null);
 							// L2Object target = getAttackTarget();
@@ -1962,7 +1962,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						{
 							continue;
 						}
-						if (getAttackTarget().getFirstEffect(L2EffectType.BUFF) != null)
+						if (getAttackTarget().getEffectList().getFirstEffect(L2EffectType.BUFF) != null)
 						{
 							clientStopMoving(null);
 							// L2Object target = getAttackTarget();
@@ -2123,7 +2123,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					}
 					if (dist2 <= range)
 					{
-						if (getAttackTarget().getFirstEffect(sk) == null)
+						if (!getAttackTarget().isAffectedBySkill(sk.getId()))
 						{
 							return obj;
 						}
@@ -2159,7 +2159,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 						{
 							if (dist2 <= range)
 							{
-								if (getAttackTarget().getFirstEffect(sk) == null)
+								if (!getAttackTarget().isAffectedBySkill(sk.getId()))
 								{
 									return obj;
 								}
@@ -2170,7 +2170,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					{
 						if (dist2 <= range)
 						{
-							if (getAttackTarget().getFirstEffect(sk) == null)
+							if (!getAttackTarget().isAffectedBySkill(sk.getId()))
 							{
 								return obj;
 							}
@@ -2213,7 +2213,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					}
 					if (dist2 <= range)
 					{
-						if (obj.getFirstEffect(sk) == null)
+						if (!obj.isAffectedBySkill(sk.getId()))
 						{
 							return obj;
 						}
@@ -2254,7 +2254,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					{
 						if (dist2 <= range)
 						{
-							if (getAttackTarget().getFirstEffect(L2EffectType.BUFF) != null)
+							if (getAttackTarget().getEffectList().getFirstEffect(L2EffectType.BUFF) != null)
 							{
 								return obj;
 							}
@@ -2266,7 +2266,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					
 					if (dist2 <= range)
 					{
-						if (getAttackTarget().getFirstEffect(L2EffectType.BUFF) != null)
+						if (getAttackTarget().getEffectList().getFirstEffect(L2EffectType.BUFF) != null)
 						{
 							return obj;
 						}

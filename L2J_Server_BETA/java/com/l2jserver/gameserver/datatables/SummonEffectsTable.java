@@ -63,24 +63,17 @@ public class SummonEffectsTable
 	public class SummonEffect
 	{
 		L2Skill _skill;
-		int _effectCount;
 		int _effectCurTime;
 		
-		public SummonEffect(L2Skill skill, int effectCount, int effectCurTime)
+		public SummonEffect(L2Skill skill, int effectCurTime)
 		{
 			_skill = skill;
-			_effectCount = effectCount;
 			_effectCurTime = effectCurTime;
 		}
 		
 		public L2Skill getSkill()
 		{
 			return _skill;
-		}
-		
-		public int getEffectCount()
-		{
-			return _effectCount;
 		}
 		
 		public int getEffectCurTime()

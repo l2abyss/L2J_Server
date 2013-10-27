@@ -58,8 +58,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.stat.PetStat;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.effects.EffectTemplate;
-import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.itemcontainer.PetInventory;
@@ -67,6 +66,7 @@ import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.zone.ZoneId;
@@ -84,8 +84,8 @@ public class L2PetInstance extends L2Summon
 {
 	protected static final Logger _logPet = Logger.getLogger(L2PetInstance.class.getName());
 	
-	private static final String ADD_SKILL_SAVE = "INSERT INTO character_pet_skills_save (petObjItemId,skill_id,skill_level,effect_count,effect_cur_time,buff_index) VALUES (?,?,?,?,?,?)";
-	private static final String RESTORE_SKILL_SAVE = "SELECT petObjItemId,skill_id,skill_level,effect_count,effect_cur_time,buff_index FROM character_pet_skills_save WHERE petObjItemId=? ORDER BY buff_index ASC";
+	private static final String ADD_SKILL_SAVE = "INSERT INTO character_pet_skills_save (petObjItemId,skill_id,skill_level,remaining_time,buff_index) VALUES (?,?,?,?,?)";
+	private static final String RESTORE_SKILL_SAVE = "SELECT petObjItemId,skill_id,skill_level,remaining_time,buff_index FROM character_pet_skills_save WHERE petObjItemId=? ORDER BY buff_index ASC";
 	private static final String DELETE_SKILL_SAVE = "DELETE FROM character_pet_skills_save WHERE petObjItemId=?";
 	
 	private final Map<Integer, TimeStamp> _reuseTimeStampsSkills = new FastMap<>();
@@ -1074,23 +1074,14 @@ public class L2PetInstance extends L2Summon
 			// Store all effect data along with calculated remaining
 			if (storeEffects)
 			{
-				for (L2Effect effect : getAllEffects())
+				for (BuffInfo info : getEffectList().getEffects())
 				{
-					if (effect == null)
+					if (info == null)
 					{
 						continue;
 					}
 					
-					switch (effect.getEffectType())
-					{
-						case HEAL_OVER_TIME:
-						case CPHEAL_OVER_TIME:
-							// TODO: Fix me.
-						case HIDE:
-							continue;
-					}
-					
-					L2Skill skill = effect.getSkill();
+					L2Skill skill = info.getSkill();
 					if (storedSkills.contains(skill.getReuseHashCode()))
 					{
 						continue;
@@ -1098,14 +1089,13 @@ public class L2PetInstance extends L2Summon
 					
 					storedSkills.add(skill.getReuseHashCode());
 					
-					if (effect.isInUse() && !skill.isToggle())
+					if (!skill.isToggle())
 					{
 						ps2.setInt(1, getControlObjectId());
 						ps2.setInt(2, skill.getId());
 						ps2.setInt(3, skill.getLevel());
-						ps2.setInt(4, effect.getTickCount());
-						ps2.setInt(5, effect.getTime());
-						ps2.setInt(6, ++buff_index);
+						ps2.setInt(4, info.getTime());
+						ps2.setInt(5, ++buff_index);
 						ps2.execute();
 						
 						if (!SummonEffectsTable.getInstance().getPetEffects().contains(getControlObjectId()))
@@ -1113,7 +1103,7 @@ public class L2PetInstance extends L2Summon
 							SummonEffectsTable.getInstance().getPetEffects().put(getControlObjectId(), new FastList<SummonEffect>());
 						}
 						
-						SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effect.getTickCount(), effect.getTime()));
+						SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, info.getTime()));
 					}
 				}
 			}
@@ -1138,8 +1128,7 @@ public class L2PetInstance extends L2Summon
 				{
 					while (rset.next())
 					{
-						int effectCount = rset.getInt("effect_count");
-						int effectCurTime = rset.getInt("effect_cur_time");
+						int effectCurTime = rset.getInt("remaining_time");
 						
 						final L2Skill skill = SkillTable.getInstance().getInfo(rset.getInt("skill_id"), rset.getInt("skill_level"));
 						if (skill == null)
@@ -1154,7 +1143,7 @@ public class L2PetInstance extends L2Summon
 								SummonEffectsTable.getInstance().getPetEffects().put(getControlObjectId(), new FastList<SummonEffect>());
 							}
 							
-							SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effectCount, effectCurTime));
+							SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, effectCurTime));
 						}
 					}
 				}
@@ -1184,20 +1173,30 @@ public class L2PetInstance extends L2Summon
 						env.setCharacter(this);
 						env.setTarget(this);
 						env.setSkill(se.getSkill());
-						final L2Effect[] effects = new L2Effect[se.getSkill().getEffectTemplates().size()];
-						int index = 0;
-						for (EffectTemplate et : se.getSkill().getEffectTemplates())
+						
+						final BuffInfo info = new BuffInfo(env);
+						info.setAbnormalTime(se.getEffectCurTime());
+						for (AbstractEffect effect : se.getSkill().getEffectTemplates())
 						{
-							L2Effect effect = et.getEffect(env);
 							if (effect != null)
 							{
-								effect.setCount(se.getEffectCount());
-								effect.setFirstTime(se.getEffectCurTime());
-								effect.scheduleEffect();
-								effects[index++] = effect;
+								if (effect.isInstant())
+								{
+									if (effect.calcSuccess(info))
+									{
+										effect.onStart(info);
+									}
+								}
+								else
+								{
+									if (effect.onStart(info))
+									{
+										info.addEffect(effect);
+									}
+								}
 							}
 						}
-						getEffectList().add(effects);
+						getEffectList().add(info);
 					}
 				}
 			}

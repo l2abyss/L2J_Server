@@ -691,7 +691,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 110<br>
-	 * Message: $s1 $s2's effect can be felt.
+	 * Message: $s1's effect can be felt.
 	 */
 	public static final SystemMessageId YOU_FEEL_S1_EFFECT;
 	
@@ -4336,7 +4336,7 @@ public final class SystemMessageId
 	 * ID: 749<br>
 	 * Message: The effect of $s1 has been removed.
 	 */
-	public static final SystemMessageId EFFECT_S1_DISAPPEARED;
+	public static final SystemMessageId EFFECT_S1_HAS_BEEN_REMOVED;
 	
 	/**
 	 * ID: 750<br>
@@ -15922,7 +15922,7 @@ public final class SystemMessageId
 		YOU_ARE_NOT_IN_PETITION_CHAT = new SystemMessageId(745);
 		CURRENTLY_NO_PETITION = new SystemMessageId(746);
 		DIST_TOO_FAR_CASTING_STOPPED = new SystemMessageId(748);
-		EFFECT_S1_DISAPPEARED = new SystemMessageId(749);
+		EFFECT_S1_HAS_BEEN_REMOVED = new SystemMessageId(749);
 		NO_MORE_SKILLS_TO_LEARN = new SystemMessageId(750);
 		CANNOT_INVITE_CONFLICT_CLAN = new SystemMessageId(751);
 		CANNOT_USE_NAME = new SystemMessageId(752);

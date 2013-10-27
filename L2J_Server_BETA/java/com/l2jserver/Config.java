@@ -132,7 +132,6 @@ public final class Config
 	public static boolean AUTO_LEARN_DIVINE_INSPIRATION;
 	public static boolean ALT_GAME_CANCEL_BOW;
 	public static boolean ALT_GAME_CANCEL_CAST;
-	public static boolean EFFECT_CANCELING;
 	public static boolean ALT_GAME_MAGICFAILURES;
 	public static int PLAYER_FAKEDEATH_UP_PROTECTION;
 	public static boolean STORE_SKILL_COOLTIME;
@@ -1526,7 +1525,6 @@ public final class Config
 			AUTO_LEARN_DIVINE_INSPIRATION = Character.getBoolean("AutoLearnDivineInspiration", false);
 			ALT_GAME_CANCEL_BOW = Character.getString("AltGameCancelByHit", "Cast").equalsIgnoreCase("bow") || Character.getString("AltGameCancelByHit", "Cast").equalsIgnoreCase("all");
 			ALT_GAME_CANCEL_CAST = Character.getString("AltGameCancelByHit", "Cast").equalsIgnoreCase("cast") || Character.getString("AltGameCancelByHit", "Cast").equalsIgnoreCase("all");
-			EFFECT_CANCELING = Character.getBoolean("CancelLesserEffect", true);
 			ALT_GAME_MAGICFAILURES = Character.getBoolean("MagicFailures", true);
 			PLAYER_FAKEDEATH_UP_PROTECTION = Character.getInt("PlayerFakeDeathUpProtection", 0);
 			STORE_SKILL_COOLTIME = Character.getBoolean("StoreSkillCooltime", true);
@@ -3254,9 +3252,6 @@ public final class Config
 				break;
 			case "guardattackaggromob":
 				GUARD_ATTACK_AGGRO_MOB = Boolean.parseBoolean(pValue);
-				break;
-			case "cancellessereffect":
-				EFFECT_CANCELING = Boolean.parseBoolean(pValue);
 				break;
 			case "maximumslotsfornodwarf":
 				INVENTORY_MAXIMUM_NO_DWARF = Integer.parseInt(pValue);

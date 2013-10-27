@@ -29,11 +29,11 @@ import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.FortSiege;
 import com.l2jserver.gameserver.model.entity.Siegable;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
@@ -248,16 +248,16 @@ public class L2SiegeZone extends L2ZoneType
 			if (character.isPlayer() && character.getActingPlayer().isRegisteredOnThisSiegeField(getSettings().getSiegeableId()))
 			{
 				int lvl = 1;
-				final L2Effect e = character.getFirstEffect(5660);
-				if (e != null)
+				final BuffInfo info = character.getEffectList().getBuffInfoBySkillId(5660);
+				if (info != null)
 				{
-					lvl = Math.min(lvl + e.getSkill().getLevel(), 5);
+					lvl = Math.min(lvl + info.getSkill().getLevel(), 5);
 				}
 				
 				final L2Skill skill = SkillTable.getInstance().getInfo(5660, lvl);
 				if (skill != null)
 				{
-					skill.getEffects(character, character);
+					skill.applyEffects(character, null, character, null, false, false);
 				}
 			}
 		}

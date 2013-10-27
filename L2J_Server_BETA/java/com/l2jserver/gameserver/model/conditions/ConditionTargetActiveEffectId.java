@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -53,8 +53,8 @@ public class ConditionTargetActiveEffectId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		final L2Effect e = env.getTarget().getFirstEffect(_effectId);
-		if ((e != null) && ((_effectLvl == -1) || (_effectLvl <= e.getSkill().getLevel())))
+		final BuffInfo info = env.getTarget().getEffectList().getBuffInfoBySkillId(_effectId);
+		if ((info != null) && ((_effectLvl == -1) || (_effectLvl <= info.getSkill().getLevel())))
 		{
 			return true;
 		}

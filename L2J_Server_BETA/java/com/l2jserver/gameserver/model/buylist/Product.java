@@ -35,7 +35,7 @@ import com.l2jserver.gameserver.model.items.L2Item;
  */
 public final class Product
 {
-	private final static Logger _log = Logger.getLogger(Product.class.getName());
+	private static final Logger _log = Logger.getLogger(Product.class.getName());
 	
 	private final int _buyListId;
 	private final L2Item _item;

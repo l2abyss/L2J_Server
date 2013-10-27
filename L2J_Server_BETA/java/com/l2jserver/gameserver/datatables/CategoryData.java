@@ -121,6 +121,6 @@ public final class CategoryData extends DocumentParser
 	
 	private static class SingletonHolder
 	{
-		protected final static CategoryData _instance = new CategoryData();
+		protected static final CategoryData _instance = new CategoryData();
 	}
 }

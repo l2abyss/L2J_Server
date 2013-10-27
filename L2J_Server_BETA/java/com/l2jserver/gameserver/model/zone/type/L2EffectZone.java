@@ -261,9 +261,9 @@ public class L2EffectZone extends L2ZoneType
 								L2Skill skill = getSkill(e.getKey(), e.getValue());
 								if ((skill != null) && (_bypassConditions || skill.checkCondition(temp, temp, false)))
 								{
-									if (temp.getFirstEffect(e.getKey()) == null)
+									if (!temp.isAffectedBySkill(e.getKey()))
 									{
-										skill.getEffects(temp, temp);
+										skill.applyEffects(temp, null, temp, null, false, false);
 									}
 								}
 							}

@@ -37,7 +37,6 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.tasks.cubics.CubicAction;
 import com.l2jserver.gameserver.model.actor.tasks.cubics.CubicDisappear;
 import com.l2jserver.gameserver.model.actor.tasks.cubics.CubicHeal;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.entity.TvTEventTeam;
@@ -465,7 +464,7 @@ public final class L2CubicInstance implements IIdentifiable
 		}
 	}
 	
-	public void useCubicContinuous(L2CubicInstance activeCubic, L2Skill skill, L2Object[] targets)
+	public void useCubicContinuous(L2Skill skill, L2Object[] targets)
 	{
 		for (L2Character target : (L2Character[]) targets)
 		{
@@ -476,33 +475,23 @@ public final class L2CubicInstance implements IIdentifiable
 			
 			if (skill.isBad())
 			{
-				byte shld = Formulas.calcShldUse(activeCubic.getOwner(), target, skill);
-				boolean acted = Formulas.calcCubicSkillSuccess(activeCubic, target, skill, shld);
+				byte shld = Formulas.calcShldUse(getOwner(), target, skill);
+				boolean acted = Formulas.calcCubicSkillSuccess(this, target, skill, shld);
 				if (!acted)
 				{
-					activeCubic.getOwner().sendPacket(SystemMessageId.ATTACK_FAILED);
+					getOwner().sendPacket(SystemMessageId.ATTACK_FAILED);
 					continue;
 				}
 				
 			}
 			
-			// if this is a debuff let the duel manager know about it
-			// so the debuff can be removed after the duel
-			// (player & target must be in the same duel)
-			if ((target.isPlayer()) && target.getActingPlayer().isInDuel() && (skill.getSkillType() == L2SkillType.DEBUFF) && (activeCubic.getOwner().getDuelId() == target.getActingPlayer().getDuelId()))
+			// Apply effects
+			skill.applyEffects(getOwner(), this, target, null, false, false);
+			
+			// If this is a bad skill notify the duel manager, so it can be removed after the duel (player & target must be in the same duel).
+			if (target.isPlayer() && target.getActingPlayer().isInDuel() && skill.isBad() && (getOwner().getDuelId() == target.getActingPlayer().getDuelId()))
 			{
-				DuelManager dm = DuelManager.getInstance();
-				for (L2Effect debuff : skill.getEffects(activeCubic.getOwner(), target))
-				{
-					if (debuff != null)
-					{
-						dm.onBuff(target.getActingPlayer(), debuff);
-					}
-				}
-			}
-			else
-			{
-				skill.getEffects(activeCubic, target, null);
+				DuelManager.getInstance().onBuff(target.getActingPlayer(), skill);
 			}
 		}
 	}
@@ -611,7 +600,7 @@ public final class L2CubicInstance implements IIdentifiable
 		}
 	}
 	
-	public void useCubicDisabler(L2SkillType type, L2CubicInstance activeCubic, L2Skill skill, L2Object[] targets)
+	public void useCubicDisabler(L2SkillType type, L2Skill skill, L2Object[] targets)
 	{
 		if (Config.DEBUG)
 		{
@@ -625,29 +614,19 @@ public final class L2CubicInstance implements IIdentifiable
 				continue;
 			}
 			
-			byte shld = Formulas.calcShldUse(activeCubic.getOwner(), target, skill);
+			byte shld = Formulas.calcShldUse(getOwner(), target, skill);
 			
 			if (skill.hasEffectType(L2EffectType.STUN, L2EffectType.PARALYZE, L2EffectType.ROOT))
 			{
-				if (Formulas.calcCubicSkillSuccess(activeCubic, target, skill, shld))
+				if (Formulas.calcCubicSkillSuccess(this, target, skill, shld))
 				{
-					// if this is a debuff let the duel manager know about it
-					// so the debuff can be removed after the duel
-					// (player & target must be in the same duel)
-					if ((target instanceof L2PcInstance) && ((L2PcInstance) target).isInDuel() && (skill.getSkillType() == L2SkillType.DEBUFF) && (activeCubic.getOwner().getDuelId() == ((L2PcInstance) target).getDuelId()))
+					// Apply effects
+					skill.applyEffects(getOwner(), this, target, null, false, false);
+					
+					// If this is a bad skill notify the duel manager, so it can be removed after the duel (player & target must be in the same duel).
+					if (target.isPlayer() && target.getActingPlayer().isInDuel() && skill.isBad() && (getOwner().getDuelId() == target.getActingPlayer().getDuelId()))
 					{
-						DuelManager dm = DuelManager.getInstance();
-						for (L2Effect debuff : skill.getEffects(activeCubic.getOwner(), target))
-						{
-							if (debuff != null)
-							{
-								dm.onBuff(((L2PcInstance) target), debuff);
-							}
-						}
-					}
-					else
-					{
-						skill.getEffects(activeCubic, target, null);
+						DuelManager.getInstance().onBuff(target.getActingPlayer(), skill);
 					}
 					
 					if (Config.DEBUG)
@@ -666,13 +645,15 @@ public final class L2CubicInstance implements IIdentifiable
 			
 			if (skill.hasEffectType(L2EffectType.AGGRESSION))
 			{
-				if (Formulas.calcCubicSkillSuccess(activeCubic, target, skill, shld))
+				if (Formulas.calcCubicSkillSuccess(this, target, skill, shld))
 				{
 					if (target.isL2Attackable())
 					{
-						target.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, activeCubic.getOwner(), (int) ((150 * skill.getPower()) / (target.getLevel() + 7)));
+						target.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, getOwner(), (int) ((150 * skill.getPower()) / (target.getLevel() + 7)));
 					}
-					skill.getEffects(activeCubic, target, null);
+					
+					// Apply effects
+					skill.applyEffects(getOwner(), this, target, null, false, false);
 					
 					if (Config.DEBUG)
 					{

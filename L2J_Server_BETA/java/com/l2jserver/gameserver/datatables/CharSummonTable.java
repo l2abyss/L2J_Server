@@ -195,7 +195,6 @@ public class CharSummonTable
 			ps.setInt(2, skillId);
 			try (ResultSet rs = ps.executeQuery())
 			{
-				
 				L2NpcTemplate summonTemplate;
 				L2ServitorInstance summon;
 				L2SkillSummon skill;

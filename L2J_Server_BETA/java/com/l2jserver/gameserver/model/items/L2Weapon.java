@@ -18,10 +18,7 @@
  */
 package com.l2jserver.gameserver.model.items;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.handler.ISkillHandler;
@@ -33,7 +30,6 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.conditions.Condition;
 import com.l2jserver.gameserver.model.conditions.ConditionGameChance;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.quest.Quest;
@@ -325,13 +321,12 @@ public final class L2Weapon extends L2Item
 	 * @param caster the L2Character pointing out the caster
 	 * @param target the L2Character pointing out the target
 	 * @param crit the boolean tells whether the hit was critical
-	 * @return the effects of skills associated with the item to be triggered onHit.
 	 */
-	public List<L2Effect> getSkillEffects(L2Character caster, L2Character target, boolean crit)
+	public void getSkillEffects(L2Character caster, L2Character target, boolean crit)
 	{
 		if ((_skillsOnCrit == null) || !crit)
 		{
-			return Collections.<L2Effect> emptyList();
+			return;
 		}
 		
 		final L2Skill onCritSkill = _skillsOnCrit.getSkill();
@@ -344,32 +339,28 @@ public final class L2Weapon extends L2Item
 			if (!_skillsOnCritCondition.test(env))
 			{
 				// Chance not met
-				return Collections.<L2Effect> emptyList();
+				return;
 			}
 		}
 		
 		if (!onCritSkill.checkCondition(caster, target, false))
 		{
 			// Skill condition not met
-			return Collections.<L2Effect> emptyList();
+			return;
 		}
 		
 		final byte shld = Formulas.calcShldUse(caster, target, onCritSkill);
 		if (!Formulas.calcSkillSuccess(caster, target, onCritSkill, shld, false, false, false))
 		{
 			// These skills should not work on RaidBoss
-			return Collections.<L2Effect> emptyList();
+			return;
 		}
-		if (target.getFirstEffect(onCritSkill.getId()) != null)
+		if (target.isAffectedBySkill(onCritSkill.getId()))
 		{
-			target.getFirstEffect(onCritSkill.getId()).exit();
+			target.stopSkillEffects(false, onCritSkill.getId());
 		}
-		final List<L2Effect> effects = new ArrayList<>();
-		for (L2Effect e : onCritSkill.getEffects(caster, target, new Env(shld, false, false, false)))
-		{
-			effects.add(e);
-		}
-		return effects;
+		
+		onCritSkill.applyEffects(caster, null, target, new Env(shld, false, false, false), crit, crit);
 	}
 	
 	/**

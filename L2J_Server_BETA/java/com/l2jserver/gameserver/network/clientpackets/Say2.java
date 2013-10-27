@@ -206,7 +206,7 @@ public final class Say2 extends L2GameClientPacket
 		
 		if (activeChar.isChatBanned() && (_text.charAt(0) != '.'))
 		{
-			if (activeChar.getFirstEffect(L2EffectType.CHAT_BLOCK) != null)
+			if (activeChar.getEffectList().getFirstEffect(L2EffectType.CHAT_BLOCK) != null)
 			{
 				activeChar.sendPacket(SystemMessageId.YOU_HAVE_BEEN_REPORTED_SO_CHATTING_NOT_ALLOWED);
 			}

@@ -84,9 +84,8 @@ import com.l2jserver.gameserver.model.actor.tasks.character.UsePotionTask;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.model.actor.transform.Transform;
 import com.l2jserver.gameserver.model.actor.transform.TransformTemplate;
-import com.l2jserver.gameserver.model.effects.AbnormalEffect;
+import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.effects.EffectFlag;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
@@ -104,6 +103,9 @@ import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.options.OptionsSkillHolder;
 import com.l2jserver.gameserver.model.options.OptionsSkillType;
 import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.skills.AbnormalType;
+import com.l2jserver.gameserver.model.skills.AbnormalVisualEffect;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.SkillChannelized;
@@ -1924,7 +1926,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		if (skillTime > 0)
 		{
 			// Send a Server->Client packet SetupGauge with the color of the gauge and the casting time
-			if (isPlayer())
+			if (isPlayer() && !simultaneously)
 			{
 				sendPacket(new SetupGauge(SetupGauge.BLUE, skillTime));
 			}
@@ -2874,7 +2876,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	 * Active abnormal effects flags in the binary mask and send Server->Client UserInfo/CharInfo packet.
 	 * @param mask
 	 */
-	public final void startAbnormalEffect(AbnormalEffect mask)
+	public final void startAbnormalEffect(AbnormalVisualEffect mask)
 	{
 		_AbnormalEffects |= mask.getMask();
 		updateAbnormalEffect();
@@ -2884,9 +2886,9 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	 * Active special effects flags in the binary mask and send Server->Client UserInfo/CharInfo packet.
 	 * @param mask
 	 */
-	public final void startSpecialEffect(AbnormalEffect[] mask)
+	public final void startSpecialEffect(AbnormalVisualEffect[] mask)
 	{
-		for (AbnormalEffect special : mask)
+		for (AbnormalVisualEffect special : mask)
 		{
 			_SpecialEffects |= special.getMask();
 		}
@@ -2960,7 +2962,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	 * Modify the abnormal effect map according to the mask.
 	 * @param mask
 	 */
-	public final void stopAbnormalEffect(AbnormalEffect mask)
+	public final void stopAbnormalEffect(AbnormalVisualEffect mask)
 	{
 		_AbnormalEffects &= ~mask.getMask();
 		updateAbnormalEffect();
@@ -2970,9 +2972,9 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	 * Modify the special effect map according to the mask.
 	 * @param mask
 	 */
-	public final void stopSpecialEffect(AbnormalEffect[] mask)
+	public final void stopSpecialEffect(AbnormalVisualEffect[] mask)
 	{
-		for (AbnormalEffect special : mask)
+		for (AbnormalVisualEffect special : mask)
 		{
 			_SpecialEffects &= ~special.getMask();
 		}
@@ -2999,13 +3001,16 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		_effectList.stopAllEffects();
 	}
 	
+	/**
+	 * Stops all effects, except those that last through death.
+	 */
 	public void stopAllEffectsExceptThoseThatLastThroughDeath()
 	{
 		_effectList.stopAllEffectsExceptThoseThatLastThroughDeath();
 	}
 	
 	/**
-	 * Stop and remove the effects corresponding to the skill Id.
+	 * Stop and remove the effects corresponding to the skill ID.
 	 * @param removed if {@code true} the effect will be set as removed, and a system message will be sent
 	 * @param skillId the skill Id
 	 */
@@ -3014,19 +3019,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		_effectList.stopSkillEffects(removed, skillId);
 	}
 	
-	/**
-	 * Stop and remove all L2Effect of the selected type (ex : BUFF, DMG_OVER_TIME...) from the L2Character and update client magic icon.<br>
-	 * <B><U>Concept</U>:</B><br>
-	 * All active skills effects in progress on the L2Character are identified in ConcurrentHashMap(Integer,L2Effect) <B>_effects</B>.<br>
-	 * The Integer key of _effects is the L2Skill Identifier that has created the L2Effect.<br>
-	 * <B><U>Actions</U>:</B>
-	 * <ul>
-	 * <li>Remove Func added by this effect from the L2Character Calculator (Stop L2Effect)</li>
-	 * <li>Remove the L2Effect from _effects of the L2Character</li>
-	 * <li>Update active skills in progress icons on player client</li>
-	 * </ul>
-	 * @param type The type of effect to stop ((ex : BUFF, DMG_OVER_TIME...)
-	 */
 	public final void stopEffects(L2EffectType type)
 	{
 		_effectList.stopEffects(type);
@@ -3120,7 +3112,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	{
 		if (removeEffects)
 		{
-			stopEffects(L2EffectType.TRANSFORMATION);
+			getEffectList().stopSkillEffects(false, AbnormalType.TRANSFORM);
 		}
 		
 		// if this is a player instance, then untransform, also set the transform_id column equal to 0 if not cursed.
@@ -3175,31 +3167,31 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		int ae = _AbnormalEffects;
 		if (!isFlying() && isStunned())
 		{
-			ae |= AbnormalEffect.STUN.getMask();
+			ae |= AbnormalVisualEffect.STUN.getMask();
 		}
 		if (!isFlying() && isRooted())
 		{
-			ae |= AbnormalEffect.ROOT.getMask();
+			ae |= AbnormalVisualEffect.ROOT.getMask();
 		}
 		if (isSleeping())
 		{
-			ae |= AbnormalEffect.SLEEP.getMask();
+			ae |= AbnormalVisualEffect.SLEEP.getMask();
 		}
 		if (isConfused())
 		{
-			ae |= AbnormalEffect.FEAR.getMask();
+			ae |= AbnormalVisualEffect.FEAR.getMask();
 		}
 		if (isMuted())
 		{
-			ae |= AbnormalEffect.MUTED.getMask();
+			ae |= AbnormalVisualEffect.MUTED.getMask();
 		}
 		if (isPhysicalMuted())
 		{
-			ae |= AbnormalEffect.MUTED.getMask();
+			ae |= AbnormalVisualEffect.MUTED.getMask();
 		}
 		if (isAfraid())
 		{
-			ae |= AbnormalEffect.SKULL_FEAR.getMask();
+			ae |= AbnormalVisualEffect.SKULL_FEAR.getMask();
 		}
 		return ae;
 	}
@@ -3218,59 +3210,18 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		int se = _SpecialEffects;
 		if (isFlying() && isStunned())
 		{
-			se |= AbnormalEffect.S_AIR_STUN.getMask();
+			se |= AbnormalVisualEffect.S_AIR_STUN.getMask();
 		}
 		if (isFlying() && isRooted())
 		{
-			se |= AbnormalEffect.S_AIR_ROOT.getMask();
+			se |= AbnormalVisualEffect.S_AIR_ROOT.getMask();
 		}
 		return se;
 	}
 	
-	public final List<L2Effect> getAllEffects()
+	public boolean isAffectedBySkill(int skillId)
 	{
-		return _effectList.getAllEffects();
-	}
-	
-	/**
-	 * Return L2Effect in progress on the L2Character corresponding to the L2Skill Identifier.<br>
-	 * <B><U>Concept</U>:</B><br>
-	 * All active skills effects in progress on the L2Character are identified in <B>_effects</B>.
-	 * @param skillId The L2Skill Identifier of the L2Effect to return from the _effects
-	 * @return The L2Effect corresponding to the L2Skill Identifier
-	 */
-	public final L2Effect getFirstEffect(int skillId)
-	{
-		return _effectList.getFirstEffect(skillId);
-	}
-	
-	/**
-	 * Return the first L2Effect in progress on the L2Character created by the L2Skill.<br>
-	 * <B><U>Concept</U>:</B><br>
-	 * All active skills effects in progress on the L2Character are identified in <B>_effects</B>.
-	 * @param skill The L2Skill whose effect must be returned
-	 * @return The first L2Effect created by the L2Skill
-	 */
-	public final L2Effect getFirstEffect(L2Skill skill)
-	{
-		return _effectList.getFirstEffect(skill);
-	}
-	
-	/**
-	 * Return the first L2Effect in progress on the L2Character corresponding to the Effect Type (ex : BUFF, STUN, ROOT...).<br>
-	 * <B><U>Concept</U>:</B><br>
-	 * All active skills effects in progress on the L2Character are identified in <B>_effects</B>.
-	 * @param tp The Effect Type of skills whose effect must be returned
-	 * @return The first L2Effect corresponding to the Effect Type
-	 */
-	public final L2Effect getFirstEffect(L2EffectType tp)
-	{
-		return _effectList.getFirstEffect(tp);
-	}
-	
-	public final L2Effect getFirstPassiveEffect(L2EffectType type)
-	{
-		return _effectList.getFirstPassiveEffect(type);
+		return _effectList.isAffectedBySkill(skillId);
 	}
 	
 	// TODO: NEED TO ORGANIZE AND MOVE TO PROPER PLACE
@@ -3660,17 +3611,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				}
 			}
 			
-			if (owner instanceof L2Effect)
-			{
-				if (!((L2Effect) owner).isPreventExitUpdate())
-				{
-					broadcastModifiedStats(modifiedStats);
-				}
-			}
-			else
-			{
-				broadcastModifiedStats(modifiedStats);
-			}
+			broadcastModifiedStats(modifiedStats);
 		}
 	}
 	
@@ -4868,7 +4809,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 					abortAttack();
 					abortCast();
 					getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-					skill.getEffects(target, this);
+					skill.applyEffects(target, null, this, null, false, false);
 				}
 				else
 				{
@@ -5332,7 +5273,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			{
 				addChanceTrigger(newSkill);
 			}
-			newSkill.getPassiveEffects(this);
+			newSkill.applyEffects(this, null, this, null, false, true);
 		}
 		return oldSkill;
 	}
@@ -5376,20 +5317,13 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				}
 			}
 			
-			// Remove passive effects.
-			_effectList.removePassiveEffects(skillId);
-			
-			if (cancelEffect || oldSkill.isToggle())
+			// Stop effects.
+			if (cancelEffect || oldSkill.isToggle() || oldSkill.isPassive())
 			{
-				// for now, to support transformations, we have to let their
-				// effects stay when skill is removed
-				L2Effect e = getFirstEffect(oldSkill);
-				if ((e == null) || (e.getEffectType() != L2EffectType.TRANSFORMATION))
-				{
-					removeStatsOwner(oldSkill);
-					stopSkillEffects(true, oldSkill.getId());
-				}
+				removeStatsOwner(oldSkill);
+				stopSkillEffects(true, oldSkill.getId());
 			}
+			
 			if (isPlayer())
 			{
 				// TODO: Unhardcode it!
@@ -5706,17 +5640,9 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			{
 				if (tgt.isPlayable())
 				{
-					L2Character target = (L2Character) tgt;
-					if (skill.getSkillType() == L2SkillType.BUFF)
+					if (isPlayer() && tgt.isSummon())
 					{
-						SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
-						smsg.addSkillName(skill);
-						target.sendPacket(smsg);
-					}
-					
-					if (isPlayer() && target.isSummon())
-					{
-						((L2Summon) target).updateAndBroadcastStatus(1);
+						((L2Summon) tgt).updateAndBroadcastStatus(1);
 					}
 				}
 				else if (isPlayable() && tgt.isL2Attackable())
@@ -6048,7 +5974,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			L2Weapon activeWeapon = getActiveWeaponItem();
 			
 			// Check if the toggle skill effects are already in progress on the L2Character
-			if (skill.isToggle() && (getFirstEffect(skill.getId()) != null))
+			if (skill.isToggle() && isAffectedBySkill(skill.getId()))
 			{
 				return;
 			}
@@ -6084,7 +6010,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 								abortAttack();
 								abortCast();
 								getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-								tempSkill.getEffects(target, this);
+								tempSkill.applyEffects(target, null, this, null, false, false);
 							}
 							else if (_log.isLoggable(Level.WARNING))
 							{
@@ -6099,7 +6025,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 								abortAttack();
 								abortCast();
 								getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
-								tempSkill.getEffects(target, this);
+								tempSkill.applyEffects(target, null, this, null, false, false);
 							}
 							else if (_log.isLoggable(Level.WARNING))
 							{
@@ -6760,8 +6686,16 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	 */
 	public int getMaxBuffCount()
 	{
-		final L2Effect effect = getFirstPassiveEffect(L2EffectType.ENLARGE_ABNORMAL_SLOT);
-		return Config.BUFFS_MAX_AMOUNT + (effect == null ? 0 : (int) effect.calc());
+		int count = Config.BUFFS_MAX_AMOUNT;
+		if (isAffectedBySkill(L2Skill.SKILL_DIVINE_INSPIRATION))
+		{
+			final BuffInfo info = getEffectList().getBuffInfoBySkillId(L2Skill.SKILL_DIVINE_INSPIRATION);
+			for (AbstractEffect effect : info.getEffects())
+			{
+				count += (int) effect.getValue();
+			}
+		}
+		return count;
 	}
 	
 	/**

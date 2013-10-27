@@ -66,7 +66,7 @@ public final class L2TeleporterInstance extends L2Npc
 		StringTokenizer st = new StringTokenizer(command, " ");
 		String actualCommand = st.nextToken(); // Get actual command
 		
-		if ((player.getFirstEffect(6201) != null) || (player.getFirstEffect(6202) != null) || (player.getFirstEffect(6203) != null))
+		if (player.isAffectedBySkill(6201) || player.isAffectedBySkill(6202) || player.isAffectedBySkill(6203))
 		{
 			final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 			

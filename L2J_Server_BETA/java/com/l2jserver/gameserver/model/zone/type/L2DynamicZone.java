@@ -75,7 +75,7 @@ public class L2DynamicZone extends L2ZoneType
 		}
 		if (_owner != null)
 		{
-			_skill.getEffects(_owner, character);
+			_skill.applyEffects(_owner, null, character, null, false, false);
 		}
 	}
 	
@@ -130,6 +130,6 @@ public class L2DynamicZone extends L2ZoneType
 	@Override
 	public void onReviveInside(L2Character character)
 	{
-		_skill.getEffects(_owner, character);
+		_skill.applyEffects(_owner, null, character, null, false, false);
 	}
 }

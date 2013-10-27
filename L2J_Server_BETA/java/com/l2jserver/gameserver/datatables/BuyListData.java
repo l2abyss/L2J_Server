@@ -178,6 +178,6 @@ public final class BuyListData extends DocumentParser
 	
 	private static class SingletonHolder
 	{
-		protected final static BuyListData _instance = new BuyListData();
+		protected static final BuyListData _instance = new BuyListData();
 	}
 }

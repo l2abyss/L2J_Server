@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.enums.ShotType;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillLaunched;
 import com.l2jserver.gameserver.util.Point3D;
@@ -182,11 +181,11 @@ public class SkillChannelizer implements Runnable
 				final int maxSkillLevel = SkillTable.getInstance().getMaxLevel(_skill.getChannelingSkillId());
 				final int skillLevel = Math.min(_channelized.getSkillChannelized().getChannerlizersSize(_skill.getChannelingSkillId()), maxSkillLevel);
 				
-				final L2Effect currentEffect = _channelized.getFirstEffect(_skill.getChannelingSkillId());
-				if ((currentEffect == null) || (currentEffect.getSkill().getLevel() < skillLevel))
+				final BuffInfo info = _channelized.getEffectList().getBuffInfoBySkillId(_skill.getChannelingSkillId());
+				if ((info == null) || (info.getSkill().getLevel() < skillLevel))
 				{
 					final L2Skill skill = SkillTable.getInstance().getInfo(_skill.getChannelingSkillId(), skillLevel);
-					skill.getEffects(getChannelizer(), _channelized);
+					skill.applyEffects(getChannelizer(), null, _channelized, null, false, false);
 				}
 				_channelizer.broadcastPacket(new MagicSkillLaunched(_channelizer, _skill.getId(), _skill.getLevel(), _channelized));
 			}
@@ -210,8 +209,7 @@ public class SkillChannelizer implements Runnable
 					if (_channelizer.isPlayable() && _channelizer.getActingPlayer().canAttackCharacter(target))
 					{
 						// Apply channeling skill effects on the target.
-						_skill.getChannelingEffects(_channelizer, target);
-						
+						_skill.applyEffects(_channelizer, null, _channelizer, null, false, false);
 						// Update the pvp flag of the caster.
 						_channelizer.getActingPlayer().updatePvPStatus(target);
 					}
@@ -223,7 +221,7 @@ public class SkillChannelizer implements Runnable
 				else
 				{
 					// Apply channeling skill effects on the target.
-					_skill.getChannelingEffects(_channelizer, target);
+					_skill.applyEffects(_channelizer, null, _channelizer, null, false, false);
 				}
 			}
 			

@@ -18,8 +18,8 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 
 import javolution.util.FastList;
@@ -32,10 +32,10 @@ import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.L2PetData.L2PetSkillLearn;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -238,7 +238,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 	private class CastTask implements Runnable
 	{
 		private final L2BabyPetInstance _baby;
-		private final List<L2Skill> _currentBuffs = new FastList<>();
+		private final List<L2Skill> _currentBuffs = new CopyOnWriteArrayList<>();
 		
 		public CastTask(L2BabyPetInstance baby)
 		{
@@ -290,7 +290,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 					}
 				}
 				
-				if (_baby.getFirstEffect(BUFF_CONTROL) == null) // Buff Control is not active
+				if (!_baby.isAffectedBySkill(BUFF_CONTROL)) // Buff Control is not active
 				{
 					// searching for usable buffs
 					if ((_buffs != null) && !_buffs.isEmpty())
@@ -312,36 +312,21 @@ public final class L2BabyPetInstance extends L2PetInstance
 					// buffs found, checking owner buffs
 					if (!_currentBuffs.isEmpty())
 					{
-						Iterator<L2Skill> iter;
-						L2Skill currentSkill;
-						for (L2Effect e : owner.getAllEffects())
+						for (BuffInfo info : owner.getEffectList().getBuffs().values())
 						{
-							if (e == null)
-							{
-								continue;
-							}
-							
-							currentSkill = e.getSkill();
-							// skipping debuffs, passives, toggles
-							if (currentSkill.isDebuff() || currentSkill.isPassive() || currentSkill.isToggle())
-							{
-								continue;
-							}
-							
+							final L2Skill currentSkill = info.getSkill();
 							// if buff does not need to be casted - remove it from list
-							iter = _currentBuffs.iterator();
-							while (iter.hasNext())
+							for (L2Skill buff : _currentBuffs)
 							{
-								skill = iter.next();
-								if ((currentSkill.getId() == skill.getId()) && (currentSkill.getLevel() >= skill.getLevel()))
+								if ((currentSkill.getId() == buff.getId()) && (currentSkill.getLevel() >= buff.getLevel()))
 								{
-									iter.remove();
+									_currentBuffs.remove(buff);
 								}
 								else
 								{
-									if (!skill.getAbnormalType().isNone() && (currentSkill.getAbnormalType() == skill.getAbnormalType()) && (currentSkill.getAbnormalLvl() >= skill.getAbnormalLvl()))
+									if (!buff.getAbnormalType().isNone() && (currentSkill.getAbnormalType() == buff.getAbnormalType()) && (currentSkill.getAbnormalLvl() >= buff.getAbnormalLvl()))
 									{
-										iter.remove();
+										_currentBuffs.remove(buff);
 									}
 								}
 							}

@@ -28,10 +28,9 @@ import com.l2jserver.gameserver.handler.ISkillHandler;
 import com.l2jserver.gameserver.handler.SkillHandler;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
-import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
 import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillLaunched;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
@@ -49,7 +48,6 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 	
 	public ChanceSkillList(L2Character owner)
 	{
-		super();
 		shared();
 		_owner = owner;
 	}
@@ -147,13 +145,13 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 				}
 				else
 				{
-					makeCast((L2Effect) e.getKey(), target);
+					makeCast((AbstractEffect) e.getKey(), target);
 				}
 			}
 		}
 	}
 	
-	private void makeCast(L2Effect effect, L2Character target)
+	private void makeCast(AbstractEffect effect, L2Character target)
 	{
 		try
 		{
@@ -168,8 +166,8 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 				return;
 			}
 			
-			final L2Character caster = triggered.getTargetType() == L2TargetType.SELF ? _owner : effect.getEffector();
-			if ((caster == null) || (triggered.getSkillType() == L2SkillType.NOTDONE) || caster.isSkillDisabled(triggered))
+			final L2Character caster = triggered.getTargetType() == L2TargetType.SELF ? _owner : target;
+			if ((caster == null) || caster.isSkillDisabled(triggered))
 			{
 				return;
 			}

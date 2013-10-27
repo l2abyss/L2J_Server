@@ -45,8 +45,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.conditions.Condition;
-import com.l2jserver.gameserver.model.effects.EffectTemplate;
-import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
@@ -69,24 +68,25 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	protected static final Logger _log = Logger.getLogger(L2Skill.class.getName());
 	
 	private static final L2Object[] EMPTY_TARGET_LIST = new L2Object[0];
-	private static final List<L2Effect> EMPTY_EFFECT_LIST = Collections.<L2Effect> emptyList();
 	
+	public static final int SKILL_CUBIC_MASTERY = 143;
 	public static final int SKILL_CREATE_DWARVEN = 172;
+	public static final int SKILL_LUCKY = 194;
 	public static final int SKILL_EXPERTISE = 239;
 	public static final int SKILL_CRYSTALLIZE = 248;
 	public static final int SKILL_CLAN_LUCK = 390;
 	public static final int SKILL_ONYX_BEAST_TRANSFORMATION = 617;
 	public static final int SKILL_CREATE_COMMON = 1320;
 	public static final int SKILL_DIVINE_INSPIRATION = 1405;
+	public static final int SKILL_SERVITOR_SHARE = 1557;
+	public static final int SKILL_CARAVANS_SECRET_MEDICINE = 2341;
 	public static final int SKILL_NPC_RACE = 4416;
-	
-	public static final boolean geoEnabled = Config.GEODATA > 0;
 	
 	/** Skill Id. */
 	private final int _id;
 	/** Skill level. */
 	private final int _level;
-	/** Custom skill Id displayed by the client. */
+	/** Custom skill ID displayed by the client. */
 	private final int _displayId;
 	/** Custom skill level displayed by the client. */
 	private final int _displayLevel;
@@ -174,8 +174,6 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	private final int _soulMaxConsume;
 	private final boolean _dependOnTargetBuff;
 	
-	private final int _afterEffectId;
-	private final int _afterEffectLvl;
 	private final boolean _isHeroSkill; // If true the skill is a Hero Skill
 	private final boolean _isGMSkill; // True if skill is GM skill
 	private final boolean _isSevenSigns;
@@ -190,10 +188,10 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	// Function lists
 	private List<FuncTemplate> _funcTemplates;
 	// Effect lists
-	private List<EffectTemplate> _effectTemplates;
-	private List<EffectTemplate> _effectTemplatesSelf;
-	private List<EffectTemplate> _effectTemplatesPassive;
-	private List<EffectTemplate> _effectTemplatesChanneling;
+	private List<AbstractEffect> _effects;
+	private List<AbstractEffect> _effectSelf;
+	private List<AbstractEffect> _effectPassive;
+	private List<AbstractEffect> _effectChanneling;
 	
 	protected ChanceCondition _chanceCondition = null;
 	
@@ -223,6 +221,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	
 	private byte[] _effectTypes;
 	
+	// Channeling data
 	private final int _channelingSkillId;
 	private final int _channelingTickInitialDelay;
 	private final int _channelingTickInterval;
@@ -246,15 +245,13 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		_hpConsume = set.getInt("hpConsume", 0);
 		_itemConsumeCount = set.getInt("itemConsumeCount", 0);
 		_itemConsumeId = set.getInt("itemConsumeId", 0);
-		_afterEffectId = set.getInt("afterEffectId", 0);
-		_afterEffectLvl = set.getInt("afterEffectLvl", 1);
 		
 		_castRange = set.getInt("castRange", -1);
 		_effectRange = set.getInt("effectRange", -1);
 		_abnormalLvl = set.getInt("abnormalLvl", 0);
 		_abnormalType = set.getEnum("abnormalType", AbnormalType.class, AbnormalType.NONE);
 		
-		int abnormalTime = set.getInt("abnormalTime", 1); // TODO: Should be 0, but instant effects need it until implementation is done.
+		int abnormalTime = set.getInt("abnormalTime", 0);
 		if (Config.ENABLE_MODIFY_SKILL_DURATION && Config.SKILL_DURATION_LIST.containsKey(getId()))
 		{
 			if ((getLevel() < 100) || (getLevel() > 140))
@@ -379,6 +376,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		}
 		_npcId = set.getInt("npcId", 0);
 		_icon = set.getString("icon", "icon.skill0000");
+		
 		_channelingSkillId = set.getInt("channelingSkillId", 0);
 		_channelingTickInterval = set.getInt("channelingTickInterval", 2) * 1000;
 		_channelingTickInitialDelay = set.getInt("channelingTickInitialDelay", _channelingTickInterval / 1000) * 1000;
@@ -781,6 +779,11 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		return (_operateType != null) && _operateType.isToggle();
 	}
 	
+	public final boolean isContinuous()
+	{
+		return (_operateType != null) && _operateType.isContinuous();
+	}
+	
 	public final boolean isChance()
 	{
 		return (_chanceCondition != null) && isPassive();
@@ -794,6 +797,15 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	public final boolean isTriggeredSkill()
 	{
 		return _isTriggeredSkill;
+	}
+	
+	/**
+	 * Verify if the skill is a transformation skill.
+	 * @return {@code true} if the skill is a transformation, {@code false} otherwise
+	 */
+	public boolean isTransformation()
+	{
+		return _abnormalType == AbnormalType.TRANSFORM;
 	}
 	
 	public final int getEffectPoint()
@@ -834,6 +846,27 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	public final boolean is7Signs()
 	{
 		return _isSevenSigns;
+	}
+	
+	/**
+	 * Verify if this is a healing potion skill.
+	 * @return {@code true} if this is a healing potion skill, {@code false} otherwise
+	 */
+	public final boolean isHealingPotionSkill()
+	{
+		switch (getId())
+		{
+			case 2031: // Lesser Healing Potion
+			case 2032: // Healing Potion
+			case 2037: // Greater Healing Potion
+			case 2863: // Highest Power Healing Potion
+			case 26025: // Powerful Healing Potion
+			case 26026: // High-grade Healing Potion
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public final int getChargeConsume()
@@ -1108,7 +1141,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 			}
 		}
 		
-		if (geoEnabled && !GeoData.getInstance().canSeeTarget(caster, target))
+		if ((Config.GEODATA > 0) && !GeoData.getInstance().canSeeTarget(caster, target))
 		{
 			return false;
 		}
@@ -1138,7 +1171,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		return true;
 	}
 	
-	public final List<Func> getStatFuncs(L2Effect effect, L2Character player)
+	public final List<Func> getStatFuncs(AbstractEffect effect, L2Character player)
 	{
 		if (_funcTemplates == null)
 		{
@@ -1167,73 +1200,60 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	
 	public boolean hasEffects()
 	{
-		return (_effectTemplates != null) && !_effectTemplates.isEmpty();
+		return (_effects != null) && !_effects.isEmpty();
 	}
 	
-	public List<EffectTemplate> getEffectTemplates()
+	public List<AbstractEffect> getEffectTemplates()
 	{
-		return _effectTemplates;
-	}
-	
-	public List<EffectTemplate> getEffectTemplatesPassive()
-	{
-		return _effectTemplatesPassive;
-	}
-	
-	public List<EffectTemplate> getEffectTemplateChanneling()
-	{
-		return _effectTemplatesChanneling;
-	}
-	
-	public boolean hasSelfEffects()
-	{
-		return (_effectTemplatesSelf != null) && !_effectTemplatesSelf.isEmpty();
+		return _effects;
 	}
 	
 	public boolean hasPassiveEffects()
 	{
-		return (_effectTemplatesPassive != null) && !_effectTemplatesPassive.isEmpty();
+		return (_effectPassive != null) && !_effectPassive.isEmpty();
+	}
+	
+	public List<AbstractEffect> getEffectTemplatesPassive()
+	{
+		return _effectPassive;
+	}
+	
+	public List<AbstractEffect> getEffectTemplateChanneling()
+	{
+		return _effectChanneling;
+	}
+	
+	public boolean hasSelfEffects()
+	{
+		return (_effectSelf != null) && !_effectSelf.isEmpty();
 	}
 	
 	public boolean hasChannelingEffects()
 	{
-		return (_effectTemplatesChanneling != null) && !_effectTemplatesChanneling.isEmpty();
+		return (_effectChanneling != null) && !_effectChanneling.isEmpty();
 	}
 	
 	/**
-	 * Env is used to pass parameters for secondary effects (shield and ss/bss/bsss)
-	 * @param effector
-	 * @param effected
+	 * Applies the effects from this skill to the target.
+	 * @param effector the caster of the skill
+	 * @param cubic the cubic that cast the skill, can be {@code null}
+	 * @param effected the target of the effect
 	 * @param env
-	 * @return an array with the effects that have been added to effector
+	 * @param self if {@code true} self-effects will be casted on the caster
+	 * @param passive if {@code true} passive effects will be applied to the caster
 	 */
-	public final List<L2Effect> getEffects(L2Character effector, L2Character effected, Env env)
+	public final void applyEffects(L2Character effector, L2CubicInstance cubic, L2Character effected, Env env, boolean self, boolean passive)
 	{
-		if ((effected == null) || !hasEffects() || isPassive())
+		// Null targets, doors and siege flags cannot receive any effects.
+		if ((effected == null) || effected.isDoor() || (effected instanceof L2SiegeFlagInstance))
 		{
-			return EMPTY_EFFECT_LIST;
+			return;
 		}
 		
-		// doors and siege flags cannot receive any effects
-		if (effected.isDoor() || (effected instanceof L2SiegeFlagInstance))
+		// Check bad skills against target.
+		if ((effector != effected) && isBad() && (effected.isInvul() || (effector.isGM() && !effector.getAccessLevel().canGiveDamage())))
 		{
-			return EMPTY_EFFECT_LIST;
-		}
-		
-		if ((effector != effected) && isBad())
-		{
-			if (effected.isInvul())
-			{
-				return EMPTY_EFFECT_LIST;
-			}
-			
-			if (effector.isPlayer() && effector.isGM())
-			{
-				if (!effector.getAccessLevel().canGiveDamage())
-				{
-					return EMPTY_EFFECT_LIST;
-				}
-			}
+			return;
 		}
 		
 		if (env == null)
@@ -1242,175 +1262,100 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		}
 		env.setSkillMastery(Formulas.calcSkillMastery(effector, this));
 		env.setCharacter(effector);
+		env.setCubic(cubic);
 		env.setTarget(effected);
 		env.setSkill(this);
+		final boolean addContinuousEffects = _operateType.isToggle() || (_operateType.isContinuous() && Formulas.calcEffectSuccess(env));
 		
-		boolean addContinuousEffects = _operateType.isToggle() || (_operateType.isContinuous() && Formulas.calcEffectSuccess(env));
-		
-		final List<L2Effect> effects = new ArrayList<>(_effectTemplates.size());
-		for (EffectTemplate et : _effectTemplates)
+		if (!self && !passive && hasEffects())
 		{
-			final L2Effect e = et.getEffect(env);
-			if (e != null)
+			final BuffInfo info = new BuffInfo(env);
+			for (AbstractEffect effect : _effects)
 			{
-				if ((e.isInstant() && e.calcSuccess()) || (!e.isInstant() && addContinuousEffects))
+				if (effect != null)
 				{
-					e.scheduleEffect();
-					effects.add(e);
+					if (effect.isInstant())
+					{
+						if (effect.calcSuccess(info))
+						{
+							effect.onStart(info);
+						}
+					}
+					else if (addContinuousEffects)
+					{
+						if (effect.onStart(info))
+						{
+							info.addEffect(effect);
+						}
+					}
 				}
 			}
-		}
-		effected.getEffectList().add(effects);
-		return effects;
-	}
-	
-	/**
-	 * Warning: this method doesn't consider modifier (shield, ss, sps, bss) for secondary effects
-	 * @param effector
-	 * @param effected
-	 * @return
-	 */
-	public final List<L2Effect> getEffects(L2Character effector, L2Character effected)
-	{
-		return getEffects(effector, effected, null);
-	}
-	
-	public final List<L2Effect> getEffects(L2CubicInstance effector, L2Character effected, Env env)
-	{
-		if ((effector == null) || (effected == null) || !hasEffects() || isPassive())
-		{
-			return EMPTY_EFFECT_LIST;
+			effected.getEffectList().add(info);
 		}
 		
-		if ((effector.getOwner() != effected) && isBad())
+		if (self && hasSelfEffects())
 		{
-			if (effected.isInvul())
+			env.setTarget(effector);
+			final BuffInfo info = new BuffInfo(env);
+			for (AbstractEffect effect : _effectSelf)
 			{
-				return EMPTY_EFFECT_LIST;
-			}
-			
-			if (effector.getOwner().isGM() && !effector.getOwner().getAccessLevel().canGiveDamage())
-			{
-				return EMPTY_EFFECT_LIST;
-			}
-		}
-		
-		if (env == null)
-		{
-			env = new Env();
-		}
-		env.setCharacter(effector.getOwner());
-		env.setCubic(effector);
-		env.setTarget(effected);
-		env.setSkill(this);
-		
-		boolean addContinuousEffects = _operateType.isToggle() || (_operateType.isContinuous() && Formulas.calcEffectSuccess(env));
-		
-		final List<L2Effect> effects = new ArrayList<>(_effectTemplates.size());
-		for (EffectTemplate et : _effectTemplates)
-		{
-			final L2Effect e = et.getEffect(env);
-			if (e != null)
-			{
-				if ((e.isInstant() && e.calcSuccess()) || (!e.isInstant() && addContinuousEffects))
+				if (effect != null)
 				{
-					e.scheduleEffect();
-					effects.add(e);
+					if (effect.isInstant())
+					{
+						if (effect.calcSuccess(info))
+						{
+							effect.onStart(info);
+						}
+					}
+					else if (addContinuousEffects)
+					{
+						if (effect.onStart(info))
+						{
+							info.addEffect(effect);
+						}
+					}
 				}
 			}
-		}
-		return effects;
-	}
-	
-	public final List<L2Effect> getEffectsSelf(L2Character effector)
-	{
-		if ((effector == null) || !hasSelfEffects() || isPassive())
-		{
-			return EMPTY_EFFECT_LIST;
+			effector.getEffectList().add(info);
 		}
 		
-		final Env env = new Env();
-		env.setCharacter(effector);
-		env.setTarget(effector);
-		env.setSkill(this);
-		
-		boolean addContinuousEffects = _operateType.isToggle() || (_operateType.isContinuous() && Formulas.calcEffectSuccess(env));
-		
-		final List<L2Effect> effects = new ArrayList<>(_effectTemplatesSelf.size());
-		for (EffectTemplate et : _effectTemplatesSelf)
+		if (passive && hasPassiveEffects())
 		{
-			final L2Effect e = et.getEffect(env);
-			if (e != null)
+			env.setTarget(effector);
+			final BuffInfo info = new BuffInfo(env);
+			for (AbstractEffect effect : _effectPassive)
 			{
-				if ((e.isInstant() && e.calcSuccess()) || (!e.isInstant() && addContinuousEffects))
+				if (effect != null)
 				{
-					e.setSelfEffect();
-					e.scheduleEffect();
-					effects.add(e);
+					if (effect.onStart(info))
+					{
+						info.addEffect(effect);
+					}
 				}
 			}
-		}
-		effector.getEffectList().add(effects);
-		return effects;
-	}
-	
-	public final List<L2Effect> getPassiveEffects(L2Character effector)
-	{
-		if ((effector == null) || !hasPassiveEffects())
-		{
-			return EMPTY_EFFECT_LIST;
+			effector.getEffectList().add(info);
 		}
 		
-		final Env env = new Env();
-		env.setCharacter(effector);
-		env.setTarget(effector);
-		env.setSkill(this);
-		final List<L2Effect> effects = new ArrayList<>(_effectTemplatesPassive.size());
-		for (EffectTemplate et : _effectTemplatesPassive)
+		if (!self && !passive && hasChannelingEffects())
 		{
-			final L2Effect e = et.getEffect(env);
-			if (e != null)
+			env.setTarget(effected);
+			final BuffInfo info = new BuffInfo(env);
+			for (AbstractEffect effect : _effectChanneling)
 			{
-				if (!e.isInstant())
+				if (effect != null)
 				{
-					e.scheduleEffect();
-					effects.add(e);
+					if ((effect.isInstant() && effect.calcSuccess(info)) || (!effect.isInstant() && addContinuousEffects))
+					{
+						if (effect.onStart(info))
+						{
+							info.addEffect(effect);
+						}
+					}
 				}
 			}
+			effector.getEffectList().add(info);
 		}
-		effector.getEffectList().add(effects);
-		return effects;
-	}
-	
-	public final List<L2Effect> getChannelingEffects(L2Character effector, L2Character effected)
-	{
-		if ((effector == null) || (effected == null) || !hasChannelingEffects())
-		{
-			return EMPTY_EFFECT_LIST;
-		}
-		
-		final Env env = new Env();
-		env.setCharacter(effector);
-		env.setTarget(effected);
-		env.setSkill(this);
-		
-		boolean addContinuousEffects = _operateType.isToggle() || (_operateType.isContinuous() && Formulas.calcEffectSuccess(env));
-		
-		final List<L2Effect> effects = new ArrayList<>(_effectTemplatesChanneling.size());
-		for (EffectTemplate et : _effectTemplatesChanneling)
-		{
-			final L2Effect e = et.getEffect(env);
-			if (e != null)
-			{
-				if ((e.isInstant() && e.calcSuccess()) || (!e.isInstant() && addContinuousEffects))
-				{
-					e.scheduleEffect();
-					effects.add(e);
-				}
-			}
-		}
-		effector.getEffectList().add(effects);
-		return effects;
 	}
 	
 	public final void attach(FuncTemplate f)
@@ -1422,40 +1367,40 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		_funcTemplates.add(f);
 	}
 	
-	public final void attach(EffectTemplate effect)
+	public final void attach(AbstractEffect effect)
 	{
-		if (_effectTemplates == null)
+		if (_effects == null)
 		{
-			_effectTemplates = new ArrayList<>(1);
+			_effects = new ArrayList<>(1);
 		}
-		_effectTemplates.add(effect);
+		_effects.add(effect);
 	}
 	
-	public final void attachSelf(EffectTemplate effect)
+	public final void attachSelf(AbstractEffect effect)
 	{
-		if (_effectTemplatesSelf == null)
+		if (_effectSelf == null)
 		{
-			_effectTemplatesSelf = new ArrayList<>(1);
+			_effectSelf = new ArrayList<>(1);
 		}
-		_effectTemplatesSelf.add(effect);
+		_effectSelf.add(effect);
 	}
 	
-	public final void attachPassive(EffectTemplate effect)
+	public final void attachPassive(AbstractEffect effect)
 	{
-		if (_effectTemplatesPassive == null)
+		if (_effectPassive == null)
 		{
-			_effectTemplatesPassive = new ArrayList<>(1);
+			_effectPassive = new ArrayList<>(1);
 		}
-		_effectTemplatesPassive.add(effect);
+		_effectPassive.add(effect);
 	}
 	
-	public final void attachChanneling(EffectTemplate effectTemplate)
+	public final void attachChanneling(AbstractEffect effectTemplate)
 	{
-		if (_effectTemplatesChanneling == null)
+		if (_effectChanneling == null)
 		{
-			_effectTemplatesChanneling = new ArrayList<>(1);
+			_effectChanneling = new ArrayList<>(1);
 		}
-		_effectTemplatesChanneling.add(effectTemplate);
+		_effectChanneling.add(effectTemplate);
 	}
 	
 	public final void attach(Condition c, boolean itemOrWeapon)
@@ -1499,16 +1444,6 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	public int getReferenceItemId()
 	{
 		return _refId;
-	}
-	
-	public int getAfterEffectId()
-	{
-		return _afterEffectId;
-	}
-	
-	public int getAfterEffectLvl()
-	{
-		return _afterEffectLvl;
 	}
 	
 	@Override
@@ -1556,6 +1491,15 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	public boolean canBeDispeled()
 	{
 		return _canBeDispeled;
+	}
+	
+	/**
+	 * Verify if the skill can be stolen.
+	 * @return {@code true} if skill can be stolen, {@code false} otherwise
+	 */
+	public boolean canBeStolen()
+	{
+		return !isPassive() && !isToggle() && !isDebuff() && !isHeroSkill() && !isGMSkill() && !(isStatic() && (getId() != SKILL_CARAVANS_SECRET_MEDICINE)) && canBeDispeled() && (getId() != SKILL_SERVITOR_SHARE);
 	}
 	
 	public boolean isClanSkill()
@@ -1655,20 +1599,19 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		{
 			if (_effectTypes == null)
 			{
-				_effectTypes = new byte[_effectTemplates.size()];
+				_effectTypes = new byte[_effects.size()];
 				
 				final Env env = new Env();
 				env.setSkill(this);
 				
 				int i = 0;
-				for (EffectTemplate et : _effectTemplates)
+				for (AbstractEffect effect : _effects)
 				{
-					final L2Effect e = et.getEffect(env, true);
-					if (e == null)
+					if (effect == null)
 					{
 						continue;
 					}
-					_effectTypes[i++] = (byte) e.getEffectType().ordinal();
+					_effectTypes[i++] = (byte) effect.getEffectType().ordinal();
 				}
 				Arrays.sort(_effectTypes);
 			}

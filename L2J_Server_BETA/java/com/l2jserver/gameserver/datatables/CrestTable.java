@@ -45,7 +45,7 @@ import com.l2jserver.util.file.filter.BMPFilter;
  */
 public final class CrestTable
 {
-	private final static Logger _log = Logger.getLogger(CrestTable.class.getName());
+	private static final Logger _log = Logger.getLogger(CrestTable.class.getName());
 	
 	private final Map<Integer, L2Crest> _crests = new ConcurrentHashMap<>();
 	private final AtomicInteger _nextId = new AtomicInteger(1);

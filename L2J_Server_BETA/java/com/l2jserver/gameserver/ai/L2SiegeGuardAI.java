@@ -39,7 +39,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
@@ -591,17 +590,12 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 							useSkillSelf = false;
 							break;
 						}
-						if (sk.getSkillType() == L2SkillType.BUFF)
+						
+						if ((sk.getSkillType() == L2SkillType.BUFF) && _actor.isAffectedBySkill(sk.getId()))
 						{
-							for (L2Effect effect : _actor.getAllEffects())
-							{
-								if (effect.getSkill() == sk)
-								{
-									useSkillSelf = false;
-									break;
-								}
-							}
+							useSkillSelf = false;
 						}
+						
 						if (useSkillSelf)
 						{
 							_actor.setTarget(_actor);
@@ -737,17 +731,12 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 								useSkillSelf = false;
 								break;
 							}
-							if (sk.getSkillType() == L2SkillType.BUFF)
+							
+							if ((sk.getSkillType() == L2SkillType.BUFF) && _actor.isAffectedBySkill(sk.getId()))
 							{
-								for (L2Effect effect : _actor.getAllEffects())
-								{
-									if (effect.getSkill() == sk)
-									{
-										useSkillSelf = false;
-										break;
-									}
-								}
+								useSkillSelf = false;
 							}
+							
 							if (useSkillSelf)
 							{
 								_actor.setTarget(_actor);

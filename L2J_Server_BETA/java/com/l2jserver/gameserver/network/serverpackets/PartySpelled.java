@@ -22,12 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.holders.EffectDurationHolder;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
 
 public class PartySpelled extends L2GameServerPacket
 {
-	private final List<EffectDurationHolder> _effects = new ArrayList<>();
+	private final List<BuffInfo> _effects = new ArrayList<>();
 	private final L2Character _activeChar;
 	
 	public PartySpelled(L2Character cha)
@@ -35,9 +34,9 @@ public class PartySpelled extends L2GameServerPacket
 		_activeChar = cha;
 	}
 	
-	public void addPartySpelledEffect(L2Skill skill, int duration)
+	public void addSkill(BuffInfo info)
 	{
-		_effects.add(new EffectDurationHolder(skill, duration));
+		_effects.add(info);
 	}
 	
 	@Override
@@ -47,11 +46,14 @@ public class PartySpelled extends L2GameServerPacket
 		writeD(_activeChar.isServitor() ? 2 : _activeChar.isPet() ? 1 : 0);
 		writeD(_activeChar.getObjectId());
 		writeD(_effects.size());
-		for (EffectDurationHolder edh : _effects)
+		for (BuffInfo info : _effects)
 		{
-			writeD(edh.getSkillId());
-			writeH(edh.getSkillLvl());
-			writeD(edh.getDuration());
+			if ((info != null) && info.isInUse())
+			{
+				writeD(info.getSkill().getId());
+				writeH(info.getSkill().getLevel());
+				writeD(info.getTime());
+			}
 		}
 	}
 }

@@ -347,7 +347,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 					return;
 				}
 				
-				if (clanLeader.getFirstEffect(L2EffectType.CLAN_GATE) != null)
+				if (clanLeader.getEffectList().getFirstEffect(L2EffectType.CLAN_GATE) != null)
 				{
 					if (!validateGateCondition(clanLeader, player))
 					{

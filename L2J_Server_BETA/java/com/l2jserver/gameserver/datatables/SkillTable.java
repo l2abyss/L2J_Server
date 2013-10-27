@@ -32,9 +32,9 @@ import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntIntHashMap;
 
 /**
- * 
+ * Skill table.
  */
-public class SkillTable
+public final class SkillTable
 {
 	private static Logger _log = Logger.getLogger(SkillTable.class.getName());
 	
@@ -60,7 +60,7 @@ public class SkillTable
 		DocumentEngine.getInstance().loadAllSkills(_skills);
 		
 		_skillMaxLevel.clear();
-		for (final L2Skill skill : _skills.values())
+		for (L2Skill skill : _skills.values())
 		{
 			final int skillId = skill.getId();
 			final int skillLvl = skill.getLevel();
@@ -106,7 +106,7 @@ public class SkillTable
 		return (skillId * 1021) + skillLevel;
 	}
 	
-	public final L2Skill getInfo(final int skillId, final int level)
+	public L2Skill getInfo(int skillId, int level)
 	{
 		final L2Skill result = _skills.get(getSkillHashCode(skillId, level));
 		if (result != null)
@@ -130,12 +130,12 @@ public class SkillTable
 		return null;
 	}
 	
-	public final int getMaxLevel(final int skillId)
+	public int getMaxLevel(int skillId)
 	{
 		return _skillMaxLevel.get(skillId);
 	}
 	
-	public final boolean isEnchantable(final int skillId)
+	public boolean isEnchantable(int skillId)
 	{
 		return _enchantable.binarySearch(skillId) >= 0;
 	}
@@ -176,7 +176,6 @@ public class SkillTable
 		BUILD_HEADQUARTERS(247, 1),
 		WYVERN_BREATH(4289, 1),
 		STRIDER_SIEGE_ASSAULT(325, 1),
-		FAKE_PETRIFICATION(4616, 1),
 		FIREWORK(5965, 1),
 		LARGE_FIREWORK(2025, 1),
 		BLESSING_OF_PROTECTION(5182, 1),

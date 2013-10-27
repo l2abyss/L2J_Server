@@ -16,15 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.effects;
+package com.l2jserver.gameserver.model.skills;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Abnormal Visual Effect enumerated.
  * @author DrHouse
  */
-public enum AbnormalEffect
+public enum AbnormalVisualEffect
 {
 	NULL("null", 0x0),
 	BLEEDING("bleed", 0x000001),
@@ -59,8 +60,7 @@ public enum AbnormalEffect
 	REAL_TARGET("realtarget", 0x20000000),
 	DEATH_MARK("deathmark", 0x40000000),
 	SKULL_FEAR("skull_fear", 0x80000000),
-	
-	// special effects
+	// Special effects
 	S_INVINCIBLE("invincible", 0x000001),
 	S_AIR_STUN("airstun", 0x000002),
 	S_AIR_ROOT("airroot", 0x000004),
@@ -76,8 +76,7 @@ public enum AbnormalEffect
 	S_VESPER_C("vesper_c", 0x001000),
 	S_VESPER_D("vesper_d", 0x002000),
 	ARCANE_SHIELD("arcane_shield", 0x008000),
-	
-	// event effects
+	// Event effects
 	E_AFRO_1("afrobaguette1", 0x000001),
 	E_AFRO_2("afrobaguette2", 0x000002),
 	E_AFRO_3("afrobaguette3", 0x000004),
@@ -88,11 +87,11 @@ public enum AbnormalEffect
 	E_VESPER_3("vesper3", 0x000080),
 	HUNTING_BONUS("hunting_bonus", 0x80000);
 	
-	private static final Logger _log = Logger.getLogger(AbnormalEffect.class.getName());
+	private static final Logger _log = Logger.getLogger(AbnormalVisualEffect.class.getName());
 	private final int _mask;
 	private final String _name;
 	
-	private AbnormalEffect(String name, int mask)
+	private AbnormalVisualEffect(String name, int mask)
 	{
 		_name = name;
 		_mask = mask;
@@ -109,21 +108,21 @@ public enum AbnormalEffect
 	}
 	
 	/**
-	 * @param name the name of the abnormal effect to get
-	 * @return the found abnormal effect
+	 * @param name the name of the abnormal visual effect to get
+	 * @return the found abnormal visual effect
 	 */
-	public static AbnormalEffect getByName(String name)
+	public static AbnormalVisualEffect getByName(String name)
 	{
 		if ((name != null) && !name.isEmpty())
 		{
-			for (AbnormalEffect eff : AbnormalEffect.values())
+			for (AbnormalVisualEffect eff : AbnormalVisualEffect.values())
 			{
 				if (eff.getName().equals(name))
 				{
 					return eff;
 				}
 			}
-			_log.log(Level.WARNING, AbnormalEffect.class.getSimpleName() + ": Abnormal effect not found for name: " + name + "!");
+			_log.log(Level.WARNING, AbnormalVisualEffect.class.getSimpleName() + ": Abnormal visual effect not found for name: " + name + "!");
 		}
 		return NULL;
 	}

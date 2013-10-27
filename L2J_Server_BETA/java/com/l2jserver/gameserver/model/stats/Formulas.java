@@ -39,8 +39,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.effects.EffectTemplate;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.ClanHall;
@@ -51,6 +49,7 @@ import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.type.L2ArmorType;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncArmorSet;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncAtkAccuracy;
@@ -1981,96 +1980,91 @@ public final class Formulas
 		return Rnd.get(100) < rate;
 	}
 	
-	public static List<L2Effect> calcCancelStealEffects(L2Character activeChar, L2Character target, L2Skill skill, String slot, int rate, int max)
+	public static List<BuffInfo> calcCancelStealEffects(L2Character activeChar, L2Character target, L2Skill skill, String slot, int rate, int max)
 	{
-		final List<L2Effect> effects = target.getAllEffects();
-		List<L2Effect> canceled = new ArrayList<>(max);
-		if (!effects.isEmpty())
+		final List<BuffInfo> canceled = new ArrayList<>(max);
+		switch (slot)
 		{
-			switch (slot)
+			case "buff":
 			{
-				case "buff":
+				// Resist Modifier.
+				int cancelMagicLvl = skill.getMagicLevel();
+				final double vuln = target.calcStat(Stats.CANCEL_VULN, 0, target, null);
+				final double prof = activeChar.calcStat(Stats.CANCEL_PROF, 0, target, null);
+				double resMod = 1 + (((vuln + prof) * -1) / 100);
+				double finalRate = rate / resMod;
+				
+				if (activeChar.isDebug())
 				{
-					// Resist Modifier.
-					int cancelMagicLvl = skill.getMagicLevel();
-					final double vuln = target.calcStat(Stats.CANCEL_VULN, 0, target, null);
-					final double prof = activeChar.calcStat(Stats.CANCEL_PROF, 0, target, null);
-					double resMod = 1 + (((vuln + prof) * -1) / 100);
-					double finalRate = rate / resMod;
-					
-					if (activeChar.isDebug())
+					final StatsSet set = new StatsSet();
+					set.set("baseMod", rate);
+					set.set("magicLevel", cancelMagicLvl);
+					set.set("resMod", resMod);
+					set.set("rate", finalRate);
+					Debug.sendSkillDebug(activeChar, target, skill, set);
+				}
+				
+				final List<BuffInfo> buffs = new ArrayList<>(target.getEffectList().getBuffs().values());
+				buffs.addAll(target.getEffectList().getTriggered().values());
+				for (int i = buffs.size() - 1; i >= 0; i--) // reverse order
+				{
+					BuffInfo info = buffs.get(i);
+					if (!info.getSkill().canBeStolen() || (!calcCancelSuccess(info, cancelMagicLvl, (int) finalRate, skill)))
 					{
-						final StatsSet set = new StatsSet();
-						set.set("baseMod", rate);
-						set.set("magicLevel", cancelMagicLvl);
-						set.set("resMod", resMod);
-						set.set("rate", finalRate);
-						Debug.sendSkillDebug(activeChar, target, skill, set);
+						continue;
 					}
-					
-					L2Effect effect;
-					for (int i = effects.size(); --i >= 0;) // reverse order
+					canceled.add(info);
+					if (canceled.size() >= max)
 					{
-						effect = effects.get(i);
-						if (!effect.canBeStolen() || effect.getSkill().isDance() || (!calcCancelSuccess(effect, cancelMagicLvl, (int) finalRate, skill)))
-						{
-							continue;
-						}
-						canceled.add(effect);
+						break;
+					}
+				}
+				break;
+			}
+			case "debuff":
+			{
+				final List<BuffInfo> debuffs = new ArrayList<>(target.getEffectList().getDebuffs().values());
+				for (int i = debuffs.size() - 1; i >= 0; i--)
+				{
+					BuffInfo info = debuffs.get(i);
+					if (info.getSkill().isDebuff() && info.getSkill().canBeDispeled() && (Rnd.get(100) <= rate))
+					{
+						canceled.add(info);
 						if (canceled.size() >= max)
 						{
 							break;
 						}
 					}
-					break;
 				}
-				case "debuff":
-				{
-					L2Effect effect;
-					for (int i = effects.size(); --i >= 0;) // reverse order
-					{
-						effect = effects.get(i);
-						if (effect.getSkill().isDebuff() && effect.getSkill().canBeDispeled() && (Rnd.get(100) <= rate))
-						{
-							canceled.add(effect);
-							if (canceled.size() >= max)
-							{
-								break;
-							}
-						}
-					}
-					break;
-				}
+				break;
 			}
 		}
 		return canceled;
 	}
 	
-	public static boolean calcCancelSuccess(L2Effect eff, int cancelMagicLvl, int rate, L2Skill skill)
+	public static boolean calcCancelSuccess(BuffInfo info, int cancelMagicLvl, int rate, L2Skill skill)
 	{
 		// Lvl Bonus Modifier.
-		rate *= eff.getSkill().getMagicLevel() > 0 ? 1 + ((cancelMagicLvl - eff.getSkill().getMagicLevel()) / 100.) : 1;
+		rate *= info.getSkill().getMagicLevel() > 0 ? 1 + ((cancelMagicLvl - info.getSkill().getMagicLevel()) / 100.) : 1;
 		return Rnd.get(100) < Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
 	}
 	
 	/**
 	 * Calculates the abnormal time for an effect.<br>
-	 * The abnormal time is taken from the skill definition, and it's global for all effects present in the skills.<br>
-	 * However there is the possibility to define an abnormal time for each effect.<br>
-	 * @param template the effect template
+	 * The abnormal time is taken from the skill definition, and it's global for all effects present in the skills.
 	 * @param env the data transfer object with required information
 	 * @return the time that the effect will last
 	 */
-	public static int calcEffectAbnormalTime(Env env, EffectTemplate template)
+	public static int calcEffectAbnormalTime(Env env)
 	{
 		final L2Character caster = env.getCharacter();
 		final L2Character target = env.getTarget();
 		final L2Skill skill = env.getSkill();
-		int time = (template.getAbnormalTime() != 0) || (skill == null) ? template.getAbnormalTime() : skill.isPassive() || skill.isToggle() ? -1 : skill.getAbnormalTime();
+		int time = skill.isPassive() || skill.isToggle() ? -1 : skill.getAbnormalTime();
 		
 		// An herb buff will affect both master and servitor, but the buff duration will be half of the normal duration.
 		// If a servitor is not summoned, the master will receive the full buff duration.
-		if ((target != null) && target.isServitor() && (skill != null) && skill.isAbnormalInstant())
+		if ((target != null) && target.isServitor() && skill.isAbnormalInstant())
 		{
 			time /= 2;
 		}
@@ -2082,7 +2076,7 @@ public final class Formulas
 		}
 		
 		// Debuffs Duration Affected by Resistances.
-		if ((caster != null) && (target != null) && (skill != null) && skill.isDebuff())
+		if ((caster != null) && (target != null) && skill.isDebuff())
 		{
 			double statMod = calcSkillStatMod(skill, target);
 			double resMod = calcGeneralTraitBonus(caster, target, skill.getTraitType(), false);

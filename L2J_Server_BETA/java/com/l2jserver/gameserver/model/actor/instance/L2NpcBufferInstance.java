@@ -165,7 +165,7 @@ public class L2NpcBufferInstance extends L2Npc
 				final L2Skill skill = SkillTable.getInstance().getInfo(npcBuffGroupInfo.getSkill().getSkillId(), npcBuffGroupInfo.getSkill().getSkillLvl());
 				if (skill != null)
 				{
-					skill.getEffects(player, target);
+					skill.applyEffects(player, null, target, null, false, false);
 				}
 			}
 			

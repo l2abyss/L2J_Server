@@ -395,15 +395,15 @@ public final class BlockCheckerEngine
 				
 				// Give the player start up effects
 				// Freeze
-				_freeze.getEffects(player, player);
+				_freeze.applyEffects(player, null, player, null, false, false);
 				// Transformation
 				if (_holder.getPlayerTeam(player) == 0)
 				{
-					_transformationRed.getEffects(player, player);
+					_transformationRed.applyEffects(player, null, player, null, false, false);
 				}
 				else
 				{
-					_transformationBlue.getEffects(player, player);
+					_transformationBlue.applyEffects(player, null, player, null, false, false);
 				}
 				// Set the current player arena
 				player.setBlockCheckerArena((byte) _arena);

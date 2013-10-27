@@ -95,6 +95,6 @@ public final class SkillLearnData extends DocumentParser
 	
 	private static class SingletonHolder
 	{
-		protected final static SkillLearnData _instance = new SkillLearnData();
+		protected static final SkillLearnData _instance = new SkillLearnData();
 	}
 }

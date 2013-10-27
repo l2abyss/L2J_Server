@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.effects.AbnormalEffect;
+import com.l2jserver.gameserver.model.skills.AbnormalVisualEffect;
 
 public final class UserInfo extends L2GameServerPacket
 {
@@ -208,7 +208,7 @@ public final class UserInfo extends L2GameServerPacket
 		
 		writeC(_activeChar.isInPartyMatchRoom() ? 1 : 0);
 		
-		writeD(_activeChar.getAppearance().getInvisible() && _activeChar.isGM() ? _activeChar.getAbnormalEffect() | AbnormalEffect.STEALTH.getMask() : _activeChar.getAbnormalEffect());
+		writeD(_activeChar.getAppearance().getInvisible() && _activeChar.isGM() ? _activeChar.getAbnormalEffect() | AbnormalVisualEffect.STEALTH.getMask() : _activeChar.getAbnormalEffect());
 		writeC(_activeChar.isFlyingMounted() ? 2 : 0);
 		
 		writeD(_activeChar.getClanPrivileges());

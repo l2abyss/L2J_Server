@@ -461,7 +461,7 @@ public final class PetitionManager
 	 * Gets the single instance of {@code PetitionManager}.
 	 * @return single instance of {@code PetitionManager}
 	 */
-	public final static PetitionManager getInstance()
+	public static final PetitionManager getInstance()
 	{
 		return SingletonHolder._instance;
 	}

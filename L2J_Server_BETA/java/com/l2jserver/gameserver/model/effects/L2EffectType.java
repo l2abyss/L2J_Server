@@ -25,7 +25,6 @@ package com.l2jserver.gameserver.model.effects;
 public enum L2EffectType
 {
 	AGGRESSION,
-	ACTION_BLOCK,
 	BLOCK_RESURRECTION,
 	BUFF,
 	CHARM_OF_LUCK,
@@ -44,7 +43,6 @@ public enum L2EffectType
 	DMG_OVER_TIME_PERCENT,
 	DEATH_LINK,
 	ENERGY_ATTACK,
-	ENLARGE_ABNORMAL_SLOT,
 	FAKE_DEATH,
 	FATAL_BLOW,
 	FEAR,
@@ -52,7 +50,6 @@ public enum L2EffectType
 	HEAL,
 	HEAL_OVER_TIME,
 	HEAL_PERCENT,
-	HIDE,
 	HP_DRAIN,
 	INVINCIBLE,
 	LETHAL,
@@ -86,5 +83,4 @@ public enum L2EffectType
 	SUMMON_PET,
 	TELEPORT,
 	TELEPORT_TO_TARGET,
-	TRANSFORMATION,
 }

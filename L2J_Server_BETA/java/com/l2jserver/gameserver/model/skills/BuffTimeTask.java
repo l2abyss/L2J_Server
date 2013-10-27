@@ -16,29 +16,43 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.enums;
+package com.l2jserver.gameserver.model.skills;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Illegal Action Punishment Type.
- * @author xban1x
+ * Effect time task finish the effect when the abnormal time is reached.
+ * @author Zoey76
  */
-public enum IllegalActionPunishmentType
+public class BuffTimeTask implements Runnable
 {
-	NONE,
-	BROADCAST,
-	KICK,
-	KICKBAN,
-	JAIL;
+	private final AtomicInteger _time = new AtomicInteger();
+	private final BuffInfo _info;
 	
-	public static final IllegalActionPunishmentType findByName(String name)
+	/**
+	 * EffectTimeTask constructor.
+	 * @param info the buff info
+	 */
+	public BuffTimeTask(BuffInfo info)
 	{
-		for (IllegalActionPunishmentType type : values())
+		_info = info;
+	}
+	
+	/**
+	 * Gets the elapsed time.
+	 * @return the tick count
+	 */
+	public int getElapsedTime()
+	{
+		return _time.get();
+	}
+	
+	@Override
+	public void run()
+	{
+		if (_time.incrementAndGet() > _info.getAbnormalTime())
 		{
-			if (type.name().toLowerCase().equals(name.toLowerCase()))
-			{
-				return type;
-			}
+			_info.getEffected().getEffectList().stopSkillEffects(false, _info.getSkill().getId());
 		}
-		return NONE;
 	}
 }

@@ -23,8 +23,8 @@ import java.util.List;
 import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.entity.Duel;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 public final class DuelManager
@@ -155,7 +155,7 @@ public final class DuelManager
 	 * @param player
 	 * @param buff
 	 */
-	public void onBuff(L2PcInstance player, L2Effect buff)
+	public void onBuff(L2PcInstance player, L2Skill buff)
 	{
 		if ((player == null) || !player.isInDuel() || (buff == null))
 		{

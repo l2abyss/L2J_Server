@@ -21,7 +21,6 @@ package com.l2jserver.gameserver.model.stats;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
@@ -35,7 +34,6 @@ public final class Env
 	private boolean _blessedSpiritShot = false;
 	private L2Character _character;
 	private L2CubicInstance _cubic;
-	private L2Effect _effect;
 	private L2ItemInstance _item;
 	private byte _shield = 0;
 	private L2Skill _skill;
@@ -79,14 +77,6 @@ public final class Env
 	public L2CubicInstance getCubic()
 	{
 		return _cubic;
-	}
-	
-	/**
-	 * @return the _effect
-	 */
-	public L2Effect getEffect()
-	{
-		return _effect;
 	}
 	
 	/**
@@ -199,14 +189,6 @@ public final class Env
 	public void setCubic(L2CubicInstance cubic)
 	{
 		_cubic = cubic;
-	}
-	
-	/**
-	 * @param effect the _effect to set
-	 */
-	public void setEffect(L2Effect effect)
-	{
-		_effect = effect;
 	}
 	
 	/**

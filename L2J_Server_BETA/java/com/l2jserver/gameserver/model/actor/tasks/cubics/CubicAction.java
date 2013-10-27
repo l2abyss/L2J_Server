@@ -27,8 +27,8 @@ import com.l2jserver.gameserver.handler.ISkillHandler;
 import com.l2jserver.gameserver.handler.SkillHandler;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
@@ -70,6 +70,7 @@ public final class CubicAction implements Runnable
 				_cubic.cancelDisappear();
 				return;
 			}
+			
 			if (!AttackStanceTaskManager.getInstance().hasAttackStanceTask(_cubic.getOwner()))
 			{
 				if (_cubic.getOwner().hasSummon())
@@ -86,29 +87,29 @@ public final class CubicAction implements Runnable
 					return;
 				}
 			}
+			
 			// The cubic has already reached its limit and it will stay idle until its duration ends.
 			if ((_cubic.getCubicMaxCount() > -1) && (_currentCount.get() >= _cubic.getCubicMaxCount()))
 			{
 				_cubic.stopAction();
 				return;
 			}
-			// Smart Cubic debuff cancel is 100%
-			boolean UseCubicCure = false;
-			L2Skill skill = null;
 			
+			// Smart Cubic debuff cancel is 100%
+			boolean useCubicCure = false;
 			if ((_cubic.getId() >= L2CubicInstance.SMART_CUBIC_EVATEMPLAR) && (_cubic.getId() <= L2CubicInstance.SMART_CUBIC_SPECTRALMASTER))
 			{
-				for (L2Effect e : _cubic.getOwner().getAllEffects())
+				for (BuffInfo info : _cubic.getOwner().getEffectList().getDebuffs().values())
 				{
-					if ((e != null) && e.getSkill().isDebuff() && e.getSkill().canBeDispeled())
+					if (info.getSkill().canBeDispeled())
 					{
-						UseCubicCure = true;
-						e.exit();
+						useCubicCure = true;
+						info.getEffected().getEffectList().stopSkillEffects(true, info.getSkill());
 					}
 				}
 			}
 			
-			if (UseCubicCure)
+			if (useCubicCure)
 			{
 				// Smart Cubic debuff cancel is needed, no other skill is used in this activation period
 				MagicSkillUse msu = new MagicSkillUse(_cubic.getOwner(), _cubic.getOwner(), L2CubicInstance.SKILL_CUBIC_CURE, 1, 0, 0);
@@ -119,7 +120,7 @@ public final class CubicAction implements Runnable
 			}
 			else if (Rnd.get(1, 100) < _chance)
 			{
-				skill = _cubic.getSkills().get(Rnd.get(_cubic.getSkills().size()));
+				L2Skill skill = _cubic.getSkills().get(Rnd.get(_cubic.getSkills().size()));
 				if (skill != null)
 				{
 					if (skill.getId() == L2CubicInstance.SKILL_CUBIC_HEAL)
@@ -160,7 +161,7 @@ public final class CubicAction implements Runnable
 							{
 								_log.info("L2CubicInstance: Action.run() handler " + type);
 							}
-							_cubic.useCubicContinuous(_cubic, skill, targets);
+							_cubic.useCubicContinuous(skill, targets);
 						}
 						else
 						{
@@ -193,7 +194,7 @@ public final class CubicAction implements Runnable
 							{
 								_log.info("L2CubicInstance: Action.run() handler " + type);
 							}
-							_cubic.useCubicDisabler(type, _cubic, skill, targets);
+							_cubic.useCubicDisabler(type, skill, targets);
 						}
 						else if (skill.hasEffectType(L2EffectType.DMG_OVER_TIME, L2EffectType.DMG_OVER_TIME_PERCENT))
 						{
@@ -201,7 +202,7 @@ public final class CubicAction implements Runnable
 							{
 								_log.info("L2CubicInstance: Action.run() handler " + type);
 							}
-							_cubic.useCubicContinuous(_cubic, skill, targets);
+							_cubic.useCubicContinuous(skill, targets);
 						}
 						else if (skill.hasEffectType(L2EffectType.AGGRESSION))
 						{
@@ -209,7 +210,7 @@ public final class CubicAction implements Runnable
 							{
 								_log.info("L2CubicInstance: Action.run() handler " + type);
 							}
-							_cubic.useCubicDisabler(type, _cubic, skill, targets);
+							_cubic.useCubicDisabler(type, skill, targets);
 						}
 						
 						// The cubic has done an action, increase the current count

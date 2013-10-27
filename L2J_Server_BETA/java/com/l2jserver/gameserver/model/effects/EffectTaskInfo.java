@@ -16,31 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.actor.tasks.player;
+package com.l2jserver.gameserver.model.effects;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.network.serverpackets.ShortBuffStatusUpdate;
+import java.util.concurrent.ScheduledFuture;
 
 /**
- * Task dedicated to update player's short buffs window.
- * @author UnAfraid
+ * Effect Task Info DTO.
+ * @author Zoey76
  */
-public class ShortBuffTask implements Runnable
+public class EffectTaskInfo
 {
-	private final L2PcInstance _player;
+	private final EffectTickTask _effectTask;
+	private final ScheduledFuture<?> _scheduledFuture;
 	
-	public ShortBuffTask(L2PcInstance player)
+	public EffectTaskInfo(EffectTickTask effectTask, ScheduledFuture<?> scheduledFuture)
 	{
-		_player = player;
+		_effectTask = effectTask;
+		_scheduledFuture = scheduledFuture;
 	}
 	
-	@Override
-	public void run()
+	public EffectTickTask getEffectTask()
 	{
-		if (_player != null)
-		{
-			_player.sendPacket(new ShortBuffStatusUpdate(0, 0, 0));
-			_player.setShortBuffTaskSkillId(0);
-		}
+		return _effectTask;
+	}
+	
+	public ScheduledFuture<?> getScheduledFuture()
+	{
+		return _scheduledFuture;
 	}
 }

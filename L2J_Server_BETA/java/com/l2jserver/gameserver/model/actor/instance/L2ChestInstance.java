@@ -224,10 +224,10 @@ public final class L2ChestInstance extends L2MonsterInstance
 		
 		L2Skill skill = SkillTable.getInstance().getInfo(skillId, skillLevel);
 		
-		if (player.getFirstEffect(skill) == null)
+		if (!player.isAffectedBySkill(skillId))
 		{
-			skill.getEffects(this, player);
-			broadcastPacket(new MagicSkillUse(this, player, skill.getId(), skillLevel, skill.getHitTime(), 0));
+			skill.applyEffects(this, null, player, null, false, false);
+			broadcastPacket(new MagicSkillUse(this, player, skillId, skillLevel, skill.getHitTime(), 0));
 			return true;
 		}
 		return false;

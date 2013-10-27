@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.holders.EffectDurationHolder;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
 
 /**
  * @author godson
@@ -31,16 +30,16 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 public class ExOlympiadSpelledInfo extends L2GameServerPacket
 {
 	private final int _playerId;
-	private final List<EffectDurationHolder> _effects = new ArrayList<>();
+	private final List<BuffInfo> _effects = new ArrayList<>();
 	
 	public ExOlympiadSpelledInfo(L2PcInstance player)
 	{
 		_playerId = player.getObjectId();
 	}
 	
-	public void addEffect(L2Skill skill, int duration)
+	public void addSkill(BuffInfo info)
 	{
-		_effects.add(new EffectDurationHolder(skill, duration));
+		_effects.add(info);
 	}
 	
 	@Override
@@ -50,11 +49,14 @@ public class ExOlympiadSpelledInfo extends L2GameServerPacket
 		writeH(0x7B);
 		writeD(_playerId);
 		writeD(_effects.size());
-		for (EffectDurationHolder edh : _effects)
+		for (BuffInfo info : _effects)
 		{
-			writeD(edh.getSkillId());
-			writeH(edh.getSkillLvl());
-			writeD(edh.getDuration());
+			if ((info != null) && info.isInUse())
+			{
+				writeD(info.getSkill().getId());
+				writeH(info.getSkill().getLevel());
+				writeD(info.getTime());
+			}
 		}
 	}
 }

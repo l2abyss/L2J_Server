@@ -25,8 +25,8 @@ import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Decoy;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.effects.AbnormalEffect;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
+import com.l2jserver.gameserver.model.skills.AbnormalVisualEffect;
 
 public class CharInfo extends L2GameServerPacket
 {
@@ -172,7 +172,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_activeChar.getPvpFlag()); // pvp flag
 			writeD(_activeChar.getKarma()); // karma ??
 			
-			writeD(gmSeeInvis ? (_activeChar.getAbnormalEffect() | AbnormalEffect.STEALTH.getMask()) : _activeChar.getAbnormalEffect()); // C2
+			writeD(gmSeeInvis ? (_activeChar.getAbnormalEffect() | AbnormalVisualEffect.STEALTH.getMask()) : _activeChar.getAbnormalEffect()); // C2
 			
 			writeD(_activeChar.getClanId()); // clan id
 			writeD(_activeChar.getClanCrestId()); // crest id
@@ -284,7 +284,7 @@ public class CharInfo extends L2GameServerPacket
 			
 			writeC(_activeChar.isInPartyMatchRoom() ? 1 : 0);
 			
-			writeD(gmSeeInvis ? (_activeChar.getAbnormalEffect() | AbnormalEffect.STEALTH.getMask()) : _activeChar.getAbnormalEffect());
+			writeD(gmSeeInvis ? (_activeChar.getAbnormalEffect() | AbnormalVisualEffect.STEALTH.getMask()) : _activeChar.getAbnormalEffect());
 			
 			writeC(_activeChar.isFlyingMounted() ? 2 : 0);
 			
