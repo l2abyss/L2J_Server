@@ -18,9 +18,9 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.StopMoveInVehicle;
-import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * @author Maktakien
@@ -57,7 +57,7 @@ public final class CannotMoveAnymoreInVehicle extends L2GameClientPacket
 		{
 			if (player.getBoat().getObjectId() == _boatId)
 			{
-				player.setInVehiclePosition(new Point3D(_x, _y, _z));
+				player.setInVehiclePosition(new Location(_x, _y, _z));
 				player.setHeading(_heading);
 				StopMoveInVehicle msg = new StopMoveInVehicle(player, _boatId);
 				player.broadcastPacket(msg);

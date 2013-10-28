@@ -35,7 +35,6 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
-import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.StringUtil;
 
 public final class L2World
@@ -595,7 +594,7 @@ public final class L2World
 	 * @param point position of the object
 	 * @return
 	 */
-	public L2WorldRegion getRegion(Point3D point)
+	public L2WorldRegion getRegion(Location point)
 	{
 		return _worldRegions[(point.getX() >> SHIFT_BY) + OFFSET_X][(point.getY() >> SHIFT_BY) + OFFSET_Y];
 	}

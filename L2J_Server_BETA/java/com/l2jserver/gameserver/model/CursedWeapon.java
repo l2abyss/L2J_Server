@@ -49,7 +49,6 @@ import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.util.Broadcast;
-import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.Rnd;
 
 public class CursedWeapon implements INamable
@@ -734,16 +733,16 @@ public class CursedWeapon implements INamable
 		}
 	}
 	
-	public Point3D getWorldPosition()
+	public Location getWorldPosition()
 	{
 		if (_isActivated && (_player != null))
 		{
-			return _player.getWorldPosition();
+			return _player.getLocation();
 		}
 		
 		if (_isDropped && (_item != null))
 		{
-			return _item.getWorldPosition();
+			return _item.getLocation();
 		}
 		
 		return null;

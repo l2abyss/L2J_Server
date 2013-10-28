@@ -1592,7 +1592,7 @@ public final class L2ItemInstance extends L2Object
 				// Set the x,y,z position of the L2ItemInstance dropped and update its _worldregion
 				_itm.setIsVisible(true);
 				_itm.setXYZ(_x, _y, _z);
-				_itm.setWorldRegion(L2World.getInstance().getRegion(getWorldPosition()));
+				_itm.setWorldRegion(L2World.getInstance().getRegion(getLocation()));
 				
 				// Add the L2ItemInstance dropped to _visibleObjects of its L2WorldRegion
 			}

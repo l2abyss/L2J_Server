@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.model;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javolution.util.FastMap;
 
@@ -39,6 +40,7 @@ import com.l2jserver.gameserver.model.interfaces.IDecayable;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.interfaces.ILocational;
 import com.l2jserver.gameserver.model.interfaces.INamable;
+import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.interfaces.ISpawnable;
 import com.l2jserver.gameserver.model.interfaces.IUniqueId;
 import com.l2jserver.gameserver.model.zone.ZoneId;
@@ -46,13 +48,12 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExSendUIEvent;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
-import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * Base class for all interactive objects.
  * @author unknown
  */
-public abstract class L2Object extends Point3D implements IIdentifiable, INamable, ISpawnable, IUniqueId, IDecayable
+public abstract class L2Object implements IIdentifiable, INamable, ISpawnable, IUniqueId, IDecayable, IPositionable
 {
 	private boolean _isVisible;
 	private ObjectKnownList _knownList;
@@ -62,9 +63,14 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 	private InstanceType _instanceType = null;
 	private volatile Map<String, Object> _scripts;
 	
+	private final AtomicInteger _x = new AtomicInteger(0);
+	private final AtomicInteger _y = new AtomicInteger(0);
+	private final AtomicInteger _z = new AtomicInteger(0);
+	private final AtomicInteger _heading = new AtomicInteger(0);
+	private final AtomicInteger _instanceId = new AtomicInteger(0);
+	
 	public L2Object(int objectId)
 	{
-		super(0, 0, 0);
 		setInstanceType(InstanceType.L2Object);
 		_objectId = objectId;
 		initKnownList();
@@ -182,8 +188,7 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 			}
 		}
 		
-		super.setInstanceId(instanceId);
-		
+		_instanceId.set(instanceId);
 		if (_isVisible && (_knownList != null))
 		{
 			// We don't want some ugly looking disappear/appear effects, so don't update
@@ -243,13 +248,13 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 	@Override
 	public final boolean spawnMe()
 	{
-		assert (getWorldRegion() == null) && (getWorldPosition().getX() != 0) && (getWorldPosition().getY() != 0) && (getWorldPosition().getZ() != 0);
+		assert (getWorldRegion() == null) && (getLocation().getX() != 0) && (getLocation().getY() != 0) && (getLocation().getZ() != 0);
 		
 		synchronized (this)
 		{
 			// Set the x,y,z position of the L2Object spawn and update its _worldregion
 			_isVisible = true;
-			setWorldRegion(L2World.getInstance().getRegion(getWorldPosition()));
+			setWorldRegion(L2World.getInstance().getRegion(getLocation()));
 			
 			// Add the L2Object spawn in the _allobjects of L2World
 			L2World.getInstance().storeObject(this);
@@ -294,7 +299,7 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 			}
 			
 			setXYZ(x, y, z);
-			setWorldRegion(L2World.getInstance().getRegion(getWorldPosition()));
+			setWorldRegion(L2World.getInstance().getRegion(getLocation()));
 			
 			// Add the L2Object spawn in the _allobjects of L2World
 		}
@@ -611,11 +616,13 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 	{
 		assert getWorldRegion() != null;
 		
-		super.setXYZ(x, y, z);
+		setX(x);
+		setY(y);
+		setZ(z);
 		
 		try
 		{
-			if (L2World.getInstance().getRegion(getWorldPosition()) != getWorldRegion())
+			if (L2World.getInstance().getRegion(getLocation()) != getWorldRegion())
 			{
 				updateWorldRegion();
 			}
@@ -663,7 +670,7 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 		this.setIsVisible(false);
 	}
 	
-	public final void setLocationInvisible(Location loc)
+	public final void setLocationInvisible(ILocational loc)
 	{
 		setXYZInvisible(loc.getX(), loc.getY(), loc.getZ());
 	}
@@ -675,7 +682,7 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 			return;
 		}
 		
-		L2WorldRegion newRegion = L2World.getInstance().getRegion(getWorldPosition());
+		L2WorldRegion newRegion = L2World.getInstance().getRegion(getLocation());
 		if (newRegion != getWorldRegion())
 		{
 			getWorldRegion().removeVisibleObject(this);
@@ -685,11 +692,6 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 			// Add the L2Oject spawn to _visibleObjects and if necessary to _allplayers of its L2WorldRegion
 			getWorldRegion().addVisibleObject(this);
 		}
-	}
-	
-	public final void setWorldPosition(Point3D newPosition)
-	{
-		setXYZ(newPosition.getX(), newPosition.getY(), newPosition.getZ());
 	}
 	
 	public final L2WorldRegion getWorldRegion()
@@ -739,6 +741,95 @@ public abstract class L2Object extends Point3D implements IIdentifiable, INamabl
 	public double calculateDistance(ILocational loc, boolean includeZAxis, boolean squared)
 	{
 		return calculateDistance(loc.getLocation(this).getX(), loc.getLocation(this).getY(), loc.getLocation(this).getZ(), includeZAxis, squared);
+	}
+	
+	@Override
+	public int getX()
+	{
+		return _x.get();
+	}
+	
+	@Override
+	public int getY()
+	{
+		return _y.get();
+	}
+	
+	@Override
+	public int getZ()
+	{
+		return _z.get();
+	}
+	
+	@Override
+	public int getHeading()
+	{
+		return _heading.get();
+	}
+	
+	@Override
+	public int getInstanceId()
+	{
+		return _instanceId.get();
+	}
+	
+	@Override
+	public Location getLocation()
+	{
+		return new Location(getX(), getY(), getZ(), getHeading(), getInstanceId());
+	}
+	
+	@Override
+	public Location getLocation(L2Object obj)
+	{
+		return getLocation();
+	}
+	
+	@Override
+	public void setX(int x)
+	{
+		_x.set(x);
+	}
+	
+	@Override
+	public void setY(int y)
+	{
+		_y.set(y);
+	}
+	
+	@Override
+	public void setZ(int z)
+	{
+		_z.set(z);
+	}
+	
+	public void setXYZ(ILocational loc)
+	{
+		_x.set(loc.getX());
+		_y.set(loc.getY());
+		_z.set(loc.getZ());
+	}
+	
+	@Override
+	public void setHeading(int heading)
+	{
+		_heading.set(heading);
+	}
+	
+	@Override
+	public void setLocation(Location loc)
+	{
+		_x.set(loc.getX());
+		_y.set(loc.getY());
+		_z.set(loc.getZ());
+		_heading.set(loc.getHeading());
+		_instanceId.set(loc.getInstanceId());
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		return ((obj instanceof L2Object) && (((L2Object) obj).getObjectId() == getObjectId()));
 	}
 	
 	@Override

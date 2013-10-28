@@ -20,7 +20,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
 
-import com.l2jserver.gameserver.util.Point3D;
+import com.l2jserver.gameserver.model.Location;
 
 /**
  * Format: (ch) d[ddddd]
@@ -63,11 +63,11 @@ public class ExCursedWeaponLocation extends L2GameServerPacket
 	
 	public static class CursedWeaponInfo
 	{
-		public Point3D pos;
+		public Location pos;
 		public int id;
 		public int activated; // 0 - not activated ? 1 - activated
 		
-		public CursedWeaponInfo(Point3D p, int ID, int status)
+		public CursedWeaponInfo(Location p, int ID, int status)
 		{
 			pos = p;
 			id = ID;

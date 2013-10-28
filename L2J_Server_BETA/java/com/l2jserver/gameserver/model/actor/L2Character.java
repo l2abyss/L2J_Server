@@ -93,7 +93,6 @@ import com.l2jserver.gameserver.model.holders.SkillUseHolder;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
 import com.l2jserver.gameserver.model.interfaces.IDeletable;
 import com.l2jserver.gameserver.model.interfaces.ILocational;
-import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.interfaces.ISkillsHolder;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.items.L2Item;
@@ -140,7 +139,6 @@ import com.l2jserver.gameserver.network.serverpackets.TeleportToLocation;
 import com.l2jserver.gameserver.pathfinding.AbstractNodeLoc;
 import com.l2jserver.gameserver.pathfinding.PathFinding;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
-import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
@@ -745,17 +743,17 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		teleToLocation(x, y, z, 0, -1, 0);
 	}
 	
-	public void teleToLocation(IPositionable loc, int randomOffset)
+	public void teleToLocation(ILocational loc, int randomOffset)
 	{
 		teleToLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), loc.getInstanceId(), randomOffset);
 	}
 	
-	public void teleToLocation(IPositionable loc, boolean randomOffset)
+	public void teleToLocation(ILocational loc, boolean randomOffset)
 	{
 		teleToLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), loc.getInstanceId(), (randomOffset) ? Config.MAX_OFFSET_ON_TELEPORT : 0);
 	}
 	
-	public void teleToLocation(IPositionable loc)
+	public void teleToLocation(ILocational loc)
 	{
 		teleToLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getHeading(), loc.getInstanceId(), 0);
 	}
@@ -2042,7 +2040,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			boolean canCast = true;
 			if ((skill.getTargetType() == L2TargetType.GROUND) && isPlayer())
 			{
-				Point3D wp = getActingPlayer().getCurrentSkillWorldPosition();
+				Location wp = getActingPlayer().getCurrentSkillWorldPosition();
 				if (!region.checkEffectRangeInsidePeaceZone(skill, wp.getX(), wp.getY(), wp.getZ()))
 				{
 					canCast = false;

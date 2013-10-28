@@ -22,10 +22,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.interfaces.IPositionable;
-import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * @author Unknown, UnAfraid, Nos
@@ -39,7 +39,7 @@ public final class MagicSkillUse extends L2GameServerPacket
 	private final L2Character _activeChar;
 	private final L2Character _target;
 	private final List<Integer> _unknown = Collections.emptyList();
-	private final List<Point3D> _groundLocations;
+	private final List<Location> _groundLocations;
 	
 	public MagicSkillUse(L2Character cha, L2Character target, int skillId, int skillLevel, int hitTime, int reuseDelay)
 	{
@@ -49,7 +49,7 @@ public final class MagicSkillUse extends L2GameServerPacket
 		_skillLevel = skillLevel;
 		_hitTime = hitTime;
 		_reuseDelay = reuseDelay;
-		Point3D skillWorldPos = null;
+		Location skillWorldPos = null;
 		if (cha.isPlayer())
 		{
 			final L2PcInstance player = cha.getActingPlayer();
@@ -58,7 +58,7 @@ public final class MagicSkillUse extends L2GameServerPacket
 				skillWorldPos = player.getCurrentSkillWorldPosition();
 			}
 		}
-		_groundLocations = skillWorldPos != null ? Arrays.asList(skillWorldPos) : Collections.<Point3D> emptyList();
+		_groundLocations = skillWorldPos != null ? Arrays.asList(skillWorldPos) : Collections.<Location> emptyList();
 	}
 	
 	public MagicSkillUse(L2Character cha, int skillId, int skillLevel, int hitTime, int reuseDelay)

@@ -41,7 +41,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.VehicleKnownList;
 import com.l2jserver.gameserver.model.actor.stat.VehicleStat;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
-import com.l2jserver.gameserver.model.interfaces.IPositionable;
+import com.l2jserver.gameserver.model.interfaces.ILocational;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -360,7 +360,7 @@ public abstract class L2Vehicle extends L2Character
 	}
 	
 	@Override
-	public void teleToLocation(IPositionable loc, boolean allowRandomOffset)
+	public void teleToLocation(ILocational loc, boolean allowRandomOffset)
 	{
 		if (isMoving())
 		{

@@ -29,10 +29,10 @@ import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.enums.ShotType;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillLaunched;
-import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -257,7 +257,7 @@ public class SkillChannelizer implements Runnable
 				
 				if (_channelizer.isPlayer())
 				{
-					final Point3D wordPosition = _channelizer.getActingPlayer().getCurrentSkillWorldPosition();
+					final Location wordPosition = _channelizer.getActingPlayer().getCurrentSkillWorldPosition();
 					if (wordPosition != null)
 					{
 						x = wordPosition.getX();

@@ -18,15 +18,15 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.util.Point3D;
 
 public class ValidateLocationInVehicle extends L2GameServerPacket
 {
 	private final int _charObjId;
 	private final int _boatObjId;
 	private final int _heading;
-	private final Point3D _pos;
+	private final Location _pos;
 	
 	/**
 	 * @param player
