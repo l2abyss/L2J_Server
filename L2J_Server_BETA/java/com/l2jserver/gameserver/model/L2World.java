@@ -460,9 +460,7 @@ public final class L2World
 			return new ArrayList<>();
 		}
 		
-		int x = object.getX();
-		int y = object.getY();
-		int sqRadius = radius * radius;
+		final int sqRadius = radius * radius;
 		
 		// Create an FastList in order to contain all visible L2Object
 		List<L2Object> result = new ArrayList<>();
@@ -479,13 +477,7 @@ public final class L2World
 					continue; // skip our own character
 				}
 				
-				int x1 = _object.getX();
-				int y1 = _object.getY();
-				
-				double dx = x1 - x;
-				double dy = y1 - y;
-				
-				if (((dx * dx) + (dy * dy)) < sqRadius)
+				if (sqRadius > object.calculateDistance(_object, false, true))
 				{
 					result.add(_object);
 				}
@@ -509,10 +501,7 @@ public final class L2World
 			return new ArrayList<>();
 		}
 		
-		int x = object.getX();
-		int y = object.getY();
-		int z = object.getZ();
-		int sqRadius = radius * radius;
+		final int sqRadius = radius * radius;
 		
 		// Create an FastList in order to contain all visible L2Object
 		List<L2Object> result = new ArrayList<>();
@@ -528,15 +517,7 @@ public final class L2World
 					continue; // skip our own character
 				}
 				
-				int x1 = _object.getX();
-				int y1 = _object.getY();
-				int z1 = _object.getZ();
-				
-				long dx = x1 - x;
-				long dy = y1 - y;
-				long dz = z1 - z;
-				
-				if (((dx * dx) + (dy * dy) + (dz * dz)) < sqRadius)
+				if (sqRadius > object.calculateDistance(_object, true, true))
 				{
 					result.add(_object);
 				}

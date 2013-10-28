@@ -103,6 +103,11 @@ public class DimensionalRift
 	
 	protected void createTeleporterTimer(final boolean reasonTP)
 	{
+		if (_party == null)
+		{
+			return;
+		}
+		
 		if (teleporterTimerTask != null)
 		{
 			teleporterTimerTask.cancel();
