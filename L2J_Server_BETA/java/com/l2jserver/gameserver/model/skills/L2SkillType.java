@@ -57,7 +57,6 @@ public enum L2SkillType
 	FEED_PET,
 	
 	BUFF,
-	DEBUFF,
 	DETECT_TRAP,
 	REMOVE_TRAP,
 	

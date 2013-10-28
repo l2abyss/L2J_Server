@@ -155,7 +155,7 @@ public final class CubicAction implements Runnable
 							target
 						};
 						
-						if (type == L2SkillType.DEBUFF)
+						if (skill.isContinuous())
 						{
 							if (Config.DEBUG)
 							{

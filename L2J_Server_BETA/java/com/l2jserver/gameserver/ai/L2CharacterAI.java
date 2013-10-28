@@ -1286,14 +1286,15 @@ public class L2CharacterAI extends AbstractAI
 					case BUFF:
 						buffSkills.add(sk);
 						continue; // won't be considered something for fighting
-					case DEBUFF:
-						debuffSkills.add(sk);
-						break;
 					case NOTDONE:
 					case COREDONE:
 						continue; // won't be considered something for fighting
 					default:
-						if (sk.hasEffectType(L2EffectType.DISPEL))
+						if (sk.isDebuff())
+						{
+							debuffSkills.add(sk);
+						}
+						else if (sk.hasEffectType(L2EffectType.DISPEL))
 						{
 							cancelSkills.add(sk);
 						}
