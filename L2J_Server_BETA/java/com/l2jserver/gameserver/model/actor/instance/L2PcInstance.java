@@ -7823,6 +7823,12 @@ public final class L2PcInstance extends L2Playable
 					}
 					
 					final L2Skill skill = info.getSkill();
+					// Do not save heals.
+					if (skill.getAbnormalType() == AbnormalType.LIFE_FORCE_OTHERS)
+					{
+						continue;
+					}
+					
 					if (skill.isToggle())
 					{
 						continue;

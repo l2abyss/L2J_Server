@@ -66,6 +66,7 @@ import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
+import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.Env;
@@ -1081,7 +1082,24 @@ public class L2PetInstance extends L2Summon
 						continue;
 					}
 					
-					L2Skill skill = info.getSkill();
+					final L2Skill skill = info.getSkill();
+					// Do not save heals.
+					if (skill.getAbnormalType() == AbnormalType.LIFE_FORCE_OTHERS)
+					{
+						continue;
+					}
+					
+					if (skill.isToggle())
+					{
+						continue;
+					}
+					
+					// Dances and songs are not kept in retail.
+					if (skill.isDance() && !Config.ALT_STORE_DANCES)
+					{
+						continue;
+					}
+					
 					if (storedSkills.contains(skill.getReuseHashCode()))
 					{
 						continue;
@@ -1089,22 +1107,19 @@ public class L2PetInstance extends L2Summon
 					
 					storedSkills.add(skill.getReuseHashCode());
 					
-					if (!skill.isToggle())
+					ps2.setInt(1, getControlObjectId());
+					ps2.setInt(2, skill.getId());
+					ps2.setInt(3, skill.getLevel());
+					ps2.setInt(4, info.getTime());
+					ps2.setInt(5, ++buff_index);
+					ps2.execute();
+					
+					if (!SummonEffectsTable.getInstance().getPetEffects().contains(getControlObjectId()))
 					{
-						ps2.setInt(1, getControlObjectId());
-						ps2.setInt(2, skill.getId());
-						ps2.setInt(3, skill.getLevel());
-						ps2.setInt(4, info.getTime());
-						ps2.setInt(5, ++buff_index);
-						ps2.execute();
-						
-						if (!SummonEffectsTable.getInstance().getPetEffects().contains(getControlObjectId()))
-						{
-							SummonEffectsTable.getInstance().getPetEffects().put(getControlObjectId(), new FastList<SummonEffect>());
-						}
-						
-						SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, info.getTime()));
+						SummonEffectsTable.getInstance().getPetEffects().put(getControlObjectId(), new FastList<SummonEffect>());
 					}
+					
+					SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, info.getTime()));
 				}
 			}
 		}

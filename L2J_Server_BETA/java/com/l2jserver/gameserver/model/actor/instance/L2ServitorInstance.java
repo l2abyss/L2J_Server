@@ -41,6 +41,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.effects.AbstractEffect;
+import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
@@ -381,7 +382,24 @@ public class L2ServitorInstance extends L2Summon
 							continue;
 						}
 						
-						L2Skill skill = info.getSkill();
+						final L2Skill skill = info.getSkill();
+						// Do not save heals.
+						if (skill.getAbnormalType() == AbnormalType.LIFE_FORCE_OTHERS)
+						{
+							continue;
+						}
+						
+						if (skill.isToggle())
+						{
+							continue;
+						}
+						
+						// Dances and songs are not kept in retail.
+						if (skill.isDance() && !Config.ALT_STORE_DANCES)
+						{
+							continue;
+						}
+						
 						if (storedSkills.contains(skill.getReuseHashCode()))
 						{
 							continue;
@@ -389,32 +407,29 @@ public class L2ServitorInstance extends L2Summon
 						
 						storedSkills.add(skill.getReuseHashCode());
 						
-						if (!skill.isToggle())
+						ps2.setInt(1, getOwner().getObjectId());
+						ps2.setInt(2, getOwner().getClassIndex());
+						ps2.setInt(3, getReferenceSkill());
+						ps2.setInt(4, skill.getId());
+						ps2.setInt(5, skill.getLevel());
+						ps2.setInt(6, info.getTime());
+						ps2.setInt(7, ++buff_index);
+						ps2.execute();
+						
+						if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId()))
 						{
-							ps2.setInt(1, getOwner().getObjectId());
-							ps2.setInt(2, getOwner().getClassIndex());
-							ps2.setInt(3, getReferenceSkill());
-							ps2.setInt(4, skill.getId());
-							ps2.setInt(5, skill.getLevel());
-							ps2.setInt(6, info.getTime());
-							ps2.setInt(7, ++buff_index);
-							ps2.execute();
-							
-							if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId()))
-							{
-								SummonEffectsTable.getInstance().getServitorEffectsOwner().put(getOwner().getObjectId(), new TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>());
-							}
-							if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex()))
-							{
-								SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).put(getOwner().getClassIndex(), new TIntObjectHashMap<List<SummonEffect>>());
-							}
-							if (!SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill()))
-							{
-								SummonEffectsTable.getInstance().getServitorEffects(getOwner()).put(getReferenceSkill(), new FastList<SummonEffect>());
-							}
-							
-							SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, info.getTime()));
+							SummonEffectsTable.getInstance().getServitorEffectsOwner().put(getOwner().getObjectId(), new TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>());
 						}
+						if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).contains(getOwner().getClassIndex()))
+						{
+							SummonEffectsTable.getInstance().getServitorEffectsOwner().get(getOwner().getObjectId()).put(getOwner().getClassIndex(), new TIntObjectHashMap<List<SummonEffect>>());
+						}
+						if (!SummonEffectsTable.getInstance().getServitorEffects(getOwner()).contains(getReferenceSkill()))
+						{
+							SummonEffectsTable.getInstance().getServitorEffects(getOwner()).put(getReferenceSkill(), new FastList<SummonEffect>());
+						}
+						
+						SummonEffectsTable.getInstance().getServitorEffects(getOwner()).get(getReferenceSkill()).add(SummonEffectsTable.getInstance().new SummonEffect(skill, info.getTime()));
 					}
 				}
 			}
