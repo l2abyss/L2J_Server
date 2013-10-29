@@ -18,8 +18,6 @@
  */
 package com.l2jserver.gameserver.model.interfaces;
 
-import com.l2jserver.gameserver.model.L2Object;
-
 /**
  * Simple interface for location of object.
  * @author xban1x
@@ -37,5 +35,4 @@ public interface ILocational
 	public int getInstanceId();
 	
 	public ILocational getLocation();
-	public ILocational getLocation(L2Object obj);
 }

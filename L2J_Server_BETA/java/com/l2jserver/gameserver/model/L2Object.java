@@ -740,7 +740,7 @@ public abstract class L2Object implements IIdentifiable, INamable, ISpawnable, I
 	 */
 	public double calculateDistance(ILocational loc, boolean includeZAxis, boolean squared)
 	{
-		return calculateDistance(loc.getLocation(this).getX(), loc.getLocation(this).getY(), loc.getLocation(this).getZ(), includeZAxis, squared);
+		return calculateDistance(loc.getX(), loc.getY(), loc.getZ(), includeZAxis, squared);
 	}
 	
 	@Override
@@ -777,12 +777,6 @@ public abstract class L2Object implements IIdentifiable, INamable, ISpawnable, I
 	public Location getLocation()
 	{
 		return new Location(getX(), getY(), getZ(), getHeading(), getInstanceId());
-	}
-	
-	@Override
-	public Location getLocation(L2Object obj)
-	{
-		return getLocation();
 	}
 	
 	@Override

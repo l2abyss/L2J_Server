@@ -350,25 +350,10 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				{
 					if (npc.getSpawn() != null)
 					{
-						int x, y, z;
-						
-						// Territory based spawn
-						if ((npc.getSpawn().getX() == 0) && (npc.getSpawn().getY() == 0))
-						{
-							x = npc.getSpawn().getX(npc);
-							y = npc.getSpawn().getY(npc);
-							z = npc.getSpawn().getZ(npc);
-						}
-						// Npc with fixed coords
-						else
-						{
-							x = npc.getSpawn().getX();
-							y = npc.getSpawn().getY();
-							z = npc.getSpawn().getZ();
-						}
-						
+						final Location loc = npc.getSpawn().getLocation(npc);
 						final int range = Config.MAX_DRIFT_RANGE;
-						if (!npc.isInsideRadius(x, y, z, range + range, true, false))
+						
+						if (!npc.isInsideRadius(loc, range + range, true, false))
 						{
 							intention = AI_INTENTION_ACTIVE;
 						}
@@ -687,20 +672,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			}
 			else
 			{
-				// New territory based spawn - obtain last spawn point
-				if ((npc.getSpawn().getX() == 0) && (npc.getSpawn().getY() == 0))
-				{
-					x1 = npc.getSpawn().getX(npc);
-					y1 = npc.getSpawn().getY(npc);
-					z1 = npc.getSpawn().getZ(npc);
-				}
-				else
-				// If NPC with fixed coord
-				{
-					x1 = npc.getSpawn().getX();
-					y1 = npc.getSpawn().getY();
-					z1 = npc.getSpawn().getZ();
-				}
+				x1 = npc.getSpawn().getX(npc);
+				y1 = npc.getSpawn().getY(npc);
+				z1 = npc.getSpawn().getZ(npc);
 				
 				if (!npc.isInsideRadius(x1, y1, 0, range, false, false))
 				{
