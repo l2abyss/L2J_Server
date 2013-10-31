@@ -18,6 +18,7 @@
  */
 package com.l2jserver.gameserver.model;
 
+import com.l2jserver.gameserver.model.interfaces.ILocational;
 import com.l2jserver.gameserver.model.interfaces.IPositionable;
 
 /**
@@ -129,6 +130,16 @@ public class Location implements IPositionable
 		setX(x);
 		setY(y);
 		setZ(z);
+	}
+	
+	/**
+	 * Set the x, y, z coordinates.
+	 * @param loc The location.
+	 */
+	@Override
+	public void setXYZ(ILocational loc)
+	{
+		setXYZ(loc.getX(), loc.getY(), loc.getZ());
 	}
 	
 	/**

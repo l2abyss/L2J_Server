@@ -34,6 +34,8 @@ public interface IPositionable extends ILocational
 	
 	public void setXYZ(int x, int y, int z);
 	
+	public void setXYZ(ILocational loc);
+	
 	public void setHeading(int heading);
 	
 	public void setInstanceId(int instanceId);

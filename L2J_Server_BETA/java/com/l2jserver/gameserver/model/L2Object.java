@@ -797,11 +797,10 @@ public abstract class L2Object implements IIdentifiable, INamable, ISpawnable, I
 		_z.set(z);
 	}
 	
+	@Override
 	public void setXYZ(ILocational loc)
 	{
-		_x.set(loc.getX());
-		_y.set(loc.getY());
-		_z.set(loc.getZ());
+		setXYZ(loc.getX(), loc.getY(), loc.getZ());
 	}
 	
 	@Override
