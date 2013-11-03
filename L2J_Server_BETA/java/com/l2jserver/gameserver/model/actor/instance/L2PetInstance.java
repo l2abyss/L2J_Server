@@ -58,7 +58,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.stat.PetStat;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.itemcontainer.PetInventory;
@@ -69,7 +68,6 @@ import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -1180,39 +1178,9 @@ public class L2PetInstance extends L2Summon
 			
 			for (SummonEffect se : SummonEffectsTable.getInstance().getPetEffects().get(getControlObjectId()))
 			{
-				if ((se != null) && se.getSkill().hasEffects())
+				if (se != null)
 				{
-					if (se.getSkill().hasEffects())
-					{
-						final Env env = new Env();
-						env.setCharacter(this);
-						env.setTarget(this);
-						env.setSkill(se.getSkill());
-						
-						final BuffInfo info = new BuffInfo(env);
-						info.setAbnormalTime(se.getEffectCurTime());
-						for (AbstractEffect effect : se.getSkill().getEffectTemplates())
-						{
-							if (effect != null)
-							{
-								if (effect.isInstant())
-								{
-									if (effect.calcSuccess(info))
-									{
-										effect.onStart(info);
-									}
-								}
-								else
-								{
-									if (effect.onStart(info))
-									{
-										info.addEffect(effect);
-									}
-								}
-							}
-						}
-						getEffectList().add(info);
-					}
+					se.getSkill().applyEffects(this, this, false, se.getEffectCurTime());
 				}
 			}
 		}

@@ -1234,15 +1234,40 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	}
 	
 	/**
+	 * Method overload for {@link L2Skill#applyEffects(L2Character, L2CubicInstance, L2Character, boolean, boolean, boolean, int)}.<br>
+	 * Simplify the calls.
+	 * @param effector the caster of the skill
+	 * @param effected the target of the effect
+	 */
+	public void applyEffects(L2Character effector, L2Character effected)
+	{
+		applyEffects(effector, null, effected, false, false, true, 0);
+	}
+	
+	/**
+	 * Method overload for {@link L2Skill#applyEffects(L2Character, L2CubicInstance, L2Character, boolean, boolean, boolean, int)}.<br>
+	 * Simplify the calls, allowing abnormal time time customization.
+	 * @param effector the caster of the skill
+	 * @param effected the target of the effect
+	 * @param instant if {@code true} instant effects will be applied to the effected
+	 * @param abnormalTime custom abnormal time, if equal or lesser than zero will be ignored
+	 */
+	public void applyEffects(L2Character effector, L2Character effected, boolean instant, int abnormalTime)
+	{
+		applyEffects(effector, null, effected, false, false, instant, abnormalTime);
+	}
+	
+	/**
 	 * Applies the effects from this skill to the target.
 	 * @param effector the caster of the skill
 	 * @param cubic the cubic that cast the skill, can be {@code null}
 	 * @param effected the target of the effect
-	 * @param env
 	 * @param self if {@code true} self-effects will be casted on the caster
-	 * @param passive if {@code true} passive effects will be applied to the caster
+	 * @param passive if {@code true} passive effects will be applied to the effector
+	 * @param instant if {@code true} instant effects will be applied to the effected
+	 * @param abnormalTime custom abnormal time, if equal or lesser than zero will be ignored
 	 */
-	public final void applyEffects(L2Character effector, L2CubicInstance cubic, L2Character effected, Env env, boolean self, boolean passive)
+	public void applyEffects(L2Character effector, L2CubicInstance cubic, L2Character effected, boolean self, boolean passive, boolean instant, int abnormalTime)
 	{
 		// Null targets, doors and siege flags cannot receive any effects.
 		if ((effected == null) || effected.isDoor() || (effected instanceof L2SiegeFlagInstance))
@@ -1256,34 +1281,35 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 			return;
 		}
 		
-		if (env == null)
-		{
-			env = new Env();
-		}
+		final Env env = new Env();
 		env.setSkillMastery(Formulas.calcSkillMastery(effector, this));
 		env.setCharacter(effector);
 		env.setCubic(cubic);
 		env.setTarget(effected);
 		env.setSkill(this);
-		final boolean addContinuousEffects = _operateType.isToggle() || (_operateType.isContinuous() && Formulas.calcEffectSuccess(env));
-		
+		final boolean addContinuousEffects = !passive && (_operateType.isToggle() || (_operateType.isContinuous() && Formulas.calcEffectSuccess(env)));
 		if (!self && !passive && hasEffects())
 		{
 			final BuffInfo info = new BuffInfo(env);
+			if (addContinuousEffects && (abnormalTime > 0))
+			{
+				info.setAbnormalTime(abnormalTime);
+			}
+			
 			for (AbstractEffect effect : _effects)
 			{
 				if (effect != null)
 				{
 					if (effect.isInstant())
 					{
-						if (effect.calcSuccess(info))
+						if (instant && effect.calcSuccess(info))
 						{
 							effect.onStart(info);
 						}
 					}
 					else if (addContinuousEffects)
 					{
-						if (effect.onStart(info))
+						if (effect.canStart(info))
 						{
 							info.addEffect(effect);
 						}
@@ -1291,26 +1317,37 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 				}
 			}
 			effected.getEffectList().add(info);
+			
+			// Support for buff sharing feature.
+			if (addContinuousEffects && effected.isPlayer() && effected.hasSummon() && isContinuous() && !isDebuff())
+			{
+				applyEffects(effector, effected.getSummon(), false, 0);
+			}
 		}
 		
 		if (self && hasSelfEffects())
 		{
 			env.setTarget(effector);
 			final BuffInfo info = new BuffInfo(env);
+			if (addContinuousEffects && (abnormalTime > 0))
+			{
+				info.setAbnormalTime(abnormalTime);
+			}
+			
 			for (AbstractEffect effect : _effectSelf)
 			{
 				if (effect != null)
 				{
 					if (effect.isInstant())
 					{
-						if (effect.calcSuccess(info))
+						if (instant && effect.calcSuccess(info))
 						{
 							effect.onStart(info);
 						}
 					}
 					else if (addContinuousEffects)
 					{
-						if (effect.onStart(info))
+						if (effect.canStart(info))
 						{
 							info.addEffect(effect);
 						}
@@ -1318,6 +1355,12 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 				}
 			}
 			effector.getEffectList().add(info);
+			
+			// Support for buff sharing feature.
+			if (addContinuousEffects && effected.isPlayer() && effected.hasSummon() && isContinuous() && !isDebuff())
+			{
+				applyEffects(effector, effected.getSummon(), false, 0);
+			}
 		}
 		
 		if (passive && hasPassiveEffects())
@@ -1328,7 +1371,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 			{
 				if (effect != null)
 				{
-					if (effect.onStart(info))
+					if (effect.canStart(info))
 					{
 						info.addEffect(effect);
 					}
@@ -1341,13 +1384,25 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		{
 			env.setTarget(effected);
 			final BuffInfo info = new BuffInfo(env);
+			if (addContinuousEffects && (abnormalTime > 0))
+			{
+				info.setAbnormalTime(abnormalTime);
+			}
+			
 			for (AbstractEffect effect : _effectChanneling)
 			{
 				if (effect != null)
 				{
-					if ((effect.isInstant() && effect.calcSuccess(info)) || (!effect.isInstant() && addContinuousEffects))
+					if (effect.isInstant())
 					{
-						if (effect.onStart(info))
+						if (instant && effect.calcSuccess(info))
+						{
+							effect.onStart(info);
+						}
+					}
+					else if (addContinuousEffects)
+					{
+						if (effect.canStart(info))
 						{
 							info.addEffect(effect);
 						}
@@ -1355,6 +1410,12 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 				}
 			}
 			effector.getEffectList().add(info);
+			
+			// Support for buff sharing feature.
+			if (addContinuousEffects && effected.isPlayer() && effected.hasSummon() && isContinuous() && !isDebuff())
+			{
+				applyEffects(effector, effected.getSummon(), false, 0);
+			}
 		}
 	}
 	

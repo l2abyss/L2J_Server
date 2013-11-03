@@ -263,7 +263,7 @@ public class L2EffectZone extends L2ZoneType
 								{
 									if (!temp.isAffectedBySkill(e.getKey()))
 									{
-										skill.applyEffects(temp, null, temp, null, false, false);
+										skill.applyEffects(temp, temp);
 									}
 								}
 							}

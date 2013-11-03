@@ -189,7 +189,6 @@ import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.ClassLevel;
 import com.l2jserver.gameserver.model.base.PlayerClass;
 import com.l2jserver.gameserver.model.base.SubClass;
-import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.effects.EffectFlag;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Castle;
@@ -239,7 +238,6 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSiegeFlag;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
-import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.model.variables.AccountVariables;
@@ -8171,49 +8169,15 @@ public final class L2PcInstance extends L2Playable
 						addTimeStamp(skill, reuseDelay, systime);
 					}
 					
-					/**
-					 * Restore Type 1 The remaning skills lost effect upon logout but were still under a high reuse delay.
-					 */
+					// Restore Type 1 The remaning skills lost effect upon logout but were still under a high reuse delay.
 					if (restoreType > 0)
 					{
 						continue;
 					}
 					
-					/**
-					 * Restore Type 0 These skill were still in effect on the character upon logout.<br>
-					 * Some of which were self casted and might still have had a long reuse delay which also is restored.
-					 */
-					if (skill.hasEffects())
-					{
-						final Env env = new Env();
-						env.setCharacter(this);
-						env.setTarget(this);
-						env.setSkill(skill);
-						
-						final BuffInfo info = new BuffInfo(env);
-						info.setAbnormalTime(remainingTime);
-						for (AbstractEffect effect : skill.getEffectTemplates())
-						{
-							if (effect != null)
-							{
-								if (effect.isInstant())
-								{
-									if (effect.calcSuccess(info))
-									{
-										effect.onStart(info);
-									}
-								}
-								else
-								{
-									if (effect.onStart(info))
-									{
-										info.addEffect(effect);
-									}
-								}
-							}
-						}
-						getEffectList().add(info);
-					}
+					// Restore Type 0 These skill were still in effect on the character upon logout.
+					// Some of which were self casted and might still have had a long reuse delay which also is restored.
+					skill.applyEffects(this, this, false, remainingTime);
 				}
 			}
 			// Remove previously restored skills

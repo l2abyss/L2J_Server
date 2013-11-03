@@ -1000,7 +1000,7 @@ public class TvTEvent
 					L2Skill skill = SkillTable.getInstance().getInfo(e.getKey(), e.getValue());
 					if (skill != null)
 					{
-						skill.applyEffects(playerInstance, null, playerInstance, null, false, false);
+						skill.applyEffects(playerInstance, playerInstance);
 					}
 				}
 			}
@@ -1014,7 +1014,7 @@ public class TvTEvent
 					L2Skill skill = SkillTable.getInstance().getInfo(e.getKey(), e.getValue());
 					if (skill != null)
 					{
-						skill.applyEffects(playerInstance, null, playerInstance, null, false, false);
+						skill.applyEffects(playerInstance, playerInstance);
 					}
 				}
 			}

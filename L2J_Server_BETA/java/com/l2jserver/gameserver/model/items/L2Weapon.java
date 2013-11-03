@@ -360,7 +360,7 @@ public final class L2Weapon extends L2Item
 			target.stopSkillEffects(false, onCritSkill.getId());
 		}
 		
-		onCritSkill.applyEffects(caster, null, target, new Env(shld, false, false, false), crit, crit);
+		onCritSkill.applyEffects(caster, target);
 	}
 	
 	/**

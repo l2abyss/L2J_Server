@@ -344,7 +344,7 @@ public final class BotReportTable
 	{
 		if (ph != null)
 		{
-			ph._punish.applyEffects(bot, null, bot, null, false, false);
+			ph._punish.applyEffects(bot, bot);
 			if (ph._systemMessageId > -1)
 			{
 				SystemMessageId id = SystemMessageId.getSystemMessageId(ph._systemMessageId);

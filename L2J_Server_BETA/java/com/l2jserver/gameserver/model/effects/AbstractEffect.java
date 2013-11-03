@@ -37,7 +37,10 @@ import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
- * Abstract effect implementation.
+ * Abstract effect implementation.<br>
+ * Instant effects should not override {@link #onExit(BuffInfo)}.<br>
+ * Instant effects should not override {@link #canStart(BuffInfo)}, all checks should be done {@link #onStart(BuffInfo)}. Do not call super class methods {@link #onStart(BuffInfo)} nor {@link #onExit(BuffInfo)}.<br>
+ * @since <a href="http://trac.l2jserver.com/changeset/6249">Changeset 6249</a> the "effect steal constructor" is deprecated.
  * @author Zoey76
  */
 public abstract class AbstractEffect implements IChanceSkillTrigger
@@ -263,13 +266,23 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 	}
 	
 	/**
-	 * Called on effect start.
+	 * Verify if the buff can start.<br>
+	 * Used for continuous effects.
 	 * @param info the buff info
 	 * @return {@code true} if all the start conditions are meet, {@code false} otherwise
 	 */
-	public boolean onStart(BuffInfo info)
+	public boolean canStart(BuffInfo info)
 	{
 		return true;
+	}
+	
+	/**
+	 * Called on effect start.
+	 * @param info the buff info
+	 */
+	public void onStart(BuffInfo info)
+	{
+		
 	}
 	
 	/**

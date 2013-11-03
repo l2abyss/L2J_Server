@@ -257,7 +257,7 @@ public class L2SiegeZone extends L2ZoneType
 				final L2Skill skill = SkillTable.getInstance().getInfo(5660, lvl);
 				if (skill != null)
 				{
-					skill.applyEffects(character, null, character, null, false, false);
+					skill.applyEffects(character, character);
 				}
 			}
 		}

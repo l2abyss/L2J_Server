@@ -278,6 +278,9 @@ public final class BuffInfo
 				continue;
 			}
 			
+			// Call on start.
+			effect.onStart(this);
+			
 			// If it's a continuous effect, if has ticks schedule a task with period, otherwise schedule a simple task to end it.
 			if (effect.getTicks() > 0)
 			{
@@ -360,7 +363,7 @@ public final class BuffInfo
 		}
 		
 		// Sends the proper system message.
-		final SystemMessageId smId;
+		SystemMessageId smId = null;
 		if (_env.getSkill().isToggle())
 		{
 			smId = SystemMessageId.S1_HAS_BEEN_ABORTED;
@@ -369,14 +372,17 @@ public final class BuffInfo
 		{
 			smId = SystemMessageId.EFFECT_S1_HAS_BEEN_REMOVED;
 		}
-		else
+		else if (!_env.getSkill().isPassive())
 		{
 			smId = SystemMessageId.S1_HAS_WORN_OFF;
 		}
 		
-		final SystemMessage sm = SystemMessage.getSystemMessage(smId);
-		sm.addSkillName(_env.getSkill());
-		_env.getTarget().sendPacket(sm);
+		if (smId != null)
+		{
+			final SystemMessage sm = SystemMessage.getSystemMessage(smId);
+			sm.addSkillName(_env.getSkill());
+			_env.getTarget().sendPacket(sm);
+		}
 		
 		if (this == _env.getTarget().getEffectList().getShortBuff())
 		{

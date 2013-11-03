@@ -486,7 +486,7 @@ public final class L2CubicInstance implements IIdentifiable
 			}
 			
 			// Apply effects
-			skill.applyEffects(getOwner(), this, target, null, false, false);
+			skill.applyEffects(getOwner(), this, target, false, false, true, 0);
 			
 			// If this is a bad skill notify the duel manager, so it can be removed after the duel (player & target must be in the same duel).
 			if (target.isPlayer() && target.getActingPlayer().isInDuel() && skill.isBad() && (getOwner().getDuelId() == target.getActingPlayer().getDuelId()))
@@ -621,7 +621,7 @@ public final class L2CubicInstance implements IIdentifiable
 				if (Formulas.calcCubicSkillSuccess(this, target, skill, shld))
 				{
 					// Apply effects
-					skill.applyEffects(getOwner(), this, target, null, false, false);
+					skill.applyEffects(getOwner(), this, target, false, false, true, 0);
 					
 					// If this is a bad skill notify the duel manager, so it can be removed after the duel (player & target must be in the same duel).
 					if (target.isPlayer() && target.getActingPlayer().isInDuel() && skill.isBad() && (getOwner().getDuelId() == target.getActingPlayer().getDuelId()))
@@ -653,7 +653,7 @@ public final class L2CubicInstance implements IIdentifiable
 					}
 					
 					// Apply effects
-					skill.applyEffects(getOwner(), this, target, null, false, false);
+					skill.applyEffects(getOwner(), this, target, false, false, true, 0);
 					
 					if (Config.DEBUG)
 					{

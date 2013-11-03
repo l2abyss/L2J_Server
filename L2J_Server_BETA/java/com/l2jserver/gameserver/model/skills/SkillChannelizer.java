@@ -185,7 +185,7 @@ public class SkillChannelizer implements Runnable
 				if ((info == null) || (info.getSkill().getLevel() < skillLevel))
 				{
 					final L2Skill skill = SkillTable.getInstance().getInfo(_skill.getChannelingSkillId(), skillLevel);
-					skill.applyEffects(getChannelizer(), null, _channelized, null, false, false);
+					skill.applyEffects(getChannelizer(), _channelized);
 				}
 				_channelizer.broadcastPacket(new MagicSkillLaunched(_channelizer, _skill.getId(), _skill.getLevel(), _channelized));
 			}
@@ -209,7 +209,7 @@ public class SkillChannelizer implements Runnable
 					if (_channelizer.isPlayable() && _channelizer.getActingPlayer().canAttackCharacter(target))
 					{
 						// Apply channeling skill effects on the target.
-						_skill.applyEffects(_channelizer, null, _channelizer, null, false, false);
+						_skill.applyEffects(_channelizer, _channelizer);
 						// Update the pvp flag of the caster.
 						_channelizer.getActingPlayer().updatePvPStatus(target);
 					}
@@ -221,7 +221,7 @@ public class SkillChannelizer implements Runnable
 				else
 				{
 					// Apply channeling skill effects on the target.
-					_skill.applyEffects(_channelizer, null, _channelizer, null, false, false);
+					_skill.applyEffects(_channelizer, _channelizer);
 				}
 			}
 			

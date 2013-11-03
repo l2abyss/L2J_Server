@@ -226,7 +226,7 @@ public final class L2ChestInstance extends L2MonsterInstance
 		
 		if (!player.isAffectedBySkill(skillId))
 		{
-			skill.applyEffects(this, null, player, null, false, false);
+			skill.applyEffects(this, player);
 			broadcastPacket(new MagicSkillUse(this, player, skillId, skillLevel, skill.getHitTime(), 0));
 			return true;
 		}
