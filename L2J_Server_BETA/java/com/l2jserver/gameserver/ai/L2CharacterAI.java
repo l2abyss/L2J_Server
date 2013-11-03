@@ -55,6 +55,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -1281,75 +1282,81 @@ public class L2CharacterAI extends AbstractAI
 				}
 				int castRange = sk.getCastRange();
 				boolean hasLongRangeDamageSkill = false;
-				switch (sk.getSkillType())
+				
+				if ((sk.getSkillType() == L2SkillType.NOTDONE) || (sk.getSkillType() == L2SkillType.COREDONE))
 				{
-					case BUFF:
-						buffSkills.add(sk);
-						continue; // won't be considered something for fighting
-					case NOTDONE:
-					case COREDONE:
-						continue; // won't be considered something for fighting
-					default:
-						if (sk.isDebuff())
-						{
-							debuffSkills.add(sk);
-						}
-						else if (sk.hasEffectType(L2EffectType.DISPEL))
-						{
-							cancelSkills.add(sk);
-						}
-						else if (sk.hasEffectType(L2EffectType.HEAL, L2EffectType.HEAL_PERCENT))
-						{
-							healSkills.add(sk);
-							hasHealOrResurrect = true;
-						}
-						else if (sk.hasEffectType(L2EffectType.SLEEP))
-						{
-							sleepSkills.add(sk);
-						}
-						else if (sk.hasEffectType(L2EffectType.STUN, L2EffectType.PARALYZE))
-						{
-							// hardcoding petrification until improvements are made to
-							// EffectTemplate... petrification is totally different for
-							// AI than paralyze
-							switch (sk.getId())
-							{
-								case 367:
-								case 4111:
-								case 4383:
-								case 4616:
-								case 4578:
-									sleepSkills.add(sk);
-									break;
-								default:
-									generalDisablers.add(sk);
-									break;
-							}
-						}
-						else if (sk.hasEffectType(L2EffectType.ROOT))
-						{
-							rootSkills.add(sk);
-						}
-						else if (sk.hasEffectType(L2EffectType.FEAR))
-						{
-							debuffSkills.add(sk);
-						}
-						else if (sk.hasEffectType(L2EffectType.MUTE))
-						{
-							muteSkills.add(sk);
-						}
-						else if (sk.hasEffectType(L2EffectType.RESURRECTION))
-						{
-							resurrectSkills.add(sk);
-							hasHealOrResurrect = true;
-						}
-						else
-						{
-							generalSkills.add(sk);
-							hasLongRangeDamageSkill = true;
-						}
-						break;
+					continue;
 				}
+				else if (sk.isContinuous())
+				{
+					if (!sk.isDebuff())
+					{
+						buffSkills.add(sk);
+					}
+					else
+					{
+						debuffSkills.add(sk);
+					}
+					continue;
+				}
+				else
+				{
+					if (sk.hasEffectType(L2EffectType.DISPEL))
+					{
+						cancelSkills.add(sk);
+					}
+					else if (sk.hasEffectType(L2EffectType.HEAL, L2EffectType.HEAL_PERCENT))
+					{
+						healSkills.add(sk);
+						hasHealOrResurrect = true;
+					}
+					else if (sk.hasEffectType(L2EffectType.SLEEP))
+					{
+						sleepSkills.add(sk);
+					}
+					else if (sk.hasEffectType(L2EffectType.STUN, L2EffectType.PARALYZE))
+					{
+						// hardcoding petrification until improvements are made to
+						// EffectTemplate... petrification is totally different for
+						// AI than paralyze
+						switch (sk.getId())
+						{
+							case 367:
+							case 4111:
+							case 4383:
+							case 4616:
+							case 4578:
+								sleepSkills.add(sk);
+								break;
+							default:
+								generalDisablers.add(sk);
+								break;
+						}
+					}
+					else if (sk.hasEffectType(L2EffectType.ROOT))
+					{
+						rootSkills.add(sk);
+					}
+					else if (sk.hasEffectType(L2EffectType.FEAR))
+					{
+						debuffSkills.add(sk);
+					}
+					else if (sk.hasEffectType(L2EffectType.MUTE))
+					{
+						muteSkills.add(sk);
+					}
+					else if (sk.hasEffectType(L2EffectType.RESURRECTION))
+					{
+						resurrectSkills.add(sk);
+						hasHealOrResurrect = true;
+					}
+					else
+					{
+						generalSkills.add(sk);
+						hasLongRangeDamageSkill = true;
+					}
+				}
+				
 				if (castRange > 70)
 				{
 					hasLongRangeSkills = true;

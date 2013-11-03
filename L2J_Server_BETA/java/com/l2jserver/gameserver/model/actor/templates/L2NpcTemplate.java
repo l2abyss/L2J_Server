@@ -41,6 +41,7 @@ import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.L2SkillType;
 
 /**
  * NPC template.
@@ -340,65 +341,68 @@ public final class L2NpcTemplate extends L2CharTemplate implements IIdentifiable
 			else
 			{
 				addGeneralSkill(skill);
-				switch (skill.getSkillType())
+				
+				if (skill.isContinuous())
 				{
-					case BUFF:
+					if (!skill.isDebuff())
+					{
 						addBuffSkill(skill);
-						break;
-					case DUMMY:
-						if (skill.isDebuff())
-						{
-							addDebuffSkill(skill);
-							addCOTSkill(skill);
-							addRangeSkill(skill);
-						}
-						else if (skill.hasEffectType(L2EffectType.DISPEL))
-						{
-							addNegativeSkill(skill);
-							addRangeSkill(skill);
-						}
-						else if (skill.hasEffectType(L2EffectType.HEAL, L2EffectType.HEAL_PERCENT))
-						{
-							addHealSkill(skill);
-						}
-						else if (skill.hasEffectType(L2EffectType.PHYSICAL_ATTACK, L2EffectType.PHYSICAL_ATTACK_HP_LINK, L2EffectType.FATAL_BLOW, L2EffectType.ENERGY_ATTACK, L2EffectType.MAGICAL_ATTACK_MP, L2EffectType.MAGICAL_ATTACK, L2EffectType.DEATH_LINK, L2EffectType.HP_DRAIN))
-						{
-							addAtkSkill(skill);
-							addUniversalSkill(skill);
-							addRangeSkill(skill);
-						}
-						else if (skill.hasEffectType(L2EffectType.SLEEP))
-						{
-							addImmobiliseSkill(skill);
-						}
-						else if (skill.hasEffectType(L2EffectType.STUN, L2EffectType.ROOT))
-						{
-							addImmobiliseSkill(skill);
-							addRangeSkill(skill);
-						}
-						else if (skill.hasEffectType(L2EffectType.MUTE, L2EffectType.FEAR))
-						{
-							addCOTSkill(skill);
-							addRangeSkill(skill);
-						}
-						else if (skill.hasEffectType(L2EffectType.PARALYZE))
-						{
-							addImmobiliseSkill(skill);
-							addRangeSkill(skill);
-						}
-						else if (skill.hasEffectType(L2EffectType.DMG_OVER_TIME, L2EffectType.DMG_OVER_TIME_PERCENT))
-						{
-							addRangeSkill(skill);
-						}
-						else if (skill.hasEffectType(L2EffectType.RESURRECTION))
-						{
-							addResSkill(skill);
-						}
-						else
-						{
-							addUniversalSkill(skill);
-						}
-						break;
+					}
+					else
+					{
+						addDebuffSkill(skill);
+						addCOTSkill(skill);
+						addRangeSkill(skill);
+					}
+				}
+				else if (skill.getSkillType() == L2SkillType.DUMMY)
+				{
+					if (skill.hasEffectType(L2EffectType.DISPEL))
+					{
+						addNegativeSkill(skill);
+						addRangeSkill(skill);
+					}
+					else if (skill.hasEffectType(L2EffectType.HEAL, L2EffectType.HEAL_PERCENT))
+					{
+						addHealSkill(skill);
+					}
+					else if (skill.hasEffectType(L2EffectType.PHYSICAL_ATTACK, L2EffectType.PHYSICAL_ATTACK_HP_LINK, L2EffectType.FATAL_BLOW, L2EffectType.ENERGY_ATTACK, L2EffectType.MAGICAL_ATTACK_MP, L2EffectType.MAGICAL_ATTACK, L2EffectType.DEATH_LINK, L2EffectType.HP_DRAIN))
+					{
+						addAtkSkill(skill);
+						addUniversalSkill(skill);
+						addRangeSkill(skill);
+					}
+					else if (skill.hasEffectType(L2EffectType.SLEEP))
+					{
+						addImmobiliseSkill(skill);
+					}
+					else if (skill.hasEffectType(L2EffectType.STUN, L2EffectType.ROOT))
+					{
+						addImmobiliseSkill(skill);
+						addRangeSkill(skill);
+					}
+					else if (skill.hasEffectType(L2EffectType.MUTE, L2EffectType.FEAR))
+					{
+						addCOTSkill(skill);
+						addRangeSkill(skill);
+					}
+					else if (skill.hasEffectType(L2EffectType.PARALYZE))
+					{
+						addImmobiliseSkill(skill);
+						addRangeSkill(skill);
+					}
+					else if (skill.hasEffectType(L2EffectType.DMG_OVER_TIME, L2EffectType.DMG_OVER_TIME_PERCENT))
+					{
+						addRangeSkill(skill);
+					}
+					else if (skill.hasEffectType(L2EffectType.RESURRECTION))
+					{
+						addResSkill(skill);
+					}
+					else
+					{
+						addUniversalSkill(skill);
+					}
 				}
 			}
 		}

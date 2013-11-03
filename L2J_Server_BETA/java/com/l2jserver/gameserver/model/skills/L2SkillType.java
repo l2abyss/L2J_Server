@@ -56,7 +56,6 @@ public enum L2SkillType
 	SUMMON(L2SkillSummon.class),
 	FEED_PET,
 	
-	BUFF,
 	DETECT_TRAP,
 	REMOVE_TRAP,
 	

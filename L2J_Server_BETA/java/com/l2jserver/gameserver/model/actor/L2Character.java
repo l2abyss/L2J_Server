@@ -1671,17 +1671,16 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 					return;
 				}
 				
-				switch (skill.getSkillType())
+				if (skill.isContinuous() && !skill.isDebuff())
 				{
-					case BUFF:
+					doit = true;
+				}
+				else if (skill.getSkillType() == L2SkillType.DUMMY)
+				{
+					if (skill.hasEffectType(L2EffectType.CPHEAL, L2EffectType.HEAL))
+					{
 						doit = true;
-						break;
-					case DUMMY:
-						if (skill.hasEffectType(L2EffectType.CPHEAL, L2EffectType.HEAL))
-						{
-							doit = true;
-						}
-						break;
+					}
 				}
 				
 				if (doit)

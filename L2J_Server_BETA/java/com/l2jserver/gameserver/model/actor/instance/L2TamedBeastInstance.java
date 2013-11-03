@@ -36,7 +36,6 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
@@ -277,7 +276,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 				for (L2Skill skill : getTemplate().getSkills().values())
 				{
 					// if the skill is a buff, check if the owner has it already [ owner.getEffect(L2Skill skill) ]
-					if (skill.getSkillType() == L2SkillType.BUFF)
+					if (skill.isContinuous() && !skill.isDebuff())
 					{
 						totalBuffsAvailable++;
 					}
@@ -540,7 +539,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			for (L2Skill skill : _tamedBeast.getTemplate().getSkills().values())
 			{
 				// if the skill is a buff, check if the owner has it already [ owner.getEffect(L2Skill skill) ]
-				if (skill.getSkillType() == L2SkillType.BUFF)
+				if (skill.isContinuous() && !skill.isDebuff())
 				{
 					if (i++ == rand)
 					{

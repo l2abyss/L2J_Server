@@ -1366,9 +1366,9 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			dist2 = dist2 - 30;
 		}
 		
-		switch (sk.getSkillType())
+		if (sk.isContinuous())
 		{
-			case BUFF:
+			if (!sk.isDebuff())
 			{
 				if (!caster.isAffectedBySkill(sk.getId()))
 				{
@@ -1407,413 +1407,408 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					caster.setTarget(targets);
 					return true;
 				}
-				break;
 			}
-			default:
+			else
 			{
-				if (sk.isDebuff())
+				if (GeoData.getInstance().canSeeTarget(caster, attackTarget) && !canAOE(sk) && !attackTarget.isDead() && (dist2 <= srange))
 				{
-					if (GeoData.getInstance().canSeeTarget(caster, attackTarget) && !canAOE(sk) && !attackTarget.isDead() && (dist2 <= srange))
-					{
-						if (!attackTarget.isAffectedBySkill(sk.getId()))
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-					}
-					else if (canAOE(sk))
-					{
-						if ((sk.getTargetType() == L2TargetType.AURA) || (sk.getTargetType() == L2TargetType.BEHIND_AURA) || (sk.getTargetType() == L2TargetType.FRONT_AURA) || (sk.getTargetType() == L2TargetType.AURA_CORPSE_MOB))
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-						if (((sk.getTargetType() == L2TargetType.AREA) || (sk.getTargetType() == L2TargetType.BEHIND_AREA) || (sk.getTargetType() == L2TargetType.FRONT_AREA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-					}
-					else if (sk.getTargetType() == L2TargetType.ONE)
-					{
-						L2Character target = effectTargetReconsider(sk, false);
-						if (target != null)
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-					}
-				}
-				
-				if (sk.hasEffectType(L2EffectType.DISPEL))
-				{
-					if (sk.getTargetType() == L2TargetType.ONE)
-					{
-						if ((attackTarget.getEffectList().getFirstEffect(L2EffectType.BUFF) != null) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-						L2Character target = effectTargetReconsider(sk, false);
-						if (target != null)
-						{
-							clientStopMoving(null);
-							L2Object targets = attackTarget;
-							caster.setTarget(target);
-							caster.doCast(sk);
-							caster.setTarget(targets);
-							return true;
-						}
-					}
-					else if (canAOE(sk))
-					{
-						if (((sk.getTargetType() == L2TargetType.AURA) || (sk.getTargetType() == L2TargetType.BEHIND_AURA) || (sk.getTargetType() == L2TargetType.FRONT_AURA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget))
-						
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-						else if (((sk.getTargetType() == L2TargetType.AREA) || (sk.getTargetType() == L2TargetType.BEHIND_AREA) || (sk.getTargetType() == L2TargetType.FRONT_AREA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-					}
-				}
-				
-				if (sk.hasEffectType(L2EffectType.HEAL, L2EffectType.HEAL_PERCENT))
-				{
-					double percentage = (caster.getCurrentHp() / caster.getMaxHp()) * 100;
-					if (caster.isMinion() && (sk.getTargetType() != L2TargetType.SELF))
-					{
-						L2Character leader = caster.getLeader();
-						if ((leader != null) && !leader.isDead() && (Rnd.get(100) > ((leader.getCurrentHp() / leader.getMaxHp()) * 100)))
-						{
-							if (!Util.checkIfInRange((sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius()), caster, leader, false) && !isParty(sk) && !caster.isMovementDisabled())
-							{
-								moveToPawn(leader, sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius());
-							}
-							if (GeoData.getInstance().canSeeTarget(caster, leader))
-							{
-								clientStopMoving(null);
-								caster.setTarget(leader);
-								caster.doCast(sk);
-								return true;
-							}
-						}
-					}
-					if (Rnd.get(100) < ((100 - percentage) / 3))
-					{
-						clientStopMoving(null);
-						caster.setTarget(caster);
-						caster.doCast(sk);
-						return true;
-					}
-					
-					if (sk.getTargetType() == L2TargetType.ONE)
-					{
-						for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getCastRange() + caster.getTemplate().getCollisionRadius()))
-						{
-							if (!(obj instanceof L2Attackable) || obj.isDead())
-							{
-								continue;
-							}
-							
-							L2Attackable targets = ((L2Attackable) obj);
-							if ((caster.getFactionId() != null) && !caster.getFactionId().equals(targets.getFactionId()))
-							{
-								continue;
-							}
-							percentage = (targets.getCurrentHp() / targets.getMaxHp()) * 100;
-							if (Rnd.get(100) < ((100 - percentage) / 10))
-							{
-								if (GeoData.getInstance().canSeeTarget(caster, targets))
-								{
-									clientStopMoving(null);
-									caster.setTarget(obj);
-									caster.doCast(sk);
-									return true;
-								}
-							}
-						}
-					}
-					if (isParty(sk))
-					{
-						for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getAffectRange() + caster.getTemplate().getCollisionRadius()))
-						{
-							if (!(obj instanceof L2Attackable))
-							{
-								continue;
-							}
-							L2Npc targets = ((L2Npc) obj);
-							if ((caster.getFactionId() != null) && targets.getFactionId().equals(caster.getFactionId()))
-							{
-								if ((obj.getCurrentHp() < obj.getMaxHp()) && (Rnd.get(100) <= 20))
-								{
-									clientStopMoving(null);
-									caster.setTarget(caster);
-									caster.doCast(sk);
-									return true;
-								}
-							}
-						}
-					}
-				}
-				
-				if (sk.hasEffectType(L2EffectType.PHYSICAL_ATTACK, L2EffectType.PHYSICAL_ATTACK_HP_LINK, L2EffectType.FATAL_BLOW, L2EffectType.ENERGY_ATTACK, L2EffectType.MAGICAL_ATTACK_MP, L2EffectType.MAGICAL_ATTACK, L2EffectType.DEATH_LINK, L2EffectType.HP_DRAIN))
-				{
-					if (!canAura(sk))
-					{
-						if (GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-						
-						L2Character target = skillTargetReconsider(sk);
-						if (target != null)
-						{
-							clientStopMoving(null);
-							L2Object targets = attackTarget;
-							caster.setTarget(target);
-							caster.doCast(sk);
-							caster.setTarget(targets);
-							return true;
-						}
-					}
-					else
+					if (!attackTarget.isAffectedBySkill(sk.getId()))
 					{
 						clientStopMoving(null);
 						caster.doCast(sk);
 						return true;
 					}
 				}
-				
-				if (sk.hasEffectType(L2EffectType.SLEEP))
+				else if (canAOE(sk))
 				{
-					if (sk.getTargetType() == L2TargetType.ONE)
-					{
-						if (!attackTarget.isDead() && (dist2 <= srange))
-						{
-							if ((dist2 > range) || attackTarget.isMoving())
-							{
-								if (!attackTarget.isAffectedBySkill(sk.getId()))
-								{
-									clientStopMoving(null);
-									caster.doCast(sk);
-									return true;
-								}
-							}
-						}
-						
-						L2Character target = effectTargetReconsider(sk, false);
-						if (target != null)
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-					}
-					else if (canAOE(sk))
-					{
-						if ((sk.getTargetType() == L2TargetType.AURA) || (sk.getTargetType() == L2TargetType.BEHIND_AURA) || (sk.getTargetType() == L2TargetType.FRONT_AURA))
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-						if (((sk.getTargetType() == L2TargetType.AREA) || (sk.getTargetType() == L2TargetType.BEHIND_AREA) || (sk.getTargetType() == L2TargetType.FRONT_AREA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-					}
-				}
-				
-				if (sk.hasEffectType(L2EffectType.STUN, L2EffectType.ROOT, L2EffectType.PARALYZE, L2EffectType.MUTE, L2EffectType.FEAR))
-				{
-					if (GeoData.getInstance().canSeeTarget(caster, attackTarget) && !canAOE(sk) && (dist2 <= srange))
-					{
-						if (!attackTarget.isAffectedBySkill(sk.getId()))
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-					}
-					else if (canAOE(sk))
-					{
-						if ((sk.getTargetType() == L2TargetType.AURA) || (sk.getTargetType() == L2TargetType.BEHIND_AURA) || (sk.getTargetType() == L2TargetType.FRONT_AURA))
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-						if (((sk.getTargetType() == L2TargetType.AREA) || (sk.getTargetType() == L2TargetType.BEHIND_AREA) || (sk.getTargetType() == L2TargetType.FRONT_AREA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-					}
-					else if (sk.getTargetType() == L2TargetType.ONE)
-					{
-						L2Character target = effectTargetReconsider(sk, false);
-						if (target != null)
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-					}
-				}
-				
-				if (sk.hasEffectType(L2EffectType.DMG_OVER_TIME, L2EffectType.DMG_OVER_TIME_PERCENT))
-				{
-					if (GeoData.getInstance().canSeeTarget(caster, attackTarget) && !canAOE(sk) && !attackTarget.isDead() && (dist2 <= srange))
-					{
-						if (!attackTarget.isAffectedBySkill(sk.getId()))
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-					}
-					else if (canAOE(sk))
-					{
-						if ((sk.getTargetType() == L2TargetType.AURA) || (sk.getTargetType() == L2TargetType.BEHIND_AURA) || (sk.getTargetType() == L2TargetType.FRONT_AURA) || (sk.getTargetType() == L2TargetType.AURA_CORPSE_MOB))
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-						if (((sk.getTargetType() == L2TargetType.AREA) || (sk.getTargetType() == L2TargetType.BEHIND_AREA) || (sk.getTargetType() == L2TargetType.FRONT_AREA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-					}
-					else if (sk.getTargetType() == L2TargetType.ONE)
-					{
-						L2Character target = effectTargetReconsider(sk, false);
-						if (target != null)
-						{
-							clientStopMoving(null);
-							caster.doCast(sk);
-							return true;
-						}
-					}
-				}
-				
-				if (sk.hasEffectType(L2EffectType.RESURRECTION))
-				{
-					if (!isParty(sk))
-					{
-						if (caster.isMinion() && (sk.getTargetType() != L2TargetType.SELF))
-						{
-							L2Character leader = caster.getLeader();
-							if ((leader != null) && leader.isDead())
-							{
-								if (!Util.checkIfInRange((sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius()), caster, leader, false) && !isParty(sk) && !caster.isMovementDisabled())
-								{
-									moveToPawn(leader, sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius());
-								}
-							}
-							if (GeoData.getInstance().canSeeTarget(caster, leader))
-							{
-								clientStopMoving(null);
-								caster.setTarget(leader);
-								caster.doCast(sk);
-								return true;
-							}
-						}
-						
-						for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getCastRange() + caster.getTemplate().getCollisionRadius()))
-						{
-							if (!(obj instanceof L2Attackable) || !obj.isDead())
-							{
-								continue;
-							}
-							
-							L2Attackable targets = ((L2Attackable) obj);
-							if ((caster.getFactionId() != null) && !caster.getFactionId().equals(targets.getFactionId()))
-							{
-								continue;
-							}
-							if (Rnd.get(100) < 10)
-							{
-								if (GeoData.getInstance().canSeeTarget(caster, targets))
-								{
-									clientStopMoving(null);
-									caster.setTarget(obj);
-									caster.doCast(sk);
-									return true;
-								}
-							}
-						}
-					}
-					else if (isParty(sk))
-					{
-						for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getAffectRange() + caster.getTemplate().getCollisionRadius()))
-						{
-							if (!(obj instanceof L2Attackable))
-							{
-								continue;
-							}
-							L2Npc targets = ((L2Npc) obj);
-							if ((caster.getFactionId() != null) && caster.getFactionId().equals(targets.getFactionId()))
-							{
-								if ((obj.getCurrentHp() < obj.getMaxHp()) && (Rnd.get(100) <= 20))
-								{
-									clientStopMoving(null);
-									caster.setTarget(caster);
-									caster.doCast(sk);
-									return true;
-								}
-							}
-						}
-					}
-				}
-				
-				if (!canAura(sk))
-				{
-					
-					if (GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
+					if ((sk.getTargetType() == L2TargetType.AURA) || (sk.getTargetType() == L2TargetType.BEHIND_AURA) || (sk.getTargetType() == L2TargetType.FRONT_AURA) || (sk.getTargetType() == L2TargetType.AURA_CORPSE_MOB))
 					{
 						clientStopMoving(null);
 						caster.doCast(sk);
 						return true;
 					}
-					
-					L2Character target = skillTargetReconsider(sk);
+					if (((sk.getTargetType() == L2TargetType.AREA) || (sk.getTargetType() == L2TargetType.BEHIND_AREA) || (sk.getTargetType() == L2TargetType.FRONT_AREA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
+					{
+						clientStopMoving(null);
+						caster.doCast(sk);
+						return true;
+					}
+				}
+				else if (sk.getTargetType() == L2TargetType.ONE)
+				{
+					L2Character target = effectTargetReconsider(sk, false);
 					if (target != null)
 					{
 						clientStopMoving(null);
-						L2Object targets = attackTarget;
-						caster.setTarget(target);
 						caster.doCast(sk);
-						caster.setTarget(targets);
 						return true;
 					}
 				}
-				else
+			}
+		}
+		
+		if (sk.hasEffectType(L2EffectType.DISPEL))
+		{
+			if (sk.getTargetType() == L2TargetType.ONE)
+			{
+				if ((attackTarget.getEffectList().getFirstEffect(L2EffectType.BUFF) != null) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
 				{
 					clientStopMoving(null);
 					caster.doCast(sk);
 					return true;
 				}
-				break;
+				L2Character target = effectTargetReconsider(sk, false);
+				if (target != null)
+				{
+					clientStopMoving(null);
+					L2Object targets = attackTarget;
+					caster.setTarget(target);
+					caster.doCast(sk);
+					caster.setTarget(targets);
+					return true;
+				}
 			}
+			else if (canAOE(sk))
+			{
+				if (((sk.getTargetType() == L2TargetType.AURA) || (sk.getTargetType() == L2TargetType.BEHIND_AURA) || (sk.getTargetType() == L2TargetType.FRONT_AURA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget))
+				
+				{
+					clientStopMoving(null);
+					caster.doCast(sk);
+					return true;
+				}
+				else if (((sk.getTargetType() == L2TargetType.AREA) || (sk.getTargetType() == L2TargetType.BEHIND_AREA) || (sk.getTargetType() == L2TargetType.FRONT_AREA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
+				{
+					clientStopMoving(null);
+					caster.doCast(sk);
+					return true;
+				}
+			}
+		}
+		
+		if (sk.hasEffectType(L2EffectType.HEAL, L2EffectType.HEAL_PERCENT))
+		{
+			double percentage = (caster.getCurrentHp() / caster.getMaxHp()) * 100;
+			if (caster.isMinion() && (sk.getTargetType() != L2TargetType.SELF))
+			{
+				L2Character leader = caster.getLeader();
+				if ((leader != null) && !leader.isDead() && (Rnd.get(100) > ((leader.getCurrentHp() / leader.getMaxHp()) * 100)))
+				{
+					if (!Util.checkIfInRange((sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius()), caster, leader, false) && !isParty(sk) && !caster.isMovementDisabled())
+					{
+						moveToPawn(leader, sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius());
+					}
+					if (GeoData.getInstance().canSeeTarget(caster, leader))
+					{
+						clientStopMoving(null);
+						caster.setTarget(leader);
+						caster.doCast(sk);
+						return true;
+					}
+				}
+			}
+			if (Rnd.get(100) < ((100 - percentage) / 3))
+			{
+				clientStopMoving(null);
+				caster.setTarget(caster);
+				caster.doCast(sk);
+				return true;
+			}
+			
+			if (sk.getTargetType() == L2TargetType.ONE)
+			{
+				for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getCastRange() + caster.getTemplate().getCollisionRadius()))
+				{
+					if (!(obj instanceof L2Attackable) || obj.isDead())
+					{
+						continue;
+					}
+					
+					L2Attackable targets = ((L2Attackable) obj);
+					if ((caster.getFactionId() != null) && !caster.getFactionId().equals(targets.getFactionId()))
+					{
+						continue;
+					}
+					percentage = (targets.getCurrentHp() / targets.getMaxHp()) * 100;
+					if (Rnd.get(100) < ((100 - percentage) / 10))
+					{
+						if (GeoData.getInstance().canSeeTarget(caster, targets))
+						{
+							clientStopMoving(null);
+							caster.setTarget(obj);
+							caster.doCast(sk);
+							return true;
+						}
+					}
+				}
+			}
+			if (isParty(sk))
+			{
+				for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getAffectRange() + caster.getTemplate().getCollisionRadius()))
+				{
+					if (!(obj instanceof L2Attackable))
+					{
+						continue;
+					}
+					L2Npc targets = ((L2Npc) obj);
+					if ((caster.getFactionId() != null) && targets.getFactionId().equals(caster.getFactionId()))
+					{
+						if ((obj.getCurrentHp() < obj.getMaxHp()) && (Rnd.get(100) <= 20))
+						{
+							clientStopMoving(null);
+							caster.setTarget(caster);
+							caster.doCast(sk);
+							return true;
+						}
+					}
+				}
+			}
+		}
+		
+		if (sk.hasEffectType(L2EffectType.PHYSICAL_ATTACK, L2EffectType.PHYSICAL_ATTACK_HP_LINK, L2EffectType.FATAL_BLOW, L2EffectType.ENERGY_ATTACK, L2EffectType.MAGICAL_ATTACK_MP, L2EffectType.MAGICAL_ATTACK, L2EffectType.DEATH_LINK, L2EffectType.HP_DRAIN))
+		{
+			if (!canAura(sk))
+			{
+				if (GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
+				{
+					clientStopMoving(null);
+					caster.doCast(sk);
+					return true;
+				}
+				
+				L2Character target = skillTargetReconsider(sk);
+				if (target != null)
+				{
+					clientStopMoving(null);
+					L2Object targets = attackTarget;
+					caster.setTarget(target);
+					caster.doCast(sk);
+					caster.setTarget(targets);
+					return true;
+				}
+			}
+			else
+			{
+				clientStopMoving(null);
+				caster.doCast(sk);
+				return true;
+			}
+		}
+		
+		if (sk.hasEffectType(L2EffectType.SLEEP))
+		{
+			if (sk.getTargetType() == L2TargetType.ONE)
+			{
+				if (!attackTarget.isDead() && (dist2 <= srange))
+				{
+					if ((dist2 > range) || attackTarget.isMoving())
+					{
+						if (!attackTarget.isAffectedBySkill(sk.getId()))
+						{
+							clientStopMoving(null);
+							caster.doCast(sk);
+							return true;
+						}
+					}
+				}
+				
+				L2Character target = effectTargetReconsider(sk, false);
+				if (target != null)
+				{
+					clientStopMoving(null);
+					caster.doCast(sk);
+					return true;
+				}
+			}
+			else if (canAOE(sk))
+			{
+				if ((sk.getTargetType() == L2TargetType.AURA) || (sk.getTargetType() == L2TargetType.BEHIND_AURA) || (sk.getTargetType() == L2TargetType.FRONT_AURA))
+				{
+					clientStopMoving(null);
+					caster.doCast(sk);
+					return true;
+				}
+				if (((sk.getTargetType() == L2TargetType.AREA) || (sk.getTargetType() == L2TargetType.BEHIND_AREA) || (sk.getTargetType() == L2TargetType.FRONT_AREA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
+				{
+					clientStopMoving(null);
+					caster.doCast(sk);
+					return true;
+				}
+			}
+		}
+		
+		if (sk.hasEffectType(L2EffectType.STUN, L2EffectType.ROOT, L2EffectType.PARALYZE, L2EffectType.MUTE, L2EffectType.FEAR))
+		{
+			if (GeoData.getInstance().canSeeTarget(caster, attackTarget) && !canAOE(sk) && (dist2 <= srange))
+			{
+				if (!attackTarget.isAffectedBySkill(sk.getId()))
+				{
+					clientStopMoving(null);
+					caster.doCast(sk);
+					return true;
+				}
+			}
+			else if (canAOE(sk))
+			{
+				if ((sk.getTargetType() == L2TargetType.AURA) || (sk.getTargetType() == L2TargetType.BEHIND_AURA) || (sk.getTargetType() == L2TargetType.FRONT_AURA))
+				{
+					clientStopMoving(null);
+					caster.doCast(sk);
+					return true;
+				}
+				if (((sk.getTargetType() == L2TargetType.AREA) || (sk.getTargetType() == L2TargetType.BEHIND_AREA) || (sk.getTargetType() == L2TargetType.FRONT_AREA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
+				{
+					clientStopMoving(null);
+					caster.doCast(sk);
+					return true;
+				}
+			}
+			else if (sk.getTargetType() == L2TargetType.ONE)
+			{
+				L2Character target = effectTargetReconsider(sk, false);
+				if (target != null)
+				{
+					clientStopMoving(null);
+					caster.doCast(sk);
+					return true;
+				}
+			}
+		}
+		
+		if (sk.hasEffectType(L2EffectType.DMG_OVER_TIME, L2EffectType.DMG_OVER_TIME_PERCENT))
+		{
+			if (GeoData.getInstance().canSeeTarget(caster, attackTarget) && !canAOE(sk) && !attackTarget.isDead() && (dist2 <= srange))
+			{
+				if (!attackTarget.isAffectedBySkill(sk.getId()))
+				{
+					clientStopMoving(null);
+					caster.doCast(sk);
+					return true;
+				}
+			}
+			else if (canAOE(sk))
+			{
+				if ((sk.getTargetType() == L2TargetType.AURA) || (sk.getTargetType() == L2TargetType.BEHIND_AURA) || (sk.getTargetType() == L2TargetType.FRONT_AURA) || (sk.getTargetType() == L2TargetType.AURA_CORPSE_MOB))
+				{
+					clientStopMoving(null);
+					caster.doCast(sk);
+					return true;
+				}
+				if (((sk.getTargetType() == L2TargetType.AREA) || (sk.getTargetType() == L2TargetType.BEHIND_AREA) || (sk.getTargetType() == L2TargetType.FRONT_AREA)) && GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
+				{
+					clientStopMoving(null);
+					caster.doCast(sk);
+					return true;
+				}
+			}
+			else if (sk.getTargetType() == L2TargetType.ONE)
+			{
+				L2Character target = effectTargetReconsider(sk, false);
+				if (target != null)
+				{
+					clientStopMoving(null);
+					caster.doCast(sk);
+					return true;
+				}
+			}
+		}
+		
+		if (sk.hasEffectType(L2EffectType.RESURRECTION))
+		{
+			if (!isParty(sk))
+			{
+				if (caster.isMinion() && (sk.getTargetType() != L2TargetType.SELF))
+				{
+					L2Character leader = caster.getLeader();
+					if ((leader != null) && leader.isDead())
+					{
+						if (!Util.checkIfInRange((sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius()), caster, leader, false) && !isParty(sk) && !caster.isMovementDisabled())
+						{
+							moveToPawn(leader, sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius());
+						}
+					}
+					if (GeoData.getInstance().canSeeTarget(caster, leader))
+					{
+						clientStopMoving(null);
+						caster.setTarget(leader);
+						caster.doCast(sk);
+						return true;
+					}
+				}
+				
+				for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getCastRange() + caster.getTemplate().getCollisionRadius()))
+				{
+					if (!(obj instanceof L2Attackable) || !obj.isDead())
+					{
+						continue;
+					}
+					
+					L2Attackable targets = ((L2Attackable) obj);
+					if ((caster.getFactionId() != null) && !caster.getFactionId().equals(targets.getFactionId()))
+					{
+						continue;
+					}
+					if (Rnd.get(100) < 10)
+					{
+						if (GeoData.getInstance().canSeeTarget(caster, targets))
+						{
+							clientStopMoving(null);
+							caster.setTarget(obj);
+							caster.doCast(sk);
+							return true;
+						}
+					}
+				}
+			}
+			else if (isParty(sk))
+			{
+				for (L2Character obj : caster.getKnownList().getKnownCharactersInRadius(sk.getAffectRange() + caster.getTemplate().getCollisionRadius()))
+				{
+					if (!(obj instanceof L2Attackable))
+					{
+						continue;
+					}
+					L2Npc targets = ((L2Npc) obj);
+					if ((caster.getFactionId() != null) && caster.getFactionId().equals(targets.getFactionId()))
+					{
+						if ((obj.getCurrentHp() < obj.getMaxHp()) && (Rnd.get(100) <= 20))
+						{
+							clientStopMoving(null);
+							caster.setTarget(caster);
+							caster.doCast(sk);
+							return true;
+						}
+					}
+				}
+			}
+		}
+		
+		if (!canAura(sk))
+		{
+			
+			if (GeoData.getInstance().canSeeTarget(caster, attackTarget) && !attackTarget.isDead() && (dist2 <= srange))
+			{
+				clientStopMoving(null);
+				caster.doCast(sk);
+				return true;
+			}
+			
+			L2Character target = skillTargetReconsider(sk);
+			if (target != null)
+			{
+				clientStopMoving(null);
+				L2Object targets = attackTarget;
+				caster.setTarget(target);
+				caster.doCast(sk);
+				caster.setTarget(targets);
+				return true;
+			}
+		}
+		else
+		{
+			clientStopMoving(null);
+			caster.doCast(sk);
+			return true;
 		}
 		return false;
 	}

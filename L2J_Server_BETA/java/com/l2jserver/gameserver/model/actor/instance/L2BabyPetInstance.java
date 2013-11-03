@@ -37,6 +37,7 @@ import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Rnd;
@@ -90,43 +91,42 @@ public final class L2BabyPetInstance extends L2PetInstance
 					continue;
 				}
 				
-				switch (skill.getSkillType())
+				if (skill.isContinuous() && !skill.isDebuff())
 				{
-					case BUFF:
-						if (_buffs == null)
+					if (_buffs == null)
+					{
+						_buffs = new FastList<>();
+					}
+					_buffs.add(new SkillHolder(skill));
+				}
+				else if (skill.getSkillType() == L2SkillType.DUMMY)
+				{
+					if (skill.hasEffectType(L2EffectType.MANAHEAL_BY_LEVEL))
+					{
+						_recharge = new SkillHolder(skill);
+					}
+					else if (skill.hasEffectType(L2EffectType.HEAL))
+					{
+						if (healPower == 0)
 						{
-							_buffs = new FastList<>();
+							// set both heal types to the same skill
+							_majorHeal = new SkillHolder(skill);
+							_minorHeal = _majorHeal;
+							healPower = skill.getPower();
 						}
-						_buffs.add(new SkillHolder(skill));
-						break;
-					case DUMMY:
-						if (skill.hasEffectType(L2EffectType.MANAHEAL_BY_LEVEL))
+						else
 						{
-							_recharge = new SkillHolder(skill);
-						}
-						else if (skill.hasEffectType(L2EffectType.HEAL))
-						{
-							if (healPower == 0)
+							// another heal skill found - search for most powerful
+							if (skill.getPower() > healPower)
 							{
-								// set both heal types to the same skill
 								_majorHeal = new SkillHolder(skill);
-								_minorHeal = _majorHeal;
-								healPower = skill.getPower();
 							}
 							else
 							{
-								// another heal skill found - search for most powerful
-								if (skill.getPower() > healPower)
-								{
-									_majorHeal = new SkillHolder(skill);
-								}
-								else
-								{
-									_minorHeal = new SkillHolder(skill);
-								}
+								_minorHeal = new SkillHolder(skill);
 							}
 						}
-						break;
+					}
 				}
 			}
 		}
