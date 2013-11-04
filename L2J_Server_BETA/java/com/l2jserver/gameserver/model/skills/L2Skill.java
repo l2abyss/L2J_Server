@@ -1319,7 +1319,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 			effected.getEffectList().add(info);
 			
 			// Support for buff sharing feature.
-			if (addContinuousEffects && effected.isPlayer() && effected.hasSummon() && isContinuous() && !isDebuff())
+			if (addContinuousEffects && effected.isPlayer() && effected.hasServitor() && isContinuous() && !isDebuff())
 			{
 				applyEffects(effector, effected.getSummon(), false, 0);
 			}
