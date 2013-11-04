@@ -103,7 +103,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 			return;
 		}
 		
-		int castleId = ((L2ManorManagerInstance) manager).getCastle().getCastleId();
+		int castleId = ((L2ManorManagerInstance) manager).getCastle().getResidenceId();
 		
 		// Calculate summary values
 		int slots = 0;

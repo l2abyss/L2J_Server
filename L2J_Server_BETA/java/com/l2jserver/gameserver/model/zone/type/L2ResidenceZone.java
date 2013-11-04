@@ -20,47 +20,50 @@ package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.zone.ZoneId;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 
 /**
- * A castle zone
- * @author durgus
+ * @author xban1x
  */
-public final class L2CastleZone extends L2ResidenceZone
+public abstract class L2ResidenceZone extends L2ZoneRespawn
 {
+	private int _residenceId;
 	
-	public L2CastleZone(int id)
+	protected L2ResidenceZone(int id)
 	{
 		super(id);
 	}
 	
 	@Override
-	public void setParameter(String name, String value)
+	public void onDieInside(L2Character character)
 	{
-		if (name.equals("castleId"))
-		{
-			setResidenceId(Integer.parseInt(value));
-		}
-		else
-		{
-			super.setParameter(name, value);
-		}
 	}
 	
 	@Override
-	protected void onEnter(L2Character character)
+	public void onReviveInside(L2Character character)
 	{
-		character.setInsideZone(ZoneId.CASTLE, true);
 	}
 	
-	@Override
-	protected void onExit(L2Character character)
+	protected void banishForeigners(int owningClanId, TeleportWhereType type)
 	{
-		character.setInsideZone(ZoneId.CASTLE, false);
+		for (L2PcInstance temp : getPlayersInside())
+		{
+			if ((temp.getClanId() == owningClanId) && (owningClanId != 0))
+			{
+				continue;
+			}
+			temp.teleToLocation(type);
+		}
 	}
 	
-	public void banishForeigners(int owningClanId)
+	protected void setResidenceId(int residenceId)
 	{
-		super.banishForeigners(owningClanId, TeleportWhereType.CASTLE_BANISH);
+		_residenceId = residenceId;
+	}
+	
+	public int getResidenceId()
+	{
+		return _residenceId;
 	}
 }

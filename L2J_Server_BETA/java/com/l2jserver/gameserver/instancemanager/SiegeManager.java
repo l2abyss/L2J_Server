@@ -90,7 +90,7 @@ public final class SiegeManager
 		L2PcInstance player = (L2PcInstance) activeChar;
 		Castle castle = CastleManager.getInstance().getCastle(player);
 		
-		if ((castle == null) || (castle.getCastleId() <= 0))
+		if ((castle == null) || (castle.getResidenceId() <= 0))
 		{
 			text = "You must be on castle ground to summon this";
 		}
@@ -231,13 +231,13 @@ public final class SiegeManager
 					_log.warning(getClass().getSimpleName() + ": Error while loading flame tower(s) for " + castle.getName() + " castle.");
 				}
 			}
-			_controlTowers.put(castle.getCastleId(), controlTowers);
-			_flameTowers.put(castle.getCastleId(), flameTowers);
-			MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getCastleId() - 1] = siegeSettings.getInt(castle.getName() + "MaxMercenaries", MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getCastleId() - 1]);
+			_controlTowers.put(castle.getResidenceId(), controlTowers);
+			_flameTowers.put(castle.getResidenceId(), flameTowers);
+			MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getResidenceId() - 1] = siegeSettings.getInt(castle.getName() + "MaxMercenaries", MercTicketManager.MERCS_MAX_PER_CASTLE[castle.getResidenceId() - 1]);
 			
 			if (castle.getOwnerId() != 0)
 			{
-				loadTrapUpgrade(castle.getCastleId());
+				loadTrapUpgrade(castle.getResidenceId());
 			}
 		}
 	}

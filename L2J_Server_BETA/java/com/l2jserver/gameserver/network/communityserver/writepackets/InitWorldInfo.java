@@ -145,7 +145,7 @@ public final class InitWorldInfo extends BaseWritePacket
 				_log.info("Transfering " + castles.size() + " castles data to CB server.");
 				for (Castle castle : castles)
 				{
-					writeD(castle.getCastleId());
+					writeD(castle.getResidenceId());
 					writeS(castle.getName());
 					writeD(castle.getOwnerId());
 					writeD(castle.getTaxPercent());

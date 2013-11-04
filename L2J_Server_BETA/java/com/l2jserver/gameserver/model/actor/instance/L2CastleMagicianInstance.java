@@ -403,7 +403,7 @@ public class L2CastleMagicianInstance extends L2NpcInstance implements L2SquadTr
 		{
 			return COND_OWNER;
 		}
-		if ((getCastle() != null) && (getCastle().getCastleId() > 0))
+		if ((getCastle() != null) && (getCastle().getResidenceId() > 0))
 		{
 			if (player.getClan() != null)
 			{

@@ -45,7 +45,7 @@ public class ExShowProcureCropDetail extends L2GameServerPacket
 			CropProcure cropItem = c.getCrop(_cropId, CastleManorManager.PERIOD_CURRENT);
 			if ((cropItem != null) && (cropItem.getAmount() > 0))
 			{
-				_castleCrops.put(c.getCastleId(), cropItem);
+				_castleCrops.put(c.getResidenceId(), cropItem);
 			}
 		}
 	}

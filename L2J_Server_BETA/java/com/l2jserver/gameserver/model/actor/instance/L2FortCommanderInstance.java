@@ -59,7 +59,7 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 			return false;
 		}
 		
-		boolean isFort = ((getFort() != null) && (getFort().getFortId() > 0) && getFort().getSiege().getIsInProgress() && !getFort().getSiege().checkIsDefender(((L2PcInstance) attacker).getClan()));
+		boolean isFort = ((getFort() != null) && (getFort().getResidenceId() > 0) && getFort().getSiege().getIsInProgress() && !getFort().getSiege().checkIsDefender(((L2PcInstance) attacker).getClan()));
 		
 		// Attackable during siege by all except defenders
 		return (isFort);
@@ -124,7 +124,7 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 		L2Spawn spawn = getSpawn();
 		if ((spawn != null) && canTalk())
 		{
-			FastList<FortSiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getFortId());
+			FastList<FortSiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getResidenceId());
 			for (FortSiegeSpawn spawn2 : commanders)
 			{
 				if (spawn2.getId() == spawn.getId())

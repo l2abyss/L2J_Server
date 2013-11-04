@@ -132,7 +132,7 @@ public final class SiegeGuardManager
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("Delete From castle_siege_guards Where castleId = ? And isHired = 1"))
 		{
-			ps.setInt(1, getCastle().getCastleId());
+			ps.setInt(1, getCastle().getResidenceId());
 			ps.execute();
 		}
 		catch (Exception e)
@@ -148,7 +148,7 @@ public final class SiegeGuardManager
 	{
 		try
 		{
-			int hiredCount = 0, hiredMax = MercTicketManager.getInstance().getMaxAllowedMerc(_castle.getCastleId());
+			int hiredCount = 0, hiredMax = MercTicketManager.getInstance().getMaxAllowedMerc(_castle.getResidenceId());
 			boolean isHired = (getCastle().getOwnerId() > 0) ? true : false;
 			loadSiegeGuard();
 			for (L2Spawn spawn : getSiegeGuardSpawn())
@@ -198,7 +198,7 @@ public final class SiegeGuardManager
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT * FROM castle_siege_guards Where castleId = ? And isHired = ?"))
 		{
-			ps.setInt(1, getCastle().getCastleId());
+			ps.setInt(1, getCastle().getResidenceId());
 			if (getCastle().getOwnerId() > 0)
 			{
 				ps.setInt(2, 1);
@@ -254,7 +254,7 @@ public final class SiegeGuardManager
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("Insert Into castle_siege_guards (castleId, npcId, x, y, z, heading, respawnDelay, isHired) Values (?, ?, ?, ?, ?, ?, ?, ?)"))
 		{
-			statement.setInt(1, getCastle().getCastleId());
+			statement.setInt(1, getCastle().getResidenceId());
 			statement.setInt(2, npcId);
 			statement.setInt(3, x);
 			statement.setInt(4, y);

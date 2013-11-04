@@ -173,12 +173,12 @@ public final class MercTicketManager
 				Castle castle = CastleManager.getInstance().getCastle(x, y, z);
 				if (castle != null)
 				{
-					if (mercPlaced[castle.getCastleId() - 1] >= MERCS_MAX_PER_CASTLE[castle.getCastleId() - 1])
+					if (mercPlaced[castle.getResidenceId() - 1] >= MERCS_MAX_PER_CASTLE[castle.getResidenceId() - 1])
 					{
 						continue;
 					}
-					startindex = GUARDIAN_TYPES_COUNT * (castle.getCastleId() - 1);
-					mercPlaced[castle.getCastleId() - 1] += 1;
+					startindex = GUARDIAN_TYPES_COUNT * (castle.getResidenceId() - 1);
+					mercPlaced[castle.getResidenceId() - 1] += 1;
 				}
 				
 				// find the FIRST ticket itemId with spawns the saved NPC in the saved location

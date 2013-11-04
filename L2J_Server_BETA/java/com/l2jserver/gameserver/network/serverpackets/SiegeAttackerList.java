@@ -70,7 +70,7 @@ public final class SiegeAttackerList extends L2GameServerPacket
 		
 		if (_castle != null)
 		{
-			writeD(_castle.getCastleId());
+			writeD(_castle.getResidenceId());
 			writeD(0x00); // 0
 			writeD(0x01); // 1
 			writeD(0x00); // 0

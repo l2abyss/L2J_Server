@@ -92,7 +92,7 @@ public final class CastleManager implements InstanceListManager
 	{
 		for (Castle temp : getCastles())
 		{
-			if (temp.getCastleId() == castleId)
+			if (temp.getResidenceId() == castleId)
 			{
 				return temp;
 			}
@@ -147,7 +147,7 @@ public final class CastleManager implements InstanceListManager
 		for (int i = 0; i < getCastles().size(); i++)
 		{
 			castle = getCastles().get(i);
-			if ((castle != null) && (castle.getCastleId() == castleId))
+			if ((castle != null) && (castle.getResidenceId() == castleId))
 			{
 				return i;
 			}

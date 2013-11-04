@@ -374,11 +374,11 @@ public class L2DoorInstance extends L2Character
 	
 	public boolean isEnemy()
 	{
-		if ((getCastle() != null) && (getCastle().getCastleId() > 0) && getCastle().getZone().isActive() && getIsShowHp())
+		if ((getCastle() != null) && (getCastle().getResidenceId() > 0) && getCastle().getZone().isActive() && getIsShowHp())
 		{
 			return true;
 		}
-		if ((getFort() != null) && (getFort().getFortId() > 0) && getFort().getZone().isActive() && getIsShowHp())
+		if ((getFort() != null) && (getFort().getResidenceId() > 0) && getFort().getZone().isActive() && getIsShowHp())
 		{
 			return true;
 		}
@@ -419,9 +419,9 @@ public class L2DoorInstance extends L2Character
 			return hall.isInSiege() && hall.getSiege().doorIsAutoAttackable() && hall.getSiege().checkIsAttacker(actingPlayer.getClan());
 		}
 		// Attackable only during siege by everyone (not owner)
-		boolean isCastle = ((getCastle() != null) && (getCastle().getCastleId() > 0) && getCastle().getZone().isActive());
-		boolean isFort = ((getFort() != null) && (getFort().getFortId() > 0) && getFort().getZone().isActive());
-		int activeSiegeId = (getFort() != null ? getFort().getFortId() : (getCastle() != null ? getCastle().getCastleId() : 0));
+		boolean isCastle = ((getCastle() != null) && (getCastle().getResidenceId() > 0) && getCastle().getZone().isActive());
+		boolean isFort = ((getFort() != null) && (getFort().getResidenceId() > 0) && getFort().getZone().isActive());
+		int activeSiegeId = (getFort() != null ? getFort().getResidenceId() : (getCastle() != null ? getCastle().getResidenceId() : 0));
 		
 		if (TerritoryWarManager.getInstance().isTWInProgress())
 		{
@@ -503,7 +503,7 @@ public class L2DoorInstance extends L2Character
 				continue;
 			}
 			
-			if (player.isGM() || (((getCastle() != null) && (getCastle().getCastleId() > 0)) || ((getFort() != null) && (getFort().getFortId() > 0))))
+			if (player.isGM() || (((getCastle() != null) && (getCastle().getResidenceId() > 0)) || ((getFort() != null) && (getFort().getResidenceId() > 0))))
 			{
 				player.sendPacket(targetableSu);
 			}
@@ -698,8 +698,8 @@ public class L2DoorInstance extends L2Character
 			return false;
 		}
 		
-		boolean isFort = ((getFort() != null) && (getFort().getFortId() > 0) && getFort().getSiege().getIsInProgress());
-		boolean isCastle = ((getCastle() != null) && (getCastle().getCastleId() > 0) && getCastle().getSiege().getIsInProgress());
+		boolean isFort = ((getFort() != null) && (getFort().getResidenceId() > 0) && getFort().getSiege().getIsInProgress());
+		boolean isCastle = ((getCastle() != null) && (getCastle().getResidenceId() > 0) && getCastle().getSiege().getIsInProgress());
 		boolean isHall = ((getClanHall() != null) && getClanHall().isSiegableHall() && ((SiegableHall) getClanHall()).isInSiege());
 		
 		if (isFort || isCastle || isHall)

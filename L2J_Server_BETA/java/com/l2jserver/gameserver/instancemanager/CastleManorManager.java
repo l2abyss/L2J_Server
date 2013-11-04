@@ -114,7 +114,7 @@ public final class CastleManorManager
 				FastList<CropProcure> procureNext = new FastList<>();
 				
 				// restore seed production info
-				statementProduction.setInt(1, castle.getCastleId());
+				statementProduction.setInt(1, castle.getResidenceId());
 				try (ResultSet rs = statementProduction.executeQuery())
 				{
 					statementProduction.clearParameters();
@@ -141,7 +141,7 @@ public final class CastleManorManager
 				
 				// restore procure info
 				
-				statementProcure.setInt(1, castle.getCastleId());
+				statementProcure.setInt(1, castle.getResidenceId());
 				try (ResultSet rs = statementProcure.executeQuery())
 				{
 					statementProcure.clearParameters();
@@ -350,8 +350,8 @@ public final class CastleManorManager
 			
 			if (c.getTreasury() < c.getManorCost(PERIOD_CURRENT))
 			{
-				c.setSeedProduction(getNewSeedsList(c.getCastleId()), PERIOD_NEXT);
-				c.setCropProcure(getNewCropsList(c.getCastleId()), PERIOD_NEXT);
+				c.setSeedProduction(getNewSeedsList(c.getResidenceId()), PERIOD_NEXT);
+				c.setCropProcure(getNewCropsList(c.getResidenceId()), PERIOD_NEXT);
 			}
 			else
 			{
@@ -404,8 +404,8 @@ public final class CastleManorManager
 			{
 				notFunc = true;
 				_log.info("Manor for castle " + c.getName() + " disabled, not enough adena in treasury: " + c.getTreasury() + ", " + c.getManorCost(PERIOD_NEXT) + " required.");
-				c.setSeedProduction(getNewSeedsList(c.getCastleId()), PERIOD_NEXT);
-				c.setCropProcure(getNewCropsList(c.getCastleId()), PERIOD_NEXT);
+				c.setSeedProduction(getNewSeedsList(c.getResidenceId()), PERIOD_NEXT);
+				c.setCropProcure(getNewCropsList(c.getResidenceId()), PERIOD_NEXT);
 			}
 			else
 			{
@@ -430,8 +430,8 @@ public final class CastleManorManager
 				{
 					notFunc = true;
 					_log.info("Manor for castle " + c.getName() + " disabled, not enough free slots in clan warehouse: " + (Config.WAREHOUSE_SLOTS_CLAN - cwh.getSize()) + ", but " + slots + " required.");
-					c.setSeedProduction(getNewSeedsList(c.getCastleId()), PERIOD_NEXT);
-					c.setCropProcure(getNewCropsList(c.getCastleId()), PERIOD_NEXT);
+					c.setSeedProduction(getNewSeedsList(c.getResidenceId()), PERIOD_NEXT);
+					c.setCropProcure(getNewCropsList(c.getResidenceId()), PERIOD_NEXT);
 				}
 			}
 			c.setNextPeriodApproved(true);

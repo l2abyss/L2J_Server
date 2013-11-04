@@ -40,7 +40,7 @@ public class L2FortEnvoyInstance extends L2Npc
 	{
 		String filePath;
 		final Fort fortress = getFort();
-		if (!player.isClanLeader() || (fortress.getFortId() != player.getClan().getFortId()))
+		if (!player.isClanLeader() || (fortress.getResidenceId() != player.getClan().getFortId()))
 		{
 			filePath = "data/html/fortress/ambassador-not-leader.htm";
 		}
@@ -88,7 +88,7 @@ public class L2FortEnvoyInstance extends L2Npc
 			else
 			{
 				int choice = Util.isDigit(param) ? Integer.parseInt(param) : 0;
-				fortress.setFortState(choice, castle.getCastleId());
+				fortress.setFortState(choice, castle.getResidenceId());
 				filePath = (choice == 1) ? "data/html/fortress/ambassador-independent.htm" : "data/html/fortress/ambassador-signed.htm";
 			}
 			

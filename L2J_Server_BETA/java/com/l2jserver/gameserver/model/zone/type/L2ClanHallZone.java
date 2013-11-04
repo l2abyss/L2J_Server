@@ -21,10 +21,8 @@ package com.l2jserver.gameserver.model.zone.type;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.ClanHall;
 import com.l2jserver.gameserver.model.entity.clanhall.AuctionableHall;
-import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.serverpackets.AgitDecoInfo;
 
@@ -32,10 +30,8 @@ import com.l2jserver.gameserver.network.serverpackets.AgitDecoInfo;
  * A clan hall zone
  * @author durgus
  */
-public class L2ClanHallZone extends L2ZoneRespawn
+public class L2ClanHallZone extends L2ResidenceZone
 {
-	private int _clanHallId;
-	
 	public L2ClanHallZone(int id)
 	{
 		super(id);
@@ -46,12 +42,12 @@ public class L2ClanHallZone extends L2ZoneRespawn
 	{
 		if (name.equals("clanHallId"))
 		{
-			_clanHallId = Integer.parseInt(value);
+			setResidenceId(Integer.parseInt(value));
 			// Register self to the correct clan hall
-			ClanHall hall = ClanHallManager.getInstance().getClanHallById(_clanHallId);
+			ClanHall hall = ClanHallManager.getInstance().getClanHallById(getResidenceId());
 			if (hall == null)
 			{
-				_log.warning("L2ClanHallZone: Clan hall with id " + _clanHallId + " does not exist!");
+				_log.warning("L2ClanHallZone: Clan hall with id " + getResidenceId() + " does not exist!");
 			}
 			else
 			{
@@ -72,7 +68,7 @@ public class L2ClanHallZone extends L2ZoneRespawn
 			// Set as in clan hall
 			character.setInsideZone(ZoneId.CLAN_HALL, true);
 			
-			AuctionableHall clanHall = ClanHallManager.getInstance().getAuctionableHallById(_clanHallId);
+			AuctionableHall clanHall = ClanHallManager.getInstance().getAuctionableHallById(getResidenceId());
 			if (clanHall == null)
 			{
 				return;
@@ -94,39 +90,8 @@ public class L2ClanHallZone extends L2ZoneRespawn
 		}
 	}
 	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
-	
-	/**
-	 * Removes all foreigners from the clan hall
-	 * @param owningClanId
-	 */
 	public void banishForeigners(int owningClanId)
 	{
-		TeleportWhereType type = TeleportWhereType.CLANHALL_BANISH;
-		for (L2PcInstance temp : getPlayersInside())
-		{
-			if ((temp.getClanId() == owningClanId) && (owningClanId != 0))
-			{
-				continue;
-			}
-			
-			temp.teleToLocation(type);
-		}
-	}
-	
-	/**
-	 * @return the clanHallId
-	 */
-	public int getClanHallId()
-	{
-		return _clanHallId;
+		super.banishForeigners(owningClanId, TeleportWhereType.CLANHALL_BANISH);
 	}
 }

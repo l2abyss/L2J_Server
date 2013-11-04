@@ -53,7 +53,7 @@ public class ConditionPlayerCanPossessHolything extends Condition
 		
 		Castle castle = CastleManager.getInstance().getCastle(env.getPlayer());
 		SystemMessage sm;
-		if ((castle == null) || (castle.getCastleId() <= 0) || !castle.getSiege().getIsInProgress() || (castle.getSiege().getAttackerClan(env.getPlayer().getClan()) == null))
+		if ((castle == null) || (castle.getResidenceId() <= 0) || !castle.getSiege().getIsInProgress() || (castle.getSiege().getAttackerClan(env.getPlayer().getClan()) == null))
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addSkillName(env.getSkill());

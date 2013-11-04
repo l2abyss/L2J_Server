@@ -70,7 +70,7 @@ public class SiegeInfo extends L2GameServerPacket
 		writeC(0xc9);
 		if (_castle != null)
 		{
-			writeD(_castle.getCastleId());
+			writeD(_castle.getResidenceId());
 			
 			final int ownerId = _castle.getOwnerId();
 			

@@ -222,7 +222,7 @@ public class L2SiegeZone extends L2ZoneType
 				Fort fort = FortManager.getInstance().getFortById(getSettings().getSiegeableId());
 				if (fort != null)
 				{
-					FortSiegeManager.getInstance().dropCombatFlag(activeChar, fort.getFortId());
+					FortSiegeManager.getInstance().dropCombatFlag(activeChar, fort.getResidenceId());
 				}
 				else
 				{

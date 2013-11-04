@@ -914,7 +914,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		
 		for (Castle castle : CastleManager.getInstance().getCastles())
 		{
-			if (SiegeManager.getInstance().checkIsRegistered(clan, castle.getCastleId()))
+			if (SiegeManager.getInstance().checkIsRegistered(clan, castle.getResidenceId()))
 			{
 				player.sendPacket(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_SIEGE);
 				return;
@@ -922,7 +922,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		}
 		for (Fort fort : FortManager.getInstance().getForts())
 		{
-			if (FortSiegeManager.getInstance().checkIsRegistered(clan, fort.getFortId()))
+			if (FortSiegeManager.getInstance().checkIsRegistered(clan, fort.getResidenceId()))
 			{
 				player.sendPacket(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_SIEGE);
 				return;

@@ -678,7 +678,7 @@ public final class L2AuctioneerInstance extends L2Npc
 	
 	private int validateCondition(L2PcInstance player)
 	{
-		if ((getCastle() != null) && (getCastle().getCastleId() > 0))
+		if ((getCastle() != null) && (getCastle().getResidenceId() > 0))
 		{
 			if (getCastle().getSiege().getIsInProgress())
 			{

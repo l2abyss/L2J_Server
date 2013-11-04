@@ -43,7 +43,7 @@ public class ExShowCastleInfo extends L2GameServerPacket
 		writeD(castles.size());
 		for (Castle castle : castles)
 		{
-			writeD(castle.getCastleId());
+			writeD(castle.getResidenceId());
 			if (castle.getOwnerId() > 0)
 			{
 				if (ClanTable.getInstance().getClan(castle.getOwnerId()) != null)

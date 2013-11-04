@@ -53,7 +53,7 @@ public class DefenderKnownList extends AttackableKnownList
 			{
 				player = object.getActingPlayer();
 			}
-			int activeSiegeId = (fortress != null ? fortress.getFortId() : (castle != null ? castle.getCastleId() : hall != null ? hall.getId() : 0));
+			int activeSiegeId = (fortress != null ? fortress.getResidenceId() : (castle != null ? castle.getResidenceId() : hall != null ? hall.getId() : 0));
 			
 			// Check if player is an enemy of this defender npc
 			if ((player != null) && (((player.getSiegeState() == 2) && !player.isRegisteredOnThisSiegeField(activeSiegeId)) || ((player.getSiegeState() == 1) && !TerritoryWarManager.getInstance().isAllyField(player, activeSiegeId)) || (player.getSiegeState() == 0)))

@@ -844,8 +844,8 @@ public class L2Npc extends L2Character
 	{
 		if (player.isClanLeader())
 		{
-			final int castleId = getCastle() != null ? getCastle().getCastleId() : -1;
-			final int fortId = getFort() != null ? getFort().getFortId() : -1;
+			final int castleId = getCastle() != null ? getCastle().getResidenceId() : -1;
+			final int fortId = getFort() != null ? getFort().getResidenceId() : -1;
 			return (player.getClan().getCastleId() == castleId) || (player.getClan().getFortId() == fortId);
 		}
 		return false;
@@ -884,7 +884,7 @@ public class L2Npc extends L2Character
 			Fort fort = FortManager.getInstance().getFort(getX(), getY(), getZ());
 			if (fort != null)
 			{
-				_fortIndex = FortManager.getInstance().getFortIndex(fort.getFortId());
+				_fortIndex = FortManager.getInstance().getFortIndex(fort.getResidenceId());
 			}
 			
 			if (_fortIndex < 0)

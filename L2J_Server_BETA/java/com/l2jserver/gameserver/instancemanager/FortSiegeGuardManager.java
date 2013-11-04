@@ -54,7 +54,7 @@ public final class FortSiegeGuardManager
 	{
 		try
 		{
-			final FastList<L2Spawn> monsterList = getSiegeGuardSpawn().get(getFort().getFortId());
+			final FastList<L2Spawn> monsterList = getSiegeGuardSpawn().get(getFort().getResidenceId());
 			if (monsterList != null)
 			{
 				for (L2Spawn spawnDat : monsterList)
@@ -84,7 +84,7 @@ public final class FortSiegeGuardManager
 	{
 		try
 		{
-			final FastList<L2Spawn> monsterList = getSiegeGuardSpawn().get(getFort().getFortId());
+			final FastList<L2Spawn> monsterList = getSiegeGuardSpawn().get(getFort().getResidenceId());
 			
 			if (monsterList != null)
 			{
@@ -113,7 +113,7 @@ public final class FortSiegeGuardManager
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT * FROM fort_siege_guards Where fortId = ? "))
 		{
-			ps.setInt(1, getFort().getFortId());
+			ps.setInt(1, getFort().getResidenceId());
 			try (ResultSet rs = ps.executeQuery())
 			{
 				L2Spawn spawn1;

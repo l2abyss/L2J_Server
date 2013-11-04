@@ -995,7 +995,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 	
 	protected int validateCondition(L2PcInstance player)
 	{
-		if ((getFort() != null) && (getFort().getFortId() > 0))
+		if ((getFort() != null) && (getFort().getResidenceId() > 0))
 		{
 			if (player.getClan() != null)
 			{

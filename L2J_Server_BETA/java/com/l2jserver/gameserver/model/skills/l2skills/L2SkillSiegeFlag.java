@@ -184,7 +184,7 @@ public class L2SkillSiegeFlag extends L2Skill
 		String text = "";
 		L2PcInstance player = activeChar.getActingPlayer();
 		
-		if ((castle == null) || (castle.getCastleId() <= 0))
+		if ((castle == null) || (castle.getResidenceId() <= 0))
 		{
 			text = "You must be on castle ground to place a flag.";
 		}
@@ -236,7 +236,7 @@ public class L2SkillSiegeFlag extends L2Skill
 		String text = "";
 		L2PcInstance player = activeChar.getActingPlayer();
 		
-		if ((fort == null) || (fort.getFortId() <= 0))
+		if ((fort == null) || (fort.getResidenceId() <= 0))
 		{
 			text = "You must be on fort ground to place a flag.";
 		}
@@ -349,7 +349,7 @@ public class L2SkillSiegeFlag extends L2Skill
 		String text = "";
 		L2PcInstance player = activeChar.getActingPlayer();
 		
-		if (((fort != null) && (fort.getFortId() == 0)) || ((castle != null) && (castle.getCastleId() == 0)))
+		if (((fort != null) && (fort.getResidenceId() == 0)) || ((castle != null) && (castle.getResidenceId() == 0)))
 		{
 			text = "You must be on fort or castle ground to construct an outpost or flag.";
 		}

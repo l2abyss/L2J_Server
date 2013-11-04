@@ -5514,7 +5514,7 @@ public final class L2PcInstance extends L2Playable
 					Fort fort = FortManager.getInstance().getFort(this);
 					if (fort != null)
 					{
-						FortSiegeManager.getInstance().dropCombatFlag(this, fort.getFortId());
+						FortSiegeManager.getInstance().dropCombatFlag(this, fort.getResidenceId());
 					}
 					else
 					{
@@ -8902,14 +8902,14 @@ public final class L2PcInstance extends L2Playable
 		// skills can be used on Walls and Doors only during siege
 		if (target.isDoor())
 		{
-			if ((((L2DoorInstance) target).getCastle() != null) && (((L2DoorInstance) target).getCastle().getCastleId() > 0)) // If its castle door
+			if ((((L2DoorInstance) target).getCastle() != null) && (((L2DoorInstance) target).getCastle().getResidenceId() > 0)) // If its castle door
 			{
 				if (!((L2DoorInstance) target).getCastle().getSiege().getIsInProgress())
 				{
 					return false;
 				}
 			}
-			else if ((((L2DoorInstance) target).getFort() != null) && (((L2DoorInstance) target).getFort().getFortId() > 0) && !((L2DoorInstance) target).getIsShowHp()) // If its fort door
+			else if ((((L2DoorInstance) target).getFort() != null) && (((L2DoorInstance) target).getFort().getResidenceId() > 0) && !((L2DoorInstance) target).getIsShowHp()) // If its fort door
 			{
 				if (!((L2DoorInstance) target).getFort().getSiege().getIsInProgress())
 				{
@@ -9195,7 +9195,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		SystemMessage sm;
 		
-		if ((fort == null) || (fort.getFortId() <= 0))
+		if ((fort == null) || (fort.getResidenceId() <= 0))
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addSkillName(skill);
@@ -11564,7 +11564,7 @@ public final class L2PcInstance extends L2Playable
 				Fort fort = FortManager.getInstance().getFort(this);
 				if (fort != null)
 				{
-					FortSiegeManager.getInstance().dropCombatFlag(this, fort.getFortId());
+					FortSiegeManager.getInstance().dropCombatFlag(this, fort.getResidenceId());
 				}
 				else
 				{

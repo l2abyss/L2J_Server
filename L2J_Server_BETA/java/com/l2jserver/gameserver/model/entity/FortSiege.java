@@ -259,7 +259,7 @@ public class FortSiege implements Siegable
 		{
 			_isInProgress = false; // Flag so that siege instance can be started
 			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THE_FORTRESS_BATTLE_OF_S1_HAS_FINISHED);
-			sm.addCastleId(getFort().getFortId());
+			sm.addCastleId(getFort().getResidenceId());
 			announceToPlayer(sm);
 			
 			removeFlags(); // Removes all flags. Note: Remove flag before teleporting players
@@ -353,7 +353,7 @@ public class FortSiege implements Siegable
 			_siegeEnd = ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleEndSiegeTask(), FortSiegeManager.getInstance().getSiegeLength() * 60 * 1000L); // Prepare auto end task
 			
 			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THE_FORTRESS_BATTLE_S1_HAS_BEGUN);
-			sm.addCastleId(getFort().getFortId());
+			sm.addCastleId(getFort().getResidenceId());
 			announceToPlayer(sm);
 			saveFortSiege();
 			
@@ -423,7 +423,7 @@ public class FortSiege implements Siegable
 				else
 				{
 					member.setSiegeState((byte) 1);
-					member.setSiegeSide(getFort().getFortId());
+					member.setSiegeSide(getFort().getResidenceId());
 					if (checkIfInZone(member))
 					{
 						member.setIsInSiege(true);
@@ -453,7 +453,7 @@ public class FortSiege implements Siegable
 				else
 				{
 					member.setSiegeState((byte) 2);
-					member.setSiegeSide(getFort().getFortId());
+					member.setSiegeSide(getFort().getResidenceId());
 					if (checkIfInZone(member))
 					{
 						member.setIsInSiege(true);
@@ -516,7 +516,7 @@ public class FortSiege implements Siegable
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("DELETE FROM fortsiege_clans WHERE fort_id=?"))
 		{
-			ps.setInt(1, getFort().getFortId());
+			ps.setInt(1, getFort().getResidenceId());
 			ps.execute();
 			
 			if (getFort().getOwnerClan() != null)
@@ -632,7 +632,7 @@ public class FortSiege implements Siegable
 			L2Spawn spawn = instance.getSpawn();
 			if (spawn != null)
 			{
-				FastList<FortSiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getFortId());
+				FastList<FortSiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getResidenceId());
 				for (FortSiegeSpawn spawn2 : commanders)
 				{
 					if (spawn2.getId() == spawn.getId())
@@ -663,7 +663,7 @@ public class FortSiege implements Siegable
 				if (_commanders.isEmpty())
 				{
 					// spawn fort flags
-					spawnFlag(getFort().getFortId());
+					spawnFlag(getFort().getResidenceId());
 					// cancel door/commanders respawn
 					if (_siegeRestore != null)
 					{
@@ -695,7 +695,7 @@ public class FortSiege implements Siegable
 			}
 			else
 			{
-				_log.warning("FortSiege.killedCommander(): killed commander, but commander not registered for fortress. NpcId: " + instance.getId() + " FortId: " + getFort().getFortId());
+				_log.warning("FortSiege.killedCommander(): killed commander, but commander not registered for fortress. NpcId: " + instance.getId() + " FortId: " + getFort().getResidenceId());
 			}
 		}
 	}
@@ -763,7 +763,7 @@ public class FortSiege implements Siegable
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(query))
 		{
-			statement.setInt(1, getFort().getFortId());
+			statement.setInt(1, getFort().getResidenceId());
 			if (clanId != 0)
 			{
 				statement.setInt(2, clanId);
@@ -802,7 +802,7 @@ public class FortSiege implements Siegable
 	 */
 	public void removeSiegeClan(L2Clan clan)
 	{
-		if ((clan == null) || (clan.getFortId() == getFort().getFortId()) || !FortSiegeManager.getInstance().checkIsRegistered(clan, getFort().getFortId()))
+		if ((clan == null) || (clan.getFortId() == getFort().getResidenceId()) || !FortSiegeManager.getInstance().checkIsRegistered(clan, getFort().getResidenceId()))
 		{
 			return;
 		}
@@ -1047,7 +1047,7 @@ public class FortSiege implements Siegable
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT clan_id FROM fortsiege_clans WHERE fort_id=?"))
 		{
-			ps.setInt(1, getFort().getFortId());
+			ps.setInt(1, getFort().getResidenceId());
 			try (ResultSet rs = ps.executeQuery())
 			{
 				while (rs.next())
@@ -1109,7 +1109,7 @@ public class FortSiege implements Siegable
 			PreparedStatement ps = con.prepareStatement("UPDATE fort SET siegeDate = ? WHERE id = ?"))
 		{
 			ps.setLong(1, getSiegeDate().getTimeInMillis());
-			ps.setInt(2, getFort().getFortId());
+			ps.setInt(2, getFort().getResidenceId());
 			ps.execute();
 		}
 		catch (Exception e)
@@ -1134,7 +1134,7 @@ public class FortSiege implements Siegable
 			PreparedStatement statement = con.prepareStatement("INSERT INTO fortsiege_clans (clan_id,fort_id) values (?,?)"))
 		{
 			statement.setInt(1, clan.getId());
-			statement.setInt(2, getFort().getFortId());
+			statement.setInt(2, getFort().getResidenceId());
 			statement.execute();
 			
 			addAttacker(clan.getId());
@@ -1154,7 +1154,7 @@ public class FortSiege implements Siegable
 			_commanders.clear();
 			L2Spawn spawnDat;
 			L2NpcTemplate template1;
-			for (FortSiegeSpawn _sp : FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getFortId()))
+			for (FortSiegeSpawn _sp : FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getResidenceId()))
 			{
 				template1 = NpcTable.getInstance().getTemplate(_sp.getId());
 				if (template1 != null)
@@ -1193,12 +1193,12 @@ public class FortSiege implements Siegable
 	
 	private void unSpawnFlags()
 	{
-		if (FortSiegeManager.getInstance().getFlagList(getFort().getFortId()) == null)
+		if (FortSiegeManager.getInstance().getFlagList(getFort().getResidenceId()) == null)
 		{
 			return;
 		}
 		
-		for (CombatFlag cf : FortSiegeManager.getInstance().getFlagList(getFort().getFortId()))
+		for (CombatFlag cf : FortSiegeManager.getInstance().getFlagList(getFort().getResidenceId()))
 		{
 			cf.unSpawnMe();
 		}

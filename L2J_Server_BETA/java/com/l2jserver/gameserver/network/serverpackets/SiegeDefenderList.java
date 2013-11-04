@@ -59,7 +59,7 @@ public final class SiegeDefenderList extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0xcb);
-		writeD(_castle.getCastleId());
+		writeD(_castle.getResidenceId());
 		writeD(0x00); // 0
 		writeD(0x01); // 1
 		writeD(0x00); // 0

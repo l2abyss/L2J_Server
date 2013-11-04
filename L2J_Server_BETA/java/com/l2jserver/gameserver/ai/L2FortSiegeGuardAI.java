@@ -138,7 +138,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 			{
 				player = ((L2Summon) target).getOwner();
 			}
-			if ((player == null) || ((player.getClan() != null) && (player.getClan().getFortId() == ((L2Npc) _actor).getFort().getFortId())))
+			if ((player == null) || ((player.getClan() != null) && (player.getClan().getFortId() == ((L2Npc) _actor).getFort().getResidenceId())))
 			{
 				return false;
 			}
