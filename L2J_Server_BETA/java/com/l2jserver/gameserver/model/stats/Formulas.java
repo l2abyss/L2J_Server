@@ -1297,11 +1297,6 @@ public final class Formulas
 		return d > 0;
 	}
 	
-	public static double calcSkillStatMod(L2Skill skill, L2Character target)
-	{
-		return skill.getSaveVs() != null ? skill.getSaveVs().calcBonus(target) : 1;
-	}
-	
 	public static double calcLvlBonusMod(L2Character attacker, L2Character target, L2Skill skill)
 	{
 		int attackerLvl = skill.getMagicLevel() > 0 ? skill.getMagicLevel() : attacker.getLevel();
@@ -1321,7 +1316,7 @@ public final class Formulas
 		final L2Character target = env.getTarget();
 		final L2Skill skill = env.getSkill();
 		final int activateRate = skill.getActivateRate();
-		if ((activateRate == -1) || (skill.getSaveVs() == BaseStats.NULL))
+		if ((activateRate == -1) || (skill.getBasicProperty() == BaseStats.NONE))
 		{
 			return true;
 		}
@@ -1333,7 +1328,7 @@ public final class Formulas
 		}
 		
 		int targetBaseStat = 0;
-		switch (skill.getSaveVs())
+		switch (skill.getBasicProperty())
 		{
 			case STR:
 				targetBaseStat = target.getSTR();
@@ -1432,7 +1427,7 @@ public final class Formulas
 		
 		// Calculate BaseRate.
 		double baseRate = skill.getPower();
-		double statMod = calcSkillStatMod(skill, target);
+		double statMod = skill.getBasicProperty().calcBonus(target);
 		double rate = (baseRate / statMod);
 		
 		// Lvl Bonus Modifier.
@@ -1489,7 +1484,7 @@ public final class Formulas
 		
 		// Calculate BaseRate.
 		double baseRate = skill.getPower();
-		double statMod = calcSkillStatMod(skill, target);
+		double statMod = skill.getBasicProperty().calcBonus(target);
 		double rate = (baseRate / statMod);
 		
 		// Resist Modifier.
@@ -2078,7 +2073,7 @@ public final class Formulas
 		// Debuffs Duration Affected by Resistances.
 		if ((caster != null) && (target != null) && skill.isDebuff())
 		{
-			double statMod = calcSkillStatMod(skill, target);
+			double statMod = skill.getBasicProperty().calcBonus(target);
 			double resMod = calcGeneralTraitBonus(caster, target, skill.getTraitType(), false);
 			double lvlBonusMod = calcLvlBonusMod(caster, target, skill);
 			double elementMod = calcAttributeBonus(caster, target, skill);

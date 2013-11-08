@@ -43,7 +43,7 @@ public enum BaseStats
 	WIT(new WIT()),
 	CON(new CON()),
 	MEN(new MEN()),
-	NULL(new NULL());
+	NONE(new NONE());
 	
 	private static final Logger _log = Logger.getLogger(BaseStats.class.getName());
 	
@@ -150,7 +150,7 @@ public enum BaseStats
 		}
 	}
 	
-	protected static final class NULL implements BaseStat
+	protected static final class NONE implements BaseStat
 	{
 		@Override
 		public final double calcBonus(L2Character actor)

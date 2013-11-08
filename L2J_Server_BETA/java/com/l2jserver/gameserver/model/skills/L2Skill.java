@@ -162,7 +162,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	private final byte _element;
 	private final int _elementPower;
 	
-	private final BaseStats _saveVs;
+	private final BaseStats _basicProperty;
 	
 	private final boolean _overhit;
 	
@@ -326,7 +326,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		_element = set.getByte("element", (byte) -1);
 		_elementPower = set.getInt("elementPower", 0);
 		
-		_saveVs = set.getEnum("saveVs", BaseStats.class, BaseStats.NULL);
+		_basicProperty = set.getEnum("basicProperty", BaseStats.class, BaseStats.NONE);
 		
 		_overhit = set.getBoolean("overHit", false);
 		_isSuicideAttack = set.getBoolean("isSuicideAttack", false);
@@ -624,12 +624,12 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	}
 	
 	/**
-	 * Return skill saveVs base stat (STR, INT ...).
+	 * Return skill basicProperty base stat (STR, INT ...).
 	 * @return
 	 */
-	public final BaseStats getSaveVs()
+	public final BaseStats getBasicProperty()
 	{
-		return _saveVs;
+		return _basicProperty;
 	}
 	
 	/**
