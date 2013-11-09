@@ -215,7 +215,26 @@ public class Quest extends ManagedScript implements IIdentifiable
 	 */
 	public QuestState newQuestState(L2PcInstance player)
 	{
-		return new QuestState(this, player, getInitialState());
+		return new QuestState(this, player, _initialState);
+	}
+	
+	/**
+	 * Get the specified player's {@link QuestState} object for this quest.<br>
+	 * If the player does not have it and initIfNode is {@code true},<br>
+	 * create a new QuestState object and return it, otherwise return {@code null}.
+	 * @param player the player whose QuestState to get
+	 * @param initIfNone if true and the player does not have a QuestState for this quest,<br>
+	 *            create a new QuestState
+	 * @return the QuestState object for this quest or null if it doesn't exist
+	 */
+	public QuestState getQuestState(L2PcInstance player, boolean initIfNone)
+	{
+		final QuestState qs = player.getQuestState(_name);
+		if ((qs != null) || !initIfNone)
+		{
+			return qs;
+		}
+		return newQuestState(player);
 	}
 	
 	/**
