@@ -43,6 +43,7 @@ public abstract class AbstractResidence implements INamable
 	{
 		_residenceId = residenceId;
 		load();
+		initResidentialSkills();
 	}
 	
 	protected abstract void load();
