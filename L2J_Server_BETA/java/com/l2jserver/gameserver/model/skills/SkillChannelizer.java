@@ -36,6 +36,7 @@ import com.l2jserver.gameserver.network.serverpackets.MagicSkillLaunched;
 import com.l2jserver.gameserver.util.Util;
 
 /**
+ * Skill Channelizer implementation.
  * @author UnAfraid
  */
 public class SkillChannelizer implements Runnable
@@ -209,7 +210,7 @@ public class SkillChannelizer implements Runnable
 					if (_channelizer.isPlayable() && _channelizer.getActingPlayer().canAttackCharacter(target))
 					{
 						// Apply channeling skill effects on the target.
-						_skill.applyEffects(_channelizer, _channelizer);
+						_skill.applyEffects(_channelizer, target);
 						// Update the pvp flag of the caster.
 						_channelizer.getActingPlayer().updatePvPStatus(target);
 					}
@@ -221,7 +222,7 @@ public class SkillChannelizer implements Runnable
 				else
 				{
 					// Apply channeling skill effects on the target.
-					_skill.applyEffects(_channelizer, _channelizer);
+					_skill.applyEffects(_channelizer, target);
 				}
 			}
 			
