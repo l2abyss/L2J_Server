@@ -40,8 +40,6 @@ public class L2SkillSummon extends L2Skill
 	// How much time is lost per second of activity (fighting)
 	private final int _summonTimeLostActive;
 	
-	// item consume time in milliseconds
-	private final int _itemConsumeTime;
 	// item consume count over time
 	private final int _itemConsumeOT;
 	// item consume id over time
@@ -64,7 +62,6 @@ public class L2SkillSummon extends L2Skill
 		
 		_itemConsumeOT = set.getInt("itemConsumeCountOT", 0);
 		_itemConsumeIdOT = set.getInt("itemConsumeIdOT", 0);
-		_itemConsumeTime = set.getInt("itemConsumeTime", 0);
 		_itemConsumeSteps = set.getInt("itemConsumeSteps", 0);
 		
 		_inheritElementals = set.getBoolean("inheritElementals", false);
@@ -162,14 +159,6 @@ public class L2SkillSummon extends L2Skill
 	public final int getItemConsumeSteps()
 	{
 		return _itemConsumeSteps;
-	}
-	
-	/**
-	 * @return Returns the itemConsume time in milliseconds.
-	 */
-	public final int getItemConsumeTime()
-	{
-		return _itemConsumeTime;
 	}
 	
 	public final float getExpPenalty()

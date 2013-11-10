@@ -1016,10 +1016,10 @@ public abstract class L2Summon extends L2Playable
 	
 	/**
 	 * Verify if the summon can perform an attack.
-	 * @param ctrlPressed
-	 * @return
+	 * @param ctrlPressed {@code true} if Ctrl key is pressed
+	 * @return {@code true} if the summon can attack, {@code false} otherwise
 	 */
-	public boolean canAttack(boolean ctrlPressed)
+	public final boolean canAttack(boolean ctrlPressed)
 	{
 		if (getOwner() == null)
 		{
@@ -1106,8 +1106,8 @@ public abstract class L2Summon extends L2Playable
 		}
 		
 		// TODO: Unhardcode it.
-		// Siege golems AI doesn't support attacking other than doors at the moment.
-		if ((!target.isDoor() && (npcId == L2SiegeSummonInstance.SWOOP_CANNON_ID)) || (npcId == L2SiegeSummonInstance.SIEGE_GOLEM_ID))
+		// Siege golems AI doesn't support attacking other than doors/walls at the moment.
+		if (!target.isDoor() && ((npcId == L2SiegeSummonInstance.SWOOP_CANNON_ID) || (npcId == L2SiegeSummonInstance.SIEGE_GOLEM_ID)))
 		{
 			return false;
 		}
