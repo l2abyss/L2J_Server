@@ -499,13 +499,13 @@ public final class RequestActionUse extends L2GameClientPacket
 				useSkill(5140, false);
 				break;
 			case 1039: // Swoop Cannon - Cannon Fodder
-				if ((target != null) && !target.isDoor())
+				if ((target != null) && target.isDoor())
 				{
 					useSkill(5110, false);
 				}
 				break;
 			case 1040: // Swoop Cannon - Big Bang
-				if ((target != null) && !target.isDoor())
+				if ((target != null) && target.isDoor())
 				{
 					useSkill(5111, false);
 				}
