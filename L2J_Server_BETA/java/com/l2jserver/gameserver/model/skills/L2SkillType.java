@@ -31,8 +31,6 @@ import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
  */
 public enum L2SkillType
 {
-	// reco
-	GIVE_RECO,
 	// Fishing
 	FISHING,
 	PUMPING,

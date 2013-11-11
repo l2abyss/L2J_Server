@@ -115,6 +115,7 @@ import com.l2jserver.gameserver.model.conditions.ConditionUsingItemType;
 import com.l2jserver.gameserver.model.conditions.ConditionUsingSkill;
 import com.l2jserver.gameserver.model.conditions.ConditionWithSkill;
 import com.l2jserver.gameserver.model.effects.AbstractEffect;
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.type.L2ArmorType;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
@@ -311,6 +312,11 @@ public abstract class DocumentBase
 		
 		final StatsSet parameters = parseParameters(n.getFirstChild(), template);
 		final Condition applayCond = parseCondition(n.getFirstChild(), template);
+		
+		if (template instanceof IIdentifiable)
+		{
+			set.set("id", ((IIdentifiable) template).getId());
+		}
 		
 		final AbstractEffect effect = AbstractEffect.createEffect(attachCond, applayCond, set, parameters);
 		parseTemplate(n, effect);
