@@ -246,6 +246,7 @@ public final class Fort extends AbstractResidence
 	public Fort(int fortId)
 	{
 		super(fortId);
+		load();
 		loadFlagPoles();
 		_function = new FastMap<>();
 		if (getOwnerClan() != null)

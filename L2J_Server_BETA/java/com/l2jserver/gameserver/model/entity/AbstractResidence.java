@@ -42,7 +42,6 @@ public abstract class AbstractResidence implements INamable
 	public AbstractResidence(int residenceId)
 	{
 		_residenceId = residenceId;
-		load();
 		initResidentialSkills();
 	}
 	

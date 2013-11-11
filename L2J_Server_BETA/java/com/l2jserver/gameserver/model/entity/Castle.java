@@ -254,6 +254,7 @@ public final class Castle extends AbstractResidence
 	public Castle(int castleId)
 	{
 		super(castleId);
+		load();
 		/*
 		 * if (getResidenceId() == 7 || castleId == 9) // Goddard and Schuttgart _nbArtifact = 2;
 		 */
