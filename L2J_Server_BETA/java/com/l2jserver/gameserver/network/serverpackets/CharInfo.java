@@ -172,7 +172,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_activeChar.getPvpFlag()); // pvp flag
 			writeD(_activeChar.getKarma()); // karma ??
 			
-			writeD(gmSeeInvis ? (_activeChar.getAbnormalEffect() | AbnormalVisualEffect.STEALTH.getMask()) : _activeChar.getAbnormalEffect()); // C2
+			writeD(gmSeeInvis ? (_activeChar.getAbnormaVisualEffect() | AbnormalVisualEffect.STEALTH.getMask()) : _activeChar.getAbnormaVisualEffect()); // C2
 			
 			writeD(_activeChar.getClanId()); // clan id
 			writeD(_activeChar.getClanCrestId()); // crest id
@@ -193,7 +193,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(0x00); // CT1.5 Pet form and skills, Color effect
 			writeC(template.getAIDataStatic().isTargetable() ? 0x01 : 0x00); // targetable
 			writeC(template.getAIDataStatic().showName() ? 0x01 : 0x00); // show name
-			writeC(_activeChar.getSpecialEffect());
+			writeC(_activeChar.getAbnormalVisualEffectSpecial());
 			writeD(0x00);
 		}
 		else
@@ -284,7 +284,7 @@ public class CharInfo extends L2GameServerPacket
 			
 			writeC(_activeChar.isInPartyMatchRoom() ? 1 : 0);
 			
-			writeD(gmSeeInvis ? (_activeChar.getAbnormalEffect() | AbnormalVisualEffect.STEALTH.getMask()) : _activeChar.getAbnormalEffect());
+			writeD(gmSeeInvis ? (_activeChar.getAbnormaVisualEffect() | AbnormalVisualEffect.STEALTH.getMask()) : _activeChar.getAbnormaVisualEffect());
 			
 			writeC(_activeChar.isFlyingMounted() ? 2 : 0);
 			
@@ -326,7 +326,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(0x01);
 			
 			// T2.3
-			writeD(_activeChar.getSpecialEffect());
+			writeD(_activeChar.getAbnormalVisualEffectSpecial());
 		}
 	}
 	

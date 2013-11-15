@@ -40,6 +40,6 @@ public class ConditionTargetAbnormal extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return (env.getTarget().getAbnormalEffect() & _abnormalId) != 0;
+		return (env.getTarget().getAbnormaVisualEffect() & _abnormalId) != 0;
 	}
 }

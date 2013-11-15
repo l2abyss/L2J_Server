@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.model.ChanceCondition;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.conditions.Condition;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
-import com.l2jserver.gameserver.model.skills.AbnormalVisualEffect;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
@@ -50,10 +49,6 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 	// Conditions
 	private final Condition _attachCond;
 	// private final Condition _applyCond; // TODO: Use or cleanup.
-	// Abnormal visual effect
-	private final AbnormalVisualEffect _abnormalEffect;
-	private final AbnormalVisualEffect[] _specialEffect;
-	private final AbnormalVisualEffect _eventEffect;
 	private List<FuncTemplate> _funcTemplates;
 	private final String _name;
 	private final double _val;
@@ -80,14 +75,6 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 		_val = set.getDouble("val", 0);
 		_isSelfEffect = set.getInt("self", 0) == 1;
 		_ticks = set.getInt("ticks", 0);
-		_abnormalEffect = AbnormalVisualEffect.getByName(set.getString("abnormalVisualEffect", ""));
-		final String[] specialEffects = set.getString("special", "").split(",");
-		_specialEffect = new AbnormalVisualEffect[specialEffects.length];
-		for (int i = 0; i < specialEffects.length; i++)
-		{
-			_specialEffect[i] = AbnormalVisualEffect.getByName(specialEffects[i]);
-		}
-		_eventEffect = AbnormalVisualEffect.getByName(set.getString("event", ""));
 		_triggeredId = set.getInt("triggeredId", 0);
 		_triggeredLevel = set.getInt("triggeredLevel", 1);
 		_chanceCondition = ChanceCondition.parse(set.getString("chanceType", null), set.getInt("activationChance", -1), set.getInt("activationMinDamage", -1), set.getString("activationElements", null), set.getString("activationSkills", null), set.getBoolean("pvpChanceOnly", false));
@@ -184,21 +171,6 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 	public int getTicks()
 	{
 		return _ticks;
-	}
-	
-	public AbnormalVisualEffect getAbnormalEffect()
-	{
-		return _abnormalEffect;
-	}
-	
-	public AbnormalVisualEffect[] getSpecialEffect()
-	{
-		return _specialEffect;
-	}
-	
-	public AbnormalVisualEffect getEventEffect()
-	{
-		return _eventEffect;
 	}
 	
 	public List<FuncTemplate> getFuncTemplates()

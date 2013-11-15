@@ -82,7 +82,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	public static final int SKILL_CARAVANS_SECRET_MEDICINE = 2341;
 	public static final int SKILL_NPC_RACE = 4416;
 	
-	/** Skill Id. */
+	/** Skill ID. */
 	private final int _id;
 	/** Skill level. */
 	private final int _level;
@@ -120,6 +120,12 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	private final AbnormalType _abnormalType;
 	/** Abnormal time: global effect duration time. */
 	private final int _abnormalTime;
+	/** Abnormal visual effect: the visual effect displayed ingame. */
+	private AbnormalVisualEffect[] _abnormalVisualEffects = null;
+	/** Abnormal visual effect special: the visual effect displayed ingame. */
+	private AbnormalVisualEffect[] _abnormalVisualEffectsSpecial = null;
+	/** Abnormal visual effect event: the visual effect displayed ingame. */
+	private AbnormalVisualEffect[] _abnormalVisualEffectsEvent = null;
 	/** If {@code true} this skill's effect should stay after death. */
 	private final boolean _stayAfterDeath;
 	/** If {@code true} this skill's effect should stay after class-subclass change. */
@@ -228,7 +234,6 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	
 	protected L2Skill(StatsSet set)
 	{
-		_isAbnormalInstant = set.getBoolean("abnormalInstant", false);
 		_id = set.getInt("skill_id");
 		_level = set.getInt("level");
 		_refId = set.getInt("referenceId", 0);
@@ -265,6 +270,9 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		}
 		
 		_abnormalTime = abnormalTime;
+		_isAbnormalInstant = set.getBoolean("abnormalInstant", false);
+		parseAbnormalVisualEffect(set.getString("abnormalVisualEffect", null));
+		
 		_attribute = set.getString("attribute", "");
 		
 		_stayAfterDeath = set.getBoolean("stayAfterDeath", false);
@@ -466,6 +474,8 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	}
 	
 	/**
+	 * Verify if this skill is abnormal instant.<br>
+	 * Herb buff skills yield {@code true} for this check.
 	 * @return {@code true} if the skill is abnormal instant, {@code false} otherwise
 	 */
 	public final boolean isAbnormalInstant()
@@ -473,21 +483,92 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		return _isAbnormalInstant;
 	}
 	
-	public final int getAbnormalLvl()
-	{
-		return _abnormalLvl;
-	}
-	
+	/**
+	 * Gets the skill abnormal type.
+	 * @return the abnormal type
+	 */
 	public final AbnormalType getAbnormalType()
 	{
 		return _abnormalType;
 	}
 	
+	/**
+	 * Gets the skill abnormal level.
+	 * @return the skill abnormal level
+	 */
+	public final int getAbnormalLvl()
+	{
+		return _abnormalLvl;
+	}
+	
+	/**
+	 * Gets the skill abnormal time.<br>
+	 * Is the base to calculate the duration of the continuous effects of this skill.
+	 * @return the abnormal time
+	 */
 	public final int getAbnormalTime()
 	{
 		return _abnormalTime;
 	}
 	
+	/**
+	 * Gets the skill abnormal visual effect.
+	 * @return the abnormal visual effect
+	 */
+	public AbnormalVisualEffect[] getAbnormalVisualEffects()
+	{
+		return _abnormalVisualEffects;
+	}
+	
+	/**
+	 * Verify if the skill has abnormal visual effects.
+	 * @return {@code true} if the skill has abnormal visual effects, {@code false} otherwise
+	 */
+	public boolean hasAbnormalVisualEffects()
+	{
+		return (_abnormalVisualEffects != null) && (_abnormalVisualEffects.length > 0);
+	}
+	
+	/**
+	 * Gets the skill special abnormal visual effect.
+	 * @return the abnormal visual effect
+	 */
+	public AbnormalVisualEffect[] getAbnormalVisualEffectsSpecial()
+	{
+		return _abnormalVisualEffectsSpecial;
+	}
+	
+	/**
+	 * Verify if the skill has special abnormal visual effects.
+	 * @return {@code true} if the skill has special abnormal visual effects, {@code false} otherwise
+	 */
+	public boolean hasAbnormalVisualEffectsSpecial()
+	{
+		return (_abnormalVisualEffectsSpecial != null) && (_abnormalVisualEffectsSpecial.length > 0);
+	}
+	
+	/**
+	 * Gets the skill event abnormal visual effect.
+	 * @return the abnormal visual effect
+	 */
+	public AbnormalVisualEffect[] getAbnormalVisualEffectsEvent()
+	{
+		return _abnormalVisualEffectsEvent;
+	}
+	
+	/**
+	 * Verify if the skill has event abnormal visual effects.
+	 * @return {@code true} if the skill has event abnormal visual effects, {@code false} otherwise
+	 */
+	public boolean hasAbnormalVisualEffectsEvent()
+	{
+		return (_abnormalVisualEffectsEvent != null) && (_abnormalVisualEffectsEvent.length > 0);
+	}
+	
+	/**
+	 * Gets the skill magic level.
+	 * @return the skill magic level
+	 */
 	public final int getMagicLevel()
 	{
 		return _magicLevel;
@@ -1635,6 +1716,68 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 			_log.warning("Extractable skills data: Error in Skill Id: " + skillId + " Level: " + skillLvl + " -> There are no production items!");
 		}
 		return new L2ExtractableSkill(SkillTable.getSkillHashCode(skillId, skillLvl), products);
+	}
+	
+	/**
+	 * Parses all the abnormal visual effects.
+	 * @param abnormalVisualEffects the abnormal visual effects list
+	 */
+	private void parseAbnormalVisualEffect(String abnormalVisualEffects)
+	{
+		if (abnormalVisualEffects != null)
+		{
+			final String[] data = abnormalVisualEffects.split(";");
+			List<AbnormalVisualEffect> avesEvent = null;
+			List<AbnormalVisualEffect> avesSpecial = null;
+			List<AbnormalVisualEffect> aves = null;
+			for (String ave2 : data)
+			{
+				final AbnormalVisualEffect ave = AbnormalVisualEffect.valueOf(ave2);
+				if (ave != null)
+				{
+					if (ave.isEvent())
+					{
+						if (avesEvent == null)
+						{
+							avesEvent = new ArrayList<>(1);
+						}
+						avesEvent.add(ave);
+						continue;
+					}
+					
+					if (ave.isSpecial())
+					{
+						if (avesSpecial == null)
+						{
+							avesSpecial = new ArrayList<>(1);
+						}
+						avesSpecial.add(ave);
+						continue;
+					}
+					
+					if (aves == null)
+					{
+						aves = new ArrayList<>(1);
+					}
+					aves.add(ave);
+				}
+			}
+			
+			if (avesEvent != null)
+			{
+				_abnormalVisualEffectsEvent = avesEvent.toArray(new AbnormalVisualEffect[avesEvent.size()]);
+			}
+			
+			if (avesSpecial != null)
+			{
+				_abnormalVisualEffectsSpecial = avesSpecial.toArray(new AbnormalVisualEffect[avesSpecial.size()]);
+			}
+			
+			if (aves != null)
+			{
+				_abnormalVisualEffects = aves.toArray(new AbnormalVisualEffect[aves.size()]);
+			}
+		}
 	}
 	
 	public L2ExtractableSkill getExtractableSkill()

@@ -208,7 +208,7 @@ public final class UserInfo extends L2GameServerPacket
 		
 		writeC(_activeChar.isInPartyMatchRoom() ? 1 : 0);
 		
-		writeD(_activeChar.getAppearance().getInvisible() && _activeChar.isGM() ? _activeChar.getAbnormalEffect() | AbnormalVisualEffect.STEALTH.getMask() : _activeChar.getAbnormalEffect());
+		writeD(_activeChar.getAppearance().getInvisible() && _activeChar.isGM() ? _activeChar.getAbnormaVisualEffect() | AbnormalVisualEffect.STEALTH.getMask() : _activeChar.getAbnormaVisualEffect());
 		writeC(_activeChar.isFlyingMounted() ? 2 : 0);
 		
 		writeD(_activeChar.getClanPrivileges());
@@ -265,7 +265,7 @@ public final class UserInfo extends L2GameServerPacket
 		writeD(_activeChar.getFame()); // Fame
 		writeD(_activeChar.isMinimapAllowed() ? 1 : 0); // Minimap on Hellbound
 		writeD(_activeChar.getVitalityPoints()); // Vitality Points
-		writeD(_activeChar.getSpecialEffect());
+		writeD(_activeChar.getAbnormalVisualEffectSpecial());
 		// writeD(_territoryId); // CT2.3
 		// writeD((_isDisguised ? 0x01: 0x00)); // CT2.3
 		// writeD(_territoryId); // CT2.3

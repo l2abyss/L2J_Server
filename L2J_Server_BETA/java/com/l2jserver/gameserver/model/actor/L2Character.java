@@ -230,13 +230,21 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	
 	private SkillChannelized _channelized = null;
 	
+	/** Map 32 bits, containing all abnormal visual effects in progress. */
+	private int _abnormalVisualEffects;
+	/** Map 32 bits, containing all special abnormal visual effects in progress. */
+	private int _abnormalVisualEffectsSpecial;
+	/** Map 32 bits, containing all event abnormal visual effects in progress. */
+	private int _abnormalVisualEffectsEvent;
+	
 	public final CharEffectList getEffectList()
 	{
 		return _effectList;
 	}
 	
 	/**
-	 * @return True if debugging is enabled for this L2Character
+	 * Verify if this character is under debug.
+	 * @return {@code true} if this character is under debug. {@code false} otherwise
 	 */
 	public boolean isDebug()
 	{
@@ -244,12 +252,12 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	}
 	
 	/**
-	 * Sets L2Character instance, to which debug packets will be send
-	 * @param d
+	 * Sets character instance, to which debug packets will be send.
+	 * @param debugger the character debugging this character
 	 */
-	public void setDebug(L2Character d)
+	public void setDebug(L2Character debugger)
 	{
-		_debugger = d;
+		_debugger = debugger;
 	}
 	
 	/**
@@ -2863,45 +2871,107 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		}
 	}
 	
-	// TODO: Abnormal Effect - NEED TO REMOVE ONCE L2CHARABNORMALEFFECT IS COMPLETE
-	/** Map 32 bits (0x0000) containing all abnormal effect in progress */
-	private int _AbnormalEffects;
-	
-	private int _SpecialEffects;
-	
 	/**
-	 * Active abnormal effects flags in the binary mask and send Server->Client UserInfo/CharInfo packet.
-	 * @param mask
+	 * Gets the abnormal visual effects affecting this character.
+	 * @return a map of 32 bits containing all abnormal visual effects in progress for this character
 	 */
-	public final void startAbnormalEffect(AbnormalVisualEffect mask)
+	public int getAbnormaVisualEffect()
 	{
-		_AbnormalEffects |= mask.getMask();
-		updateAbnormalEffect();
+		return _abnormalVisualEffects;
 	}
 	
 	/**
-	 * Active special effects flags in the binary mask and send Server->Client UserInfo/CharInfo packet.
-	 * @param mask
+	 * Gets the special abnormal visual effects affecting this character.
+	 * @return a map of 32 bits containing all special effect in progress for this character
 	 */
-	public final void startSpecialEffect(AbnormalVisualEffect[] mask)
+	public int getAbnormalVisualEffectSpecial()
 	{
-		for (AbnormalVisualEffect special : mask)
+		return _abnormalVisualEffectsSpecial;
+	}
+	
+	/**
+	 * Gets the event abnormal visual effects affecting this character.
+	 * @return a map of 32 bits containing all event abnormal visual effects in progress for this character
+	 */
+	public int getAbnormalVisualEffectEvent()
+	{
+		return _abnormalVisualEffectsEvent;
+	}
+	
+	/**
+	 * Verify if this creature is affected by the given abnormal visual effect.
+	 * @param ave the abnormal visual effect
+	 * @return {@code true} if the creature is affected by the abnormal visual effect, {@code false} otherwise
+	 */
+	public boolean hasAbnormalVisualEffect(AbnormalVisualEffect ave)
+	{
+		if (ave.isEvent())
 		{
-			_SpecialEffects |= special.getMask();
+			return (getAbnormalVisualEffectEvent() & ave.getMask()) == ave.getMask();
 		}
-		updateAbnormalEffect();
+		
+		if (ave.isSpecial())
+		{
+			return (getAbnormalVisualEffectSpecial() & ave.getMask()) == ave.getMask();
+		}
+		
+		return (getAbnormaVisualEffect() & ave.getMask()) == ave.getMask();
 	}
 	
-	public final void startAbnormalEffect(int mask)
+	/**
+	 * Adds the abnormal visual effect flags in the binary mask and send Server->Client UserInfo/CharInfo packet.
+	 * @param update if {@code true} update packets will be sent
+	 * @param aves the abnormal visual effects
+	 */
+	public final void startAbnormalVisualEffect(boolean update, AbnormalVisualEffect... aves)
 	{
-		_AbnormalEffects |= mask;
-		updateAbnormalEffect();
+		for (AbnormalVisualEffect ave : aves)
+		{
+			if (ave.isEvent())
+			{
+				_abnormalVisualEffectsEvent |= ave.getMask();
+			}
+			else if (ave.isSpecial())
+			{
+				_abnormalVisualEffectsSpecial |= ave.getMask();
+			}
+			else
+			{
+				_abnormalVisualEffects |= ave.getMask();
+			}
+		}
+		if (update)
+		{
+			updateAbnormalEffect();
+		}
 	}
 	
-	public final void startSpecialEffect(int mask)
+	/**
+	 * Removes the abnormal visual effect flags from the binary mask and send Server->Client UserInfo/CharInfo packet.
+	 * @param update if {@code true} update packets will be sent
+	 * @param aves the abnormal visual effects
+	 */
+	public final void stopAbnormalVisualEffect(boolean update, AbnormalVisualEffect... aves)
 	{
-		_SpecialEffects |= mask;
-		updateAbnormalEffect();
+		for (AbnormalVisualEffect ave : aves)
+		{
+			if (ave.isEvent())
+			{
+				_abnormalVisualEffectsEvent &= ~ave.getMask();
+			}
+			else if (ave.isSpecial())
+			{
+				_abnormalVisualEffectsSpecial &= ~ave.getMask();
+			}
+			else
+			{
+				_abnormalVisualEffects &= ~ave.getMask();
+			}
+		}
+		if (update)
+		{
+			updateAbnormalEffect();
+		}
 	}
 	
 	/**
@@ -2953,41 +3023,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		abortCast();
 		stopMove(null);
 		getAI().notifyEvent(CtrlEvent.EVT_PARALYZED);
-	}
-	
-	/**
-	 * Modify the abnormal effect map according to the mask.
-	 * @param mask
-	 */
-	public final void stopAbnormalEffect(AbnormalVisualEffect mask)
-	{
-		_AbnormalEffects &= ~mask.getMask();
-		updateAbnormalEffect();
-	}
-	
-	/**
-	 * Modify the special effect map according to the mask.
-	 * @param mask
-	 */
-	public final void stopSpecialEffect(AbnormalVisualEffect[] mask)
-	{
-		for (AbnormalVisualEffect special : mask)
-		{
-			_SpecialEffects &= ~special.getMask();
-		}
-		updateAbnormalEffect();
-	}
-	
-	public final void stopAbnormalEffect(int mask)
-	{
-		_AbnormalEffects &= ~mask;
-		updateAbnormalEffect();
-	}
-	
-	public final void stopSpecialEffect(int mask)
-	{
-		_SpecialEffects &= ~mask;
-		updateAbnormalEffect();
 	}
 	
 	/**
@@ -3148,72 +3183,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	public void updateEffectIcons(boolean partyOnly)
 	{
 		// overridden
-	}
-	
-	/**
-	 * <B><U>Concept</U>:</B><br>
-	 * In Server->Client packet, each effect is represented by 1 bit of the map (ex : BLEEDING = 0x0001 (bit 1), SLEEP = 0x0080 (bit 8)...). The map is calculated by applying a BINARY OR operation on each effect.<br>
-	 * <B><U>Example of use </U>:</B>
-	 * <ul>
-	 * <li>Server Packet : CharInfo, NpcInfo, NpcInfoPoly, UserInfo...</li>
-	 * </ul>
-	 * @return a map of 16 bits (0x0000) containing all abnormal effect in progress for this L2Character.
-	 */
-	public int getAbnormalEffect()
-	{
-		int ae = _AbnormalEffects;
-		if (!isFlying() && isStunned())
-		{
-			ae |= AbnormalVisualEffect.STUN.getMask();
-		}
-		if (!isFlying() && isRooted())
-		{
-			ae |= AbnormalVisualEffect.ROOT.getMask();
-		}
-		if (isSleeping())
-		{
-			ae |= AbnormalVisualEffect.SLEEP.getMask();
-		}
-		if (isConfused())
-		{
-			ae |= AbnormalVisualEffect.FEAR.getMask();
-		}
-		if (isMuted())
-		{
-			ae |= AbnormalVisualEffect.MUTED.getMask();
-		}
-		if (isPhysicalMuted())
-		{
-			ae |= AbnormalVisualEffect.MUTED.getMask();
-		}
-		if (isAfraid())
-		{
-			ae |= AbnormalVisualEffect.SKULL_FEAR.getMask();
-		}
-		return ae;
-	}
-	
-	/**
-	 * <B><U>Concept</U>:</B><br>
-	 * In Server->Client packet, each effect is represented by 1 bit of the map (ex : INVULNERABLE = 0x0001 (bit 1), PINK_AFFRO = 0x0020 (bit 6)...). The map is calculated by applying a BINARY OR operation on each effect.<br>
-	 * <B><U>Example of use </U>:</B>
-	 * <ul>
-	 * <li>Server Packet : CharInfo, UserInfo...</li>
-	 * </ul>
-	 * @return a map of 32 bits (0x00000000) containing all special effect in progress for this L2Character.
-	 */
-	public int getSpecialEffect()
-	{
-		int se = _SpecialEffects;
-		if (isFlying() && isStunned())
-		{
-			se |= AbnormalVisualEffect.S_AIR_STUN.getMask();
-		}
-		if (isFlying() && isRooted())
-		{
-			se |= AbnormalVisualEffect.S_AIR_ROOT.getMask();
-		}
-		return se;
 	}
 	
 	public boolean isAffectedBySkill(int skillId)

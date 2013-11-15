@@ -18,112 +18,111 @@
  */
 package com.l2jserver.gameserver.model.skills;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * Abnormal Visual Effect enumerated.
- * @author DrHouse
+ * @author DrHouse, Zoey76
  */
 public enum AbnormalVisualEffect
 {
-	NULL("null", 0x0),
-	BLEEDING("bleed", 0x000001),
-	POISON("poison", 0x000002),
-	REDCIRCLE("redcircle", 0x000004),
-	ICE("ice", 0x000008),
-	WIND("wind", 0x000010),
-	FEAR("fear", 0x000020),
-	STUN("stun", 0x000040),
-	SLEEP("sleep", 0x000080),
-	MUTED("mute", 0x000100),
-	ROOT("root", 0x000200),
-	HOLD_1("hold1", 0x000400),
-	HOLD_2("hold2", 0x000800),
-	UNKNOWN_13("unknown13", 0x001000),
-	BIG_HEAD("bighead", 0x002000),
-	FLAME("flame", 0x004000),
-	UNKNOWN_16("unknown16", 0x008000),
-	GROW("grow", 0x010000),
-	FLOATING_ROOT("floatroot", 0x020000),
-	DANCE_STUNNED("dancestun", 0x040000),
-	FIREROOT_STUN("firerootstun", 0x080000),
-	STEALTH("stealth", 0x100000),
-	IMPRISIONING_1("imprison1", 0x200000),
-	IMPRISIONING_2("imprison2", 0x400000),
-	MAGIC_CIRCLE("magiccircle", 0x800000),
-	ICE2("ice2", 0x1000000),
-	EARTHQUAKE("earthquake", 0x2000000),
-	UNKNOWN_27("unknown27", 0x4000000),
-	INVULNERABLE("invulnerable", 0x8000000),
-	VITALITY("vitality", 0x10000000),
-	REAL_TARGET("realtarget", 0x20000000),
-	DEATH_MARK("deathmark", 0x40000000),
-	SKULL_FEAR("skull_fear", 0x80000000),
-	// Special effects
-	S_INVINCIBLE("invincible", 0x000001),
-	S_AIR_STUN("airstun", 0x000002),
-	S_AIR_ROOT("airroot", 0x000004),
-	S_BAGUETTE_SWORD("baguettesword", 0x000008),
-	S_YELLOW_AFFRO("yellowafro", 0x000010),
-	S_PINK_AFFRO("pinkafro", 0x000020),
-	S_BLACK_AFFRO("blackafro", 0x000040),
-	S_UNKNOWN8("unknown8", 0x000080),
-	S_STIGMA_SHILIEN("stigmashilien", 0x000100),
-	S_STAKATOROOT("stakatoroot", 0x000200),
-	S_FREEZING("freezing", 0x000400),
-	S_VESPER_S("vesper_s", 0x000800),
-	S_VESPER_C("vesper_c", 0x001000),
-	S_VESPER_D("vesper_d", 0x002000),
-	ARCANE_SHIELD("arcane_shield", 0x008000),
-	// Event effects
-	E_AFRO_1("afrobaguette1", 0x000001),
-	E_AFRO_2("afrobaguette2", 0x000002),
-	E_AFRO_3("afrobaguette3", 0x000004),
-	E_EVASWRATH("evaswrath", 0x000008),
-	E_HEADPHONE("headphone", 0x000010),
-	E_VESPER_1("vesper1", 0x000020),
-	E_VESPER_2("vesper2", 0x000040),
-	E_VESPER_3("vesper3", 0x000080),
-	HUNTING_BONUS("hunting_bonus", 0x80000);
+	NONE(0x0000000, 0),
+	DOT_BLEEDING(0x00000001, 0),
+	DOT_POISON(0x00000002, 0),
+	DOT_FIRE(0x00000004, 0),
+	DOT_WATER(0x00000008, 0),
+	DOT_WIND(0x00000010, 0),
+	DOT_SOIL(0x00000020, 0),
+	STUN(0x00000040, 0),
+	SLEEP(0x00000080, 0),
+	SILENCE(0x00000100, 0),
+	ROOT(0x00000200, 0),
+	PARALYZE(0x00000400, 0),
+	FLESH_STONE(0x00000800, 0),
+	DOT_MP(0x00001000, 0),
+	BIG_HEAD(0x00002000, 0),
+	DOT_FIRE_AREA(0x00004000, 0),
+	CHANGE_TEXTURE(0x00008000, 0),
+	BIG_BODY(0x00010000, 0),
+	FLOATING_ROOT(0x00020000, 0),
+	DANCE_ROOT(0x00040000, 0),
+	GHOST_STUN(0x00080000, 0),
+	STEALTH(0x00100000, 0),
+	SEIZURE1(0x00200000, 0),
+	SEIZURE2(0x00400000, 0),
+	MAGIC_SQUARE(0x00800000, 0),
+	FREEZING(0x01000000, 0),
+	SHAKE(0x02000000, 0),
+	BLIND(0x04000000, 0),
+	ULTIMATE_DEFENCE(0x08000000, 0),
+	VP_UP(0x10000000, 0),
+	REAL_TARGET(0x20000000, 0),
+	DEATH_MARK(0x40000000, 0),
+	TURN_FLEE(0x80000000, 0),
+	VP_KEEP(0x10000000, 0), // TODO: Find.
+	// Special
+	INVINCIBILITY(0x000001, 1),
+	AIR_BATTLE_SLOW(0x000002, 1),
+	AIR_BATTLE_ROOT(0x000004, 1),
+	CHANGE_WP(0x000008, 1),
+	CHANGE_HAIR_G(0x000010, 1),
+	CHANGE_HAIR_P(0x000020, 1),
+	CHANGE_HAIR_B(0x000040, 1),
+	STIGMA_OF_SILEN(0x000100, 1),
+	SPEED_DOWN(0x000200, 1),
+	FROZEN_PILLAR(0x000400, 1),
+	CHANGE_VES_S(0x000800, 1),
+	CHANGE_VES_C(0x001000, 1),
+	CHANGE_VES_D(0x002000, 1),
+	TIME_BOMB(0x004000, 1), // High Five
+	MP_SHIELD(0x008000, 1), // High Five
+	NAVIT_ADVENT(0x080000, 1), // High Five
+	// Event
+	// TODO: Fix, currently not working.
+	BR_NONE(0x000000, 2),
+	BR_AFRO_NORMAL(0x000001, 2),
+	BR_AFRO_PINK(0x000002, 2),
+	BR_AFRO_GOLD(0x000004, 2),
+	BR_POWER_OF_EVA(0x000008, 2), // High Five
+	BR_HEADPHONE(0x000010, 2), // High Five
+	BR_VESPER1(0x000020, 2),
+	BR_VESPER2(0x000040, 2),
+	BR_VESPER3(0x000080, 2),
+	BR_SOUL_AVATAR(0x000100, 2); // High Five
 	
-	private static final Logger _log = Logger.getLogger(AbnormalVisualEffect.class.getName());
+	/** Int mask. */
 	private final int _mask;
-	private final String _name;
+	/** Type: 1 Normal, 2 Special, 3 Event. */
+	private final int _type;
 	
-	private AbnormalVisualEffect(String name, int mask)
+	private AbnormalVisualEffect(int mask, int type)
 	{
-		_name = name;
 		_mask = mask;
+		_type = type;
 	}
 	
+	/**
+	 * Gets the int bitmask for the abnormal visual effect.
+	 * @return the int bitmask
+	 */
 	public final int getMask()
 	{
 		return _mask;
 	}
 	
-	public final String getName()
+	/**
+	 * Verify if it's a special abnormal visual effect.
+	 * @return {@code true} it's a special abnormal visual effect, {@code false} otherwise
+	 */
+	public final boolean isSpecial()
 	{
-		return _name;
+		return _type == 1;
 	}
 	
 	/**
-	 * @param name the name of the abnormal visual effect to get
-	 * @return the found abnormal visual effect
+	 * Verify if it's an event abnormal visual effect.
+	 * @return {@code true} it's an event abnormal visual effect, {@code false} otherwise
 	 */
-	public static AbnormalVisualEffect getByName(String name)
+	public final boolean isEvent()
 	{
-		if ((name != null) && !name.isEmpty())
-		{
-			for (AbnormalVisualEffect eff : AbnormalVisualEffect.values())
-			{
-				if (eff.getName().equals(name))
-				{
-					return eff;
-				}
-			}
-			_log.log(Level.WARNING, AbnormalVisualEffect.class.getSimpleName() + ": Abnormal visual effect not found for name: " + name + "!");
-		}
-		return NULL;
+		return _type == 2;
 	}
 }

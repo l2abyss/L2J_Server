@@ -232,7 +232,6 @@ import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.quest.State;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
-import com.l2jserver.gameserver.model.skills.AbnormalVisualEffect;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
@@ -521,7 +520,6 @@ public final class L2PcInstance extends L2Playable
 	private final Map<Integer, TeleportBookmark> _tpbookmarks = new FastMap<>();
 	
 	private boolean _canFeed;
-	private int _eventEffectId = 0;
 	private boolean _isInSiege;
 	private boolean _isInHideoutSiege = false;
 	
@@ -13178,28 +13176,6 @@ public final class L2PcInstance extends L2Playable
 				_log.log(Level.SEVERE, "Failed to store Pet [NpcId: " + petId + "] data", e);
 			}
 		}
-	}
-	
-	/** End of section for mounted pets */
-	
-	/**
-	 * @return event effect id
-	 */
-	public int getEventEffectId()
-	{
-		return _eventEffectId;
-	}
-	
-	public void startEventEffect(AbnormalVisualEffect mask)
-	{
-		_eventEffectId |= mask.getMask();
-		broadcastUserInfo();
-	}
-	
-	public void stopEventEffect(AbnormalVisualEffect mask)
-	{
-		_eventEffectId &= ~mask.getMask();
-		broadcastUserInfo();
 	}
 	
 	public void setIsInSiege(boolean b)

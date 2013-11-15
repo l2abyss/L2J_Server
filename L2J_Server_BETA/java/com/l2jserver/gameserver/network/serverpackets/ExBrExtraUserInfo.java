@@ -21,29 +21,33 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * @author Kerberos
+ * ExBrExtraUserInfo server packet implementation.
+ * @author Kerberos, Zoey76
  */
 public class ExBrExtraUserInfo extends L2GameServerPacket
 {
+	/** Player object ID. */
 	private final int _charObjId;
-	private final int _val;
+	/** Event abnormal visual effects map. */
+	private final int _abnormalVisualEffectsEvent;
+	/** Lecture mark. */
+	private final int _lectureMark;
 	
 	public ExBrExtraUserInfo(L2PcInstance player)
 	{
 		_charObjId = player.getObjectId();
-		_val = player.getEventEffectId();
+		_abnormalVisualEffectsEvent = player.getAbnormalVisualEffectEvent();
+		_lectureMark = 1; // TODO: Implement.
 		_invisible = player.getAppearance().getInvisible();
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
-		
 		writeC(0xFE);
 		writeH(0xDA);
-		writeD(_charObjId); // object ID of Player
-		writeD(_val); // event effect id
-		// writeC(0x00); // Event flag, added only if event is active
-		
+		writeD(_charObjId);
+		writeD(_abnormalVisualEffectsEvent);
+		writeC(_lectureMark);
 	}
 }

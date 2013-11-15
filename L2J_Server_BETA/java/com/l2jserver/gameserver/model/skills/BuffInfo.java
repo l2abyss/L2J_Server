@@ -270,11 +270,12 @@ public final class BuffInfo
 			_scheduledFutureTimeTask = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(_effectTimeTask, 0, 1000L);
 		}
 		
+		applyAbnormalVisualEffects();
+		
 		for (AbstractEffect effect : _effects)
 		{
 			if (effect.isInstant())
 			{
-				// TODO: Log, instant effects shouldn't be added.
 				continue;
 			}
 			
@@ -293,8 +294,6 @@ public final class BuffInfo
 			
 			// Add stats.
 			_env.getTarget().addStatFuncs(effect.getStatFuncs(_env));
-			
-			applyAbnormalVisualEffects(_env.getTarget(), effect);
 		}
 	}
 	
@@ -342,10 +341,10 @@ public final class BuffInfo
 	
 	public void finishEffects()
 	{
+		removeAbnormalVisualEffects();
+		
 		for (AbstractEffect effect : _effects)
 		{
-			removeAbnormalVisualEffects(_env.getTarget(), effect); // TODO: Implement correctly.
-			
 			// Instant effects shouldn't call onExit(..).
 			if ((effect != null) && !effect.isInstant())
 			{
@@ -392,52 +391,65 @@ public final class BuffInfo
 	
 	/**
 	 * Applies all the abnormal visual effects to the effected.<br>
-	 * TODO: Shouldn't be read from effect template, but from skill template.
-	 * @param effected the target of the skill
-	 * @param effect the effect
+	 * Prevents multiple updates.
 	 */
-	private static void applyAbnormalVisualEffects(L2Character effected, AbstractEffect effect)
+	private void applyAbnormalVisualEffects()
 	{
-		if (effect.getAbnormalEffect() != AbnormalVisualEffect.NULL)
+		if ((_env.getTarget() == null) || (_env.getSkill() == null))
 		{
-			effected.startAbnormalEffect(effect.getAbnormalEffect());
+			return;
 		}
 		
-		if (effect.getSpecialEffect() != null)
+		if (_env.getSkill().hasAbnormalVisualEffects())
 		{
-			effected.startSpecialEffect(effect.getSpecialEffect());
+			_env.getTarget().startAbnormalVisualEffect(false, _env.getSkill().getAbnormalVisualEffects());
 		}
 		
-		if ((effect.getEventEffect() != AbnormalVisualEffect.NULL) && effected.isPlayer())
+		if (_env.getTarget().isPlayer() && _env.getSkill().hasAbnormalVisualEffectsEvent())
 		{
-			effected.getActingPlayer().startEventEffect(effect.getEventEffect());
+			_env.getTarget().startAbnormalVisualEffect(false, _env.getSkill().getAbnormalVisualEffectsEvent());
 		}
+		
+		if (_env.getSkill().hasAbnormalVisualEffectsSpecial())
+		{
+			_env.getTarget().startAbnormalVisualEffect(false, _env.getSkill().getAbnormalVisualEffectsSpecial());
+		}
+		
+		_env.getTarget().updateAbnormalEffect();
 	}
 	
 	/**
 	 * Removes all the abnormal visual effects from the effected.<br>
-	 * TODO: Shouldn't be read from effect template, but from skill template.
-	 * @param effected the target of the skill
-	 * @param effect the effect
+	 * Prevents multiple updates.
 	 */
-	private static void removeAbnormalVisualEffects(L2Character effected, AbstractEffect effect)
+	private void removeAbnormalVisualEffects()
 	{
-		if (effect.getAbnormalEffect() != AbnormalVisualEffect.NULL)
+		if ((_env.getTarget() == null) || (_env.getSkill() == null))
 		{
-			effected.stopAbnormalEffect(effect.getAbnormalEffect());
+			return;
 		}
 		
-		if (effect.getSpecialEffect() != null)
+		if (_env.getSkill().hasAbnormalVisualEffects())
 		{
-			effected.stopSpecialEffect(effect.getSpecialEffect());
+			_env.getTarget().stopAbnormalVisualEffect(false, _env.getSkill().getAbnormalVisualEffects());
 		}
 		
-		if ((effect.getEventEffect() != AbnormalVisualEffect.NULL) && effected.isPlayer())
+		if (_env.getTarget().isPlayer() && _env.getSkill().hasAbnormalVisualEffectsEvent())
 		{
-			effected.getActingPlayer().stopEventEffect(effect.getEventEffect());
+			_env.getTarget().stopAbnormalVisualEffect(false, _env.getSkill().getAbnormalVisualEffectsEvent());
 		}
+		
+		if (_env.getSkill().hasAbnormalVisualEffectsSpecial())
+		{
+			_env.getTarget().stopAbnormalVisualEffect(false, _env.getSkill().getAbnormalVisualEffectsSpecial());
+		}
+		
+		_env.getTarget().updateAbnormalEffect();
 	}
 	
+	/**
+	 * Adds the buff stats.
+	 */
 	public void addStats()
 	{
 		for (AbstractEffect effect : _effects)
@@ -446,13 +458,15 @@ public final class BuffInfo
 		}
 	}
 	
+	/**
+	 * Removes the buff stats.
+	 */
 	public void removeStats()
 	{
 		for (AbstractEffect effect : _effects)
 		{
 			_env.getTarget().removeStatsOwner(effect);
 		}
-		// TODO: This should be removed when all effects are properly managed.
 		_env.getTarget().removeStatsOwner(_env.getSkill());
 	}
 	
