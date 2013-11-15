@@ -13303,7 +13303,7 @@ public final class L2PcInstance extends L2Playable
 	
 	public void teleportBookmarkModify(int id, int icon, String tag, String name)
 	{
-		TeleportBookmark bookmark = _tpbookmarks.get(id);
+		final TeleportBookmark bookmark = _tpbookmarks.get(id);
 		if (bookmark != null)
 		{
 			bookmark.setIcon(icon);
@@ -13465,7 +13465,14 @@ public final class L2PcInstance extends L2Playable
 			return;
 		}
 		
-		int id = _tpbookmarks.size();
+		int id;
+		for (id = 1; id <= _bookmarkslot; ++id)
+		{
+			if (!_tpbookmarks.containsKey(id))
+			{
+				break;
+			}
+		}
 		_tpbookmarks.put(id, new TeleportBookmark(id, x, y, z, icon, tag, name));
 		
 		destroyItem("Consume", getInventory().getItemByItemId(20033).getObjectId(), 1, null, false);
