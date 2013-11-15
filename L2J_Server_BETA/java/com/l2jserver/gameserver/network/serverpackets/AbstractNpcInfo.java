@@ -182,7 +182,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(0x00); // pvp flag
 			writeD(0x00); // karma
 			
-			writeD(_npc.getAbnormaVisualEffect()); // C2
+			writeD(_npc.getAbnormalVisualEffects()); // C2
 			writeD(_clanId); // clan id
 			writeD(_clanCrest); // crest id
 			writeD(_allyId); // ally id
@@ -269,7 +269,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_trap.getPvpFlag());
 			writeD(_trap.getKarma());
 			
-			writeD(_trap.getAbnormaVisualEffect()); // C2
+			writeD(_trap.getAbnormalVisualEffects()); // C2
 			writeD(0x00); // clan id
 			writeD(0x00); // crest id
 			writeD(0000); // C2
@@ -409,7 +409,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_summon.getPvpFlag());
 			writeD(_summon.getKarma());
 			
-			writeD(gmSeeInvis ? _summon.getAbnormaVisualEffect() | AbnormalVisualEffect.STEALTH.getMask() : _summon.getAbnormaVisualEffect());
+			writeD(gmSeeInvis ? _summon.getAbnormalVisualEffects() | AbnormalVisualEffect.STEALTH.getMask() : _summon.getAbnormalVisualEffects());
 			
 			writeD(0x00); // clan id
 			writeD(0x00); // crest id

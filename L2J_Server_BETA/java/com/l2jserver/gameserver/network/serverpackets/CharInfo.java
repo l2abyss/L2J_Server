@@ -172,7 +172,7 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_activeChar.getPvpFlag()); // pvp flag
 			writeD(_activeChar.getKarma()); // karma ??
 			
-			writeD(gmSeeInvis ? (_activeChar.getAbnormaVisualEffect() | AbnormalVisualEffect.STEALTH.getMask()) : _activeChar.getAbnormaVisualEffect()); // C2
+			writeD(gmSeeInvis ? (_activeChar.getAbnormalVisualEffects() | AbnormalVisualEffect.STEALTH.getMask()) : _activeChar.getAbnormalVisualEffects()); // C2
 			
 			writeD(_activeChar.getClanId()); // clan id
 			writeD(_activeChar.getClanCrestId()); // crest id
@@ -284,7 +284,7 @@ public class CharInfo extends L2GameServerPacket
 			
 			writeC(_activeChar.isInPartyMatchRoom() ? 1 : 0);
 			
-			writeD(gmSeeInvis ? (_activeChar.getAbnormaVisualEffect() | AbnormalVisualEffect.STEALTH.getMask()) : _activeChar.getAbnormaVisualEffect());
+			writeD(gmSeeInvis ? (_activeChar.getAbnormalVisualEffects() | AbnormalVisualEffect.STEALTH.getMask()) : _activeChar.getAbnormalVisualEffects());
 			
 			writeC(_activeChar.isFlyingMounted() ? 2 : 0);
 			

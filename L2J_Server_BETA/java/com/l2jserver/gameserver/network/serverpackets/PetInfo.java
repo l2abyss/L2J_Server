@@ -157,7 +157,7 @@ public class PetInfo extends L2GameServerPacket
 		writeD(_summon.getPAtkSpd());// atkspeed
 		writeD(_summon.getMAtkSpd());// casting speed
 		
-		writeD(_summon.getAbnormaVisualEffect());// c2 abnormal visual effect... bleed=1; poison=2; poison & bleed=3; flame=4;
+		writeD(_summon.getAbnormalVisualEffects());// c2 abnormal visual effect... bleed=1; poison=2; poison & bleed=3; flame=4;
 		writeH(_summon.isMountable() ? 1 : 0);// c2 ride button
 		
 		writeC(0); // c2

@@ -208,7 +208,7 @@ public final class UserInfo extends L2GameServerPacket
 		
 		writeC(_activeChar.isInPartyMatchRoom() ? 1 : 0);
 		
-		writeD(_activeChar.getAppearance().getInvisible() && _activeChar.isGM() ? _activeChar.getAbnormaVisualEffect() | AbnormalVisualEffect.STEALTH.getMask() : _activeChar.getAbnormaVisualEffect());
+		writeD(_activeChar.getAppearance().getInvisible() && _activeChar.isGM() ? _activeChar.getAbnormalVisualEffects() | AbnormalVisualEffect.STEALTH.getMask() : _activeChar.getAbnormalVisualEffects());
 		writeC(_activeChar.isFlyingMounted() ? 2 : 0);
 		
 		writeD(_activeChar.getClanPrivileges());
