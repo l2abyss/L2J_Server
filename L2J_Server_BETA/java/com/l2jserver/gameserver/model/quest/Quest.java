@@ -2968,6 +2968,62 @@ public class Quest extends ManagedScript implements IIdentifiable
 	}
 	
 	/**
+	 * Check if the player has the specified item in his inventory.
+	 * @param player the player whose inventory to check for the specified item
+	 * @param item the {@link ItemHolder} object containing the ID and count of the item to check
+	 * @return {@code true} if the player has the required count of the item
+	 */
+	protected static boolean hasItem(L2PcInstance player, ItemHolder item)
+	{
+		return hasItem(player, item, true);
+	}
+	
+	/**
+	 * Check if the player has the required count of the specified item in his inventory.
+	 * @param player the player whose inventory to check for the specified item
+	 * @param item the {@link ItemHolder} object containing the ID and count of the item to check
+	 * @param checkCount if {@code true}, check if each item is at least of the count specified in the ItemHolder,<br>
+	 *            otherwise check only if the player has the item at all
+	 * @return {@code true} if the player has the item
+	 */
+	protected static boolean hasItem(L2PcInstance player, ItemHolder item, boolean checkCount)
+	{
+		if (item == null)
+		{
+			return false;
+		}
+		if (checkCount)
+		{
+			return (getQuestItemsCount(player, item.getId()) >= item.getCount());
+		}
+		return hasQuestItems(player, item.getId());
+	}
+	
+	/**
+	 * Check if the player has all the specified items in his inventory and, if necessary, if their count is also as required.
+	 * @param player the player whose inventory to check for the specified item
+	 * @param checkCount if {@code true}, check if each item is at least of the count specified in the ItemHolder,<br>
+	 *            otherwise check only if the player has the item at all
+	 * @param itemList a list of {@link ItemHolder} objects containing the IDs of the items to check
+	 * @return {@code true} if the player has all the items from the list
+	 */
+	protected static boolean hasAllItems(L2PcInstance player, boolean checkCount, ItemHolder... itemList)
+	{
+		if ((itemList == null) || (itemList.length == 0))
+		{
+			return false;
+		}
+		for (ItemHolder item : itemList)
+		{
+			if (!hasItem(player, item, checkCount))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
 	 * Check for an item in player's inventory.
 	 * @param player the player whose inventory to check for quest items
 	 * @param itemId the ID of the item to check for
@@ -3405,14 +3461,46 @@ public class Quest extends ManagedScript implements IIdentifiable
 	}
 	
 	/**
-	 * Take an amount of a specified item from player's inventory.
-	 * @param player
-	 * @param holder
-	 * @return {@code true} if any items were taken, {@code false} otherwise
+	 * Take a set amount of a specified item from player's inventory.
+	 * @param player the player whose item to take
+	 * @param holder the {@link ItemHolder} object containing the ID and count of the item to take
+	 * @return {@code true} if the item was taken, {@code false} otherwise
 	 */
-	protected static boolean takeItems(L2PcInstance player, ItemHolder holder)
+	protected static boolean takeItem(L2PcInstance player, ItemHolder holder)
 	{
+		if (holder == null)
+		{
+			return false;
+		}
 		return takeItems(player, holder.getId(), holder.getCount());
+	}
+	
+	/**
+	 * Take a set amount of all specified items from player's inventory.
+	 * @param player the player whose items to take
+	 * @param itemList the list of {@link ItemHolder} objects containing the IDs and counts of the items to take
+	 * @return {@code true} if all items were taken, {@code false} otherwise
+	 */
+	protected static boolean takeAllItems(L2PcInstance player, ItemHolder... itemList)
+	{
+		if ((itemList == null) || (itemList.length == 0))
+		{
+			return false;
+		}
+		// first check if the player has all items to avoid taking half the items from the list
+		if (!hasAllItems(player, true, itemList))
+		{
+			return false;
+		}
+		for (ItemHolder item : itemList)
+		{
+			// this should never be false, but just in case
+			if (!takeItem(player, item))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**
