@@ -596,8 +596,8 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 					case 0xae: // RequestConfirmCastleSiegeWaitingList
 						msg = new RequestConfirmSiegeWaitingList();
 						break;
-					case 0xaf:
-						// RequestSetCastleSiegeTime
+					case 0xAF:
+						msg = new RequestSetCastleSiegeTime();
 						break;
 					case 0xb0:
 						msg = new MultiSellChoose();

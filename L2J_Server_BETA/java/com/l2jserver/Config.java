@@ -57,6 +57,7 @@ import com.l2jserver.gameserver.enums.IllegalActionPunishmentType;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.util.FloodProtectorConfig;
+import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.PropertiesParser;
 import com.l2jserver.util.StringUtil;
 
@@ -331,9 +332,7 @@ public final class Config
 	public static long CS_SUPPORT_FEE_RATIO;
 	public static int CS_SUPPORT1_FEE;
 	public static int CS_SUPPORT2_FEE;
-	public static List<String> CL_SET_SIEGE_TIME_LIST;
-	public static List<Integer> SIEGE_HOUR_LIST_MORNING;
-	public static List<Integer> SIEGE_HOUR_LIST_AFTERNOON;
+	public static List<Integer> SIEGE_HOUR_LIST;
 	public static int OUTER_DOOR_UPGRADE_PRICE2;
 	public static int OUTER_DOOR_UPGRADE_PRICE3;
 	public static int OUTER_DOOR_UPGRADE_PRICE5;
@@ -1264,57 +1263,12 @@ public final class Config
 			CH_FRONT1_FEE = Feature.getInt("ClanHallFrontPlatformFunctionFeeLvl1", 1300);
 			CH_FRONT2_FEE = Feature.getInt("ClanHallFrontPlatformFunctionFeeLvl2", 4000);
 			CH_BUFF_FREE = Feature.getBoolean("AltClanHallMpBuffFree", false);
-			
-			CL_SET_SIEGE_TIME_LIST = new ArrayList<>();
-			SIEGE_HOUR_LIST_MORNING = new ArrayList<>();
-			SIEGE_HOUR_LIST_AFTERNOON = new ArrayList<>();
-			String[] sstl = Feature.getString("CLSetSiegeTimeList", "").split(",");
-			if (sstl.length != 0)
+			SIEGE_HOUR_LIST = new ArrayList<>();
+			for (String hour : Feature.getString("SiegeHourList", "").split(","))
 			{
-				boolean isHour = false;
-				for (String st : sstl)
+				if (Util.isDigit(hour))
 				{
-					if (st.equalsIgnoreCase("day") || st.equalsIgnoreCase("hour") || st.equalsIgnoreCase("minute"))
-					{
-						if (st.equalsIgnoreCase("hour"))
-						{
-							isHour = true;
-						}
-						CL_SET_SIEGE_TIME_LIST.add(st.toLowerCase());
-					}
-					else
-					{
-						_log.warning(StringUtil.concat("[CLSetSiegeTimeList]: invalid config property -> CLSetSiegeTimeList \"", st, "\""));
-					}
-				}
-				if (isHour)
-				{
-					String[] shl = Feature.getString("SiegeHourList", "").split(",");
-					for (String st : shl)
-					{
-						if (!st.equalsIgnoreCase(""))
-						{
-							int val = Integer.parseInt(st);
-							if ((val > 23) || (val < 0))
-							{
-								_log.warning(StringUtil.concat("[SiegeHourList]: invalid config property -> SiegeHourList \"", st, "\""));
-							}
-							else if (val < 12)
-							{
-								SIEGE_HOUR_LIST_MORNING.add(val);
-							}
-							else
-							{
-								val -= 12;
-								SIEGE_HOUR_LIST_AFTERNOON.add(val);
-							}
-						}
-					}
-					if (Config.SIEGE_HOUR_LIST_AFTERNOON.isEmpty() && Config.SIEGE_HOUR_LIST_AFTERNOON.isEmpty())
-					{
-						_log.warning("[SiegeHourList]: invalid config property -> SiegeHourList is empty");
-						CL_SET_SIEGE_TIME_LIST.remove("hour");
-					}
+					SIEGE_HOUR_LIST.add(Integer.parseInt(hour));
 				}
 			}
 			CS_TELE_FEE_RATIO = Feature.getLong("CastleTeleportFunctionFeeRatio", 604800000);

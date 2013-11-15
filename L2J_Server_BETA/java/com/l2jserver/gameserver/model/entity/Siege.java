@@ -1478,9 +1478,8 @@ public class Siege implements Siegable
 			{
 				getCastle().getSiegeDate().set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
 			}
-			// from CT2.3 Castle sieges are on Sunday, but if server admins allow to set day of the siege
-			// than sieges can occur on Saturdays as well
-			if ((getCastle().getSiegeDate().get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) && !Config.CL_SET_SIEGE_TIME_LIST.contains("day"))
+			// from CT2.3 Castle sieges are on Sunday, but if server admins allow to set day of the siege than sieges can occur on Saturdays as well
+			if ((getCastle().getSiegeDate().get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY))
 			{
 				getCastle().getSiegeDate().set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 			}
@@ -1492,11 +1491,6 @@ public class Siege implements Siegable
 		{
 			getCastle().getSiegeDate().add(Calendar.DAY_OF_MONTH, 7);
 		}
-		
-		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_ANNOUNCED_SIEGE_TIME);
-		sm.addCastleId(getCastle().getResidenceId());
-		Announcements.getInstance().announceToAll(sm);
-		
 		_isRegistrationOver = false; // Allow registration for next siege
 	}
 	
