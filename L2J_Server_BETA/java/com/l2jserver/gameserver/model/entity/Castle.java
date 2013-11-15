@@ -61,10 +61,10 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.zone.type.L2CastleZone;
 import com.l2jserver.gameserver.model.zone.type.L2ResidenceTeleportZone;
 import com.l2jserver.gameserver.model.zone.type.L2SiegeZone;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
-
-import gnu.trove.map.hash.TIntIntHashMap;
+import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 public final class Castle extends AbstractResidence
 {
@@ -91,7 +91,6 @@ public final class Castle extends AbstractResidence
 	private L2ResidenceTeleportZone _teleZone;
 	private L2Clan _formerOwner = null;
 	private final List<L2ArtefactInstance> _artefacts = new ArrayList<>(1);
-	private final TIntIntHashMap _engrave = new TIntIntHashMap(1);
 	private final Map<Integer, CastleFunction> _function;
 	private int _ticketBuyCount = 0;
 	
@@ -287,19 +286,10 @@ public final class Castle extends AbstractResidence
 		{
 			return;
 		}
-		_engrave.put(target.getObjectId(), clan.getId());
-		if (_engrave.size() == _artefacts.size())
-		{
-			for (L2ArtefactInstance art : _artefacts)
-			{
-				if (_engrave.get(art.getObjectId()) != clan.getId())
-				{
-					return;
-				}
-			}
-			_engrave.clear();
-			setOwner(clan);
-		}
+		setOwner(clan);
+		final SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.CLAN_S1_ENGRAVED_RULER);
+		msg.addString(clan.getName());
+		getSiege().announceToPlayer(msg, true);
 	}
 	
 	// This method add to the treasury
