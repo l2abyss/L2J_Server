@@ -1379,8 +1379,8 @@ public final class CharEffectList
 				infoToRemove.removeStats();
 			}
 			
-			// Add stats to the character.
-			info.addStats();
+			// Initialize effects.
+			info.initializeEffects();
 			return;
 		}
 		

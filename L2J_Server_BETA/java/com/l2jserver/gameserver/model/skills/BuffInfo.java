@@ -256,7 +256,7 @@ public final class BuffInfo
 	public void initializeEffects()
 	{
 		// When effects are initialized, the successfully landed.
-		if (_env.getTarget().isPlayer())
+		if (_env.getTarget().isPlayer() && !_env.getSkill().isPassive())
 		{
 			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_FEEL_S1_EFFECT);
 			sm.addSkillName(_env.getSkill());
