@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.handler.EffectHandler;
 import com.l2jserver.gameserver.model.ChanceCondition;
 import com.l2jserver.gameserver.model.StatsSet;
@@ -171,6 +172,11 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 	public int getTicks()
 	{
 		return _ticks;
+	}
+	
+	public double getTicksMultiplier()
+	{
+		return (getTicks() * Config.EFFECT_TICK_RATIO) / 1000f;
 	}
 	
 	public List<FuncTemplate> getFuncTemplates()

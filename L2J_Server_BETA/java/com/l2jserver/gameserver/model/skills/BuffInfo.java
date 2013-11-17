@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.CharEffectList;
@@ -287,7 +288,7 @@ public final class BuffInfo
 			{
 				// The task for the effect ticks
 				final EffectTickTask effectTask = new EffectTickTask(this, effect);
-				final ScheduledFuture<?> scheduledFuture = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(effectTask, effect.getTicks() * 1000L, effect.getTicks() * 1000L);
+				final ScheduledFuture<?> scheduledFuture = ThreadPoolManager.getInstance().scheduleEffectAtFixedRate(effectTask, effect.getTicks() * Config.EFFECT_TICK_RATIO, effect.getTicks() * Config.EFFECT_TICK_RATIO);
 				// Adds the task for ticking
 				addTask(effect, new EffectTaskInfo(effectTask, scheduledFuture));
 			}
@@ -313,22 +314,7 @@ public final class BuffInfo
 			continueForever = effect.onActionTime(this);
 		}
 		
-		// Skills without abnormal time should tick indefinitely, unless they fail on action time.
-		if (_env.getSkill().getAbnormalTime() > 0)
-		{
-			// Checks made in seconds, although tasks run in milliseconds, it'll increase margin for effects that run indefinitely.
-			final long elapsedTime = effect.getTicks() * tickCount;
-			if (elapsedTime >= _env.getSkill().getAbnormalTime())
-			{
-				final EffectTaskInfo task = getEffectTask(effect);
-				if (task != null)
-				{
-					task.getScheduledFuture().cancel(true); // Allow to finish current run.
-					_env.getTarget().getEffectList().remove(this); // Remove the buff from the effect list.
-				}
-			}
-		}
-		else if (!continueForever)
+		if (!continueForever && _env.getSkill().isToggle())
 		{
 			final EffectTaskInfo task = getEffectTask(effect);
 			if (task != null)

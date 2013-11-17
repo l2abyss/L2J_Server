@@ -18,17 +18,17 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-public class ExRegMax extends L2GameServerPacket
+public class ExRegenMax extends L2GameServerPacket
 {
-	private final double _max;
-	private final int _count;
 	private final int _time;
+	private final int _tickInterval;
+	private final double _amountPerTick;
 	
-	public ExRegMax(double max, int count, int time)
+	public ExRegenMax(int time, int tickInterval, double amountPerTick)
 	{
-		_max = max;
-		_count = count;
 		_time = time;
+		_tickInterval = tickInterval;
+		_amountPerTick = amountPerTick;
 	}
 	
 	@Override
@@ -37,8 +37,8 @@ public class ExRegMax extends L2GameServerPacket
 		writeC(0xfe);
 		writeH(0x01);
 		writeD(1);
-		writeD(_count);
 		writeD(_time);
-		writeF(_max);
+		writeD(_tickInterval);
+		writeF(_amountPerTick);
 	}
 }

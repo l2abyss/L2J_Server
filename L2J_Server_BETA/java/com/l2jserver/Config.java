@@ -140,6 +140,7 @@ public final class Config
 	public static boolean SUMMON_STORE_SKILL_COOLTIME;
 	public static boolean ALT_GAME_SHIELD_BLOCKS;
 	public static int ALT_PERFECT_SHLD_BLOCK;
+	public static long EFFECT_TICK_RATIO;
 	public static boolean ALLOW_CLASS_MASTERS;
 	public static ClassMasterSettings CLASS_MASTER_SETTINGS;
 	public static boolean ALLOW_ENTIRE_TREE;
@@ -1486,6 +1487,7 @@ public final class Config
 			SUMMON_STORE_SKILL_COOLTIME = Character.getBoolean("SummonStoreSkillCooltime", true);
 			ALT_GAME_SHIELD_BLOCKS = Character.getBoolean("AltShieldBlocks", false);
 			ALT_PERFECT_SHLD_BLOCK = Character.getInt("AltPerfectShieldBlockRate", 10);
+			EFFECT_TICK_RATIO = Character.getLong("EffectTickRatio", 666);
 			ALLOW_CLASS_MASTERS = Character.getBoolean("AllowClassMasters", false);
 			ALLOW_ENTIRE_TREE = Character.getBoolean("AllowEntireTree", false);
 			ALTERNATE_CLASS_MASTER = Character.getBoolean("AlternateClassMaster", false);

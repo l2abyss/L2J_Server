@@ -278,20 +278,7 @@ public class L2PlayerAI extends L2PlayableAI
 			clientStopMoving(null);
 		}
 		
-		L2Object oldTarget = _actor.getTarget();
-		if ((oldTarget != null) && (target != null) && (oldTarget != target))
-		{
-			// Replace the current target by the cast target
-			_actor.setTarget(getCastTarget());
-			// Launch the Cast of the skill
-			_accessor.doCast(_skill);
-			// Restore the initial target
-			_actor.setTarget(oldTarget);
-		}
-		else
-		{
-			_accessor.doCast(_skill);
-		}
+		_accessor.doCast(_skill);
 	}
 	
 	private void thinkPickUp()
