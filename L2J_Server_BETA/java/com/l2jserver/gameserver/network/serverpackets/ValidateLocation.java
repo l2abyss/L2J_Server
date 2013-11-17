@@ -29,14 +29,13 @@ public class ValidateLocation extends L2GameServerPacket
 	public ValidateLocation(L2Object obj)
 	{
 		_charObjId = obj.getObjectId();
-		_loc = new Location(obj);
+		_loc = obj.getLocation();
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x79);
-		
 		writeD(_charObjId);
 		writeLoc(_loc);
 		writeD(_loc.getHeading());

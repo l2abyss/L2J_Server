@@ -672,7 +672,8 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	}
 	
 	/**
-	 * @return Returns the boolean _isDebuff.
+	 * Verify if this skill is a debuff.
+	 * @return {@code true} if this skill is a debuff, {@code false} otherwise
 	 */
 	public final boolean isDebuff()
 	{
