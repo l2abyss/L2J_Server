@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.CategoryData;
 import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.datatables.NpcPersonalAIData;
 import com.l2jserver.gameserver.enums.AIType;
 import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.InstanceType;
@@ -73,6 +74,7 @@ import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
+import com.l2jserver.gameserver.model.variables.NpcVariables;
 import com.l2jserver.gameserver.model.zone.type.L2TownZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
@@ -128,7 +130,6 @@ public class L2Npc extends L2Character
 	private int _soulshotamount = 0;
 	private int _spiritshotamount = 0;
 	private int _displayEffect = 0;
-	private int _scriptVal = 0;
 	
 	private final L2NpcAIData _staticAIData = getTemplate().getAIDataStatic();
 	
@@ -573,11 +574,11 @@ public class L2Npc extends L2Character
 	}
 	
 	/**
-	 * @return the Aggro Range of this L2NpcInstance contained in the L2NpcTemplate.
+	 * @return the Aggro Range of this L2NpcInstance either contained in the L2NpcTemplate, or overriden by spawnlist AI value.
 	 */
 	public int getAggroRange()
 	{
-		return _staticAIData.getAggroRange();
+		return hasAIValue("aggroRange") ? getAIValue("aggroRange") : _staticAIData.getAggroRange();
 	}
 	
 	/**
@@ -1843,19 +1844,84 @@ public class L2Npc extends L2Character
 		}
 	}
 	
+	/**
+	 * Short wrapper for backward compatibility
+	 * @return stored script value
+	 */
 	public int getScriptValue()
 	{
-		return _scriptVal;
+		return getVariables().getInt("SCRIPT_VAL");
 	}
 	
+	/**
+	 * Short wrapper for backward compatibility. Stores script value
+	 * @param val value to store
+	 */
 	public void setScriptValue(int val)
 	{
-		_scriptVal = val;
+		getVariables().set("SCRIPT_VAL", val);
 	}
 	
+	/**
+	 * Short wrapper for backward compatibility.
+	 * @param val value to store
+	 * @return {@code true} if stored script value equals given value, {@code false} otherwise 	 
+	 */
 	public boolean isScriptValue(int val)
 	{
-		return _scriptVal == val;
+		return getVariables().getInt("SCRIPT_VAL") == val;
+	}
+	
+	/**
+	 * @param paramName the parameter name to check
+	 * @return given AI parameter value
+	 */
+	public int getAIValue(final String paramName)
+	{
+		return hasAIValue(paramName) ? NpcPersonalAIData.getInstance().getAIValue(getSpawn().getName(), paramName) : -1;
+	}
+	
+	/**
+	 * @param paramName the parameter name to check
+	 * @return {@code true} if given parameter is set for NPC, {@code false} otherwise
+	 */
+	public boolean hasAIValue(final String paramName)
+	{
+		return (getSpawn() != null) && (getSpawn().getName() != null) && NpcPersonalAIData.getInstance().hasAIValue(getSpawn().getName(), paramName);
+	}
+	
+	/**
+	 * @param npc NPC to check
+	 * @return {@code true} if both given NPC and this NPC is in the same spawn group, {@code false} otherwise
+	 */
+	public boolean isInMySpawnGroup(L2Npc npc)
+	{
+		return ((getSpawn() != null) && (npc.getSpawn() != null) && (getSpawn().getName() != null) && (getSpawn().getName().equals(npc.getSpawn().getName())));
+	}
+	
+	/**
+	 * @return {@code true} if NPC currently located in own spawn point, {@code false} otherwise
+	 */
+	public boolean staysInSpawnLoc()
+	{
+		return ((getSpawn() != null) && (getSpawn().getX(this) == getX()) && (getSpawn().getY(this) == getY()));
+	}
+	
+ 	/**
+	 * @return {@code true} if {@link NpcVariables} instance is attached to current player's scripts, {@code false} otherwise.
+	 */
+	public boolean hasVariables()
+	{
+		return getScript(NpcVariables.class) != null;
+	}
+	
+	/**
+	 * @return {@link NpcVariables} instance containing parameters regarding NPC.
+	 */
+	public NpcVariables getVariables()
+	{
+		final NpcVariables vars = getScript(NpcVariables.class);
+		return vars != null ? vars : addScript(new NpcVariables());
 	}
 	
 	/**

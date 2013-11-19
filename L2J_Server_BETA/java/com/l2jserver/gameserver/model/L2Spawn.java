@@ -30,6 +30,7 @@ import javolution.util.FastList;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.datatables.NpcPersonalAIData;
 import com.l2jserver.gameserver.datatables.TerritoryTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
@@ -38,6 +39,7 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.interfaces.ILocational;
+import com.l2jserver.gameserver.model.interfaces.INamable;
 import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.zone.type.NpcSpawnTerritory;
 import com.l2jserver.util.Rnd;
@@ -49,10 +51,12 @@ import com.l2jserver.util.Rnd;
  * The heading of the L2NpcInstance can be a random heading if not defined (value= -1) or an exact heading (ex : merchant...).
  * @author Nightmare
  */
-public class L2Spawn implements IPositionable, IIdentifiable
+public class L2Spawn implements IPositionable, IIdentifiable, INamable
 {
 	protected static final Logger _log = Logger.getLogger(L2Spawn.class.getName());
 	
+	/** String identifier of this spawn */
+	private String _name;
 	/** The link on the L2NpcTemplate object containing generic and static properties of this spawn (ex : RewardExp, RewardSP, AggroRange...) */
 	private L2NpcTemplate _template;
 	/** The maximum number of L2NpcInstance that can manage this L2Spawn */
@@ -154,6 +158,24 @@ public class L2Spawn implements IPositionable, IIdentifiable
 	public int getAmount()
 	{
 		return _maximumCount;
+	}
+	
+ 	/**
+	 * @return the String Identifier of this spawn.
+ 	 */
+	@Override
+	public String getName()
+	{
+		return _name;
+	}
+	
+ 	/**
+	 * Set the String Identifier of this spawn.
+	 * @param name
+	 */
+	public void setName(String name)
+	{
+		_name = name;
 	}
 	
 	/**
@@ -531,6 +553,12 @@ public class L2Spawn implements IPositionable, IIdentifiable
 				return mob;
 			}
 			mob = (L2Npc) tmp;
+			// Check for certain AI data, overriden in spawnlist 
+			if (_name != null)
+			{
+				NpcPersonalAIData.getInstance().initializeNpcParameters(mob, this, _name);
+			}
+
 			return initializeNpcInstance(mob);
 		}
 		catch (Exception e)
@@ -595,8 +623,11 @@ public class L2Spawn implements IPositionable, IIdentifiable
 		mob.setDecayed(false);
 		// Set the HP and MP of the L2NpcInstance to the max
 		mob.setCurrentHpMp(mob.getMaxHp(), mob.getMaxMp());
-		// Set default value
-		mob.setScriptValue(0);
+		// Clear script variables
+		if (mob.hasVariables())
+		{
+			mob.getVariables().getSet().clear();
+		}
 		// Set is not random walk default value
 		mob.setIsNoRndWalk(isNoRndWalk());
 		

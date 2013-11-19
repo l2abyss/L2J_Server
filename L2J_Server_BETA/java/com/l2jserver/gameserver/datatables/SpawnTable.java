@@ -23,6 +23,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -113,13 +114,26 @@ public final class SpawnTable extends DocumentParser
 		{
 			if (list.getNodeName().equalsIgnoreCase("list"))
 			{
+				attrs = list.getAttributes();
+				// skip disabled spawnlists
+				if (!Boolean.parseBoolean(attrs.getNamedItem("enabled").getNodeValue()))
+				{
+					continue;
+				}
 				for (Node param = list.getFirstChild(); param != null; param = param.getNextSibling())
 				{
 					attrs = param.getAttributes();
 					if (param.getNodeName().equalsIgnoreCase("spawn"))
 					{
 						String territoryName = null;
+						String spawnName = null;
+						Map<String, Integer> map = null;
 						
+						// Check, if spawn name specified
+						if (attrs.getNamedItem("name") != null)
+						{
+							spawnName = parseString(attrs, "name");
+						}
 						// Check, if spawn territory specified and exists
 						if ((attrs.getNamedItem("zone") != null) && (ZoneManager.getInstance().getSpawnTerritory(attrs.getNamedItem("zone").getNodeValue()) != null))
 						{
@@ -129,7 +143,36 @@ public final class SpawnTable extends DocumentParser
 						for (Node npctag = param.getFirstChild(); npctag != null; npctag = npctag.getNextSibling())
 						{
 							attrs = npctag.getAttributes();
-							if (npctag.getNodeName().equalsIgnoreCase("npc"))
+							// Check if there are any AI parameters
+							if (npctag.getNodeName().equalsIgnoreCase("AIData"))
+							{
+								attrs = npctag.getAttributes();
+								if (map == null)
+								{
+									map = new HashMap<>();
+								}
+								for (Node c = npctag.getFirstChild(); c != null; c = c.getNextSibling())
+								{
+									// Skip odd nodes
+									if (c.getNodeName().equals("#text"))
+									{
+										continue;
+									}
+									int val;
+									switch (c.getNodeName())
+									{
+										case "disableRandomAnimation":
+										case "disableRandomWalk":
+											val = Boolean.parseBoolean(c.getTextContent()) ? 1 : 0;
+											break;
+										default:
+											val = Integer.parseInt(c.getTextContent());
+									}
+									map.put(c.getNodeName(), val);
+								}
+							}
+							// Check for NPC spawns
+							else if (npctag.getNodeName().equalsIgnoreCase("npc"))
 							{
 								// mandatory
 								final int templateId = parseInt(attrs, "id");
@@ -161,6 +204,7 @@ public final class SpawnTable extends DocumentParser
 								spawnInfo.set("y", y);
 								spawnInfo.set("z", z);
 								spawnInfo.set("territoryName", territoryName);
+								spawnInfo.set("spawnName", spawnName);
 								
 								// trying to read optional parameters
 								if (attrs.getNamedItem("heading") != null)
@@ -192,7 +236,7 @@ public final class SpawnTable extends DocumentParser
 									}
 								}
 								
-								_xmlSpawnCount += addSpawn(spawnInfo);
+								_xmlSpawnCount += addSpawn(spawnInfo, map);
 							}
 						}
 					}
@@ -246,7 +290,13 @@ public final class SpawnTable extends DocumentParser
 		return npcSpawnCount;
 	}
 	
-	private int addSpawn(StatsSet spawnInfo)
+	/**
+	 * Creates NPC spawn
+	 * @param spawnInfo StatsSet of spawn parameters
+	 * @param AIData Map of specific AI parameters for this spawn
+	 * @return count NPC instances, spawned by this spawn
+	 */
+	private int addSpawn(StatsSet spawnInfo, Map<String, Integer> AIData)
 	{
 		L2Spawn spawnDat;
 		int ret = 0;
@@ -261,11 +311,18 @@ public final class SpawnTable extends DocumentParser
 			spawnDat.setRespawnDelay(spawnInfo.getInt("respawnDelay", 0), spawnInfo.getInt("respawnRandom", 0));
 			spawnDat.setLocationId(spawnInfo.getInt("locId", 0));
 			String territoryName = spawnInfo.getString("territoryName", "");
+			String spawnName = spawnInfo.getString("spawnName", "");
 			spawnDat.setCustom(spawnInfo.getBoolean("isCustomSpawn", false));
+			if (!spawnName.isEmpty())
+			{
+				spawnDat.setName(spawnName);
+			}
 			if (!territoryName.isEmpty())
 			{
 				spawnDat.setSpawnTerritory(ZoneManager.getInstance().getSpawnTerritory(territoryName));
 			}
+			// Register AI Data for this spawn
+			NpcPersonalAIData.getInstance().storeData(spawnDat, AIData);
 			switch (spawnInfo.getInt("periodOfDay", 0))
 			{
 				case 0: // default
@@ -290,6 +347,16 @@ public final class SpawnTable extends DocumentParser
 		}
 		
 		return ret;
+	}
+	
+	/**
+	 * Wrapper for {@link #addSpawn(StatsSet, Map)}.
+	 * @param spawnInfo StatsSet of spawn parameters
+	 * @return count NPC instances, spawned by this spawn
+	 */
+	private int addSpawn(StatsSet spawnInfo)
+	{
+		return addSpawn(spawnInfo, null);
 	}
 	
 	public Map<Integer, Set<L2Spawn>> getSpawnTable()
