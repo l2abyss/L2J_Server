@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.SecondaryAuthData;
 
 /**
  * Format: (ch)S S: numerical password
@@ -39,7 +39,7 @@ public class RequestEx2ndPasswordVerify extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (!Config.SECOND_AUTH_ENABLED)
+		if (!SecondaryAuthData.getInstance().isEnabled())
 		{
 			return;
 		}

@@ -75,6 +75,7 @@ import com.l2jserver.gameserver.datatables.OfflineTradersTable;
 import com.l2jserver.gameserver.datatables.OptionsData;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.RecipeData;
+import com.l2jserver.gameserver.datatables.SecondaryAuthData;
 import com.l2jserver.gameserver.datatables.SkillLearnData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
@@ -217,6 +218,7 @@ public class GameServer
 		
 		printSection("Data");
 		CategoryData.getInstance();
+		SecondaryAuthData.getInstance();
 		
 		printSection("Skills");
 		EffectHandler.getInstance().executeScript();

@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.SecondaryAuthData;
 import com.l2jserver.gameserver.network.serverpackets.Ex2ndPasswordCheck;
 
 /**
@@ -38,7 +38,7 @@ public class RequestEx2ndPasswordCheck extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (!Config.SECOND_AUTH_ENABLED || getClient().getSecondaryAuth().isAuthed())
+		if (!SecondaryAuthData.getInstance().isEnabled() || getClient().getSecondaryAuth().isAuthed())
 		{
 			sendPacket(new Ex2ndPasswordCheck(Ex2ndPasswordCheck.PASSWORD_OK));
 			return;

@@ -102,7 +102,6 @@ public final class Config
 	public static final String GRANDBOSS_CONFIG_FILE = "./config/GrandBoss.properties";
 	public static final String GRACIASEEDS_CONFIG_FILE = "./config/GraciaSeeds.properties";
 	public static final String CHAT_FILTER_FILE = "./config/chatfilter.txt";
-	public static final String SECURITY_CONFIG_FILE = "./config/Security.properties";
 	public static final String EMAIL_CONFIG_FILE = "./config/Email.properties";
 	public static final String CH_SIEGE_FILE = "./config/ConquerableHallSiege.properties";
 	// --------------------------------------------------
@@ -1092,12 +1091,6 @@ public final class Config
 	
 	// chatfilter
 	public static ArrayList<String> FILTER_LIST;
-	
-	// Security
-	public static boolean SECOND_AUTH_ENABLED;
-	public static int SECOND_AUTH_MAX_ATTEMPTS;
-	public static long SECOND_AUTH_BAN_TIME;
-	public static String SECOND_AUTH_REC_LINK;
 	
 	// Email
 	public static String EMAIL_SERVERINFO_NAME;
@@ -2762,15 +2755,6 @@ public final class Config
 			{
 				_log.log(Level.WARNING, "Error while loading chat filter words!", e);
 			}
-			
-			// Security
-			final PropertiesParser SecuritySettings = new PropertiesParser(SECURITY_CONFIG_FILE);
-			
-			// Second Auth Settings
-			SECOND_AUTH_ENABLED = SecuritySettings.getBoolean("SecondAuthEnabled", false);
-			SECOND_AUTH_MAX_ATTEMPTS = SecuritySettings.getInt("SecondAuthMaxAttempts", 5);
-			SECOND_AUTH_BAN_TIME = SecuritySettings.getInt("SecondAuthBanTime", 480);
-			SECOND_AUTH_REC_LINK = SecuritySettings.getString("SecondAuthRecoveryLink", "");
 			
 			final PropertiesParser ClanHallSiege = new PropertiesParser(CH_SIEGE_FILE);
 			
