@@ -1999,8 +1999,16 @@ public final class Formulas
 					Debug.sendSkillDebug(activeChar, target, skill, set);
 				}
 				
-				final List<BuffInfo> buffs = new ArrayList<>(target.getEffectList().getBuffs().values());
-				buffs.addAll(target.getEffectList().getTriggered().values());
+				// Prevent initialization.
+				final List<BuffInfo> buffs = target.getEffectList().hasBuffs() ? new ArrayList<>(target.getEffectList().getBuffs().values()) : new ArrayList<BuffInfo>(1);
+				if (target.getEffectList().hasTriggered())
+				{
+					buffs.addAll(target.getEffectList().getTriggered().values());
+				}
+				if (target.getEffectList().hasDances())
+				{
+					buffs.addAll(target.getEffectList().getDances().values());
+				}
 				for (int i = buffs.size() - 1; i >= 0; i--) // reverse order
 				{
 					BuffInfo info = buffs.get(i);

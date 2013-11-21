@@ -90,7 +90,7 @@ public enum AbnormalVisualEffect
 	
 	/** Int mask. */
 	private final int _mask;
-	/** Type: 1 Normal, 2 Special, 3 Event. */
+	/** Type: 0 Normal, 1 Special, 2 Event. */
 	private final int _type;
 	
 	private AbnormalVisualEffect(int mask, int type)
