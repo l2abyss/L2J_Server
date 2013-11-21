@@ -81,7 +81,7 @@ public abstract class AbstractHtmlPacket extends L2GameServerPacket
 			_html = html.substring(0, 17200);
 		}
 		
-		if (!html.contains("<html>"))
+		if (!html.contains("<html"))
 		{
 			html = "<html><body>" + html + "</body></html>";
 		}

@@ -120,6 +120,7 @@ public class HtmCache
 			
 			bis.read(raw);
 			content = new String(raw, "UTF-8");
+			content = content.replaceAll("(?s)<!--.*?-->", ""); // Remove html comments
 			
 			String oldContent = _cache.get(relpath);
 			if (oldContent == null)
