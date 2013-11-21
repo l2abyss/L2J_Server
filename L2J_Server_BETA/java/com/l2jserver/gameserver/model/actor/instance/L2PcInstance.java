@@ -9268,7 +9268,8 @@ public final class L2PcInstance extends L2Playable
 	public boolean checkPvpSkill(L2Object target, L2Skill skill, boolean srcIsSummon)
 	{
 		final L2PcInstance targetPlayer = target != null ? target.getActingPlayer() : null;
-		if (skill.isDebuff())
+		final boolean bannedEffects = skill.hasEffectType(L2EffectType.DISPEL, L2EffectType.STEAL_ABNORMAL);
+		if (skill.isDebuff() || bannedEffects)
 		{
 			if (this == targetPlayer)
 			{
@@ -9304,8 +9305,7 @@ public final class L2PcInstance extends L2Playable
 						return true;
 					}
 				}
-				
-				if (targetPlayer.isInOlympiadMode())
+				else if (targetPlayer.isInOlympiadMode())
 				{
 					return false;
 				}
