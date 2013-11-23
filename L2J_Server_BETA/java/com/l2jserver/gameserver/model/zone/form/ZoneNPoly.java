@@ -20,7 +20,7 @@ package com.l2jserver.gameserver.model.zone.form;
 
 import java.awt.Polygon;
 
-import com.l2jserver.gameserver.GeoEngine;
+import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.zone.L2ZoneForm;
 import com.l2jserver.util.Rnd;
@@ -143,7 +143,7 @@ public class ZoneNPoly extends L2ZoneForm
 		{
 			x,
 			y,
-			GeoEngine.getInstance().getHeight(x, y, _z1)
+			GeoData.getInstance().getHeight(x, y, _z1)
 		};
 	}
 }

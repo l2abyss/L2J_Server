@@ -513,7 +513,7 @@ public final class Config
 	public static int WORLD_Y_MIN;
 	public static int WORLD_Y_MAX;
 	public static int GEODATA;
-	public static File GEODATA_DIR;
+	public static String GEODATA_DRIVER;
 	public static File PATHNODE_DIR;
 	public static boolean GEODATA_CELLFINDING;
 	public static String PATHFIND_BUFFERS;
@@ -1850,15 +1850,7 @@ public final class Config
 			WORLD_Y_MIN = General.getInt("WorldYMin", 10);
 			WORLD_Y_MAX = General.getInt("WorldYMax", 26);
 			GEODATA = General.getInt("GeoData", 0);
-			try
-			{
-				GEODATA_DIR = new File(General.getString("GeodataDirectory", "data/geodata").replaceAll("\\\\", "/")).getCanonicalFile();
-			}
-			catch (IOException e)
-			{
-				_log.log(Level.WARNING, "Error setting geodata directory!", e);
-				GEODATA_DIR = new File("data/geodata");
-			}
+			GEODATA_DRIVER = General.getString("GeoDataDriver", "com.l2jserver.gameserver.geoengine.NullDriver");
 			try
 			{
 				PATHNODE_DIR = new File(General.getString("PathnodeDirectory", "data/pathnode").replaceAll("\\\\", "/")).getCanonicalFile();

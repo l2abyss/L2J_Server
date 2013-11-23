@@ -599,21 +599,20 @@ public class L2Spawn implements IPositionable, IIdentifiable, INamable
 			// Set the calculated position of the L2NpcInstance
 			newlocx = p[0];
 			newlocy = p[1];
-			newlocz = GeoData.getInstance().getSpawnHeight(newlocx, newlocy, p[2], p[3], this);
+			newlocz = p[3];
 		}
 		else
 		{
 			// The L2NpcInstance is spawned at the exact position (Lox, Locy, Locz)
 			newlocx = getX();
 			newlocy = getY();
-			if (Config.GEODATA > 0)
-			{
-				newlocz = GeoData.getInstance().getSpawnHeight(newlocx, newlocy, getZ(), getZ(), this);
-			}
-			else
-			{
-				newlocz = getZ();
-			}
+			newlocz = getZ();
+		}
+		
+		// don't correct z of flying npc's
+		if (!mob.isFlying())
+		{
+			newlocz = GeoData.getInstance().getSpawnHeight(newlocx, newlocy, newlocz, newlocz);
 		}
 		
 		mob.stopAllEffects();
