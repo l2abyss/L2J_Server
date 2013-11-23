@@ -29,39 +29,39 @@ public final class Utils
 	{
 		return (nswe & nsweFlags) == nsweFlags;
 	}
-
+	
 	private static byte _getNsweFlagsFromDirection(Direction dir)
 	{
 		switch (dir)
 		{
-		case NORTH_WEST:
-			return Cell.FLAG_NSWE_NORTH_WEST;
-		case NORTH_EAST:
-			return Cell.FLAG_NSWE_NORTH_EAST;
-		case SOUTH_WEST:
-			return Cell.FLAG_NSWE_SOUTH_WEST;
-		case SOUTH_EAST:
-			return Cell.FLAG_NSWE_SOUTH_EAST;
-		case NORTH:
-			return Cell.FLAG_NSWE_NORTH;
-		case EAST:
-			return Cell.FLAG_NSWE_EAST;
-		case SOUTH:
-			return Cell.FLAG_NSWE_SOUTH;
-		case WEST:
-			return Cell.FLAG_NSWE_WEST;
-		default:
-			throw new IllegalStateException("This can't happen we have exacly the number of fields in the enum!");
+			case NORTH_WEST:
+				return Cell.FLAG_NSWE_NORTH_WEST;
+			case NORTH_EAST:
+				return Cell.FLAG_NSWE_NORTH_EAST;
+			case SOUTH_WEST:
+				return Cell.FLAG_NSWE_SOUTH_WEST;
+			case SOUTH_EAST:
+				return Cell.FLAG_NSWE_SOUTH_EAST;
+			case NORTH:
+				return Cell.FLAG_NSWE_NORTH;
+			case EAST:
+				return Cell.FLAG_NSWE_EAST;
+			case SOUTH:
+				return Cell.FLAG_NSWE_SOUTH;
+			case WEST:
+				return Cell.FLAG_NSWE_WEST;
+			default:
+				throw new IllegalStateException("This can't happen we have exacly the number of fields in the enum!");
 		}
 	}
-
+	
 	public static boolean canMoveIntoDirections(byte nswe, Direction first, Direction... more)
 	{
 		if (!_nsweContains(nswe, _getNsweFlagsFromDirection(first)))
 		{
 			return false;
 		}
-
+		
 		if (more != null)
 		{
 			for (Direction dir : more)
@@ -72,9 +72,11 @@ public final class Utils
 				}
 			}
 		}
-
+		
 		return true;
 	}
-
-	private Utils(){}
+	
+	private Utils()
+	{
+	}
 }

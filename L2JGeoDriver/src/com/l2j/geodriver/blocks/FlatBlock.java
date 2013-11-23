@@ -29,7 +29,7 @@ import com.l2jserver.gameserver.geoengine.Direction;
 public class FlatBlock implements IBlock
 {
 	private final short _height;
-
+	
 	/**
 	 * Initializes a new instance of this block reading the specified buffer.
 	 * @param bb the buffer
@@ -38,31 +38,31 @@ public class FlatBlock implements IBlock
 	{
 		_height = bb.getShort();
 	}
-
+	
 	@Override
 	public boolean hasGeoPos(int geoX, int geoY)
 	{
 		return true;
 	}
-
+	
 	@Override
 	public int getNearestZ(int geoX, int geoY, int worldZ)
 	{
 		return _height;
 	}
-
+	
 	@Override
 	public int getNextLowerZ(int geoX, int geoY, int worldZ)
 	{
 		return _height <= worldZ ? _height : worldZ;
 	}
-
+	
 	@Override
 	public int getNextHigherZ(int geoX, int geoY, int worldZ)
 	{
 		return _height >= worldZ ? _height : worldZ;
 	}
-
+	
 	@Override
 	public boolean canMoveIntoDirections(int geoX, int geoY, int worldZ, Direction first, Direction... more)
 	{

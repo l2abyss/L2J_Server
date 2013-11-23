@@ -29,7 +29,7 @@ public enum Direction
 	NORTH_EAST,
 	/** East direction */
 	EAST,
-	/** South-East direction*/
+	/** South-East direction */
 	SOUTH_EAST,
 	/** South direction */
 	SOUTH,

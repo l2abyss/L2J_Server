@@ -40,9 +40,11 @@ public final class Cell
 	public static final byte FLAG_NSWE_SOUTH_EAST = FLAG_NSWE_SOUTH | FLAG_NSWE_EAST;
 	/** South-West NSWE flags */
 	public static final byte FLAG_NSWE_SOUTH_WEST = FLAG_NSWE_SOUTH | FLAG_NSWE_WEST;
-
+	
 	/** All directions NSWE flags */
 	public static final byte FLAG_NSWE_ALL = FLAG_NSWE_EAST | FLAG_NSWE_WEST | FLAG_NSWE_SOUTH | FLAG_NSWE_NORTH;
-
-	private Cell() {}
+	
+	private Cell()
+	{
+	}
 }

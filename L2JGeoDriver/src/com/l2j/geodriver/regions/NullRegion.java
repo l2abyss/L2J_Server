@@ -21,7 +21,6 @@ package com.l2j.geodriver.regions;
 import com.l2j.geodriver.IRegion;
 import com.l2jserver.gameserver.geoengine.Direction;
 
-
 /**
  * @author FBIagent
  */
@@ -31,37 +30,37 @@ public final class NullRegion implements IRegion
 	 * The only required instance of this class.
 	 */
 	public static final NullRegion INSTANCE = new NullRegion();
-
+	
 	@Override
 	public boolean hasGeoPos(int geoX, int geoY)
 	{
 		return false;
 	}
-
+	
 	@Override
 	public int getNearestZ(int geoX, int geoY, int worldZ)
 	{
 		return worldZ;
 	}
-
+	
 	@Override
 	public int getNextLowerZ(int geoX, int geoY, int worldZ)
 	{
 		return worldZ;
 	}
-
+	
 	@Override
 	public int getNextHigherZ(int geoX, int geoY, int worldZ)
 	{
 		return worldZ;
 	}
-
+	
 	@Override
 	public boolean canMoveIntoDirections(int geoX, int geoY, int worldZ, Direction first, Direction... more)
 	{
 		return true;
 	}
-
+	
 	@Override
 	public boolean canMoveIntoAllDirections(int geoX, int geoY, int worldZ)
 	{

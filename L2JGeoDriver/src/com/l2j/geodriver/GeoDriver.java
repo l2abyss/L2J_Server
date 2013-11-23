@@ -40,13 +40,13 @@ import com.l2jserver.gameserver.geoengine.abstraction.IGeoDriver;
 public final class GeoDriver implements IGeoDriver
 {
 	private final Logger _LOGGER = Logger.getLogger(GeoDriver.class.getName());
-
+	
 	// world dimensions: 1048576 * 1048576 = 1099511627776
 	private static final int WORLD_MIN_X = -655360;
 	private static final int WORLD_MAX_X = 393215;
 	private static final int WORLD_MIN_Y = -589824;
 	private static final int WORLD_MAX_Y = 458751;
-
+	
 	/** Regions in the world on the x axis */
 	public static final int GEO_REGIONS_X = 32;
 	/** Regions in the world on the y axis */
@@ -60,15 +60,15 @@ public final class GeoDriver implements IGeoDriver
 	public static final int GEO_BLOCKS_Y = GEO_REGIONS_Y * IRegion.REGION_BLOCKS_Y;
 	/** Blocks in the world */
 	public static final int GEO_BLOCKS = GEO_REGIONS * IRegion.REGION_BLOCKS;
-
+	
 	/** Cells in the world on the x axis */
 	public static final int GEO_CELLS_X = GEO_BLOCKS_X * IBlock.BLOCK_CELLS_X;
 	/** Cells in the world in the y axis */
 	public static final int GEO_CELLS_Y = GEO_BLOCKS_Y * IBlock.BLOCK_CELLS_Y;
-
+	
 	/** The regions array */
 	private final IRegion[] _regions = new IRegion[GEO_REGIONS];
-
+	
 	/**
 	 * Initializes a new instance of this geodata driver.<br>
 	 * Required properties are "geodataPath".
@@ -83,24 +83,24 @@ public final class GeoDriver implements IGeoDriver
 			filePathFormat += File.separator;
 		}
 		filePathFormat += "%d_%d.l2j";
-
+		
 		boolean tryLoadUnspecifiedRegions = Boolean.valueOf(_loadProperty(props, "tryLoadUnspecifiedRegions"));
-
+		
 		int loadedRegions = 0;
-		for (int geoRegionX = 0;geoRegionX < GEO_REGIONS_X;++ geoRegionX)
+		for (int geoRegionX = 0; geoRegionX < GEO_REGIONS_X; ++geoRegionX)
 		{
-			for (int geoRegionY = 0;geoRegionY < GEO_REGIONS_Y;++ geoRegionY)
+			for (int geoRegionY = 0; geoRegionY < GEO_REGIONS_Y; ++geoRegionY)
 			{
-				int geoRegionOffset = geoRegionX * GEO_REGIONS_Y + geoRegionY;
-				String filePath = String.format(filePathFormat, geoRegionX, geoRegionY); 
-
+				int geoRegionOffset = (geoRegionX * GEO_REGIONS_Y) + geoRegionY;
+				String filePath = String.format(filePathFormat, geoRegionX, geoRegionY);
+				
 				try
 				{
 					boolean regionEnabled = Boolean.valueOf(_loadProperty(props, geoRegionX + "_" + geoRegionY));
 					if (regionEnabled)
 					{
 						_regions[geoRegionOffset] = _loadGeoFile(filePath);
-						++ loadedRegions;
+						++loadedRegions;
 					}
 				}
 				catch (MissingPropertyException e)
@@ -110,7 +110,7 @@ public final class GeoDriver implements IGeoDriver
 						try
 						{
 							_regions[geoRegionOffset] = _loadGeoFile(filePath);
-							++ loadedRegions;
+							++loadedRegions;
 						}
 						catch (FileNotFoundException e2)
 						{
@@ -124,10 +124,10 @@ public final class GeoDriver implements IGeoDriver
 				}
 			}
 		}
-
+		
 		_LOGGER.info("Loaded " + loadedRegions + " regions.");
 	}
-
+	
 	private String _loadProperty(Properties props, String propertyKey)
 	{
 		String propertyValue = props.getProperty(propertyKey);
@@ -137,7 +137,7 @@ public final class GeoDriver implements IGeoDriver
 		}
 		return propertyValue;
 	}
-
+	
 	private NonNullRegion _loadGeoFile(String filePath) throws FileNotFoundException, IOException
 	{
 		try (RandomAccessFile raf = new RandomAccessFile(filePath, "r");
@@ -150,44 +150,52 @@ public final class GeoDriver implements IGeoDriver
 			return nnr;
 		}
 	}
-
+	
 	private void _checkGeoX(int geoX)
 	{
 		// maximum of GEO_CELLS_X - 1
-		if (geoX < 0 || geoX >= GEO_CELLS_X)
+		if ((geoX < 0) || (geoX >= GEO_CELLS_X))
+		{
 			throw new IllegalArgumentException();
+		}
 	}
 	
 	private void _checkGeoY(int geoY)
 	{
 		// maximum of GEO_CELLS_Y - 1
-		if (geoY < 0 || geoY >= GEO_CELLS_Y)
+		if ((geoY < 0) || (geoY >= GEO_CELLS_Y))
+		{
 			throw new IllegalArgumentException();
+		}
 	}
 	
 	private IRegion _getGeoRegion(int geoX, int geoY)
 	{
 		_checkGeoX(geoX);
 		_checkGeoY(geoY);
-		return _regions[(geoX / IRegion.REGION_CELLS_X) * GEO_REGIONS_Y + (geoY / IRegion.REGION_CELLS_Y)];
+		return _regions[((geoX / IRegion.REGION_CELLS_X) * GEO_REGIONS_Y) + (geoY / IRegion.REGION_CELLS_Y)];
 	}
-
+	
 	@Override
 	public int getGeoX(int worldX)
 	{
-		if (worldX < WORLD_MIN_X || worldX > WORLD_MAX_X)
+		if ((worldX < WORLD_MIN_X) || (worldX > WORLD_MAX_X))
+		{
 			throw new IllegalArgumentException();
+		}
 		return (worldX - WORLD_MIN_X) >> 4;
 	}
-
+	
 	@Override
 	public int getGeoY(int worldY)
 	{
-		if (worldY < WORLD_MIN_Y || worldY > WORLD_MAX_Y)
+		if ((worldY < WORLD_MIN_Y) || (worldY > WORLD_MAX_Y))
+		{
 			throw new IllegalArgumentException();
+		}
 		return (worldY - WORLD_MIN_Y) >> 4;
 	}
-
+	
 	/**
 	 * A single geodata position represents 16x16 positions in the game world.<br>
 	 * That means we add 8 to the calculated world position, to always return the<br>
@@ -199,44 +207,44 @@ public final class GeoDriver implements IGeoDriver
 		_checkGeoX(geoX);
 		return (geoX << 4) + WORLD_MIN_X + 8;
 	}
-
+	
 	@Override
 	public int getWorldY(int geoY)
 	{
 		_checkGeoY(geoY);
 		return (geoY << 4) + WORLD_MIN_Y + 8;
 	}
-
+	
 	@Override
 	public boolean hasGeoPos(int geoX, int geoY)
 	{
 		return _getGeoRegion(geoX, geoY).hasGeoPos(geoX, geoY);
 	}
-
+	
 	@Override
 	public int getNearestZ(int geoX, int geoY, int worldZ)
 	{
 		return _getGeoRegion(geoX, geoY).getNearestZ(geoX, geoY, worldZ);
 	}
-
+	
 	@Override
 	public int getNextLowerZ(int geoX, int geoY, int worldZ)
 	{
 		return _getGeoRegion(geoX, geoY).getNextLowerZ(geoX, geoY, worldZ);
 	}
-
+	
 	@Override
 	public int getNextHigherZ(int geoX, int geoY, int worldZ)
 	{
 		return _getGeoRegion(geoX, geoY).getNextHigherZ(geoX, geoY, worldZ);
 	}
-
+	
 	@Override
 	public boolean canEnterNeighbors(int geoX, int geoY, int worldZ, Direction first, Direction... more)
 	{
 		return _getGeoRegion(geoX, geoY).canMoveIntoDirections(geoX, geoY, worldZ, first, more);
 	}
-
+	
 	@Override
 	public boolean canEnterAllNeighbors(int geoX, int geoY, int worldZ)
 	{

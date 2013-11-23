@@ -27,7 +27,6 @@ public interface IRegion
 {
 	/**
 	 * Region types.
-	 * 
 	 * @author FBIagent
 	 */
 	public enum Type
@@ -37,25 +36,30 @@ public interface IRegion
 		/** Non null region type */
 		NON_NULL
 	}
-
+	
 	/** Blocks in a region on the x axis */
 	public static final int REGION_BLOCKS_X = 256;
 	/** Blocks in a region on the y axis */
 	public static final int REGION_BLOCKS_Y = 256;
 	/** Blocks in a region */
 	public static final int REGION_BLOCKS = REGION_BLOCKS_X * REGION_BLOCKS_Y;
-
+	
 	/** Cells in a region on the x axis */
 	public static final int REGION_CELLS_X = REGION_BLOCKS_X * IBlock.BLOCK_CELLS_X;
 	/** Cells in a regioin on the y axis */
 	public static final int REGION_CELLS_Y = REGION_BLOCKS_Y * IBlock.BLOCK_CELLS_Y;
 	/** Cells in a region */
 	public static final int REGION_CELLS = REGION_CELLS_X * REGION_CELLS_Y;
-
+	
 	boolean hasGeoPos(int geoX, int geoY);
+	
 	int getNearestZ(int geoX, int geoY, int worldZ);
+	
 	int getNextLowerZ(int geoX, int geoY, int worldZ);
+	
 	int getNextHigherZ(int geoX, int geoY, int worldZ);
+	
 	boolean canMoveIntoDirections(int geoX, int geoY, int worldZ, Direction first, Direction... more);
+	
 	boolean canMoveIntoAllDirections(int geoX, int geoY, int worldZ);
 }

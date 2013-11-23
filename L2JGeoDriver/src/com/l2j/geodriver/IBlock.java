@@ -27,7 +27,6 @@ public interface IBlock
 {
 	/**
 	 * Region type.
-	 * 
 	 * @author FBIagent
 	 */
 	public enum Type
@@ -39,19 +38,23 @@ public interface IBlock
 		/** Multilayer block type */
 		MULTILAYER
 	}
-
+	
 	/** Cells in a block on the x axis */
 	public static final int BLOCK_CELLS_X = 8;
 	/** Cells in a block on the y axis */
 	public static final int BLOCK_CELLS_Y = 8;
 	/** Cells in a block */
 	public static final int BLOCK_CELLS = BLOCK_CELLS_X * BLOCK_CELLS_Y;
-
-
+	
 	boolean hasGeoPos(int geoX, int geoY);
+	
 	int getNearestZ(int geoX, int geoY, int worldZ);
+	
 	int getNextLowerZ(int geoX, int geoY, int worldZ);
+	
 	int getNextHigherZ(int geoX, int geoY, int worldZ);
+	
 	boolean canMoveIntoDirections(int geoX, int geoY, int worldZ, Direction first, Direction... more);
+	
 	boolean canMoveIntoAllDirections(int geoX, int geoY, int worldZ);
 }

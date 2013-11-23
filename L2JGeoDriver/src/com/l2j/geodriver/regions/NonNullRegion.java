@@ -27,13 +27,12 @@ import com.l2j.geodriver.blocks.FlatBlock;
 import com.l2j.geodriver.blocks.MultilayerBlock;
 import com.l2jserver.gameserver.geoengine.Direction;
 
-
 /**
  * @author FBIagent
  */
 public final class NonNullRegion implements IRegion
 {
-	private IBlock[] _blocks = new IBlock[IRegion.REGION_BLOCKS];
+	private final IBlock[] _blocks = new IBlock[IRegion.REGION_BLOCKS];
 	
 	/**
 	 * Initializes a new instance of this region reading from the specified<br>
@@ -43,7 +42,7 @@ public final class NonNullRegion implements IRegion
 	public NonNullRegion(ByteBuffer bb)
 	{
 		int blockType;
-		for (int regionBlockOffset = 0;regionBlockOffset < IRegion.REGION_BLOCKS;++ regionBlockOffset)
+		for (int regionBlockOffset = 0; regionBlockOffset < IRegion.REGION_BLOCKS; ++regionBlockOffset)
 		{
 			blockType = bb.get();
 			if (blockType == IBlock.Type.FLAT.ordinal())
@@ -64,42 +63,42 @@ public final class NonNullRegion implements IRegion
 			}
 		}
 	}
-
+	
 	private IBlock _getBlock(int geoX, int geoY)
 	{
-		return _blocks[((geoX / IBlock.BLOCK_CELLS_X) % IRegion.REGION_BLOCKS_X) * IRegion.REGION_BLOCKS_Y + ((geoY / IBlock.BLOCK_CELLS_Y) % IRegion.REGION_BLOCKS_Y)];
+		return _blocks[(((geoX / IBlock.BLOCK_CELLS_X) % IRegion.REGION_BLOCKS_X) * IRegion.REGION_BLOCKS_Y) + ((geoY / IBlock.BLOCK_CELLS_Y) % IRegion.REGION_BLOCKS_Y)];
 	}
-
+	
 	@Override
 	public boolean hasGeoPos(int geoX, int geoY)
 	{
 		return _getBlock(geoX, geoY).hasGeoPos(geoX, geoY);
 	}
-
+	
 	@Override
 	public int getNearestZ(int geoX, int geoY, int worldZ)
 	{
 		return _getBlock(geoX, geoY).getNearestZ(geoX, geoY, worldZ);
 	}
-
+	
 	@Override
 	public int getNextLowerZ(int geoX, int geoY, int worldZ)
 	{
 		return _getBlock(geoX, geoY).getNextLowerZ(geoX, geoY, worldZ);
 	}
-
+	
 	@Override
 	public int getNextHigherZ(int geoX, int geoY, int worldZ)
 	{
 		return _getBlock(geoX, geoY).getNextHigherZ(geoX, geoY, worldZ);
 	}
-
+	
 	@Override
 	public boolean canMoveIntoDirections(int geoX, int geoY, int worldZ, Direction first, Direction... more)
 	{
 		return _getBlock(geoX, geoY).canMoveIntoDirections(geoX, geoY, worldZ, first, more);
 	}
-
+	
 	@Override
 	public boolean canMoveIntoAllDirections(int geoX, int geoY, int worldZ)
 	{

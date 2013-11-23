@@ -32,7 +32,7 @@ public final class ComplexBlock implements IBlock
 {
 	private final int _bbPos;
 	private final ByteBuffer _bb;
-
+	
 	/**
 	 * Initializes a new instance of this block reading the specified buffer.
 	 * @param bb the buffer
@@ -41,60 +41,60 @@ public final class ComplexBlock implements IBlock
 	{
 		_bbPos = bb.position();
 		_bb = bb;
-		_bb.position(_bbPos + IBlock.BLOCK_CELLS * 2);
+		_bb.position(_bbPos + (IBlock.BLOCK_CELLS * 2));
 	}
-
+	
 	private short _getCellData(int geoX, int geoY)
 	{
-		return _bb.getShort(_bbPos + ((geoX % IBlock.BLOCK_CELLS_X) * IBlock.BLOCK_CELLS_Y + (geoY % IBlock.BLOCK_CELLS_Y)) * 2);
+		return _bb.getShort(_bbPos + ((((geoX % IBlock.BLOCK_CELLS_X) * IBlock.BLOCK_CELLS_Y) + (geoY % IBlock.BLOCK_CELLS_Y)) * 2));
 	}
-
+	
 	private byte _getCellNSWE(int geoX, int geoY)
 	{
-		return (byte)(_getCellData(geoX, geoY) & 0x000F);
+		return (byte) (_getCellData(geoX, geoY) & 0x000F);
 	}
 	
 	private int _getCellHeight(int geoX, int geoY)
 	{
-		short height = (short)(_getCellData(geoX, geoY) & 0x0fff0);
+		short height = (short) (_getCellData(geoX, geoY) & 0x0fff0);
 		return height >> 1;
 	}
-
+	
 	@Override
 	public boolean hasGeoPos(int geoX, int geoY)
 	{
 		return true;
 	}
-
+	
 	@Override
 	public int getNearestZ(int geoX, int geoY, int worldZ)
 	{
 		return _getCellHeight(geoX, geoY);
 	}
-
+	
 	@Override
 	public int getNextLowerZ(int geoX, int geoY, int worldZ)
 	{
 		int cellHeight = _getCellHeight(geoX, geoY);
 		return cellHeight <= worldZ ? cellHeight : worldZ;
 	}
-
+	
 	@Override
 	public int getNextHigherZ(int geoX, int geoY, int worldZ)
 	{
 		int cellHeight = _getCellHeight(geoX, geoY);
 		return cellHeight >= worldZ ? cellHeight : worldZ;
 	}
-
+	
 	@Override
 	public boolean canMoveIntoDirections(int geoX, int geoY, int worldZ, Direction first, Direction... more)
 	{
 		return Utils.canMoveIntoDirections(_getCellNSWE(geoX, geoY), first, more);
 	}
-
+	
 	@Override
 	public boolean canMoveIntoAllDirections(int geoX, int geoY, int worldZ)
 	{
-		return _getCellNSWE(geoX, geoY) == Cell.FLAG_NSWE_ALL; 
+		return _getCellNSWE(geoX, geoY) == Cell.FLAG_NSWE_ALL;
 	}
 }
