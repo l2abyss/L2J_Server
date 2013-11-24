@@ -871,6 +871,7 @@ public final class Config
 	public static float RATE_QUEST_REWARD_RECIPE;
 	public static float RATE_QUEST_REWARD_MATERIAL;
 	public static Map<Integer, Float> RATE_DROP_ITEMS_ID;
+	public static float RATE_KARMA_LOST;
 	public static float RATE_KARMA_EXP_LOST;
 	public static float RATE_SIEGE_GUARDS_PRICE;
 	public static float RATE_DROP_COMMON_HERBS;
@@ -2143,6 +2144,11 @@ public final class Config
 			RATE_VITALITY_LOST = RatesSettings.getFloat("RateVitalityLost", 1);
 			RATE_VITALITY_GAIN = RatesSettings.getFloat("RateVitalityGain", 1);
 			RATE_RECOVERY_ON_RECONNECT = RatesSettings.getFloat("RateRecoveryOnReconnect", 4);
+			RATE_KARMA_LOST = RatesSettings.getFloat("RateKarmaLost", -1);
+			if (RATE_KARMA_LOST == -1)
+			{
+				RATE_KARMA_LOST = RATE_XP;
+			}
 			RATE_KARMA_EXP_LOST = RatesSettings.getFloat("RateKarmaExpLost", 1);
 			RATE_SIEGE_GUARDS_PRICE = RatesSettings.getFloat("RateSiegeGuardsPrice", 1);
 			RATE_DROP_COMMON_HERBS = RatesSettings.getFloat("RateCommonHerbs", 1);

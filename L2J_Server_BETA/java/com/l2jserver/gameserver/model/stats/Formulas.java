@@ -2122,6 +2122,10 @@ public final class Formulas
 	public static int calculateKarmaLost(L2PcInstance player, long exp)
 	{
 		double karmaLooseMul = KarmaData.getInstance().getMultiplier(player.getLevel());
+		if (exp > 0) // Received exp
+		{
+			exp /= Config.RATE_KARMA_LOST;
+		}
 		return (int) ((Math.abs(exp) / karmaLooseMul) / 15);
 	}
 	
