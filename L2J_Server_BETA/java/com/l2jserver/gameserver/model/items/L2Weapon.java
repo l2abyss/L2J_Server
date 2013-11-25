@@ -349,18 +349,20 @@ public final class L2Weapon extends L2Item
 			return;
 		}
 		
-		final byte shld = Formulas.calcShldUse(caster, target, onCritSkill);
-		if (!Formulas.calcSkillSuccess(caster, target, onCritSkill, shld, false, false, false))
+		L2Character[] targets =
 		{
-			// These skills should not work on RaidBoss
-			return;
-		}
-		if (target.isAffectedBySkill(onCritSkill.getId()))
-		{
-			target.stopSkillEffects(false, onCritSkill.getId());
-		}
+			target
+		};
 		
-		onCritSkill.applyEffects(caster, target);
+		final ISkillHandler handler = SkillHandler.getInstance().getHandler(onCritSkill.getSkillType());
+		if (handler != null)
+		{
+			handler.useSkill(caster, onCritSkill, targets);
+		}
+		else
+		{
+			onCritSkill.useSkill(caster, targets);
+		}
 	}
 	
 	/**
