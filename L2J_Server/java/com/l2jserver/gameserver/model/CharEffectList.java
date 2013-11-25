@@ -698,7 +698,7 @@ public class CharEffectList
 			if (effect.setInUse(false))
 			{
 				// Remove Func added by this effect from the L2Character Calculator
-				_owner.removeStatsOwner(effect.getStatFuncs());
+				_owner.removeStatsOwner(effect);
 				_passives.remove(effect);
 			}
 		}
