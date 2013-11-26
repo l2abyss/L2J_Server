@@ -275,6 +275,7 @@ public class L2PetInstance extends L2Summon
 			if (data.isSynchLevel() && (pet.getLevel() != owner.getLevel()))
 			{
 				pet.getStat().setLevel((byte) owner.getLevel());
+				pet.getStat().setExp(pet.getStat().getExpForLevel(owner.getLevel()));
 			}
 			L2World.getInstance().addPet(owner.getObjectId(), pet);
 		}

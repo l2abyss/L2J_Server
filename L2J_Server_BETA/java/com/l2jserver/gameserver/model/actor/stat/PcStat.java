@@ -301,6 +301,9 @@ public class PcStat extends PlayableStat
 			if (pet.getPetData().isSynchLevel() && (pet.getLevel() != getLevel()))
 			{
 				pet.getStat().setLevel(getLevel());
+				pet.getStat().getExpForLevel(getActiveChar().getLevel());
+				pet.broadcastPacket(new SocialAction(getActiveChar().getObjectId(), SocialAction.LEVEL_UP));
+				pet.updateAndBroadcastStatus(1);
 			}
 		}
 		
