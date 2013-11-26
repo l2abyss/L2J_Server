@@ -18,58 +18,44 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javolution.util.FastList;
-
-import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.interfaces.ILocational;
 
 /**
- * @author KenM
+ * This packet shows the mouse click particle for 30 seconds on every location.
+ * @author Nos
  */
 public final class ExShowTrace extends L2GameServerPacket
 {
-	private final List<Trace> _traces = new FastList<>();
+	private final List<Location> _locations = new ArrayList<>();
 	
-	public void addTrace(int x, int y, int z, int time)
+	public void addLocation(int x, int y, int z)
 	{
-		_traces.add(new Trace(x, y, z, time));
+		_locations.add(new Location(x, y, z));
 	}
 	
-	public void addTrace(L2Object obj, int time)
+	public void addLocation(ILocational loc)
 	{
-		addTrace(obj.getX(), obj.getY(), obj.getZ(), time);
-	}
-	
-	static final class Trace
-	{
-		public final int _x;
-		public final int _y;
-		public final int _z;
-		public final int _time;
-		
-		public Trace(int x, int y, int z, int time)
-		{
-			_x = x;
-			_y = y;
-			_z = z;
-			_time = time;
-		}
+		addLocation(loc.getX(), loc.getY(), loc.getZ());
 	}
 	
 	@Override
 	protected void writeImpl()
 	{
-		writeC(0xfe);
+		writeC(0xFE);
 		writeH(0x67);
 		
-		writeH(_traces.size());
-		for (Trace t : _traces)
+		writeH(0); // type broken in H5
+		writeD(0); // time broken in H5
+		writeH(_locations.size());
+		for (Location loc : _locations)
 		{
-			writeD(t._x);
-			writeD(t._y);
-			writeD(t._z);
-			writeH(t._time);
+			writeD(loc.getX());
+			writeD(loc.getY());
+			writeD(loc.getZ());
 		}
 	}
 }
