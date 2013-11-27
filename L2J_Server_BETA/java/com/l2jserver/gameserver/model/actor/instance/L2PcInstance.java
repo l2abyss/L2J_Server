@@ -4712,25 +4712,42 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	/**
-	 * Manage AutoLoot Task. <B><U> Actions</U> :</B> <li>Send a System Message to the L2PcInstance : YOU_PICKED_UP_S1_ADENA or YOU_PICKED_UP_S1_S2</li> <li>Add the Item to the L2PcInstance inventory</li> <li>Send a Server->Client packet InventoryUpdate to this L2PcInstance with NewItem (use a new
-	 * slot) or ModifiedItem (increase amount)</li> <li>Send a Server->Client packet StatusUpdate to this L2PcInstance with current weight</li> <FONT COLOR=#FF0000><B> <U>Caution</U> : If a Party is in progress, distribute Items between party members</B></FONT>
-	 * @param target The L2ItemInstance dropped
-	 * @param item
+	 * Manages AutoLoot Task.<br>
+	 * <ul>
+	 * <li>Send a system message to the player.</li>
+	 * <li>Add the item to the player's inventory.</li>
+	 * <li>Send a Server->Client packet InventoryUpdate to this player with NewItem (use a new slot) or ModifiedItem (increase amount).</li>
+	 * <li>Send a Server->Client packet StatusUpdate to this player with current weight.</li>
+	 * </ul>
+	 * <font color=#FF0000><B><U>Caution</U>: If a party is in progress, distribute the items between the party members!</b></font>
+	 * @param target the NPC dropping the item
+	 * @param itemId the item ID
+	 * @param itemCount the item count
 	 */
-	public void doAutoLoot(L2Attackable target, ItemHolder item)
+	public void doAutoLoot(L2Attackable target, int itemId, long itemCount)
 	{
-		if (isInParty() && (ItemTable.getInstance().getTemplate(item.getId()).getItemType() != L2EtcItemType.HERB))
+		if (isInParty() && (ItemTable.getInstance().getTemplate(itemId).getItemType() != L2EtcItemType.HERB))
 		{
-			getParty().distributeItem(this, item, false, target);
+			getParty().distributeItem(this, itemId, itemCount, false, target);
 		}
-		else if (item.getId() == PcInventory.ADENA_ID)
+		else if (itemId == PcInventory.ADENA_ID)
 		{
-			addAdena("Loot", item.getCount(), target, true);
+			addAdena("Loot", itemCount, target, true);
 		}
 		else
 		{
-			addItem("Loot", item, target, true);
+			addItem("Loot", itemId, itemCount, target, true);
 		}
+	}
+	
+	/**
+	 * Method overload for {@link L2PcInstance#doAutoLoot(L2Attackable, int, long)}
+	 * @param target the NPC dropping the item
+	 * @param item the item holder
+	 */
+	public void doAutoLoot(L2Attackable target, ItemHolder item)
+	{
+		doAutoLoot(target, item.getId(), item.getCount());
 	}
 	
 	/**

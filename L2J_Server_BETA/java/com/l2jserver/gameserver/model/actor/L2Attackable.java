@@ -1572,8 +1572,7 @@ public class L2Attackable extends L2Npc
 					// Broadcast message if RaidBoss was defeated
 					if (isRaid() && !isRaidMinion())
 					{
-						SystemMessage sm;
-						sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DIED_DROPPED_S3_S2);
+						final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DIED_DROPPED_S3_S2);
 						sm.addCharName(this);
 						sm.addItemName(item.getId());
 						sm.addItemNumber(item.getCount());
@@ -1682,47 +1681,48 @@ public class L2Attackable extends L2Npc
 		{
 			if (Rnd.get(L2DropData.MAX_CHANCE) < drop.getEventDrop().getDropChance())
 			{
-				final ItemHolder rewardItem = new ItemHolder(drop.getEventDrop().getItemIdList()[Rnd.get(drop.getEventDrop().getItemIdList().length)], Rnd.get(drop.getEventDrop().getMinCount(), drop.getEventDrop().getMaxCount()));
-				
+				final int itemId = drop.getEventDrop().getItemIdList()[Rnd.get(drop.getEventDrop().getItemIdList().length)];
+				final long itemCount = Rnd.get(drop.getEventDrop().getMinCount(), drop.getEventDrop().getMaxCount());
 				if (Config.AUTO_LOOT || isFlying())
 				{
-					player.doAutoLoot(this, rewardItem); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
+					player.doAutoLoot(this, itemId, itemCount); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
 				}
 				else
 				{
-					dropItem(player, rewardItem); // drop the item on the ground
+					dropItem(player, itemId, itemCount); // drop the item on the ground
 				}
 			}
 		}
 	}
 	
 	/**
-	 * Drop reward item.
-	 * @param mainDamageDealer
-	 * @param item
-	 * @return
+	 * Drops an item.
+	 * @param player the last attacker or main damage dealer
+	 * @param itemId the item ID
+	 * @param itemCount the item count
+	 * @return the dropped item
 	 */
-	public L2ItemInstance dropItem(L2PcInstance mainDamageDealer, ItemHolder item)
+	public L2ItemInstance dropItem(L2PcInstance player, int itemId, long itemCount)
 	{
 		int randDropLim = 70;
 		
 		L2ItemInstance ditem = null;
-		for (int i = 0; i < item.getCount(); i++)
+		for (int i = 0; i < itemCount; i++)
 		{
 			// Randomize drop position
 			int newX = (getX() + Rnd.get((randDropLim * 2) + 1)) - randDropLim;
 			int newY = (getY() + Rnd.get((randDropLim * 2) + 1)) - randDropLim;
-			int newZ = Math.max(getZ(), mainDamageDealer.getZ()) + 20; // TODO: temp hack, do something nicer when we have geodatas
+			int newZ = Math.max(getZ(), player.getZ()) + 20; // TODO: temp hack, do something nicer when we have geodatas
 			
-			if (ItemTable.getInstance().getTemplate(item.getId()) != null)
+			if (ItemTable.getInstance().getTemplate(itemId) != null)
 			{
 				// Init the dropped L2ItemInstance and add it in the world as a visible object at the position where mob was last
-				ditem = ItemTable.getInstance().createItem("Loot", item.getId(), item.getCount(), mainDamageDealer, this);
-				ditem.getDropProtection().protect(mainDamageDealer);
+				ditem = ItemTable.getInstance().createItem("Loot", itemId, itemCount, player, this);
+				ditem.getDropProtection().protect(player);
 				ditem.dropMe(this, newX, newY, newZ);
 				
 				// Add drop to auto destroy item task
-				if (!Config.LIST_PROTECTED_ITEMS.contains(item.getId()))
+				if (!Config.LIST_PROTECTED_ITEMS.contains(itemId))
 				{
 					if (((Config.AUTODESTROY_ITEM_AFTER > 0) && (ditem.getItemType() != L2EtcItemType.HERB)) || ((Config.HERB_AUTO_DESTROY_TIME > 0) && (ditem.getItemType() == L2EtcItemType.HERB)))
 					{
@@ -1739,15 +1739,21 @@ public class L2Attackable extends L2Npc
 			}
 			else
 			{
-				_log.log(Level.SEVERE, "Item doesn't exist so cannot be dropped. Item ID: " + item.getId());
+				_log.log(Level.SEVERE, "Item doesn't exist so cannot be dropped. Item ID: " + itemId);
 			}
 		}
 		return ditem;
 	}
 	
-	public L2ItemInstance dropItem(L2PcInstance lastAttacker, int itemId, int itemCount)
+	/**
+	 * Method overload for {@link L2Attackable#dropItem(L2PcInstance, int, long)}
+	 * @param player the last attacker or main damage dealer
+	 * @param item the item holder
+	 * @return the dropped item
+	 */
+	public L2ItemInstance dropItem(L2PcInstance player, ItemHolder item)
 	{
-		return dropItem(lastAttacker, new ItemHolder(itemId, itemCount));
+		return dropItem(player, item.getId(), item.getCount());
 	}
 	
 	/**

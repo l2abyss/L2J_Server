@@ -636,45 +636,53 @@ public class L2Party extends AbstractPlayerGroup
 	}
 	
 	/**
-	 * distribute item(s) to party members
-	 * @param player
-	 * @param item
-	 * @param spoil
-	 * @param target
+	 * Distributes item loot between party members.
+	 * @param player the reference player
+	 * @param itemId the item ID
+	 * @param itemCount the item count
+	 * @param spoil {@code true} if it's spoil loot
+	 * @param target the NPC target
 	 */
-	public void distributeItem(L2PcInstance player, ItemHolder item, boolean spoil, L2Attackable target)
+	public void distributeItem(L2PcInstance player, int itemId, long itemCount, boolean spoil, L2Attackable target)
 	{
-		if (item == null)
+		if (itemId == PcInventory.ADENA_ID)
 		{
+			distributeAdena(player, itemCount, target);
 			return;
 		}
 		
-		if (item.getId() == PcInventory.ADENA_ID)
-		{
-			distributeAdena(player, item.getCount(), target);
-			return;
-		}
+		L2PcInstance looter = getActualLooter(player, itemId, spoil, target);
 		
-		L2PcInstance looter = getActualLooter(player, item.getId(), spoil, target);
-		
-		looter.addItem(spoil ? "Sweeper" : "Party", item, player, true);
+		looter.addItem(spoil ? "Sweeper" : "Party", itemId, itemCount, player, true);
 		
 		// Send messages to other party members about reward
-		if (item.getCount() > 1)
+		if (itemCount > 1)
 		{
 			SystemMessage msg = spoil ? SystemMessage.getSystemMessage(SystemMessageId.C1_SWEEPED_UP_S3_S2) : SystemMessage.getSystemMessage(SystemMessageId.C1_OBTAINED_S3_S2);
 			msg.addString(looter.getName());
-			msg.addItemName(item.getId());
-			msg.addItemNumber(item.getCount());
+			msg.addItemName(itemId);
+			msg.addItemNumber(itemCount);
 			broadcastToPartyMembers(looter, msg);
 		}
 		else
 		{
 			SystemMessage msg = spoil ? SystemMessage.getSystemMessage(SystemMessageId.C1_SWEEPED_UP_S2) : SystemMessage.getSystemMessage(SystemMessageId.C1_OBTAINED_S2);
 			msg.addString(looter.getName());
-			msg.addItemName(item.getId());
+			msg.addItemName(itemId);
 			broadcastToPartyMembers(looter, msg);
 		}
+	}
+	
+	/**
+	 * Method overload for {@link L2Party#distributeItem(L2PcInstance, int, long, boolean, L2Attackable)}
+	 * @param player the reference player
+	 * @param item the item holder
+	 * @param spoil {@code true} if it's spoil loot
+	 * @param target the NPC target
+	 */
+	public void distributeItem(L2PcInstance player, ItemHolder item, boolean spoil, L2Attackable target)
+	{
+		distributeItem(player, item.getId(), item.getCount(), spoil, target);
 	}
 	
 	/**
