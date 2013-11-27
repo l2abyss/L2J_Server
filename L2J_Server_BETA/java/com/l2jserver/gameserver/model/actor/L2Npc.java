@@ -1865,7 +1865,7 @@ public class L2Npc extends L2Character
 	/**
 	 * Short wrapper for backward compatibility.
 	 * @param val value to store
-	 * @return {@code true} if stored script value equals given value, {@code false} otherwise 	 
+	 * @return {@code true} if stored script value equals given value, {@code false} otherwise
 	 */
 	public boolean isScriptValue(int val)
 	{
@@ -1907,7 +1907,7 @@ public class L2Npc extends L2Character
 		return ((getSpawn() != null) && (getSpawn().getX(this) == getX()) && (getSpawn().getY(this) == getY()));
 	}
 	
- 	/**
+	/**
 	 * @return {@code true} if {@link NpcVariables} instance is attached to current player's scripts, {@code false} otherwise.
 	 */
 	public boolean hasVariables()

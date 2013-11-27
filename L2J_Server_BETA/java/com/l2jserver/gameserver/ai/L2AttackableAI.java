@@ -1447,7 +1447,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			}
 		}
 		
-		if (sk.hasEffectType(L2EffectType.DISPEL))
+		if (sk.hasEffectType(L2EffectType.DISPEL, L2EffectType.DISPEL_BY_SLOT))
 		{
 			if (sk.getTargetType() == L2TargetType.ONE)
 			{
@@ -2062,7 +2062,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			return null;
 		}
 		L2Attackable actor = getActiveChar();
-		if (!sk.hasEffectType(L2EffectType.DISPEL))
+		if (!sk.hasEffectType(L2EffectType.DISPEL, L2EffectType.DISPEL_BY_SLOT))
 		{
 			if (!positive)
 			{

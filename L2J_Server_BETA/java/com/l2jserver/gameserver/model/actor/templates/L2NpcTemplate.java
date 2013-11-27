@@ -357,7 +357,7 @@ public final class L2NpcTemplate extends L2CharTemplate implements IIdentifiable
 				}
 				else if (skill.getSkillType() == L2SkillType.DUMMY)
 				{
-					if (skill.hasEffectType(L2EffectType.DISPEL))
+					if (skill.hasEffectType(L2EffectType.DISPEL, L2EffectType.DISPEL_BY_SLOT))
 					{
 						addNegativeSkill(skill);
 						addRangeSkill(skill);
