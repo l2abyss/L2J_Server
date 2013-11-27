@@ -37,7 +37,6 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.GameTimeController;
-import com.l2jserver.gameserver.ItemsAutoDestroy;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.DoorTable;
@@ -70,7 +69,6 @@ import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.model.olympiad.CompetitionType;
 import com.l2jserver.gameserver.model.quest.AITasks.AggroRangeEnter;
 import com.l2jserver.gameserver.model.quest.AITasks.SeeCreature;
@@ -3523,58 +3521,6 @@ public class Quest extends ManagedScript implements IIdentifiable
 			}
 		}
 		return check;
-	}
-	
-	/**
-	 * Drops an item given an NPC.
-	 * @param npc the NPC dropping the item
-	 * @param itemId the item ID
-	 * @param itemCount the item count
-	 */
-	public void dropItem(L2Npc npc, int itemId, long itemCount)
-	{
-		for (int i = 0; i < itemCount; i++)
-		{
-			// Randomize drop position.
-			final int newX = (npc.getX() + Rnd.get((70 * 2) + 1)) - 70;
-			final int newY = (npc.getY() + Rnd.get((70 * 2) + 1)) - 70;
-			final int newZ = npc.getZ() + 20;
-			
-			if (ItemTable.getInstance().getTemplate(itemId) == null)
-			{
-				_log.log(Level.SEVERE, "Item doesn't exist so cannot be dropped. Item ID: " + itemId + " Quest: " + getName());
-				return;
-			}
-			
-			final L2ItemInstance item = ItemTable.getInstance().createItem("Loot", itemId, itemCount, null, null);
-			item.dropMe(npc, newX, newY, newZ);
-			
-			// Add drop to auto destroy item task.
-			if (!Config.LIST_PROTECTED_ITEMS.contains(itemId))
-			{
-				if (((Config.AUTODESTROY_ITEM_AFTER > 0) && (item.getItemType() != L2EtcItemType.HERB)) || ((Config.HERB_AUTO_DESTROY_TIME > 0) && (item.getItemType() == L2EtcItemType.HERB)))
-				{
-					ItemsAutoDestroy.getInstance().addItem(item);
-				}
-			}
-			item.setProtected(false);
-			
-			// If stackable, end loop as entire count is included in 1 instance of item.
-			if (item.isStackable() || !Config.MULTIPLE_ITEM_DROP)
-			{
-				break;
-			}
-		}
-	}
-	
-	/**
-	 * Method overload for {@link Quest#dropItem(L2Npc, int, long)}
-	 * @param npc the NPC dropping the item
-	 * @param item the item holder
-	 */
-	public void dropItem(L2Npc npc, ItemHolder item)
-	{
-		dropItem(npc, item.getId(), item.getCount());
 	}
 	
 	/**

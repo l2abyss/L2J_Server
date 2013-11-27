@@ -34,7 +34,6 @@ import com.l2jserver.gameserver.enums.QuestType;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
@@ -1200,11 +1199,6 @@ public final class QuestState
 	public void onTutorialClientEvent(int number)
 	{
 		_player.sendPacket(new TutorialEnableClientEvent(number));
-	}
-	
-	public void dropItem(L2MonsterInstance npc, L2PcInstance player, int itemId, int count)
-	{
-		npc.dropItem(player, itemId, count);
 	}
 	
 	/**
