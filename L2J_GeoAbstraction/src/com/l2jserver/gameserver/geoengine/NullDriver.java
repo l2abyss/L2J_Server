@@ -28,14 +28,14 @@ import com.l2jserver.gameserver.geoengine.abstraction.IGeoDriver;
  */
 public final class NullDriver implements IGeoDriver
 {
-	private static final Logger _LOGGER = Logger.getLogger(NullDriver.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(NullDriver.class.getName());
 	
 	/**
 	 * @param props properties for the driver
 	 */
 	public NullDriver(Properties props)
 	{
-		_LOGGER.info("Using Null GeoDriver.");
+		LOGGER.info("Using Null GeoDriver.");
 	}
 	
 	@Override
