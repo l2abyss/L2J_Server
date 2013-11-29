@@ -51,6 +51,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2ClanHallManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoormenInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FestivalGuideInstance;
@@ -1947,6 +1948,25 @@ public class L2Npc extends L2Character
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Gets point in range between radiusMin and radiusMax from this NPC
+	 * @param radiusMin miminal range from NPC (not closer than)
+	 * @param radiusMax maximal range from NPC (not further than)	 
+	 * @return Location in given range from this NPC 
+	 */
+	public Location getPointInRange(int radiusMin, int radiusMax)
+	{
+		if((radiusMax == 0) || (radiusMax < radiusMin))
+		{
+			return new Location(getX(), getY(), getZ());
+		}
+		
+		final int radius = Rnd.get(radiusMin, radiusMax);
+		final double angle = Rnd.nextDouble() * 2 * Math.PI;
+		
+		return new Location((int) (getX() + radius * Math.cos(angle)), (int) (getY() + radius * Math.sin(angle)), getZ());
 	}
 	
 	@Override
