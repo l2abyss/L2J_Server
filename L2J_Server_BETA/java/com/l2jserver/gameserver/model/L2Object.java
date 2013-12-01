@@ -51,7 +51,6 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 /**
  * Base class for all interactive objects.
- * @author unknown
  */
 public abstract class L2Object implements IIdentifiable, INamable, ISpawnable, IUniqueId, IDecayable, IPositionable
 {
@@ -76,9 +75,9 @@ public abstract class L2Object implements IIdentifiable, INamable, ISpawnable, I
 		initKnownList();
 	}
 	
-	protected final void setInstanceType(InstanceType i)
+	protected final void setInstanceType(InstanceType instanceType)
 	{
-		_instanceType = i;
+		_instanceType = instanceType;
 	}
 	
 	public final InstanceType getInstanceType()
@@ -86,14 +85,14 @@ public abstract class L2Object implements IIdentifiable, INamable, ISpawnable, I
 		return _instanceType;
 	}
 	
-	public final boolean isInstanceType(InstanceType i)
+	public final boolean isInstanceType(InstanceType instanceType)
 	{
-		return _instanceType.isType(i);
+		return _instanceType.isType(instanceType);
 	}
 	
-	public final boolean isInstanceTypes(InstanceType... i)
+	public final boolean isInstanceTypes(InstanceType... instanceType)
 	{
-		return _instanceType.isTypes(i);
+		return _instanceType.isTypes(instanceType);
 	}
 	
 	public final void onAction(L2PcInstance player)
