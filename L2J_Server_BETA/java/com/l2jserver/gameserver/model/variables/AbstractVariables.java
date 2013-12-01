@@ -20,6 +20,8 @@ package com.l2jserver.gameserver.model.variables;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javolution.util.FastMap;
+
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.interfaces.IRestorable;
 import com.l2jserver.gameserver.model.interfaces.IStorable;
@@ -30,6 +32,11 @@ import com.l2jserver.gameserver.model.interfaces.IStorable;
 public abstract class AbstractVariables extends StatsSet implements IRestorable, IStorable
 {
 	private final AtomicBoolean _hasChanges = new AtomicBoolean(false);
+	
+	public AbstractVariables()
+	{
+		super(new FastMap<String, Object>().shared());
+	}
 	
 	/**
 	 * Overriding following methods to prevent from doing useless database operations if there is no changes since player's login.
