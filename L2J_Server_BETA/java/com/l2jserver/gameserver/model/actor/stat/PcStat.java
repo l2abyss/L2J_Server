@@ -302,6 +302,8 @@ public class PcStat extends PlayableStat
 			{
 				pet.getStat().setLevel(getLevel());
 				pet.getStat().getExpForLevel(getActiveChar().getLevel());
+				pet.setCurrentHp(pet.getMaxHp());
+				pet.setCurrentMp(pet.getMaxMp());
 				pet.broadcastPacket(new SocialAction(getActiveChar().getObjectId(), SocialAction.LEVEL_UP));
 				pet.updateAndBroadcastStatus(1);
 			}
