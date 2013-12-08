@@ -6015,7 +6015,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 					}
 					
 					// Static skills not trigger any chance skills
-					if (!skill.isStatic() && (target.getObjectId() != getObjectId()))
+					if (!skill.isStatic())
 					{
 						// Launch weapon Special ability skill effect if available
 						if ((activeWeapon != null) && !target.isDead())
