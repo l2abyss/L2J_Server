@@ -545,6 +545,11 @@ public class StatsSet implements IParserAdvUtils
 		}
 	}
 	
+	public void set(String name, Object value)
+	{
+		_set.put(name, value);
+	}
+	
 	public void set(String key, boolean value)
 	{
 		_set.put(key, value);
@@ -599,5 +604,17 @@ public class StatsSet implements IParserAdvUtils
 		}
 		
 		set(key, value);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public final <A> A getObject(String name, Class<A> type)
+	{
+		Object obj = _set.get(name);
+		if ((obj == null) || !type.isAssignableFrom(obj.getClass()))
+		{
+			return null;
+		}
+		
+		return (A) obj;
 	}
 }

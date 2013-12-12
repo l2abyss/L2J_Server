@@ -44,6 +44,8 @@ import com.l2jserver.gameserver.model.L2NpcAIData;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.ClassId;
+import com.l2jserver.gameserver.model.holders.ItemHolder;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.BaseStats;
@@ -110,7 +112,6 @@ public class NpcTable extends DocumentParser
 	protected void parseDocument()
 	{
 		NamedNodeMap attrs;
-		StatsSet set;
 		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
 			if ("list".equals(n.getNodeName()))
@@ -124,7 +125,6 @@ public class NpcTable extends DocumentParser
 						if (_npcs.containsKey(id))
 						{
 							L2NpcTemplate template = _npcs.get(id);
-							set = new StatsSet();
 							for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling())
 							{
 								if ((c.getNodeName() == null) || c.getNodeName().startsWith("#"))
@@ -172,12 +172,32 @@ public class NpcTable extends DocumentParser
 									}
 									case "npc_ai":
 									{
+										StatsSet set = new StatsSet();
 										for (Node b = c.getFirstChild(); b != null; b = b.getNextSibling())
 										{
 											attrs = b.getAttributes();
-											if ("ai_param".equals(b.getNodeName()))
+											switch (b.getNodeName())
 											{
-												set.set(parseString(attrs, "name"), parseString(attrs, "val"));
+												case "ai_param":
+												{
+													set.set(parseString(attrs, "name"), parseString(attrs, "val"));
+													break;
+												}
+												case "ai_skill":
+												{
+													set.set(parseString(attrs, "name"), new SkillHolder(parseInt(attrs, "id"), parseInt(attrs, "level")));
+													break;
+												}
+												case "ai_item":
+												{
+													set.set(parseString(attrs, "name"), new ItemHolder(parseInt(attrs, "id"), 1));
+													break;
+												}
+												case "ai":
+												{
+													set.set(b.getNodeName(), b.getTextContent());
+													break;
+												}
 											}
 										}
 										template.setParameters(set);

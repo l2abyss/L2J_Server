@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.model.actor.knownlist.TrapKnownList;
 import com.l2jserver.gameserver.model.actor.tasks.npc.trap.TrapTask;
 import com.l2jserver.gameserver.model.actor.tasks.npc.trap.TrapTriggerTask;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
@@ -57,7 +58,7 @@ public final class L2TrapInstance extends L2Npc
 	private final int _lifeTime;
 	private L2PcInstance _owner;
 	private final List<Integer> _playersWhoDetectedMe = new ArrayList<>();
-	private L2Skill _skill;
+	private final SkillHolder _skill;
 	private int _remainingTime;
 	
 	public L2TrapInstance(int objectId, L2NpcTemplate template, int instanceId, int lifeTime)
@@ -70,11 +71,7 @@ public final class L2TrapInstance extends L2Npc
 		
 		_owner = null;
 		_isTriggered = false;
-		// TODO: Manage this properly when NPC templates are complete and in XML.
-		for (L2Skill skill : template.getSkills().values())
-		{
-			_skill = skill; // Last skill
-		}
+		_skill = getTemplate().getParameters().getObject("trap_skill", SkillHolder.class);
 		_hasLifeTime = lifeTime >= 0;
 		_lifeTime = lifeTime != 0 ? lifeTime : 30000;
 		_remainingTime = _lifeTime;
@@ -94,11 +91,7 @@ public final class L2TrapInstance extends L2Npc
 		
 		_owner = owner;
 		_isTriggered = false;
-		// TODO: Manage this properly when NPC templates are complete and in XML.
-		for (L2Skill skill : template.getSkills().values())
-		{
-			_skill = skill; // Last skill
-		}
+		_skill = getTemplate().getParameters().getObject("trap_skill", SkillHolder.class);
 		_hasLifeTime = lifeTime >= 0;
 		_lifeTime = lifeTime != 0 ? lifeTime : 30000;
 		_remainingTime = getLifeTime();
@@ -182,7 +175,7 @@ public final class L2TrapInstance extends L2Npc
 	
 	public boolean checkTarget(L2Character target)
 	{
-		if (!L2Skill.checkForAreaOffensiveSkills(this, target, _skill, _isInArena))
+		if (!L2Skill.checkForAreaOffensiveSkills(this, target, _skill.getSkill(), _isInArena))
 		{
 			return false;
 		}
@@ -287,7 +280,7 @@ public final class L2TrapInstance extends L2Npc
 	
 	public L2Skill getSkill()
 	{
-		return _skill;
+		return _skill.getSkill();
 	}
 	
 	@Override
@@ -455,11 +448,6 @@ public final class L2TrapInstance extends L2Npc
 	public void setRemainingTime(int time)
 	{
 		_remainingTime = time;
-	}
-	
-	public void setSkill(L2Skill _skill)
-	{
-		this._skill = _skill;
 	}
 	
 	public int getLifeTime()
