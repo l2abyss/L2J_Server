@@ -1370,7 +1370,7 @@ public final class Formulas
 		}
 		
 		final double rate = baseMod * elementMod * traitMod * mAtkMod * buffDebuffMod;
-		final double finalRate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
+		final double finalRate = traitMod > 0 ? Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance()) : 0;
 		
 		if (attacker.isDebug())
 		{
@@ -1385,7 +1385,7 @@ public final class Formulas
 			Debug.sendSkillDebug(attacker, target, skill, set);
 		}
 		
-		if (finalRate < Rnd.get(100))
+		if (finalRate <= Rnd.get(100))
 		{
 			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
 			sm.addCharName(env.getTarget());
