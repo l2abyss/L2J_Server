@@ -164,7 +164,7 @@ public class PetInfo extends L2GameServerPacket
 		
 		// Following all added in C4.
 		writeH(0); // ??
-		writeC(_summon.getTeam()); // team aura (1 = blue, 2 = red)
+		writeC(_summon.getTeam().getId());
 		writeD(_summon.getSoulShotsPerHit()); // How many soulshots this servitor uses per hit
 		writeD(_summon.getSpiritShotsPerHit()); // How many spiritshots this servitor uses per hit
 		

@@ -29,6 +29,7 @@ import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.ShotType;
+import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
@@ -285,9 +286,9 @@ public abstract class L2Summon extends L2Playable
 	}
 	
 	@Override
-	public final int getTeam()
+	public final Team getTeam()
 	{
-		return getOwner() != null ? getOwner().getTeam() : 0;
+		return getOwner() != null ? getOwner().getTeam() : Team.NONE;
 	}
 	
 	public final L2PcInstance getOwner()

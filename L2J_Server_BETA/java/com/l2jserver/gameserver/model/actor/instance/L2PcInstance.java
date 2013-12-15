@@ -96,6 +96,7 @@ import com.l2jserver.gameserver.enums.PcRace;
 import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.enums.Sex;
 import com.l2jserver.gameserver.enums.ShotType;
+import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.idfactory.IdFactory;
@@ -10291,7 +10292,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	@Override
-	public void setTeam(int team)
+	public void setTeam(Team team)
 	{
 		super.setTeam(team);
 		broadcastUserInfo();

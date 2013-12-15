@@ -25,6 +25,7 @@ import java.util.Map;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.instancemanager.tasks.PenaltyRemoveTask;
 import com.l2jserver.gameserver.model.ArenaParticipantsHolder;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -336,11 +337,11 @@ public final class HandysBlockCheckerManager
 		int arena = player.getBlockCheckerArena();
 		int team = getHolder(arena).getPlayerTeam(player);
 		HandysBlockCheckerManager.getInstance().removePlayer(player, arena, team);
-		if (player.getTeam() > 0)
+		if (player.getTeam() != Team.NONE)
 		{
 			player.stopAllEffects();
 			// Remove team aura
-			player.setTeam(0);
+			player.setTeam(Team.NONE);
 			
 			// Remove the event items
 			PcInventory inv = player.getInventory();

@@ -39,6 +39,7 @@ import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.enums.ShotType;
+import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.handler.BypassHandler;
 import com.l2jserver.gameserver.handler.IBypassHandler;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
@@ -1777,9 +1778,9 @@ public class L2Npc extends L2Character
 	}
 	
 	@Override
-	public void setTeam(int id)
+	public void setTeam(Team team)
 	{
-		super.setTeam(id);
+		super.setTeam(team);
 		for (L2PcInstance player : getKnownList().getKnownPlayers().values())
 		{
 			player.sendPacket(new AbstractNpcInfo.NpcInfo(this, player));
@@ -1953,12 +1954,12 @@ public class L2Npc extends L2Character
 	/**
 	 * Gets point in range between radiusMin and radiusMax from this NPC
 	 * @param radiusMin miminal range from NPC (not closer than)
-	 * @param radiusMax maximal range from NPC (not further than)	 
-	 * @return Location in given range from this NPC 
+	 * @param radiusMax maximal range from NPC (not further than)
+	 * @return Location in given range from this NPC
 	 */
 	public Location getPointInRange(int radiusMin, int radiusMax)
 	{
-		if((radiusMax == 0) || (radiusMax < radiusMin))
+		if ((radiusMax == 0) || (radiusMax < radiusMin))
 		{
 			return new Location(getX(), getY(), getZ());
 		}
@@ -1966,7 +1967,7 @@ public class L2Npc extends L2Character
 		final int radius = Rnd.get(radiusMin, radiusMax);
 		final double angle = Rnd.nextDouble() * 2 * Math.PI;
 		
-		return new Location((int) (getX() + radius * Math.cos(angle)), (int) (getY() + radius * Math.sin(angle)), getZ());
+		return new Location((int) (getX() + (radius * Math.cos(angle))), (int) (getY() + (radius * Math.sin(angle))), getZ());
 	}
 	
 	@Override

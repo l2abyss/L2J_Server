@@ -31,6 +31,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
+import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager;
 import com.l2jserver.gameserver.model.ArenaParticipantsHolder;
 import com.l2jserver.gameserver.model.L2Spawn;
@@ -379,12 +380,12 @@ public final class BlockCheckerEngine
 				if (isRed)
 				{
 					_redTeamPoints.put(player, 0);
-					player.setTeam(2);
+					player.setTeam(Team.RED);
 				}
 				else
 				{
 					_blueTeamPoints.put(player, 0);
-					player.setTeam(1);
+					player.setTeam(Team.BLUE);
 				}
 				player.stopAllEffects();
 				
@@ -745,7 +746,7 @@ public final class BlockCheckerEngine
 				
 				player.stopAllEffects();
 				// Remove team aura
-				player.setTeam(0);
+				player.setTeam(Team.NONE);
 				// Set default arena
 				player.setBlockCheckerArena(DEFAULT_ARENA);
 				// Remove the event items

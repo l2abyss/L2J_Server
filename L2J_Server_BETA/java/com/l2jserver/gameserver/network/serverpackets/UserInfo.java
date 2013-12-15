@@ -224,7 +224,7 @@ public final class UserInfo extends L2GameServerPacket
 		writeD((int) _activeChar.getCurrentCp());
 		writeC(_activeChar.isMounted() || (_airShipHelm != 0) ? 0 : _activeChar.getEnchantEffect());
 		
-		writeC(_activeChar.getTeam()); // team circle around feet 1= Blue, 2 = red
+		writeC(_activeChar.getTeam().getId());
 		
 		writeD(_activeChar.getClanCrestLargeId());
 		writeC(_activeChar.isNoble() ? 1 : 0); // 0x01: symbol on char menu ctrl+I

@@ -51,6 +51,7 @@ import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.enums.ShotType;
+import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.handler.ISkillHandler;
 import com.l2jserver.gameserver.handler.SkillHandler;
 import com.l2jserver.gameserver.instancemanager.DimensionalRiftManager;
@@ -213,7 +214,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	
 	private final ReentrantLock _teleportLock;
 	
-	private int _team;
+	private Team _team = Team.NONE;
 	
 	protected long _exceptions = 0L;
 	
@@ -6735,17 +6736,14 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		broadcastPacket(new SocialAction(getObjectId(), id));
 	}
 	
-	public int getTeam()
+	public Team getTeam()
 	{
 		return _team;
 	}
 	
-	public void setTeam(int id)
+	public void setTeam(Team team)
 	{
-		if ((id >= 0) && (id <= 2))
-		{
-			_team = id;
-		}
+		_team = team;
 	}
 	
 	public void addOverrideCond(PcCondOverride... excs)
