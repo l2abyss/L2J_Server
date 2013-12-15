@@ -277,7 +277,12 @@ public class GeoData implements IGeoDriver
 		double fullDist = Util.calculateDistance(geoX, geoY, 0, tGeoX, tGeoY, 0, false, false);
 		if (!(fullDist > 0.0))
 		{
-			return z == tz;
+			if (hasGeoPos(tGeoX, tGeoY))
+			{
+				return z == tz;
+			}
+			
+			return true;
 		}
 		
 		if (tz > z)
