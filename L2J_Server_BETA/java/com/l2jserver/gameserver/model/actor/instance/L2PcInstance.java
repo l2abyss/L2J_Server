@@ -7230,7 +7230,7 @@ public final class L2PcInstance extends L2Playable
 					player.setTitle(rset.getString("title"));
 					player.setAccessLevel(rset.getInt("accesslevel"));
 					int titleColor = rset.getInt("title_color");
-					if (titleColor != 0xFFFFFF)
+					if (titleColor != PcAppearance.DEFAULT_TITLE_COLOR)
 					{
 						player.getAppearance().setTitleColor(titleColor);
 					}

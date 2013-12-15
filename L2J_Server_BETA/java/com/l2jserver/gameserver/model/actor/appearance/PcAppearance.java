@@ -22,6 +22,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public class PcAppearance
 {
+	public static final int DEFAULT_TITLE_COLOR = 0xECF9A2;
+	
 	private L2PcInstance _owner;
 	
 	private byte _face;
@@ -46,7 +48,7 @@ public class PcAppearance
 	private int _nameColor = 0xFFFFFF;
 	
 	/** The hexadecimal Color of players name (white is 0xFFFFFF) */
-	private int _titleColor = 0xFFFF77;
+	private int _titleColor = DEFAULT_TITLE_COLOR;
 	
 	public PcAppearance(byte face, byte hColor, byte hStyle, boolean sex)
 	{
