@@ -83,7 +83,7 @@ public final class SpawnTable extends DocumentParser
 			}
 			
 			// Load XML list
-			parseDirectory("data/spawnlist");
+			parseDatapackDirectory("data/spawnlist", false);
 			_log.info(getClass().getSimpleName() + ": Loaded " + _xmlSpawnCount + " npc spawns from XML.");
 		}
 	}
