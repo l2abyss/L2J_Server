@@ -27,6 +27,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.skills.AbnormalVisualEffect;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 
 public class CharInfo extends L2GameServerPacket
 {
@@ -98,8 +99,8 @@ public class CharInfo extends L2GameServerPacket
 		_moveMultiplier = cha.getMovementSpeedMultiplier();
 		_runSpd = Math.round(cha.getRunSpeed() / _moveMultiplier);
 		_walkSpd = Math.round(cha.getWalkSpeed() / _moveMultiplier);
-		_swimRunSpd = cha.getSwimRunSpeed();
-		_swimWalkSpd = cha.getSwimWalkSpeed();
+		_swimRunSpd = Math.round(cha.getSwimRunSpeed() / _moveMultiplier);
+		_swimWalkSpd = Math.round(cha.getSwimWalkSpeed() / _moveMultiplier);
 		_flyRunSpd = cha.isFlying() ? _runSpd : 0;
 		_flyWalkSpd = cha.isFlying() ? _walkSpd : 0;
 	}
@@ -286,7 +287,7 @@ public class CharInfo extends L2GameServerPacket
 			
 			writeD(gmSeeInvis ? (_activeChar.getAbnormalVisualEffects() | AbnormalVisualEffect.STEALTH.getMask()) : _activeChar.getAbnormalVisualEffects());
 			
-			writeC(_activeChar.isFlyingMounted() ? 2 : 0);
+			writeC(_activeChar.isInsideZone(ZoneId.WATER) ? 1 : _activeChar.isFlyingMounted() ? 2 : 0);
 			
 			writeH(_activeChar.getRecomHave()); // Blue value for name (0 = white, 255 = pure blue)
 			writeD(_activeChar.getMountNpcId() + 1000000);

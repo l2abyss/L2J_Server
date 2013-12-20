@@ -25,8 +25,6 @@ public class StaticObjStat extends CharStat
 	public StaticObjStat(L2StaticObjectInstance activeChar)
 	{
 		super(activeChar);
-		
-		setLevel((byte) 1);
 	}
 	
 	@Override
@@ -38,6 +36,6 @@ public class StaticObjStat extends CharStat
 	@Override
 	public final byte getLevel()
 	{
-		return 1;
+		return (byte) getActiveChar().getLevel();
 	}
 }

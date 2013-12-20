@@ -20,7 +20,6 @@ package com.l2jserver.gameserver.model.actor.stat;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.model.L2PetLevelData;
 import com.l2jserver.gameserver.model.PcCondOverride;
@@ -525,11 +524,9 @@ public class PcStat extends PlayableStat
 	public float getBaseMoveSpeed(MoveType type)
 	{
 		final L2PcInstance player = getActiveChar();
-		float val = super.getBaseMoveSpeed(type);
-		
-		if (getActiveChar().isTransformed())
+		if (player.isTransformed())
 		{
-			final TransformTemplate template = getActiveChar().getTransformation().getTemplate(getActiveChar());
+			final TransformTemplate template = player.getTransformation().getTemplate(player);
 			if (template != null)
 			{
 				return template.getBaseMoveSpeed(type);
@@ -537,13 +534,13 @@ public class PcStat extends PlayableStat
 		}
 		else if (player.isMounted())
 		{
-			final L2PetLevelData data = PetDataTable.getInstance().getPetLevelData(getActiveChar().getMountNpcId(), getActiveChar().getMountLevel());
+			final L2PetLevelData data = PetDataTable.getInstance().getPetLevelData(player.getMountNpcId(), player.getMountLevel());
 			if (data != null)
 			{
 				return data.getSpeedOnRide(type);
 			}
 		}
-		return val;
+		return super.getBaseMoveSpeed(type);
 	}
 	
 	@Override
@@ -614,19 +611,6 @@ public class PcStat extends PlayableStat
 		}
 		
 		return val;
-	}
-	
-	@Override
-	public float getMovementSpeedMultiplier()
-	{
-		if (getActiveChar().isMounted())
-		{
-			final L2PetLevelData data = PetDataTable.getInstance().getPetLevelData(getActiveChar().getMountNpcId(), getActiveChar().getMountLevel());
-			float baseSpeed = data != null ? data.getSpeedOnRide(MoveType.RUN) : NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseMoveSpeed(MoveType.RUN);
-			return (getRunSpeed() / baseSpeed);
-		}
-		
-		return super.getMovementSpeedMultiplier();
 	}
 	
 	private void updateVitalityLevel(boolean quiet)

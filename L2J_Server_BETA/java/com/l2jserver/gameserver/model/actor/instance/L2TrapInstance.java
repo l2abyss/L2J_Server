@@ -83,22 +83,8 @@ public final class L2TrapInstance extends L2Npc
 	
 	public L2TrapInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, int lifeTime)
 	{
-		super(objectId, template);
-		setInstanceType(InstanceType.L2TrapInstance);
-		setInstanceId(owner.getInstanceId());
-		setName(template.getName());
-		setIsInvul(false);
-		
+		this(objectId, template, owner.getInstanceId(), lifeTime);
 		_owner = owner;
-		_isTriggered = false;
-		_skill = getTemplate().getParameters().getObject("trap_skill", SkillHolder.class);
-		_hasLifeTime = lifeTime >= 0;
-		_lifeTime = lifeTime != 0 ? lifeTime : 30000;
-		_remainingTime = getLifeTime();
-		if (_skill != null)
-		{
-			ThreadPoolManager.getInstance().scheduleGeneral(new TrapTask(this), TICK);
-		}
 	}
 	
 	@Override
@@ -358,7 +344,10 @@ public final class L2TrapInstance extends L2Npc
 	{
 		if (_isInArena)
 		{
-			detector.sendPacket(new TrapInfo(this, detector));
+			if (detector.isPlayable())
+			{
+				sendInfo(detector.getActingPlayer());
+			}
 			return;
 		}
 		
@@ -376,7 +365,10 @@ public final class L2TrapInstance extends L2Npc
 				quest.notifyTrapAction(this, detector, TrapAction.TRAP_DETECTED);
 			}
 		}
-		detector.sendPacket(new TrapInfo(this, detector));
+		if (detector.isPlayable())
+		{
+			sendInfo(detector.getActingPlayer());
+		}
 	}
 	
 	public void stopDecay()
