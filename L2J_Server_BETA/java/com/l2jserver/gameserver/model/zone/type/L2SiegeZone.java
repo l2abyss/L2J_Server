@@ -263,11 +263,6 @@ public class L2SiegeZone extends L2ZoneType
 		}
 	}
 	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
-	
 	public void updateZoneStatusForCharactersInside()
 	{
 		if (getSettings().isActiveSiege())

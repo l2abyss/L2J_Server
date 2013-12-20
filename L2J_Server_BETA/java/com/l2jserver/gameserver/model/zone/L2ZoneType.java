@@ -517,9 +517,21 @@ public abstract class L2ZoneType
 	
 	protected abstract void onExit(L2Character character);
 	
-	public abstract void onDieInside(L2Character character);
+	public void onDieInside(L2Character character)
+	{
+	}
 	
-	public abstract void onReviveInside(L2Character character);
+	public void onReviveInside(L2Character character)
+	{
+	}
+	
+	public void onPlayerLoginInside(L2PcInstance player)
+	{
+	}
+	
+	public void onPlayerLogoutInside(L2PcInstance player)
+	{
+	}
 	
 	public Map<Integer, L2Character> getCharacters()
 	{

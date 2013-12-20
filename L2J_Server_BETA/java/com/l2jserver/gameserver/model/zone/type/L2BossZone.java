@@ -437,16 +437,6 @@ public class L2BossZone extends L2ZoneType
 		}
 	}
 	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
-	
 	public void updateKnownList(L2Npc npc)
 	{
 		if ((_characterList == null) || _characterList.isEmpty())

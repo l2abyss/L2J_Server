@@ -50,14 +50,4 @@ public class L2LandingZone extends L2ZoneType
 			character.setInsideZone(ZoneId.LANDING, false);
 		}
 	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
 }

@@ -62,14 +62,4 @@ public class L2ArenaZone extends L2ZoneType
 		
 		character.setInsideZone(ZoneId.PVP, false);
 	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
 }

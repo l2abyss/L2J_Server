@@ -75,14 +75,4 @@ public class L2HqZone extends L2ZoneType
 			character.setInsideZone(ZoneId.HQ, false);
 		}
 	}
-	
-	@Override
-	public void onDieInside(final L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(final L2Character character)
-	{
-	}
 }

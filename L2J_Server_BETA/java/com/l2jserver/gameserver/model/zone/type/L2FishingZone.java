@@ -42,16 +42,6 @@ public class L2FishingZone extends L2ZoneType
 	{
 	}
 	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
-	
 	/*
 	 * getWaterZ() this added function returns the Z value for the water surface. In effect this simply returns the upper Z value of the zone. This required some modification of L2ZoneForm, and zone form extentions.
 	 */

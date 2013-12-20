@@ -119,14 +119,4 @@ public class L2SwampZone extends L2ZoneType
 	{
 		return _move_bonus;
 	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
 }

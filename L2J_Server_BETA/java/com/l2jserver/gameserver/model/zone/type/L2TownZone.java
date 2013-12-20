@@ -67,16 +67,6 @@ public class L2TownZone extends L2ZoneType
 		character.setInsideZone(ZoneId.TOWN, false);
 	}
 	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
-	
 	/**
 	 * Returns this zones town id (if any)
 	 * @return

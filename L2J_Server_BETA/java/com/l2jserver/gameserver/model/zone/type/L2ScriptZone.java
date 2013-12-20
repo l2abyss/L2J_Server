@@ -44,14 +44,4 @@ public class L2ScriptZone extends L2ZoneType
 	{
 		character.setInsideZone(ZoneId.SCRIPT, false);
 	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
 }

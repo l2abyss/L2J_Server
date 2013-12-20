@@ -50,14 +50,4 @@ public class L2NoStoreZone extends L2ZoneType
 			character.setInsideZone(ZoneId.NO_STORE, false);
 		}
 	}
-	
-	@Override
-	public void onDieInside(final L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(final L2Character character)
-	{
-	}
 }

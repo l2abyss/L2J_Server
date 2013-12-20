@@ -45,14 +45,4 @@ public class L2NoSummonFriendZone extends L2ZoneType
 	{
 		character.setInsideZone(ZoneId.NO_SUMMON_FRIEND, false);
 	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
 }

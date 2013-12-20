@@ -773,7 +773,6 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 			{
 				if ((getActiveChar() != null) && !isDetached())
 				{
-					getActiveChar().storeZoneRestartLimitTime();
 					setDetached(true);
 					if (offlineMode(getActiveChar()))
 					{

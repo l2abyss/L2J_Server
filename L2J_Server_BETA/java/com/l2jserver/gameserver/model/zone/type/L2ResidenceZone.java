@@ -19,7 +19,6 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.model.TeleportWhereType;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 
@@ -33,16 +32,6 @@ public abstract class L2ResidenceZone extends L2ZoneRespawn
 	protected L2ResidenceZone(int id)
 	{
 		super(id);
-	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
 	}
 	
 	protected void banishForeigners(int owningClanId, TeleportWhereType type)

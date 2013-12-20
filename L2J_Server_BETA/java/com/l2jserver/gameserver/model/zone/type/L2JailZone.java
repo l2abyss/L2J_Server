@@ -89,16 +89,6 @@ public class L2JailZone extends L2ZoneType
 		}
 	}
 	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
-	
 	public static Location getLocationIn()
 	{
 		return JAIL_IN_LOC;

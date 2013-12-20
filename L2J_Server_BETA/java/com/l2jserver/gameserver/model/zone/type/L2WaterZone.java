@@ -98,16 +98,6 @@ public class L2WaterZone extends L2ZoneType
 		}
 	}
 	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
-	
 	public int getWaterZ()
 	{
 		return getZone().getHighZ();

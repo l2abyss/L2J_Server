@@ -50,14 +50,4 @@ public class L2DerbyTrackZone extends L2ZoneType
 			character.setInsideZone(ZoneId.MONSTER_TRACK, false);
 		}
 	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
 }

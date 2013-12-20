@@ -218,14 +218,4 @@ public class L2DamageZone extends L2ZoneType
 			}
 		}
 	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
 }

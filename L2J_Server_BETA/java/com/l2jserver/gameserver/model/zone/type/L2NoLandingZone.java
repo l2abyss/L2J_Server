@@ -76,14 +76,4 @@ public class L2NoLandingZone extends L2ZoneType
 			}
 		}
 	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
 }

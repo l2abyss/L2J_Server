@@ -259,16 +259,6 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 		}
 	}
 	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
-	
 	private static final class KickPlayer implements Runnable
 	{
 		private L2PcInstance _player;

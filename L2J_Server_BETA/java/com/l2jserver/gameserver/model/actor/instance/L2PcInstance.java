@@ -244,7 +244,6 @@ import com.l2jserver.gameserver.model.variables.PlayerVariables;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.model.zone.type.L2BossZone;
-import com.l2jserver.gameserver.model.zone.type.L2NoRestartZone;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
@@ -379,11 +378,6 @@ public final class L2PcInstance extends L2Playable
 	// Character Shortcut SQL String Definitions:
 	private static final String DELETE_CHAR_SHORTCUTS = "DELETE FROM character_shortcuts WHERE charId=? AND class_index=?";
 	
-	// Character zone restart time SQL String Definitions - L2Master mod
-	private static final String DELETE_ZONE_RESTART_LIMIT = "DELETE FROM character_norestart_zone_time WHERE charId = ?";
-	private static final String LOAD_ZONE_RESTART_LIMIT = "SELECT time_limit FROM character_norestart_zone_time WHERE charId = ?";
-	private static final String UPDATE_ZONE_RESTART_LIMIT = "REPLACE INTO character_norestart_zone_time (charId, time_limit) VALUES (?,?)";
-	
 	private static final String COND_OVERRIDE_KEY = "cond_override";
 	
 	public static final String NEWBIE_KEY = "NEWBIE";
@@ -456,7 +450,6 @@ public final class L2PcInstance extends L2Playable
 	private long _onlineBeginTime;
 	private long _lastAccess;
 	private long _uptime;
-	private long _zoneRestartLimitTime = 0;
 	
 	private final ReentrantLock _subclassLock = new ReentrantLock();
 	protected int _baseClass;
@@ -3039,71 +3032,6 @@ public final class L2PcInstance extends L2Playable
 	{
 		_onlineTime = time;
 		_onlineBeginTime = System.currentTimeMillis();
-	}
-	
-	public long getZoneRestartLimitTime()
-	{
-		return _zoneRestartLimitTime;
-	}
-	
-	public void setZoneRestartLimitTime(long time)
-	{
-		_zoneRestartLimitTime = time;
-	}
-	
-	public void storeZoneRestartLimitTime()
-	{
-		if (isInsideZone(ZoneId.NO_RESTART))
-		{
-			L2NoRestartZone zone = null;
-			for (L2ZoneType tmpzone : ZoneManager.getInstance().getZones(this))
-			{
-				if (tmpzone instanceof L2NoRestartZone)
-				{
-					zone = (L2NoRestartZone) tmpzone;
-					break;
-				}
-			}
-			if (zone != null)
-			{
-				try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-					PreparedStatement statement = con.prepareStatement(UPDATE_ZONE_RESTART_LIMIT))
-				{
-					statement.setInt(1, getObjectId());
-					statement.setLong(2, System.currentTimeMillis() + (zone.getRestartAllowedTime() * 1000));
-					statement.execute();
-				}
-				catch (SQLException e)
-				{
-					_log.log(Level.WARNING, "Cannot store zone norestart limit for character " + getObjectId(), e);
-				}
-			}
-		}
-	}
-	
-	private void restoreZoneRestartLimitTime()
-	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement ps1 = con.prepareStatement(LOAD_ZONE_RESTART_LIMIT))
-		{
-			ps1.setInt(1, getObjectId());
-			try (ResultSet rset = ps1.executeQuery())
-			{
-				if (rset.next())
-				{
-					setZoneRestartLimitTime(rset.getLong("time_limit"));
-					try (PreparedStatement ps2 = con.prepareStatement(DELETE_ZONE_RESTART_LIMIT))
-					{
-						ps2.setInt(1, getObjectId());
-						ps2.executeUpdate();
-					}
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.WARNING, "Could not restore " + this + " zone restart time: " + e.getMessage(), e);
-		}
 	}
 	
 	/**
@@ -7377,8 +7305,6 @@ public final class L2PcInstance extends L2Playable
 				player.restoreUISettings();
 			}
 			
-			player.restoreZoneRestartLimitTime();
-			
 			if (player.isGM())
 			{
 				final long masks = player.getVariables().getLong(COND_OVERRIDE_KEY, PcCondOverride.getAllExceptionsMask());
@@ -10887,6 +10813,18 @@ public final class L2PcInstance extends L2Playable
 			checkPlayerSkills();
 		}
 		getEvents().onPlayerLogin();
+		
+		try
+		{
+			for (L2ZoneType zone : ZoneManager.getInstance().getZones(this))
+			{
+				zone.onPlayerLoginInside(this);
+			}
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "", e);
+		}
 	}
 	
 	public long getLastAccess()
@@ -11515,6 +11453,18 @@ public final class L2PcInstance extends L2Playable
 	private synchronized void cleanup()
 	{
 		getEvents().onPlayerLogout();
+		
+		try
+		{
+			for (L2ZoneType zone : ZoneManager.getInstance().getZones(this))
+			{
+				zone.onPlayerLogoutInside(this);
+			}
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.SEVERE, "deleteMe()", e);
+		}
 		
 		// Set the online Flag to True or False and update the characters table of the database with online status and lastAccess (called when login and logout)
 		try

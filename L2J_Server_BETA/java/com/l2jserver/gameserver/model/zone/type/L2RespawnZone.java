@@ -49,16 +49,6 @@ public class L2RespawnZone extends L2ZoneType
 	{
 	}
 	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
-	
 	public void addRaceRespawnPoint(String race, String point)
 	{
 		_raceRespawnPoint.put(PcRace.valueOf(race), point);
