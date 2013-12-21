@@ -48,6 +48,7 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExSendUIEvent;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
+import com.l2jserver.gameserver.util.Util;
 
 /**
  * Base class for all interactive objects.
@@ -740,6 +741,23 @@ public abstract class L2Object implements IIdentifiable, INamable, ISpawnable, I
 	public double calculateDistance(ILocational loc, boolean includeZAxis, boolean squared)
 	{
 		return calculateDistance(loc.getX(), loc.getY(), loc.getZ(), includeZAxis, squared);
+	}
+	
+	/**
+	 * Calculates the angle in degrees from this object to the given object.<br>
+	 * The return value can be described as how much this object has to turn<br>
+	 * to have the given object directly in front of it.
+	 * @param to
+	 * @return the angle this onject has to turn to have the given object in front of it
+	 */
+	public double calculateDirectionTo(ILocational to)
+	{
+		int heading = Util.calculateHeadingFrom(this, to) - this.getHeading();
+		if (heading < 0)
+		{
+			heading = 65535 + heading;
+		}
+		return Util.convertHeadingToDegree(heading);
 	}
 	
 	@Override
