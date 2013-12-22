@@ -445,7 +445,7 @@ public abstract class L2Object implements IIdentifiable, INamable, ISpawnable, I
 	}
 	
 	/**
-	 * @return {@code true} if object is instance of L2Attackable
+	 * @return {@code true} if object is instance of L2Character
 	 */
 	public boolean isCharacter()
 	{
@@ -747,12 +747,12 @@ public abstract class L2Object implements IIdentifiable, INamable, ISpawnable, I
 	 * Calculates the angle in degrees from this object to the given object.<br>
 	 * The return value can be described as how much this object has to turn<br>
 	 * to have the given object directly in front of it.
-	 * @param to
-	 * @return the angle this onject has to turn to have the given object in front of it
+	 * @param target the object to which to calculate the angle
+	 * @return the angle this object has to turn to have the given object in front of it
 	 */
-	public double calculateDirectionTo(ILocational to)
+	public double calculateDirectionTo(ILocational target)
 	{
-		int heading = Util.calculateHeadingFrom(this, to) - this.getHeading();
+		int heading = Util.calculateHeadingFrom(this, target) - this.getHeading();
 		if (heading < 0)
 		{
 			heading = 65535 + heading;
