@@ -757,4 +757,108 @@ public final class Util
 		
 		return true;
 	}
+	
+	public static int min(int value1, int value2, int... values)
+	{
+		int min = Math.min(value1, value2);
+		for (int value : values)
+		{
+			if (min > value)
+			{
+				min = value;
+			}
+		}
+		return min;
+	}
+	
+	public static int max(int value1, int value2, int... values)
+	{
+		int max = Math.max(value1, value2);
+		for (int value : values)
+		{
+			if (max < value)
+			{
+				max = value;
+			}
+		}
+		return max;
+	}
+	
+	public static long min(long value1, long value2, long... values)
+	{
+		long min = Math.min(value1, value2);
+		for (long value : values)
+		{
+			if (min > value)
+			{
+				min = value;
+			}
+		}
+		return min;
+	}
+	
+	public static long max(long value1, long value2, long... values)
+	{
+		long max = Math.max(value1, value2);
+		for (long value : values)
+		{
+			if (max < value)
+			{
+				max = value;
+			}
+		}
+		return max;
+	}
+	
+	public static float min(float value1, float value2, float... values)
+	{
+		float min = Math.min(value1, value2);
+		for (float value : values)
+		{
+			if (min > value)
+			{
+				min = value;
+			}
+		}
+		return min;
+	}
+	
+	public static float max(float value1, float value2, float... values)
+	{
+		float max = Math.max(value1, value2);
+		for (float value : values)
+		{
+			if (max < value)
+			{
+				max = value;
+			}
+		}
+		return max;
+	}
+	
+	public static double min(double value1, double value2, double... values)
+	{
+		double min = Math.min(value1, value2);
+		for (double value : values)
+		{
+			if (min > value)
+			{
+				min = value;
+			}
+		}
+		return min;
+	}
+	
+	public static double max(double value1, double value2, double... values)
+	{
+		double max = Math.max(value1, value2);
+		for (double value : values)
+		{
+			if (max < value)
+			{
+				max = value;
+			}
+		}
+		return max;
+	}
 }
