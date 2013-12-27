@@ -117,7 +117,6 @@ public enum L2SkillOpType
 			case A2:
 			case A3:
 			case A4:
-			case CA5:
 			case DA2:
 				return true;
 			default:
