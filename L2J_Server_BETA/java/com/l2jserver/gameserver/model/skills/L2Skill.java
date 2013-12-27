@@ -21,6 +21,7 @@ package com.l2jserver.gameserver.model.skills;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -193,11 +194,8 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	private List<Condition> _itemPreCondition;
 	// Function lists
 	private List<FuncTemplate> _funcTemplates;
-	// Effect lists
-	private List<AbstractEffect> _effects;
-	private List<AbstractEffect> _effectSelf;
-	private List<AbstractEffect> _effectPassive;
-	private List<AbstractEffect> _effectChanneling;
+	
+	private final EnumMap<EffectScope, List<AbstractEffect>> _effectLists = new EnumMap<>(EffectScope.class);
 	
 	protected ChanceCondition _chanceCondition = null;
 	
@@ -1280,39 +1278,42 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		return funcs;
 	}
 	
-	public boolean hasEffects()
+	public List<AbstractEffect> getEffects(EffectScope effectScope)
 	{
-		return (_effects != null) && !_effects.isEmpty();
+		return _effectLists.get(effectScope);
 	}
 	
-	public List<AbstractEffect> getEffectTemplates()
+	public boolean hasEffects(EffectScope effectScope)
 	{
-		return _effects;
+		List<AbstractEffect> effects = _effectLists.get(effectScope);
+		return (effects != null) && !effects.isEmpty();
 	}
 	
-	public boolean hasPassiveEffects()
+	public void applyEffectScope(EffectScope effectScope, BuffInfo info, boolean applyInstantEffects, boolean addContinuousEffects)
 	{
-		return (_effectPassive != null) && !_effectPassive.isEmpty();
-	}
-	
-	public List<AbstractEffect> getEffectTemplatesPassive()
-	{
-		return _effectPassive;
-	}
-	
-	public List<AbstractEffect> getEffectTemplateChanneling()
-	{
-		return _effectChanneling;
-	}
-	
-	public boolean hasSelfEffects()
-	{
-		return (_effectSelf != null) && !_effectSelf.isEmpty();
-	}
-	
-	public boolean hasChannelingEffects()
-	{
-		return (_effectChanneling != null) && !_effectChanneling.isEmpty();
+		if ((effectScope != null) && hasEffects(effectScope))
+		{
+			for (AbstractEffect effect : getEffects(effectScope))
+			{
+				if (effect != null)
+				{
+					if (effect.isInstant())
+					{
+						if (applyInstantEffects && effect.calcSuccess(info))
+						{
+							effect.onStart(info);
+						}
+					}
+					else if (addContinuousEffects)
+					{
+						if (effect.canStart(info))
+						{
+							info.addEffect(effect);
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	/**
@@ -1370,7 +1371,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		env.setTarget(effected);
 		env.setSkill(this);
 		final boolean addContinuousEffects = !passive && (_operateType.isToggle() || (_operateType.isContinuous() && Formulas.calcEffectSuccess(env)));
-		if (!self && !passive && hasEffects())
+		if (!self && !passive)
 		{
 			final BuffInfo info = new BuffInfo(env);
 			if (addContinuousEffects && (abnormalTime > 0))
@@ -1378,27 +1379,17 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 				info.setAbnormalTime(abnormalTime);
 			}
 			
-			for (AbstractEffect effect : _effects)
+			applyEffectScope(EffectScope.GENERAL, info, instant, addContinuousEffects);
+			
+			EffectScope pvpOrPveEffectScope = effector.isPlayable() && effected.isL2Attackable() ? EffectScope.PVE : effector.isPlayable() && effected.isPlayable() ? EffectScope.PVP : null;
+			applyEffectScope(pvpOrPveEffectScope, info, instant, addContinuousEffects);
+			
+			applyEffectScope(EffectScope.CHANNELING, info, instant, addContinuousEffects);
+			
+			if (addContinuousEffects)
 			{
-				if (effect != null)
-				{
-					if (effect.isInstant())
-					{
-						if (instant && effect.calcSuccess(info))
-						{
-							effect.onStart(info);
-						}
-					}
-					else if (addContinuousEffects)
-					{
-						if (effect.canStart(info))
-						{
-							info.addEffect(effect);
-						}
-					}
-				}
+				effected.getEffectList().add(info);
 			}
-			effected.getEffectList().add(info);
 			
 			// Support for buff sharing feature.
 			if (addContinuousEffects && effected.isPlayer() && effected.hasServitor() && isContinuous() && !isDebuff())
@@ -1407,7 +1398,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 			}
 		}
 		
-		if (self && hasSelfEffects())
+		if (self)
 		{
 			env.setTarget(effector);
 			final BuffInfo info = new BuffInfo(env);
@@ -1416,27 +1407,12 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 				info.setAbnormalTime(abnormalTime);
 			}
 			
-			for (AbstractEffect effect : _effectSelf)
+			applyEffectScope(EffectScope.SELF, info, instant, addContinuousEffects);
+			
+			if (addContinuousEffects)
 			{
-				if (effect != null)
-				{
-					if (effect.isInstant())
-					{
-						if (instant && effect.calcSuccess(info))
-						{
-							effect.onStart(info);
-						}
-					}
-					else if (addContinuousEffects)
-					{
-						if (effect.canStart(info))
-						{
-							info.addEffect(effect);
-						}
-					}
-				}
+				effector.getEffectList().add(info);
 			}
-			effector.getEffectList().add(info);
 			
 			// Support for buff sharing feature.
 			// Avoiding Servitor Share since it's implementation already "shares" the effect.
@@ -1446,59 +1422,12 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 			}
 		}
 		
-		if (passive && hasPassiveEffects())
+		if (passive)
 		{
 			env.setTarget(effector);
 			final BuffInfo info = new BuffInfo(env);
-			for (AbstractEffect effect : _effectPassive)
-			{
-				if (effect != null)
-				{
-					if (effect.canStart(info))
-					{
-						info.addEffect(effect);
-					}
-				}
-			}
+			applyEffectScope(EffectScope.PASSIVE, info, false, true);
 			effector.getEffectList().add(info);
-		}
-		
-		if (!self && !passive && hasChannelingEffects())
-		{
-			env.setTarget(effected);
-			final BuffInfo info = new BuffInfo(env);
-			if (addContinuousEffects && (abnormalTime > 0))
-			{
-				info.setAbnormalTime(abnormalTime);
-			}
-			
-			for (AbstractEffect effect : _effectChanneling)
-			{
-				if (effect != null)
-				{
-					if (effect.isInstant())
-					{
-						if (instant && effect.calcSuccess(info))
-						{
-							effect.onStart(info);
-						}
-					}
-					else if (addContinuousEffects)
-					{
-						if (effect.canStart(info))
-						{
-							info.addEffect(effect);
-						}
-					}
-				}
-			}
-			effector.getEffectList().add(info);
-			
-			// Support for buff sharing feature.
-			if (addContinuousEffects && effected.isPlayer() && effected.hasServitor() && isContinuous() && !isDebuff())
-			{
-				applyEffects(effector, effected.getSummon(), false, 0);
-			}
 		}
 	}
 	
@@ -1511,40 +1440,15 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		_funcTemplates.add(f);
 	}
 	
-	public final void attach(AbstractEffect effect)
+	public final void addEffect(EffectScope effectScope, AbstractEffect effect)
 	{
-		if (_effects == null)
+		List<AbstractEffect> effects = _effectLists.get(effectScope);
+		if (effects == null)
 		{
-			_effects = new ArrayList<>(1);
+			effects = new ArrayList<>(1);
+			_effectLists.put(effectScope, effects);
 		}
-		_effects.add(effect);
-	}
-	
-	public final void attachSelf(AbstractEffect effect)
-	{
-		if (_effectSelf == null)
-		{
-			_effectSelf = new ArrayList<>(1);
-		}
-		_effectSelf.add(effect);
-	}
-	
-	public final void attachPassive(AbstractEffect effect)
-	{
-		if (_effectPassive == null)
-		{
-			_effectPassive = new ArrayList<>(1);
-		}
-		_effectPassive.add(effect);
-	}
-	
-	public final void attachChanneling(AbstractEffect effectTemplate)
-	{
-		if (_effectChanneling == null)
-		{
-			_effectChanneling = new ArrayList<>(1);
-		}
-		_effectChanneling.add(effectTemplate);
+		effects.add(effect);
 	}
 	
 	public final void attach(Condition c, boolean itemOrWeapon)
@@ -1801,17 +1705,17 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	 */
 	public boolean hasEffectType(L2EffectType... types)
 	{
-		if (hasEffects() && (types != null) && (types.length > 0))
+		if (hasEffects(EffectScope.GENERAL) && (types != null) && (types.length > 0))
 		{
 			if (_effectTypes == null)
 			{
-				_effectTypes = new byte[_effects.size()];
+				_effectTypes = new byte[getEffects(EffectScope.GENERAL).size()];
 				
 				final Env env = new Env();
 				env.setSkill(this);
 				
 				int i = 0;
-				for (AbstractEffect effect : _effects)
+				for (AbstractEffect effect : getEffects(EffectScope.GENERAL))
 				{
 					if (effect == null)
 					{

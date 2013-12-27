@@ -43,6 +43,7 @@ import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
+import com.l2jserver.gameserver.model.skills.EffectScope;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.AbnormalStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadSpelledInfo;
@@ -640,6 +641,8 @@ public final class CharEffectList
 				}
 			}
 		}
+		
+		info.getSkill().applyEffectScope(EffectScope.END, info, true, false);
 	}
 	
 	/**
@@ -1352,7 +1355,7 @@ public final class CharEffectList
 	 */
 	public void add(BuffInfo info)
 	{
-		if ((info == null) || info.getEffects().isEmpty())
+		if (info == null)
 		{
 			return;
 		}

@@ -42,6 +42,7 @@ import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
+import com.l2jserver.gameserver.model.skills.EffectScope;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.network.serverpackets.SetSummonRemainTime;
@@ -467,7 +468,7 @@ public class L2ServitorInstance extends L2Summon
 								continue;
 							}
 							
-							if (skill.hasEffects())
+							if (skill.hasEffects(EffectScope.GENERAL))
 							{
 								if (!SummonEffectsTable.getInstance().getServitorEffectsOwner().contains(getOwner().getObjectId()))
 								{

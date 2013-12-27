@@ -67,6 +67,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
+import com.l2jserver.gameserver.model.skills.EffectScope;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -1150,7 +1151,7 @@ public class L2PetInstance extends L2Summon
 							continue;
 						}
 						
-						if (skill.hasEffects())
+						if (skill.hasEffects(EffectScope.GENERAL))
 						{
 							if (!SummonEffectsTable.getInstance().getPetEffects().contains(getControlObjectId()))
 							{

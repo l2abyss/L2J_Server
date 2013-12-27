@@ -119,6 +119,7 @@ import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.type.L2ArmorType;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.model.skills.EffectScope;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.skills.funcs.Lambda;
@@ -182,10 +183,10 @@ public abstract class DocumentBase
 	
 	protected void parseTemplate(Node n, Object template)
 	{
-		parseTemplate(n, template, false);
+		parseTemplate(n, template, null);
 	}
 	
-	protected void parseTemplate(Node n, Object template, boolean isChanneling)
+	protected void parseTemplate(Node n, Object template, EffectScope effectScope)
 	{
 		Condition condition = null;
 		n = n.getFirstChild();
@@ -257,7 +258,7 @@ public abstract class DocumentBase
 				{
 					throw new RuntimeException("Nested effects");
 				}
-				attachEffect(n, template, condition, isChanneling);
+				attachEffect(n, template, condition, effectScope);
 			}
 		}
 	}
@@ -297,10 +298,10 @@ public abstract class DocumentBase
 	
 	protected void attachEffect(Node n, Object template, Condition attachCond)
 	{
-		attachEffect(n, template, attachCond, false);
+		attachEffect(n, template, attachCond, null);
 	}
 	
-	protected void attachEffect(Node n, Object template, Condition attachCond, boolean isChanneling)
+	protected void attachEffect(Node n, Object template, Condition attachCond, EffectScope effectScope)
 	{
 		final NamedNodeMap attrs = n.getAttributes();
 		final StatsSet set = new StatsSet();
@@ -327,21 +328,21 @@ public abstract class DocumentBase
 		else if (template instanceof L2Skill)
 		{
 			final L2Skill skill = (L2Skill) template;
-			if (isChanneling)
+			if (effectScope != null)
 			{
-				skill.attachChanneling(effect);
+				skill.addEffect(effectScope, effect);
 			}
 			else if (set.getInt("self", 0) == 1)
 			{
-				skill.attachSelf(effect);
+				skill.addEffect(EffectScope.SELF, effect);
 			}
 			else if (skill.isPassive())
 			{
-				skill.attachPassive(effect);
+				skill.addEffect(EffectScope.PASSIVE, effect);
 			}
 			else
 			{
-				skill.attach(effect);
+				skill.addEffect(EffectScope.GENERAL, effect);
 			}
 		}
 	}
