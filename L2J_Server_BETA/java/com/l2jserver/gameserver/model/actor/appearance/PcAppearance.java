@@ -19,6 +19,8 @@
 package com.l2jserver.gameserver.model.actor.appearance;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.serverpackets.DeleteObject;
+import com.l2jserver.gameserver.util.Broadcast;
 
 public class PcAppearance
 {
@@ -156,11 +158,13 @@ public class PcAppearance
 	public void setInvisible()
 	{
 		_invisible = true;
+		Broadcast.toKnownPlayers(_owner, new DeleteObject(_owner));
 	}
 	
 	public void setVisible()
 	{
 		_invisible = false;
+		_owner.broadcastUserInfo();
 	}
 	
 	public boolean getInvisible()

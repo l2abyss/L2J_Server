@@ -9802,8 +9802,11 @@ public final class L2PcInstance extends L2Playable
 		getAppearance().setInvisible();
 		// sendPacket(new GMHide(1));
 		sendPacket(new ObservationMode(loc));
-		getKnownList().removeAllKnownObjects(); // reinit knownlist
+		
+		decayMe();
 		setLocation(loc);
+		spawnMe();
+		
 		broadcastUserInfo();
 	}
 	
@@ -9865,8 +9868,13 @@ public final class L2PcInstance extends L2Playable
 	public void leaveObserverMode()
 	{
 		setTarget(null);
-		getKnownList().removeAllKnownObjects(); // reinit knownlist
+		
+		decayMe();
 		setLocation(_lastLoc);
+		unsetLastLocation();
+		sendPacket(new ObservationReturn(getLocation()));
+		spawnMe();
+		
 		setIsParalyzed(false);
 		if (!isGM())
 		{
@@ -9880,8 +9888,7 @@ public final class L2PcInstance extends L2Playable
 		
 		setFalling(); // prevent receive falling damage
 		_observerMode = false;
-		sendPacket(new ObservationReturn(getLocation()));
-		unsetLastLocation();
+		
 		broadcastUserInfo();
 	}
 	

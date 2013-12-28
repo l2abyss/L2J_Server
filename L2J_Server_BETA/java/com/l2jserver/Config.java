@@ -1782,9 +1782,9 @@ public final class Config
 			PACKET_HANDLER_DEBUG = General.getBoolean("PacketHandlerDebug", false);
 			DEVELOPER = General.getBoolean("Developer", false);
 			ACCEPT_GEOEDITOR_CONN = General.getBoolean("AcceptGeoeditorConn", false);
-			ALT_DEV_NO_HANDLERS = General.getBoolean("AltDevNoHandlers", false);
-			ALT_DEV_NO_QUESTS = General.getBoolean("AltDevNoQuests", false);
-			ALT_DEV_NO_SPAWNS = General.getBoolean("AltDevNoSpawns", false);
+			ALT_DEV_NO_HANDLERS = General.getBoolean("AltDevNoHandlers", false) || Boolean.getBoolean("nohandlers");
+			ALT_DEV_NO_QUESTS = General.getBoolean("AltDevNoQuests", false) || Boolean.getBoolean("noquests");
+			ALT_DEV_NO_SPAWNS = General.getBoolean("AltDevNoSpawns", false) || Boolean.getBoolean("nospawns");
 			THREAD_P_EFFECTS = General.getInt("ThreadPoolSizeEffects", 10);
 			THREAD_P_GENERAL = General.getInt("ThreadPoolSizeGeneral", 13);
 			IO_PACKET_THREAD_CORE_SIZE = General.getInt("UrgentPacketThreadCoreSize", 2);
