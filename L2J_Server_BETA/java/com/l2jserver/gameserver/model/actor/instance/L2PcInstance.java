@@ -9800,12 +9800,9 @@ public final class L2PcInstance extends L2Playable
 		startParalyze();
 		setIsInvul(true);
 		getAppearance().setInvisible();
-		// sendPacket(new GMHide(1));
 		sendPacket(new ObservationMode(loc));
 		
-		decayMe();
-		setLocation(loc);
-		spawnMe();
+		teleToLocation(loc, false);
 		
 		broadcastUserInfo();
 	}
@@ -9869,11 +9866,9 @@ public final class L2PcInstance extends L2Playable
 	{
 		setTarget(null);
 		
-		decayMe();
-		setLocation(_lastLoc);
+		teleToLocation(_lastLoc, false);
 		unsetLastLocation();
 		sendPacket(new ObservationReturn(getLocation()));
-		spawnMe();
 		
 		setIsParalyzed(false);
 		if (!isGM())
