@@ -53,7 +53,6 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 	private List<FuncTemplate> _funcTemplates;
 	private final String _name;
 	private final double _val;
-	private final boolean _isSelfEffect;
 	/** Ticks. */
 	private final int _ticks;
 	private final int _triggeredId;
@@ -74,7 +73,6 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 		// _applyCond = applyCond;
 		_name = set.getString("name");
 		_val = set.getDouble("val", 0);
-		_isSelfEffect = set.getInt("self", 0) == 1;
 		_ticks = set.getInt("ticks", 0);
 		_triggeredId = set.getInt("triggeredId", 0);
 		_triggeredLevel = set.getInt("triggeredLevel", 1);
@@ -145,15 +143,6 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 	public String getName()
 	{
 		return _name;
-	}
-	
-	/**
-	 * Verify if this is a self-effect.
-	 * @return {@code true} if it is a self-effect, {@code false} otherwise
-	 */
-	public boolean isSelfEffect()
-	{
-		return _isSelfEffect;
 	}
 	
 	/**
