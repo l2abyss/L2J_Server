@@ -332,10 +332,6 @@ public abstract class DocumentBase
 			{
 				skill.addEffect(effectScope, effect);
 			}
-			else if (set.getInt("self", 0) == 1)
-			{
-				skill.addEffect(EffectScope.SELF, effect);
-			}
 			else if (skill.isPassive())
 			{
 				skill.addEffect(EffectScope.PASSIVE, effect);

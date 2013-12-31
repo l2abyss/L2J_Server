@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -223,7 +225,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	
 	private final String _icon;
 	
-	private byte[] _effectTypes;
+	private Byte[] _effectTypes;
 	
 	// Channeling data
 	private final int _channelingSkillId;
@@ -1700,38 +1702,51 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	}
 	
 	/**
-	 * @param types
-	 * @return {@code true} if at least one of specified {@link L2EffectType} types present on the current skill's effects, {@code false} otherwise.
+	 * @param effectType Effect type to check if its present on this skill effects.
+	 * @param effectTypes Effect types to check if are present on this skill effects.
+	 * @return {@code true} if at least one of specified {@link L2EffectType} types is present on this skill effects, {@code false} otherwise.
 	 */
-	public boolean hasEffectType(L2EffectType... types)
+	public boolean hasEffectType(L2EffectType effectType, L2EffectType... effectTypes)
 	{
-		if (hasEffects(EffectScope.GENERAL) && (types != null) && (types.length > 0))
+		if (_effectTypes == null)
 		{
-			if (_effectTypes == null)
+			synchronized (this)
 			{
-				_effectTypes = new byte[getEffects(EffectScope.GENERAL).size()];
-				
-				final Env env = new Env();
-				env.setSkill(this);
-				
-				int i = 0;
-				for (AbstractEffect effect : getEffects(EffectScope.GENERAL))
+				if (_effectTypes == null)
 				{
-					if (effect == null)
+					Set<Byte> effectTypesSet = new HashSet<>();
+					for (List<AbstractEffect> effectList : _effectLists.values())
 					{
-						continue;
+						if (effectList != null)
+						{
+							for (AbstractEffect effect : effectList)
+							{
+								if (effect == null)
+								{
+									continue;
+								}
+								effectTypesSet.add((byte) effect.getEffectType().ordinal());
+							}
+						}
 					}
-					_effectTypes[i++] = (byte) effect.getEffectType().ordinal();
+					
+					Byte[] effectTypesArray = effectTypesSet.toArray(new Byte[effectTypesSet.size()]);
+					Arrays.sort(effectTypesArray);
+					_effectTypes = effectTypesArray;
 				}
-				Arrays.sort(_effectTypes);
 			}
-			
-			for (L2EffectType type : types)
+		}
+		
+		if (Arrays.binarySearch(_effectTypes, (byte) effectType.ordinal()) >= 0)
+		{
+			return true;
+		}
+		
+		for (L2EffectType type : effectTypes)
+		{
+			if (Arrays.binarySearch(_effectTypes, (byte) type.ordinal()) >= 0)
 			{
-				if (Arrays.binarySearch(_effectTypes, (byte) type.ordinal()) >= 0)
-				{
-					return true;
-				}
+				return true;
 			}
 		}
 		return false;
