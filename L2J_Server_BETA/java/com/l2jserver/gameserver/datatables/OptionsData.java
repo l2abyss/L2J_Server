@@ -67,7 +67,7 @@ public class OptionsData extends DocumentParser
 				{
 					if ("option".equalsIgnoreCase(d.getNodeName()))
 					{
-						id = parseInt(d.getAttributes(), "id");
+						id = parseInteger(d.getAttributes(), "id");
 						op = new Options(id);
 						
 						for (Node cd = d.getFirstChild(); cd != null; cd = cd.getNextSibling())
@@ -116,27 +116,27 @@ public class OptionsData extends DocumentParser
 								}
 								case "active_skill":
 								{
-									op.setActiveSkill(new SkillHolder(parseInt(cd.getAttributes(), "id"), parseInt(cd.getAttributes(), "level")));
+									op.setActiveSkill(new SkillHolder(parseInteger(cd.getAttributes(), "id"), parseInteger(cd.getAttributes(), "level")));
 									break;
 								}
 								case "passive_skill":
 								{
-									op.setPassiveSkill(new SkillHolder(parseInt(cd.getAttributes(), "id"), parseInt(cd.getAttributes(), "level")));
+									op.setPassiveSkill(new SkillHolder(parseInteger(cd.getAttributes(), "id"), parseInteger(cd.getAttributes(), "level")));
 									break;
 								}
 								case "attack_skill":
 								{
-									op.addActivationSkill(new OptionsSkillHolder(parseInt(cd.getAttributes(), "id"), parseInt(cd.getAttributes(), "level"), parseDouble(cd.getAttributes(), "chance"), OptionsSkillType.ATTACK));
+									op.addActivationSkill(new OptionsSkillHolder(parseInteger(cd.getAttributes(), "id"), parseInteger(cd.getAttributes(), "level"), parseDouble(cd.getAttributes(), "chance"), OptionsSkillType.ATTACK));
 									break;
 								}
 								case "magic_skill":
 								{
-									op.addActivationSkill(new OptionsSkillHolder(parseInt(cd.getAttributes(), "id"), parseInt(cd.getAttributes(), "level"), parseDouble(cd.getAttributes(), "chance"), OptionsSkillType.MAGIC));
+									op.addActivationSkill(new OptionsSkillHolder(parseInteger(cd.getAttributes(), "id"), parseInteger(cd.getAttributes(), "level"), parseDouble(cd.getAttributes(), "chance"), OptionsSkillType.MAGIC));
 									break;
 								}
 								case "critical_skill":
 								{
-									op.addActivationSkill(new OptionsSkillHolder(parseInt(cd.getAttributes(), "id"), parseInt(cd.getAttributes(), "level"), parseDouble(cd.getAttributes(), "chance"), OptionsSkillType.CRITICAL));
+									op.addActivationSkill(new OptionsSkillHolder(parseInteger(cd.getAttributes(), "id"), parseInteger(cd.getAttributes(), "level"), parseDouble(cd.getAttributes(), "chance"), OptionsSkillType.CRITICAL));
 									break;
 								}
 							}

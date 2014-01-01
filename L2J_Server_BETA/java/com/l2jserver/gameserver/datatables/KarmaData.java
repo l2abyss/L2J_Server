@@ -60,7 +60,7 @@ public class KarmaData extends DocumentParser
 					if ("increase".equalsIgnoreCase(d.getNodeName()))
 					{
 						attrs = d.getAttributes();
-						_karmaTable.put(parseInt(attrs, "lvl"), parseDouble(attrs, "val"));
+						_karmaTable.put(parseInteger(attrs, "lvl"), parseDouble(attrs, "val"));
 					}
 				}
 			}

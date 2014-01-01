@@ -192,11 +192,11 @@ public final class ZoneManager extends DocumentParser
 							}
 						}
 						
-						minZ = parseInt(attrs, "minZ");
-						maxZ = parseInt(attrs, "maxZ");
+						minZ = parseInteger(attrs, "minZ");
+						maxZ = parseInteger(attrs, "maxZ");
 						
-						zoneType = attrs.getNamedItem("type").getNodeValue();
-						zoneShape = attrs.getNamedItem("shape").getNodeValue();
+						zoneType = parseString(attrs, "type");
+						zoneShape = parseString(attrs, "shape");
 						
 						// Get the zone shape from xml
 						L2ZoneForm zoneForm = null;
@@ -212,8 +212,8 @@ public final class ZoneManager extends DocumentParser
 								{
 									attrs = cd.getAttributes();
 									point = new int[2];
-									point[0] = parseInt(attrs, "X");
-									point[1] = parseInt(attrs, "Y");
+									point[0] = parseInteger(attrs, "X");
+									point[1] = parseInteger(attrs, "Y");
 									rs.add(point);
 								}
 							}

@@ -85,9 +85,9 @@ public final class MapRegionManager extends DocumentParser
 						attrs = d.getAttributes();
 						name = attrs.getNamedItem("name").getNodeValue();
 						town = attrs.getNamedItem("town").getNodeValue();
-						locId = parseInt(attrs, "locId");
-						castle = parseInt(attrs, "castle");
-						bbs = parseInt(attrs, "bbs");
+						locId = parseInteger(attrs, "locId");
+						castle = parseInteger(attrs, "castle");
+						bbs = parseInteger(attrs, "bbs");
 						
 						L2MapRegion region = new L2MapRegion(name, town, locId, castle, bbs);
 						for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling())
@@ -95,13 +95,13 @@ public final class MapRegionManager extends DocumentParser
 							attrs = c.getAttributes();
 							if ("respawnPoint".equalsIgnoreCase(c.getNodeName()))
 							{
-								int spawnX = parseInt(attrs, "X");
-								int spawnY = parseInt(attrs, "Y");
-								int spawnZ = parseInt(attrs, "Z");
+								int spawnX = parseInteger(attrs, "X");
+								int spawnY = parseInteger(attrs, "Y");
+								int spawnZ = parseInteger(attrs, "Z");
 								
-								boolean other = parseBoolean(attrs, "isOther");
-								boolean chaotic = parseBoolean(attrs, "isChaotic");
-								boolean banish = parseBoolean(attrs, "isBanish");
+								boolean other = parseBoolean(attrs, "isOther", false);
+								boolean chaotic = parseBoolean(attrs, "isChaotic", false);
+								boolean banish = parseBoolean(attrs, "isBanish", false);
 								
 								if (other)
 								{
@@ -122,7 +122,7 @@ public final class MapRegionManager extends DocumentParser
 							}
 							else if ("map".equalsIgnoreCase(c.getNodeName()))
 							{
-								region.addMap(parseInt(attrs, "X"), parseInt(attrs, "Y"));
+								region.addMap(parseInteger(attrs, "X"), parseInteger(attrs, "Y"));
 							}
 							else if ("banned".equalsIgnoreCase(c.getNodeName()))
 							{

@@ -71,7 +71,7 @@ public class ManorData extends DocumentParser
 				{
 					if ("castle".equalsIgnoreCase(d.getNodeName()))
 					{
-						castleId = parseInt(d.getAttributes(), "id");
+						castleId = parseInteger(d.getAttributes(), "id");
 						for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling())
 						{
 							if ("crop".equalsIgnoreCase(c.getNodeName()))

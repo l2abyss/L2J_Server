@@ -74,7 +74,7 @@ public class UIData extends DocumentParser
 	
 	private void parseCategory(Node n)
 	{
-		final int cat = parseInt(n.getAttributes(), "id");
+		final int cat = parseInteger(n.getAttributes(), "id");
 		for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 		{
 			if ("commands".equalsIgnoreCase(d.getNodeName()))

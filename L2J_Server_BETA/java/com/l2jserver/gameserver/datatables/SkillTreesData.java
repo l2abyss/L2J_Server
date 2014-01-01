@@ -201,10 +201,10 @@ public final class SkillTreesData extends DocumentParser
 									switch (b.getNodeName())
 									{
 										case "item":
-											skillLearn.addRequiredItem(new ItemHolder(parseInt(attrs, "id"), parseInt(attrs, "count")));
+											skillLearn.addRequiredItem(new ItemHolder(parseInteger(attrs, "id"), parseInteger(attrs, "count")));
 											break;
 										case "preRequisiteSkill":
-											skillLearn.addPreReqSkill(new SkillHolder(parseInt(attrs, "id"), parseInt(attrs, "lvl")));
+											skillLearn.addPreReqSkill(new SkillHolder(parseInteger(attrs, "id"), parseInteger(attrs, "lvl")));
 											break;
 										case "race":
 											skillLearn.addRace(PcRace.valueOf(b.getTextContent()));
@@ -216,7 +216,7 @@ public final class SkillTreesData extends DocumentParser
 											skillLearn.setSocialClass(Enum.valueOf(SocialClass.class, b.getTextContent()));
 											break;
 										case "subClassConditions":
-											skillLearn.addSubclassConditions(parseInt(attrs, "slot"), parseInt(attrs, "lvl"));
+											skillLearn.addSubclassConditions(parseInteger(attrs, "slot"), parseInteger(attrs, "lvl"));
 											break;
 									}
 								}

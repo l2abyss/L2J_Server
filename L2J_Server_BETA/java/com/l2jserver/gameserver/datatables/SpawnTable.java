@@ -175,7 +175,7 @@ public final class SpawnTable extends DocumentParser
 							else if (npctag.getNodeName().equalsIgnoreCase("npc"))
 							{
 								// mandatory
-								final int templateId = parseInt(attrs, "id");
+								final int templateId = parseInteger(attrs, "id");
 								// coordinates are optional, if territory is specified; mandatory otherwise
 								int x = 0;
 								int y = 0;
@@ -183,9 +183,9 @@ public final class SpawnTable extends DocumentParser
 								
 								try
 								{
-									x = parseInt(attrs, "x");
-									y = parseInt(attrs, "y");
-									z = parseInt(attrs, "z");
+									x = parseInteger(attrs, "x");
+									y = parseInteger(attrs, "y");
+									z = parseInteger(attrs, "z");
 								}
 								catch (NullPointerException npe)
 								{
@@ -209,22 +209,22 @@ public final class SpawnTable extends DocumentParser
 								// trying to read optional parameters
 								if (attrs.getNamedItem("heading") != null)
 								{
-									spawnInfo.set("heading", parseInt(attrs, "heading"));
+									spawnInfo.set("heading", parseInteger(attrs, "heading"));
 								}
 								
 								if (attrs.getNamedItem("count") != null)
 								{
-									spawnInfo.set("count", parseInt(attrs, "count"));
+									spawnInfo.set("count", parseInteger(attrs, "count"));
 								}
 								
 								if (attrs.getNamedItem("respawnDelay") != null)
 								{
-									spawnInfo.set("respawnDelay", parseInt(attrs, "respawnDelay"));
+									spawnInfo.set("respawnDelay", parseInteger(attrs, "respawnDelay"));
 								}
 								
 								if (attrs.getNamedItem("respawnRandom") != null)
 								{
-									spawnInfo.set("respawnRandom", parseInt(attrs, "respawnRandom"));
+									spawnInfo.set("respawnRandom", parseInteger(attrs, "respawnRandom"));
 								}
 								
 								if (attrs.getNamedItem("periodOfDay") != null)

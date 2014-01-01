@@ -127,8 +127,8 @@ public final class TransformData extends DocumentParser
 												if ("skill".equals(s.getNodeName()))
 												{
 													attrs = s.getAttributes();
-													int skillId = parseInt(attrs, "id");
-													int skillLevel = parseInt(attrs, "level");
+													int skillId = parseInteger(attrs, "id");
+													int skillLevel = parseInteger(attrs, "level");
 													templateData.addSkill(new SkillHolder(skillId, skillLevel));
 												}
 											}
@@ -158,9 +158,9 @@ public final class TransformData extends DocumentParser
 												if ("skill".equals(s.getNodeName()))
 												{
 													attrs = s.getAttributes();
-													int skillId = parseInt(attrs, "id");
-													int skillLevel = parseInt(attrs, "level");
-													int minLevel = parseInt(attrs, "minLevel");
+													int skillId = parseInteger(attrs, "id");
+													int skillLevel = parseInteger(attrs, "level");
+													int minLevel = parseInteger(attrs, "minLevel");
 													templateData.addAdditionalSkill(new AdditionalSkillHolder(skillId, skillLevel, minLevel));
 												}
 											}
@@ -178,7 +178,7 @@ public final class TransformData extends DocumentParser
 												if ("item".equals(s.getNodeName()))
 												{
 													attrs = s.getAttributes();
-													int itemId = parseInt(attrs, "id");
+													int itemId = parseInteger(attrs, "id");
 													boolean allowed = parseBoolean(attrs, "allowed");
 													templateData.addAdditionalItem(new AdditionalItemHolder(itemId, allowed));
 												}

@@ -63,8 +63,8 @@ public final class PetDataTable extends DocumentParser
 		{
 			if (d.getNodeName().equals("pet"))
 			{
-				int npcId = parseInt(d.getAttributes(), "id");
-				int itemId = parseInt(d.getAttributes(), "itemId");
+				int npcId = parseInteger(d.getAttributes(), "id");
+				int itemId = parseInteger(d.getAttributes(), "itemId");
 				// index ignored for now
 				L2PetData data = new L2PetData(npcId, itemId);
 				for (Node p = d.getFirstChild(); p != null; p = p.getNextSibling())
@@ -82,15 +82,15 @@ public final class PetDataTable extends DocumentParser
 						}
 						else if ("load".equals(type))
 						{
-							data.setLoad(parseInt(attrs, "val"));
+							data.setLoad(parseInteger(attrs, "val"));
 						}
 						else if ("hungry_limit".equals(type))
 						{
-							data.setHungryLimit(parseInt(attrs, "val"));
+							data.setHungryLimit(parseInteger(attrs, "val"));
 						}
 						else if ("sync_level".equals(type))
 						{
-							data.setSyncLevel(parseInt(attrs, "val") == 1);
+							data.setSyncLevel(parseInteger(attrs, "val") == 1);
 						}
 						// evolve ignored
 					}
@@ -101,7 +101,7 @@ public final class PetDataTable extends DocumentParser
 							if (s.getNodeName().equals("skill"))
 							{
 								attrs = s.getAttributes();
-								data.addNewSkill(parseInt(attrs, "skillId"), parseInt(attrs, "skillLvl"), parseInt(attrs, "minLvl"));
+								data.addNewSkill(parseInteger(attrs, "skillId"), parseInteger(attrs, "skillLvl"), parseInteger(attrs, "minLvl"));
 							}
 						}
 					}

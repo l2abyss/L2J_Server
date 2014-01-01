@@ -116,10 +116,10 @@ public final class WalkingManager extends DocumentParser
 					if (r.getNodeName().equals("point"))
 					{
 						NamedNodeMap attrs = r.getAttributes();
-						int x = parseInt(attrs, "X");
-						int y = parseInt(attrs, "Y");
-						int z = parseInt(attrs, "Z");
-						int delay = parseInt(attrs, "delay");
+						int x = parseInteger(attrs, "X");
+						int y = parseInteger(attrs, "Y");
+						int z = parseInteger(attrs, "Z");
+						int delay = parseInteger(attrs, "delay");
 						boolean run = parseBoolean(attrs, "run");
 						NpcStringId npcString = null;
 						String chatString = null;

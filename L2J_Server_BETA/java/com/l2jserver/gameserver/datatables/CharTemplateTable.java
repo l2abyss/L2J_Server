@@ -108,7 +108,7 @@ public final class CharTemplateTable extends DocumentParser
 									if ("node".equalsIgnoreCase(cnd.getNodeName()))
 									{
 										attrs = cnd.getAttributes();
-										creationPoints.add(new Location(parseInt(attrs, "x"), parseInt(attrs, "y"), parseInt(attrs, "z")));
+										creationPoints.add(new Location(parseInteger(attrs, "x"), parseInteger(attrs, "y"), parseInteger(attrs, "z")));
 									}
 									else if ("walk".equalsIgnoreCase(cnd.getNodeName()))
 									{
@@ -151,7 +151,7 @@ public final class CharTemplateTable extends DocumentParser
 							if ("level".equalsIgnoreCase(lvlNode.getNodeName()))
 							{
 								attrs = lvlNode.getAttributes();
-								int level = parseInt(attrs, "val");
+								int level = parseInteger(attrs, "val");
 								
 								for (Node valNode = lvlNode.getFirstChild(); valNode != null; valNode = valNode.getNextSibling())
 								{

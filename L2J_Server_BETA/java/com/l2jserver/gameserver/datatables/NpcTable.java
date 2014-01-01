@@ -121,7 +121,7 @@ public class NpcTable extends DocumentParser
 					if ("npc".equals(d.getNodeName()))
 					{
 						attrs = d.getAttributes();
-						int id = parseInt(attrs, "id");
+						int id = parseInteger(attrs, "id");
 						if (_npcs.containsKey(id))
 						{
 							L2NpcTemplate template = _npcs.get(id);
@@ -137,7 +137,7 @@ public class NpcTable extends DocumentParser
 									case "base_attack":
 									{
 										final String type = parseString(attrs, "type");
-										final int range = parseInt(attrs, "range");
+										final int range = parseInteger(attrs, "range");
 										final L2WeaponType weaponType = L2WeaponType.findByName(type);
 										template.setBaseAttackType(weaponType);
 										template.setBaseAttackRange(range);
@@ -150,22 +150,22 @@ public class NpcTable extends DocumentParser
 											attrs = b.getAttributes();
 											if ("attack".equals(b.getNodeName()))
 											{
-												template.setBaseFire(parseInt(attrs, "fire"));
-												template.setBaseWater(parseInt(attrs, "water"));
-												template.setBaseEarth(parseInt(attrs, "earth"));
-												template.setBaseWind(parseInt(attrs, "wind"));
-												template.setBaseHoly(parseInt(attrs, "holy"));
-												template.setBaseDark(parseInt(attrs, "dark"));
+												template.setBaseFire(parseInteger(attrs, "fire"));
+												template.setBaseWater(parseInteger(attrs, "water"));
+												template.setBaseEarth(parseInteger(attrs, "earth"));
+												template.setBaseWind(parseInteger(attrs, "wind"));
+												template.setBaseHoly(parseInteger(attrs, "holy"));
+												template.setBaseDark(parseInteger(attrs, "dark"));
 											}
 											else if ("defend".equals(b.getNodeName()))
 											{
-												template.setBaseFireRes(parseInt(attrs, "fire"));
-												template.setBaseWaterRes(parseInt(attrs, "water"));
-												template.setBaseEarthRes(parseInt(attrs, "earth"));
-												template.setBaseWindRes(parseInt(attrs, "wind"));
-												template.setBaseHolyRes(parseInt(attrs, "holy"));
-												template.setBaseDarkRes(parseInt(attrs, "dark"));
-												template.setBaseElementRes(parseInt(attrs, "unknown"));
+												template.setBaseFireRes(parseInteger(attrs, "fire"));
+												template.setBaseWaterRes(parseInteger(attrs, "water"));
+												template.setBaseEarthRes(parseInteger(attrs, "earth"));
+												template.setBaseWindRes(parseInteger(attrs, "wind"));
+												template.setBaseHolyRes(parseInteger(attrs, "holy"));
+												template.setBaseDarkRes(parseInteger(attrs, "dark"));
+												template.setBaseElementRes(parseInteger(attrs, "unknown"));
 											}
 										}
 										break;
@@ -185,12 +185,12 @@ public class NpcTable extends DocumentParser
 												}
 												case "ai_skill":
 												{
-													set.set(parseString(attrs, "name"), new SkillHolder(parseInt(attrs, "id"), parseInt(attrs, "level")));
+													set.set(parseString(attrs, "name"), new SkillHolder(parseInteger(attrs, "id"), parseInteger(attrs, "level")));
 													break;
 												}
 												case "ai_item":
 												{
-													set.set(parseString(attrs, "name"), new ItemHolder(parseInt(attrs, "id"), 1));
+													set.set(parseString(attrs, "name"), new ItemHolder(parseInteger(attrs, "id"), 1));
 													break;
 												}
 												case "ai":
