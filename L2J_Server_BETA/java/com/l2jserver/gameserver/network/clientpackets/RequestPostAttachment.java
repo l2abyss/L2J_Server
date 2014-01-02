@@ -23,6 +23,7 @@ import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.enums.ItemLocation;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.instancemanager.MailManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -96,7 +97,7 @@ public final class RequestPostAttachment extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.getPrivateStoreType() > L2PcInstance.STORE_PRIVATE_NONE)
+		if (activeChar.getPrivateStoreType() != PrivateStoreType.NONE)
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_RECEIVE_PRIVATE_STORE);
 			return;

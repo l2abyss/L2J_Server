@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.BotReportTable;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
@@ -140,7 +141,7 @@ public final class TradeRequest extends L2GameClientPacket
 			return;
 		}
 		
-		if ((player.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE) || (partner.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE))
+		if ((player.getPrivateStoreType() != PrivateStoreType.NONE) || (partner.getPrivateStoreType() != PrivateStoreType.NONE))
 		{
 			player.sendPacket(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE);
 			return;

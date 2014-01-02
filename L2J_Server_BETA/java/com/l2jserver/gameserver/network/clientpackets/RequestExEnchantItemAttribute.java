@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -66,7 +67,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 			return;
 		}
 		
-		if (player.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
+		if (player.getPrivateStoreType() != PrivateStoreType.NONE)
 		{
 			player.sendPacket(SystemMessageId.CANNOT_ADD_ELEMENTAL_POWER_WHILE_OPERATING_PRIVATE_STORE_OR_WORKSHOP);
 			player.setActiveEnchantAttrItemId(L2PcInstance.ID_NONE);

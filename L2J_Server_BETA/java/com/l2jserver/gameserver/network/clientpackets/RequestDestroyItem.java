@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -79,7 +80,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 		
 		long count = _count;
 		
-		if (activeChar.isProcessingTransaction() || (activeChar.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE))
+		if (activeChar.isProcessingTransaction() || (activeChar.getPrivateStoreType() != PrivateStoreType.NONE))
 		{
 			activeChar.sendPacket(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE);
 			return;

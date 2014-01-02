@@ -18,6 +18,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -43,7 +44,7 @@ public final class RequestPrivateStoreQuitSell extends L2GameClientPacket
 			return;
 		}
 		
-		player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
+		player.setPrivateStoreType(PrivateStoreType.NONE);
 		player.standUp();
 		player.broadcastUserInfo();
 	}

@@ -196,7 +196,7 @@ public final class UserInfo extends L2GameServerPacket
 		// siege flags: attacker - 0x180 sword over name, defender - 0x80 shield, 0xC0 crown (|leader), 0x1C0 flag (|leader)
 		writeD(_relation);
 		writeC(_activeChar.getMountType().ordinal()); // mount type
-		writeC(_activeChar.getPrivateStoreType());
+		writeC(_activeChar.getPrivateStoreType().getId());
 		writeC(_activeChar.hasDwarvenCraft() ? 1 : 0);
 		writeD(_activeChar.getPkKills());
 		writeD(_activeChar.getPvpKills());

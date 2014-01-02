@@ -275,7 +275,7 @@ public class CharInfo extends L2GameServerPacket
 			writeC(!gmSeeInvis && _invisible ? 1 : 0); // invisible = 1 visible =0
 			
 			writeC(_activeChar.getMountType().ordinal()); // 1-on Strider, 2-on Wyvern, 3-on Great Wolf, 0-no mount
-			writeC(_activeChar.getPrivateStoreType()); // 1 - sellshop
+			writeC(_activeChar.getPrivateStoreType().getId());
 			
 			writeH(_activeChar.getCubics().size());
 			for (int cubicId : _activeChar.getCubics().keySet())

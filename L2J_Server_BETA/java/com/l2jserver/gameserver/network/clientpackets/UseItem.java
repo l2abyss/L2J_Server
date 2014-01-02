@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.NextAction;
 import com.l2jserver.gameserver.ai.NextAction.NextActionCallback;
 import com.l2jserver.gameserver.enums.PcRace;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
@@ -115,7 +116,7 @@ public final class UseItem extends L2GameClientPacket
 			activeChar.cancelActiveTrade();
 		}
 		
-		if (activeChar.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
+		if (activeChar.getPrivateStoreType() != PrivateStoreType.NONE)
 		{
 			activeChar.sendPacket(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE);
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);

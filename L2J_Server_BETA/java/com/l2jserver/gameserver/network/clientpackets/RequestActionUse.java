@@ -31,6 +31,7 @@ import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SummonSkillsTable;
 import com.l2jserver.gameserver.enums.MountType;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.instancemanager.AirShipManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Summon;
@@ -260,9 +261,9 @@ public final class RequestActionUse extends L2GameClientPacket
 					sendPacket(ActionFailed.STATIC_PACKET);
 					return;
 				}
-				if (activeChar.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
+				if (activeChar.getPrivateStoreType() != PrivateStoreType.NONE)
 				{
-					activeChar.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
+					activeChar.setPrivateStoreType(PrivateStoreType.NONE);
 					activeChar.broadcastUserInfo();
 				}
 				if (activeChar.isSitting())
@@ -319,9 +320,9 @@ public final class RequestActionUse extends L2GameClientPacket
 					sendPacket(ActionFailed.STATIC_PACKET);
 					return;
 				}
-				if (activeChar.getPrivateStoreType() != 0)
+				if (activeChar.getPrivateStoreType() != PrivateStoreType.NONE)
 				{
-					activeChar.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
+					activeChar.setPrivateStoreType(PrivateStoreType.NONE);
 					activeChar.broadcastUserInfo();
 				}
 				if (activeChar.isSitting())

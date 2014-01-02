@@ -18,6 +18,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.PcCondOverride;
@@ -130,7 +131,7 @@ public final class Attack extends L2GameClientPacket
 		}
 		else
 		{
-			if ((target.getObjectId() != activeChar.getObjectId()) && (activeChar.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_NONE) && (activeChar.getActiveRequester() == null))
+			if ((target.getObjectId() != activeChar.getObjectId()) && (activeChar.getPrivateStoreType() == PrivateStoreType.NONE) && (activeChar.getActiveRequester() == null))
 			{
 				target.onForcedAttack(activeChar);
 			}

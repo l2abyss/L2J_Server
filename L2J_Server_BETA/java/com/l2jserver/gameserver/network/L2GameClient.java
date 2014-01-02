@@ -835,14 +835,14 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		boolean canSetShop = false;
 		switch (player.getPrivateStoreType())
 		{
-			case L2PcInstance.STORE_PRIVATE_SELL:
-			case L2PcInstance.STORE_PRIVATE_PACKAGE_SELL:
-			case L2PcInstance.STORE_PRIVATE_BUY:
+			case SELL:
+			case PACKAGE_SELL:
+			case BUY:
 			{
 				canSetShop = Config.OFFLINE_TRADE_ENABLE;
 				break;
 			}
-			case L2PcInstance.STORE_PRIVATE_MANUFACTURE:
+			case MANUFACTURE:
 			{
 				canSetShop = Config.OFFLINE_TRADE_ENABLE;
 				break;

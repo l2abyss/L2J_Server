@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -68,7 +69,7 @@ public final class RequestGiveItemToPet extends L2GameClientPacket
 			return;
 		}
 		
-		if (player.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
+		if (player.getPrivateStoreType() != PrivateStoreType.NONE)
 		{
 			player.sendMessage("You cannot exchange items while trading.");
 			return;

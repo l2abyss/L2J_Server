@@ -24,6 +24,7 @@ import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.datatables.CharNameTable;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.instancemanager.MailManager;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.L2AccessLevel;
@@ -148,7 +149,7 @@ public final class RequestSendPost extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.getPrivateStoreType() > L2PcInstance.STORE_PRIVATE_NONE)
+		if (activeChar.getPrivateStoreType() != PrivateStoreType.NONE)
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_FORWARD_PRIVATE_STORE);
 			return;

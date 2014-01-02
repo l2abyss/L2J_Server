@@ -24,6 +24,7 @@ import java.util.Map;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.enums.ItemLocation;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.L2Armor;
 import com.l2jserver.gameserver.model.items.L2Item;
@@ -397,7 +398,7 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 	 */
 	protected static final boolean isValid(L2PcInstance player)
 	{
-		if (player.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
+		if (player.getPrivateStoreType() != PrivateStoreType.NONE)
 		{
 			player.sendPacket(SystemMessageId.YOU_CANNOT_AUGMENT_ITEMS_WHILE_A_PRIVATE_STORE_OR_PRIVATE_WORKSHOP_IS_IN_OPERATION);
 			return false;
