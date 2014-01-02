@@ -29,6 +29,7 @@ import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.communitybbs.CommunityBoard;
 import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.enums.InstanceType;
+import com.l2jserver.gameserver.enums.PlayerAction;
 import com.l2jserver.gameserver.handler.AdminCommandHandler;
 import com.l2jserver.gameserver.handler.BypassHandler;
 import com.l2jserver.gameserver.handler.IAdminCommandHandler;
@@ -158,6 +159,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 					activeChar.setAdminConfirmCmd(_command);
 					ConfirmDlg dlg = new ConfirmDlg(SystemMessageId.S1);
 					dlg.addString("Are you sure you want execute command " + _command.substring(6) + " ?");
+					activeChar.addAction(PlayerAction.ADMIN_COMMAND);
 					activeChar.sendPacket(dlg);
 				}
 				else

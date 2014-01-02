@@ -93,6 +93,7 @@ import com.l2jserver.gameserver.enums.IllegalActionPunishmentType;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.MountType;
 import com.l2jserver.gameserver.enums.PcRace;
+import com.l2jserver.gameserver.enums.PlayerAction;
 import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.enums.Sex;
@@ -843,6 +844,8 @@ public final class L2PcInstance extends L2Playable
 	private Map<Integer, L2Skill> _customSkills = null;
 	
 	private boolean _canRevive = true;
+	
+	private volatile int _actionMask;
 	
 	public void setPvpFlagLasts(long time)
 	{
@@ -14882,5 +14885,42 @@ public final class L2PcInstance extends L2Playable
 	public boolean isPartyBanned()
 	{
 		return PunishmentManager.getInstance().hasPunishment(getObjectId(), PunishmentAffect.CHARACTER, PunishmentType.PARTY_BAN);
+	}
+	
+	/**
+	 * @param act
+	 * @return {@code true} if action was added successfully, {@code false} otherwise.
+	 */
+	public boolean addAction(PlayerAction act)
+	{
+		if (!hasAction(act))
+		{
+			_actionMask |= act.getMask();
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * @param act
+	 * @return {@code true} if action was removed successfully, {@code false} otherwise.
+	 */
+	public boolean removeAction(PlayerAction act)
+	{
+		if (hasAction(act))
+		{
+			_actionMask &= ~act.getMask();
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * @param act
+	 * @return {@code true} if action is present, {@code false} otherwise.
+	 */
+	public boolean hasAction(PlayerAction act)
+	{
+		return (_actionMask & act.getMask()) == act.getMask();
 	}
 }

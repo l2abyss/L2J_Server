@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.AdminTable;
+import com.l2jserver.gameserver.enums.PlayerAction;
 import com.l2jserver.gameserver.handler.AdminCommandHandler;
 import com.l2jserver.gameserver.handler.IAdminCommandHandler;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -62,16 +63,16 @@ public final class DlgAnswer extends L2GameClientPacket
 		
 		if (_messageId == SystemMessageId.S1.getId())
 		{
-			String cmd = activeChar.getAdminConfirmCmd();
-			if (cmd == null)
+			if (activeChar.removeAction(PlayerAction.USER_ENGAGE))
 			{
 				if (Config.L2JMOD_ALLOW_WEDDING)
 				{
 					activeChar.engageAnswer(_answer);
 				}
 			}
-			else
+			else if (activeChar.removeAction(PlayerAction.ADMIN_COMMAND))
 			{
+				String cmd = activeChar.getAdminConfirmCmd();
 				activeChar.setAdminConfirmCmd(null);
 				if (_answer == 0)
 				{
