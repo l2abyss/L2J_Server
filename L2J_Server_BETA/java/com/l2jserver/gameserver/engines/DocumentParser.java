@@ -35,8 +35,7 @@ import com.l2jserver.Config;
 import com.l2jserver.util.file.filter.XMLFilter;
 
 /**
- * Abstract class for XML parsers.<br>
- * It's in <i>beta</i> state, so it's expected to change over time.
+ * Abstract class for XML parsers.
  * @author Zoey76
  */
 public abstract class DocumentParser
@@ -45,8 +44,8 @@ public abstract class DocumentParser
 	
 	private static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 	private static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
-	
-	private static final XMLFilter xmlFilter = new XMLFilter();
+	/** The default file filter, ".xml" files only. */
+	private static final XMLFilter XML_FILTER = new XMLFilter();
 	
 	private File _currentFile;
 	
@@ -208,166 +207,366 @@ public abstract class DocumentParser
 	 */
 	protected abstract void parseDocument();
 	
+	/**
+	 * Parses a boolean value.
+	 * @param node the node to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected Boolean parseBoolean(Node node, Boolean defaultValue)
 	{
 		return node != null ? Boolean.valueOf(node.getNodeValue()) : defaultValue;
 	}
 	
+	/**
+	 * Parses a boolean value.
+	 * @param node the node to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected Boolean parseBoolean(Node node)
 	{
 		return parseBoolean(node, null);
 	}
 	
+	/**
+	 * Parses a boolean value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected Boolean parseBoolean(NamedNodeMap attrs, String name)
 	{
 		return parseBoolean(attrs.getNamedItem(name));
 	}
 	
+	/**
+	 * Parses a boolean value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected Boolean parseBoolean(NamedNodeMap attrs, String name, Boolean defaultValue)
 	{
 		return parseBoolean(attrs.getNamedItem(name), defaultValue);
 	}
 	
+	/**
+	 * Parses a byte value.
+	 * @param node the node to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected Byte parseByte(Node node, Byte defaultValue)
 	{
 		return node != null ? Byte.valueOf(node.getNodeValue()) : defaultValue;
 	}
 	
+	/**
+	 * Parses a byte value.
+	 * @param node the node to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected Byte parseByte(Node node)
 	{
 		return parseByte(node, null);
 	}
 	
+	/**
+	 * Parses a byte value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected Byte parseByte(NamedNodeMap attrs, String name)
 	{
 		return parseByte(attrs.getNamedItem(name));
 	}
 	
+	/**
+	 * Parses a byte value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected Byte parseByte(NamedNodeMap attrs, String name, Byte defaultValue)
 	{
 		return parseByte(attrs.getNamedItem(name), defaultValue);
 	}
 	
+	/**
+	 * Parses a short value.
+	 * @param node the node to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected Short parseShort(Node node, Short defaultValue)
 	{
 		return node != null ? Short.valueOf(node.getNodeValue()) : defaultValue;
 	}
 	
+	/**
+	 * Parses a short value.
+	 * @param node the node to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected Short parseShort(Node node)
 	{
 		return parseShort(node, null);
 	}
 	
+	/**
+	 * Parses a short value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected Short parseShort(NamedNodeMap attrs, String name)
 	{
 		return parseShort(attrs.getNamedItem(name));
 	}
 	
+	/**
+	 * Parses a short value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected Short parseShort(NamedNodeMap attrs, String name, Short defaultValue)
 	{
 		return parseShort(attrs.getNamedItem(name), defaultValue);
 	}
 	
+	/**
+	 * Parses an integer value.
+	 * @param node the node to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected Integer parseInteger(Node node, Integer defaultValue)
 	{
 		return node != null ? Integer.valueOf(node.getNodeValue()) : defaultValue;
 	}
 	
+	/**
+	 * Parses an integer value.
+	 * @param node the node to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected Integer parseInteger(Node node)
 	{
 		return parseInteger(node, null);
 	}
 	
+	/**
+	 * Parses an integer value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected Integer parseInteger(NamedNodeMap attrs, String name)
 	{
 		return parseInteger(attrs.getNamedItem(name));
 	}
 	
+	/**
+	 * Parses an integer value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected Integer parseInteger(NamedNodeMap attrs, String name, Integer defaultValue)
 	{
 		return parseInteger(attrs.getNamedItem(name), defaultValue);
 	}
 	
+	/**
+	 * Parses a long value.
+	 * @param node the node to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected Long parseLong(Node node, Long defaultValue)
 	{
 		return node != null ? Long.valueOf(node.getNodeValue()) : defaultValue;
 	}
 	
+	/**
+	 * Parses a long value.
+	 * @param node the node to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected Long parseLong(Node node)
 	{
 		return parseLong(node, null);
 	}
 	
+	/**
+	 * Parses a long value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected Long parseLong(NamedNodeMap attrs, String name)
 	{
 		return parseLong(attrs.getNamedItem(name));
 	}
 	
+	/**
+	 * Parses a long value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected Long parseLong(NamedNodeMap attrs, String name, Long defaultValue)
 	{
 		return parseLong(attrs.getNamedItem(name), defaultValue);
 	}
 	
+	/**
+	 * Parses a float value.
+	 * @param node the node to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected Float parseFloat(Node node, Float defaultValue)
 	{
 		return node != null ? Float.valueOf(node.getNodeValue()) : defaultValue;
 	}
 	
+	/**
+	 * Parses a float value.
+	 * @param node the node to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected Float parseFloat(Node node)
 	{
 		return parseFloat(node, null);
 	}
 	
+	/**
+	 * Parses a float value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected Float parseFloat(NamedNodeMap attrs, String name)
 	{
 		return parseFloat(attrs.getNamedItem(name));
 	}
 	
+	/**
+	 * Parses a float value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected Float parseFloat(NamedNodeMap attrs, String name, Float defaultValue)
 	{
 		return parseFloat(attrs.getNamedItem(name), defaultValue);
 	}
 	
+	/**
+	 * Parses a double value.
+	 * @param node the node to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected Double parseDouble(Node node, Double defaultValue)
 	{
 		return node != null ? Double.valueOf(node.getNodeValue()) : defaultValue;
 	}
 	
+	/**
+	 * Parses a double value.
+	 * @param node the node to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected Double parseDouble(Node node)
 	{
 		return parseDouble(node, null);
 	}
 	
+	/**
+	 * Parses a double value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected Double parseDouble(NamedNodeMap attrs, String name)
 	{
 		return parseDouble(attrs.getNamedItem(name));
 	}
 	
+	/**
+	 * Parses a double value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected Double parseDouble(NamedNodeMap attrs, String name, Double defaultValue)
 	{
 		return parseDouble(attrs.getNamedItem(name), defaultValue);
 	}
 	
+	/**
+	 * Parses a string value.
+	 * @param node the node to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected String parseString(Node node, String defaultValue)
 	{
 		return node != null ? node.getNodeValue() : defaultValue;
 	}
 	
+	/**
+	 * Parses a string value.
+	 * @param node the node to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected String parseString(Node node)
 	{
 		return parseString(node, null);
 	}
 	
+	/**
+	 * Parses a string value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @return if the node is not null, the value of the parsed node, otherwise null
+	 */
 	protected String parseString(NamedNodeMap attrs, String name)
 	{
 		return parseString(attrs.getNamedItem(name));
 	}
 	
+	/**
+	 * Parses a string value.
+	 * @param attrs the attributes
+	 * @param name the name of the attribute to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null, the value of the parsed node, otherwise the default value
+	 */
 	protected String parseString(NamedNodeMap attrs, String name, String defaultValue)
 	{
 		return parseString(attrs.getNamedItem(name), defaultValue);
 	}
 	
+	/**
+	 * Parses an enumerated value.
+	 * @param <T> the enumerated type
+	 * @param node the node to parse
+	 * @param clazz the class of the enumerated
+	 * @param defaultValue the default value
+	 * @return if the node is not null and the node value is valid the parsed value, otherwise the default value
+	 */
 	protected <T extends Enum<T>> T parseEnum(Node node, Class<T> clazz, T defaultValue)
 	{
 		if (node == null)
@@ -386,29 +585,61 @@ public abstract class DocumentParser
 		}
 	}
 	
+	/**
+	 * Parses an enumerated value.
+	 * @param <T> the enumerated type
+	 * @param node the node to parse
+	 * @param clazz the class of the enumerated
+	 * @return if the node is not null and the node value is valid the parsed value, otherwise null
+	 */
 	protected <T extends Enum<T>> T parseEnum(Node node, Class<T> clazz)
 	{
 		return parseEnum(node, clazz, null);
 	}
 	
+	/**
+	 * Parses an enumerated value.
+	 * @param <T> the enumerated type
+	 * @param attrs the attributes
+	 * @param clazz the class of the enumerated
+	 * @param name the name of the attribute to parse
+	 * @return if the node is not null and the node value is valid the parsed value, otherwise null
+	 */
 	protected <T extends Enum<T>> T parseEnum(NamedNodeMap attrs, Class<T> clazz, String name)
 	{
 		return parseEnum(attrs.getNamedItem(name), clazz);
 	}
 	
+	/**
+	 * Parses an enumerated value.
+	 * @param <T> the enumerated type
+	 * @param attrs the attributes
+	 * @param clazz the class of the enumerated
+	 * @param name the name of the attribute to parse
+	 * @param defaultValue the default value
+	 * @return if the node is not null and the node value is valid the parsed value, otherwise the default value
+	 */
 	protected <T extends Enum<T>> T parseEnum(NamedNodeMap attrs, Class<T> clazz, String name, T defaultValue)
 	{
 		return parseEnum(attrs.getNamedItem(name), clazz, defaultValue);
 	}
 	
+	/**
+	 * Sets the current file filter.
+	 * @param filter the file filter
+	 */
 	public void setCurrentFileFilter(FileFilter filter)
 	{
 		_currentFilter = filter;
 	}
 	
+	/**
+	 * Gets the current file filter.
+	 * @return the current file filter
+	 */
 	public FileFilter getCurrentFileFilter()
 	{
-		return _currentFilter != null ? _currentFilter : xmlFilter;
+		return _currentFilter != null ? _currentFilter : XML_FILTER;
 	}
 	
 	/**

@@ -46,10 +46,10 @@ public class PcAppearance
 	/** The current visible title of this player, not necessarily the real one */
 	private String _visibleTitle;
 	
-	/** The hexadecimal Color of players name (white is 0xFFFFFF) */
+	/** The default name color is 0xFFFFFF. */
 	private int _nameColor = 0xFFFFFF;
 	
-	/** The hexadecimal Color of players name (white is 0xFFFFFF) */
+	/** The default title color is 0xECF9A2. */
 	private int _titleColor = DEFAULT_TITLE_COLOR;
 	
 	public PcAppearance(byte face, byte hColor, byte hStyle, boolean sex)

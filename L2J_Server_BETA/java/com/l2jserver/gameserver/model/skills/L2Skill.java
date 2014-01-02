@@ -1280,17 +1280,34 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		return funcs;
 	}
 	
+	/**
+	 * Gets the skill effects.
+	 * @param effectScope the effect scope
+	 * @return the list of effects for the give scope
+	 */
 	public List<AbstractEffect> getEffects(EffectScope effectScope)
 	{
 		return _effectLists.get(effectScope);
 	}
 	
+	/**
+	 * Verify if this skill has effects for the given scope.
+	 * @param effectScope the effect scope
+	 * @return {@code true} if this skill has effects for the given scope, {@code false} otherwise
+	 */
 	public boolean hasEffects(EffectScope effectScope)
 	{
 		List<AbstractEffect> effects = _effectLists.get(effectScope);
 		return (effects != null) && !effects.isEmpty();
 	}
 	
+	/**
+	 * Applies the effects from this skill to the target for the given effect scope.
+	 * @param effectScope the effect scope
+	 * @param info the buff info
+	 * @param applyInstantEffects if {@code true} instant effects will be applied to the effected
+	 * @param addContinuousEffects if {@code true} continuous effects will be applied to the effected
+	 */
 	public void applyEffectScope(EffectScope effectScope, BuffInfo info, boolean applyInstantEffects, boolean addContinuousEffects)
 	{
 		if ((effectScope != null) && hasEffects(effectScope))
@@ -1442,6 +1459,11 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		_funcTemplates.add(f);
 	}
 	
+	/**
+	 * Adds an effect to the effect list for the give effect scope.
+	 * @param effectScope the effect scope
+	 * @param effect the effect to add
+	 */
 	public final void addEffect(EffectScope effectScope, AbstractEffect effect)
 	{
 		List<AbstractEffect> effects = _effectLists.get(effectScope);
