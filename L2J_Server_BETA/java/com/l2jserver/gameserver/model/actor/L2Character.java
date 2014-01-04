@@ -1981,7 +1981,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	 * @param skill
 	 * @return True if casting is possible
 	 */
-	protected boolean checkDoCastConditions(L2Skill skill)
+	public boolean checkDoCastConditions(L2Skill skill)
 	{
 		if ((skill == null) || isSkillDisabled(skill) || (((skill.getFlyRadius() > 0) || (skill.getFlyType() != null)) && isMovementDisabled()))
 		{
@@ -5751,10 +5751,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			return;
 		}
 		
-		_skillCast = null;
-		setIsCastingNow(false);
-		_castInterruptTime = 0;
-		
 		final L2Skill skill = mut.getSkill();
 		final L2Object target = mut.getTargets().length > 0 ? mut.getTargets()[0] : null;
 		
@@ -5789,6 +5785,10 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		getAI().notifyEvent(CtrlEvent.EVT_FINISH_CASTING);
 		
 		notifyQuestEventSkillFinished(skill, target);
+		
+		_skillCast = null;
+		setIsCastingNow(false);
+		_castInterruptTime = 0;
 		
 		// If character is a player, then wipe their current cast state and check if a skill is queued.
 		// If there is a queued skill, launch it and wipe the queue.

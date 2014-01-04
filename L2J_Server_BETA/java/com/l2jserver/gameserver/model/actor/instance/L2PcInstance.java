@@ -4276,7 +4276,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	@Override
-	protected boolean checkDoCastConditions(L2Skill skill)
+	public boolean checkDoCastConditions(L2Skill skill)
 	{
 		if (!super.checkDoCastConditions(skill))
 		{
