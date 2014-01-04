@@ -5751,6 +5751,13 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			return;
 		}
 		
+		// Cleanup
+		_skillCast = null;
+		_castInterruptTime = 0;
+		
+		// Stop casting
+		setIsCastingNow(false);
+		
 		final L2Skill skill = mut.getSkill();
 		final L2Object target = mut.getTargets().length > 0 ? mut.getTargets()[0] : null;
 		
@@ -5784,11 +5791,8 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		// Notify the AI of the L2Character with EVT_FINISH_CASTING
 		getAI().notifyEvent(CtrlEvent.EVT_FINISH_CASTING);
 		
+		// Notify DP Scripts
 		notifyQuestEventSkillFinished(skill, target);
-		
-		_skillCast = null;
-		setIsCastingNow(false);
-		_castInterruptTime = 0;
 		
 		// If character is a player, then wipe their current cast state and check if a skill is queued.
 		// If there is a queued skill, launch it and wipe the queue.
