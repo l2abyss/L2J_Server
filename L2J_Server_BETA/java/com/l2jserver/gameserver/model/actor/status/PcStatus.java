@@ -324,9 +324,9 @@ public class PcStatus extends PlayableStatus
 	}
 	
 	@Override
-	public final void setCurrentHp(double newHp, boolean broadcastPacket)
+	public final boolean setCurrentHp(double newHp, boolean broadcastPacket)
 	{
-		super.setCurrentHp(newHp, broadcastPacket);
+		boolean result = super.setCurrentHp(newHp, broadcastPacket);
 		
 		if (!Config.DISABLE_TUTORIAL && (getCurrentHp() <= (getActiveChar().getStat().getMaxHp() * .3)))
 		{
@@ -336,6 +336,8 @@ public class PcStatus extends PlayableStatus
 				qs.getQuest().notifyEvent("CE45", null, getActiveChar());
 			}
 		}
+		
+		return result;
 	}
 	
 	@Override

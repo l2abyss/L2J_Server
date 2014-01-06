@@ -261,7 +261,13 @@ public class CharStatus
 		setCurrentHp(newHp, true);
 	}
 	
-	public void setCurrentHp(double newHp, boolean broadcastPacket)
+	/**
+	 * Sets the current hp of this character.
+	 * @param newHp the new hp
+	 * @param broadcastPacket if true StatusUpdate packet will be broadcasted.
+	 * @return @{code true} if hp was changed, @{code false} otherwise.
+	 */
+	public boolean setCurrentHp(double newHp, boolean broadcastPacket)
 	{
 		// Get the Max HP of the L2Character
 		int currentHp = (int) getCurrentHp();
@@ -271,7 +277,7 @@ public class CharStatus
 		{
 			if (getActiveChar().isDead())
 			{
-				return;
+				return false;
 			}
 			
 			if (newHp >= maxHp)
@@ -297,17 +303,25 @@ public class CharStatus
 			}
 		}
 		
+		boolean hpWasChanged = currentHp != _currentHp;
+		
 		// Send the Server->Client packet StatusUpdate with current HP and MP to all other L2PcInstance to inform
-		if ((currentHp != _currentHp) && broadcastPacket)
+		if (hpWasChanged && broadcastPacket)
 		{
 			getActiveChar().broadcastStatusUpdate();
 		}
+		
+		return hpWasChanged;
 	}
 	
 	public final void setCurrentHpMp(double newHp, double newMp)
 	{
-		setCurrentHp(newHp, false);
-		setCurrentMp(newMp, true); // send the StatusUpdate only once
+		boolean hpOrMpWasChanged = setCurrentHp(newHp, false);
+		hpOrMpWasChanged |= setCurrentMp(newMp, false);
+		if (hpOrMpWasChanged)
+		{
+			getActiveChar().broadcastStatusUpdate();
+		}
 	}
 	
 	public final double getCurrentMp()
@@ -320,7 +334,13 @@ public class CharStatus
 		setCurrentMp(newMp, true);
 	}
 	
-	public final void setCurrentMp(double newMp, boolean broadcastPacket)
+	/**
+	 * Sets the current mp of this character.
+	 * @param newMp the new mp
+	 * @param broadcastPacket if true StatusUpdate packet will be broadcasted.
+	 * @return @{code true} if mp was changed, @{code false} otherwise.
+	 */
+	public final boolean setCurrentMp(double newMp, boolean broadcastPacket)
 	{
 		// Get the Max MP of the L2Character
 		int currentMp = (int) getCurrentMp();
@@ -330,7 +350,7 @@ public class CharStatus
 		{
 			if (getActiveChar().isDead())
 			{
-				return;
+				return false;
 			}
 			
 			if (newMp >= maxMp)
@@ -356,11 +376,15 @@ public class CharStatus
 			}
 		}
 		
+		boolean mpWasChanged = currentMp != _currentMp;
+		
 		// Send the Server->Client packet StatusUpdate with current HP and MP to all other L2PcInstance to inform
-		if ((currentMp != _currentMp) && broadcastPacket)
+		if (mpWasChanged && broadcastPacket)
 		{
 			getActiveChar().broadcastStatusUpdate();
 		}
+		
+		return mpWasChanged;
 	}
 	
 	protected void doRegeneration()
