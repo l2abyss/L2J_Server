@@ -8666,6 +8666,11 @@ public final class L2PcInstance extends L2Playable
 				sendPacket(ActionFailed.STATIC_PACKET);
 				return false;
 			}
+			else if (isSkillDisabled(skill))
+			{
+				sendPacket(ActionFailed.STATIC_PACKET);
+				return false;
+			}
 			
 			// Create a new SkillDat object and queue it in the player _queuedSkill
 			setQueuedSkill(skill, forceUse, dontMove);
