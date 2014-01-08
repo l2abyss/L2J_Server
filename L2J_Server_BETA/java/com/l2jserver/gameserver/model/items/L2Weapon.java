@@ -36,6 +36,7 @@ import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Formulas;
+import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.StringUtil;
 
 /**
@@ -49,6 +50,8 @@ public final class L2Weapon extends L2Item
 	private final int _soulShotCount;
 	private final int _spiritShotCount;
 	private final int _mpConsume;
+	private final int _baseAttackRange;
+	private final int _baseAttackAngle;
 	/**
 	 * Skill that activates when item is enchanted +4 (for duals).
 	 */
@@ -86,6 +89,16 @@ public final class L2Weapon extends L2Item
 		_spiritShotCount = set.getInt("spiritshots", 0);
 		_rndDam = set.getInt("random_damage", 0);
 		_mpConsume = set.getInt("mp_consume", 0);
+		_baseAttackRange = set.getInt("attack_range", 40);
+		String[] damgeRange = set.getString("damage_range", "").split(";"); // 0?;0?;fan sector;base attack angle
+		if ((damgeRange.length > 1) && Util.isDigit(damgeRange[3]))
+		{
+			_baseAttackAngle = Integer.parseInt(damgeRange[3]);
+		}
+		else
+		{
+			_baseAttackAngle = 120;
+		}
 		
 		String[] reduced_soulshots = set.getString("reduced_soulshot", "").split(",");
 		_reducedSoulshotChance = (reduced_soulshots.length == 2) ? Integer.parseInt(reduced_soulshots[0]) : 0;
@@ -254,6 +267,16 @@ public final class L2Weapon extends L2Item
 	public int getMpConsume()
 	{
 		return _mpConsume;
+	}
+	
+	public int getBaseAttackRange()
+	{
+		return _baseAttackRange;
+	}
+	
+	public int getBaseAttackAngle()
+	{
+		return _baseAttackAngle;
 	}
 	
 	/**

@@ -43,6 +43,7 @@ public final class TransformTemplate
 	private final double _collisionRadius;
 	private final double _collisionHeight;
 	private final L2WeaponType _baseAttackType;
+	private final int _baseAttackRange;
 	private final double _baseRandomDamage;
 	private List<SkillHolder> _skills;
 	private List<AdditionalSkillHolder> _additionalSkills;
@@ -59,6 +60,7 @@ public final class TransformTemplate
 		_collisionRadius = set.getDouble("radius", 0);
 		_collisionHeight = set.getDouble("height", 0);
 		_baseAttackType = L2WeaponType.findByName(set.getString("attackType", "FIST"));
+		_baseAttackRange = set.getInt("range", 40);
 		_baseRandomDamage = set.getDouble("randomDamage", 0);
 		
 		addSpeed(MoveType.WALK, set.getFloat("walk", 0));
@@ -161,6 +163,11 @@ public final class TransformTemplate
 	public L2WeaponType getBaseAttackType()
 	{
 		return _baseAttackType;
+	}
+	
+	public int getBaseAttackRange()
+	{
+		return _baseAttackRange;
 	}
 	
 	public double getBaseRandomDamage()

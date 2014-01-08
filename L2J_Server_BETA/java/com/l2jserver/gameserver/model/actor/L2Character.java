@@ -1375,8 +1375,8 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	private boolean doAttackHitByPole(Attack attack, L2Character target, int sAtk)
 	{
 		// double angleChar;
-		int maxRadius = getPhysicalAttackRange();
-		int maxAngleDiff = (int) getStat().calcStat(Stats.POWER_ATTACK_ANGLE, 120, null, null);
+		int maxRadius = getStat().getPhysicalAttackRange();
+		int maxAngleDiff = getStat().getPhysicalAttackAngle();
 		
 		// o1 x: 83420 y: 148158 (Giran)
 		// o2 x: 83379 y: 148081 (Giran)
@@ -1403,7 +1403,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		// angleChar = Util.convertHeadingToDegree(getHeading());
 		
 		// H5 Changes: without Polearm Mastery (skill 216) max simultaneous attacks is 3 (1 by default + 2 in skill 3599).
-		int attackRandomCountMax = (int) getStat().calcStat(Stats.ATTACK_COUNT_MAX, 0, null, null);
+		int attackRandomCountMax = (int) getStat().calcStat(Stats.ATTACK_COUNT_MAX, 1, null, null);
 		int attackcount = 0;
 		
 		// if (angleChar <= 0) angleChar += 360;

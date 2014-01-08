@@ -90,7 +90,6 @@ public enum Stats
 	ACCURACY_COMBAT("accCombat"),
 	POWER_ATTACK_RANGE("pAtkRange"),
 	MAGIC_ATTACK_RANGE("mAtkRange"),
-	POWER_ATTACK_ANGLE("pAtkAngle"),
 	ATTACK_COUNT_MAX("atkCountMax"),
 	// Run speed, walk & escape speed are calculated proportionally, magic speed is a buff
 	MOVE_SPEED("runSpd"),

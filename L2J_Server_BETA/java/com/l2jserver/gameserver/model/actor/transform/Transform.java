@@ -198,6 +198,12 @@ public final class Transform implements IIdentifiable
 		return template != null ? template.getCollisionRadius() : player.getCollisionRadius();
 	}
 	
+	public int getBaseAttackRange(L2PcInstance player)
+	{
+		final TransformTemplate template = getTemplate(player);
+		return template != null ? template.getBaseAttackRange() : player.getTemplate().getBaseAttackRange();
+	}
+	
 	public void onTransform(L2PcInstance player)
 	{
 		final TransformTemplate template = getTemplate(player);

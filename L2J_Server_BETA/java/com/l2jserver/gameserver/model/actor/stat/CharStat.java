@@ -24,6 +24,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.stats.Calculator;
@@ -467,7 +468,37 @@ public class CharStat
 	 */
 	public final int getPhysicalAttackRange()
 	{
-		return (int) calcStat(Stats.POWER_ATTACK_RANGE, _activeChar.getTemplate().getBaseAttackRange());
+		final L2Weapon weapon = _activeChar.getActiveWeaponItem();
+		int baseAttackRange;
+		if (_activeChar.isTransformed() && _activeChar.isPlayer())
+		{
+			baseAttackRange = _activeChar.getTransformation().getBaseAttackRange(_activeChar.getActingPlayer());
+		}
+		else if (weapon != null)
+		{
+			baseAttackRange = weapon.getBaseAttackRange();
+		}
+		else
+		{
+			baseAttackRange = _activeChar.getTemplate().getBaseAttackRange();
+		}
+		
+		return (int) calcStat(Stats.POWER_ATTACK_RANGE, baseAttackRange, null, null);
+	}
+	
+	public int getPhysicalAttackAngle()
+	{
+		final L2Weapon weapon = _activeChar.getActiveWeaponItem();
+		final int baseAttackAngle;
+		if (weapon != null)
+		{
+			baseAttackAngle = weapon.getBaseAttackAngle();
+		}
+		else
+		{
+			baseAttackAngle = 120;
+		}
+		return baseAttackAngle;
 	}
 	
 	/**

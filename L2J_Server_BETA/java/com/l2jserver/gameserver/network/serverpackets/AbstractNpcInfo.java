@@ -65,8 +65,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 		_moveMultiplier = cha.getMovementSpeedMultiplier();
 		_runSpd = Math.round(cha.getRunSpeed() / _moveMultiplier);
 		_walkSpd = Math.round(cha.getWalkSpeed() / _moveMultiplier);
-		_swimRunSpd = cha.getSwimRunSpeed();
-		_swimWalkSpd = cha.getSwimWalkSpeed();
+		_swimRunSpd = Math.round(cha.getSwimRunSpeed() / _moveMultiplier);
+		_swimWalkSpd = Math.round(cha.getSwimWalkSpeed() / _moveMultiplier);
 		_flyRunSpd = cha.isFlying() ? _runSpd : 0;
 		_flyWalkSpd = cha.isFlying() ? _walkSpd : 0;
 	}
@@ -188,7 +188,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_allyId); // ally id
 			writeD(_allyCrest); // all crest
 			
-			writeC(_npc.isFlying() ? 2 : 0); // C2
+			writeC(_npc.isInsideZone(ZoneId.WATER) ? 1 : _npc.isFlying() ? 2 : 0); // C2
 			writeC(_npc.getTeam().getId());
 			
 			writeF(_collisionRadius);
@@ -415,7 +415,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(0x00); // crest id
 			writeD(0x00); // C2
 			writeD(0x00); // C2
-			writeC(0x00); // C2
+			writeC(_summon.isInsideZone(ZoneId.WATER) ? 1 : _summon.isFlying() ? 2 : 0); // C2
 			
 			writeC(_summon.getTeam().getId());
 			
