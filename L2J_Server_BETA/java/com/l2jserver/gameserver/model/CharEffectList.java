@@ -1455,7 +1455,7 @@ public final class CharEffectList
 		// Select the map that holds the effects related to this skill.
 		final Map<Integer, BuffInfo> effects = getEffectList(skill);
 		// Remove first buff when buff list is full.
-		if (!skill.isDebuff() && !skill.is7Signs() && !doesStack(skill))
+		if (!skill.isDebuff() && !skill.isToggle() && !skill.is7Signs() && !doesStack(skill))
 		{
 			int buffsToRemove = -1;
 			if (skill.isDance())
