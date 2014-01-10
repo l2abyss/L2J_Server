@@ -6811,7 +6811,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		getTriggerSkills().remove(holder.getSkillId());
 	}
 	
-	public void makeTriggerCast(L2Skill skill, L2Character target)
+	public void makeTriggerCast(L2Skill skill, L2Character target, boolean ignoreTargetType)
 	{
 		try
 		{
@@ -6841,24 +6841,24 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 					disableSkill(skill, skill.getReuseDelay());
 				}
 				
-				final L2Object[] targets = skill.getTargetList(this, false, target);
+				// @formatter:off
+				final L2Object[] targets = !ignoreTargetType ? skill.getTargetList(this, false, target) : new L2Character[]{ target };
+				// @formatter:on
 				if (targets.length == 0)
 				{
 					return;
 				}
 				
-				final L2Character firstTarget = (L2Character) targets[0];
-				
-				if (Config.ALT_VALIDATE_TRIGGER_SKILLS && isPlayable() && (firstTarget != null) && firstTarget.isPlayable())
+				if (Config.ALT_VALIDATE_TRIGGER_SKILLS && isPlayable() && (target != null) && target.isPlayable())
 				{
 					final L2PcInstance player = getActingPlayer();
-					if (!player.checkPvpSkill(firstTarget, skill, isSummon()))
+					if (!player.checkPvpSkill(target, skill, isSummon()))
 					{
 						return;
 					}
 				}
 				
-				broadcastPacket(new MagicSkillUse(this, firstTarget, skill.getDisplayId(), skill.getLevel(), 0, 0));
+				broadcastPacket(new MagicSkillUse(this, target, skill.getDisplayId(), skill.getLevel(), 0, 0));
 				broadcastPacket(new MagicSkillLaunched(this, skill.getDisplayId(), skill.getLevel(), targets));
 				
 				// Launch the magic skill and calculate its effects
@@ -6878,6 +6878,11 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		{
 			_log.log(Level.WARNING, "", e);
 		}
+	}
+	
+	public void makeTriggerCast(L2Skill skill, L2Character target)
+	{
+		makeTriggerCast(skill, target, false);
 	}
 	
 	/**
