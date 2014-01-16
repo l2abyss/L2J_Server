@@ -31,13 +31,16 @@ import java.util.logging.Logger;
 import javolution.util.FastMap;
 
 import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.instancemanager.tasks.GrandBossManagerStoreTask;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2GrandBossInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.interfaces.IStorable;
 import com.l2jserver.gameserver.model.zone.type.L2BossZone;
 import com.l2jserver.util.L2FastList;
 
@@ -47,7 +50,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 /**
  * @author DaRkRaGe Revised by Emperorc
  */
-public final class GrandBossManager
+public final class GrandBossManager implements IStorable
 {
 	// SQL queries
 	private static final String DELETE_GRAND_BOSS_LIST = "DELETE FROM grandboss_list";
@@ -117,6 +120,7 @@ public final class GrandBossManager
 		{
 			_log.log(Level.WARNING, "Error while initializing GrandBossManager: " + e.getMessage(), e);
 		}
+		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new GrandBossManagerStoreTask(), 5 * 60 * 1000, 5 * 60 * 1000);
 	}
 	
 	/**
@@ -298,7 +302,8 @@ public final class GrandBossManager
 		updateDb(bossId, false);
 	}
 	
-	private void storeToDb()
+	@Override
+	public boolean storeMe()
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement delete = con.prepareStatement(DELETE_GRAND_BOSS_LIST))
@@ -371,7 +376,9 @@ public final class GrandBossManager
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't store grandbosses to database:" + e.getMessage(), e);
+			return false;
 		}
+		return true;
 	}
 	
 	private void updateDb(int bossId, boolean statusOnly)
@@ -425,7 +432,7 @@ public final class GrandBossManager
 	 */
 	public void cleanUp()
 	{
-		storeToDb();
+		storeMe();
 		
 		_bosses.clear();
 		_storedInfo.clear();
