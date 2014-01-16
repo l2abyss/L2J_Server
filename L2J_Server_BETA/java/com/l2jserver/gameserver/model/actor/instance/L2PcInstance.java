@@ -3491,7 +3491,7 @@ public final class L2PcInstance extends L2Playable
 				return null;
 			}
 			// Sends message to client if requested
-			if (sendMessage && ((!isCastingNow() && (item.getItemType() == L2EtcItemType.HERB)) || (item.getItemType() != L2EtcItemType.HERB)))
+			if (sendMessage && ((!isCastingNow() && item.getItem().hasExImmediateEffect()) || !item.getItem().hasExImmediateEffect()))
 			{
 				if (count > 1)
 				{
@@ -3528,7 +3528,7 @@ public final class L2PcInstance extends L2Playable
 			}
 			
 			// Auto-use herbs.
-			if (item.getItemType() == L2EtcItemType.HERB)
+			if (item.getItem().hasExImmediateEffect())
 			{
 				final IItemHandler handler = ItemHandler.getInstance().getHandler(item.getEtcItem());
 				if (handler == null)
@@ -4636,7 +4636,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public void doAutoLoot(L2Attackable target, int itemId, long itemCount)
 	{
-		if (isInParty() && (ItemTable.getInstance().getTemplate(itemId).getItemType() != L2EtcItemType.HERB))
+		if (isInParty() && !ItemTable.getInstance().getTemplate(itemId).hasExImmediateEffect())
 		{
 			getParty().distributeItem(this, itemId, itemCount, false, target);
 		}
@@ -4775,7 +4775,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		// Auto use herbs - pick up
-		if (target.getItemType() == L2EtcItemType.HERB)
+		if (target.getItem().hasExImmediateEffect())
 		{
 			IItemHandler handler = ItemHandler.getInstance().getHandler(target.getEtcItem());
 			if (handler == null)

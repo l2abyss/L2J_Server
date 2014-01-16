@@ -21,7 +21,6 @@ package com.l2jserver.gameserver.model.items.type;
 /**
  * Description of EtcItem Type
  */
-
 public enum L2EtcItemType implements L2ItemType
 {
 	NONE(1, "none"),
@@ -58,18 +57,17 @@ public enum L2EtcItemType implements L2ItemType
 	RUNE(32, "rune"),
 	
 	// L2J CUSTOM, BACKWARD COMPATIBILITY
-	SHOT(33, "Shot"),
-	HERB(34, "Herb");
+	SHOT(33, "Shot");
 	
-	final int _id;
-	final String _name;
+	private final int _id;
+	private final String _name;
 	
 	/**
 	 * Constructor of the L2EtcItemType.
 	 * @param id : int designating the ID of the EtcItemType
 	 * @param name : String designating the name of the EtcItemType
 	 */
-	L2EtcItemType(int id, String name)
+	private L2EtcItemType(int id, String name)
 	{
 		_id = id;
 		_name = name;
@@ -82,6 +80,15 @@ public enum L2EtcItemType implements L2ItemType
 	public int mask()
 	{
 		return 0;
+	}
+	
+	/**
+	 * Gets the EtcItem type ID.
+	 * @return the EtcItem type ID
+	 */
+	public int getId()
+	{
+		return _id;
 	}
 	
 	/**

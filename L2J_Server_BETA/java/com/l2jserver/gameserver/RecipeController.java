@@ -347,8 +347,7 @@ public class RecipeController
 				// if still not empty, schedule another pass
 				if (!_items.isEmpty())
 				{
-					// divided by RATE_CONSUMABLES_COST to remove craft time increase on higher consumables rates
-					_delay = (int) ((Config.ALT_GAME_CREATION_SPEED * _player.getMReuseRate(_skill) * GameTimeController.TICKS_PER_SECOND) / Config.RATE_CONSUMABLE_COST) * GameTimeController.MILLIS_IN_TICK;
+					_delay = (int) (Config.ALT_GAME_CREATION_SPEED * _player.getMReuseRate(_skill) * GameTimeController.TICKS_PER_SECOND * GameTimeController.MILLIS_IN_TICK);
 					
 					// FIXME: please fix this packet to show crafting animation (somebody)
 					MagicSkillUse msk = new MagicSkillUse(_player, _skillId, _skillLevel, _delay, 0);
@@ -606,19 +605,17 @@ public class RecipeController
 			
 			for (L2RecipeInstance recipe : recipes)
 			{
-				int quantity = _recipeList.isConsumable() ? (int) (recipe.getQuantity() * Config.RATE_CONSUMABLE_COST) : recipe.getQuantity();
-				
-				if (quantity > 0)
+				if (recipe.getQuantity() > 0)
 				{
 					L2ItemInstance item = inv.getItemByItemId(recipe.getItemId());
 					long itemQuantityAmount = item == null ? 0 : item.getCount();
 					
 					// check materials
-					if (itemQuantityAmount < quantity)
+					if (itemQuantityAmount < recipe.getQuantity())
 					{
 						sm = SystemMessage.getSystemMessage(SystemMessageId.MISSING_S2_S1_TO_CREATE);
 						sm.addItemName(recipe.getItemId());
-						sm.addItemNumber(quantity - itemQuantityAmount);
+						sm.addItemNumber(recipe.getQuantity() - itemQuantityAmount);
 						_target.sendPacket(sm);
 						
 						abort();
@@ -626,9 +623,7 @@ public class RecipeController
 					}
 					
 					// make new temporary object, just for counting purposes
-					
-					TempItem temp = new TempItem(item, quantity);
-					materials.add(temp);
+					materials.add(new TempItem(item, recipe.getQuantity()));
 				}
 			}
 			

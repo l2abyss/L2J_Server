@@ -339,11 +339,6 @@ public final class UseItem extends L2GameClientPacket
 		}
 		else
 		{
-			if (activeChar.isCastingNow() && !(item.isPotion() || item.isElixir()))
-			{
-				return;
-			}
-			
 			final L2Weapon weaponItem = activeChar.getActiveWeaponItem();
 			if (((weaponItem != null) && (weaponItem.getItemType() == L2WeaponType.FISHINGROD)) && (((_itemId >= 6519) && (_itemId <= 6527)) || ((_itemId >= 7610) && (_itemId <= 7613)) || ((_itemId >= 7807) && (_itemId <= 7809)) || ((_itemId >= 8484) && (_itemId <= 8486)) || ((_itemId >= 8505) && (_itemId <= 8513))))
 			{

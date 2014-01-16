@@ -59,11 +59,6 @@ public final class L2EtcItem extends L2Item
 			}
 		}
 		
-		if (is_ex_immediate_effect())
-		{
-			_type = L2EtcItemType.HERB;
-		}
-		
 		_type1 = L2Item.TYPE1_ITEM_QUESTITEM_ADENA;
 		_type2 = L2Item.TYPE2_OTHER; // default is other
 		
@@ -131,15 +126,6 @@ public final class L2EtcItem extends L2Item
 	public L2EtcItemType getItemType()
 	{
 		return _type;
-	}
-	
-	/**
-	 * @return {@code true} if the item is consumable, {@code false} otherwise.
-	 */
-	@Override
-	public final boolean isConsumable()
-	{
-		return ((getItemType() == L2EtcItemType.SHOT) || (getItemType() == L2EtcItemType.POTION)); // || (type == L2EtcItemType.SCROLL));
 	}
 	
 	/**

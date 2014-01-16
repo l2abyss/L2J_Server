@@ -852,7 +852,6 @@ public final class Config
 	public static float RATE_SP;
 	public static float RATE_PARTY_XP;
 	public static float RATE_PARTY_SP;
-	public static float RATE_CONSUMABLE_COST;
 	public static float RATE_HB_TRUST_INCREASE;
 	public static float RATE_HB_TRUST_DECREASE;
 	public static float RATE_EXTRACTABLE;
@@ -2117,7 +2116,6 @@ public final class Config
 			RATE_SP = RatesSettings.getFloat("RateSp", 1);
 			RATE_PARTY_XP = RatesSettings.getFloat("RatePartyXp", 1);
 			RATE_PARTY_SP = RatesSettings.getFloat("RatePartySp", 1);
-			RATE_CONSUMABLE_COST = RatesSettings.getFloat("RateConsumableCost", 1);
 			RATE_EXTRACTABLE = RatesSettings.getFloat("RateExtractable", 1);
 			RATE_DROP_ITEMS = RatesSettings.getFloat("RateDropItems", 1);
 			RATE_DROP_ITEMS_BY_RAID = RatesSettings.getFloat("RateRaidDropItems", 1);
@@ -2870,9 +2868,6 @@ public final class Config
 				break;
 			case "ratepartyxp":
 				RATE_PARTY_XP = Float.parseFloat(pValue);
-				break;
-			case "rateconsumablecost":
-				RATE_CONSUMABLE_COST = Float.parseFloat(pValue);
 				break;
 			case "rateextractable":
 				RATE_EXTRACTABLE = Float.parseFloat(pValue);

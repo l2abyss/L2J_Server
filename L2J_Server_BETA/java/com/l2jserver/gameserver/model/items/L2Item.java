@@ -61,7 +61,6 @@ import com.l2jserver.util.StringUtil;
  * <li>L2EtcItem</li>
  * <li>L2Weapon</li>
  * </ul>
- * @version $Revision: 1.7.2.2.2.5 $ $Date: 2005/04/06 18:25:18 $
  */
 public abstract class L2Item implements IIdentifiable
 {
@@ -221,6 +220,7 @@ public abstract class L2Item implements IIdentifiable
 	private final boolean _common;
 	private final boolean _heroItem;
 	private final boolean _pvpItem;
+	private final boolean _immediate_effect;
 	private final boolean _ex_immediate_effect;
 	private final int _defaultEnchantLevel;
 	private final L2ActionType _defaultAction;
@@ -274,10 +274,9 @@ public abstract class L2Item implements IIdentifiable
 		_is_oly_restricted = set.getBoolean("is_oly_restricted", false);
 		_for_npc = set.getBoolean("for_npc", false);
 		
-		// _immediate_effect - herb
+		_immediate_effect = set.getBoolean("immediate_effect", false);
 		_ex_immediate_effect = set.getBoolean("ex_immediate_effect", false);
 		
-		// used for custom type select
 		_defaultAction = set.getEnum("default_action", L2ActionType.class, L2ActionType.none);
 		_useSkillDisTime = set.getInt("useSkillDisTime", 0);
 		_defaultEnchantLevel = set.getInt("enchanted", 0);
@@ -407,7 +406,8 @@ public abstract class L2Item implements IIdentifiable
 	public abstract L2ItemType getItemType();
 	
 	/**
-	 * @return {@code true} if the weapon is magic, {@code false} otherwise.
+	 * Verifies if the item is a magic weapon.
+	 * @return {@code true} if the weapon is magic, {@code false} otherwise
 	 */
 	public boolean isMagicWeapon()
 	{
@@ -679,14 +679,6 @@ public abstract class L2Item implements IIdentifiable
 	}
 	
 	/**
-	 * @return {@code true} if the item is consumable, {@code false} otherwise.
-	 */
-	public boolean isConsumable()
-	{
-		return false;
-	}
-	
-	/**
 	 * @return {@code true} if the item can be equipped, {@code false} otherwise.
 	 */
 	public boolean isEquipable()
@@ -699,7 +691,7 @@ public abstract class L2Item implements IIdentifiable
 	 */
 	public final int getReferencePrice()
 	{
-		return (isConsumable() ? (int) (_referencePrice * Config.RATE_CONSUMABLE_COST) : _referencePrice);
+		return _referencePrice;
 	}
 	
 	/**
@@ -1045,8 +1037,8 @@ public abstract class L2Item implements IIdentifiable
 	}
 	
 	/**
-	 * Returns the name of the item
-	 * @return String
+	 * Returns the name of the item followed by the item ID.
+	 * @return the name and the ID of the item
 	 */
 	@Override
 	public String toString()
@@ -1055,11 +1047,22 @@ public abstract class L2Item implements IIdentifiable
 	}
 	
 	/**
-	 * @return the _ex_immediate_effect
+	 * Verifies if the item has effects immediately.<br>
+	 * <i>Used for herbs mostly.</i>
+	 * @return {@code true} if the item applies effects immediately, {@code false} otherwise
 	 */
-	public boolean is_ex_immediate_effect()
+	public boolean hasExImmediateEffect()
 	{
 		return _ex_immediate_effect;
+	}
+	
+	/**
+	 * Verifies if the item has effects immediately.
+	 * @return {@code true} if the item applies effects immediately, {@code false} otherwise
+	 */
+	public boolean hasImmediateEffect()
+	{
+		return _immediate_effect;
 	}
 	
 	/**
@@ -1076,7 +1079,8 @@ public abstract class L2Item implements IIdentifiable
 	}
 	
 	/**
-	 * @return the Reuse Delay of item.
+	 * Gets the item reuse delay time in seconds.
+	 * @return the reuse delay time
 	 */
 	public int getReuseDelay()
 	{
@@ -1084,7 +1088,9 @@ public abstract class L2Item implements IIdentifiable
 	}
 	
 	/**
-	 * @return the shared reuse group.
+	 * Gets the shared reuse group.<br>
+	 * Items with the same reuse group will render reuse delay upon those items when used.
+	 * @return the shared reuse group
 	 */
 	public int getSharedReuseGroup()
 	{
@@ -1093,7 +1099,7 @@ public abstract class L2Item implements IIdentifiable
 	
 	/**
 	 * Usable in HTML windows.
-	 * @return the icon link in client files.
+	 * @return the icon link in client files
 	 */
 	public String getIcon()
 	{
