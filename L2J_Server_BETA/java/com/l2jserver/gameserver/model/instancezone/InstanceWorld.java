@@ -106,7 +106,7 @@ public class InstanceWorld
 			if (instance != null)
 			{
 				final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_WILL_BE_EXPELLED_IN_S1);
-				sm.addNumber(instance.getEjectTime());
+				sm.addNumber(instance.getEjectTime() / 1000 / 60);
 				victim.getActingPlayer().sendPacket(sm);
 				instance.addEjectDeadTask(victim.getActingPlayer());
 			}
