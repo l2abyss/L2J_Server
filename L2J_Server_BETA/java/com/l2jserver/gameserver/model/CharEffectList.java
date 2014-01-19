@@ -608,17 +608,21 @@ public final class CharEffectList
 	{
 		// Stop the buff effects.
 		info.stopAllEffects(false);
+		
 		// If it's a hidden buff that ends, then decrease hidden buff count.
 		if (!info.isInUse())
 		{
 			_hiddenBuffs.decrementAndGet();
 		}
-		// Removes the buff from the given effect list and the stack.
-		effects.remove(info.getSkill().getId());
-		if (_stackedEffects != null)
+		// Removes the buff from the stack.
+		else if (_stackedEffects != null)
 		{
 			_stackedEffects.remove(info.getSkill().getAbnormalType());
 		}
+		
+		// Removes the buff from the given effect list.
+		effects.remove(info.getSkill().getId());
+		
 		// If it's an herb that ends, check if there are hidden buffs.
 		if (info.getSkill().isAbnormalInstant() && hasBuffs())
 		{
@@ -1440,6 +1444,10 @@ public final class CharEffectList
 					// Remove buff that will stack with the abnormal type.
 					else
 					{
+						if (stackedInfo.getSkill().isAbnormalInstant())
+						{
+							stopSkillEffects(false, skill.getAbnormalType());
+						}
 						stopSkillEffects(false, skill.getAbnormalType());
 					}
 				}
