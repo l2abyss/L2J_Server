@@ -42,7 +42,8 @@ public enum QuestEventType
 	ON_MOVE_FINISHED(true), // onMoveFinished action, triggered when NPC stops after moving
 	ON_NODE_ARRIVED(true), // onNodeArrived action, triggered when NPC, controlled by Walking Manager, arrives to next node
 	ON_SEE_CREATURE(true), // onSeeCreature action, triggered when NPC's known list include the character
-	ON_ROUTE_FINISHED(true); // onRouteFinished action, triggered when NPC, controlled by Walking Manager, arrives to last node
+	ON_ROUTE_FINISHED(true), // onRouteFinished action, triggered when NPC, controlled by Walking Manager, arrives to last node
+	ON_NPC_HATE(true);
 	
 	// control whether this event type is allowed for the same npc template in multiple quests
 	// or if the npc must be registered in at most one quest for the specified event
