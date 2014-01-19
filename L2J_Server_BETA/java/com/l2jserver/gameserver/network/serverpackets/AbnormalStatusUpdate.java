@@ -44,8 +44,8 @@ public class AbnormalStatusUpdate extends L2GameServerPacket
 		{
 			if ((info != null) && info.isInUse())
 			{
-				writeD(info.getSkill().getId());
-				writeH(info.getSkill().getLevel());
+				writeD(info.getSkill().getDisplayId());
+				writeH(info.getSkill().getDisplayLevel());
 				writeD(info.getTime());
 			}
 		}
