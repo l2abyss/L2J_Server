@@ -74,7 +74,6 @@
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.version}" />
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.login}/L2J_Configurator.jar" level="9">
@@ -100,7 +99,6 @@
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.tools.configurator.ConfigUserInterface" />
 			</manifest>
 		</jar>
@@ -115,7 +113,6 @@
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.version}" />
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.game}/L2J_Configurator.jar" level="9">
@@ -141,7 +138,6 @@
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.tools.configurator.ConfigUserInterface" />
 			</manifest>
 		</jar>
@@ -159,7 +155,6 @@
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.tools.dbinstaller.LauncherCS" />
 			</manifest>
 		</jar>
@@ -177,7 +172,6 @@
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.tools.dbinstaller.LauncherGS" />
 			</manifest>
 		</jar>
@@ -195,7 +189,6 @@
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.tools.dbinstaller.LauncherLS" />
 			</manifest>
 		</jar>
