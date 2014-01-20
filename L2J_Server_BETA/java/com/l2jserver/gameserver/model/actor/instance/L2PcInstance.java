@@ -1212,8 +1212,7 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	public L2CharacterAI getAI()
 	{
-		L2CharacterAI ai = _ai; // copy handle
-		if (ai == null)
+		if (_ai == null)
 		{
 			synchronized (this)
 			{
@@ -1224,7 +1223,7 @@ public final class L2PcInstance extends L2Playable
 				return _ai;
 			}
 		}
-		return ai;
+		return _ai;
 	}
 	
 	/** Return the Level of the L2PcInstance. */

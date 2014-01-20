@@ -65,8 +65,7 @@ public class L2DefenderInstance extends L2Attackable
 	@Override
 	public L2CharacterAI getAI()
 	{
-		L2CharacterAI ai = _ai; // copy handle
-		if (ai == null)
+		if (_ai == null)
 		{
 			synchronized (this)
 			{
@@ -88,7 +87,7 @@ public class L2DefenderInstance extends L2Attackable
 				return _ai;
 			}
 		}
-		return ai;
+		return _ai;
 	}
 	
 	/**

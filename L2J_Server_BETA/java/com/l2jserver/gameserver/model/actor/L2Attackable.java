@@ -173,9 +173,7 @@ public class L2Attackable extends L2Npc
 	@Override
 	public L2CharacterAI getAI()
 	{
-		L2CharacterAI ai = _ai;
-		
-		if (ai == null)
+		if (_ai == null)
 		{
 			synchronized (this)
 			{
@@ -186,7 +184,7 @@ public class L2Attackable extends L2Npc
 				return _ai;
 			}
 		}
-		return ai;
+		return _ai;
 	}
 	
 	public final Map<L2Character, AggroInfo> getAggroList()

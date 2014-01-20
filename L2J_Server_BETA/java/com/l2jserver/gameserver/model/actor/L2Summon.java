@@ -200,8 +200,7 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public L2CharacterAI getAI()
 	{
-		L2CharacterAI ai = _ai; // copy handle
-		if (ai == null)
+		if (_ai == null)
 		{
 			synchronized (this)
 			{
@@ -212,7 +211,7 @@ public abstract class L2Summon extends L2Playable
 				return _ai;
 			}
 		}
-		return ai;
+		return _ai;
 	}
 	
 	@Override
