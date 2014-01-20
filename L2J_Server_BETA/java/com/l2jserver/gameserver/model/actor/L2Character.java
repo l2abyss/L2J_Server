@@ -339,16 +339,19 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	 */
 	public final void setInsideZone(ZoneId zone, final boolean state)
 	{
-		if (state)
+		synchronized (_zones)
 		{
-			_zones[zone.getId()]++;
-		}
-		else
-		{
-			_zones[zone.getId()]--;
-			if (_zones[zone.getId()] < 0)
+			if (state)
 			{
-				_zones[zone.getId()] = 0;
+				_zones[zone.getId()]++;
+			}
+			else
+			{
+				_zones[zone.getId()]--;
+				if (_zones[zone.getId()] < 0)
+				{
+					_zones[zone.getId()] = 0;
+				}
 			}
 		}
 	}
@@ -2360,8 +2363,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	 */
 	public L2CharacterAI getAI()
 	{
-		L2CharacterAI ai = _ai; // copy handle
-		if (ai == null)
+		if (_ai == null)
 		{
 			synchronized (this)
 			{
@@ -2372,7 +2374,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				return _ai;
 			}
 		}
-		return ai;
+		return _ai;
 	}
 	
 	public void setAI(L2CharacterAI newAI)
@@ -3342,7 +3344,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	/** Table of calculators containing all standard NPC calculator (ex : ACCURACY_COMBAT, EVASION_RATE) */
 	private static final Calculator[] NPC_STD_CALCULATOR = Formulas.getStdNPCCalculators();
 	
-	protected L2CharacterAI _ai;
+	protected volatile L2CharacterAI _ai;
 	
 	/** Future Skill Cast */
 	protected Future<?> _skillCast;
