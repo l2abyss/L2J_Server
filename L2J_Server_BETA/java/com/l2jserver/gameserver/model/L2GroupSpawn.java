@@ -18,13 +18,13 @@
  */
 package com.l2jserver.gameserver.model;
 
-import java.lang.reflect.Constructor;
 import java.util.logging.Level;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.TerritoryTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.L2Npc;
+import com.l2jserver.gameserver.model.actor.instance.L2ControllableMobInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.util.Rnd;
 
@@ -33,13 +33,11 @@ import com.l2jserver.util.Rnd;
  */
 public class L2GroupSpawn extends L2Spawn
 {
-	private final Constructor<?> _constructor;
 	private final L2NpcTemplate _template;
 	
 	public L2GroupSpawn(L2NpcTemplate mobTemplate) throws SecurityException, ClassNotFoundException, NoSuchMethodException
 	{
 		super(mobTemplate);
-		_constructor = Class.forName("com.l2jserver.gameserver.model.actor.instance.L2ControllableMobInstance").getConstructors()[0];
 		_template = mobTemplate;
 		
 		setAmount(1);
@@ -47,28 +45,12 @@ public class L2GroupSpawn extends L2Spawn
 	
 	public L2Npc doGroupSpawn()
 	{
-		L2Npc mob = null;
-		
 		try
 		{
 			if (_template.isType("L2Pet") || _template.isType("L2Minion"))
 			{
 				return null;
 			}
-			
-			Object[] parameters =
-			{
-				IdFactory.getInstance().getNextId(),
-				_template
-			};
-			Object tmp = _constructor.newInstance(parameters);
-			
-			if (!(tmp instanceof L2Npc))
-			{
-				return null;
-			}
-			
-			mob = (L2Npc) tmp;
 			
 			int newlocx, newlocy, newlocz;
 			
@@ -91,6 +73,7 @@ public class L2GroupSpawn extends L2Spawn
 				newlocz = getZ();
 			}
 			
+			final L2Npc mob = new L2ControllableMobInstance(IdFactory.getInstance().getNextId(), _template);
 			mob.setCurrentHpMp(mob.getMaxHp(), mob.getMaxMp());
 			
 			if (getHeading() == -1)
