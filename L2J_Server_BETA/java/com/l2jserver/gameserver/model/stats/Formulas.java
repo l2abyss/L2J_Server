@@ -1305,6 +1305,16 @@ public final class Formulas
 		final L2Character attacker = env.getCharacter();
 		final L2Character target = env.getTarget();
 		final L2Skill skill = env.getSkill();
+		
+		if (skill.isDebuff() && (target.calcStat(Stats.DEBUFF_IMMUNITY, 0, attacker, skill) > 0))
+		{
+			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
+			sm.addCharName(target);
+			sm.addSkillName(skill);
+			attacker.sendPacket(sm);
+			return false;
+		}
+		
 		final int activateRate = skill.getActivateRate();
 		if ((activateRate == -1) || (skill.getBasicProperty() == BaseStats.NONE))
 		{
@@ -1378,8 +1388,8 @@ public final class Formulas
 		if (finalRate <= Rnd.get(100))
 		{
 			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
-			sm.addCharName(env.getTarget());
-			sm.addSkillName(env.getSkill());
+			sm.addCharName(target);
+			sm.addSkillName(skill);
 			attacker.sendPacket(sm);
 			return false;
 		}
