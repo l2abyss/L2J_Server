@@ -320,7 +320,7 @@ public final class BuffInfo
 			if (task != null)
 			{
 				task.getScheduledFuture().cancel(true); // Allow to finish current run.
-				_env.getTarget().getEffectList().remove(this); // Remove the buff from the effect list.
+				_env.getTarget().getEffectList().remove(true, this); // Remove the buff from the effect list.
 			}
 		}
 	}
