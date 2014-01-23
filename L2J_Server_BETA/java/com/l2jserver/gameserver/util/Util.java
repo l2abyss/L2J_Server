@@ -861,4 +861,30 @@ public final class Util
 		}
 		return max;
 	}
+	
+	public static int getIndexOfMaxValue(int... array)
+	{
+		int index = 0;
+		for (int i = 1; i < array.length; i++)
+		{
+			if (array[i] > array[index])
+			{
+				index = i;
+			}
+		}
+		return index;
+	}
+	
+	public static int getIndexOfMinValue(int... array)
+	{
+		int index = 0;
+		for (int i = 1; i < array.length; i++)
+		{
+			if (array[i] < array[index])
+			{
+				index = i;
+			}
+		}
+		return index;
+	}
 }
