@@ -69,6 +69,7 @@ import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.TeleportWhereType;
+import com.l2jserver.gameserver.model.TimeStamp;
 import com.l2jserver.gameserver.model.actor.events.CharEvents;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
@@ -200,10 +201,15 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	
 	/** Table of Calculators containing all used calculator */
 	private Calculator[] _calculators;
-	
 	/** Map containing all skills of this character. */
 	private final Map<Integer, L2Skill> _skills = new FastMap<Integer, L2Skill>().shared();
-	
+	/** Map containing the skill reuse time stamps. */
+	private volatile Map<Integer, TimeStamp> _reuseTimeStampsSkills = null;
+	/** Map containing the item reuse time stamps. */
+	private volatile Map<Integer, TimeStamp> _reuseTimeStampsItems = null;
+	/** Map containing all the disabled skills. */
+	private volatile Map<Integer, Long> _disabledSkills = null;
+	private boolean _allSkillsDisabled;
 	/** Map containing the active chance skills on this character */
 	private volatile ChanceSkillList _chanceSkills;
 	
@@ -1917,6 +1923,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				{
 					sm = SystemMessage.getSystemMessage(SystemMessageId.USE_S1);
 					sm.addSkillName(skill);
+					break;
 				}
 			}
 			
@@ -2126,40 +2133,293 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	}
 	
 	/**
-	 * @param item
-	 * @param reuse
+	 * Gets the item reuse time stamps map.
+	 * @return the item reuse time stamps map
 	 */
-	public void addTimeStampItem(L2ItemInstance item, long reuse)
+	public final Map<Integer, TimeStamp> getItemReuseTimeStamps()
 	{
-		// Dummy
+		return _reuseTimeStampsItems;
 	}
 	
 	/**
-	 * @param itemObjId the item object Id
-	 * @return the reuse time stamp
+	 * Adds a item reuse time stamp.
+	 * @param item the item
+	 * @param reuse the reuse
 	 */
-	public long getItemRemainingReuseTime(int itemObjId)
+	public final void addTimeStampItem(L2ItemInstance item, long reuse)
 	{
+		addTimeStampItem(item, reuse, -1);
+	}
+	
+	/**
+	 * Adds a item reuse time stamp.<br>
+	 * Used for restoring purposes.
+	 * @param item the item
+	 * @param reuse the reuse
+	 * @param systime the system time
+	 */
+	public final void addTimeStampItem(L2ItemInstance item, long reuse, long systime)
+	{
+		if (_reuseTimeStampsItems == null)
+		{
+			synchronized (this)
+			{
+				if (_reuseTimeStampsItems == null)
+				{
+					_reuseTimeStampsItems = new ConcurrentHashMap<>();
+				}
+			}
+		}
+		_reuseTimeStampsItems.put(item.getObjectId(), new TimeStamp(item, reuse, systime));
+	}
+	
+	/**
+	 * Gets the item remaining reuse time for a given item object ID.
+	 * @param itemObjId the item object ID
+	 * @return if the item has a reuse time stamp, the remaining time, otherwise -1
+	 */
+	public synchronized final long getItemRemainingReuseTime(int itemObjId)
+	{
+		if ((_reuseTimeStampsItems == null) || !_reuseTimeStampsItems.containsKey(itemObjId))
+		{
+			return -1;
+		}
+		return _reuseTimeStampsItems.get(itemObjId).getRemaining();
+	}
+	
+	/**
+	 * Gets the item remaining reuse time for a given shared reuse item group.
+	 * @param group the shared reuse item group
+	 * @return if the shared reuse item group has a reuse time stamp, the remaining time, otherwise -1
+	 */
+	public final long getReuseDelayOnGroup(int group)
+	{
+		if (group > 0)
+		{
+			for (TimeStamp ts : _reuseTimeStampsItems.values())
+			{
+				if ((ts.getSharedReuseGroup() == group) && ts.hasNotPassed())
+				{
+					return ts.getRemaining();
+				}
+			}
+		}
 		return -1;
 	}
 	
 	/**
-	 * Index according to skill id the current time stamp of use.
-	 * @param skill id
-	 * @param reuse delay
+	 * Gets the skill reuse time stamps map.
+	 * @return the skill reuse time stamps map
 	 */
-	public void addTimeStamp(L2Skill skill, long reuse)
+	public final Map<Integer, TimeStamp> getSkillReuseTimeStamps()
 	{
-		// Dummy
+		return _reuseTimeStampsSkills;
 	}
 	
 	/**
-	 * @param skillReuseHashId
-	 * @return -1
+	 * Adds the skill reuse time stamp.
+	 * @param skill the skill
+	 * @param reuse the delay
 	 */
-	public long getSkillRemainingReuseTime(int skillReuseHashId)
+	public final void addTimeStamp(L2Skill skill, long reuse)
 	{
-		return -1;
+		addTimeStamp(skill, reuse, -1);
+	}
+	
+	/**
+	 * Adds the skill reuse time stamp.<br>
+	 * Used for restoring purposes.
+	 * @param skill the skill
+	 * @param reuse the reuse
+	 * @param systime the system time
+	 */
+	public final void addTimeStamp(L2Skill skill, long reuse, long systime)
+	{
+		if (_reuseTimeStampsSkills == null)
+		{
+			synchronized (this)
+			{
+				if (_reuseTimeStampsSkills == null)
+				{
+					_reuseTimeStampsSkills = new ConcurrentHashMap<>();
+				}
+			}
+		}
+		_reuseTimeStampsSkills.put(skill.getReuseHashCode(), new TimeStamp(skill, reuse, systime));
+	}
+	
+	/**
+	 * Removes a skill reuse time stamp.
+	 * @param skill the skill to remove
+	 */
+	public synchronized final void removeTimeStamp(L2Skill skill)
+	{
+		if (_reuseTimeStampsSkills != null)
+		{
+			_reuseTimeStampsSkills.remove(skill.getReuseHashCode());
+		}
+	}
+	
+	/**
+	 * Removes all skill reuse time stamps.
+	 */
+	public synchronized final void resetTimeStamps()
+	{
+		if (_reuseTimeStampsSkills != null)
+		{
+			_reuseTimeStampsSkills.clear();
+		}
+	}
+	
+	/**
+	 * Gets the skill remaining reuse time for a given skill hash code.
+	 * @param hashCode the skill hash code
+	 * @return if the skill has a reuse time stamp, the remaining time, otherwise -1
+	 */
+	public synchronized final long getSkillRemainingReuseTime(int hashCode)
+	{
+		if ((_reuseTimeStampsSkills == null) || !_reuseTimeStampsSkills.containsKey(hashCode))
+		{
+			return -1;
+		}
+		return _reuseTimeStampsSkills.get(hashCode).getRemaining();
+	}
+	
+	/**
+	 * Verifies if the skill is under reuse time.
+	 * @param hashCode the skill hash code
+	 * @return {@code true} if the skill is under reuse time, {@code false} otherwise
+	 */
+	public synchronized final boolean hasSkillReuse(int hashCode)
+	{
+		if ((_reuseTimeStampsSkills == null) || !_reuseTimeStampsSkills.containsKey(hashCode))
+		{
+			return false;
+		}
+		return _reuseTimeStampsSkills.get(hashCode).hasNotPassed();
+	}
+	
+	/**
+	 * Gets the skill reuse time stamp.
+	 * @param hashCode the skill hash code
+	 * @return if the skill has a reuse time stamp, the skill reuse time stamp, otherwise {@code null}
+	 */
+	public synchronized final TimeStamp getSkillReuseTimeStamp(int hashCode)
+	{
+		return _reuseTimeStampsSkills != null ? _reuseTimeStampsSkills.get(hashCode) : null;
+	}
+	
+	/**
+	 * Gets the disabled skills map.
+	 * @return the disabled skills map
+	 */
+	public Map<Integer, Long> getDisabledSkills()
+	{
+		return _disabledSkills;
+	}
+	
+	/**
+	 * Enables a skill.
+	 * @param skill the skill to enable
+	 */
+	public void enableSkill(L2Skill skill)
+	{
+		if ((skill == null) || (_disabledSkills == null))
+		{
+			return;
+		}
+		
+		_disabledSkills.remove(skill.getReuseHashCode());
+	}
+	
+	/**
+	 * Disables a skill for a given time.<br>
+	 * If delay is lesser or equal than zero, skill will be disabled "forever".
+	 * @param skill the skill to disable
+	 * @param delay delay in milliseconds
+	 */
+	public void disableSkill(L2Skill skill, long delay)
+	{
+		if (skill == null)
+		{
+			return;
+		}
+		
+		if (_disabledSkills == null)
+		{
+			synchronized (this)
+			{
+				if (_disabledSkills == null)
+				{
+					_disabledSkills = new ConcurrentHashMap<>();
+				}
+			}
+		}
+		
+		_disabledSkills.put(skill.getReuseHashCode(), delay > 0 ? System.currentTimeMillis() + delay : Long.MAX_VALUE);
+	}
+	
+	/**
+	 * Removes all the disabled skills.
+	 */
+	public synchronized final void resetDisabledSkills()
+	{
+		if (_disabledSkills != null)
+		{
+			_disabledSkills.clear();
+		}
+	}
+	
+	/**
+	 * Verifies if the skill is disabled.
+	 * @param skill the skill
+	 * @return {@code true} if the skill is disabled, {@code false} otherwise
+	 */
+	public boolean isSkillDisabled(L2Skill skill)
+	{
+		return (skill != null) && isSkillDisabled(skill.getReuseHashCode());
+	}
+	
+	/**
+	 * Verifies if the skill is disabled.
+	 * @param hashCode the skill hash code
+	 * @return {@code true} if the skill is disabled, {@code false} otherwise
+	 */
+	public boolean isSkillDisabled(int hashCode)
+	{
+		if (isAllSkillsDisabled())
+		{
+			return true;
+		}
+		
+		if ((_disabledSkills == null) || !_disabledSkills.containsKey(hashCode))
+		{
+			return false;
+		}
+		
+		if (_disabledSkills.get(hashCode) < System.currentTimeMillis())
+		{
+			_disabledSkills.remove(hashCode);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Disables all skills.
+	 */
+	public void disableAllSkills()
+	{
+		_allSkillsDisabled = true;
+	}
+	
+	/**
+	 * Enables all skills, except those under reuse time or previously disabled.
+	 */
+	public void enableAllSkills()
+	{
+		_allSkillsDisabled = false;
 	}
 	
 	/**
@@ -3316,22 +3576,13 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		public int geoPathGty;
 	}
 	
-	/** Table containing all skillId that are disabled */
-	protected Map<Integer, Long> _disabledSkills;
-	private boolean _allSkillsDisabled;
-	
-	// private int _flyingRunSpeed;
-	// private int _floatingWalkSpeed;
-	// private int _flyingWalkSpeed;
-	// private int _floatingRunSpeed;
-	
 	/** Movement data of this L2Character */
 	protected MoveData _move;
 	
 	/** Orientation of the L2Character */
 	private int _heading;
 	
-	/** L2Charcater targeted by the L2Character */
+	/** This creature's target. */
 	private L2Object _target;
 	
 	// set by the start of attack, in game ticks
@@ -5825,118 +6076,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	protected void notifyQuestEventSkillFinished(L2Skill skill, L2Object target)
 	{
 		
-	}
-	
-	public Map<Integer, Long> getDisabledSkills()
-	{
-		return _disabledSkills;
-	}
-	
-	/**
-	 * Enable a skill (remove it from _disabledSkills of the L2Character).<br>
-	 * <B><U>Concept</U>:</B><br>
-	 * All skills disabled are identified by their skillId in <B>_disabledSkills</B> of the L2Character
-	 * @param skill the skill to enable.
-	 */
-	public void enableSkill(L2Skill skill)
-	{
-		if ((skill == null) || (_disabledSkills == null))
-		{
-			return;
-		}
-		
-		_disabledSkills.remove(Integer.valueOf(skill.getReuseHashCode()));
-	}
-	
-	/**
-	 * Disable this skill id for the duration of the delay in milliseconds.
-	 * @param skill
-	 * @param delay (seconds * 1000)
-	 */
-	public void disableSkill(L2Skill skill, long delay)
-	{
-		if (skill == null)
-		{
-			return;
-		}
-		
-		if (_disabledSkills == null)
-		{
-			synchronized (this)
-			{
-				if (_disabledSkills == null)
-				{
-					_disabledSkills = new ConcurrentHashMap<>();
-				}
-			}
-		}
-		
-		_disabledSkills.put(Integer.valueOf(skill.getReuseHashCode()), delay > 10 ? System.currentTimeMillis() + delay : Long.MAX_VALUE);
-	}
-	
-	/**
-	 * <B><U>Concept</U>:</B><br>
-	 * All skills disabled are identified by their reuse hashcodes in <B>_disabledSkills</B> of the L2Character
-	 * @param skill The L2Skill to check
-	 * @return true if a skill is disabled.
-	 */
-	public boolean isSkillDisabled(L2Skill skill)
-	{
-		if (skill == null)
-		{
-			return true;
-		}
-		
-		return isSkillDisabled(skill.getReuseHashCode());
-	}
-	
-	/**
-	 * <B><U>Concept</U>:</B><br>
-	 * All skills disabled are identified by their reuse hashcodes in <B>_disabledSkills</B> of the L2Character
-	 * @param reuseHashcode The reuse hashcode of the skillId/level to check
-	 * @return true if a skill is disabled.
-	 */
-	public boolean isSkillDisabled(int reuseHashcode)
-	{
-		if (isAllSkillsDisabled())
-		{
-			return true;
-		}
-		
-		if (_disabledSkills == null)
-		{
-			return false;
-		}
-		
-		final Long timeStamp = _disabledSkills.get(Integer.valueOf(reuseHashcode));
-		if (timeStamp == null)
-		{
-			return false;
-		}
-		
-		if (timeStamp < System.currentTimeMillis())
-		{
-			_disabledSkills.remove(Integer.valueOf(reuseHashcode));
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
-	 * Disable all skills (set _allSkillsDisabled to True).
-	 */
-	public void disableAllSkills()
-	{
-		_allSkillsDisabled = true;
-	}
-	
-	/**
-	 * Enable all skills (set _allSkillsDisabled to False).
-	 */
-	public void enableAllSkills()
-	{
-		_allSkillsDisabled = false;
 	}
 	
 	/**

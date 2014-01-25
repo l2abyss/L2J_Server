@@ -29,26 +29,19 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
  */
 public class TimeStamp
 {
-	private final int _id1; // Item or Skill Id.
-	private final int _id2; // Item Object Id or Skill Level.
+	/** Item or skill ID. */
+	private final int _id1;
+	/** Item object ID or skill level. */
+	private final int _id2;
+	/** Item or skill reuse time. */
 	private final long _reuse;
+	/** Time stamp. */
 	private final long _stamp;
+	/** Shared reuse group. */
 	private final int _group;
 	
 	/**
-	 * @param skill the skill upon the stamp will be created.
-	 * @param reuse the reuse time for this skill.
-	 */
-	public TimeStamp(L2Skill skill, long reuse)
-	{
-		_id1 = skill.getId();
-		_id2 = skill.getLevel();
-		_reuse = reuse;
-		_stamp = System.currentTimeMillis() + reuse;
-		_group = -1;
-	}
-	
-	/**
+	 * Skill time stamp constructor.
 	 * @param skill the skill upon the stamp will be created.
 	 * @param reuse the reuse time for this skill.
 	 * @param systime overrides the system time with a customized one.
@@ -58,24 +51,12 @@ public class TimeStamp
 		_id1 = skill.getId();
 		_id2 = skill.getLevel();
 		_reuse = reuse;
-		_stamp = systime;
+		_stamp = systime > 0 ? systime : System.currentTimeMillis() + reuse;
 		_group = -1;
 	}
 	
 	/**
-	 * @param item the item upon the stamp will be created.
-	 * @param reuse the reuse time for this item.
-	 */
-	public TimeStamp(L2ItemInstance item, long reuse)
-	{
-		_id1 = item.getId();
-		_id2 = item.getObjectId();
-		_reuse = reuse;
-		_stamp = System.currentTimeMillis() + reuse;
-		_group = item.getSharedReuseGroup();
-	}
-	
-	/**
+	 * Item time stamp constructor.
 	 * @param item the item upon the stamp will be created.
 	 * @param reuse the reuse time for this item.
 	 * @param systime overrides the system time with a customized one.
@@ -85,12 +66,13 @@ public class TimeStamp
 		_id1 = item.getId();
 		_id2 = item.getObjectId();
 		_reuse = reuse;
-		_stamp = systime;
+		_stamp = systime > 0 ? systime : System.currentTimeMillis() + reuse;
 		_group = item.getSharedReuseGroup();
 	}
 	
 	/**
-	 * @return the time stamp, either the system time where this time stamp was created or the custom time assigned.
+	 * Gets the time stamp.
+	 * @return the time stamp, either the system time where this time stamp was created or the custom time assigned
 	 */
 	public long getStamp()
 	{
@@ -98,7 +80,8 @@ public class TimeStamp
 	}
 	
 	/**
-	 * @return the first Id for the item, the item Id.
+	 * Gets the item ID.
+	 * @return the item ID
 	 */
 	public int getItemId()
 	{
@@ -106,7 +89,8 @@ public class TimeStamp
 	}
 	
 	/**
-	 * @return the second Id for the item, the item object Id.
+	 * Gets the item object ID.
+	 * @return the item object ID
 	 */
 	public int getItemObjectId()
 	{
@@ -114,7 +98,8 @@ public class TimeStamp
 	}
 	
 	/**
-	 * @return the skill Id.
+	 * Gets the skill ID.
+	 * @return the skill ID
 	 */
 	public int getSkillId()
 	{
@@ -122,7 +107,8 @@ public class TimeStamp
 	}
 	
 	/**
-	 * @return the skill level.
+	 * Gets the skill level.
+	 * @return the skill level
 	 */
 	public int getSkillLvl()
 	{
@@ -130,7 +116,8 @@ public class TimeStamp
 	}
 	
 	/**
-	 * @return the reuse set for this Item/Skill.
+	 * Gets the reuse.
+	 * @return the reuse
 	 */
 	public long getReuse()
 	{
@@ -138,7 +125,9 @@ public class TimeStamp
 	}
 	
 	/**
-	 * @return the shared reuse group for the item, -1 for skills.
+	 * Get the shared reuse group.<br>
+	 * Only used on items.
+	 * @return the shared reuse group
 	 */
 	public int getSharedReuseGroup()
 	{
@@ -146,7 +135,8 @@ public class TimeStamp
 	}
 	
 	/**
-	 * @return the remaining time for this time stamp to expire.
+	 * Gets the remaining time.
+	 * @return the remaining time for this time stamp to expire
 	 */
 	public long getRemaining()
 	{
@@ -154,8 +144,8 @@ public class TimeStamp
 	}
 	
 	/**
-	 * Check if the reuse delay has passed and if it has not then update the stored reuse time according to what is currently remaining on the delay.
-	 * @return {@code true} if this time stamp has expired, {@code false} otherwise.
+	 * Verifies if the reuse delay has passed.
+	 * @return {@code true} if this time stamp has expired, {@code false} otherwise
 	 */
 	public boolean hasNotPassed()
 	{

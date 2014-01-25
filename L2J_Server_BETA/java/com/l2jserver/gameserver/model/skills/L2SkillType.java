@@ -47,7 +47,6 @@ public enum L2SkillType
 	TAKEFORT,
 	DELUXE_KEY_UNLOCK,
 	SOW,
-	GET_PLAYER,
 	DETECTION,
 	DUMMY,
 	// Summons
