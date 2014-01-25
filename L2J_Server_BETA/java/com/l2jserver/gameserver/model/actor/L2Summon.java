@@ -730,7 +730,7 @@ public abstract class L2Summon extends L2Playable
 			else
 			{
 				// Summons can cast skills on NPCs inside peace zones.
-				if (!target.isAttackable() && !getOwner().getAccessLevel().allowPeaceAttack())
+				if (!target.canBeAttacked() && !getOwner().getAccessLevel().allowPeaceAttack())
 				{
 					return false;
 				}

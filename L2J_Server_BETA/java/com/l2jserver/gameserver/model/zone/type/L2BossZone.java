@@ -271,7 +271,7 @@ public class L2BossZone extends L2ZoneType
 						{
 							count++;
 						}
-						else if (obj.isL2Attackable() && obj.isRaid())
+						else if (obj.isAttackable() && obj.isRaid())
 						{
 							getSettings().getRaidList().add(obj);
 						}
@@ -295,7 +295,7 @@ public class L2BossZone extends L2ZoneType
 				}
 			}
 		}
-		if (character.isL2Attackable() && character.isRaid() && !character.isDead())
+		if (character.isAttackable() && character.isRaid() && !character.isDead())
 		{
 			((L2Attackable) character).returnHome();
 		}

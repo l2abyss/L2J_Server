@@ -115,7 +115,7 @@ public class L2SiegeFlagInstance extends L2Npc
 	}
 	
 	@Override
-	public boolean isAttackable()
+	public boolean canBeAttacked()
 	{
 		return !isInvul();
 	}

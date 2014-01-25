@@ -66,7 +66,7 @@ public final class L2ArtefactInstance extends L2Npc
 	}
 	
 	@Override
-	public boolean isAttackable()
+	public boolean canBeAttacked()
 	{
 		return false;
 	}

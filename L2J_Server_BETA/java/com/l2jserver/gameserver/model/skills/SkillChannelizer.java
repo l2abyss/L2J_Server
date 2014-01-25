@@ -282,7 +282,7 @@ public class SkillChannelizer implements Runnable
 					}
 					
 					// Only attackable creatures can be attacked.
-					if (cha.isL2Attackable() || cha.isPlayable())
+					if (cha.isAttackable() || cha.isPlayable())
 					{
 						if (cha.isAlikeDead())
 						{

@@ -264,7 +264,7 @@ public abstract class L2Playable extends L2Character
 	 * Return True.
 	 */
 	@Override
-	public boolean isAttackable()
+	public boolean canBeAttacked()
 	{
 		return true;
 	}

@@ -8966,7 +8966,7 @@ public final class L2PcInstance extends L2Playable
 				}
 				default:
 				{
-					if (!target.isAttackable() && !getAccessLevel().allowPeaceAttack())
+					if (!target.canBeAttacked() && !getAccessLevel().allowPeaceAttack())
 					{
 						// If target is not attackable, send a Server->Client packet ActionFailed
 						sendPacket(ActionFailed.STATIC_PACKET);

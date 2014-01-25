@@ -55,7 +55,7 @@ public class Die extends L2GameServerPacket
 		}
 		
 		_canTeleport = cha.canRevive() && !cha.isPendingRevive();
-		_sweepable = cha.isL2Attackable() && cha.isSweepActive();
+		_sweepable = cha.isAttackable() && cha.isSweepActive();
 	}
 	
 	@Override

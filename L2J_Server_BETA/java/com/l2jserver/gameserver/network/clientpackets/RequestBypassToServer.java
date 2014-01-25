@@ -315,7 +315,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				if (bypassOriginId > 0)
 				{
 					L2Object bypassOrigin = activeChar.getKnownList().getKnownObjects().get(bypassOriginId);
-					if ((bypassOrigin != null) && bypassOrigin.isInstanceType(InstanceType.L2Character))
+					if ((bypassOrigin != null) && bypassOrigin.isInstanceTypes(InstanceType.L2Character))
 					{
 						handler.useBypass(_command, activeChar, (L2Character) bypassOrigin);
 					}
@@ -337,7 +337,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 					if (bypassOriginId > 0)
 					{
 						L2Object bypassOrigin = activeChar.getKnownList().getKnownObjects().get(bypassOriginId);
-						if ((bypassOrigin != null) && bypassOrigin.isInstanceType(InstanceType.L2Character))
+						if ((bypassOrigin != null) && bypassOrigin.isInstanceTypes(InstanceType.L2Character))
 						{
 							handler.useBypass(_command, activeChar, (L2Character) bypassOrigin);
 						}

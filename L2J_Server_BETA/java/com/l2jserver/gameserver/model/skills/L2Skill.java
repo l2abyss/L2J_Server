@@ -1400,7 +1400,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 			
 			applyEffectScope(EffectScope.GENERAL, info, instant, addContinuousEffects);
 			
-			EffectScope pvpOrPveEffectScope = effector.isPlayable() && effected.isL2Attackable() ? EffectScope.PVE : effector.isPlayable() && effected.isPlayable() ? EffectScope.PVP : null;
+			EffectScope pvpOrPveEffectScope = effector.isPlayable() && effected.isAttackable() ? EffectScope.PVE : effector.isPlayable() && effected.isPlayable() ? EffectScope.PVP : null;
 			applyEffectScope(pvpOrPveEffectScope, info, instant, addContinuousEffects);
 			
 			applyEffectScope(EffectScope.CHANNELING, info, instant, addContinuousEffects);

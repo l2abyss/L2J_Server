@@ -591,7 +591,7 @@ public final class Formulas
 		}
 		
 		final boolean isPvP = attacker.isPlayable() && target.isPlayable();
-		final boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
+		final boolean isPvE = attacker.isPlayable() && target.isAttackable();
 		double power = skill.getPower(isPvP, isPvE);
 		double damage = 0;
 		double proximityBonus = 1;
@@ -659,7 +659,7 @@ public final class Formulas
 		}
 		
 		boolean isPvP = attacker.isPlayable() && target.isPlayer();
-		boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
+		boolean isPvE = attacker.isPlayable() && target.isAttackable();
 		double damage = 0;
 		double proximityBonus = attacker.isBehindTarget() ? 1.2 : attacker.isInFrontOfTarget() ? 1 : 1.1; // Behind: +20% - Side: +10% (TODO: values are unconfirmed, possibly custom, remove or update when confirmed)
 		double graciaPhysSkillBonus = skill.isMagic() ? 1 : 1.10113; // Gracia final physical skill bonus 10.113%
@@ -681,7 +681,7 @@ public final class Formulas
 		damage *= calcGeneralTraitBonus(attacker, target, skill.getTraitType(), false) * calcAttributeBonus(attacker, target, skill);
 		damage *= attacker.getRandomDamageMultiplier();
 		
-		if (target.isL2Attackable() && !target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2))
+		if (target.isAttackable() && !target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2))
 		{
 			int lvlDiff = target.getLevel() - attacker.getActingPlayer().getLevel() - 1;
 			if (lvlDiff >= Config.NPC_SKILL_DMG_PENALTY.size())
@@ -710,7 +710,7 @@ public final class Formulas
 	public static final double calcPhysDam(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean crit, boolean ss)
 	{
 		final boolean isPvP = attacker.isPlayable() && target.isPlayable();
-		final boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
+		final boolean isPvE = attacker.isPlayable() && target.isAttackable();
 		double damage = attacker.getPAtk(target);
 		double defence = target.getPDef(attacker);
 		
@@ -795,7 +795,7 @@ public final class Formulas
 		}
 		
 		damage *= calcAttributeBonus(attacker, target, skill);
-		if (target.isL2Attackable())
+		if (target.isAttackable())
 		{
 			final L2Weapon weapon = attacker.getActiveWeaponItem();
 			if ((weapon != null) && ((weapon.getItemType() == L2WeaponType.BOW) || (weapon.getItemType() == L2WeaponType.CROSSBOW)))
@@ -872,7 +872,7 @@ public final class Formulas
 		
 		int mAtk = attacker.getMAtk(target, skill);
 		final boolean isPvP = attacker.isPlayable() && target.isPlayable();
-		final boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
+		final boolean isPvE = attacker.isPlayable() && target.isAttackable();
 		
 		// PvP bonuses for defense
 		if (isPvP)
@@ -946,7 +946,7 @@ public final class Formulas
 		damage *= target.calcStat(Stats.MAGIC_DAMAGE_VULN, 1, null, null);
 		damage *= calcAttributeBonus(attacker, target, skill);
 		
-		if (target.isL2Attackable())
+		if (target.isAttackable())
 		{
 			damage *= attacker.calcStat(Stats.PVE_MAGICAL_DMG, 1, null, null);
 			if (!target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2))
@@ -979,7 +979,7 @@ public final class Formulas
 		
 		int mAtk = attacker.getCubicPower();
 		final boolean isPvP = target.isPlayable();
-		final boolean isPvE = target.isL2Attackable();
+		final boolean isPvE = target.isAttackable();
 		
 		// Cubics MDAM Formula (similar to PDAM formula, but using 91 instead of 70, also resisted by mDef).
 		double damage = 91 * ((mAtk + skill.getPower(isPvP, isPvE)) / mDef);
@@ -1034,7 +1034,7 @@ public final class Formulas
 		damage *= target.calcStat(Stats.MAGIC_DAMAGE_VULN, 1, null, null);
 		damage *= calcAttributeBonus(owner, target, skill);
 		
-		if (target.isL2Attackable())
+		if (target.isAttackable())
 		{
 			damage *= attacker.getOwner().calcStat(Stats.PVE_MAGICAL_DMG, 1, null, null);
 			if (!target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY) && (attacker.getOwner() != null) && ((target.getLevel() - attacker.getOwner().getLevel()) >= 2))
@@ -1531,7 +1531,7 @@ public final class Formulas
 		int lvlDifference = (target.getLevel() - (skill.getMagicLevel() > 0 ? skill.getMagicLevel() : attacker.getLevel()));
 		double lvlModifier = Math.pow(1.3, lvlDifference);
 		float targetModifier = 1;
-		if (target.isL2Attackable() && !target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_MAGIC_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 3))
+		if (target.isAttackable() && !target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_MAGIC_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 3))
 		{
 			int lvlDiff = target.getLevel() - attacker.getActingPlayer().getLevel() - 2;
 			if (lvlDiff >= Config.NPC_SKILL_CHANCE_PENALTY.size())
@@ -1569,7 +1569,7 @@ public final class Formulas
 		double mAtk = attacker.getMAtk(target, skill);
 		double mDef = target.getMDef(attacker, skill);
 		final boolean isPvP = attacker.isPlayable() && target.isPlayable();
-		final boolean isPvE = attacker.isPlayable() && target.isL2Attackable();
+		final boolean isPvE = attacker.isPlayable() && target.isAttackable();
 		double mp = target.getMaxMp();
 		
 		switch (shld)
@@ -1587,7 +1587,7 @@ public final class Formulas
 		double damage = (Math.sqrt(mAtk) * skill.getPower(attacker, target, isPvP, isPvE) * (mp / 97)) / mDef;
 		damage *= calcGeneralTraitBonus(attacker, target, skill.getTraitType(), false);
 		
-		if (target.isL2Attackable())
+		if (target.isAttackable())
 		{
 			damage *= attacker.calcStat(Stats.PVE_MAGICAL_DMG, 1, null, null);
 			if (!target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2))

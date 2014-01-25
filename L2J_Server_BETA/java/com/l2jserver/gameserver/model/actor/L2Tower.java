@@ -37,7 +37,7 @@ public abstract class L2Tower extends L2Npc
 	}
 	
 	@Override
-	public boolean isAttackable()
+	public boolean canBeAttacked()
 	{
 		// Attackable during siege by attacker only
 		return ((getCastle() != null) && (getCastle().getResidenceId() > 0) && getCastle().getSiege().getIsInProgress());
