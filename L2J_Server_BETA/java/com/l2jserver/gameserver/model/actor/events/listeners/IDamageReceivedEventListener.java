@@ -26,5 +26,5 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
  */
 public interface IDamageReceivedEventListener extends IEventListener
 {
-	public void onDamageReceivedEvent(L2Character attacker, L2Character target, double damage, L2Skill skill, boolean crit);
+	public void onDamageReceivedEvent(L2Character attacker, L2Character target, double damage, L2Skill skill, boolean crit, boolean damageOverTime);
 }

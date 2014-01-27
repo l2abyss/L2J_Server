@@ -184,8 +184,9 @@ public class CharEvents extends AbstractCharEvents
 	 * @param target
 	 * @param skill
 	 * @param crit
+	 * @param damageOverTime
 	 */
-	public void onDamageDealt(double damage, L2Character target, L2Skill skill, boolean crit)
+	public void onDamageDealt(double damage, L2Character target, L2Skill skill, boolean crit, boolean damageOverTime)
 	{
 		if (hasListeners())
 		{
@@ -198,7 +199,7 @@ public class CharEvents extends AbstractCharEvents
 						continue;
 					}
 					
-					listener.onDamageDealtEvent(getActingPlayer(), target, damage, skill, crit);
+					listener.onDamageDealtEvent(getActingPlayer(), target, damage, skill, crit, damageOverTime);
 				}
 				catch (Exception e)
 				{
@@ -218,8 +219,9 @@ public class CharEvents extends AbstractCharEvents
 	 * @param attacker
 	 * @param skill
 	 * @param crit
+	 * @param damageOverTime
 	 */
-	public void onDamageReceived(double damage, L2Character attacker, L2Skill skill, boolean crit)
+	public void onDamageReceived(double damage, L2Character attacker, L2Skill skill, boolean crit, boolean damageOverTime)
 	{
 		if (hasListeners())
 		{
@@ -232,7 +234,7 @@ public class CharEvents extends AbstractCharEvents
 						continue;
 					}
 					
-					listener.onDamageReceivedEvent(attacker, getActingPlayer(), damage, skill, crit);
+					listener.onDamageReceivedEvent(attacker, getActingPlayer(), damage, skill, crit, damageOverTime);
 				}
 				catch (Exception e)
 				{

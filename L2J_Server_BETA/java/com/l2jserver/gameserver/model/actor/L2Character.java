@@ -5058,12 +5058,12 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			
 			// reduce targets HP
 			target.reduceCurrentHp(damage, this, null);
-			target.notifyDamageReceived(damage, this, null, crit);
+			target.notifyDamageReceived(damage, this, null, crit, false);
 			
 			if (reflectedDamage > 0)
 			{
 				reduceCurrentHp(reflectedDamage, target, true, false, null);
-				notifyDamageReceived(reflectedDamage, target, null, crit);
+				notifyDamageReceived(reflectedDamage, target, null, crit, false);
 			}
 			
 			if (!isBow) // Do not absorb if weapon is of type bow
@@ -7063,11 +7063,12 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	 * @param attacker
 	 * @param skill
 	 * @param critical
+	 * @param damageOverTime
 	 */
-	public void notifyDamageReceived(double damage, L2Character attacker, L2Skill skill, boolean critical)
+	public void notifyDamageReceived(double damage, L2Character attacker, L2Skill skill, boolean critical, boolean damageOverTime)
 	{
-		getEvents().onDamageReceived(damage, attacker, skill, critical);
-		attacker.getEvents().onDamageDealt(damage, this, skill, critical);
+		getEvents().onDamageReceived(damage, attacker, skill, critical, damageOverTime);
+		attacker.getEvents().onDamageDealt(damage, this, skill, critical, damageOverTime);
 	}
 	
 	/**
