@@ -411,6 +411,11 @@ public abstract class L2Summon extends L2Playable
 	public void deleteMe(L2PcInstance owner)
 	{
 		owner.sendPacket(new PetDelete(getSummonType(), getObjectId()));
+		final L2Party party = owner.getParty();
+		if (party != null)
+		{
+			party.broadcastToPartyMembers(owner, new ExPartyPetWindowDelete(this));
+		}
 		
 		// pet will be deleted along with all his items
 		if (getInventory() != null)
@@ -429,8 +434,8 @@ public abstract class L2Summon extends L2Playable
 		{
 			getAI().stopFollow();
 			owner.sendPacket(new PetDelete(getSummonType(), getObjectId()));
-			L2Party party;
-			if ((party = owner.getParty()) != null)
+			final L2Party party = owner.getParty();
+			if (party != null)
 			{
 				party.broadcastToPartyMembers(owner, new ExPartyPetWindowDelete(this));
 			}
