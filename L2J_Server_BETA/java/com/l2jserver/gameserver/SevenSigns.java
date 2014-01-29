@@ -43,7 +43,7 @@ import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SSQInfo;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -1432,7 +1432,7 @@ public class SevenSigns
 		L2World.getInstance().forEachPlayer(new TeleLosingCabalFromDungeons(compWinner));
 	}
 	
-	private final class TeleLosingCabalFromDungeons implements IL2Procedure<L2PcInstance>
+	private final class TeleLosingCabalFromDungeons implements IProcedure<L2PcInstance, Boolean>
 	{
 		private final String _cmpWinner;
 		
@@ -1442,7 +1442,7 @@ public class SevenSigns
 		}
 		
 		@Override
-		public final boolean execute(final L2PcInstance onlinePlayer)
+		public final Boolean execute(final L2PcInstance onlinePlayer)
 		{
 			if (onlinePlayer != null)
 			{
@@ -1658,7 +1658,7 @@ public class SevenSigns
 		L2World.getInstance().forEachPlayer(new GiveCPMult(StrifeOwner));
 	}
 	
-	private final class GiveCPMult implements IL2Procedure<L2PcInstance>
+	private final class GiveCPMult implements IProcedure<L2PcInstance, Boolean>
 	{
 		private final int _strifeOwner;
 		
@@ -1668,7 +1668,7 @@ public class SevenSigns
 		}
 		
 		@Override
-		public final boolean execute(final L2PcInstance character)
+		public final Boolean execute(final L2PcInstance character)
 		{
 			if (character != null)
 			{
@@ -1696,10 +1696,10 @@ public class SevenSigns
 		L2World.getInstance().forEachPlayer(new RemoveCPMult());
 	}
 	
-	protected final class RemoveCPMult implements IL2Procedure<L2PcInstance>
+	protected final class RemoveCPMult implements IProcedure<L2PcInstance, Boolean>
 	{
 		@Override
-		public final boolean execute(final L2PcInstance character)
+		public final Boolean execute(final L2PcInstance character)
 		{
 			if (character != null)
 			{

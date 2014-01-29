@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CharInfo;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
@@ -208,7 +208,7 @@ public final class Broadcast
 		L2World.getInstance().forEachPlayer(new ForEachPlayerInInstanceBroadcast(mov, instanceId));
 	}
 	
-	private static final class ForEachPlayerBroadcast implements IL2Procedure<L2PcInstance>
+	private static final class ForEachPlayerBroadcast implements IProcedure<L2PcInstance, Boolean>
 	{
 		L2GameServerPacket _packet;
 		
@@ -218,7 +218,7 @@ public final class Broadcast
 		}
 		
 		@Override
-		public final boolean execute(final L2PcInstance onlinePlayer)
+		public final Boolean execute(final L2PcInstance onlinePlayer)
 		{
 			if ((onlinePlayer != null) && onlinePlayer.isOnline())
 			{
@@ -228,7 +228,7 @@ public final class Broadcast
 		}
 	}
 	
-	private static final class ForEachPlayerInInstanceBroadcast implements IL2Procedure<L2PcInstance>
+	private static final class ForEachPlayerInInstanceBroadcast implements IProcedure<L2PcInstance, Boolean>
 	{
 		private final L2GameServerPacket _packet;
 		private final int _instanceId;
@@ -240,7 +240,7 @@ public final class Broadcast
 		}
 		
 		@Override
-		public final boolean execute(final L2PcInstance onlinePlayer)
+		public final Boolean execute(final L2PcInstance onlinePlayer)
 		{
 			if ((onlinePlayer != null) && onlinePlayer.isOnline() && (onlinePlayer.getInstanceId() == _instanceId))
 			{

@@ -54,7 +54,7 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2FestivalMonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -2471,10 +2471,10 @@ public class SevenSignsFestival implements SpawnListener
 		}
 	}
 	
-	protected final class ForEachPlayerRemoveUnusedBloodOfferings implements IL2Procedure<L2PcInstance>
+	protected final class ForEachPlayerRemoveUnusedBloodOfferings implements IProcedure<L2PcInstance, Boolean>
 	{
 		@Override
-		public final boolean execute(final L2PcInstance onlinePlayer)
+		public final Boolean execute(final L2PcInstance onlinePlayer)
 		{
 			try
 			{

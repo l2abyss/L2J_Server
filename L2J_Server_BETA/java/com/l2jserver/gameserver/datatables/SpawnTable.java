@@ -43,7 +43,7 @@ import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 
 /**
  * Spawn data retriever.
@@ -497,7 +497,7 @@ public final class SpawnTable extends DocumentParser
 	 * @param procedure the procedure to execute
 	 * @return {@code true} if all procedures were executed, {@code false} otherwise
 	 */
-	public boolean forEachSpawn(IL2Procedure<L2Spawn> procedure)
+	public boolean forEachSpawn(IProcedure<L2Spawn, Boolean> procedure)
 	{
 		for (Set<L2Spawn> set : _spawnTable.values())
 		{

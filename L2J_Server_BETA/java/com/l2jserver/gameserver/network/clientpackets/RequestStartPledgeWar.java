@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -145,7 +145,7 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
 		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcastUserInfo(player, clan));
 	}
 	
-	private final class ForEachPlayerBroadcastUserInfo implements IL2Procedure<L2PcInstance>
+	private final class ForEachPlayerBroadcastUserInfo implements IProcedure<L2PcInstance, Boolean>
 	{
 		private final L2Clan _cln;
 		private final L2PcInstance _ply;
@@ -157,7 +157,7 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
 		}
 		
 		@Override
-		public final boolean execute(final L2PcInstance cha)
+		public final Boolean execute(final L2PcInstance cha)
 		{
 			if ((cha.getClan() == _ply.getClan()) || (cha.getClan() == _cln))
 			{

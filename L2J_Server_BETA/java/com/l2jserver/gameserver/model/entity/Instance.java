@@ -58,7 +58,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2DoorTemplate;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.instancezone.InstanceWorld;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
@@ -826,10 +826,10 @@ public final class Instance
 		}
 	}
 	
-	public final class EjectProcedure implements IL2Procedure<Integer>
+	public final class EjectProcedure implements IProcedure<Integer, Boolean>
 	{
 		@Override
-		public boolean execute(Integer objectId)
+		public Boolean execute(Integer objectId)
 		{
 			final L2PcInstance player = L2World.getInstance().getPlayer(objectId);
 			if ((player != null) && (player.getInstanceId() == getId()))
@@ -848,7 +848,7 @@ public final class Instance
 		}
 	}
 	
-	public final class BroadcastPacket implements IL2Procedure<Integer>
+	public final class BroadcastPacket implements IProcedure<Integer, Boolean>
 	{
 		private final L2GameServerPacket _packet;
 		
@@ -858,7 +858,7 @@ public final class Instance
 		}
 		
 		@Override
-		public boolean execute(Integer objectId)
+		public Boolean execute(Integer objectId)
 		{
 			final L2PcInstance player = L2World.getInstance().getPlayer(objectId);
 			if ((player != null) && (player.getInstanceId() == getId()))

@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.l2jserver.gameserver.model.interfaces.IL2EntryProcedure;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 
 /**
  * A custom version of HashMap: Extension for iterating without using temporary collection<br>
@@ -76,7 +76,7 @@ public class L2HashMap<K, V> extends HashMap<K, V>
 		return true;
 	}
 	
-	public boolean executeForEachKey(IL2Procedure<K> proc)
+	public boolean executeForEachKey(IProcedure<K, Boolean> proc)
 	{
 		for (K k : keySet())
 		{
@@ -88,7 +88,7 @@ public class L2HashMap<K, V> extends HashMap<K, V>
 		return true;
 	}
 	
-	public boolean executeForEachValue(IL2Procedure<V> proc)
+	public boolean executeForEachValue(IProcedure<V, Boolean> proc)
 	{
 		for (V v : values())
 		{

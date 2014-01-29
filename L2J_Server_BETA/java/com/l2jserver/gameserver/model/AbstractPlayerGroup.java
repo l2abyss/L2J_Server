@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
@@ -45,10 +45,10 @@ public abstract class AbstractPlayerGroup
 	public List<Integer> getMembersObjectId()
 	{
 		final List<Integer> ids = new ArrayList<>();
-		forEachMember(new IL2Procedure<L2PcInstance>()
+		forEachMember(new IProcedure<L2PcInstance, Boolean>()
 		{
 			@Override
-			public boolean execute(L2PcInstance member)
+			public Boolean execute(L2PcInstance member)
 			{
 				ids.add(member.getObjectId());
 				return true;
@@ -105,10 +105,10 @@ public abstract class AbstractPlayerGroup
 	 */
 	public void broadcastPacket(final L2GameServerPacket packet)
 	{
-		forEachMember(new IL2Procedure<L2PcInstance>()
+		forEachMember(new IProcedure<L2PcInstance, Boolean>()
 		{
 			@Override
-			public boolean execute(L2PcInstance member)
+			public Boolean execute(L2PcInstance member)
 			{
 				if (member != null)
 				{
@@ -139,10 +139,10 @@ public abstract class AbstractPlayerGroup
 	
 	public void broadcastCreatureSay(final CreatureSay msg, final L2PcInstance broadcaster)
 	{
-		forEachMember(new IL2Procedure<L2PcInstance>()
+		forEachMember(new IProcedure<L2PcInstance, Boolean>()
 		{
 			@Override
-			public boolean execute(L2PcInstance member)
+			public Boolean execute(L2PcInstance member)
 			{
 				if ((member != null) && !BlockList.isBlocked(member, broadcaster))
 				{
@@ -177,7 +177,7 @@ public abstract class AbstractPlayerGroup
 	 *            If executing the procedure on a member returns {@code true}, the loop continues to the next member, otherwise it breaks the loop
 	 * @return {@code true} if the procedure executed correctly, {@code false} if the loop was broken prematurely
 	 */
-	public boolean forEachMember(IL2Procedure<L2PcInstance> procedure)
+	public boolean forEachMember(IProcedure<L2PcInstance, Boolean> procedure)
 	{
 		for (L2PcInstance player : getMembers())
 		{

@@ -31,7 +31,7 @@ import com.l2jserver.gameserver.instancemanager.FourSepulchersManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.NpcStringId;
@@ -440,7 +440,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 		L2World.getInstance().forEachPlayer(new SayInShout(this, new CreatureSay(0, Say2.NPC_SHOUT, getName(), msg)));
 	}
 	
-	private final class SayInShout implements IL2Procedure<L2PcInstance>
+	private final class SayInShout implements IProcedure<L2PcInstance, Boolean>
 	{
 		L2SepulcherNpcInstance _npc;
 		CreatureSay _sm;
@@ -452,7 +452,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 		}
 		
 		@Override
-		public final boolean execute(final L2PcInstance player)
+		public final Boolean execute(final L2PcInstance player)
 		{
 			if (player != null)
 			{

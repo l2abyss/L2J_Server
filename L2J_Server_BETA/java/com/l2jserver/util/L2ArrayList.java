@@ -21,7 +21,7 @@ package com.l2jserver.util;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 
 /**
  * A custom version of ArrayList: Extension for iterating without using temporary collection<br>
@@ -56,7 +56,7 @@ public class L2ArrayList<T> extends ArrayList<T>
 	 * @return - returns true if entire collection is iterated, false if it`s been interrupted by<br>
 	 *         check method (IL2Procedure.execute(T))<br>
 	 */
-	public boolean executeForEach(IL2Procedure<T> proc)
+	public boolean executeForEach(IProcedure<T, Boolean> proc)
 	{
 		for (T e : this)
 		{

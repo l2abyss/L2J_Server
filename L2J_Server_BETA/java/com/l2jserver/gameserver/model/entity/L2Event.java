@@ -46,7 +46,7 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.holders.PlayerEventHolder;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.network.serverpackets.CharInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
@@ -209,10 +209,10 @@ public class L2Event
 	 */
 	public static void unspawnEventNpcs()
 	{
-		SpawnTable.getInstance().forEachSpawn(new IL2Procedure<L2Spawn>()
+		SpawnTable.getInstance().forEachSpawn(new IProcedure<L2Spawn, Boolean>()
 		{
 			@Override
-			public boolean execute(L2Spawn spawn)
+			public Boolean execute(L2Spawn spawn)
 			{
 				L2Npc npc = spawn.getLastSpawn();
 				if ((npc != null) && npc.isEventMob())

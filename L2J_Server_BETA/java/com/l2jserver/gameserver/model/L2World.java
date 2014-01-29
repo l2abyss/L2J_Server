@@ -34,7 +34,7 @@ import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.util.StringUtil;
 
 public final class L2World
@@ -192,7 +192,7 @@ public final class L2World
 		return players;
 	}
 	
-	public boolean forEachPlayer(IL2Procedure<L2PcInstance> procedure)
+	public boolean forEachPlayer(IProcedure<L2PcInstance, Boolean> procedure)
 	{
 		for (L2PcInstance player : _allPlayers.values())
 		{

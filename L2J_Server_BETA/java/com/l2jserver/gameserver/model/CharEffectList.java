@@ -38,7 +38,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.effects.EffectFlag;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
@@ -1288,7 +1288,7 @@ public final class CharEffectList
 	 * @param dances if {@code true} dances/songs will be included
 	 * @return {@code true} if the procedure is executed successfully for every element, {@code false} otherwise
 	 */
-	public boolean forEach(IL2Procedure<BuffInfo> procedure, boolean dances)
+	public boolean forEach(IProcedure<BuffInfo, Boolean> procedure, boolean dances)
 	{
 		if (hasBuffs())
 		{

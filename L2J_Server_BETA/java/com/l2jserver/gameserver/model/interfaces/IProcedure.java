@@ -22,13 +22,14 @@ package com.l2jserver.gameserver.model.interfaces;
  * Interface for procedures with one Object parameter.
  * @author Battlecruiser
  * @param <T> the type of object on which the procedure will be executed
+ * @param <R> the return type
  */
-public interface IL2Procedure<T>
+public interface IProcedure<T, R>
 {
 	/**
 	 * Executes this procedure. A false return value indicates that the application executing this procedure should not invoke this procedure again.
 	 * @param arg the object on which the procedure will be executed
 	 * @return {@code true} if additional invocations of the procedure are allowed.
 	 */
-	public boolean execute(T arg);
+	public R execute(T arg);
 }

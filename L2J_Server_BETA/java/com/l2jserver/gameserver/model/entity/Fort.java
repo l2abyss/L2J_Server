@@ -56,7 +56,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.zone.type.L2FortZone;
 import com.l2jserver.gameserver.model.zone.type.L2SiegeZone;
@@ -1361,7 +1361,7 @@ public final class Fort extends AbstractResidence
 		}
 	}
 	
-	private final class ForEachPlayerSendMessage implements IL2Procedure<L2PcInstance>
+	private final class ForEachPlayerSendMessage implements IProcedure<L2PcInstance, Boolean>
 	{
 		SystemMessage _sm;
 		
@@ -1371,7 +1371,7 @@ public final class Fort extends AbstractResidence
 		}
 		
 		@Override
-		public final boolean execute(final L2PcInstance character)
+		public final Boolean execute(final L2PcInstance character)
 		{
 			character.sendPacket(_sm);
 			return true;

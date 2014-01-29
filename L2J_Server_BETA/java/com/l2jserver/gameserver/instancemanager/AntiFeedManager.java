@@ -25,7 +25,7 @@ import javolution.util.FastMap;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.util.L2FastMap;
 import com.l2jserver.util.L2HashMap;
@@ -310,7 +310,7 @@ public final class AntiFeedManager
 		}
 	}
 	
-	private static final class DisconnectProcedure implements IL2Procedure<Map<Integer, Connections>>
+	private static final class DisconnectProcedure implements IProcedure<Map<Integer, Connections>, Boolean>
 	{
 		private final Integer _addrHash;
 		
@@ -320,7 +320,7 @@ public final class AntiFeedManager
 		}
 		
 		@Override
-		public final boolean execute(Map<Integer, Connections> event)
+		public final Boolean execute(Map<Integer, Connections> event)
 		{
 			final Connections conns = event.get(_addrHash);
 			if (conns != null)

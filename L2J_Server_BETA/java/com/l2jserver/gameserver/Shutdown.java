@@ -39,7 +39,7 @@ import com.l2jserver.gameserver.instancemanager.RaidBossSpawnManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Hero;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -590,12 +590,12 @@ public class Shutdown extends Thread
 		L2World.getInstance().forEachPlayer(new DisconnectAllCharacters());
 	}
 	
-	protected final class DisconnectAllCharacters implements IL2Procedure<L2PcInstance>
+	protected final class DisconnectAllCharacters implements IProcedure<L2PcInstance, Boolean>
 	{
 		private final Logger _log = Logger.getLogger(DisconnectAllCharacters.class.getName());
 		
 		@Override
-		public final boolean execute(final L2PcInstance player)
+		public final Boolean execute(final L2PcInstance player)
 		{
 			if (player != null)
 			{

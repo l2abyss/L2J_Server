@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.model.VehiclePathPoint;
 import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 public class BoatManager
@@ -179,7 +179,7 @@ public class BoatManager
 		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcastPackets(point1, point2, packets));
 	}
 	
-	private final class ForEachPlayerBroadcastPackets implements IL2Procedure<L2PcInstance>
+	private final class ForEachPlayerBroadcastPackets implements IProcedure<L2PcInstance, Boolean>
 	{
 		VehiclePathPoint _point1, _point2;
 		L2GameServerPacket[] _packets;
@@ -192,7 +192,7 @@ public class BoatManager
 		}
 		
 		@Override
-		public final boolean execute(final L2PcInstance player)
+		public final Boolean execute(final L2PcInstance player)
 		{
 			if (player != null)
 			{
