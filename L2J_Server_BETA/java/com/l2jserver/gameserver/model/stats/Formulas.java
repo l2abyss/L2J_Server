@@ -1370,7 +1370,7 @@ public final class Formulas
 		}
 		
 		final double rate = baseMod * elementMod * traitMod * mAtkMod * buffDebuffMod;
-		final double finalRate = traitMod > 0 ? Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance()) : 0;
+		final double finalRate = traitMod > 0 ? Util.constrain(rate, skill.getMinChance(), skill.getMaxChance()) : 0;
 		
 		if (attacker.isDebug())
 		{
@@ -1439,7 +1439,7 @@ public final class Formulas
 		rate *= elementMod;
 		
 		// Add Matk/Mdef Bonus (TODO: Pending)
-		double finalRate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
+		final double finalRate = Util.constrain(rate, skill.getMinChance(), skill.getMaxChance());
 		if (attacker.isDebug())
 		{
 			final StatsSet set = new StatsSet();
@@ -1502,7 +1502,7 @@ public final class Formulas
 		// Add Matk/Mdef Bonus (TODO: Pending)
 		
 		// Check the Rate Limits.
-		double finalRate = Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
+		final double finalRate = Util.constrain(rate, skill.getMinChance(), skill.getMaxChance());
 		
 		if (attacker.getOwner().isDebug())
 		{
@@ -1862,7 +1862,7 @@ public final class Formulas
 		
 		double attribute_mod_diff = attack_attribute_mod - defence_attribute_mod;
 		
-		attribute_mod_diff = Math.min(Math.max(attribute_mod_diff, min), max);
+		attribute_mod_diff = Util.constrain(attribute_mod_diff, min, max);
 		
 		double result = (attribute_mod_diff / 100.0) + 1;
 		
@@ -2049,7 +2049,7 @@ public final class Formulas
 	{
 		// Lvl Bonus Modifier.
 		rate *= info.getSkill().getMagicLevel() > 0 ? 1 + ((cancelMagicLvl - info.getSkill().getMagicLevel()) / 100.) : 1;
-		return Rnd.get(100) < Math.min(Math.max(rate, skill.getMinChance()), skill.getMaxChance());
+		return Rnd.get(100) < Util.constrain(rate, skill.getMinChance(), skill.getMaxChance());
 	}
 	
 	/**
@@ -2085,7 +2085,7 @@ public final class Formulas
 			double resMod = calcGeneralTraitBonus(caster, target, skill.getTraitType(), false);
 			double lvlBonusMod = calcLvlBonusMod(caster, target, skill);
 			double elementMod = calcAttributeBonus(caster, target, skill);
-			time = (int) Math.ceil(Math.min(Math.max((time * resMod * lvlBonusMod * elementMod) / statMod, time * 0.5), time));
+			time = (int) Math.ceil(Util.constrain(((time * resMod * lvlBonusMod * elementMod) / statMod), (time * 0.5), time));
 		}
 		return time;
 	}
@@ -2192,7 +2192,7 @@ public final class Formulas
 		}
 		
 		final double result = (attacker.getStat().getAttackTrait(traitType) - target.getStat().getDefenceTrait(traitType)) + 1.0;
-		return Math.min(Math.max(result, 0.05), 2.0);
+		return Util.constrain(result, 0.05, 2.0);
 	}
 	
 	public static double calcWeaponTraitBonus(L2Character attacker, L2Character target)
@@ -2223,6 +2223,6 @@ public final class Formulas
 			}
 		}
 		
-		return Math.min(Math.max(weaponTraitBonus * weaknessBonus, 0.05), 2.0);
+		return Util.constrain((weaponTraitBonus * weaknessBonus), 0.05, 2.0);
 	}
 }

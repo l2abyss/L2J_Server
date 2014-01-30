@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.util;
+package com.l2jserver.gameserver.util;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -122,17 +122,30 @@ public class HtmlUtil
 	}
 	
 	/**
+	 * Gets the HTML representation of Weight gauge automatically changing level depending on current/max.
+	 * @param width the width
+	 * @param current the current value
+	 * @param max the max value
+	 * @param displayAsPercentage if {@code true} the text in middle will be displayed as percent else it will be displayed as "current / max"
+	 * @return the HTML
+	 */
+	public static String getWeightGauge(int width, long current, long max, boolean displayAsPercentage)
+	{
+		return getWeightGauge(width, current, max, displayAsPercentage, Util.map(current, 0, max, 1, 5));
+	}
+	
+	/**
 	 * Gets the HTML representation of Weight gauge.
 	 * @param width the width
 	 * @param current the current value
 	 * @param max the max value
 	 * @param displayAsPercentage if {@code true} the text in middle will be displayed as percent else it will be displayed as "current / max"
-	 * @param type a number from 1 to 5 for the 5 different colors of weight gauge
+	 * @param level a number from 1 to 5 for the 5 different colors of weight gauge
 	 * @return the HTML
 	 */
-	public static String getWeightGauge(int width, long current, long max, boolean displayAsPercentage, long type)
+	public static String getWeightGauge(int width, long current, long max, boolean displayAsPercentage, long level)
 	{
-		return getGauge(width, current, max, displayAsPercentage, "L2UI_CT1.Gauges.Gauge_DF_Large_Weight_bg_Center" + type, "L2UI_CT1.Gauges.Gauge_DF_Large_Weight_Center" + type, 17, -13);
+		return getGauge(width, current, max, displayAsPercentage, "L2UI_CT1.Gauges.Gauge_DF_Large_Weight_bg_Center" + level, "L2UI_CT1.Gauges.Gauge_DF_Large_Weight_Center" + level, 17, -13);
 	}
 	
 	/**
