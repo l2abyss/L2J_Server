@@ -937,7 +937,7 @@ public final class Util
 	 * @param max the upper end of the range, all data types
 	 * @return input: if input is between min and max, min: if input is less than min, max: if input is greater than max
 	 */
-	public static long constrain(int input, int min, int max)
+	public static int constrain(int input, int min, int max)
 	{
 		return (input < min) ? min : (input > max) ? max : input;
 	}
