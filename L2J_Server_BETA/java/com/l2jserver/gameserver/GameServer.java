@@ -36,6 +36,7 @@ import org.mmocore.network.SelectorThread;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.Server;
+import com.l2jserver.UPnPService;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.datatables.ArmorSetsData;
@@ -451,16 +452,20 @@ public class GameServer
 		try
 		{
 			_selectorThread.openServerSocket(bindAddress, Config.PORT_GAME);
+			_selectorThread.start();
+			_log.log(Level.INFO, getClass().getSimpleName() + ": is now listening on: " + Config.GAMESERVER_HOSTNAME + ":" + Config.PORT_GAME);
 		}
 		catch (IOException e)
 		{
 			_log.log(Level.SEVERE, getClass().getSimpleName() + ": FATAL: Failed to open server socket. Reason: " + e.getMessage(), e);
 			System.exit(1);
 		}
-		_selectorThread.start();
-		_log.info("Maximum numbers of connected players: " + Config.MAXIMUM_ONLINE_USERS);
-		long serverLoadEnd = System.currentTimeMillis();
-		_log.info("Server loaded in " + ((serverLoadEnd - serverLoadStart) / 1000) + " seconds.");
+		
+		_log.log(Level.INFO, getClass().getSimpleName() + ": Maximum numbers of connected players: " + Config.MAXIMUM_ONLINE_USERS);
+		_log.log(Level.INFO, getClass().getSimpleName() + ": Server loaded in " + ((System.currentTimeMillis() - serverLoadStart) / 1000) + " seconds.");
+		
+		printSection("UPnP");
+		UPnPService.getInstance();
 		
 		AutoAnnounceTaskManager.getInstance();
 	}
