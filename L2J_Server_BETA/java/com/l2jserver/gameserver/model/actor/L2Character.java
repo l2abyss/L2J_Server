@@ -2180,11 +2180,8 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	 */
 	public synchronized final long getItemRemainingReuseTime(int itemObjId)
 	{
-		if ((_reuseTimeStampsItems == null) || !_reuseTimeStampsItems.containsKey(itemObjId))
-		{
-			return -1;
-		}
-		return _reuseTimeStampsItems.get(itemObjId).getRemaining();
+		final TimeStamp reuseStamp = (_reuseTimeStampsItems != null) ? _reuseTimeStampsItems.get(itemObjId) : null;
+		return reuseStamp != null ? reuseStamp.getRemaining() : -1;
 	}
 	
 	/**
@@ -2194,7 +2191,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	 */
 	public final long getReuseDelayOnGroup(int group)
 	{
-		if (group > 0)
+		if ((group > 0) && (_reuseTimeStampsItems != null))
 		{
 			for (TimeStamp ts : _reuseTimeStampsItems.values())
 			{
@@ -2278,11 +2275,8 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	 */
 	public synchronized final long getSkillRemainingReuseTime(int hashCode)
 	{
-		if ((_reuseTimeStampsSkills == null) || !_reuseTimeStampsSkills.containsKey(hashCode))
-		{
-			return -1;
-		}
-		return _reuseTimeStampsSkills.get(hashCode).getRemaining();
+		final TimeStamp reuseStamp = (_reuseTimeStampsSkills != null) ? _reuseTimeStampsSkills.get(hashCode) : null;
+		return reuseStamp != null ? reuseStamp.getRemaining() : -1;
 	}
 	
 	/**
@@ -2292,11 +2286,8 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	 */
 	public synchronized final boolean hasSkillReuse(int hashCode)
 	{
-		if ((_reuseTimeStampsSkills == null) || !_reuseTimeStampsSkills.containsKey(hashCode))
-		{
-			return false;
-		}
-		return _reuseTimeStampsSkills.get(hashCode).hasNotPassed();
+		final TimeStamp reuseStamp = (_reuseTimeStampsSkills != null) ? _reuseTimeStampsSkills.get(hashCode) : null;
+		return (reuseStamp != null) && reuseStamp.hasNotPassed();
 	}
 	
 	/**
@@ -2328,7 +2319,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		{
 			return;
 		}
-		
 		_disabledSkills.remove(skill.getReuseHashCode());
 	}
 	

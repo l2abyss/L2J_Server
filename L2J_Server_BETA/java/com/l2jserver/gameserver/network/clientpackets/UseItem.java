@@ -188,7 +188,7 @@ public final class UseItem extends L2GameClientPacket
 			final long reuse = activeChar.getItemRemainingReuseTime(item.getObjectId());
 			if (reuse > 0)
 			{
-				reuseData(activeChar, item);
+				reuseData(activeChar, item, reuseDelay);
 				sendSharedGroupUpdate(activeChar, sharedReuseGroup, reuse, reuseDelay);
 				return;
 			}
@@ -196,7 +196,7 @@ public final class UseItem extends L2GameClientPacket
 			final long reuseOnGroup = activeChar.getReuseDelayOnGroup(sharedReuseGroup);
 			if (reuseOnGroup > 0)
 			{
-				reuseData(activeChar, item);
+				reuseData(activeChar, item, reuseOnGroup);
 				sendSharedGroupUpdate(activeChar, sharedReuseGroup, reuseOnGroup, reuseDelay);
 				return;
 			}
@@ -377,13 +377,12 @@ public final class UseItem extends L2GameClientPacket
 		}
 	}
 	
-	private void reuseData(L2PcInstance activeChar, L2ItemInstance item)
+	private void reuseData(L2PcInstance activeChar, L2ItemInstance item, long remainingTime)
 	{
-		SystemMessage sm = null;
-		final long remainingTime = activeChar.getItemRemainingReuseTime(item.getObjectId());
 		final int hours = (int) (remainingTime / 3600000L);
 		final int minutes = (int) (remainingTime % 3600000L) / 60000;
 		final int seconds = (int) ((remainingTime / 1000) % 60);
+		final SystemMessage sm;
 		if (hours > 0)
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1);
