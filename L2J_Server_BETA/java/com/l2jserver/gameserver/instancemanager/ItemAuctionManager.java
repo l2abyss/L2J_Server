@@ -24,6 +24,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,8 +40,6 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.itemauction.ItemAuctionInstance;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 /**
  * @author Forsaiken
  */
@@ -47,12 +47,11 @@ public final class ItemAuctionManager
 {
 	private static final Logger _log = Logger.getLogger(ItemAuctionManager.class.getName());
 	
-	private final TIntObjectHashMap<ItemAuctionInstance> _managerInstances;
+	private final Map<Integer, ItemAuctionInstance> _managerInstances = new HashMap<>();
 	private final AtomicInteger _auctionIds;
 	
 	protected ItemAuctionManager()
 	{
-		_managerInstances = new TIntObjectHashMap<>();
 		_auctionIds = new AtomicInteger(1);
 		
 		if (!Config.ALT_ITEM_AUCTION_ENABLED)
@@ -121,8 +120,7 @@ public final class ItemAuctionManager
 	
 	public final void shutdown()
 	{
-		final ItemAuctionInstance[] instances = _managerInstances.values(new ItemAuctionInstance[0]);
-		for (final ItemAuctionInstance instance : instances)
+		for (ItemAuctionInstance instance : _managerInstances.values())
 		{
 			instance.shutdown();
 		}
