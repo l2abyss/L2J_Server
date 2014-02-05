@@ -2388,7 +2388,12 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		}
 		
 		final Long stamp = _disabledSkills.get(hashCode);
-		if ((stamp != null) && (stamp < System.currentTimeMillis()))
+		if (stamp == null)
+		{
+			return false;
+		}
+		
+		if (stamp < System.currentTimeMillis())
 		{
 			_disabledSkills.remove(hashCode);
 			return false;
