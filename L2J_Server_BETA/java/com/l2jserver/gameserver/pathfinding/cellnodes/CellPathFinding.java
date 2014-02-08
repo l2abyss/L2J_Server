@@ -212,7 +212,7 @@ public class CellPathFinding extends PathFinding
 			{
 				locEnd = endPoint.next();
 				locMiddle = middlePoint.next();
-				if (GeoData.getInstance().canMoveFromToTarget(currentX, currentY, currentZ, locEnd.getX(), locEnd.getY(), locEnd.getZ(), instanceId))
+				if (GeoData.getInstance().canMove(currentX, currentY, currentZ, locEnd.getX(), locEnd.getY(), locEnd.getZ(), instanceId))
 				{
 					middlePoint.remove();
 					remove = true;

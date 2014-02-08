@@ -22,7 +22,6 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.FlyToLocation;
-import com.l2jserver.gameserver.network.serverpackets.FlyToLocation.FlyType;
 
 /**
  * Task dedicated to fly a player to the location
@@ -46,7 +45,7 @@ public final class FlyToLocationTask implements Runnable
 	{
 		if (_character != null)
 		{
-			_character.broadcastPacket(new FlyToLocation(_character, _target, FlyType.valueOf(_skill.getFlyType())));
+			_character.broadcastPacket(new FlyToLocation(_character, _target, _skill.getFlyType()));
 			_character.setXYZ(_target.getX(), _target.getY(), _target.getZ());
 		}
 	}

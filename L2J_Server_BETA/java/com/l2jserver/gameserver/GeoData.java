@@ -479,26 +479,26 @@ public class GeoData implements IGeoDriver
 	}
 	
 	/**
-	 * Can move from to target.
-	 * @param x the x coordinate
-	 * @param y the y coordinate
-	 * @param z the z coordinate
-	 * @param tx the target's x coordinate
-	 * @param ty the target's y coordinate
-	 * @param tz the target's z coordinate
-	 * @param instanceId the instance id
-	 * @return {@code true} if the character at x,y,z can move to tx,ty,tz, {@code false} otherwise
+	 * Checks if its possible to move from one location to another.
+	 * @param fromX the X coordinate to start checking from
+	 * @param fromY the Y coordinate to start checking from
+	 * @param fromZ the Z coordinate to start checking from
+	 * @param toX the X coordinate to end checking at
+	 * @param toY the Y coordinate to end checking at
+	 * @param toZ the Z coordinate to end checking at
+	 * @param instanceId the instance ID
+	 * @return {@code true} if the character at start coordinates can move to end coordinates, {@code false} otherwise
 	 */
-	public boolean canMoveFromToTarget(int x, int y, int z, int tx, int ty, int tz, int instanceId)
+	public boolean canMove(int fromX, int fromY, int fromZ, int toX, int toY, int toZ, int instanceId)
 	{
-		int geoX = getGeoX(x);
-		int geoY = getGeoY(y);
-		z = getNearestZ(geoX, geoY, z);
-		int tGeoX = getGeoX(tx);
-		int tGeoY = getGeoY(ty);
-		tz = getNearestZ(tGeoX, tGeoY, tz);
+		int geoX = getGeoX(fromX);
+		int geoY = getGeoY(fromY);
+		fromZ = getNearestZ(geoX, geoY, fromZ);
+		int tGeoX = getGeoX(toX);
+		int tGeoY = getGeoY(toY);
+		toZ = getNearestZ(tGeoX, tGeoY, toZ);
 		
-		if (DoorTable.getInstance().checkIfDoorsBetween(x, y, z, tx, ty, tz, instanceId, false))
+		if (DoorTable.getInstance().checkIfDoorsBetween(fromX, fromY, fromZ, toX, toY, toZ, instanceId, false))
 		{
 			return false;
 		}
@@ -508,7 +508,7 @@ public class GeoData implements IGeoDriver
 		pointIter.next();
 		int prevX = pointIter.x();
 		int prevY = pointIter.y();
-		int prevZ = z;
+		int prevZ = fromZ;
 		
 		while (pointIter.next())
 		{
@@ -554,7 +554,7 @@ public class GeoData implements IGeoDriver
 			prevZ = curZ;
 		}
 		
-		if (hasGeoPos(prevX, prevY) && (prevZ != tz))
+		if (hasGeoPos(prevX, prevY) && (prevZ != toZ))
 		{
 			// different floors
 			return false;
@@ -564,9 +564,33 @@ public class GeoData implements IGeoDriver
 	}
 	
 	/**
-	 * Checks for geodata.
-	 * @param x the x coordinate
-	 * @param y the y coordinate
+	 * Checks if its possible to move from one location to another.
+	 * @param from the {@code ILocational} to start checking from
+	 * @param toX the X coordinate to end checking at
+	 * @param toY the Y coordinate to end checking at
+	 * @param toZ the Z coordinate to end checking at
+	 * @return {@code true} if the character at start coordinates can move to end coordinates, {@code false} otherwise
+	 */
+	public boolean canMove(ILocational from, int toX, int toY, int toZ)
+	{
+		return canMove(from.getX(), from.getY(), from.getZ(), toX, toY, toZ, from.getInstanceId());
+	}
+	
+	/**
+	 * Checks if its possible to move from one location to another.
+	 * @param from the {@code ILocational} to start checking from
+	 * @param to the {@code ILocational} to end checking at
+	 * @return {@code true} if the character at start coordinates can move to end coordinates, {@code false} otherwise
+	 */
+	public boolean canMove(ILocational from, ILocational to)
+	{
+		return canMove(from, to.getX(), to.getY(), to.getZ());
+	}
+	
+	/**
+	 * Checks the specified position for available geodata.
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
 	 * @return {@code true} if there is geodata for the given coordinates, {@code false} otherwise
 	 */
 	public boolean hasGeo(int x, int y)
