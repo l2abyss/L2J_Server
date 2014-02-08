@@ -22,7 +22,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
@@ -56,9 +59,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
-
-import gnu.trove.map.hash.TIntIntHashMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
  * Zoey76: TODO: Use Location DTO instead of array of int.
@@ -124,30 +124,30 @@ public final class FourSepulchersManager
 	};
 	// @formatter:on
 	
-	protected FastMap<Integer, Boolean> _archonSpawned = new FastMap<>();
-	protected FastMap<Integer, Boolean> _hallInUse = new FastMap<>();
-	protected FastMap<Integer, L2PcInstance> _challengers = new FastMap<>();
-	protected TIntObjectHashMap<int[]> _startHallSpawns = new TIntObjectHashMap<>();
-	protected TIntIntHashMap _hallGateKeepers = new TIntIntHashMap();
-	protected TIntIntHashMap _keyBoxNpc = new TIntIntHashMap();
-	protected TIntIntHashMap _victim = new TIntIntHashMap();
-	protected TIntObjectHashMap<L2Spawn> _executionerSpawns = new TIntObjectHashMap<>();
-	protected TIntObjectHashMap<L2Spawn> _keyBoxSpawns = new TIntObjectHashMap<>();
-	protected TIntObjectHashMap<L2Spawn> _mysteriousBoxSpawns = new TIntObjectHashMap<>();
-	protected TIntObjectHashMap<L2Spawn> _shadowSpawns = new TIntObjectHashMap<>();
-	protected TIntObjectHashMap<FastList<L2Spawn>> _dukeFinalMobs = new TIntObjectHashMap<>();
-	protected TIntObjectHashMap<FastList<L2SepulcherMonsterInstance>> _dukeMobs = new TIntObjectHashMap<>();
-	protected TIntObjectHashMap<FastList<L2Spawn>> _emperorsGraveNpcs = new TIntObjectHashMap<>();
-	protected TIntObjectHashMap<FastList<L2Spawn>> _magicalMonsters = new TIntObjectHashMap<>();
-	protected TIntObjectHashMap<FastList<L2Spawn>> _physicalMonsters = new TIntObjectHashMap<>();
-	protected TIntObjectHashMap<FastList<L2SepulcherMonsterInstance>> _viscountMobs = new TIntObjectHashMap<>();
+	protected Map<Integer, Boolean> _archonSpawned = new FastMap<>();
+	protected Map<Integer, Boolean> _hallInUse = new FastMap<>();
+	protected Map<Integer, L2PcInstance> _challengers = new FastMap<>();
+	protected Map<Integer, int[]> _startHallSpawns = new HashMap<>();
+	protected Map<Integer, Integer> _hallGateKeepers = new HashMap<>();
+	protected Map<Integer, Integer> _keyBoxNpc = new HashMap<>();
+	protected Map<Integer, Integer> _victim = new HashMap<>();
+	protected Map<Integer, L2Spawn> _executionerSpawns = new HashMap<>();
+	protected Map<Integer, L2Spawn> _keyBoxSpawns = new HashMap<>();
+	protected Map<Integer, L2Spawn> _mysteriousBoxSpawns = new HashMap<>();
+	protected Map<Integer, L2Spawn> _shadowSpawns = new HashMap<>();
+	protected Map<Integer, List<L2Spawn>> _dukeFinalMobs = new HashMap<>();
+	protected Map<Integer, List<L2SepulcherMonsterInstance>> _dukeMobs = new HashMap<>();
+	protected Map<Integer, List<L2Spawn>> _emperorsGraveNpcs = new HashMap<>();
+	protected Map<Integer, List<L2Spawn>> _magicalMonsters = new HashMap<>();
+	protected Map<Integer, List<L2Spawn>> _physicalMonsters = new HashMap<>();
+	protected Map<Integer, List<L2SepulcherMonsterInstance>> _viscountMobs = new HashMap<>();
 	
-	protected FastList<L2Spawn> _physicalSpawns;
-	protected FastList<L2Spawn> _magicalSpawns;
-	protected FastList<L2Spawn> _managers;
-	protected FastList<L2Spawn> _dukeFinalSpawns;
-	protected FastList<L2Spawn> _emperorsGraveSpawns;
-	protected FastList<L2Npc> _allMobs = new FastList<>();
+	protected List<L2Spawn> _physicalSpawns;
+	protected List<L2Spawn> _magicalSpawns;
+	protected List<L2Spawn> _managers;
+	protected List<L2Spawn> _dukeFinalSpawns;
+	protected List<L2Spawn> _emperorsGraveSpawns;
+	protected List<L2Npc> _allMobs = new FastList<>();
 	
 	private long _attackTimeEnd = 0;
 	private long _coolDownTimeEnd = 0;
@@ -204,35 +204,27 @@ public final class FourSepulchersManager
 	{
 		timeCalculator();
 		long currentTime = Calendar.getInstance().getTimeInMillis();
-		// if current time >= time of entry beginning and if current time < time
-		// of entry beginning + time of entry end
-		if ((currentTime >= _coolDownTimeEnd) && (currentTime < _entryTimeEnd)) // entry
-		// time
-		// check
+		// if current time >= time of entry beginning and if current time < time of entry beginning + time of entry end
+		if ((currentTime >= _coolDownTimeEnd) && (currentTime < _entryTimeEnd)) // entry time check
 		{
 			clean();
 			_changeEntryTimeTask = ThreadPoolManager.getInstance().scheduleGeneral(new FourSepulchersChangeEntryTimeTask(), 0);
 			_log.info(getClass().getSimpleName() + ": Beginning in Entry time");
 		}
-		else if ((currentTime >= _entryTimeEnd) && (currentTime < _warmUpTimeEnd)) // warmup
-		// time
-		// check
+		else if ((currentTime >= _entryTimeEnd) && (currentTime < _warmUpTimeEnd)) // warmup time check
 		{
 			clean();
 			_changeWarmUpTimeTask = ThreadPoolManager.getInstance().scheduleGeneral(new FourSepulchersChangeWarmUpTimeTask(), 0);
 			_log.info(getClass().getSimpleName() + ": Beginning in WarmUp time");
 		}
-		else if ((currentTime >= _warmUpTimeEnd) && (currentTime < _attackTimeEnd)) // attack
-		// time
-		// check
+		else if ((currentTime >= _warmUpTimeEnd) && (currentTime < _attackTimeEnd)) // attack time check
 		{
 			clean();
 			_changeAttackTimeTask = ThreadPoolManager.getInstance().scheduleGeneral(new FourSepulchersChangeAttackTimeTask(), 0);
 			_log.info(getClass().getSimpleName() + ": Beginning in Attack time");
 		}
 		else
-		// else cooldown time and without cleanup because it's already
-		// implemented
+		// else cooldown time and without cleanup because it's already implemented
 		{
 			_changeCoolDownTimeTask = ThreadPoolManager.getInstance().scheduleGeneral(new FourSepulchersChangeCoolDownTimeTask(), 0);
 			_log.info(getClass().getSimpleName() + ": Beginning in Cooldown time");
@@ -285,7 +277,6 @@ public final class FourSepulchersManager
 	protected void spawnManagers()
 	{
 		_managers = new FastList<>();
-		// L2Spawn spawnDat;
 		
 		int i = 31921;
 		for (L2Spawn spawnDat; i <= 31924; i++)
@@ -476,12 +467,11 @@ public final class FourSepulchersManager
 	{
 		L2Spawn spawnDat;
 		L2NpcTemplate template;
-		// Zoey76: TODO: Replace iteration over keys with iteration over entries to avoid calling get method inside the loop.
-		for (int keyNpcId : _keyBoxNpc.keys())
+		for (Entry<Integer, Integer> keyNpc : _keyBoxNpc.entrySet())
 		{
 			try
 			{
-				template = NpcTable.getInstance().getTemplate(_keyBoxNpc.get(keyNpcId));
+				template = NpcTable.getInstance().getTemplate(keyNpc.getValue());
 				if (template != null)
 				{
 					spawnDat = new L2Spawn(template);
@@ -492,11 +482,11 @@ public final class FourSepulchersManager
 					spawnDat.setHeading(0);
 					spawnDat.setRespawnDelay(3600);
 					SpawnTable.getInstance().addNewSpawn(spawnDat, false);
-					_keyBoxSpawns.put(keyNpcId, spawnDat);
+					_keyBoxSpawns.put(keyNpc.getKey(), spawnDat);
 				}
 				else
 				{
-					_log.warning("FourSepulchersManager.InitKeyBoxSpawns: Data missing in NPC table for ID: " + _keyBoxNpc.get(keyNpcId) + ".");
+					_log.warning("FourSepulchersManager.InitKeyBoxSpawns: Data missing in NPC table for ID: " + keyNpc.getValue() + ".");
 				}
 			}
 			catch (Exception e)
@@ -791,7 +781,7 @@ public final class FourSepulchersManager
 		L2Spawn spawnDat;
 		L2NpcTemplate template;
 		
-		for (int keyNpcId : _victim.keys())
+		for (int keyNpcId : _victim.keySet())
 		{
 			try
 			{
@@ -1109,10 +1099,8 @@ public final class FourSepulchersManager
 				}
 			}
 			
-			_challengers.remove(npcId);
 			_challengers.put(npcId, player);
 			
-			_hallInUse.remove(npcId);
 			_hallInUse.put(npcId, true);
 		}
 		if ((Config.FS_PARTY_MEMBER_COUNT <= 1) && player.isInParty())
@@ -1145,10 +1133,8 @@ public final class FourSepulchersManager
 				}
 			}
 			
-			_challengers.remove(npcId);
 			_challengers.put(npcId, player);
 			
-			_hallInUse.remove(npcId);
 			_hallInUse.put(npcId, true);
 		}
 		else
@@ -1169,10 +1155,8 @@ public final class FourSepulchersManager
 				player.destroyItemByItemId("Quest", CHAPEL_KEY, hallsKey.getCount(), player, true);
 			}
 			
-			_challengers.remove(npcId);
 			_challengers.put(npcId, player);
 			
-			_hallInUse.remove(npcId);
 			_hallInUse.put(npcId, true);
 		}
 	}
@@ -1199,8 +1183,8 @@ public final class FourSepulchersManager
 			return;
 		}
 		
-		FastList<L2Spawn> monsterList;
-		FastList<L2SepulcherMonsterInstance> mobs = new FastList<>();
+		List<L2Spawn> monsterList;
+		List<L2SepulcherMonsterInstance> mobs = new FastList<>();
 		L2Spawn keyBoxMobSpawn;
 		
 		if (Rnd.get(2) == 0)
@@ -1234,8 +1218,6 @@ public final class FourSepulchersManager
 							if (Rnd.get(48) == 0)
 							{
 								spawnKeyBoxMob = true;
-								// _log.info("FourSepulchersManager.SpawnMonster:
-								// Set to spawn Church of Viscount Key Mob.");
 							}
 							break;
 						default:
@@ -1318,8 +1300,7 @@ public final class FourSepulchersManager
 	
 	public synchronized boolean isViscountMobsAnnihilated(int npcId)
 	{
-		FastList<L2SepulcherMonsterInstance> mobs = _viscountMobs.get(npcId);
-		
+		List<L2SepulcherMonsterInstance> mobs = _viscountMobs.get(npcId);
 		if (mobs == null)
 		{
 			return true;
@@ -1338,8 +1319,7 @@ public final class FourSepulchersManager
 	
 	public synchronized boolean isDukeMobsAnnihilated(int npcId)
 	{
-		FastList<L2SepulcherMonsterInstance> mobs = _dukeMobs.get(npcId);
-		
+		List<L2SepulcherMonsterInstance> mobs = _dukeMobs.get(npcId);
 		if (mobs == null)
 		{
 			return true;
@@ -1364,7 +1344,6 @@ public final class FourSepulchersManager
 		}
 		
 		L2Spawn spawnDat = _keyBoxSpawns.get(activeChar.getId());
-		
 		if (spawnDat != null)
 		{
 			spawnDat.setAmount(1);
@@ -1375,7 +1354,6 @@ public final class FourSepulchersManager
 			spawnDat.setRespawnDelay(3600);
 			_allMobs.add(spawnDat.doSpawn());
 			spawnDat.stopRespawn();
-			
 		}
 	}
 	
@@ -1387,7 +1365,6 @@ public final class FourSepulchersManager
 		}
 		
 		L2Spawn spawnDat = _executionerSpawns.get(activeChar.getId());
-		
 		if (spawnDat != null)
 		{
 			spawnDat.setAmount(1);
@@ -1413,8 +1390,7 @@ public final class FourSepulchersManager
 			return;
 		}
 		
-		FastList<L2Spawn> monsterList = _dukeFinalMobs.get(npcId);
-		
+		List<L2Spawn> monsterList = _dukeFinalMobs.get(npcId);
 		if (monsterList != null)
 		{
 			for (L2Spawn spawnDat : monsterList)
@@ -1439,8 +1415,7 @@ public final class FourSepulchersManager
 			return;
 		}
 		
-		FastList<L2Spawn> monsterList = _emperorsGraveNpcs.get(npcId);
-		
+		List<L2Spawn> monsterList = _emperorsGraveNpcs.get(npcId);
 		if (monsterList != null)
 		{
 			for (L2Spawn spawnDat : monsterList)
@@ -1454,8 +1429,6 @@ public final class FourSepulchersManager
 	public void locationShadowSpawns()
 	{
 		int locNo = Rnd.get(4);
-		// _log.info("FourSepulchersManager.LocationShadowSpawns: Location index
-		// is " + locNo + ".");
 		final int[] gateKeeper =
 		{
 			31929,
@@ -1464,12 +1437,10 @@ public final class FourSepulchersManager
 			31944
 		};
 		
-		L2Spawn spawnDat;
-		
 		for (int i = 0; i <= 3; i++)
 		{
 			int keyNpcId = gateKeeper[i];
-			spawnDat = _shadowSpawns.get(keyNpcId);
+			L2Spawn spawnDat = _shadowSpawns.get(keyNpcId);
 			spawnDat.setX(_shadowSpawnLoc[locNo][i][1]);
 			spawnDat.setY(_shadowSpawnLoc[locNo][i][2]);
 			spawnDat.setZ(_shadowSpawnLoc[locNo][i][3]);
@@ -1655,8 +1626,7 @@ public final class FourSepulchersManager
 					_log.warning(getClass().getSimpleName() + ": managerSay(): manager is not Sepulcher instance");
 					continue;
 				}
-				// hall not used right now, so its manager will not tell you
-				// anything :)
+				// hall not used right now, so its manager will not tell you anything :)
 				// if you don't need this - delete next two lines.
 				if (!_hallInUse.get(temp.getId()).booleanValue())
 				{
@@ -1689,7 +1659,7 @@ public final class FourSepulchersManager
 		}
 	}
 	
-	public TIntIntHashMap getHallGateKeepers()
+	public Map<Integer, Integer> getHallGateKeepers()
 	{
 		return _hallGateKeepers;
 	}
