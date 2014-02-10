@@ -27,7 +27,7 @@ import java.util.List;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
-import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.SeedProduction;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
@@ -81,7 +81,7 @@ public class RequestSetSeed extends L2GameClientPacket
 		
 		L2PcInstance player = getClient().getActiveChar();
 		// check player privileges
-		if ((player == null) || (player.getClan() == null) || !player.hasClanPrivilege(L2Clan.CP_CS_MANOR_ADMIN))
+		if ((player == null) || (player.getClan() == null) || !player.hasClanPrivilege(ClanPrivilege.CS_MANOR_ADMIN))
 		{
 			return;
 		}

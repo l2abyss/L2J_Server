@@ -79,6 +79,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLevelUpEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanCreationListener;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanMembershipListener;
 import com.l2jserver.gameserver.util.Util;
+import com.l2jserver.util.EnumIntBitmask;
 
 public class L2Clan implements IIdentifiable, INamable
 {
@@ -97,40 +98,6 @@ public class L2Clan implements IIdentifiable, INamable
 	public static final int PENALTY_TYPE_DISMISS_CLAN = 3;
 	/** Leader clan dissolve ally */
 	public static final int PENALTY_TYPE_DISSOLVE_ALLY = 4;
-	// Clan Privileges
-	/** No privilege to manage any clan activity */
-	public static final int CP_NOTHING = 0;
-	/** Privilege to join clan */
-	public static final int CP_CL_JOIN_CLAN = 2;
-	/** Privilege to give a title */
-	public static final int CP_CL_GIVE_TITLE = 4;
-	/** Privilege to view warehouse content */
-	public static final int CP_CL_VIEW_WAREHOUSE = 8;
-	/** Privilege to manage clan ranks */
-	public static final int CP_CL_MANAGE_RANKS = 16;
-	public static final int CP_CL_PLEDGE_WAR = 32;
-	public static final int CP_CL_DISMISS = 64;
-	/** Privilege to register clan crest */
-	public static final int CP_CL_REGISTER_CREST = 128;
-	public static final int CP_CL_APPRENTICE = 256;
-	public static final int CP_CL_TROOPS_FAME = 512;
-	public static final int CP_CL_SUMMON_AIRSHIP = 1024;
-	/** Privilege to open a door */
-	public static final int CP_CH_OPEN_DOOR = 2048;
-	public static final int CP_CH_OTHER_RIGHTS = 4096;
-	public static final int CP_CH_AUCTION = 8192;
-	public static final int CP_CH_DISMISS = 16384;
-	public static final int CP_CH_SET_FUNCTIONS = 32768;
-	public static final int CP_CS_OPEN_DOOR = 65536;
-	public static final int CP_CS_MANOR_ADMIN = 131072;
-	public static final int CP_CS_MANAGE_SIEGE = 262144;
-	public static final int CP_CS_USE_FUNCTIONS = 524288;
-	public static final int CP_CS_DISMISS = 1048576;
-	public static final int CP_CS_TAXES = 2097152;
-	public static final int CP_CS_MERCENARIES = 4194304;
-	public static final int CP_CS_SET_FUNCTIONS = 8388608;
-	/** Privilege to manage all clan activity */
-	public static final int CP_ALL = 16777214;
 	// Sub-unit types
 	/** Clan subunit type of Academy */
 	public static final int SUBUNIT_ACADEMY = -1;
@@ -285,7 +252,7 @@ public class L2Clan implements IIdentifiable, INamable
 			{
 				SiegeManager.getInstance().removeSiegeSkills(exLeader);
 			}
-			exLeader.setClanPrivileges(L2Clan.CP_NOTHING);
+			exLeader.getClanPrivileges().clear();
 			exLeader.broadcastUserInfo();
 			
 		}
@@ -294,7 +261,7 @@ public class L2Clan implements IIdentifiable, INamable
 			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 				PreparedStatement ps = con.prepareStatement("UPDATE characters SET clan_privs = ? WHERE charId = ?"))
 			{
-				ps.setInt(1, L2Clan.CP_NOTHING);
+				ps.setInt(1, 0);
 				ps.setInt(2, getLeaderId());
 				ps.execute();
 			}
@@ -321,7 +288,7 @@ public class L2Clan implements IIdentifiable, INamable
 		if (newLeader != null)
 		{
 			newLeader.setPledgeClass(L2ClanMember.calculatePledgeClass(newLeader));
-			newLeader.setClanPrivileges(L2Clan.CP_ALL);
+			newLeader.getClanPrivileges().setAll();
 			
 			if (getLevel() >= SiegeManager.getInstance().getSiegeClanMinLevel())
 			{
@@ -334,7 +301,7 @@ public class L2Clan implements IIdentifiable, INamable
 			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 				PreparedStatement ps = con.prepareStatement("UPDATE characters SET clan_privs = ? WHERE charId = ?"))
 			{
-				ps.setInt(1, L2Clan.CP_ALL);
+				ps.setInt(1, EnumIntBitmask.getAllBitmask(ClanPrivilege.class));
 				ps.setInt(2, getLeaderId());
 				ps.execute();
 			}
@@ -1828,13 +1795,20 @@ public class L2Clan implements IIdentifiable, INamable
 	{
 		private final int _rankId;
 		private final int _party;// TODO find out what this stuff means and implement it
-		private int _rankPrivs;
+		private final EnumIntBitmask<ClanPrivilege> _rankPrivs;
 		
 		public RankPrivs(int rank, int party, int privs)
 		{
 			_rankId = rank;
 			_party = party;
-			_rankPrivs = privs;
+			_rankPrivs = new EnumIntBitmask<>(ClanPrivilege.class, privs);
+		}
+		
+		public RankPrivs(int rank, int party, EnumIntBitmask<ClanPrivilege> rankPrivs)
+		{
+			_rankId = rank;
+			_party = party;
+			_rankPrivs = rankPrivs;
 		}
 		
 		public int getRank()
@@ -1847,14 +1821,14 @@ public class L2Clan implements IIdentifiable, INamable
 			return _party;
 		}
 		
-		public int getPrivs()
+		public EnumIntBitmask<ClanPrivilege> getPrivs()
 		{
 			return _rankPrivs;
 		}
 		
 		public void setPrivs(int privs)
 		{
-			_rankPrivs = privs;
+			_rankPrivs.setBitmask(privs);
 		}
 	}
 	
@@ -2095,18 +2069,18 @@ public class L2Clan implements IIdentifiable, INamable
 		RankPrivs privs;
 		for (int i = 1; i < 10; i++)
 		{
-			privs = new RankPrivs(i, 0, CP_NOTHING);
+			privs = new RankPrivs(i, 0, new EnumIntBitmask<>(ClanPrivilege.class, false));
 			_privs.put(i, privs);
 		}
 	}
 	
-	public int getRankPrivs(int rank)
+	public EnumIntBitmask<ClanPrivilege> getRankPrivs(int rank)
 	{
 		if (_privs.get(rank) != null)
 		{
 			return _privs.get(rank).getPrivs();
 		}
-		return CP_NOTHING;
+		return new EnumIntBitmask<>(ClanPrivilege.class, false);
 	}
 	
 	public void setRankPrivs(int rank, int privs)
@@ -2139,7 +2113,7 @@ public class L2Clan implements IIdentifiable, INamable
 					{
 						if (cm.getPlayerInstance() != null)
 						{
-							cm.getPlayerInstance().setClanPrivileges(privs);
+							cm.getPlayerInstance().getClanPrivileges().setBitmask(privs);
 							cm.getPlayerInstance().sendPacket(new UserInfo(cm.getPlayerInstance()));
 							cm.getPlayerInstance().sendPacket(new ExBrExtraUserInfo(cm.getPlayerInstance()));
 						}
@@ -2302,7 +2276,7 @@ public class L2Clan implements IIdentifiable, INamable
 		{
 			return false;
 		}
-		if (!activeChar.hasClanPrivilege(L2Clan.CP_CL_JOIN_CLAN))
+		if (!activeChar.hasClanPrivilege(ClanPrivilege.CL_JOIN_CLAN))
 		{
 			activeChar.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 			return false;

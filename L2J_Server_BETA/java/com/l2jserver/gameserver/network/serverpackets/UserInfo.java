@@ -212,7 +212,7 @@ public final class UserInfo extends L2GameServerPacket
 		writeD(_activeChar.getAppearance().getInvisible() && _activeChar.isGM() ? _activeChar.getAbnormalVisualEffects() | AbnormalVisualEffect.STEALTH.getMask() : _activeChar.getAbnormalVisualEffects());
 		writeC(_activeChar.isInsideZone(ZoneId.WATER) ? 1 : _activeChar.isFlyingMounted() ? 2 : 0);
 		
-		writeD(_activeChar.getClanPrivileges());
+		writeD(_activeChar.getClanPrivileges().getBitmask());
 		
 		writeH(_activeChar.getRecomLeft()); // c2 recommendations remaining
 		writeH(_activeChar.getRecomHave()); // c2 recommendations received

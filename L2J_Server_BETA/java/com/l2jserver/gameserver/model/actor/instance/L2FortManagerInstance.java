@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.TeleportLocationTable;
 import com.l2jserver.gameserver.enums.InstanceType;
-import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2TeleportLocation;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Fort;
@@ -97,7 +97,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 			}
 			if (actualCommand.equalsIgnoreCase("expel"))
 			{
-				if (player.hasClanPrivilege(L2Clan.CP_CS_DISMISS))
+				if (player.hasClanPrivilege(ClanPrivilege.CS_DISMISS))
 				{
 					final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 					html.setFile(player.getHtmlPrefix(), "data/html/fortress/foreman-expel.htm");
@@ -115,7 +115,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 			}
 			else if (actualCommand.equalsIgnoreCase("banish_foreigner"))
 			{
-				if (player.hasClanPrivilege(L2Clan.CP_CS_DISMISS))
+				if (player.hasClanPrivilege(ClanPrivilege.CS_DISMISS))
 				{
 					getFort().banishForeigners(); // Move non-clan members off fortress area
 					final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
@@ -187,7 +187,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 			else if (actualCommand.equalsIgnoreCase("operate_door")) // door
 			// control
 			{
-				if (player.hasClanPrivilege(L2Clan.CP_CS_OPEN_DOOR))
+				if (player.hasClanPrivilege(ClanPrivilege.CS_OPEN_DOOR))
 				{
 					if (!val.isEmpty())
 					{
@@ -232,7 +232,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 			else if (actualCommand.equalsIgnoreCase("manage_vault"))
 			{
 				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
-				if (player.hasClanPrivilege(L2Clan.CP_CL_VIEW_WAREHOUSE))
+				if (player.hasClanPrivilege(ClanPrivilege.CL_VIEW_WAREHOUSE))
 				{
 					if (val.equalsIgnoreCase("deposit"))
 					{
@@ -358,7 +358,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 			}
 			else if (actualCommand.equalsIgnoreCase("manage"))
 			{
-				if (player.hasClanPrivilege(L2Clan.CP_CS_SET_FUNCTIONS))
+				if (player.hasClanPrivilege(ClanPrivilege.CS_SET_FUNCTIONS))
 				{
 					if (val.equalsIgnoreCase("recovery"))
 					{
@@ -1021,7 +1021,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 	
 	private void showVaultWindowWithdraw(L2PcInstance player, WarehouseListType itemtype, byte sortorder)
 	{
-		if (player.isClanLeader() || player.hasClanPrivilege(L2Clan.CP_CL_VIEW_WAREHOUSE))
+		if (player.isClanLeader() || player.hasClanPrivilege(ClanPrivilege.CL_VIEW_WAREHOUSE))
 		{
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 			player.setActiveWarehouse(player.getClan().getWarehouse());

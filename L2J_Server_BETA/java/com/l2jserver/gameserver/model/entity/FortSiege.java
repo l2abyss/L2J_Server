@@ -41,6 +41,7 @@ import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.model.CombatFlag;
 import com.l2jserver.gameserver.model.FortSiegeSpawn;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2SiegeClan;
 import com.l2jserver.gameserver.model.L2SiegeClan.SiegeClanType;
@@ -950,7 +951,7 @@ public class FortSiege implements Siegable
 			b = false;
 			player.sendMessage("Only clans with Level " + FortSiegeManager.getInstance().getSiegeClanMinLevel() + " and higher may register for a fortress siege.");
 		}
-		else if (!player.hasClanPrivilege(L2Clan.CP_CS_MANAGE_SIEGE))
+		else if (!player.hasClanPrivilege(ClanPrivilege.CS_MANAGE_SIEGE))
 		{
 			b = false;
 			player.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);

@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.datatables.CrestTable;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2Crest;
 import com.l2jserver.gameserver.model.L2Crest.CrestType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -76,7 +77,7 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 			return;
 		}
 		
-		if (!activeChar.hasClanPrivilege(L2Clan.CP_CL_REGISTER_CREST))
+		if (!activeChar.hasClanPrivilege(ClanPrivilege.CL_REGISTER_CREST))
 		{
 			activeChar.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 			return;

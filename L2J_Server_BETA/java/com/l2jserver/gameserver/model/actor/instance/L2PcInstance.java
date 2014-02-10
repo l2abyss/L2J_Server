@@ -121,6 +121,7 @@ import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.ArenaParticipantsHolder;
 import com.l2jserver.gameserver.model.BlockList;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
@@ -330,6 +331,7 @@ import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.gameserver.util.FloodProtectors;
 import com.l2jserver.gameserver.util.Util;
+import com.l2jserver.util.EnumIntBitmask;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -665,7 +667,7 @@ public final class L2PcInstance extends L2Playable
 	private long _clanCreateExpiryTime;
 	
 	private int _powerGrade = 0;
-	private int _clanPrivileges = 0;
+	private volatile EnumIntBitmask<ClanPrivilege> _clanPrivileges = new EnumIntBitmask<>(ClanPrivilege.class, false);
 	
 	/** L2PcInstance's pledge class (knight, Baron, etc.) */
 	private int _pledgeClass = 0;
@@ -6319,7 +6321,7 @@ public final class L2PcInstance extends L2Playable
 		if (clan == null)
 		{
 			_clanId = 0;
-			_clanPrivileges = 0;
+			_clanPrivileges = new EnumIntBitmask<>(ClanPrivilege.class, false);
 			_pledgeType = 0;
 			_powerGrade = 0;
 			_lvlJoinedAcademy = 0;
@@ -7035,7 +7037,7 @@ public final class L2PcInstance extends L2Playable
 			statement.setInt(28, getAccessLevel().getLevel());
 			statement.setInt(29, isOnlineInt());
 			statement.setInt(30, isIn7sDungeon() ? 1 : 0);
-			statement.setInt(31, getClanPrivileges());
+			statement.setInt(31, getClanPrivileges().getBitmask());
 			statement.setInt(32, getWantsPeace());
 			statement.setInt(33, getBaseClass());
 			statement.setInt(34, getNewbie());
@@ -7132,7 +7134,7 @@ public final class L2PcInstance extends L2Playable
 						}
 						else
 						{
-							player.setClanPrivileges(L2Clan.CP_ALL);
+							player.getClanPrivileges().setAll();
 							player.setPowerGrade(1);
 						}
 						player.setPledgeClass(L2ClanMember.calculatePledgeClass(player));
@@ -7149,7 +7151,7 @@ public final class L2PcInstance extends L2Playable
 							player.setPledgeClass(8);
 						}
 						
-						player.setClanPrivileges(L2Clan.CP_NOTHING);
+						player.getClanPrivileges().clear();
 					}
 					
 					player.setDeleteTimer(rset.getLong("deletetime"));
@@ -7647,7 +7649,7 @@ public final class L2PcInstance extends L2Playable
 			statement.setInt(29, getAccessLevel().getLevel());
 			statement.setInt(30, isOnlineInt());
 			statement.setInt(31, isIn7sDungeon() ? 1 : 0);
-			statement.setInt(32, getClanPrivileges());
+			statement.setInt(32, getClanPrivileges().getBitmask());
 			statement.setInt(33, getWantsPeace());
 			statement.setInt(34, getBaseClass());
 			
@@ -9721,19 +9723,19 @@ public final class L2PcInstance extends L2Playable
 	
 	private ScheduledFuture<?> _taskWarnUserTakeBreak;
 	
-	public int getClanPrivileges()
+	public EnumIntBitmask<ClanPrivilege> getClanPrivileges()
 	{
 		return _clanPrivileges;
 	}
 	
-	public void setClanPrivileges(int n)
+	public void setClanPrivileges(EnumIntBitmask<ClanPrivilege> clanPrivileges)
 	{
-		_clanPrivileges = n;
+		_clanPrivileges = clanPrivileges.clone();
 	}
 	
-	public boolean hasClanPrivilege(int privilege)
+	public boolean hasClanPrivilege(ClanPrivilege privilege)
 	{
-		return ((_clanPrivileges & privilege) == privilege);
+		return _clanPrivileges.has(privilege);
 	}
 	
 	// baron etc

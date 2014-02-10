@@ -42,7 +42,7 @@ public class ManagePledgePower extends L2GameServerPacket
 			writeC(0x2a);
 			writeD(0);
 			writeD(0);
-			writeD(_clan.getRankPrivs(_rank));
+			writeD(_clan.getRankPrivs(_rank).getBitmask());
 		}
 	}
 }

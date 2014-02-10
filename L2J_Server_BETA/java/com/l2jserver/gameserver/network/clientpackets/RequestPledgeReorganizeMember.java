@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -64,7 +65,7 @@ public final class RequestPledgeReorganizeMember extends L2GameClientPacket
 			return;
 		}
 		
-		if (!activeChar.hasClanPrivilege(L2Clan.CP_CL_MANAGE_RANKS))
+		if (!activeChar.hasClanPrivilege(ClanPrivilege.CL_MANAGE_RANKS))
 		{
 			return;
 		}

@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -65,7 +66,7 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
 			sm = null;
 			return;
 		}
-		else if (!player.hasClanPrivilege(L2Clan.CP_CL_PLEDGE_WAR))
+		else if (!player.hasClanPrivilege(ClanPrivilege.CL_PLEDGE_WAR))
 		{
 			player.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 			player.sendPacket(ActionFailed.STATIC_PACKET);

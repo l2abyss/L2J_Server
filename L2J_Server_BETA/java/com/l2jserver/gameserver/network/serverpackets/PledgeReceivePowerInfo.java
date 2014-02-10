@@ -43,6 +43,6 @@ public class PledgeReceivePowerInfo extends L2GameServerPacket
 		
 		writeD(_member.getPowerGrade()); // power grade
 		writeS(_member.getName());
-		writeD(_member.getClan().getRankPrivs(_member.getPowerGrade())); // privileges
+		writeD(_member.getClan().getRankPrivs(_member.getPowerGrade()).getBitmask()); // privileges
 	}
 }
