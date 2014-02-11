@@ -350,6 +350,7 @@ public class NpcData extends DocumentParser
 									set.set("clanHelpRange", parseInteger(attrs, "clanHelpRange"));
 									set.set("dodge", parseInteger(attrs, "dodge"));
 									set.set("isChaos", parseBoolean(attrs, "isChaos"));
+									set.set("isAggressive", parseBoolean(attrs, "isAggressive"));
 									for (Node ai_node = npc_node.getFirstChild(); ai_node != null; ai_node = ai_node.getNextSibling())
 									{
 										attrs = ai_node.getAttributes();

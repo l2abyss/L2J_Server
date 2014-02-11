@@ -91,6 +91,7 @@ public final class L2NpcTemplate extends L2CharTemplate implements IIdentifiable
 	private int _clanHelpRange;
 	private int _dodge;
 	private boolean _isChaos;
+	private boolean _isAggressive;
 	private int _soulShot;
 	private int _spiritShot;
 	private int _soulShotChance;
@@ -166,6 +167,7 @@ public final class L2NpcTemplate extends L2CharTemplate implements IIdentifiable
 		_clanHelpRange = set.getInt("clanHelpRange", 0);
 		_dodge = set.getInt("dodge", 0);
 		_isChaos = set.getBoolean("isChaos", false);
+		_isAggressive = set.getBoolean("isAggressive", true);
 		
 		_soulShot = set.getInt("soulShot", 0);
 		_spiritShot = set.getInt("spiritShot", 0);
@@ -373,6 +375,11 @@ public final class L2NpcTemplate extends L2CharTemplate implements IIdentifiable
 	public boolean isChaos()
 	{
 		return _isChaos;
+	}
+	
+	public boolean isAggressive()
+	{
+		return _isAggressive;
 	}
 	
 	public int getSoulShot()
