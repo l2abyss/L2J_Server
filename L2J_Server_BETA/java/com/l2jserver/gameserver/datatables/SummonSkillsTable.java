@@ -19,7 +19,6 @@
 package com.l2jserver.gameserver.datatables;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -46,38 +45,30 @@ public class SummonSkillsTable
 	public void load()
 	{
 		_skillTrees.clear();
-		int npcId = 0;
 		int count = 0;
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			Statement s = con.createStatement();
-			ResultSet rs = s.executeQuery("SELECT id FROM npc WHERE type IN ('L2Pet','L2BabyPet','L2SiegeSummon') ORDER BY id"))
+			ResultSet rs = s.executeQuery("SELECT templateId, minLvl, skillId, skillLvl FROM pets_skills"))
 		{
-			Map<Integer, L2PetSkillLearn> map;
-			try (PreparedStatement ps2 = con.prepareStatement("SELECT minLvl, skillId, skillLvl FROM pets_skills where templateId=? ORDER BY skillId, skillLvl"))
+			while (rs.next())
 			{
-				while (rs.next())
+				final int npcId = rs.getInt("templateId");
+				Map<Integer, L2PetSkillLearn> skillTree = _skillTrees.get(npcId);
+				if (skillTree == null)
 				{
-					map = new HashMap<>();
-					npcId = rs.getInt("id");
-					ps2.setInt(1, npcId);
-					try (ResultSet skilltree = ps2.executeQuery())
-					{
-						while (skilltree.next())
-						{
-							int id = skilltree.getInt("skillId");
-							int lvl = skilltree.getInt("skillLvl");
-							map.put(SkillTable.getSkillHashCode(id, lvl + 1), new L2PetSkillLearn(id, lvl, skilltree.getInt("minLvl")));
-						}
-						_skillTrees.put(npcId, map);
-					}
-					ps2.clearParameters();
-					count += map.size();
+					skillTree = new HashMap<>();
+					_skillTrees.put(npcId, skillTree);
 				}
+				
+				int id = rs.getInt("skillId");
+				int lvl = rs.getInt("skillLvl");
+				skillTree.put(SkillTable.getSkillHashCode(id, lvl + 1), new L2PetSkillLearn(id, lvl, rs.getInt("minLvl")));
+				count++;
 			}
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while creating pet skill tree (Pet ID " + npcId + "): " + e.getMessage(), e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while loading pet skill tree:", e);
 		}
 		_log.info(getClass().getSimpleName() + ": Loaded " + count + " skills.");
 	}
