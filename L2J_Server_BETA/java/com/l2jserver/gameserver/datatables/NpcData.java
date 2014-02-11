@@ -49,6 +49,9 @@ import com.l2jserver.gameserver.model.drops.IDropItem;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
+/**
+ * @author Nos
+ */
 public class NpcData extends DocumentParser
 {
 	private static final Logger _log = Logger.getLogger(NpcData.class.getName());

@@ -28,11 +28,11 @@ public class EventDrop
 	private final long _maxCount;
 	private final int _dropChance;
 	
-	public EventDrop(int[] itemIdList, long l, long m, int dropChance)
+	public EventDrop(int[] itemIdList, long min, long max, int dropChance)
 	{
 		_itemIdList = itemIdList;
-		_minCount = l;
-		_maxCount = m;
+		_minCount = min;
+		_maxCount = max;
 		_dropChance = dropChance;
 	}
 	
