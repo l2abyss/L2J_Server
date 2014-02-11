@@ -39,7 +39,7 @@ import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Party;
@@ -2147,7 +2147,7 @@ public class SevenSignsFestival implements SpawnListener
 				}
 			}
 			
-			L2NpcTemplate witchTemplate = NpcTable.getInstance().getTemplate(_witchSpawn._npcId);
+			L2NpcTemplate witchTemplate = NpcData.getInstance().getTemplate(_witchSpawn._npcId);
 			
 			// Spawn the festival witch for this arena
 			try
@@ -2272,7 +2272,7 @@ public class SevenSignsFestival implements SpawnListener
 					continue;
 				}
 				
-				L2NpcTemplate npcTemplate = NpcTable.getInstance().getTemplate(currSpawn._npcId);
+				L2NpcTemplate npcTemplate = NpcData.getInstance().getTemplate(currSpawn._npcId);
 				
 				try
 				{

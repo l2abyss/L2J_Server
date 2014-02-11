@@ -35,7 +35,7 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Clan;
@@ -160,7 +160,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 					while (rset.next())
 					{
 						final int npcId = rset.getInt("npcId");
-						final L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId);
+						final L2NpcTemplate template = NpcData.getInstance().getTemplate(npcId);
 						L2Spawn spawn = new L2Spawn(template);
 						spawn.setX(rset.getInt("x"));
 						spawn.setY(rset.getInt("y"));

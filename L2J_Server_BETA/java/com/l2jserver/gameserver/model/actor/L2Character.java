@@ -1457,12 +1457,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 					continue;
 				}
 				
-				if (isAttackable() && obj.isAttackable() && (((L2Attackable) this).getEnemyClan() == null) && (((L2Attackable) this).getIsChaos() == 0))
-				{
-					continue;
-				}
-				
-				if (isAttackable() && obj.isAttackable() && !((L2Attackable) this).getEnemyClan().equals(((L2Attackable) obj).getClan()) && (((L2Attackable) this).getIsChaos() == 0))
+				if (isAttackable() && obj.isAttackable() && !((L2Attackable) this).isInEnemyClan(((L2Attackable) obj)) && !((L2Attackable) this).isChaos())
 				{
 					continue;
 				}

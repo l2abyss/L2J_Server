@@ -28,7 +28,7 @@ import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.instance.L2FortBallistaInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -122,7 +122,7 @@ public final class FortSiegeGuardManager
 				while (rs.next())
 				{
 					int fortId = rs.getInt("fortId");
-					template1 = NpcTable.getInstance().getTemplate(rs.getInt("npcId"));
+					template1 = NpcData.getInstance().getTemplate(rs.getInt("npcId"));
 					if (template1 != null)
 					{
 						spawn1 = new L2Spawn(template1);

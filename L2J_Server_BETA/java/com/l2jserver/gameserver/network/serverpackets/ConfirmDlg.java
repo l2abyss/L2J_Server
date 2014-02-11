@@ -120,7 +120,7 @@ public class ConfirmDlg extends L2GameServerPacket
 	
 	public ConfirmDlg addNpcName(L2NpcTemplate tpl)
 	{
-		if (tpl.isCustom())
+		if (tpl.isUsingServerSideName())
 		{
 			return addString(tpl.getName());
 		}

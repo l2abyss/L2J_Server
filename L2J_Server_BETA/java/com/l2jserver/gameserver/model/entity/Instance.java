@@ -41,7 +41,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.DoorTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.L2Spawn;
@@ -574,7 +574,7 @@ public final class Instance
 								{
 									allowRandomWalk = Boolean.valueOf(d.getAttributes().getNamedItem("allowRandomWalk").getNodeValue());
 								}
-								npcTemplate = NpcTable.getInstance().getTemplate(npcId);
+								npcTemplate = NpcData.getInstance().getTemplate(npcId);
 								if (npcTemplate != null)
 								{
 									spawnDat = new L2Spawn(npcTemplate);

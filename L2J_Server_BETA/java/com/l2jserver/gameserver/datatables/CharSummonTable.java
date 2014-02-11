@@ -132,7 +132,7 @@ public class CharSummonTable
 			_log.warning(getClass().getSimpleName() + ": Null pet data for: " + activeChar + " and summoning item: " + item);
 			return;
 		}
-		final L2NpcTemplate npcTemplate = NpcTable.getInstance().getTemplate(petData.getNpcId());
+		final L2NpcTemplate npcTemplate = NpcData.getInstance().getTemplate(petData.getNpcId());
 		if (npcTemplate == null)
 		{
 			_log.warning(getClass().getSimpleName() + ": Null pet NPC template for: " + activeChar + " and pet Id:" + petData.getNpcId());
@@ -212,7 +212,7 @@ public class CharSummonTable
 						return;
 					}
 					
-					summonTemplate = NpcTable.getInstance().getTemplate(skill.getNpcId());
+					summonTemplate = NpcData.getInstance().getTemplate(skill.getNpcId());
 					if (summonTemplate == null)
 					{
 						_log.warning(getClass().getSimpleName() + ": Summon attemp for nonexisting Skill ID:" + skillId);

@@ -35,7 +35,7 @@ import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.model.DimensionalRiftRoom;
 import com.l2jserver.gameserver.model.L2Spawn;
@@ -173,7 +173,7 @@ public final class DimensionalRiftManager
 											delay = Integer.parseInt(attrs.getNamedItem("delay").getNodeValue());
 											count = Integer.parseInt(attrs.getNamedItem("count").getNodeValue());
 											
-											template = NpcTable.getInstance().getTemplate(mobId);
+											template = NpcData.getInstance().getTemplate(mobId);
 											if (template == null)
 											{
 												_log.warning("Template " + mobId + " not found!");

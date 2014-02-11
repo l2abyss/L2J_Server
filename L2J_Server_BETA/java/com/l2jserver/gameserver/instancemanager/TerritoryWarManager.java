@@ -38,7 +38,7 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.model.L2Clan;
@@ -768,7 +768,7 @@ public final class TerritoryWarManager implements Siegable
 	
 	public L2Npc spawnNPC(int npcId, Location loc)
 	{
-		L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId);
+		L2NpcTemplate template = NpcData.getInstance().getTemplate(npcId);
 		if (template != null)
 		{
 			L2Spawn spawnDat;

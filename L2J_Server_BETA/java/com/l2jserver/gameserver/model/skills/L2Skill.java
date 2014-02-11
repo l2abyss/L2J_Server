@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -198,7 +199,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	// Function lists
 	private List<FuncTemplate> _funcTemplates;
 	
-	private final EnumMap<EffectScope, List<AbstractEffect>> _effectLists = new EnumMap<>(EffectScope.class);
+	private final Map<EffectScope, List<AbstractEffect>> _effectLists = new EnumMap<>(EffectScope.class);
 	
 	protected ChanceCondition _chanceCondition = null;
 	
@@ -1205,19 +1206,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 			// target is mob
 			if ((targetPlayer == null) && (target instanceof L2Attackable) && (caster instanceof L2Attackable))
 			{
-				String casterEnemyClan = ((L2Attackable) caster).getEnemyClan();
-				if ((casterEnemyClan == null) || casterEnemyClan.isEmpty())
-				{
-					return false;
-				}
-				
-				String targetClan = ((L2Attackable) target).getClan();
-				if ((targetClan == null) || targetClan.isEmpty())
-				{
-					return false;
-				}
-				
-				if (!casterEnemyClan.equals(targetClan))
+				if (((L2Attackable) caster).isInEnemyClan((L2Attackable) target))
 				{
 					return false;
 				}

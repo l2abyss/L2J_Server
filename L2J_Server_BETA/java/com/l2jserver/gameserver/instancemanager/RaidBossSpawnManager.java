@@ -33,7 +33,7 @@ import javolution.util.FastMap;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.StatsSet;
@@ -490,7 +490,7 @@ public class RaidBossSpawnManager
 	 */
 	public L2NpcTemplate getValidTemplate(int bossId)
 	{
-		final L2NpcTemplate template = NpcTable.getInstance().getTemplate(bossId);
+		final L2NpcTemplate template = NpcData.getInstance().getTemplate(bossId);
 		if (template == null)
 		{
 			return null;

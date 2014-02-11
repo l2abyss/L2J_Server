@@ -32,7 +32,7 @@ import javolution.util.FastMap;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.instancemanager.tasks.GrandBossManagerStoreTask;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.Location;
@@ -104,10 +104,10 @@ public final class GrandBossManager implements IStorable
 				int status = rs.getInt("status");
 				_bossStatus.put(bossId, status);
 				_storedInfo.put(bossId, info);
-				_log.info(getClass().getSimpleName() + ": " + NpcTable.getInstance().getTemplate(bossId).getName() + "(" + bossId + ") status is " + status + ".");
+				_log.info(getClass().getSimpleName() + ": " + NpcData.getInstance().getTemplate(bossId).getName() + "(" + bossId + ") status is " + status + ".");
 				if (status > 0)
 				{
-					_log.info(getClass().getSimpleName() + ": Next spawn date of " + NpcTable.getInstance().getTemplate(bossId).getName() + " is " + new Date(info.getLong("respawn_time")) + ".");
+					_log.info(getClass().getSimpleName() + ": Next spawn date of " + NpcData.getInstance().getTemplate(bossId).getName() + " is " + new Date(info.getLong("respawn_time")) + ".");
 				}
 			}
 			_log.info(getClass().getSimpleName() + ": Loaded " + _storedInfo.size() + " Instances");
@@ -270,7 +270,7 @@ public final class GrandBossManager implements IStorable
 	public void setBossStatus(int bossId, int status)
 	{
 		_bossStatus.put(bossId, status);
-		_log.info(getClass().getSimpleName() + ": Updated " + NpcTable.getInstance().getTemplate(bossId).getName() + "(" + bossId + ") status to " + status);
+		_log.info(getClass().getSimpleName() + ": Updated " + NpcData.getInstance().getTemplate(bossId).getName() + "(" + bossId + ") status to " + status);
 		updateDb(bossId, true);
 	}
 	

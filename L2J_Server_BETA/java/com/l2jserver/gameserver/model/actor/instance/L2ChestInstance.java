@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -111,7 +111,7 @@ public final class L2ChestInstance extends L2MonsterInstance
 			}
 		}
 		
-		super.doItemDrop(NpcTable.getInstance().getTemplate(id), lastAttacker);
+		super.doItemDrop(NpcData.getInstance().getTemplate(id), lastAttacker);
 	}
 	
 	// cast - trap chest

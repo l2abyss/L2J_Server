@@ -28,7 +28,7 @@ import javolution.util.FastSet;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2MinionData;
 import com.l2jserver.gameserver.model.Location;
@@ -341,7 +341,7 @@ public class MinionList
 	public static final L2MonsterInstance spawnMinion(L2MonsterInstance master, int minionId)
 	{
 		// Get the template of the Minion to spawn
-		L2NpcTemplate minionTemplate = NpcTable.getInstance().getTemplate(minionId);
+		L2NpcTemplate minionTemplate = NpcData.getInstance().getTemplate(minionId);
 		if (minionTemplate == null)
 		{
 			return null;

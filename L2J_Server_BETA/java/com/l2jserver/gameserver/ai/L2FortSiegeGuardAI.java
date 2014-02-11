@@ -417,7 +417,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 	{
 		L2Character target = getAttackTarget();
 		// Call all L2Object of its Faction inside the Faction Range
-		if ((((L2Npc) _actor).getFactionId() == null) || (target == null))
+		if ((((L2Npc) _actor).getTemplate().getClans() == null) || (target == null))
 		{
 			return;
 		}
@@ -426,8 +426,6 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 		{
 			return; // speeding it up for siege guards
 		}
-		
-		String faction_id = ((L2Npc) _actor).getFactionId();
 		
 		// Go through all L2Character that belong to its faction
 		// for (L2Character cha : _actor.getKnownList().getKnownCharactersInRadius(((L2NpcInstance) _actor).getFactionRange()+_actor.getTemplate().collisionRadius))
@@ -484,7 +482,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 			
 			L2Npc npc = (L2Npc) cha;
 			
-			if (!faction_id.equals(npc.getFactionId()))
+			if (!npc.isInMyClan((L2Npc) _actor))
 			{
 				continue;
 			}

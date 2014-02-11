@@ -36,9 +36,9 @@ import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.EventDroplist;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
-import com.l2jserver.gameserver.model.L2DropData;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.drops.GeneralDropItem;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.script.DateRange;
 
@@ -62,7 +62,7 @@ public class LongTimeEvent extends Quest
 	private final List<NpcSpawn> _spawnList = new ArrayList<>();
 	
 	// Drop data for event
-	private final List<L2DropData> _dropList = new ArrayList<>();
+	private final List<GeneralDropItem> _dropList = new ArrayList<>();
 	
 	private class NpcSpawn
 	{
@@ -180,13 +180,13 @@ public class LongTimeEvent extends Quest
 										continue;
 									}
 									
-									if ((finalChance < 10000) || (finalChance > L2DropData.MAX_CHANCE))
+									if ((finalChance < 10000) || (finalChance > 1000000))
 									{
 										_log.warning(getScriptName() + " event: item " + itemId + " - incorrect drop chance, item was not added in droplist");
 										continue;
 									}
 									
-									_dropList.add(new L2DropData(itemId, minCount, maxCount, finalChance));
+									_dropList.add(new GeneralDropItem(itemId, minCount, maxCount, finalChance));
 								}
 								catch (NumberFormatException nfe)
 								{
@@ -210,7 +210,7 @@ public class LongTimeEvent extends Quest
 									int zPos = Integer.parseInt(d.getAttributes().getNamedItem("z").getNodeValue());
 									int heading = d.getAttributes().getNamedItem("heading").getNodeValue() != null ? Integer.parseInt(d.getAttributes().getNamedItem("heading").getNodeValue()) : 0;
 									
-									if (NpcTable.getInstance().getTemplate(npcId) == null)
+									if (NpcData.getInstance().getTemplate(npcId) == null)
 									{
 										_log.warning(getScriptName() + " event: " + npcId + " is wrong NPC id, NPC was not added in spawnlist");
 										continue;
@@ -265,9 +265,9 @@ public class LongTimeEvent extends Quest
 		// Add drop
 		if (_dropList != null)
 		{
-			for (L2DropData drop : _dropList)
+			for (GeneralDropItem drop : _dropList)
 			{
-				EventDroplist.getInstance().addGlobalDrop(drop.getItemId(), drop.getMinDrop(), drop.getMaxDrop(), (int) drop.getChance(), _dropPeriod);
+				EventDroplist.getInstance().addGlobalDrop(drop.getItemId(), drop.getMin(), drop.getMax(), (int) drop.getChance(), _dropPeriod);
 			}
 		}
 		

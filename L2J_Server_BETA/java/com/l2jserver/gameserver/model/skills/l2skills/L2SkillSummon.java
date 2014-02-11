@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.model.skills.l2skills;
 
 import com.l2jserver.gameserver.datatables.ExperienceTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.StatsSet;
@@ -83,7 +83,7 @@ public class L2SkillSummon extends L2Skill
 			return;
 		}
 		
-		final L2NpcTemplate summonTemplate = NpcTable.getInstance().getTemplate(getNpcId());
+		final L2NpcTemplate summonTemplate = NpcData.getInstance().getTemplate(getNpcId());
 		if (summonTemplate == null)
 		{
 			_log.warning("Summon attempt for nonexisting NPC ID:" + getNpcId() + ", skill ID:" + getId());

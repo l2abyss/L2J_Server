@@ -52,6 +52,7 @@ public class L2CharTemplate
 	private int _basePAtkSpd;
 	private int _baseMAtkSpd;
 	private int _baseAttackRange;
+	private int _randomDamage;
 	private L2WeaponType _baseAttackType;
 	private int _baseShldDef;
 	private int _baseShldRate;
@@ -114,6 +115,7 @@ public class L2CharTemplate
 		_baseMAtkSpd = set.getInt("baseMAtkSpd", 333);
 		_baseShldDef = set.getInt("baseShldDef", 0);
 		_baseAttackRange = set.getInt("baseAtkRange", 40);
+		_randomDamage = set.getInt("baseRndDam", 0);
 		_baseAttackType = L2WeaponType.findByName(set.getString("baseAtkType", "Fist"));
 		_baseShldRate = set.getInt("baseShldRate", 0);
 		_baseCritRate = set.getInt("baseCritRate", 4);
@@ -143,10 +145,12 @@ public class L2CharTemplate
 		
 		// speed.
 		Arrays.fill(_moveType, 1);
-		setBaseMoveSpeed(MoveType.RUN, set.getInt("baseRunSpd", 1));
-		setBaseMoveSpeed(MoveType.WALK, set.getInt("baseWalkSpd", 1));
-		setBaseMoveSpeed(MoveType.FAST_SWIM, set.getInt("baseSwimRunSpd", 1));
-		setBaseMoveSpeed(MoveType.SLOW_SWIM, set.getInt("baseSwimWalkSpd", 1));
+		setBaseMoveSpeed(MoveType.RUN, set.getFloat("baseRunSpd", 120));
+		setBaseMoveSpeed(MoveType.WALK, set.getFloat("baseWalkSpd", 50));
+		setBaseMoveSpeed(MoveType.FAST_SWIM, set.getFloat("baseSwimRunSpd", getBaseMoveSpeed(MoveType.RUN)));
+		setBaseMoveSpeed(MoveType.SLOW_SWIM, set.getFloat("baseSwimWalkSpd", getBaseMoveSpeed(MoveType.WALK)));
+		setBaseMoveSpeed(MoveType.FAST_FLY, set.getFloat("baseFlyRunSpd", getBaseMoveSpeed(MoveType.RUN)));
+		setBaseMoveSpeed(MoveType.SLOW_FLY, set.getFloat("baseFlyWalkSpd", getBaseMoveSpeed(MoveType.WALK)));
 	}
 	
 	/**
@@ -387,6 +391,14 @@ public class L2CharTemplate
 	public int getBaseMAtkSpd()
 	{
 		return _baseMAtkSpd;
+	}
+	
+	/**
+	 * @return the random damage
+	 */
+	public int getRandomDamage()
+	{
+		return _randomDamage;
 	}
 	
 	/**

@@ -95,9 +95,14 @@ public abstract class DocumentParser
 			db.setErrorHandler(new XMLErrorHandler());
 			_currentDocument = db.parse(f);
 		}
+		catch (SAXParseException e)
+		{
+			_log.warning(getClass().getSimpleName() + ": Could not parse file " + f.getName() + " at line " + e.getLineNumber() + ", column " + e.getColumnNumber() + ": " + e.getMessage());
+			return;
+		}
 		catch (Exception e)
 		{
-			_log.warning(getClass().getSimpleName() + ": Could not parse " + f.getName() + " file: " + e.getMessage());
+			_log.warning(getClass().getSimpleName() + ": Could not parse file " + f.getName() + ": " + e.getMessage());
 			return;
 		}
 		parseDocument();

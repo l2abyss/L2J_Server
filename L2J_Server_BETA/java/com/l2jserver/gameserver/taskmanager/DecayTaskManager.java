@@ -30,6 +30,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 
 /**
  * @author la2 Lets drink to code!
@@ -52,12 +53,7 @@ public class DecayTaskManager
 	
 	public void addDecayTask(L2Character actor)
 	{
-		addDecayTask(actor, 0);
-	}
-	
-	public void addDecayTask(L2Character actor, int interval)
-	{
-		_decayTasks.put(actor, System.currentTimeMillis() + interval);
+		_decayTasks.put(actor, System.currentTimeMillis());
 	}
 	
 	public void cancelDecayTask(L2Character actor)
@@ -87,18 +83,20 @@ public class DecayTaskManager
 					{
 						continue;
 					}
-					if (actor.isRaid() && !actor.isRaidMinion())
+					if (actor.getTemplate() instanceof L2NpcTemplate)
 					{
-						delay = Config.RAID_BOSS_DECAY_TIME;
-					}
-					else if ((actor instanceof L2Attackable) && (((L2Attackable) actor).isSpoil() || ((L2Attackable) actor).isSeeded()))
-					{
-						delay = Config.SPOILED_DECAY_TIME;
+						delay = ((L2NpcTemplate) actor.getTemplate()).getCorpseTime() * 1000;
 					}
 					else
 					{
-						delay = Config.NPC_DECAY_TIME;
+						delay = Config.DEFAULT_CORPSE_TIME * 1000;
 					}
+					
+					if ((actor instanceof L2Attackable) && (((L2Attackable) actor).isSpoil() || ((L2Attackable) actor).isSeeded()))
+					{
+						delay += Config.SPOILED_CORPSE_EXTEND_TIME * 1000;
+					}
+					
 					if ((current - next) > delay)
 					{
 						actor.onDecay();

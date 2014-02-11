@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.model.L2PetData;
 import com.l2jserver.gameserver.model.L2World;
@@ -100,7 +100,7 @@ public final class Evolve
 			return false;
 		}
 		
-		L2NpcTemplate npcTemplate = NpcTable.getInstance().getTemplate(npcID);
+		L2NpcTemplate npcTemplate = NpcData.getInstance().getTemplate(npcID);
 		
 		currentPet.unSummon(player);
 		
@@ -193,7 +193,7 @@ public final class Evolve
 			return false;
 		}
 		
-		L2NpcTemplate npcTemplate = NpcTable.getInstance().getTemplate(npcId);
+		L2NpcTemplate npcTemplate = NpcData.getInstance().getTemplate(npcId);
 		
 		// deleting old pet item
 		L2ItemInstance removedItem = player.getInventory().destroyItem("PetRestore", item, player, npc);

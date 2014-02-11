@@ -56,7 +56,7 @@ import com.l2jserver.gameserver.model.TowerSpawn;
 import com.l2jserver.gameserver.model.actor.instance.L2ArtefactInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.zone.type.L2CastleZone;
 import com.l2jserver.gameserver.model.zone.type.L2ResidenceTeleportZone;
@@ -214,7 +214,7 @@ public final class Castle extends AbstractResidence
 						dbSave();
 						if (_cwh)
 						{
-							ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CS_function_fee", PcInventory.ADENA_ID, fee, null, null);
+							ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CS_function_fee", Inventory.ADENA_ID, fee, null, null);
 						}
 						ThreadPoolManager.getInstance().scheduleGeneral(new FunctionTask(true), getRate());
 					}
@@ -359,9 +359,9 @@ public final class Castle extends AbstractResidence
 		}
 		else
 		{
-			if ((_treasury + amount) > PcInventory.MAX_ADENA)
+			if ((_treasury + amount) > Inventory.MAX_ADENA)
 			{
-				_treasury = PcInventory.MAX_ADENA;
+				_treasury = Inventory.MAX_ADENA;
 			}
 			else
 			{
@@ -747,7 +747,7 @@ public final class Castle extends AbstractResidence
 		}
 		if (lease > 0)
 		{
-			if (!player.destroyItemByItemId("Consume", PcInventory.ADENA_ID, lease, null, true))
+			if (!player.destroyItemByItemId("Consume", Inventory.ADENA_ID, lease, null, true))
 			{
 				return false;
 			}

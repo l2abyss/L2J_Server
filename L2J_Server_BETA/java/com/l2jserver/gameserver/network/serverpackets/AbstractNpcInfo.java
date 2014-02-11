@@ -87,14 +87,14 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 		{
 			super(cha);
 			_npc = cha;
-			_idTemplate = cha.getTemplate().getIdTemplate(); // On every subclass
+			_idTemplate = cha.getTemplate().getDisplayId(); // On every subclass
 			_rhand = cha.getRightHandItem(); // On every subclass
 			_lhand = cha.getLeftHandItem(); // On every subclass
 			_enchantEffect = cha.getEnchantEffect();
 			_collisionHeight = cha.getCollisionHeight();// On every subclass
 			_collisionRadius = cha.getCollisionRadius();// On every subclass
 			_isAttackable = cha.isAutoAttackable(attacker);
-			if (cha.getTemplate().isServerSideName())
+			if (cha.getTemplate().isUsingServerSideName())
 			{
 				_name = cha.getName();// On every subclass
 			}
@@ -103,7 +103,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			{
 				_title = (Config.L2JMOD_CHAMP_TITLE); // On every subclass
 			}
-			else if (cha.getTemplate().isServerSideTitle())
+			else if (cha.getTemplate().isUsingServerSideTitle())
 			{
 				_title = cha.getTemplate().getTitle(); // On every subclass
 			}
@@ -213,13 +213,13 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			super(cha);
 			
 			_trap = cha;
-			_idTemplate = cha.getTemplate().getIdTemplate();
+			_idTemplate = cha.getTemplate().getDisplayId();
 			_isAttackable = cha.isAutoAttackable(attacker);
 			_rhand = 0;
 			_lhand = 0;
 			_collisionHeight = _trap.getTemplate().getfCollisionHeight();
 			_collisionRadius = _trap.getTemplate().getfCollisionRadius();
-			if (cha.getTemplate().isServerSideName())
+			if (cha.getTemplate().isUsingServerSideName())
 			{
 				_name = cha.getName();
 			}
@@ -347,10 +347,10 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			_rhand = cha.getWeapon();
 			_lhand = 0;
 			_chest = cha.getArmor();
-			_enchantEffect = cha.getTemplate().getEnchantEffect();
+			_enchantEffect = cha.getTemplate().getWeaponEnchant();
 			_name = cha.getName();
 			_title = cha.getOwner() != null ? ((!cha.getOwner().isOnline()) ? "" : cha.getOwner().getName()) : ""; // when owner online, summon will show in title owner name
-			_idTemplate = cha.getTemplate().getIdTemplate();
+			_idTemplate = cha.getTemplate().getDisplayId();
 			_collisionHeight = cha.getTemplate().getfCollisionHeight();
 			_collisionRadius = cha.getTemplate().getfCollisionRadius();
 			_invisible = cha.getOwner() != null ? cha.getOwner().getAppearance().getInvisible() : false;

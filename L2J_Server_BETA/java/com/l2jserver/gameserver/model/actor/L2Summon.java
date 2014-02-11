@@ -28,6 +28,7 @@ import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.InstanceType;
+import com.l2jserver.gameserver.enums.NpcRace;
 import com.l2jserver.gameserver.enums.ShotType;
 import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.handler.IItemHandler;
@@ -307,18 +308,18 @@ public abstract class L2Summon extends L2Playable
 	
 	public short getSoulShotsPerHit()
 	{
-		if (getTemplate().getAIDataStatic().getSoulShot() > 0)
+		if (getTemplate().getSoulShot() > 0)
 		{
-			return (short) getTemplate().getAIDataStatic().getSoulShot();
+			return (short) getTemplate().getSoulShot();
 		}
 		return 1;
 	}
 	
 	public short getSpiritShotsPerHit()
 	{
-		if (getTemplate().getAIDataStatic().getSpiritShot() > 0)
+		if (getTemplate().getSpiritShot() > 0)
 		{
-			return (short) getTemplate().getAIDataStatic().getSpiritShot();
+			return (short) getTemplate().getSpiritShot();
 		}
 		return 1;
 	}
@@ -977,7 +978,7 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public boolean isUndead()
 	{
-		return getTemplate().isUndead();
+		return getTemplate().getRace() == NpcRace.UNDEAD;
 	}
 	
 	/**

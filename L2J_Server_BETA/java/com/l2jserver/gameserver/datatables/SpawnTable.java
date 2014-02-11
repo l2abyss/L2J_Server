@@ -90,7 +90,7 @@ public final class SpawnTable extends DocumentParser
 	
 	private boolean checkTemplate(int npcId)
 	{
-		L2NpcTemplate npcTemplate = NpcTable.getInstance().getTemplate(npcId);
+		L2NpcTemplate npcTemplate = NpcData.getInstance().getTemplate(npcId);
 		if (npcTemplate == null)
 		{
 			_log.warning(getClass().getSimpleName() + ": Data missing in NPC table for ID: " + npcId + ".");
@@ -302,7 +302,7 @@ public final class SpawnTable extends DocumentParser
 		int ret = 0;
 		try
 		{
-			spawnDat = new L2Spawn(NpcTable.getInstance().getTemplate(spawnInfo.getInt("npcTemplateid")));
+			spawnDat = new L2Spawn(NpcData.getInstance().getTemplate(spawnInfo.getInt("npcTemplateid")));
 			spawnDat.setAmount(spawnInfo.getInt("count", 1));
 			spawnDat.setX(spawnInfo.getInt("x", 0));
 			spawnDat.setY(spawnInfo.getInt("y", 0));

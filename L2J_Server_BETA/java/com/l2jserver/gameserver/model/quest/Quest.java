@@ -41,7 +41,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.enums.QuestSound;
 import com.l2jserver.gameserver.enums.TrapAction;
@@ -68,6 +68,7 @@ import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.interfaces.IPositionable;
 import com.l2jserver.gameserver.model.interfaces.IProcedure;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -1762,7 +1763,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	{
 		try
 		{
-			final L2NpcTemplate t = NpcTable.getInstance().getTemplate(npcId);
+			final L2NpcTemplate t = NpcData.getInstance().getTemplate(npcId);
 			if (t != null)
 			{
 				t.addQuestEvent(eventType, this);
@@ -2775,7 +2776,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	{
 		try
 		{
-			L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId);
+			L2NpcTemplate template = NpcData.getInstance().getTemplate(npcId);
 			if (template == null)
 			{
 				_log.log(Level.SEVERE, "addSpawn(): no NPC template found for NPC #" + npcId + "!");
@@ -2840,7 +2841,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	 */
 	public L2TrapInstance addTrap(int trapId, int x, int y, int z, int heading, L2Skill skill, int instanceId)
 	{
-		final L2NpcTemplate npcTemplate = NpcTable.getInstance().getTemplate(trapId);
+		final L2NpcTemplate npcTemplate = NpcData.getInstance().getTemplate(trapId);
 		L2TrapInstance trap = new L2TrapInstance(IdFactory.getInstance().getNextId(), npcTemplate, instanceId, -1);
 		trap.setCurrentHp(trap.getMaxHp());
 		trap.setCurrentMp(trap.getMaxMp());
@@ -2932,7 +2933,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 		
 		for (Integer npcId : _questInvolvedNpcs)
 		{
-			L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId.intValue());
+			L2NpcTemplate template = NpcData.getInstance().getTemplate(npcId.intValue());
 			if (template != null)
 			{
 				template.removeQuest(this);
@@ -3185,11 +3186,11 @@ public class Quest extends ManagedScript implements IIdentifiable
 	{
 		if (applyRates)
 		{
-			rewardItems(player, PcInventory.ADENA_ID, count);
+			rewardItems(player, Inventory.ADENA_ID, count);
 		}
 		else
 		{
-			giveItems(player, PcInventory.ADENA_ID, count);
+			giveItems(player, Inventory.ADENA_ID, count);
 		}
 	}
 	
@@ -3224,7 +3225,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 		
 		try
 		{
-			if (itemId == PcInventory.ADENA_ID)
+			if (itemId == Inventory.ADENA_ID)
 			{
 				count *= Config.RATE_QUEST_REWARD_ADENA;
 			}
@@ -3282,7 +3283,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	private static void sendItemGetMessage(L2PcInstance player, L2ItemInstance item, long count)
 	{
 		// If item for reward is gold, send message of gold reward to client
-		if (item.getId() == PcInventory.ADENA_ID)
+		if (item.getId() == Inventory.ADENA_ID)
 		{
 			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
 			smsg.addItemNumber(count);
@@ -3353,7 +3354,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 		}
 		
 		// set enchant level for item if that item is not adena
-		if ((enchantlevel > 0) && (itemId != PcInventory.ADENA_ID))
+		if ((enchantlevel > 0) && (itemId != Inventory.ADENA_ID))
 		{
 			item.setEnchantLevel(enchantlevel);
 		}
@@ -3460,7 +3461,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 		if ((npc != null) && Config.L2JMOD_CHAMPION_ENABLE && npc.isChampion())
 		{
 			dropChance *= Config.L2JMOD_CHAMPION_REWARDS;
-			if ((itemId == PcInventory.ADENA_ID) || (itemId == PcInventory.ANCIENT_ADENA_ID))
+			if ((itemId == Inventory.ADENA_ID) || (itemId == Inventory.ANCIENT_ADENA_ID))
 			{
 				minAmount *= Config.L2JMOD_CHAMPION_ADENAS_REWARDS;
 				maxAmount *= Config.L2JMOD_CHAMPION_ADENAS_REWARDS;

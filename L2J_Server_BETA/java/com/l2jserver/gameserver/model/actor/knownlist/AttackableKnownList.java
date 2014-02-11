@@ -83,7 +83,7 @@ public class AttackableKnownList extends NpcKnownList
 			return object.getKnownList().getDistanceToWatchObject(getActiveObject());
 		}
 		
-		int max = Math.max(300, Math.max(getActiveChar().getAggroRange(), Math.max(getActiveChar().getFactionRange(), getActiveChar().getEnemyRange())));
+		int max = Math.max(300, Math.max(getActiveChar().getAggroRange(), getActiveChar().getTemplate().getClanHelpRange()));
 		
 		return max;
 	}

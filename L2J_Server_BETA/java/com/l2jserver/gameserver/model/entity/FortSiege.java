@@ -33,7 +33,7 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.enums.FortTeleportWhoType;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeGuardManager;
@@ -1157,7 +1157,7 @@ public class FortSiege implements Siegable
 			L2NpcTemplate template1;
 			for (FortSiegeSpawn _sp : FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getResidenceId()))
 			{
-				template1 = NpcTable.getInstance().getTemplate(_sp.getId());
+				template1 = NpcData.getInstance().getTemplate(_sp.getId());
 				if (template1 != null)
 				{
 					spawnDat = new L2Spawn(template1);

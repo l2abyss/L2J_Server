@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.model.skills.l2skills;
 import java.util.logging.Level;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
@@ -79,7 +79,7 @@ public class L2SkillSiegeFlag extends L2Skill
 			try
 			{
 				// Spawn a new flag
-				L2SiegeFlagInstance flag = new L2SiegeFlagInstance(player, IdFactory.getInstance().getNextId(), NpcTable.getInstance().getTemplate((_isOutpost ? 36590 : 35062)), _isAdvanced, _isOutpost);
+				L2SiegeFlagInstance flag = new L2SiegeFlagInstance(player, IdFactory.getInstance().getNextId(), NpcData.getInstance().getTemplate((_isOutpost ? 36590 : 35062)), _isAdvanced, _isOutpost);
 				flag.setTitle(player.getClan().getName());
 				flag.setCurrentHpMp(flag.getMaxHp(), flag.getMaxMp());
 				flag.setHeading(player.getHeading());
@@ -104,7 +104,7 @@ public class L2SkillSiegeFlag extends L2Skill
 		try
 		{
 			// Spawn a new flag
-			L2SiegeFlagInstance flag = new L2SiegeFlagInstance(player, IdFactory.getInstance().getNextId(), NpcTable.getInstance().getTemplate(35062), _isAdvanced, false);
+			L2SiegeFlagInstance flag = new L2SiegeFlagInstance(player, IdFactory.getInstance().getNextId(), NpcData.getInstance().getTemplate(35062), _isAdvanced, false);
 			flag.setTitle(player.getClan().getName());
 			flag.setCurrentHpMp(flag.getMaxHp(), flag.getMaxMp());
 			flag.setHeading(player.getHeading());

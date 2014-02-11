@@ -29,6 +29,7 @@ import javolution.util.FastSet;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -243,7 +244,7 @@ public class TradeList
 			return null;
 		}
 		
-		if ((PcInventory.MAX_ADENA / count) < price)
+		if ((Inventory.MAX_ADENA / count) < price)
 		{
 			_log.warning(_owner.getName() + ": Attempt to overflow adena !");
 			return null;
@@ -299,7 +300,7 @@ public class TradeList
 			return null;
 		}
 		
-		if ((PcInventory.MAX_ADENA / count) < price)
+		if ((Inventory.MAX_ADENA / count) < price)
 		{
 			_log.warning(_owner.getName() + ": Attempt to overflow adena !");
 			return null;

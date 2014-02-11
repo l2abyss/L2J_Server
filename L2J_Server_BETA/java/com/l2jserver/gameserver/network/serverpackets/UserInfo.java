@@ -20,7 +20,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.Elementals;
@@ -180,7 +180,7 @@ public final class UserInfo extends L2GameServerPacket
 		}
 		if (_activeChar.getPoly().isMorphed())
 		{
-			final L2NpcTemplate polyObj = NpcTable.getInstance().getTemplate(_activeChar.getPoly().getPolyId());
+			final L2NpcTemplate polyObj = NpcData.getInstance().getTemplate(_activeChar.getPoly().getPolyId());
 			if (polyObj != null)
 			{
 				title += " - " + polyObj.getName();

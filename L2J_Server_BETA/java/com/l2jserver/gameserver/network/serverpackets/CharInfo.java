@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Decoy;
@@ -129,7 +129,7 @@ public class CharInfo extends L2GameServerPacket
 			}
 		}
 		
-		final L2NpcTemplate template = _activeChar.getPoly().isMorphed() ? NpcTable.getInstance().getTemplate(_activeChar.getPoly().getPolyId()) : null;
+		final L2NpcTemplate template = _activeChar.getPoly().isMorphed() ? NpcData.getInstance().getTemplate(_activeChar.getPoly().getPolyId()) : null;
 		if (template != null)
 		{
 			writeC(0x0C);
@@ -155,9 +155,9 @@ public class CharInfo extends L2GameServerPacket
 			writeF(_attackSpeedMultiplier);
 			writeF(template.getfCollisionRadius());
 			writeF(template.getfCollisionHeight());
-			writeD(template.getRightHand()); // right hand weapon
-			writeD(0x00); // chest
-			writeD(template.getLeftHand()); // left hand weapon
+			writeD(template.getRHandId()); // right hand weapon
+			writeD(template.getChestId()); // chest
+			writeD(template.getLHandId()); // left hand weapon
 			writeC(1); // name above char 1=true ... ??
 			writeC(_activeChar.isRunning() ? 1 : 0);
 			writeC(_activeChar.isInCombat() ? 1 : 0);
@@ -192,8 +192,8 @@ public class CharInfo extends L2GameServerPacket
 			writeD(0x00);
 			
 			writeD(0x00); // CT1.5 Pet form and skills, Color effect
-			writeC(template.getAIDataStatic().isTargetable() ? 0x01 : 0x00); // targetable
-			writeC(template.getAIDataStatic().showName() ? 0x01 : 0x00); // show name
+			writeC(template.isTargetable() ? 1 : 0); // targetable
+			writeC(template.isShowName() ? 1 : 0); // show name
 			writeC(_activeChar.getAbnormalVisualEffectSpecial());
 			writeD(0x00);
 		}

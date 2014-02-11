@@ -24,19 +24,19 @@ package com.l2jserver.gameserver.script;
 public class EventDrop
 {
 	private final int[] _itemIdList;
-	private final int _minCount;
-	private final int _maxCount;
+	private final long _minCount;
+	private final long _maxCount;
 	private final int _dropChance;
 	
-	public EventDrop(int[] itemIdList, int minCount, int maxCount, int dropChance)
+	public EventDrop(int[] itemIdList, long l, long m, int dropChance)
 	{
 		_itemIdList = itemIdList;
-		_minCount = minCount;
-		_maxCount = maxCount;
+		_minCount = l;
+		_maxCount = m;
 		_dropChance = dropChance;
 	}
 	
-	public EventDrop(int itemId, int minCount, int maxCount, int dropChance)
+	public EventDrop(int itemId, long minCount, long maxCount, int dropChance)
 	{
 		_itemIdList = new int[]
 		{
@@ -58,7 +58,7 @@ public class EventDrop
 	/**
 	 * @return the _minCount
 	 */
-	public int getMinCount()
+	public long getMinCount()
 	{
 		return _minCount;
 	}
@@ -66,7 +66,7 @@ public class EventDrop
 	/**
 	 * @return the _maxCount
 	 */
-	public int getMaxCount()
+	public long getMaxCount()
 	{
 		return _maxCount;
 	}

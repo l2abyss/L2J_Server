@@ -65,6 +65,12 @@ public abstract class Inventory extends ItemContainer
 		public void notifyUnequiped(int slot, L2ItemInstance inst, Inventory inventory);
 	}
 	
+	// Common Items
+	public static final int ADENA_ID = 57;
+	public static final int ANCIENT_ADENA_ID = 5575;
+	
+	public static final long MAX_ADENA = Config.MAX_ADENA;
+	
 	public static final int PAPERDOLL_UNDER = 0;
 	public static final int PAPERDOLL_HEAD = 1;
 	public static final int PAPERDOLL_HAIR = 2;

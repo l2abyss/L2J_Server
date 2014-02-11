@@ -277,12 +277,9 @@ public class L2ControllableMobAI extends L2AttackableAI
 		else
 		{
 			// notify aggression
-			if (((L2Npc) _actor).getFactionId() != null)
+			if (((L2Npc) _actor).getTemplate().getClans() != null)
 			{
-				String faction_id = ((L2Npc) _actor).getFactionId();
-				
 				Collection<L2Object> objs = _actor.getKnownList().getKnownObjects().values();
-				
 				for (L2Object obj : objs)
 				{
 					if (!(obj instanceof L2Npc))
@@ -292,12 +289,12 @@ public class L2ControllableMobAI extends L2AttackableAI
 					
 					L2Npc npc = (L2Npc) obj;
 					
-					if (!faction_id.equals(npc.getFactionId()))
+					if (!npc.isInMyClan((L2Npc) _actor))
 					{
 						continue;
 					}
 					
-					if (_actor.isInsideRadius(npc, npc.getFactionRange(), false, true) && (Math.abs(getAttackTarget().getZ() - npc.getZ()) < 200))
+					if (_actor.isInsideRadius(npc, npc.getTemplate().getClanHelpRange(), false, true) && (Math.abs(getAttackTarget().getZ() - npc.getZ()) < 200))
 					{
 						npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, getAttackTarget(), 1);
 					}

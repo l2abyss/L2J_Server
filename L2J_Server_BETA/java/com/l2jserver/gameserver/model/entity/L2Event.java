@@ -37,7 +37,7 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.cache.HtmCache;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.model.L2Spawn;
@@ -171,7 +171,7 @@ public class L2Event
 	public static void spawnEventNpc(L2PcInstance target)
 	{
 		
-		L2NpcTemplate template = NpcTable.getInstance().getTemplate(_npcId);
+		L2NpcTemplate template = NpcData.getInstance().getTemplate(_npcId);
 		
 		try
 		{
@@ -381,7 +381,7 @@ public class L2Event
 			_registeredPlayers.clear();
 			// _npcs.clear();
 			
-			if (NpcTable.getInstance().getTemplate(_npcId) == null)
+			if (NpcData.getInstance().getTemplate(_npcId) == null)
 			{
 				return "Cannot start event, invalid npc id.";
 			}

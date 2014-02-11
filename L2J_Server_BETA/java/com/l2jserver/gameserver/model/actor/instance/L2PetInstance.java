@@ -56,7 +56,6 @@ import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.stat.PetStat;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.itemcontainer.PetInventory;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
@@ -96,8 +95,6 @@ public class L2PetInstance extends L2Summon
 	/** The Experience before the last Death Penalty */
 	private long _expBeforeDeath = 0;
 	private int _curWeightPenalty = 0;
-	
-	private static final int PET_DECAY_DELAY = 86400000; // 24 hours
 	
 	public final L2PetLevelData getPetLevelData()
 	{
@@ -286,7 +283,7 @@ public class L2PetInstance extends L2Summon
 	 */
 	public L2PetInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2ItemInstance control)
 	{
-		this(objectId, template, owner, control, (byte) (template.getIdTemplate() == 12564 ? owner.getLevel() : template.getLevel()));
+		this(objectId, template, owner, control, (byte) (template.getDisplayId() == 12564 ? owner.getLevel() : template.getLevel()));
 	}
 	
 	/**
@@ -572,7 +569,7 @@ public class L2PetInstance extends L2Summon
 			
 			if ((target.getOwnerId() != 0) && (target.getOwnerId() != getOwner().getObjectId()) && !getOwner().isInLooterParty(target.getOwnerId()))
 			{
-				if (target.getId() == PcInventory.ADENA_ID)
+				if (target.getId() == Inventory.ADENA_ID)
 				{
 					smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1_ADENA);
 					smsg.addItemNumber(target.getCount());
@@ -625,7 +622,7 @@ public class L2PetInstance extends L2Summon
 		}
 		else
 		{
-			if (target.getId() == PcInventory.ADENA_ID)
+			if (target.getId() == Inventory.ADENA_ID)
 			{
 				smsg = SystemMessage.getSystemMessage(SystemMessageId.PET_PICKED_S1_ADENA);
 				smsg.addItemNumber(target.getCount());
@@ -691,7 +688,7 @@ public class L2PetInstance extends L2Summon
 		}
 		stopFeed();
 		sendPacket(SystemMessageId.MAKE_SURE_YOU_RESSURECT_YOUR_PET_WITHIN_24_HOURS);
-		DecayTaskManager.getInstance().addDecayTask(this, PET_DECAY_DELAY);
+		DecayTaskManager.getInstance().addDecayTask(this);
 		// do not decrease exp if is in duel, arena
 		L2PcInstance owner = getOwner();
 		if ((owner != null) && !owner.isInDuel() && (!isInsideZone(ZoneId.PVP) || isInsideZone(ZoneId.SIEGE)))

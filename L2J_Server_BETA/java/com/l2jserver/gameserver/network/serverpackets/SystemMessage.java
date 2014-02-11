@@ -25,7 +25,7 @@ import java.util.logging.Level;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
@@ -231,7 +231,7 @@ public final class SystemMessage extends L2GameServerPacket
 		if (cha.isNpc())
 		{
 			L2Npc npc = (L2Npc) cha;
-			if (npc.getTemplate().isServerSideName())
+			if (npc.getTemplate().isUsingServerSideName())
 			{
 				return addString(npc.getTemplate().getName());
 			}
@@ -244,7 +244,7 @@ public final class SystemMessage extends L2GameServerPacket
 		else if (cha.isSummon())
 		{
 			L2Summon summon = (L2Summon) cha;
-			if (summon.getTemplate().isServerSideName())
+			if (summon.getTemplate().isUsingServerSideName())
 			{
 				return addString(summon.getTemplate().getName());
 			}
@@ -287,7 +287,7 @@ public final class SystemMessage extends L2GameServerPacket
 	
 	public final SystemMessage addNpcName(final L2NpcTemplate template)
 	{
-		if (template.isCustom())
+		if (template.isUsingServerSideName())
 		{
 			return addString(template.getName());
 		}
@@ -453,7 +453,7 @@ public final class SystemMessage extends L2GameServerPacket
 				
 				case TYPE_NPC_NAME:
 				{
-					final L2NpcTemplate template = NpcTable.getInstance().getTemplate(param.getIntValue());
+					final L2NpcTemplate template = NpcData.getInstance().getTemplate(param.getIntValue());
 					params[i] = template == null ? "Unknown" : template.getName();
 					break;
 				}

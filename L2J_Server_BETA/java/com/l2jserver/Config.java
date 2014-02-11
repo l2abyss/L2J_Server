@@ -55,7 +55,7 @@ import org.w3c.dom.Node;
 import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.enums.IllegalActionPunishmentType;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.util.FloodProtectorConfig;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.PropertiesParser;
@@ -638,10 +638,8 @@ public final class Config
 	public static boolean JAIL_DISABLE_TRANSACTION;
 	public static boolean CUSTOM_SPAWNLIST_TABLE;
 	public static boolean SAVE_GMSPAWN_ON_CUSTOM;
-	public static boolean CUSTOM_NPC_TABLE;
-	public static boolean CUSTOM_NPC_SKILLS_TABLE;
+	public static boolean CUSTOM_NPC_DATA;
 	public static boolean CUSTOM_TELEPORT_TABLE;
-	public static boolean CUSTOM_DROPLIST_TABLE;
 	public static boolean CUSTOM_NPCBUFFER_TABLES;
 	public static boolean CUSTOM_SKILLS_LOAD;
 	public static boolean CUSTOM_ITEMS_LOAD;
@@ -808,9 +806,8 @@ public final class Config
 	public static int MIN_NPC_LVL_MAGIC_PENALTY;
 	public static Map<Integer, Float> NPC_SKILL_CHANCE_PENALTY;
 	public static int DECAY_TIME_TASK;
-	public static int NPC_DECAY_TIME;
-	public static int RAID_BOSS_DECAY_TIME;
-	public static int SPOILED_DECAY_TIME;
+	public static int DEFAULT_CORPSE_TIME;
+	public static int SPOILED_CORPSE_EXTEND_TIME;
 	public static int MAX_SWEEPER_TIME;
 	public static boolean GUARD_ATTACK_AGGRO_MOB;
 	public static boolean ALLOW_WYVERN_UPGRADER;
@@ -855,9 +852,6 @@ public final class Config
 	public static float RATE_HB_TRUST_INCREASE;
 	public static float RATE_HB_TRUST_DECREASE;
 	public static float RATE_EXTRACTABLE;
-	public static float RATE_DROP_ITEMS;
-	public static float RATE_DROP_ITEMS_BY_RAID;
-	public static float RATE_DROP_SPOIL;
 	public static int RATE_DROP_MANOR;
 	public static float RATE_QUEST_DROP;
 	public static float RATE_QUEST_REWARD;
@@ -869,7 +863,14 @@ public final class Config
 	public static float RATE_QUEST_REWARD_SCROLL;
 	public static float RATE_QUEST_REWARD_RECIPE;
 	public static float RATE_QUEST_REWARD_MATERIAL;
-	public static Map<Integer, Float> RATE_DROP_ITEMS_ID;
+	public static float RATE_DEATH_DROP_AMOUNT_MULTIPLIER;
+	public static float RATE_CORPSE_DROP_AMOUNT_MULTIPLIER;
+	public static float RATE_HERB_DROP_AMOUNT_MULTIPLIER;
+	public static float RATE_DEATH_DROP_CHANCE_MULTIPLIER;
+	public static float RATE_CORPSE_DROP_CHANCE_MULTIPLIER;
+	public static float RATE_HERB_DROP_CHANCE_MULTIPLIER;
+	public static Map<Integer, Float> RATE_DROP_AMOUNT_MULTIPLIER;
+	public static Map<Integer, Float> RATE_DROP_CHANCE_MULTIPLIER;
 	public static float RATE_KARMA_LOST;
 	public static float RATE_KARMA_EXP_LOST;
 	public static float RATE_SIEGE_GUARDS_PRICE;
@@ -1984,10 +1985,8 @@ public final class Config
 			JAIL_DISABLE_TRANSACTION = General.getBoolean("JailDisableTransaction", false);
 			CUSTOM_SPAWNLIST_TABLE = General.getBoolean("CustomSpawnlistTable", false);
 			SAVE_GMSPAWN_ON_CUSTOM = General.getBoolean("SaveGmSpawnOnCustom", false);
-			CUSTOM_NPC_TABLE = General.getBoolean("CustomNpcTable", false);
-			CUSTOM_NPC_SKILLS_TABLE = General.getBoolean("CustomNpcSkillsTable", false);
+			CUSTOM_NPC_DATA = General.getBoolean("CustomNpcData", false);
 			CUSTOM_TELEPORT_TABLE = General.getBoolean("CustomTeleportTable", false);
-			CUSTOM_DROPLIST_TABLE = General.getBoolean("CustomDroplistTable", false);
 			CUSTOM_NPCBUFFER_TABLES = General.getBoolean("CustomNpcBufferTables", false);
 			CUSTOM_SKILLS_LOAD = General.getBoolean("CustomSkillsLoad", false);
 			CUSTOM_ITEMS_LOAD = General.getBoolean("CustomItemsLoad", false);
@@ -2042,11 +2041,9 @@ public final class Config
 			MIN_NPC_LVL_MAGIC_PENALTY = NPC.getInt("MinNPCLevelForMagicPenalty", 78);
 			NPC_SKILL_CHANCE_PENALTY = parseConfigLine(NPC.getString("SkillChancePenaltyForLvLDifferences", "2.5, 3.0, 3.25, 3.5"));
 			DECAY_TIME_TASK = NPC.getInt("DecayTimeTask", 5000);
-			NPC_DECAY_TIME = NPC.getInt("NpcDecayTime", 8500);
-			RAID_BOSS_DECAY_TIME = NPC.getInt("RaidBossDecayTime", 30000);
-			SPOILED_DECAY_TIME = NPC.getInt("SpoiledDecayTime", 18500);
+			DEFAULT_CORPSE_TIME = NPC.getInt("DefaultCorpseTime", 7);
+			SPOILED_CORPSE_EXTEND_TIME = NPC.getInt("SpoiledCorpseExtendTime", 10);
 			MAX_SWEEPER_TIME = NPC.getInt("MaxSweeperTime", 15000);
-			ENABLE_DROP_VITALITY_HERBS = NPC.getBoolean("EnableVitalityHerbs", true);
 			GUARD_ATTACK_AGGRO_MOB = NPC.getBoolean("GuardAttackAggroMob", false);
 			ALLOW_WYVERN_UPGRADER = NPC.getBoolean("AllowWyvernUpgrader", false);
 			String[] listPetRentNpc = NPC.getString("ListPetRentNpc", "30827").split(",");
@@ -2119,9 +2116,6 @@ public final class Config
 			RATE_PARTY_XP = RatesSettings.getFloat("RatePartyXp", 1);
 			RATE_PARTY_SP = RatesSettings.getFloat("RatePartySp", 1);
 			RATE_EXTRACTABLE = RatesSettings.getFloat("RateExtractable", 1);
-			RATE_DROP_ITEMS = RatesSettings.getFloat("RateDropItems", 1);
-			RATE_DROP_ITEMS_BY_RAID = RatesSettings.getFloat("RateRaidDropItems", 1);
-			RATE_DROP_SPOIL = RatesSettings.getFloat("RateDropSpoil", 1);
 			RATE_DROP_MANOR = RatesSettings.getInt("RateDropManor", 1);
 			RATE_QUEST_DROP = RatesSettings.getFloat("RateQuestDrop", 1);
 			RATE_QUEST_REWARD = RatesSettings.getFloat("RateQuestReward", 1);
@@ -2151,11 +2145,6 @@ public final class Config
 			}
 			RATE_KARMA_EXP_LOST = RatesSettings.getFloat("RateKarmaExpLost", 1);
 			RATE_SIEGE_GUARDS_PRICE = RatesSettings.getFloat("RateSiegeGuardsPrice", 1);
-			RATE_DROP_COMMON_HERBS = RatesSettings.getFloat("RateCommonHerbs", 1);
-			RATE_DROP_HP_HERBS = RatesSettings.getFloat("RateHpHerbs", 1);
-			RATE_DROP_MP_HERBS = RatesSettings.getFloat("RateMpHerbs", 1);
-			RATE_DROP_SPECIAL_HERBS = RatesSettings.getFloat("RateSpecialHerbs", 1);
-			RATE_DROP_VITALITY_HERBS = RatesSettings.getFloat("RateVitalityHerbs", 1);
 			PLAYER_DROP_LIMIT = RatesSettings.getInt("PlayerDropLimit", 3);
 			PLAYER_RATE_DROP = RatesSettings.getInt("PlayerRateDrop", 5);
 			PLAYER_RATE_DROP_ITEM = RatesSettings.getInt("PlayerRateDropItem", 70);
@@ -2208,11 +2197,17 @@ public final class Config
 				_log.log(Level.WARNING, "Error while loading Player XP percent lost!", e);
 			}
 			
-			String[] rateDropItemsById = RatesSettings.getString("RateDropItemsById", "").split(";");
-			RATE_DROP_ITEMS_ID = new HashMap<>(rateDropItemsById.length);
-			if (!rateDropItemsById[0].isEmpty())
+			RATE_DEATH_DROP_AMOUNT_MULTIPLIER = RatesSettings.getFloat("DeathDropAmountMultiplier", 1);
+			RATE_CORPSE_DROP_AMOUNT_MULTIPLIER = RatesSettings.getFloat("CorpseDropAmountMultiplier", 1);
+			RATE_HERB_DROP_AMOUNT_MULTIPLIER = RatesSettings.getFloat("HerbDropAmountMultiplier", 1);
+			RATE_DEATH_DROP_CHANCE_MULTIPLIER = RatesSettings.getFloat("DeathDropChanceMultiplier", 1);
+			RATE_CORPSE_DROP_CHANCE_MULTIPLIER = RatesSettings.getFloat("CorpseDropChanceMultiplier", 1);
+			RATE_HERB_DROP_CHANCE_MULTIPLIER = RatesSettings.getFloat("HerbDropChanceMultiplier", 1);
+			String[] dropAmountMultiplier = RatesSettings.getString("DropAmountMultiplierByItemId", "").split(";");
+			RATE_DROP_AMOUNT_MULTIPLIER = new HashMap<>(dropAmountMultiplier.length);
+			if (!dropAmountMultiplier[0].isEmpty())
 			{
-				for (String item : rateDropItemsById)
+				for (String item : dropAmountMultiplier)
 				{
 					String[] itemSplit = item.split(",");
 					if (itemSplit.length != 2)
@@ -2223,7 +2218,7 @@ public final class Config
 					{
 						try
 						{
-							RATE_DROP_ITEMS_ID.put(Integer.valueOf(itemSplit[0]), Float.valueOf(itemSplit[1]));
+							RATE_DROP_AMOUNT_MULTIPLIER.put(Integer.valueOf(itemSplit[0]), Float.valueOf(itemSplit[1]));
 						}
 						catch (NumberFormatException nfe)
 						{
@@ -2235,9 +2230,33 @@ public final class Config
 					}
 				}
 			}
-			if (!RATE_DROP_ITEMS_ID.containsKey(PcInventory.ADENA_ID))
+			
+			String[] dropChanceMultiplier = RatesSettings.getString("DropChanceMultiplierByItemId", "").split(";");
+			RATE_DROP_CHANCE_MULTIPLIER = new HashMap<>(dropChanceMultiplier.length);
+			if (!dropChanceMultiplier[0].isEmpty())
 			{
-				RATE_DROP_ITEMS_ID.put(PcInventory.ADENA_ID, RATE_DROP_ITEMS); // for Adena rate if not defined
+				for (String item : dropChanceMultiplier)
+				{
+					String[] itemSplit = item.split(",");
+					if (itemSplit.length != 2)
+					{
+						_log.warning(StringUtil.concat("Config.load(): invalid config property -> RateDropItemsById \"", item, "\""));
+					}
+					else
+					{
+						try
+						{
+							RATE_DROP_CHANCE_MULTIPLIER.put(Integer.valueOf(itemSplit[0]), Float.valueOf(itemSplit[1]));
+						}
+						catch (NumberFormatException nfe)
+						{
+							if (!item.isEmpty())
+							{
+								_log.warning(StringUtil.concat("Config.load(): invalid config property -> RateDropItemsById \"", item, "\""));
+							}
+						}
+					}
+				}
 			}
 			
 			// Load L2JMod L2Properties file (if exists)
@@ -2875,17 +2894,8 @@ public final class Config
 			case "rateextractable":
 				RATE_EXTRACTABLE = Float.parseFloat(pValue);
 				break;
-			case "ratedropitems":
-				RATE_DROP_ITEMS = Float.parseFloat(pValue);
-				break;
 			case "ratedropadena":
-				RATE_DROP_ITEMS_ID.put(PcInventory.ADENA_ID, Float.parseFloat(pValue));
-				break;
-			case "rateraiddropitems":
-				RATE_DROP_ITEMS_BY_RAID = Float.parseFloat(pValue);
-				break;
-			case "ratedropspoil":
-				RATE_DROP_SPOIL = Float.parseFloat(pValue);
+				RATE_DROP_AMOUNT_MULTIPLIER.put(Inventory.ADENA_ID, Float.parseFloat(pValue));
 				break;
 			case "ratedropmanor":
 				RATE_DROP_MANOR = Integer.parseInt(pValue);

@@ -40,7 +40,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.entity.DimensionalRift;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -607,7 +607,7 @@ public class L2Party extends AbstractPlayerGroup
 	 */
 	public void distributeItem(L2PcInstance player, L2ItemInstance item)
 	{
-		if (item.getId() == PcInventory.ADENA_ID)
+		if (item.getId() == Inventory.ADENA_ID)
 		{
 			distributeAdena(player, item.getCount(), player);
 			ItemTable.getInstance().destroyItem("Party", item, player, null);
@@ -645,7 +645,7 @@ public class L2Party extends AbstractPlayerGroup
 	 */
 	public void distributeItem(L2PcInstance player, int itemId, long itemCount, boolean spoil, L2Attackable target)
 	{
-		if (itemId == PcInventory.ADENA_ID)
+		if (itemId == Inventory.ADENA_ID)
 		{
 			distributeAdena(player, itemCount, target);
 			return;
@@ -653,7 +653,7 @@ public class L2Party extends AbstractPlayerGroup
 		
 		L2PcInstance looter = getActualLooter(player, itemId, spoil, target);
 		
-		looter.addItem(spoil ? "Sweeper" : "Party", itemId, itemCount, player, true);
+		looter.addItem(spoil ? "Sweeper Party" : "Party", itemId, itemCount, player, true);
 		
 		// Send messages to other party members about reward
 		if (itemCount > 1)

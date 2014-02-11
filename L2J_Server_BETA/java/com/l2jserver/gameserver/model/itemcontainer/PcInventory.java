@@ -51,10 +51,6 @@ public class PcInventory extends Inventory
 {
 	private static final Logger _log = Logger.getLogger(PcInventory.class.getName());
 	
-	public static final int ADENA_ID = 57;
-	public static final int ANCIENT_ADENA_ID = 5575;
-	public static final long MAX_ADENA = Config.MAX_ADENA;
-	
 	private final L2PcInstance _owner;
 	private L2ItemInstance _adena;
 	private L2ItemInstance _ancientAdena;

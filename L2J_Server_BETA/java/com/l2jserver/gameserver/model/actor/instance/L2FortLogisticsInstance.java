@@ -20,7 +20,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.StringTokenizer;
 
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -147,7 +147,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 					if (level > 0)
 					{
 						// spawn box
-						L2NpcTemplate BoxTemplate = NpcTable.getInstance().getTemplate(SUPPLY_BOX_IDS[level - 1]);
+						L2NpcTemplate BoxTemplate = NpcData.getInstance().getTemplate(SUPPLY_BOX_IDS[level - 1]);
 						L2MonsterInstance box = new L2MonsterInstance(IdFactory.getInstance().getNextId(), BoxTemplate);
 						box.setCurrentHp(box.getMaxHp());
 						box.setCurrentMp(box.getMaxMp());

@@ -28,7 +28,7 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.enums.Team;
@@ -478,7 +478,7 @@ public final class BlockCheckerEngine
 			// if != 0, will spawn a blue block
 			byte random = 2;
 			// common template
-			final L2NpcTemplate template = NpcTable.getInstance().getTemplate(18672);
+			final L2NpcTemplate template = NpcData.getInstance().getTemplate(18672);
 			// Spawn blocks
 			try
 			{
@@ -518,7 +518,7 @@ public final class BlockCheckerEngine
 			// Spawn the block carrying girl
 			if ((_round == 1) || (_round == 2))
 			{
-				L2NpcTemplate girl = NpcTable.getInstance().getTemplate(18676);
+				L2NpcTemplate girl = NpcData.getInstance().getTemplate(18676);
 				try
 				{
 					final L2Spawn girlSpawn = new L2Spawn(girl);

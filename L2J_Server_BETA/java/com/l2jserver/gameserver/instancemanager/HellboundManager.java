@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -265,7 +265,7 @@ public class HellboundManager
 			L2NpcTemplate template;
 			while (rs.next())
 			{
-				template = NpcTable.getInstance().getTemplate(rs.getInt("npc_templateid"));
+				template = NpcData.getInstance().getTemplate(rs.getInt("npc_templateid"));
 				if (template != null)
 				{
 					spawnDat = new HellboundSpawn(template);

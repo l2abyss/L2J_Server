@@ -303,7 +303,7 @@ public abstract class L2Object implements IIdentifiable, INamable, ISpawnable, I
 	}
 	
 	@Override
-	public final String getName()
+	public String getName()
 	{
 		return _name;
 	}

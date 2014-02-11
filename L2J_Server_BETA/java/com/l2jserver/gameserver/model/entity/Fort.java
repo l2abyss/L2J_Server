@@ -41,7 +41,7 @@ import com.l2jserver.gameserver.FortUpdater.UpdaterType;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.DoorTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.datatables.StaticObjects;
 import com.l2jserver.gameserver.enums.MountType;
@@ -57,7 +57,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.interfaces.IProcedure;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.zone.type.L2FortZone;
 import com.l2jserver.gameserver.model.zone.type.L2SiegeZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -208,7 +208,7 @@ public final class Fort extends AbstractResidence
 						dbSave();
 						if (_cwh)
 						{
-							getOwnerClan().getWarehouse().destroyItemByItemId("CS_function_fee", PcInventory.ADENA_ID, fee, null, null);
+							getOwnerClan().getWarehouse().destroyItemByItemId("CS_function_fee", Inventory.ADENA_ID, fee, null, null);
 						}
 						ThreadPoolManager.getInstance().scheduleGeneral(new FunctionTask(true), getRate());
 					}
@@ -718,7 +718,7 @@ public final class Fort extends AbstractResidence
 		}
 		if (lease > 0)
 		{
-			if (!player.destroyItemByItemId("Consume", PcInventory.ADENA_ID, lease, null, true))
+			if (!player.destroyItemByItemId("Consume", Inventory.ADENA_ID, lease, null, true))
 			{
 				return false;
 			}
@@ -1209,7 +1209,7 @@ public final class Fort extends AbstractResidence
 				L2NpcTemplate template;
 				while (rs.next())
 				{
-					template = NpcTable.getInstance().getTemplate(rs.getInt("npcId"));
+					template = NpcData.getInstance().getTemplate(rs.getInt("npcId"));
 					if (template != null)
 					{
 						spawnDat = new L2Spawn(template);
@@ -1250,7 +1250,7 @@ public final class Fort extends AbstractResidence
 				L2NpcTemplate template;
 				while (rs.next())
 				{
-					template = NpcTable.getInstance().getTemplate(rs.getInt("npcId"));
+					template = NpcData.getInstance().getTemplate(rs.getInt("npcId"));
 					if (template != null)
 					{
 						spawnDat = new L2Spawn(template);
@@ -1289,7 +1289,7 @@ public final class Fort extends AbstractResidence
 				L2NpcTemplate template;
 				while (rs.next())
 				{
-					template = NpcTable.getInstance().getTemplate(rs.getInt("npcId"));
+					template = NpcData.getInstance().getTemplate(rs.getInt("npcId"));
 					if (template != null)
 					{
 						spawnDat = new L2Spawn(template);
@@ -1333,7 +1333,7 @@ public final class Fort extends AbstractResidence
 				{
 					int castleId = rs.getInt("castleId");
 					int npcId = rs.getInt("npcId");
-					template = NpcTable.getInstance().getTemplate(npcId);
+					template = NpcData.getInstance().getTemplate(npcId);
 					if (template != null)
 					{
 						spawnDat = new L2Spawn(template);

@@ -116,7 +116,7 @@ public class KnownListUpdateTaskManager
 			}
 			
 			// Some mobs need faster knownlist update
-			final boolean aggro = (Config.GUARD_ATTACK_AGGRO_MOB && (object instanceof L2GuardInstance)) || ((object instanceof L2Attackable) && (((L2Attackable) object).getEnemyClan() != null));
+			final boolean aggro = (Config.GUARD_ATTACK_AGGRO_MOB && (object instanceof L2GuardInstance)) || ((object instanceof L2Attackable) && (((L2Attackable) object).getTemplate().getEnemyClans() != null));
 			
 			if (forgetObjects)
 			{

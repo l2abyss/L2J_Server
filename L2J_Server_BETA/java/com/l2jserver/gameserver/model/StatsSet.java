@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 
+import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.interfaces.IParserAdvUtils;
 
 /**
@@ -545,6 +546,29 @@ public class StatsSet implements IParserAdvUtils
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	public final <A> A getObject(String name, Class<A> type)
+	{
+		Object obj = _set.get(name);
+		if ((obj == null) || !type.isAssignableFrom(obj.getClass()))
+		{
+			return null;
+		}
+		
+		return (A) obj;
+	}
+	
+	public SkillHolder getSkillHolder(String key)
+	{
+		Object obj = _set.get(key);
+		if ((obj == null) || !(obj instanceof SkillHolder))
+		{
+			return null;
+		}
+		
+		return (SkillHolder) obj;
+	}
+	
 	public void set(String name, Object value)
 	{
 		_set.put(name, value);
@@ -604,17 +628,5 @@ public class StatsSet implements IParserAdvUtils
 		}
 		
 		set(key, value);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public final <A> A getObject(String name, Class<A> type)
-	{
-		Object obj = _set.get(name);
-		if ((obj == null) || !type.isAssignableFrom(obj.getClass()))
-		{
-			return null;
-		}
-		
-		return (A) obj;
 	}
 }

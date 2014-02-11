@@ -36,7 +36,7 @@ public final class ServerObjectInfo extends L2GameServerPacket
 	public ServerObjectInfo(L2Npc activeChar, L2Character actor)
 	{
 		_activeChar = activeChar;
-		_idTemplate = _activeChar.getTemplate().getIdTemplate();
+		_idTemplate = _activeChar.getTemplate().getDisplayId();
 		_isAttackable = _activeChar.isAutoAttackable(actor);
 		_collisionHeight = _activeChar.getCollisionHeight();
 		_collisionRadius = _activeChar.getCollisionRadius();
@@ -44,7 +44,7 @@ public final class ServerObjectInfo extends L2GameServerPacket
 		_y = _activeChar.getY();
 		_z = _activeChar.getZ();
 		_heading = _activeChar.getHeading();
-		_name = _activeChar.getTemplate().isServerSideName() ? _activeChar.getTemplate().getName() : "";
+		_name = _activeChar.getTemplate().isUsingServerSideName() ? _activeChar.getTemplate().getName() : "";
 	}
 	
 	@Override
