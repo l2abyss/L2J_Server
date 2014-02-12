@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +39,7 @@ import org.w3c.dom.Node;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.engines.DocumentParser;
+import com.l2jserver.gameserver.enums.AISkillScope;
 import com.l2jserver.gameserver.model.L2MinionData;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -46,8 +48,10 @@ import com.l2jserver.gameserver.model.drops.DropListScope;
 import com.l2jserver.gameserver.model.drops.GeneralDropItem;
 import com.l2jserver.gameserver.model.drops.GroupedGeneralDropItem;
 import com.l2jserver.gameserver.model.drops.IDropItem;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.L2SkillType;
 
 /**
  * @author Nos
@@ -99,7 +103,7 @@ public class NpcData extends DocumentParser
 						final StatsSet set = new StatsSet();
 						final int npcId = parseInteger(attrs, "id");
 						Map<String, Object> parameters = null;
-						List<L2Skill> skills = null;
+						Map<Integer, L2Skill> skills = null;
 						Set<Integer> clans = null;
 						Set<Integer> enemyClans = null;
 						Map<DropListScope, List<IDropItem>> dropLists = null;
@@ -308,7 +312,7 @@ public class NpcData extends DocumentParser
 								}
 								case "skill_list":
 								{
-									skills = new ArrayList<>();
+									skills = new HashMap<>();
 									for (Node skill_list_node = npc_node.getFirstChild(); skill_list_node != null; skill_list_node = skill_list_node.getNextSibling())
 									{
 										if ("skill".equalsIgnoreCase(skill_list_node.getNodeName()))
@@ -319,7 +323,7 @@ public class NpcData extends DocumentParser
 											final L2Skill skill = SkillTable.getInstance().getInfo(skillId, skillLevel);
 											if (skill != null)
 											{
-												skills.add(skill);
+												skills.put(skill.getId(), skill);
 											}
 											else
 											{
@@ -421,7 +425,7 @@ public class NpcData extends DocumentParser
 										{
 											if (dropLists == null)
 											{
-												dropLists = new HashMap<>();
+												dropLists = new EnumMap<>(DropListScope.class);
 											}
 											
 											List<IDropItem> dropList = new ArrayList<>();
@@ -478,13 +482,113 @@ public class NpcData extends DocumentParser
 							template.setParameters(null);
 						}
 						
-						template.resetSkills();
 						if (skills != null)
 						{
-							for (L2Skill skill : skills)
+							Map<AISkillScope, List<L2Skill>> aiSkillLists = null;
+							for (L2Skill skill : skills.values())
 							{
-								template.addSkill(skill);
+								if (!skill.isPassive())
+								{
+									if (aiSkillLists == null)
+									{
+										aiSkillLists = new EnumMap<>(AISkillScope.class);
+									}
+									
+									List<AISkillScope> aiSkillScopes = new ArrayList<>();
+									final AISkillScope shortOrLongRangeScope = skill.getCastRange() <= 150 ? AISkillScope.SHORT_RANGE : AISkillScope.SHORT_RANGE;
+									if (skill.isSuicideAttack())
+									{
+										aiSkillScopes.add(AISkillScope.SUICIDE);
+									}
+									else
+									{
+										aiSkillScopes.add(AISkillScope.GENERAL);
+										
+										if (skill.isContinuous())
+										{
+											if (!skill.isDebuff())
+											{
+												aiSkillScopes.add(AISkillScope.BUFF);
+											}
+											else
+											{
+												aiSkillScopes.add(AISkillScope.DEBUFF);
+												aiSkillScopes.add(AISkillScope.COT);
+												aiSkillScopes.add(shortOrLongRangeScope);
+											}
+										}
+										else if (skill.getSkillType() == L2SkillType.DUMMY)
+										{
+											if (skill.hasEffectType(L2EffectType.DISPEL, L2EffectType.DISPEL_BY_SLOT))
+											{
+												aiSkillScopes.add(AISkillScope.NEGATIVE);
+												aiSkillScopes.add(shortOrLongRangeScope);
+											}
+											else if (skill.hasEffectType(L2EffectType.HEAL, L2EffectType.HEAL_PERCENT))
+											{
+												aiSkillScopes.add(AISkillScope.HEAL);
+											}
+											else if (skill.hasEffectType(L2EffectType.PHYSICAL_ATTACK, L2EffectType.PHYSICAL_ATTACK_HP_LINK, L2EffectType.FATAL_BLOW, L2EffectType.ENERGY_ATTACK, L2EffectType.MAGICAL_ATTACK_MP, L2EffectType.MAGICAL_ATTACK, L2EffectType.DEATH_LINK, L2EffectType.HP_DRAIN))
+											{
+												aiSkillScopes.add(AISkillScope.ATTACK);
+												aiSkillScopes.add(AISkillScope.UNIVERSAL);
+												aiSkillScopes.add(shortOrLongRangeScope);
+											}
+											else if (skill.hasEffectType(L2EffectType.SLEEP))
+											{
+												aiSkillScopes.add(AISkillScope.IMMOBILIZE);
+											}
+											else if (skill.hasEffectType(L2EffectType.STUN, L2EffectType.ROOT))
+											{
+												aiSkillScopes.add(AISkillScope.IMMOBILIZE);
+												aiSkillScopes.add(shortOrLongRangeScope);
+											}
+											else if (skill.hasEffectType(L2EffectType.MUTE, L2EffectType.FEAR))
+											{
+												aiSkillScopes.add(AISkillScope.COT);
+												aiSkillScopes.add(shortOrLongRangeScope);
+											}
+											else if (skill.hasEffectType(L2EffectType.PARALYZE))
+											{
+												aiSkillScopes.add(AISkillScope.IMMOBILIZE);
+												aiSkillScopes.add(shortOrLongRangeScope);
+											}
+											else if (skill.hasEffectType(L2EffectType.DMG_OVER_TIME, L2EffectType.DMG_OVER_TIME_PERCENT))
+											{
+												aiSkillScopes.add(shortOrLongRangeScope);
+											}
+											else if (skill.hasEffectType(L2EffectType.RESURRECTION))
+											{
+												aiSkillScopes.add(AISkillScope.RES);
+											}
+											else
+											{
+												aiSkillScopes.add(AISkillScope.UNIVERSAL);
+											}
+										}
+									}
+									
+									for (AISkillScope aiSkillScope : aiSkillScopes)
+									{
+										List<L2Skill> aiSkills = aiSkillLists.get(aiSkillScope);
+										if (aiSkills == null)
+										{
+											aiSkills = new ArrayList<>();
+											aiSkillLists.put(aiSkillScope, aiSkills);
+										}
+										
+										aiSkills.add(skill);
+									}
+								}
 							}
+							
+							template.setSkills(skills);
+							template.setAISkillLists(aiSkillLists);
+						}
+						else
+						{
+							template.setSkills(null);
+							template.setAISkillLists(null);
 						}
 						
 						template.setClans(clans);

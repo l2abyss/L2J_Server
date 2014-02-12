@@ -34,6 +34,7 @@ import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.CategoryData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.NpcPersonalAIData;
+import com.l2jserver.gameserver.enums.AISkillScope;
 import com.l2jserver.gameserver.enums.AIType;
 import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.InstanceType;
@@ -243,14 +244,11 @@ public class L2Npc extends L2Character
 			}
 			case 1:
 			{
-				if (getTemplate().getUniversalSkills() != null)
+				for (L2Skill sk : getTemplate().getAISkills(AISkillScope.UNIVERSAL))
 				{
-					for (L2Skill sk : getTemplate().getUniversalSkills())
+					if (sk.getCastRange() >= 200)
 					{
-						if (sk.getCastRange() >= 200)
-						{
-							skilldata.add(sk);
-						}
+						skilldata.add(sk);
 					}
 				}
 				break;
@@ -300,14 +298,11 @@ public class L2Npc extends L2Character
 			}
 			case 1:
 			{
-				if (getTemplate().getUniversalSkills() != null)
+				for (L2Skill sk : getTemplate().getAISkills(AISkillScope.UNIVERSAL))
 				{
-					for (L2Skill sk : getTemplate().getUniversalSkills())
+					if (sk.getCastRange() <= 200)
 					{
-						if (sk.getCastRange() <= 200)
-						{
-							skilldata.add(sk);
-						}
+						skilldata.add(sk);
 					}
 				}
 				break;

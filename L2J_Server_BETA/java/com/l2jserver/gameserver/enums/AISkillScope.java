@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.enums;
 /**
  * @author Zoey76
  */
-public enum AISkillType
+public enum AISkillScope
 {
 	BUFF,
 	DEBUFF,
