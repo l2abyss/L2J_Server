@@ -1094,7 +1094,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 			}
 			// -------------------------------------------------------------------------------
 			// Res Skill Condition
-			List<L2Skill> aiResSkills = _skillrender.getAISkills(AISkillScope.HEAL);
+			List<L2Skill> aiResSkills = _skillrender.getAISkills(AISkillScope.RES);
 			if (!aiResSkills.isEmpty())
 			{
 				if (npc.isMinion())
