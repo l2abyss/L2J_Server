@@ -201,7 +201,7 @@ public class HtmCache
 	 */
 	public boolean isLoadable(String path)
 	{
-		return htmlFilter.accept(new File(path));
+		return htmlFilter.accept(new File(Config.DATAPACK_ROOT, path));
 	}
 	
 	public static HtmCache getInstance()
