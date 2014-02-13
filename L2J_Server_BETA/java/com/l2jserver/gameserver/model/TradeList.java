@@ -860,13 +860,13 @@ public class TradeList
 				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.C1_PURCHASED_S3_S2_S);
 				msg.addString(player.getName());
 				msg.addItemName(newItem);
-				msg.addItemNumber(item.getCount());
+				msg.addLong(item.getCount());
 				_owner.sendPacket(msg);
 				
 				msg = SystemMessage.getSystemMessage(SystemMessageId.PURCHASED_S3_S2_S_FROM_C1);
 				msg.addString(_owner.getName());
 				msg.addItemName(newItem);
-				msg.addItemNumber(item.getCount());
+				msg.addLong(item.getCount());
 				player.sendPacket(msg);
 			}
 			else
@@ -1038,13 +1038,13 @@ public class TradeList
 				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.PURCHASED_S3_S2_S_FROM_C1);
 				msg.addString(player.getName());
 				msg.addItemName(newItem);
-				msg.addItemNumber(item.getCount());
+				msg.addLong(item.getCount());
 				_owner.sendPacket(msg);
 				
 				msg = SystemMessage.getSystemMessage(SystemMessageId.C1_PURCHASED_S3_S2_S);
 				msg.addString(_owner.getName());
 				msg.addItemName(newItem);
-				msg.addItemNumber(item.getCount());
+				msg.addLong(item.getCount());
 				player.sendPacket(msg);
 			}
 			else

@@ -408,17 +408,17 @@ public class Lottery
 			{
 				// There are winners.
 				sm = SystemMessage.getSystemMessage(SystemMessageId.AMOUNT_FOR_WINNER_S1_IS_S2_ADENA_WE_HAVE_S3_PRIZE_WINNER);
-				sm.addNumber(getId());
-				sm.addItemNumber(getPrize());
-				sm.addItemNumber(count1);
+				sm.addInt(getId());
+				sm.addLong(getPrize());
+				sm.addLong(count1);
 				Announcements.getInstance().announceToAll(sm);
 			}
 			else
 			{
 				// There are no winners.
 				sm = SystemMessage.getSystemMessage(SystemMessageId.AMOUNT_FOR_LOTTERY_S1_IS_S2_ADENA_NO_WINNER);
-				sm.addNumber(getId());
-				sm.addItemNumber(getPrize());
+				sm.addInt(getId());
+				sm.addLong(getPrize());
 				Announcements.getInstance().announceToAll(sm);
 			}
 			

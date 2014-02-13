@@ -724,7 +724,7 @@ public class Hero
 					clan.addReputationScore(Config.HERO_POINTS, true);
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_MEMBER_C1_BECAME_HERO_AND_GAINED_S2_REPUTATION_POINTS);
 					sm.addString(CharNameTable.getInstance().getNameById(charId));
-					sm.addNumber(Config.HERO_POINTS);
+					sm.addInt(Config.HERO_POINTS);
 					clan.broadcastToOnlineMembers(sm);
 				}
 				player.sendPacket(new UserInfo(player));
@@ -762,7 +762,7 @@ public class Hero
 									clan.addReputationScore(Config.HERO_POINTS, true);
 									SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_MEMBER_C1_BECAME_HERO_AND_GAINED_S2_REPUTATION_POINTS);
 									sm.addString(CharNameTable.getInstance().getNameById(charId));
-									sm.addNumber(Config.HERO_POINTS);
+									sm.addInt(Config.HERO_POINTS);
 									clan.broadcastToOnlineMembers(sm);
 								}
 							}

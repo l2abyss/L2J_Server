@@ -91,7 +91,7 @@ public final class PetitionManager
 		
 		// Petition application accepted. Reciept No. is <ID>
 		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PETITION_ACCEPTED_RECENT_NO_S1);
-		sm.addNumber(currPetition.getId());
+		sm.addInt(currPetition.getId());
 		currPetition.sendResponderPacket(sm);
 		
 		// Petition consultation with <Player> underway.

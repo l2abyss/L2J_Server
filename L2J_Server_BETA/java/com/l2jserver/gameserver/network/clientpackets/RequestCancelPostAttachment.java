@@ -193,7 +193,7 @@ public final class RequestCancelPostAttachment extends L2GameClientPacket
 			}
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_ACQUIRED_S2_S1);
 			sm.addItemName(item.getId());
-			sm.addItemNumber(count);
+			sm.addLong(count);
 			activeChar.sendPacket(sm);
 		}
 		

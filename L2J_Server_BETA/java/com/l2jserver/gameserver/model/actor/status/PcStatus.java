@@ -179,7 +179,7 @@ public class PcStatus extends PlayableStatus
 				{
 					getActiveChar().reduceCurrentMp(mpDam);
 					SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.ARCANE_SHIELD_DECREASED_YOUR_MP_BY_S1_INSTEAD_OF_HP);
-					smsg.addNumber(mpDam);
+					smsg.addInt(mpDam);
 					getActiveChar().sendPacket(smsg);
 					return;
 				}
@@ -246,7 +246,7 @@ public class PcStatus extends PlayableStatus
 				smsg = SystemMessage.getSystemMessage(SystemMessageId.C1_RECEIVED_DAMAGE_OF_S3_FROM_C2);
 				smsg.addString(getActiveChar().getName());
 				smsg.addCharName(attacker);
-				smsg.addNumber(fullValue);
+				smsg.addInt(fullValue);
 				getActiveChar().sendPacket(smsg);
 				
 				if (tDmg > 0)
@@ -254,14 +254,14 @@ public class PcStatus extends PlayableStatus
 					smsg = SystemMessage.getSystemMessage(SystemMessageId.C1_RECEIVED_DAMAGE_OF_S3_FROM_C2);
 					smsg.addString(getActiveChar().getSummon().getName());
 					smsg.addCharName(attacker);
-					smsg.addNumber(tDmg);
+					smsg.addInt(tDmg);
 					getActiveChar().sendPacket(smsg);
 					
 					if (attackerPlayer != null)
 					{
 						smsg = SystemMessage.getSystemMessage(SystemMessageId.GIVEN_S1_DAMAGE_TO_YOUR_TARGET_AND_S2_DAMAGE_TO_SERVITOR);
-						smsg.addNumber(fullValue);
-						smsg.addNumber(tDmg);
+						smsg.addInt(fullValue);
+						smsg.addInt(tDmg);
 						attackerPlayer.sendPacket(smsg);
 					}
 				}

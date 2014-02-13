@@ -170,35 +170,35 @@ public class L2RaceManagerInstance extends L2Npc
 					_state = ACCEPTING_BETS;
 					startRace();
 				}// else{_log.info("Race open");}
-				sm.addNumber(_raceNumber);
+				sm.addInt(_raceNumber);
 				break;
 			case 818: // SystemMessageId.MONSRACE_TICKETS_STOP_IN_S1_MINUTES
 			case 820: // SystemMessageId.MONSRACE_S2_BEGINS_IN_S1_MINUTES
 			case 823: // SystemMessageId.MONSRACE_BEGINS_IN_S1_SECONDS
-				sm.addNumber(_minutes);
+				sm.addInt(_minutes);
 				if (type.getId() == 820)
 				{
-					sm.addNumber(_raceNumber);
+					sm.addInt(_raceNumber);
 				}
 				_minutes--;
 				break;
 			case 819: // SystemMessageId.MONSRACE_S1_TICKET_SALES_CLOSED
 				// _log.info("Sales closed");
-				sm.addNumber(_raceNumber);
+				sm.addInt(_raceNumber);
 				_state = WAITING;
 				_minutes = 2;
 				break;
 			case 821: // SystemMessageId.MONSRACE_S1_BEGINS_IN_30_SECONDS
 			case 822: // SystemMessageId.MONSRACE_S1_COUNTDOWN_IN_FIVE_SECONDS
 			case 825: // SystemMessageId.MONSRACE_S1_RACE_END
-				sm.addNumber(_raceNumber);
+				sm.addInt(_raceNumber);
 				_minutes = 5;
 				break;
 			case 826: // SystemMessageId.MONSRACE_FIRST_PLACE_S1_SECOND_S2
 				// _log.info("Placing");
 				_state = RACE_END;
-				sm.addNumber(MonsterRace.getInstance().getFirstPlace());
-				sm.addNumber(MonsterRace.getInstance().getSecondPlace());
+				sm.addInt(MonsterRace.getInstance().getFirstPlace());
+				sm.addInt(MonsterRace.getInstance().getSecondPlace());
 				break;
 		}
 		// _logn.info("Counter: "+minutes);
@@ -440,7 +440,7 @@ public class L2RaceManagerInstance extends L2Npc
 			player.setRace(0, 0);
 			player.setRace(1, 0);
 			sm = SystemMessage.getSystemMessage(SystemMessageId.ACQUIRED_S1_S2);
-			sm.addNumber(_raceNumber);
+			sm.addInt(_raceNumber);
 			sm.addItemName(4443);
 			player.sendPacket(sm);
 			L2ItemInstance item = new L2ItemInstance(IdFactory.getInstance().getNextId(), 4443);

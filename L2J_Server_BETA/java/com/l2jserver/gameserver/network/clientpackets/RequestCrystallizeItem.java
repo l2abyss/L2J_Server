@@ -194,7 +194,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 			if (itemToRemove.getEnchantLevel() > 0)
 			{
 				sm = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
-				sm.addNumber(itemToRemove.getEnchantLevel());
+				sm.addInt(itemToRemove.getEnchantLevel());
 				sm.addItemName(itemToRemove);
 			}
 			else
@@ -223,7 +223,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 		
 		sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
 		sm.addItemName(createditem);
-		sm.addItemNumber(crystalAmount);
+		sm.addLong(crystalAmount);
 		activeChar.sendPacket(sm);
 		
 		activeChar.broadcastUserInfo();

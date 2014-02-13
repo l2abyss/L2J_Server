@@ -83,7 +83,7 @@ public final class RequestPlayerShowMessage extends BaseReadPacket
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_UNREAD_MESSAGES);
 					final int number = super.readD();
-					sm.addNumber(number);
+					sm.addInt(number);
 					player.sendPacket(sm);
 				}
 				catch (Exception e)

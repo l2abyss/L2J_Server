@@ -444,7 +444,7 @@ public class L2PetInstance extends L2Summon
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 				sm.addItemName(item.getId());
-				sm.addItemNumber(count);
+				sm.addLong(count);
 				sendPacket(sm);
 			}
 			else
@@ -491,7 +491,7 @@ public class L2PetInstance extends L2Summon
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 				sm.addItemName(item.getId());
-				sm.addItemNumber(count);
+				sm.addLong(count);
 				sendPacket(sm);
 			}
 			else
@@ -572,13 +572,13 @@ public class L2PetInstance extends L2Summon
 				if (target.getId() == Inventory.ADENA_ID)
 				{
 					smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S1_ADENA);
-					smsg.addItemNumber(target.getCount());
+					smsg.addLong(target.getCount());
 				}
 				else if (target.getCount() > 1)
 				{
 					smsg = SystemMessage.getSystemMessage(SystemMessageId.FAILED_TO_PICKUP_S2_S1_S);
 					smsg.addItemName(target);
-					smsg.addItemNumber(target.getCount());
+					smsg.addLong(target.getCount());
 				}
 				else
 				{
@@ -625,20 +625,20 @@ public class L2PetInstance extends L2Summon
 			if (target.getId() == Inventory.ADENA_ID)
 			{
 				smsg = SystemMessage.getSystemMessage(SystemMessageId.PET_PICKED_S1_ADENA);
-				smsg.addItemNumber(target.getCount());
+				smsg.addLong(target.getCount());
 				sendPacket(smsg);
 			}
 			else if (target.getEnchantLevel() > 0)
 			{
 				smsg = SystemMessage.getSystemMessage(SystemMessageId.PET_PICKED_S1_S2);
-				smsg.addNumber(target.getEnchantLevel());
+				smsg.addInt(target.getEnchantLevel());
 				smsg.addItemName(target);
 				sendPacket(smsg);
 			}
 			else if (target.getCount() > 1)
 			{
 				smsg = SystemMessage.getSystemMessage(SystemMessageId.PET_PICKED_S2_S1_S);
-				smsg.addItemNumber(target.getCount());
+				smsg.addLong(target.getCount());
 				smsg.addItemName(target);
 				sendPacket(smsg);
 			}

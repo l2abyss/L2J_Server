@@ -387,21 +387,21 @@ public final class UseItem extends L2GameClientPacket
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1);
 			sm.addItemName(item);
-			sm.addNumber(hours);
-			sm.addNumber(minutes);
+			sm.addInt(hours);
+			sm.addInt(minutes);
 		}
 		else if (minutes > 0)
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.S2_MINUTES_S3_SECONDS_REMAINING_FOR_REUSE_S1);
 			sm.addItemName(item);
-			sm.addNumber(minutes);
+			sm.addInt(minutes);
 		}
 		else
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.S2_SECONDS_REMAINING_FOR_REUSE_S1);
 			sm.addItemName(item);
 		}
-		sm.addNumber(seconds);
+		sm.addInt(seconds);
 		activeChar.sendPacket(sm);
 	}
 	

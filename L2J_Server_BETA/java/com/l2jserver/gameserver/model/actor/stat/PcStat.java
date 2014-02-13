@@ -94,7 +94,7 @@ public class PcStat extends PlayableStat
 			{
 				activeChar.setKarma(activeChar.getKarma() - karmaLost);
 				final SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.YOUR_KARMA_HAS_BEEN_CHANGED_TO_S1);
-				msg.addNumber(activeChar.getKarma());
+				msg.addInt(activeChar.getKarma());
 				activeChar.sendPacket(msg);
 			}
 		}
@@ -184,28 +184,28 @@ public class PcStat extends PlayableStat
 		if ((addToExp == 0) && (addToSp != 0))
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.ACQUIRED_S1_SP);
-			sm.addNumber(addToSp);
+			sm.addInt(addToSp);
 		}
 		else if ((addToSp == 0) && (addToExp != 0))
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_EXPERIENCE);
-			sm.addNumber((int) addToExp);
+			sm.addLong(addToExp);
 		}
 		else
 		{
 			if ((addToExp - baseExp) > 0)
 			{
 				sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_EARNED_S1_EXP_BONUS_S2_AND_S3_SP_BONUS_S4);
-				sm.addNumber((int) addToExp);
-				sm.addNumber((int) (addToExp - baseExp));
-				sm.addNumber(addToSp);
-				sm.addNumber((addToSp - baseSp));
+				sm.addLong(addToExp);
+				sm.addLong(addToExp - baseExp);
+				sm.addInt(addToSp);
+				sm.addInt(addToSp - baseSp);
 			}
 			else
 			{
 				sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_EARNED_S1_EXP_AND_S2_SP);
-				sm.addNumber((int) addToExp);
-				sm.addNumber(addToSp);
+				sm.addLong((int) addToExp);
+				sm.addInt(addToSp);
 			}
 		}
 		activeChar.sendPacket(sm);
@@ -230,10 +230,10 @@ public class PcStat extends PlayableStat
 		{
 			// Send a Server->Client System Message to the L2PcInstance
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EXP_DECREASED_BY_S1);
-			sm.addNumber((int) addToExp);
+			sm.addLong(addToExp);
 			getActiveChar().sendPacket(sm);
 			sm = SystemMessage.getSystemMessage(SystemMessageId.SP_DECREASED_S1);
-			sm.addNumber(addToSp);
+			sm.addInt(addToSp);
 			getActiveChar().sendPacket(sm);
 			if (getLevel() < level)
 			{

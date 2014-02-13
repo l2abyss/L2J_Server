@@ -275,8 +275,8 @@ public final class BotReportTable
 				if (reuse < Config.BOTREPORT_REPORT_DELAY)
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_CAN_REPORT_IN_S1_MINS_YOU_HAVE_S2_POINTS_LEFT);
-					sm.addNumber((int) (reuse / 60000));
-					sm.addNumber(rcdRep.getPointsLeft());
+					sm.addInt((int) (reuse / 60000));
+					sm.addInt(rcdRep.getPointsLeft());
 					reporter.sendPacket(sm);
 					return false;
 				}
@@ -307,7 +307,7 @@ public final class BotReportTable
 		
 		sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_HAVE_USED_REPORT_POINT_ON_C1_YOU_HAVE_C2_POINTS_LEFT);
 		sm.addCharName(bot);
-		sm.addNumber(rcdRep.getPointsLeft());
+		sm.addInt(rcdRep.getPointsLeft());
 		reporter.sendPacket(sm);
 		
 		handleReport(bot, rcd);

@@ -203,7 +203,7 @@ public final class RequestExEnchantSkillRouteChange extends L2GameClientPacket
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.SKILL_ENCHANT_CHANGE_SUCCESSFUL_S1_LEVEL_WAS_DECREASED_BY_S2);
 				sm.addSkillName(_skillId);
-				sm.addNumber(levelPenalty);
+				sm.addInt(levelPenalty);
 				player.sendPacket(sm);
 			}
 			player.sendSkillList();

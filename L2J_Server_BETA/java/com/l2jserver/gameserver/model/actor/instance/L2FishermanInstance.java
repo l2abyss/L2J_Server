@@ -94,7 +94,7 @@ public final class L2FishermanInstance extends L2MerchantInstance
 			if (minlLevel > 0)
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN_S1);
-				sm.addNumber(minlLevel);
+				sm.addInt(minlLevel);
 				player.sendPacket(sm);
 			}
 			else

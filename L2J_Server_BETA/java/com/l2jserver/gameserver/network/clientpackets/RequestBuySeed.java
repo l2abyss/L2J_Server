@@ -182,7 +182,7 @@ public class RequestBuySeed extends L2GameClientPacket
 		{
 			castle.addToTreasuryNoTax(totalPrice);
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED_ADENA);
-			sm.addItemNumber(totalPrice);
+			sm.addLong(totalPrice);
 			player.sendPacket(sm);
 		}
 	}

@@ -93,7 +93,7 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 				{
 					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_S2_ELEMENTAL_POWER_REMOVED);
 				}
-				sm.addNumber(targetItem.getEnchantLevel());
+				sm.addInt(targetItem.getEnchantLevel());
 				sm.addItemName(targetItem);
 				if (targetItem.isArmor())
 				{

@@ -3286,7 +3286,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 		if (item.getId() == Inventory.ADENA_ID)
 		{
 			SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_ADENA);
-			smsg.addItemNumber(count);
+			smsg.addLong(count);
 			player.sendPacket(smsg);
 		}
 		// Otherwise, send message of object reward to client
@@ -3296,7 +3296,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 			{
 				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
 				smsg.addItemName(item);
-				smsg.addItemNumber(count);
+				smsg.addLong(count);
 				player.sendPacket(smsg);
 			}
 			else

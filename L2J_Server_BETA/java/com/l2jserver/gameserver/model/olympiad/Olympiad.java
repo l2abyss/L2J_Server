@@ -398,7 +398,7 @@ public class Olympiad
 		public void run()
 		{
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.OLYMPIAD_PERIOD_S1_HAS_ENDED);
-			sm.addNumber(_currentCycle);
+			sm.addInt(_currentCycle);
 			
 			Announcements.getInstance().announceToAll(sm);
 			Announcements.getInstance().announceToAll("Olympiad Validation Period has began");
@@ -585,7 +585,7 @@ public class Olympiad
 	protected void setNewOlympiadEnd()
 	{
 		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.OLYMPIAD_PERIOD_S1_HAS_STARTED);
-		sm.addNumber(_currentCycle);
+		sm.addInt(_currentCycle);
 		
 		Announcements.getInstance().announceToAll(sm);
 		

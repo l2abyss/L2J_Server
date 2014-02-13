@@ -623,7 +623,7 @@ public class L2Party extends AbstractPlayerGroup
 			SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.C1_OBTAINED_S3_S2);
 			msg.addString(target.getName());
 			msg.addItemName(item);
-			msg.addItemNumber(item.getCount());
+			msg.addLong(item.getCount());
 			broadcastToPartyMembers(target, msg);
 		}
 		else
@@ -661,7 +661,7 @@ public class L2Party extends AbstractPlayerGroup
 			SystemMessage msg = spoil ? SystemMessage.getSystemMessage(SystemMessageId.C1_SWEEPED_UP_S3_S2) : SystemMessage.getSystemMessage(SystemMessageId.C1_OBTAINED_S3_S2);
 			msg.addString(looter.getName());
 			msg.addItemName(itemId);
-			msg.addItemNumber(itemCount);
+			msg.addLong(itemCount);
 			broadcastToPartyMembers(looter, msg);
 		}
 		else

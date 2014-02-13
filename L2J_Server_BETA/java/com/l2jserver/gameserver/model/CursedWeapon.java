@@ -315,7 +315,7 @@ public class CursedWeapon implements INamable
 		SystemMessage msg2 = SystemMessage.getSystemMessage(SystemMessageId.S2_MINUTE_OF_USAGE_TIME_ARE_LEFT_FOR_S1);
 		int timeLeft = (int) (cw.getTimeLeft() / 60000);
 		msg2.addItemName(_player.getCursedWeaponEquippedId());
-		msg2.addNumber(timeLeft);
+		msg2.addInt(timeLeft);
 		_player.sendPacket(msg2);
 	}
 	

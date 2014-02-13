@@ -52,7 +52,7 @@ public class FameTask implements Runnable
 		}
 		_player.setFame(_player.getFame() + _value);
 		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.ACQUIRED_S1_REPUTATION_SCORE);
-		sm.addNumber(_value);
+		sm.addInt(_value);
 		_player.sendPacket(sm);
 		_player.sendPacket(new UserInfo(_player));
 	}

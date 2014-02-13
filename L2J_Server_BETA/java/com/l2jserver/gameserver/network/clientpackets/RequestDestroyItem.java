@@ -174,7 +174,7 @@ public final class RequestDestroyItem extends L2GameClientPacket
 			if (itemToRemove.getEnchantLevel() > 0)
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
-				sm.addNumber(itemToRemove.getEnchantLevel());
+				sm.addInt(itemToRemove.getEnchantLevel());
 				sm.addItemName(itemToRemove);
 				activeChar.sendPacket(sm);
 			}

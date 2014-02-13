@@ -2613,7 +2613,7 @@ public class L2Clan implements IIdentifiable, INamable
 					{
 						player.setSp(player.getSp() - 20000);
 						SystemMessage sp = SystemMessage.getSystemMessage(SystemMessageId.SP_DECREASED_S1);
-						sp.addNumber(20000);
+						sp.addInt(20000);
 						player.sendPacket(sp);
 						sp = null;
 						increaseClanLevel = true;
@@ -2630,7 +2630,7 @@ public class L2Clan implements IIdentifiable, INamable
 					{
 						player.setSp(player.getSp() - 100000);
 						SystemMessage sp = SystemMessage.getSystemMessage(SystemMessageId.SP_DECREASED_S1);
-						sp.addNumber(100000);
+						sp.addInt(100000);
 						player.sendPacket(sp);
 						sp = null;
 						increaseClanLevel = true;
@@ -2648,7 +2648,7 @@ public class L2Clan implements IIdentifiable, INamable
 					{
 						player.setSp(player.getSp() - 350000);
 						SystemMessage sp = SystemMessage.getSystemMessage(SystemMessageId.SP_DECREASED_S1);
-						sp.addNumber(350000);
+						sp.addInt(350000);
 						player.sendPacket(sp);
 						sp = null;
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
@@ -2670,7 +2670,7 @@ public class L2Clan implements IIdentifiable, INamable
 					{
 						player.setSp(player.getSp() - 1000000);
 						SystemMessage sp = SystemMessage.getSystemMessage(SystemMessageId.SP_DECREASED_S1);
-						sp.addNumber(1000000);
+						sp.addInt(1000000);
 						player.sendPacket(sp);
 						sp = null;
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
@@ -2692,7 +2692,7 @@ public class L2Clan implements IIdentifiable, INamable
 					{
 						player.setSp(player.getSp() - 2500000);
 						SystemMessage sp = SystemMessage.getSystemMessage(SystemMessageId.SP_DECREASED_S1);
-						sp.addNumber(2500000);
+						sp.addInt(2500000);
 						player.sendPacket(sp);
 						sp = null;
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_DISAPPEARED);
@@ -2710,7 +2710,7 @@ public class L2Clan implements IIdentifiable, INamable
 				{
 					setReputationScore(getReputationScore() - Config.CLAN_LEVEL_6_COST, true);
 					SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
-					cr.addNumber(Config.CLAN_LEVEL_6_COST);
+					cr.addInt(Config.CLAN_LEVEL_6_COST);
 					player.sendPacket(cr);
 					cr = null;
 					increaseClanLevel = true;
@@ -2723,7 +2723,7 @@ public class L2Clan implements IIdentifiable, INamable
 				{
 					setReputationScore(getReputationScore() - Config.CLAN_LEVEL_7_COST, true);
 					SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
-					cr.addNumber(Config.CLAN_LEVEL_7_COST);
+					cr.addInt(Config.CLAN_LEVEL_7_COST);
 					player.sendPacket(cr);
 					cr = null;
 					increaseClanLevel = true;
@@ -2735,7 +2735,7 @@ public class L2Clan implements IIdentifiable, INamable
 				{
 					setReputationScore(getReputationScore() - Config.CLAN_LEVEL_8_COST, true);
 					SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
-					cr.addNumber(Config.CLAN_LEVEL_8_COST);
+					cr.addInt(Config.CLAN_LEVEL_8_COST);
 					player.sendPacket(cr);
 					cr = null;
 					increaseClanLevel = true;
@@ -2750,12 +2750,12 @@ public class L2Clan implements IIdentifiable, INamable
 					{
 						setReputationScore(getReputationScore() - Config.CLAN_LEVEL_9_COST, true);
 						SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
-						cr.addNumber(Config.CLAN_LEVEL_9_COST);
+						cr.addInt(Config.CLAN_LEVEL_9_COST);
 						player.sendPacket(cr);
 						cr = null;
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 						sm.addItemName(9910);
-						sm.addItemNumber(150);
+						sm.addLong(150);
 						player.sendPacket(sm);
 						increaseClanLevel = true;
 					}
@@ -2770,12 +2770,12 @@ public class L2Clan implements IIdentifiable, INamable
 					{
 						setReputationScore(getReputationScore() - Config.CLAN_LEVEL_10_COST, true);
 						SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
-						cr.addNumber(Config.CLAN_LEVEL_10_COST);
+						cr.addInt(Config.CLAN_LEVEL_10_COST);
 						player.sendPacket(cr);
 						cr = null;
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 						sm.addItemName(9911);
-						sm.addItemNumber(5);
+						sm.addLong(5);
 						player.sendPacket(sm);
 						increaseClanLevel = true;
 					}
@@ -2796,7 +2796,7 @@ public class L2Clan implements IIdentifiable, INamable
 				{
 					setReputationScore(getReputationScore() - Config.CLAN_LEVEL_11_COST, true);
 					SystemMessage cr = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
-					cr.addNumber(Config.CLAN_LEVEL_11_COST);
+					cr.addInt(Config.CLAN_LEVEL_11_COST);
 					player.sendPacket(cr);
 					cr = null;
 					increaseClanLevel = true;

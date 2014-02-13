@@ -1199,11 +1199,11 @@ public class L2VillageMasterInstance extends L2NpcInstance
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN_S1);
 				if (player.getClan().getLevel() < 5)
 				{
-					sm.addNumber(5);
+					sm.addInt(5);
 				}
 				else
 				{
-					sm.addNumber(player.getClan().getLevel() + 1);
+					sm.addInt(player.getClan().getLevel() + 1);
 				}
 				player.sendPacket(sm);
 			}

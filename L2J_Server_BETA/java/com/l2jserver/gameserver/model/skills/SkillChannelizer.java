@@ -125,122 +125,130 @@ public class SkillChannelizer implements Runnable
 			return;
 		}
 		
-		if (_skill.getMpPerChanneling() > 0)
+		try
 		{
-			// Validate mana per tick.
-			if (_channelizer.getCurrentMp() < _skill.getMpPerChanneling())
-			{
-				if (_channelizer.isPlayer())
-				{
-					_channelizer.sendPacket(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP);
-				}
-				_channelizer.abortCast();
-				return;
-			}
 			
-			// Reduce mana per tick
-			_channelizer.reduceCurrentMp(_skill.getMpPerChanneling());
-		}
-		
-		// Apply channeling skills on the targets.
-		if (_skill.getChannelingSkillId() > 0)
-		{
-			final L2Skill baseSkill = SkillTable.getInstance().getInfo(_skill.getChannelingSkillId(), 1);
-			if (baseSkill == null)
+			if (_skill.getMpPerChanneling() > 0)
 			{
-				_log.log(Level.WARNING, getClass().getSimpleName() + ": skill " + _skill + " couldn't find effect id skill: " + _skill.getChannelingSkillId() + " !");
-				_channelizer.abortCast();
-				return;
-			}
-			
-			if (_channelized == null)
-			{
-				final List<L2Character> targets = getTargetList();
-				if (targets.isEmpty())
+				// Validate mana per tick.
+				if (_channelizer.getCurrentMp() < _skill.getMpPerChanneling())
 				{
-					_log.log(Level.WARNING, getClass().getSimpleName() + ": skill " + _skill + " couldn't find proper target!");
+					if (_channelizer.isPlayer())
+					{
+						_channelizer.sendPacket(SystemMessageId.SKILL_REMOVED_DUE_LACK_MP);
+					}
 					_channelizer.abortCast();
 					return;
 				}
 				
-				_channelized = targets.get(0);
-				_channelized.getSkillChannelized().addChannelizer(_skill.getChannelingSkillId(), getChannelizer());
+				// Reduce mana per tick
+				_channelizer.reduceCurrentMp(_skill.getMpPerChanneling());
 			}
 			
-			if (!Util.checkIfInRange(_skill.getEffectRange(), _channelizer, _channelized, true))
+			// Apply channeling skills on the targets.
+			if (_skill.getChannelingSkillId() > 0)
 			{
-				_channelizer.abortCast();
-				_channelizer.sendPacket(SystemMessageId.CANT_SEE_TARGET);
-			}
-			else if (!GeoData.getInstance().canSeeTarget(_channelizer, _channelized))
-			{
-				_channelizer.abortCast();
-				_channelizer.sendPacket(SystemMessageId.CANT_SEE_TARGET);
-			}
-			else
-			{
-				final int maxSkillLevel = SkillTable.getInstance().getMaxLevel(_skill.getChannelingSkillId());
-				final int skillLevel = Math.min(_channelized.getSkillChannelized().getChannerlizersSize(_skill.getChannelingSkillId()), maxSkillLevel);
-				
-				final BuffInfo info = _channelized.getEffectList().getBuffInfoBySkillId(_skill.getChannelingSkillId());
-				if ((info == null) || (info.getSkill().getLevel() < skillLevel))
+				final L2Skill baseSkill = SkillTable.getInstance().getInfo(_skill.getChannelingSkillId(), 1);
+				if (baseSkill == null)
 				{
-					final L2Skill skill = SkillTable.getInstance().getInfo(_skill.getChannelingSkillId(), skillLevel);
-					skill.applyEffects(getChannelizer(), _channelized);
-				}
-				_channelizer.broadcastPacket(new MagicSkillLaunched(_channelizer, _skill.getId(), _skill.getLevel(), _channelized));
-			}
-		}
-		else
-		{
-			final List<L2Character> targets = getTargetList();
-			final Iterator<L2Character> it = targets.iterator();
-			while (it.hasNext())
-			{
-				final L2Character target = it.next();
-				if (!GeoData.getInstance().canSeeTarget(_channelizer, target))
-				{
-					it.remove();
-					continue;
+					_log.log(Level.WARNING, getClass().getSimpleName() + ": skill " + _skill + " couldn't find effect id skill: " + _skill.getChannelingSkillId() + " !");
+					_channelizer.abortCast();
+					return;
 				}
 				
-				if (_channelizer.isPlayable() && target.isPlayable() && _skill.isBad())
+				if (_channelized == null)
 				{
-					// Validate pvp conditions.
-					if (_channelizer.isPlayable() && _channelizer.getActingPlayer().canAttackCharacter(target))
+					final List<L2Character> targets = getTargetList();
+					if (targets.isEmpty())
 					{
-						// Apply channeling skill effects on the target.
-						_skill.applyEffects(_channelizer, target);
-						// Update the pvp flag of the caster.
-						_channelizer.getActingPlayer().updatePvPStatus(target);
+						_log.log(Level.WARNING, getClass().getSimpleName() + ": skill " + _skill + " couldn't find proper target!");
+						_channelizer.abortCast();
+						return;
 					}
-					else
-					{
-						it.remove();
-					}
+					
+					_channelized = targets.get(0);
+					_channelized.getSkillChannelized().addChannelizer(_skill.getChannelingSkillId(), getChannelizer());
+				}
+				
+				if (!Util.checkIfInRange(_skill.getEffectRange(), _channelizer, _channelized, true))
+				{
+					_channelizer.abortCast();
+					_channelizer.sendPacket(SystemMessageId.CANT_SEE_TARGET);
+				}
+				else if (!GeoData.getInstance().canSeeTarget(_channelizer, _channelized))
+				{
+					_channelizer.abortCast();
+					_channelizer.sendPacket(SystemMessageId.CANT_SEE_TARGET);
 				}
 				else
 				{
-					// Apply channeling skill effects on the target.
-					_skill.applyEffects(_channelizer, target);
+					final int maxSkillLevel = SkillTable.getInstance().getMaxLevel(_skill.getChannelingSkillId());
+					final int skillLevel = Math.min(_channelized.getSkillChannelized().getChannerlizersSize(_skill.getChannelingSkillId()), maxSkillLevel);
+					
+					final BuffInfo info = _channelized.getEffectList().getBuffInfoBySkillId(_skill.getChannelingSkillId());
+					if ((info == null) || (info.getSkill().getLevel() < skillLevel))
+					{
+						final L2Skill skill = SkillTable.getInstance().getInfo(_skill.getChannelingSkillId(), skillLevel);
+						skill.applyEffects(getChannelizer(), _channelized);
+					}
+					_channelizer.broadcastPacket(new MagicSkillLaunched(_channelizer, _skill.getId(), _skill.getLevel(), _channelized));
 				}
-			}
-			
-			// Broadcast MagicSkillLaunched on every cast.
-			_channelizer.broadcastPacket(new MagicSkillLaunched(_channelizer, _skill.getId(), _skill.getLevel(), targets.toArray(new L2Character[0])));
-			
-			// Reduce shots.
-			if (_skill.useSpiritShot())
-			{
-				_channelizer.setChargedShot(_channelizer.isChargedShot(ShotType.BLESSED_SPIRITSHOTS) ? ShotType.BLESSED_SPIRITSHOTS : ShotType.SPIRITSHOTS, false);
 			}
 			else
 			{
-				_channelizer.setChargedShot(ShotType.SOULSHOTS, false);
+				final List<L2Character> targets = getTargetList();
+				final Iterator<L2Character> it = targets.iterator();
+				while (it.hasNext())
+				{
+					final L2Character target = it.next();
+					if (!GeoData.getInstance().canSeeTarget(_channelizer, target))
+					{
+						it.remove();
+						continue;
+					}
+					
+					if (_channelizer.isPlayable() && target.isPlayable() && _skill.isBad())
+					{
+						// Validate pvp conditions.
+						if (_channelizer.isPlayable() && _channelizer.getActingPlayer().canAttackCharacter(target))
+						{
+							// Apply channeling skill effects on the target.
+							_skill.applyEffects(_channelizer, target);
+							// Update the pvp flag of the caster.
+							_channelizer.getActingPlayer().updatePvPStatus(target);
+						}
+						else
+						{
+							it.remove();
+						}
+					}
+					else
+					{
+						// Apply channeling skill effects on the target.
+						_skill.applyEffects(_channelizer, target);
+					}
+				}
+				
+				// Broadcast MagicSkillLaunched on every cast.
+				_channelizer.broadcastPacket(new MagicSkillLaunched(_channelizer, _skill.getId(), _skill.getLevel(), targets.toArray(new L2Character[0])));
+				
+				// Reduce shots.
+				if (_skill.useSpiritShot())
+				{
+					_channelizer.setChargedShot(_channelizer.isChargedShot(ShotType.BLESSED_SPIRITSHOTS) ? ShotType.BLESSED_SPIRITSHOTS : ShotType.SPIRITSHOTS, false);
+				}
+				else
+				{
+					_channelizer.setChargedShot(ShotType.SOULSHOTS, false);
+				}
+				
+				// Shots are re-charged every cast.
+				_channelizer.rechargeShots(_skill.useSoulShot(), _skill.useSpiritShot());
 			}
-			
-			// Shots are re-charged every cast.
-			_channelizer.rechargeShots(_skill.useSoulShot(), _skill.useSpiritShot());
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Error while channelizing skill: " + _skill + " channelizer: " + _channelizer + " channelized: " + _channelized, e);
 		}
 	}
 	

@@ -2113,7 +2113,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.SUMMONING_SERVITOR_COSTS_S2_S1);
 					sm.addItemName(skill.getItemConsumeId());
-					sm.addNumber(skill.getItemConsume());
+					sm.addInt(skill.getItemConsume());
 					sendPacket(sm);
 				}
 				else
@@ -5926,7 +5926,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 					}
 					else if (mut.getSkill().useSpiritShot())
 					{
-						setChargedShot(ShotType.SPIRITSHOTS, true);
+						setChargedShot(ShotType.BLESSED_SPIRITSHOTS, true);
 					}
 				}
 			}

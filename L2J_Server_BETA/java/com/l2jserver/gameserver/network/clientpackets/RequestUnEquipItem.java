@@ -116,7 +116,7 @@ public class RequestUnEquipItem extends L2GameClientPacket
 			if (unequipped[0].getEnchantLevel() > 0)
 			{
 				sm = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
-				sm.addNumber(unequipped[0].getEnchantLevel());
+				sm.addInt(unequipped[0].getEnchantLevel());
 			}
 			else
 			{

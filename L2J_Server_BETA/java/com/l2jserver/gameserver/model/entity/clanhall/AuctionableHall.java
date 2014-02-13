@@ -195,7 +195,7 @@ public final class AuctionableHall extends ClanHall
 					{
 						updateDb();
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PAYMENT_FOR_YOUR_CLAN_HALL_HAS_NOT_BEEN_MADE_PLEASE_MAKE_PAYMENT_TO_YOUR_CLAN_WAREHOUSE_BY_S1_TOMORROW);
-						sm.addNumber(getLease());
+						sm.addInt(getLease());
 						Clan.broadcastToOnlineMembers(sm);
 						if ((_time + (3600000 * 24)) <= (_paidUntil + _chRate))
 						{

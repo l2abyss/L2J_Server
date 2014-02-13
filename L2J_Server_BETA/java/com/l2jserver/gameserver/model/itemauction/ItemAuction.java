@@ -320,7 +320,7 @@ public final class ItemAuction
 			updatePlayerBid(bid, false);
 			
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.SUBMITTED_A_BID_OF_S1);
-			sm.addItemNumber(newBid);
+			sm.addLong(newBid);
 			player.sendPacket(sm);
 			return;
 		}

@@ -818,7 +818,7 @@ public abstract class L2Summon extends L2Playable
 				sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DONE_S3_DAMAGE_TO_C2);
 				sm.addNpcName(this);
 				sm.addCharName(target);
-				sm.addNumber(damage);
+				sm.addInt(damage);
 			}
 			
 			sendPacket(sm);
@@ -834,7 +834,7 @@ public abstract class L2Summon extends L2Playable
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_RECEIVED_DAMAGE_OF_S3_FROM_C2);
 			sm.addNpcName(this);
 			sm.addCharName(attacker);
-			sm.addNumber((int) damage);
+			sm.addInt((int) damage);
 			sendPacket(sm);
 		}
 	}

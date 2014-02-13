@@ -210,7 +210,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 					{
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_SUCCESSFULY_ENCHANTED_A_S2_S3);
 						sm.addCharName(activeChar);
-						sm.addNumber(item.getEnchantLevel());
+						sm.addInt(item.getEnchantLevel());
 						sm.addItemName(item);
 						activeChar.broadcastPacket(sm);
 						
@@ -263,7 +263,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 							if (item.getEnchantLevel() > 0)
 							{
 								SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
-								sm.addNumber(item.getEnchantLevel());
+								sm.addInt(item.getEnchantLevel());
 								sm.addItemName(item);
 								activeChar.sendPacket(sm);
 							}
@@ -349,7 +349,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 								
 								SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
 								sm.addItemName(crystals);
-								sm.addItemNumber(count);
+								sm.addLong(count);
 								activeChar.sendPacket(sm);
 							}
 							

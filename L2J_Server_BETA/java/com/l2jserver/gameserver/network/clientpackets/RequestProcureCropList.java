@@ -162,7 +162,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.FAILED_IN_TRADING_S2_OF_CROP_S1);
 				sm.addItemName(i.getItemId());
-				sm.addItemNumber(i.getCount());
+				sm.addLong(i.getCount());
 				player.sendPacket(sm);
 				continue;
 			}
@@ -171,7 +171,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.FAILED_IN_TRADING_S2_OF_CROP_S1);
 				sm.addItemName(i.getItemId());
-				sm.addItemNumber(i.getCount());
+				sm.addLong(i.getCount());
 				player.sendPacket(sm);
 				sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
 				player.sendPacket(sm);

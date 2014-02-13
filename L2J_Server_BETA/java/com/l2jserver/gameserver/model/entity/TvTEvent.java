@@ -393,7 +393,7 @@ public class TvTEvent
 					{
 						systemMessage = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
 						systemMessage.addItemName(reward[0]);
-						systemMessage.addItemNumber(reward[1]);
+						systemMessage.addLong(reward[1]);
 					}
 					else
 					{

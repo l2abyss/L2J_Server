@@ -222,7 +222,7 @@ public final class RequestPostAttachment extends L2GameClientPacket
 			}
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_ACQUIRED_S2_S1);
 			sm.addItemName(item.getId());
-			sm.addItemNumber(count);
+			sm.addLong(count);
 			activeChar.sendPacket(sm);
 		}
 		
@@ -251,7 +251,7 @@ public final class RequestPostAttachment extends L2GameClientPacket
 			{
 				sender.addAdena("PayMail", adena, activeChar, false);
 				sm = SystemMessage.getSystemMessage(SystemMessageId.PAYMENT_OF_S1_ADENA_COMPLETED_BY_S2);
-				sm.addItemNumber(adena);
+				sm.addLong(adena);
 				sm.addCharName(activeChar);
 				sender.sendPacket(sm);
 			}

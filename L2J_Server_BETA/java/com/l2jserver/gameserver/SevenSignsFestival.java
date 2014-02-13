@@ -1137,7 +1137,7 @@ public class SevenSignsFestival implements SpawnListener
 				player.getClan().addReputationScore(Config.FESTIVAL_WIN_POINTS, true);
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_MEMBER_C1_WAS_IN_HIGHEST_RANKED_PARTY_IN_FESTIVAL_OF_DARKNESS_AND_GAINED_S2_REPUTATION);
 				sm.addString(partyMemberName);
-				sm.addNumber(Config.FESTIVAL_WIN_POINTS);
+				sm.addInt(Config.FESTIVAL_WIN_POINTS);
 				player.getClan().broadcastToOnlineMembers(sm);
 			}
 		}
@@ -1160,7 +1160,7 @@ public class SevenSignsFestival implements SpawnListener
 								clan.addReputationScore(Config.FESTIVAL_WIN_POINTS, true);
 								SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_MEMBER_C1_WAS_IN_HIGHEST_RANKED_PARTY_IN_FESTIVAL_OF_DARKNESS_AND_GAINED_S2_REPUTATION);
 								sm.addString(partyMemberName);
-								sm.addNumber(Config.FESTIVAL_WIN_POINTS);
+								sm.addInt(Config.FESTIVAL_WIN_POINTS);
 								clan.broadcastToOnlineMembers(sm);
 							}
 						}

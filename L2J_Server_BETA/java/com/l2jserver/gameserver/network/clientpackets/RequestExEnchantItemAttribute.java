@@ -225,7 +225,7 @@ public class RequestExEnchantItemAttribute extends L2GameClientPacket
 				{
 					sm = SystemMessage.getSystemMessage(SystemMessageId.ELEMENTAL_POWER_S3_SUCCESSFULLY_ADDED_TO_S1_S2);
 				}
-				sm.addNumber(item.getEnchantLevel());
+				sm.addInt(item.getEnchantLevel());
 				sm.addItemName(item);
 				sm.addElemental(realElement);
 				if (item.isArmor())

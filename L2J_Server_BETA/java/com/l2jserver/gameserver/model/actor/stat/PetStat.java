@@ -59,7 +59,7 @@ public class PetStat extends SummonStat
 		}
 		
 		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PET_EARNED_S1_EXP);
-		sm.addNumber((int) addToExp);
+		sm.addLong(addToExp);
 		getActiveChar().updateAndBroadcastStatus(1);
 		getActiveChar().sendPacket(sm);
 		

@@ -417,13 +417,13 @@ public class RecipeController
 					SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.CREATION_OF_S2_FOR_C1_AT_S3_ADENA_FAILED);
 					msg.addString(_target.getName());
 					msg.addItemName(_recipeList.getItemId());
-					msg.addItemNumber(_price);
+					msg.addLong(_price);
 					_player.sendPacket(msg);
 					
 					msg = SystemMessage.getSystemMessage(SystemMessageId.C1_FAILED_TO_CREATE_S2_FOR_S3_ADENA);
 					msg.addString(_player.getName());
 					msg.addItemName(_recipeList.getItemId());
-					msg.addItemNumber(_price);
+					msg.addLong(_price);
 					_target.sendPacket(msg);
 				}
 				else
@@ -494,7 +494,7 @@ public class RecipeController
 				if (_target == _player)
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_S2_EQUIPPED); // you equipped ...
-					sm.addItemNumber(count);
+					sm.addLong(count);
 					sm.addItemName(item.getItemId());
 					_player.sendPacket(sm);
 				}
@@ -615,7 +615,7 @@ public class RecipeController
 					{
 						sm = SystemMessage.getSystemMessage(SystemMessageId.MISSING_S2_S1_TO_CREATE);
 						sm.addItemName(recipe.getItemId());
-						sm.addItemNumber(recipe.getQuantity() - itemQuantityAmount);
+						sm.addLong(recipe.getQuantity() - itemQuantityAmount);
 						_target.sendPacket(sm);
 						
 						abort();
@@ -637,7 +637,7 @@ public class RecipeController
 					{
 						sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 						sm.addItemName(tmp.getItemId());
-						sm.addItemNumber(tmp.getQuantity());
+						sm.addLong(tmp.getQuantity());
 						_target.sendPacket(sm);
 					}
 					else
@@ -687,29 +687,29 @@ public class RecipeController
 					sm = SystemMessage.getSystemMessage(SystemMessageId.S2_CREATED_FOR_C1_FOR_S3_ADENA);
 					sm.addString(_target.getName());
 					sm.addItemName(itemId);
-					sm.addItemNumber(_price);
+					sm.addLong(_price);
 					_player.sendPacket(sm);
 					
 					sm = SystemMessage.getSystemMessage(SystemMessageId.C1_CREATED_S2_FOR_S3_ADENA);
 					sm.addString(_player.getName());
 					sm.addItemName(itemId);
-					sm.addItemNumber(_price);
+					sm.addLong(_price);
 					_target.sendPacket(sm);
 				}
 				else
 				{
 					sm = SystemMessage.getSystemMessage(SystemMessageId.S2_S3_S_CREATED_FOR_C1_FOR_S4_ADENA);
 					sm.addString(_target.getName());
-					sm.addNumber(itemCount);
+					sm.addInt(itemCount);
 					sm.addItemName(itemId);
-					sm.addItemNumber(_price);
+					sm.addLong(_price);
 					_player.sendPacket(sm);
 					
 					sm = SystemMessage.getSystemMessage(SystemMessageId.C1_CREATED_S2_S3_S_FOR_S4_ADENA);
 					sm.addString(_player.getName());
-					sm.addNumber(itemCount);
+					sm.addInt(itemCount);
 					sm.addItemName(itemId);
-					sm.addItemNumber(_price);
+					sm.addLong(_price);
 					_target.sendPacket(sm);
 				}
 			}
@@ -718,7 +718,7 @@ public class RecipeController
 			{
 				sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
 				sm.addItemName(itemId);
-				sm.addItemNumber(itemCount);
+				sm.addLong(itemCount);
 				_target.sendPacket(sm);
 			}
 			else

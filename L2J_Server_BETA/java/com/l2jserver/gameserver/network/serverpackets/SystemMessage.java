@@ -102,12 +102,12 @@ public final class SystemMessage extends L2GameServerPacket
 	private static final byte TYPE_ELEMENT_NAME = 9;
 	// id 8 - same as 3
 	private static final byte TYPE_ZONE_NAME = 7;
-	private static final byte TYPE_ITEM_NUMBER = 6;
+	private static final byte TYPE_LONG_NUMBER = 6;
 	private static final byte TYPE_CASTLE_NAME = 5;
 	private static final byte TYPE_SKILL_NAME = 4;
 	private static final byte TYPE_ITEM_NAME = 3;
 	private static final byte TYPE_NPC_NAME = 2;
-	private static final byte TYPE_NUMBER = 1;
+	private static final byte TYPE_INT_NUMBER = 1;
 	private static final byte TYPE_TEXT = 0;
 	
 	public static final SystemMessage sendString(final String text)
@@ -214,15 +214,15 @@ public final class SystemMessage extends L2GameServerPacket
 		return this;
 	}
 	
-	public final SystemMessage addNumber(final int number)
+	public final SystemMessage addInt(final int number)
 	{
-		append(new SMParam(TYPE_NUMBER, number));
+		append(new SMParam(TYPE_INT_NUMBER, number));
 		return this;
 	}
 	
-	public final SystemMessage addItemNumber(final long number)
+	public final SystemMessage addLong(final long number)
 	{
-		append(new SMParam(TYPE_ITEM_NUMBER, number));
+		append(new SMParam(TYPE_LONG_NUMBER, number));
 		return this;
 	}
 	
@@ -425,7 +425,7 @@ public final class SystemMessage extends L2GameServerPacket
 					break;
 				}
 				
-				case TYPE_ITEM_NUMBER:
+				case TYPE_LONG_NUMBER:
 				{
 					params[i] = param.getValue();
 					break;
@@ -445,7 +445,7 @@ public final class SystemMessage extends L2GameServerPacket
 					break;
 				}
 				
-				case TYPE_NUMBER:
+				case TYPE_INT_NUMBER:
 				{
 					params[i] = param.getValue();
 					break;
@@ -528,7 +528,7 @@ public final class SystemMessage extends L2GameServerPacket
 					break;
 				}
 				
-				case TYPE_ITEM_NUMBER:
+				case TYPE_LONG_NUMBER:
 				{
 					out.println(param.getLongValue());
 					break;
@@ -536,7 +536,7 @@ public final class SystemMessage extends L2GameServerPacket
 				
 				case TYPE_ITEM_NAME:
 				case TYPE_CASTLE_NAME:
-				case TYPE_NUMBER:
+				case TYPE_INT_NUMBER:
 				case TYPE_NPC_NAME:
 				case TYPE_ELEMENT_NAME:
 				case TYPE_SYSTEM_STRING:
@@ -590,7 +590,7 @@ public final class SystemMessage extends L2GameServerPacket
 					break;
 				}
 				
-				case TYPE_ITEM_NUMBER:
+				case TYPE_LONG_NUMBER:
 				{
 					writeQ(param.getLongValue());
 					break;
@@ -598,7 +598,7 @@ public final class SystemMessage extends L2GameServerPacket
 				
 				case TYPE_ITEM_NAME:
 				case TYPE_CASTLE_NAME:
-				case TYPE_NUMBER:
+				case TYPE_INT_NUMBER:
 				case TYPE_NPC_NAME:
 				case TYPE_ELEMENT_NAME:
 				case TYPE_SYSTEM_STRING:

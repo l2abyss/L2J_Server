@@ -87,7 +87,7 @@ public final class RequestPetition extends L2GameClientPacket
 		if (totalPetitions > Config.MAX_PETITIONS_PER_PLAYER)
 		{
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.WE_HAVE_RECEIVED_S1_PETITIONS_TODAY);
-			sm.addNumber(totalPetitions);
+			sm.addInt(totalPetitions);
 			activeChar.sendPacket(sm);
 			sm = null;
 			return;
@@ -102,16 +102,16 @@ public final class RequestPetition extends L2GameClientPacket
 		int petitionId = PetitionManager.getInstance().submitPetition(activeChar, _content, _type);
 		
 		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PETITION_ACCEPTED_RECENT_NO_S1);
-		sm.addNumber(petitionId);
+		sm.addInt(petitionId);
 		activeChar.sendPacket(sm);
 		
 		sm = SystemMessage.getSystemMessage(SystemMessageId.SUBMITTED_YOU_S1_TH_PETITION_S2_LEFT);
-		sm.addNumber(totalPetitions);
-		sm.addNumber(Config.MAX_PETITIONS_PER_PLAYER - totalPetitions);
+		sm.addInt(totalPetitions);
+		sm.addInt(Config.MAX_PETITIONS_PER_PLAYER - totalPetitions);
 		activeChar.sendPacket(sm);
 		
 		sm = SystemMessage.getSystemMessage(SystemMessageId.S1_PETITION_ON_WAITING_LIST);
-		sm.addNumber(PetitionManager.getInstance().getPendingPetitionCount());
+		sm.addInt(PetitionManager.getInstance().getPendingPetitionCount());
 		activeChar.sendPacket(sm);
 		sm = null;
 	}

@@ -1054,7 +1054,7 @@ public class L2Attackable extends L2Npc
 					final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_DIED_DROPPED_S3_S2);
 					sm.addCharName(this);
 					sm.addItemName(item);
-					sm.addItemNumber(drop.getCount());
+					sm.addLong(drop.getCount());
 					broadcastPacket(sm);
 				}
 			}

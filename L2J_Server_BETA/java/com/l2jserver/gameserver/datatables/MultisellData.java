@@ -314,7 +314,7 @@ public class MultisellData extends DocumentParser
 			case CLAN_REPUTATION:
 				player.getClan().takeReputationScore((int) amount, true);
 				SystemMessage smsg = SystemMessage.getSystemMessage(SystemMessageId.S1_DEDUCTED_FROM_CLAN_REP);
-				smsg.addItemNumber(amount);
+				smsg.addLong(amount);
 				player.sendPacket(smsg);
 				return true;
 			case FAME:

@@ -87,7 +87,7 @@ public final class Petition
 				{
 					// Receipt No. <ID> petition cancelled.
 					sm = SystemMessage.getSystemMessage(SystemMessageId.RECENT_NO_S1_CANCELED);
-					sm.addNumber(getId());
+					sm.addInt(getId());
 					getResponder().sendPacket(sm);
 				}
 			}
