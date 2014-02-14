@@ -60,7 +60,7 @@ public final class L2LoginServer
 	
 	public static void main(String[] args)
 	{
-		_instance = new L2LoginServer();
+		new L2LoginServer();
 	}
 	
 	public static L2LoginServer getInstance()
@@ -70,6 +70,7 @@ public final class L2LoginServer
 	
 	public L2LoginServer()
 	{
+		_instance = this;
 		Server.serverMode = Server.MODE_LOGINSERVER;
 		// Local Constants
 		final String LOG_FOLDER = "log"; // Name of folder for log file
