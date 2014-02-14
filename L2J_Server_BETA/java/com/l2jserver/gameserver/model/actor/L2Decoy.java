@@ -69,7 +69,7 @@ public abstract class L2Decoy extends L2Character
 	
 	public void stopDecay()
 	{
-		DecayTaskManager.getInstance().cancelDecayTask(this);
+		DecayTaskManager.getInstance().cancel(this);
 	}
 	
 	@Override

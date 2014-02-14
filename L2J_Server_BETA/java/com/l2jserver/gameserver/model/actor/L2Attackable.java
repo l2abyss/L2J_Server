@@ -1220,15 +1220,15 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Check if the corpse is too old.
+	 * Checks if the corpse is too old.
 	 * @param attacker the player to validate
-	 * @param time the time to check
+	 * @param remainingTime the time to check
 	 * @param sendMessage if {@code true} will send a message of corpse too old
 	 * @return {@code true} if the corpse is too old
 	 */
-	public boolean isOldCorpse(L2PcInstance attacker, int time, boolean sendMessage)
+	public boolean isOldCorpse(L2PcInstance attacker, int remainingTime, boolean sendMessage)
 	{
-		if (DecayTaskManager.getInstance().getTasks().containsKey(this) && ((System.currentTimeMillis() - DecayTaskManager.getInstance().getTasks().get(this)) > time))
+		if (isDead() && (DecayTaskManager.getInstance().getRemainingTime(this) < remainingTime))
 		{
 			if (sendMessage && (attacker != null))
 			{

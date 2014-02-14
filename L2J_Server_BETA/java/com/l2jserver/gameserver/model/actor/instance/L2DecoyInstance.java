@@ -62,7 +62,7 @@ public class L2DecoyInstance extends L2Decoy
 			_HateSpam = null;
 		}
 		_totalLifeTime = 0;
-		DecayTaskManager.getInstance().addDecayTask(this);
+		DecayTaskManager.getInstance().add(this);
 		return true;
 	}
 	

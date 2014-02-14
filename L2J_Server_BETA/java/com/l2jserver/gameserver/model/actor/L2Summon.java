@@ -374,7 +374,7 @@ public abstract class L2Summon extends L2Playable
 			getOwner().reviveRequest(getOwner(), null, true, 100);
 		}
 		
-		DecayTaskManager.getInstance().addDecayTask(this);
+		DecayTaskManager.getInstance().add(this);
 		return true;
 	}
 	
@@ -386,14 +386,14 @@ public abstract class L2Summon extends L2Playable
 		}
 		if (!decayed)
 		{
-			DecayTaskManager.getInstance().addDecayTask(this);
+			DecayTaskManager.getInstance().add(this);
 		}
 		return true;
 	}
 	
 	public void stopDecay()
 	{
-		DecayTaskManager.getInstance().cancelDecayTask(this);
+		DecayTaskManager.getInstance().cancel(this);
 	}
 	
 	@Override

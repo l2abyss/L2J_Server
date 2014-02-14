@@ -18,97 +18,130 @@
  */
 package com.l2jserver.gameserver.taskmanager;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javolution.util.FastMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 
 /**
- * @author la2 Lets drink to code!
+ * @author Nos
  */
-public class DecayTaskManager
+public final class DecayTaskManager
 {
-	protected static final Logger _log = Logger.getLogger(DecayTaskManager.class.getName());
+	private final ScheduledExecutorService _decayExecutor = Executors.newSingleThreadScheduledExecutor();
 	
-	protected final Map<L2Character, Long> _decayTasks = new FastMap<L2Character, Long>().shared();
+	protected final Map<L2Character, ScheduledFuture<?>> _decayTasks = new ConcurrentHashMap<>();
 	
-	protected DecayTaskManager()
+	/**
+	 * Adds a decay task for the specified character.<br>
+	 * <br>
+	 * If the decay task already exists it cancels it and re-adds it.
+	 * @param character the character
+	 */
+	public void add(L2Character character)
 	{
-		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new DecayScheduler(), 10000, Config.DECAY_TIME_TASK);
+		if (character == null)
+		{
+			return;
+		}
+		
+		long delay;
+		if (character.getTemplate() instanceof L2NpcTemplate)
+		{
+			delay = ((L2NpcTemplate) character.getTemplate()).getCorpseTime();
+		}
+		else
+		{
+			delay = Config.DEFAULT_CORPSE_TIME;
+		}
+		
+		if ((character instanceof L2Attackable) && (((L2Attackable) character).isSpoil() || ((L2Attackable) character).isSeeded()))
+		{
+			delay += Config.SPOILED_CORPSE_EXTEND_TIME;
+		}
+		
+		add(character, delay, TimeUnit.SECONDS);
 	}
 	
-	public static DecayTaskManager getInstance()
+	/**
+	 * Adds a decay task for the specified character.<br>
+	 * <br>
+	 * If the decay task already exists it cancels it and re-adds it.
+	 * @param character the character
+	 * @param delay the delay
+	 * @param timeUnit the time unit of the delay parameter
+	 */
+	public void add(L2Character character, long delay, TimeUnit timeUnit)
 	{
-		return SingletonHolder._instance;
+		ScheduledFuture<?> decayTask = _decayExecutor.schedule(new DecayTask(character), delay, TimeUnit.SECONDS);
+		
+		decayTask = _decayTasks.put(character, decayTask);
+		// if decay task already existed cancel it so we use the new time
+		if (decayTask != null)
+		{
+			if (!decayTask.cancel(false))
+			{
+				// old decay task was completed while canceling it remove and cancel the new one
+				decayTask = _decayTasks.remove(character);
+				if (decayTask != null)
+				{
+					decayTask.cancel(false);
+				}
+			}
+		}
 	}
 	
-	public void addDecayTask(L2Character actor)
+	/**
+	 * Cancels the decay task of the specified character.
+	 * @param character the character
+	 */
+	public void cancel(L2Character character)
 	{
-		_decayTasks.put(actor, System.currentTimeMillis());
+		final ScheduledFuture<?> decayTask = _decayTasks.remove(character);
+		if (decayTask != null)
+		{
+			decayTask.cancel(false);
+		}
 	}
 	
-	public void cancelDecayTask(L2Character actor)
+	/**
+	 * Gets the remaining time of the specified character's decay task.
+	 * @param character the character
+	 * @return if a decay task exists the remaining time, {@code Long.MAX_VALUE} otherwise
+	 */
+	public long getRemainingTime(L2Character character)
 	{
-		_decayTasks.remove(actor);
+		final ScheduledFuture<?> decayTask = _decayTasks.get(character);
+		if (decayTask != null)
+		{
+			return decayTask.getDelay(TimeUnit.MILLISECONDS);
+		}
+		
+		return Long.MAX_VALUE;
 	}
 	
-	protected class DecayScheduler implements Runnable
+	private class DecayTask implements Runnable
 	{
+		private final L2Character _character;
+		
+		protected DecayTask(L2Character character)
+		{
+			_character = character;
+		}
+		
 		@Override
 		public void run()
 		{
-			final long current = System.currentTimeMillis();
-			try
-			{
-				final Iterator<Entry<L2Character, Long>> it = _decayTasks.entrySet().iterator();
-				Entry<L2Character, Long> e;
-				L2Character actor;
-				Long next;
-				int delay;
-				while (it.hasNext())
-				{
-					e = it.next();
-					actor = e.getKey();
-					next = e.getValue();
-					if ((actor == null) || (next == null))
-					{
-						continue;
-					}
-					if (actor.getTemplate() instanceof L2NpcTemplate)
-					{
-						delay = ((L2NpcTemplate) actor.getTemplate()).getCorpseTime() * 1000;
-					}
-					else
-					{
-						delay = Config.DEFAULT_CORPSE_TIME * 1000;
-					}
-					
-					if ((actor instanceof L2Attackable) && (((L2Attackable) actor).isSpoil() || ((L2Attackable) actor).isSeeded()))
-					{
-						delay += Config.SPOILED_CORPSE_EXTEND_TIME * 1000;
-					}
-					
-					if ((current - next) > delay)
-					{
-						actor.onDecay();
-						it.remove();
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				// TODO: Find out the reason for exception. Unless caught here, mob decay would stop.
-				_log.log(Level.WARNING, "Error in DecayScheduler: " + e.getMessage(), e);
-			}
+			_decayTasks.remove(_character);
+			_character.onDecay();
 		}
 	}
 	
@@ -124,28 +157,23 @@ public class DecayTaskManager
 		ret.append("Tasks dump:");
 		ret.append(Config.EOL);
 		
-		Long current = System.currentTimeMillis();
-		for (L2Character actor : _decayTasks.keySet())
+		for (Entry<L2Character, ScheduledFuture<?>> entry : _decayTasks.entrySet())
 		{
 			ret.append("Class/Name: ");
-			ret.append(actor.getClass().getSimpleName());
+			ret.append(entry.getKey().getClass().getSimpleName());
 			ret.append('/');
-			ret.append(actor.getName());
+			ret.append(entry.getKey().getName());
 			ret.append(" decay timer: ");
-			ret.append(current - _decayTasks.get(actor));
+			ret.append(entry.getValue().getDelay(TimeUnit.MILLISECONDS));
 			ret.append(Config.EOL);
 		}
 		
 		return ret.toString();
 	}
 	
-	/**
-	 * <u><b><font color="FF0000">Read only</font></b></u>
-	 * @return
-	 */
-	public Map<L2Character, Long> getTasks()
+	public static DecayTaskManager getInstance()
 	{
-		return _decayTasks;
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

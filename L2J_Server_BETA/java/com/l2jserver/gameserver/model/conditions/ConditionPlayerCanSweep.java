@@ -71,7 +71,7 @@ public class ConditionPlayerCanSweep extends Condition
 								if (target.isSpoil())
 								{
 									canSweep = target.checkSpoilOwner(sweeper, true);
-									canSweep &= !target.isOldCorpse(sweeper, Config.MAX_SWEEPER_TIME, true);
+									canSweep &= !target.isOldCorpse(sweeper, Config.CORPSE_CONSUME_SKILL_ALLOWED_TIME_BEFORE_DECAY, true);
 									canSweep &= sweeper.getInventory().checkInventorySlotsAndWeight(target.getSpoilLootItems(), true, true);
 								}
 								else

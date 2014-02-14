@@ -808,7 +808,7 @@ public final class Config
 	public static int DECAY_TIME_TASK;
 	public static int DEFAULT_CORPSE_TIME;
 	public static int SPOILED_CORPSE_EXTEND_TIME;
-	public static int MAX_SWEEPER_TIME;
+	public static int CORPSE_CONSUME_SKILL_ALLOWED_TIME_BEFORE_DECAY;
 	public static boolean GUARD_ATTACK_AGGRO_MOB;
 	public static boolean ALLOW_WYVERN_UPGRADER;
 	public static List<Integer> LIST_PET_RENT_NPC;
@@ -2043,7 +2043,7 @@ public final class Config
 			DECAY_TIME_TASK = NPC.getInt("DecayTimeTask", 5000);
 			DEFAULT_CORPSE_TIME = NPC.getInt("DefaultCorpseTime", 7);
 			SPOILED_CORPSE_EXTEND_TIME = NPC.getInt("SpoiledCorpseExtendTime", 10);
-			MAX_SWEEPER_TIME = NPC.getInt("MaxSweeperTime", 15000);
+			CORPSE_CONSUME_SKILL_ALLOWED_TIME_BEFORE_DECAY = NPC.getInt("CorpseConsumeSkillAllowedTimeBeforeDecay", 2000);
 			GUARD_ATTACK_AGGRO_MOB = NPC.getBoolean("GuardAttackAggroMob", false);
 			ALLOW_WYVERN_UPGRADER = NPC.getBoolean("AllowWyvernUpgrader", false);
 			String[] listPetRentNpc = NPC.getString("ListPetRentNpc", "30827").split(",");

@@ -1365,7 +1365,7 @@ public class L2Npc extends L2Character
 		_currentRHandId = getTemplate().getRHandId();
 		_currentCollisionHeight = getTemplate().getfCollisionHeight();
 		_currentCollisionRadius = getTemplate().getfCollisionRadius();
-		DecayTaskManager.getInstance().addDecayTask(this);
+		DecayTaskManager.getInstance().add(this);
 		return true;
 	}
 	
@@ -1513,7 +1513,7 @@ public class L2Npc extends L2Character
 	{
 		if (!isDecayed())
 		{
-			DecayTaskManager.getInstance().cancelDecayTask(this);
+			DecayTaskManager.getInstance().cancel(this);
 			onDecay();
 		}
 	}
