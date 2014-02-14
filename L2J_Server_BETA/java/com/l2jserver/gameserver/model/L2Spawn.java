@@ -34,7 +34,6 @@ import com.l2jserver.gameserver.datatables.NpcPersonalAIData;
 import com.l2jserver.gameserver.datatables.TerritoryTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
@@ -77,7 +76,7 @@ public class L2Spawn implements IPositionable, IIdentifiable, INamable
 	private int _respawnMaxDelay;
 	private int _instanceId = 0;
 	/** The generic constructor of L2NpcInstance managed by this L2Spawn */
-	private Constructor<?> _constructor;
+	private Constructor<? extends L2Npc> _constructor;
 	/** If True a L2NpcInstance is respawned each time that another is killed */
 	private boolean _doRespawn;
 	/** If true then spawn is custom */
@@ -128,28 +127,26 @@ public class L2Spawn implements IPositionable, IIdentifiable, INamable
 	 * <li>Calculate the implementationName used to generate the generic constructor of L2NpcInstance managed by this L2Spawn</li>
 	 * <li>Create the generic constructor of L2NpcInstance managed by this L2Spawn</li>
 	 * </ul>
-	 * @param mobTemplate The L2NpcTemplate to link to this L2Spawn
+	 * @param template The L2NpcTemplate to link to this L2Spawn
 	 * @throws SecurityException
 	 * @throws ClassNotFoundException
 	 * @throws NoSuchMethodException
+	 * @throws ClassCastException when template type is not subclass of L2Npc
 	 */
-	public L2Spawn(L2NpcTemplate mobTemplate) throws SecurityException, ClassNotFoundException, NoSuchMethodException
+	public L2Spawn(L2NpcTemplate template) throws SecurityException, ClassNotFoundException, NoSuchMethodException, ClassCastException
 	{
 		// Set the _template of the L2Spawn
-		_template = mobTemplate;
+		_template = template;
 		
 		if (_template == null)
 		{
 			return;
 		}
 		
-		// Create the generic constructor of L2NpcInstance managed by this L2Spawn
-		Class<?>[] parameters =
-		{
-			int.class,
-			Class.forName("com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate")
-		};
-		_constructor = Class.forName("com.l2jserver.gameserver.model.actor.instance." + _template.getType() + "Instance").getConstructor(parameters);
+		String className = "com.l2jserver.gameserver.model.actor.instance." + _template.getType() + "Instance";
+		
+		// Create the generic constructor of L2Npc managed by this L2Spawn
+		_constructor = Class.forName(className).asSubclass(L2Npc.class).getConstructor(int.class, L2NpcTemplate.class);
 	}
 	
 	/**
@@ -520,7 +517,6 @@ public class L2Spawn implements IPositionable, IIdentifiable, INamable
 	 */
 	public L2Npc doSpawn(boolean isSummonSpawn)
 	{
-		L2Npc mob = null;
 		try
 		{
 			// Check if the L2Spawn is not a L2Pet or L2Minion or L2Decoy spawn
@@ -528,44 +524,30 @@ public class L2Spawn implements IPositionable, IIdentifiable, INamable
 			{
 				_currentCount++;
 				
-				return mob;
+				return null;
 			}
 			
-			// Get L2NpcInstance Init parameters and its generate an Identifier
-			Object[] parameters =
+			// Call the constructor of the L2Npc
+			L2Npc npc = _constructor.newInstance(IdFactory.getInstance().getNextId(), _template);
+			npc.setInstanceId(_instanceId); // Must be done before object is spawned into visible world
+			if (isSummonSpawn)
 			{
-				IdFactory.getInstance().getNextId(),
-				_template
-			};
+				npc.setShowSummonAnimation(isSummonSpawn);
+			}
 			
-			// Call the constructor of the L2NpcInstance
-			// (can be a L2ArtefactInstance, L2FriendlyMobInstance, L2GuardInstance, L2MonsterInstance, L2SiegeGuardInstance, L2BoxInstance,
-			// L2FeedableBeastInstance, L2TamedBeastInstance, L2FolkInstance or L2TvTEventNpcInstance)
-			Object tmp = _constructor.newInstance(parameters);
-			((L2Object) tmp).setInstanceId(_instanceId); // Must be done before object is spawned into visible world
-			if (isSummonSpawn && (tmp instanceof L2Character))
-			{
-				((L2Character) tmp).setShowSummonAnimation(isSummonSpawn);
-			}
-			// Check if the Instance is a L2NpcInstance
-			if (!(tmp instanceof L2Npc))
-			{
-				return mob;
-			}
-			mob = (L2Npc) tmp;
 			// Check for certain AI data, overriden in spawnlist
 			if (_name != null)
 			{
-				NpcPersonalAIData.getInstance().initializeNpcParameters(mob, this, _name);
+				NpcPersonalAIData.getInstance().initializeNpcParameters(npc, this, _name);
 			}
 			
-			return initializeNpcInstance(mob);
+			return initializeNpcInstance(npc);
 		}
 		catch (Exception e)
 		{
 			_log.log(Level.WARNING, "NPC " + _template.getId() + " class not found", e);
 		}
-		return mob;
+		return null;
 	}
 	
 	/**
