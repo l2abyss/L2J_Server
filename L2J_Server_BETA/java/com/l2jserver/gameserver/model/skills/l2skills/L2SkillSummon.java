@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 
@@ -90,17 +89,7 @@ public class L2SkillSummon extends L2Skill
 			return; // npcID doesn't exist
 		}
 		
-		final int id = IdFactory.getInstance().getNextId();
-		L2ServitorInstance summon;
-		if (summonTemplate.isType("L2SiegeSummon"))
-		{
-			summon = new L2SiegeSummonInstance(id, summonTemplate, activeChar, this);
-		}
-		else
-		{
-			summon = new L2ServitorInstance(id, summonTemplate, activeChar, this);
-		}
-		
+		final L2ServitorInstance summon = new L2ServitorInstance(IdFactory.getInstance().getNextId(), summonTemplate, activeChar, this);
 		summon.setName(summonTemplate.getName());
 		summon.setTitle(activeChar.getName());
 		summon.setExpPenalty(_expPenalty);

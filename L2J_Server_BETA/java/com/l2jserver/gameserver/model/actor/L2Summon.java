@@ -41,7 +41,6 @@ import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.events.SummonEvents;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.SummonKnownList;
 import com.l2jserver.gameserver.model.actor.stat.SummonStat;
 import com.l2jserver.gameserver.model.actor.status.SummonStatus;
@@ -1107,12 +1106,12 @@ public abstract class L2Summon extends L2Playable
 			return false;
 		}
 		
-		// TODO: Unhardcode it.
 		// Siege golems AI doesn't support attacking other than doors/walls at the moment.
-		if (!target.isDoor() && ((npcId == L2SiegeSummonInstance.SWOOP_CANNON_ID) || (npcId == L2SiegeSummonInstance.SIEGE_GOLEM_ID)))
+		if (target.isDoor() && (getTemplate().getRace() != NpcRace.SIEGE_WEAPON))
 		{
 			return false;
 		}
+		
 		return true;
 	}
 	

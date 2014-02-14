@@ -28,7 +28,6 @@ import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.FortSiege;
 import com.l2jserver.gameserver.model.entity.Siegable;
@@ -232,11 +231,6 @@ public class L2SiegeZone extends L2ZoneType
 				}
 			}
 		}
-		
-		if (character instanceof L2SiegeSummonInstance)
-		{
-			((L2SiegeSummonInstance) character).unSummon(((L2SiegeSummonInstance) character).getOwner());
-		}
 	}
 	
 	@Override
@@ -299,11 +293,6 @@ public class L2SiegeZone extends L2ZoneType
 						player.exitedNoLanding();
 					}
 				}
-				if (character instanceof L2SiegeSummonInstance)
-				{
-					((L2SiegeSummonInstance) character).unSummon(((L2SiegeSummonInstance) character).getOwner());
-				}
-				
 			}
 		}
 	}

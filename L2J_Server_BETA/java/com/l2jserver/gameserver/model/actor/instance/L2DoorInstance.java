@@ -30,6 +30,7 @@ import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.ai.L2DoorAI;
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.enums.InstanceType;
+import com.l2jserver.gameserver.enums.NpcRace;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
@@ -675,7 +676,13 @@ public class L2DoorInstance extends L2Character
 	@Override
 	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
 	{
-		if (isWall() && !(attacker instanceof L2SiegeSummonInstance) && (getInstanceId() == 0))
+		if (isWall() && !attacker.isServitor() && (getInstanceId() == 0))
+		{
+			return;
+		}
+		
+		L2ServitorInstance servitor = (L2ServitorInstance) attacker;
+		if (servitor.getTemplate().getRace() != NpcRace.SIEGE_WEAPON)
 		{
 			return;
 		}
