@@ -663,7 +663,7 @@ public final class Formulas
 		double damage = 0;
 		double proximityBonus = attacker.isBehindTarget() ? 1.2 : attacker.isInFrontOfTarget() ? 1 : 1.1; // Behind: +20% - Side: +10% (TODO: values are unconfirmed, possibly custom, remove or update when confirmed)
 		double graciaPhysSkillBonus = skill.isMagic() ? 1 : 1.10113; // Gracia final physical skill bonus 10.113%
-		double ssboost = ss ? 1.5 : 1; // 50% bonus with SS
+		double ssboost = ss ? 2 : 1;
 		double pvpBonus = 1;
 		
 		if (attacker.isPlayable() && target.isPlayable())
