@@ -204,7 +204,7 @@ public class PcStat extends PlayableStat
 			else
 			{
 				sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_EARNED_S1_EXP_AND_S2_SP);
-				sm.addLong((int) addToExp);
+				sm.addLong(addToExp);
 				sm.addInt(addToSp);
 			}
 		}

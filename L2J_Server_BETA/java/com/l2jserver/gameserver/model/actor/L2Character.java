@@ -5797,7 +5797,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			return;
 		}
 		
-		if (!skill.isChanneling())
+		if (!skill.isChanneling() && !skill.isToggle())
 		{
 			broadcastPacket(new MagicSkillLaunched(this, skill.getDisplayId(), skill.getDisplayLevel(), targets));
 		}
@@ -5917,18 +5917,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			// On each repeat restore shots before cast
 			if (mut.getCount() > 0)
 			{
-				final L2ItemInstance weaponInst = getActiveWeaponInstance();
-				if (weaponInst != null)
-				{
-					if (mut.getSkill().useSoulShot())
-					{
-						setChargedShot(ShotType.SOULSHOTS, true);
-					}
-					else if (mut.getSkill().useSpiritShot())
-					{
-						setChargedShot(ShotType.BLESSED_SPIRITSHOTS, true);
-					}
-				}
+				rechargeShots(mut.getSkill().useSoulShot(), mut.getSkill().useSpiritShot());
 			}
 			
 			// Launch the magic skill in order to calculate its effects
