@@ -47,7 +47,6 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
 import com.l2jserver.gameserver.model.conditions.Condition;
 import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
@@ -1361,8 +1360,8 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	 */
 	public void applyEffects(L2Character effector, L2CubicInstance cubic, L2Character effected, boolean self, boolean passive, boolean instant, int abnormalTime)
 	{
-		// Null targets, doors and siege flags cannot receive any effects.
-		if ((effected == null) || effected.isDoor() || (effected instanceof L2SiegeFlagInstance))
+		// null targets cannot receive any effects.
+		if (effected == null)
 		{
 			return;
 		}

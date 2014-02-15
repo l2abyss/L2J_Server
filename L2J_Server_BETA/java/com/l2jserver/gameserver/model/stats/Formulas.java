@@ -39,6 +39,8 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2SiegeFlagInstance;
+import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.ClanHall;
@@ -1302,10 +1304,16 @@ public final class Formulas
 	 */
 	public static boolean calcEffectSuccess(Env env)
 	{
-		final L2Character attacker = env.getCharacter();
 		final L2Character target = env.getTarget();
-		final L2Skill skill = env.getSkill();
 		
+		// StaticObjects can not receive continuous effects.
+		if (target.isDoor() || (target instanceof L2SiegeFlagInstance) || (target instanceof L2StaticObjectInstance))
+		{
+			return false;
+		}
+		
+		final L2Character attacker = env.getCharacter();
+		final L2Skill skill = env.getSkill();
 		if (skill.isDebuff() && (target.calcStat(Stats.DEBUFF_IMMUNITY, 0, attacker, skill) > 0))
 		{
 			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
