@@ -676,15 +676,18 @@ public class L2DoorInstance extends L2Character
 	@Override
 	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
 	{
-		if (isWall() && !attacker.isServitor() && (getInstanceId() == 0))
+		if (isWall() && (getInstanceId() == 0))
 		{
-			return;
-		}
-		
-		L2ServitorInstance servitor = (L2ServitorInstance) attacker;
-		if (servitor.getTemplate().getRace() != NpcRace.SIEGE_WEAPON)
-		{
-			return;
+			if (!attacker.isServitor())
+			{
+				return;
+			}
+			
+			final L2ServitorInstance servitor = (L2ServitorInstance) attacker;
+			if (servitor.getTemplate().getRace() != NpcRace.SIEGE_WEAPON)
+			{
+				return;
+			}
 		}
 		
 		super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
