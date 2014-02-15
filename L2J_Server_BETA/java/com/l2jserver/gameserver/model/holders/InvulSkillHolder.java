@@ -18,48 +18,37 @@
  */
 package com.l2jserver.gameserver.model.holders;
 
-import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Simple class for storing skill id/level.
- * @author BiggBoss
+ * @author UnAfraid
  */
-public class SkillHolder
+public class InvulSkillHolder extends SkillHolder
 {
-	private final int _skillId;
-	private final int _skillLvl;
+	private final AtomicInteger _instances = new AtomicInteger(1);
 	
-	public SkillHolder(int skillId, int skillLvl)
+	public InvulSkillHolder(int skillId, int skillLevel)
 	{
-		_skillId = skillId;
-		_skillLvl = skillLvl;
+		super(skillId, skillLevel);
 	}
 	
-	public SkillHolder(L2Skill skill)
+	public InvulSkillHolder(SkillHolder holder)
 	{
-		_skillId = skill.getId();
-		_skillLvl = skill.getLevel();
+		super(holder.getSkill());
 	}
 	
-	public final int getSkillId()
+	public int getInstances()
 	{
-		return _skillId;
+		return _instances.get();
 	}
 	
-	public final int getSkillLvl()
+	public int increaseInstances()
 	{
-		return _skillLvl;
+		return _instances.incrementAndGet();
 	}
 	
-	public final L2Skill getSkill()
+	public int decreaseInstances()
 	{
-		return SkillTable.getInstance().getInfo(_skillId, Math.max(_skillLvl, 1));
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "[SkillId: " + _skillId + " Level: " + _skillLvl + "]";
+		return _instances.decrementAndGet();
 	}
 }

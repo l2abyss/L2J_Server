@@ -1720,7 +1720,7 @@ public final class Config
 			SERVER_BUILD_DATE = serverVersion.getString("builddate", "Undefined Date.");
 			
 			// Load L2J Datapack Version L2Properties file (if exists)
-			final PropertiesParser dpVersion = new PropertiesParser(new File(DATAPACK_ROOT, DATAPACK_VERSION_FILE));
+			final PropertiesParser dpVersion = new PropertiesParser(new File(DATAPACK_VERSION_FILE));
 			
 			DATAPACK_VERSION = dpVersion.getString("version", "Unsupported Custom Version.");
 			
