@@ -38,11 +38,6 @@ public enum L2SkillType
 	// Misc
 	UNLOCK,
 	UNLOCK_SPECIAL,
-	ENCHANT_ARMOR,
-	ENCHANT_WEAPON,
-	ENCHANT_ATTRIBUTE,
-	SOULSHOT,
-	SPIRITSHOT,
 	SIEGEFLAG(L2SkillSiegeFlag.class),
 	TAKEFORT,
 	DELUXE_KEY_UNLOCK,
@@ -51,7 +46,6 @@ public enum L2SkillType
 	DUMMY,
 	// Summons
 	SUMMON(L2SkillSummon.class),
-	FEED_PET,
 	
 	DETECT_TRAP,
 	REMOVE_TRAP,
@@ -61,8 +55,7 @@ public enum L2SkillType
 	// Nornil's Power (Nornil's Garden instance)
 	NORNILS_POWER,
 	// unimplemented
-	NOTDONE,
-	BALLISTA;
+	NOTDONE;
 	
 	private final Class<? extends L2Skill> _class;
 	
