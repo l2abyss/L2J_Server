@@ -81,7 +81,6 @@ public enum InstanceType
 	L2SiegeFlagInstance(L2Npc),
 	L2SiegeNpcInstance(L2Npc),
 	// Fort Siege
-	L2FortBallistaInstance(L2Npc),
 	L2FortCommanderInstance(L2DefenderInstance),
 	// Castle NPCs
 	L2CastleMagicianInstance(L2NpcInstance),
