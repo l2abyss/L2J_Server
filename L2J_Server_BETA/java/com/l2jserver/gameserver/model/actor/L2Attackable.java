@@ -1039,7 +1039,7 @@ public class L2Attackable extends L2Npc
 			{
 				L2Item item = ItemTable.getInstance().getTemplate(drop.getId());
 				// Check if the autoLoot mode is active
-				if (isFlying() || (!isRaid() && Config.AUTO_LOOT) || (isRaid() && Config.AUTO_LOOT_RAIDS) || (item.hasExImmediateEffect() && Config.AUTO_LOOT_HERBS))
+				if (isFlying() || (!item.hasExImmediateEffect() && ((!isRaid() && Config.AUTO_LOOT) || (isRaid() && Config.AUTO_LOOT_RAIDS))) || (item.hasExImmediateEffect() && Config.AUTO_LOOT_HERBS))
 				{
 					player.doAutoLoot(this, drop); // Give the item(s) to the L2PcInstance that has killed the L2Attackable
 				}
