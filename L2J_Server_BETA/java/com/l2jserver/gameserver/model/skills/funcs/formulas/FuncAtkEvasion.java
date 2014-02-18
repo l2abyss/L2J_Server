@@ -36,7 +36,7 @@ public class FuncAtkEvasion extends Func
 	
 	private FuncAtkEvasion()
 	{
-		super(Stats.EVASION_RATE, 0x10, null);
+		super(Stats.EVASION_RATE, 0x10, null, null);
 	}
 	
 	@Override

@@ -47,7 +47,7 @@ public class FuncArmorSet extends Func
 	
 	private FuncArmorSet(Stats stat)
 	{
-		super(stat, 0x10, null);
+		super(stat, 0x10, null, null);
 	}
 	
 	@Override

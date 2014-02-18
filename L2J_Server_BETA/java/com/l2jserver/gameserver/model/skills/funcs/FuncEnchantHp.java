@@ -30,7 +30,7 @@ public class FuncEnchantHp extends Func
 {
 	public FuncEnchantHp(Stats pStat, int pOrder, Object owner, Lambda lambda)
 	{
-		super(pStat, pOrder, owner);
+		super(pStat, pOrder, owner, lambda);
 	}
 	
 	@Override

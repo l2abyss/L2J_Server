@@ -38,7 +38,7 @@ public class FuncMAtkCritical extends Func
 	
 	private FuncMAtkCritical()
 	{
-		super(Stats.MCRITICAL_RATE, 0x09, null);
+		super(Stats.MCRITICAL_RATE, 0x09, null, null);
 	}
 	
 	@Override

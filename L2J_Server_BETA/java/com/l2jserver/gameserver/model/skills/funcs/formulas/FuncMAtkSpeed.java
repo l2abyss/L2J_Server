@@ -37,7 +37,7 @@ public class FuncMAtkSpeed extends Func
 	
 	private FuncMAtkSpeed()
 	{
-		super(Stats.MAGIC_ATTACK_SPEED, 0x20, null);
+		super(Stats.MAGIC_ATTACK_SPEED, 0x20, null, null);
 	}
 	
 	@Override

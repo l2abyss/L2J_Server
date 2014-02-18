@@ -37,7 +37,7 @@ public class FuncMoveSpeed extends Func
 	
 	private FuncMoveSpeed()
 	{
-		super(Stats.MOVE_SPEED, 0x30, null);
+		super(Stats.MOVE_SPEED, 0x30, null, null);
 	}
 	
 	@Override

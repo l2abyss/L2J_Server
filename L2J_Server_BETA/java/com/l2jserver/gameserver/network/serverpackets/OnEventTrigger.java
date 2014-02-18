@@ -19,35 +19,19 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
-import com.l2jserver.gameserver.util.Util;
 
 /**
- * @author Gnacik
+ * @author Gnacik, UnAfraid
  */
 public class OnEventTrigger extends L2GameServerPacket
 {
 	private final int _emitterId;
-	private final boolean _opened;
+	private final int _enabled;
 	
-	private static final int[] REVERSE_DOORS =
-	{
-		16200023,
-		16200024,
-		16200025
-	};
-	
-	public OnEventTrigger(L2DoorInstance door, boolean opened)
+	public OnEventTrigger(L2DoorInstance door, boolean enabled)
 	{
 		_emitterId = door.getEmitter();
-		// XXX: Check this out!
-		if (Util.contains(REVERSE_DOORS, door.getId()))
-		{
-			_opened = !opened;
-		}
-		else
-		{
-			_opened = opened;
-		}
+		_enabled = enabled ? 1 : 0;
 	}
 	
 	@Override
@@ -55,6 +39,6 @@ public class OnEventTrigger extends L2GameServerPacket
 	{
 		writeC(0xCF);
 		writeD(_emitterId);
-		writeD(_opened ? 0 : 1);
+		writeC(_enabled);
 	}
 }

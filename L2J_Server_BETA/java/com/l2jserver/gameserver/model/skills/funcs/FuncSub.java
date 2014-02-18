@@ -23,12 +23,9 @@ import com.l2jserver.gameserver.model.stats.Stats;
 
 public class FuncSub extends Func
 {
-	private final Lambda _lambda;
-	
 	public FuncSub(Stats pStat, int pOrder, Object owner, Lambda lambda)
 	{
-		super(pStat, pOrder, owner);
-		_lambda = lambda;
+		super(pStat, pOrder, owner, lambda);
 	}
 	
 	@Override

@@ -207,4 +207,13 @@ public final class Calculator
 			func.calc(env);
 		}
 	}
+	
+	/**
+	 * Get array of all function, dont use for add/remove
+	 * @return
+	 */
+	public Func[] getFunctions()
+	{
+		return _functions;
+	}
 }

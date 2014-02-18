@@ -37,7 +37,7 @@ public class FuncMaxCpMul extends Func
 	
 	private FuncMaxCpMul()
 	{
-		super(Stats.MAX_CP, 0x20, null);
+		super(Stats.MAX_CP, 0x20, null, null);
 	}
 	
 	@Override

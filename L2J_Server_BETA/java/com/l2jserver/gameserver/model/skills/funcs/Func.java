@@ -58,17 +58,21 @@ public abstract class Func
 	 */
 	public Condition cond;
 	
+	public Lambda _lambda;
+	
 	/**
 	 * Constructor of Func.
 	 * @param pStat
 	 * @param pOrder
 	 * @param owner
+	 * @param lambda
 	 */
-	public Func(Stats pStat, int pOrder, Object owner)
+	public Func(Stats pStat, int pOrder, Object owner, Lambda lambda)
 	{
 		stat = pStat;
 		order = pOrder;
 		funcOwner = owner;
+		_lambda = lambda;
 	}
 	
 	/**
