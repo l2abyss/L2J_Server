@@ -20,8 +20,10 @@ package com.l2jserver.gameserver.engines;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +38,7 @@ import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.enums.InstanceType;
+import com.l2jserver.gameserver.enums.NpcRace;
 import com.l2jserver.gameserver.enums.PcRace;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.PlayerState;
@@ -105,10 +108,10 @@ import com.l2jserver.gameserver.model.conditions.ConditionTargetLevel;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetLevelRange;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetMyPartyExceptMe;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetNpcId;
+import com.l2jserver.gameserver.model.conditions.ConditionTargetNpcRace;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetNpcType;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetPlayable;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetRace;
-import com.l2jserver.gameserver.model.conditions.ConditionTargetRaceId;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetUsesWeaponKind;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetWeight;
 import com.l2jserver.gameserver.model.conditions.ConditionUsingItemType;
@@ -912,16 +915,15 @@ public abstract class DocumentBase
 				cond = joinAnd(cond, new ConditionMinDistance(distance * distance));
 			}
 			// used for npc race
-			else if ("race_id".equalsIgnoreCase(a.getNodeName()))
+			else if ("npcRace".equalsIgnoreCase(a.getNodeName()))
 			{
-				StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
-				ArrayList<Integer> array = new ArrayList<>(st.countTokens());
-				while (st.hasMoreTokens())
+				final String[] values = a.getNodeValue().split(",");
+				final Set<NpcRace> array = new HashSet<>(values.length);
+				for (String value : values)
 				{
-					String item = st.nextToken().trim();
-					array.add(Integer.decode(getValue(item, null)));
+					array.add(NpcRace.valueOf(getValue(value, null)));
 				}
-				cond = joinAnd(cond, new ConditionTargetRaceId(array));
+				cond = joinAnd(cond, new ConditionTargetNpcRace(array));
 			}
 			// used for pc race
 			else if ("races".equalsIgnoreCase(a.getNodeName()))
