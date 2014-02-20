@@ -20,8 +20,8 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2SkillLearn;
-import com.l2jserver.gameserver.model.L2SquadTrainer;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -133,7 +133,7 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 			}
 			case SUBPLEDGE:
 			{
-				if (!activeChar.isClanLeader() || !(trainer instanceof L2SquadTrainer))
+				if (!activeChar.isClanLeader() || !activeChar.hasClanPrivilege(ClanPrivilege.CL_TROOPS_FAME))
 				{
 					return;
 				}
