@@ -338,7 +338,7 @@ public abstract class Inventory extends ItemContainer
 			{
 				for (L2ItemInstance itm : inventory.getItems())
 				{
-					if (!itm.isEquipped() || (itm.getItem().getSkills() == null))
+					if (!itm.isEquipped() || (itm.getItem().getSkills() == null) || itm.equals(item))
 					{
 						continue;
 					}
