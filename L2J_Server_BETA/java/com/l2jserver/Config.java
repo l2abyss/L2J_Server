@@ -794,8 +794,6 @@ public final class Config
 	public static boolean ALT_ATTACKABLE_NPCS;
 	public static boolean ALT_GAME_VIEWNPC;
 	public static int MAX_DRIFT_RANGE;
-	public static boolean DEEPBLUE_DROP_RULES;
-	public static boolean DEEPBLUE_DROP_RULES_RAID;
 	public static boolean SHOW_NPC_LVL;
 	public static boolean SHOW_CREST_WITHOUT_QUEST;
 	public static boolean ENABLE_RANDOM_ENCHANT_EFFECT;
@@ -2029,8 +2027,6 @@ public final class Config
 			ALT_ATTACKABLE_NPCS = NPC.getBoolean("AltAttackableNpcs", true);
 			ALT_GAME_VIEWNPC = NPC.getBoolean("AltGameViewNpc", false);
 			MAX_DRIFT_RANGE = NPC.getInt("MaxDriftRange", 300);
-			DEEPBLUE_DROP_RULES = NPC.getBoolean("UseDeepBlueDropRules", true);
-			DEEPBLUE_DROP_RULES_RAID = NPC.getBoolean("UseDeepBlueDropRulesRaid", true);
 			SHOW_NPC_LVL = NPC.getBoolean("ShowNpcLevel", false);
 			SHOW_CREST_WITHOUT_QUEST = NPC.getBoolean("ShowCrestWithoutQuest", false);
 			ENABLE_RANDOM_ENCHANT_EFFECT = NPC.getBoolean("EnableRandomEnchantEffect", false);
@@ -3189,12 +3185,6 @@ public final class Config
 				break;
 			case "maxdriftrange":
 				MAX_DRIFT_RANGE = Integer.parseInt(pValue);
-				break;
-			case "usedeepbluedroprules":
-				DEEPBLUE_DROP_RULES = Boolean.parseBoolean(pValue);
-				break;
-			case "usedeepbluedroprulesraid":
-				DEEPBLUE_DROP_RULES_RAID = Boolean.parseBoolean(pValue);
 				break;
 			case "guardattackaggromob":
 				GUARD_ATTACK_AGGRO_MOB = Boolean.parseBoolean(pValue);
