@@ -583,7 +583,7 @@ public abstract class ItemContainer
 		{
 			_log.log(Level.SEVERE, "deletedMe()", e);
 		}
-		final List<L2Object> items = new ArrayList<>(_items);
+		final List<L2Object> items = new ArrayList<L2Object>(_items);
 		_items.clear();
 		
 		L2World.getInstance().removeObjects(items);
