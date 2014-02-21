@@ -42,6 +42,10 @@ import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
+/**
+ * UnAfraid: TODO: MOVE IT TO DP AI
+ * @author Unknown
+ */
 public final class Evolve
 {
 	public static final Logger _log = Logger.getLogger(Evolve.class.getName());

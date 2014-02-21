@@ -158,6 +158,10 @@ public class CharKnownList extends ObjectKnownList
 				{
 					sIter.remove();
 				}
+				else if (getActiveChar().isPlayer() && (summon.getOwner() == getActiveChar()))
+				{
+					continue;
+				}
 				else if (!summon.isVisible() || !Util.checkIfInShortRadius(getDistanceToForgetObject(summon), getActiveObject(), summon, true))
 				{
 					sIter.remove();

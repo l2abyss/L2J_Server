@@ -2008,7 +2008,7 @@ public final class Formulas
 				}
 				
 				// Prevent initialization.
-				final List<BuffInfo> buffs = target.getEffectList().hasBuffs() ? new ArrayList<>(target.getEffectList().getBuffs().values()) : new ArrayList<BuffInfo>(1);
+				final List<BuffInfo> buffs = target.getEffectList().hasBuffs() ? new ArrayList<>(target.getEffectList().getBuffs().values()) : new ArrayList<>(1);
 				if (target.getEffectList().hasTriggered())
 				{
 					buffs.addAll(target.getEffectList().getTriggered().values());
