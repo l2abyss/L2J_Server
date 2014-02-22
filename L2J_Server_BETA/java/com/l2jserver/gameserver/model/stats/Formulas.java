@@ -1404,66 +1404,6 @@ public final class Formulas
 		return true;
 	}
 	
-	public static boolean calcSkillSuccess(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss, boolean sps, boolean bss)
-	{
-		if (skill.isDebuff())
-		{
-			if (skill.getPower() == -1)
-			{
-				if (attacker.isDebug())
-				{
-					attacker.sendDebugMessage(skill.getName() + " ignoring resists");
-				}
-				return true;
-			}
-			else if (target.calcStat(Stats.DEBUFF_IMMUNITY, 0, null, skill) > 0)
-			{
-				return false;
-			}
-		}
-		
-		// Perfect Shield Block.
-		if (shld == SHIELD_DEFENSE_PERFECT_BLOCK)
-		{
-			if (attacker.isDebug())
-			{
-				attacker.sendDebugMessage(skill.getName() + " blocked by shield");
-			}
-			
-			return false;
-		}
-		
-		// Calculate BaseRate.
-		double baseRate = skill.getPower();
-		double statMod = skill.getBasicProperty().calcBonus(target);
-		double rate = (baseRate / statMod);
-		
-		// Lvl Bonus Modifier.
-		double lvlBonusMod = calcLvlBonusMod(attacker, target, skill);
-		rate *= lvlBonusMod;
-		
-		// Element Modifier.
-		double elementMod = calcAttributeBonus(attacker, target, skill);
-		rate *= elementMod;
-		
-		// Add Matk/Mdef Bonus (TODO: Pending)
-		final double finalRate = Util.constrain(rate, skill.getMinChance(), skill.getMaxChance());
-		if (attacker.isDebug())
-		{
-			final StatsSet set = new StatsSet();
-			set.set("statMod", statMod);
-			set.set("elementMod", elementMod);
-			set.set("lvlBonusMod", lvlBonusMod);
-			set.set("rate", rate);
-			set.set("finalRate", finalRate);
-			Debug.sendSkillDebug(attacker, target, skill, set);
-		}
-		
-		// Check the Rate Limits.
-		
-		return (Rnd.get(100) < finalRate);
-	}
-	
 	public static boolean calcCubicSkillSuccess(L2CubicInstance attacker, L2Character target, L2Skill skill, byte shld)
 	{
 		if (skill.isDebuff())

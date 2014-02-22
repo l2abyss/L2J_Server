@@ -434,8 +434,7 @@ public final class L2Weapon extends L2Item
 			return false;
 		}
 		
-		final byte shld = Formulas.calcShldUse(caster, target, onMagicSkill);
-		if (onMagicSkill.isBad() && !Formulas.calcSkillSuccess(caster, target, onMagicSkill, shld, false, false, false))
+		if (onMagicSkill.isBad() && (Formulas.calcShldUse(caster, target, onMagicSkill) == Formulas.SHIELD_DEFENSE_PERFECT_BLOCK))
 		{
 			return false;
 		}
