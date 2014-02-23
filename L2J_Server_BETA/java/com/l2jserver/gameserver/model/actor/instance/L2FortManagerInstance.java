@@ -29,9 +29,9 @@ import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2TeleportLocation;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SortedWareHouseWithdrawalList;
@@ -887,7 +887,7 @@ public class L2FortManagerInstance extends L2MerchantInstance
 							skill_lvl = Integer.parseInt(st.nextToken());
 						}
 						skill = SkillTable.getInstance().getInfo(skill_id, skill_lvl);
-						if (skill.getSkillType() == L2SkillType.SUMMON)
+						if (skill.hasEffectType(L2EffectType.SUMMON))
 						{
 							player.doCast(skill);
 						}

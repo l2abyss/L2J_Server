@@ -29,6 +29,7 @@ import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.NpcRace;
+import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.enums.ShotType;
 import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.handler.IItemHandler;
@@ -52,6 +53,7 @@ import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2ActionType;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
+import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.zone.ZoneId;
@@ -71,6 +73,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.TeleportToLocation;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 import com.l2jserver.gameserver.util.Util;
+import com.l2jserver.util.Rnd;
 
 public abstract class L2Summon extends L2Playable
 {
@@ -119,7 +122,7 @@ public abstract class L2Summon extends L2Playable
 		_owner = owner;
 		_ai = new L2SummonAI(new AIAccessor());
 		
-		setXYZInvisible(owner.getX() + 20, owner.getY() + 20, owner.getZ() + 100);
+		setXYZInvisible(owner.getX() + Rnd.get(-100, 100), owner.getY() + Rnd.get(-100, 100), owner.getZ());
 	}
 	
 	@Override
@@ -147,6 +150,15 @@ public abstract class L2Summon extends L2Playable
 		setShowSummonAnimation(false); // addVisibleObject created the info packets with summon animation
 		// if someone comes into range now, the animation shouldn't show any more
 		_restoreSummon = false;
+		
+		// Notify DP scripts.
+		if (getTemplate().getEventQuests(QuestEventType.ON_SUMMON) != null)
+		{
+			for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_SUMMON))
+			{
+				quest.onSummon(this);
+			}
+		}
 	}
 	
 	@Override
@@ -206,9 +218,8 @@ public abstract class L2Summon extends L2Playable
 			{
 				if (_ai == null)
 				{
-					_ai = new L2SummonAI(new L2Summon.AIAccessor());
+					return _ai = new L2SummonAI(new L2Summon.AIAccessor());
 				}
-				return _ai;
 			}
 		}
 		return _ai;
@@ -453,6 +464,7 @@ public abstract class L2Summon extends L2Playable
 			storeMe();
 			storeEffect(true);
 			owner.setPet(null);
+			setOwner(null);
 			
 			// Stop AI tasks
 			if (hasAI())

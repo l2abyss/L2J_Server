@@ -113,7 +113,6 @@ import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.SkillChannelized;
 import com.l2jserver.gameserver.model.skills.SkillChannelizer;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.stats.BaseStats;
 import com.l2jserver.gameserver.model.stats.Calculator;
@@ -2113,7 +2112,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			if ((requiredItems == null) || (requiredItems.getCount() < skill.getItemConsume()))
 			{
 				// Checked: when a summon skill failed, server show required consume item count
-				if (skill.getSkillType() == L2SkillType.SUMMON)
+				if (skill.hasEffectType(L2EffectType.SUMMON))
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.SUMMONING_SERVITOR_COSTS_S2_S1);
 					sm.addItemName(skill.getItemConsumeId());
@@ -5518,15 +5517,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			{
 				removeStatsOwner(oldSkill);
 				stopSkillEffects(true, oldSkill.getId());
-			}
-			
-			if (isPlayer())
-			{
-				// TODO: Unhardcode it!
-				if ((oldSkill instanceof L2SkillSummon) && (oldSkill.getId() == 710) && hasSummon() && (getSummon().getId() == 14870))
-				{
-					getActingPlayer().getSummon().unSummon(getActingPlayer());
-				}
 			}
 			
 			if (oldSkill.isChance() && (_chanceSkills != null))

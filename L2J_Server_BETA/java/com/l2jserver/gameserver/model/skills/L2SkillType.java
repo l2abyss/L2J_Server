@@ -23,7 +23,6 @@ import java.lang.reflect.Constructor;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDefault;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSiegeFlag;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
 
 /**
  * Skill type enumerated.
@@ -44,8 +43,6 @@ public enum L2SkillType
 	SOW,
 	DETECTION,
 	DUMMY,
-	// Summons
-	SUMMON(L2SkillSummon.class),
 	
 	DETECT_TRAP,
 	REMOVE_TRAP,

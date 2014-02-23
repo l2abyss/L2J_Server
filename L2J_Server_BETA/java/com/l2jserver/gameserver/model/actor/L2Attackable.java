@@ -497,7 +497,7 @@ public class L2Attackable extends L2Npc
 					
 					// Penalty applied to the attacker's XP
 					// If this attacker have servitor, get Exp Penalty applied for the servitor.
-					final float penalty = attacker.hasServitor() ? ((L2ServitorInstance) attacker.getSummon()).getExpPenalty() : 0;
+					final float penalty = attacker.hasServitor() ? ((L2ServitorInstance) attacker.getSummon()).getExpMultiplier() : 1;
 					
 					// If there's NO party in progress
 					if (attackerParty == null)
@@ -521,7 +521,7 @@ public class L2Attackable extends L2Npc
 								sp *= Config.L2JMOD_CHAMPION_REWARDS;
 							}
 							
-							exp *= 1 - penalty;
+							exp *= penalty;
 							
 							// Check for an over-hit enabled strike
 							L2Character overhitAttacker = getOverhitAttacker();

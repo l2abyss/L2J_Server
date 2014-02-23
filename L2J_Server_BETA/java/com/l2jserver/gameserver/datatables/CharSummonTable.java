@@ -29,14 +29,13 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2PetData;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
+import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.PetItemList;
 
 /**
@@ -194,9 +193,7 @@ public class CharSummonTable
 			ps.setInt(2, skillId);
 			try (ResultSet rs = ps.executeQuery())
 			{
-				L2NpcTemplate summonTemplate;
-				L2ServitorInstance summon;
-				L2SkillSummon skill;
+				L2Skill skill;
 				
 				while (rs.next())
 				{
@@ -204,47 +201,21 @@ public class CharSummonTable
 					int curMp = rs.getInt("curMp");
 					int time = rs.getInt("time");
 					
-					skill = (L2SkillSummon) SkillTable.getInstance().getInfo(skillId, activeChar.getSkillLevel(skillId));
+					skill = SkillTable.getInstance().getInfo(skillId, activeChar.getSkillLevel(skillId));
 					if (skill == null)
 					{
 						removeServitor(activeChar);
 						return;
 					}
 					
-					summonTemplate = NpcData.getInstance().getTemplate(skill.getNpcId());
-					if (summonTemplate == null)
+					skill.applyEffects(activeChar, activeChar);
+					if (activeChar.hasServitor())
 					{
-						_log.warning(getClass().getSimpleName() + ": Summon attemp for nonexisting Skill ID:" + skillId);
-						return;
+						final L2ServitorInstance summon = (L2ServitorInstance) activeChar.getSummon();
+						summon.setCurrentHp(curHp);
+						summon.setCurrentMp(curMp);
+						summon.setLifeTimeRemaining(time);
 					}
-					
-					final int id = IdFactory.getInstance().getNextId();
-					
-					summon = new L2ServitorInstance(id, summonTemplate, activeChar, skill);
-					
-					summon.setName(summonTemplate.getName());
-					summon.setTitle(activeChar.getName());
-					summon.setExpPenalty(skill.getExpPenalty());
-					summon.setSharedElementals(skill.getInheritElementals());
-					summon.setSharedElementalsValue(skill.getElementalSharePercent());
-					
-					if (summon.getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
-					{
-						summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(ExperienceTable.getInstance().getMaxPetLevel() - 1));
-						_log.warning(getClass().getSimpleName() + ": Summon (" + summon.getName() + ") NpcID: " + summon.getId() + " has a level above " + ExperienceTable.getInstance().getMaxPetLevel() + ". Please rectify.");
-					}
-					else
-					{
-						summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(summon.getLevel() % ExperienceTable.getInstance().getMaxPetLevel()));
-					}
-					summon.setCurrentHp(curHp);
-					summon.setCurrentMp(curMp);
-					summon.setHeading(activeChar.getHeading());
-					summon.setRunning();
-					activeChar.setPet(summon);
-					summon.setTimeRemaining(time);
-					
-					summon.spawnMe(activeChar.getX() + 20, activeChar.getY() + 20, activeChar.getZ());
 				}
 			}
 		}
@@ -256,7 +227,7 @@ public class CharSummonTable
 	
 	public void saveSummon(L2ServitorInstance summon)
 	{
-		if ((summon == null) || (summon.getTimeRemaining() <= 0))
+		if ((summon == null) || (summon.getLifeTimeRemaining() <= 0))
 		{
 			return;
 		}
@@ -270,7 +241,7 @@ public class CharSummonTable
 			ps.setInt(2, summon.getReferenceSkill());
 			ps.setInt(3, (int) Math.round(summon.getCurrentHp()));
 			ps.setInt(4, (int) Math.round(summon.getCurrentMp()));
-			ps.setInt(5, summon.getTimeRemaining());
+			ps.setInt(5, summon.getLifeTimeRemaining());
 			ps.execute();
 		}
 		catch (Exception e)

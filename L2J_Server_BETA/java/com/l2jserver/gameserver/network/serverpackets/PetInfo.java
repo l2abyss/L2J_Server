@@ -70,8 +70,8 @@ public class PetInfo extends L2GameServerPacket
 		else if (summon.isServitor())
 		{
 			final L2ServitorInstance sum = (L2ServitorInstance) _summon;
-			_curFed = sum.getTimeRemaining();
-			_maxFed = sum.getTotalLifeTime();
+			_curFed = sum.getLifeTimeRemaining();
+			_maxFed = sum.getLifeTime();
 		}
 	}
 	

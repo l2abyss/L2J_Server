@@ -763,10 +763,10 @@ public class L2Party extends AbstractPlayerGroup
 			if (validMembers.contains(member))
 			{
 				// The servitor penalty
-				final float penalty = member.hasServitor() ? ((L2ServitorInstance) member.getSummon()).getExpPenalty() : 0;
+				final float penalty = member.hasServitor() ? ((L2ServitorInstance) member.getSummon()).getExpMultiplier() : 1;
 				
 				final double sqLevel = member.getLevel() * member.getLevel();
-				final double preCalculation = (sqLevel / sqLevelSum) * (1 - penalty);
+				final double preCalculation = (sqLevel / sqLevelSum) * penalty;
 				
 				// Add the XP/SP points to the requested party member
 				long addexp = Math.round(member.calcStat(Stats.EXPSP_RATE, xpReward * preCalculation, null, null));
