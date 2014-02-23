@@ -1219,7 +1219,7 @@ public class DocumentSkill extends DocumentBase
 					{
 						parseTemplate(n, _currentSkill.currentSkills.get(i));
 					}
-					else if (!foundChannelingEffects && "startEffects".equalsIgnoreCase(n.getNodeName()))
+					else if (!foundStartEffects && "startEffects".equalsIgnoreCase(n.getNodeName()))
 					{
 						parseTemplate(n, _currentSkill.currentSkills.get(i), EffectScope.START);
 					}
