@@ -264,7 +264,6 @@ public final class Fort extends AbstractResidence
 		if ((getOwnerClan() != null) && (getFortState() == 0))
 		{
 			spawnSpecialEnvoys();
-			ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSpecialEnvoysDeSpawn(this), 3600000); // Prepare 1hr task for special envoys despawn
 		}
 	}
 	
@@ -280,34 +279,6 @@ public final class Fort extends AbstractResidence
 			return _function.get(type);
 		}
 		return null;
-	}
-	
-	public static class ScheduleSpecialEnvoysDeSpawn implements Runnable
-	{
-		private final Fort _fortInst;
-		
-		public ScheduleSpecialEnvoysDeSpawn(Fort pFort)
-		{
-			_fortInst = pFort;
-		}
-		
-		@Override
-		public void run()
-		{
-			try
-			{
-				// if state not decided, change state to indenpendent
-				if (_fortInst.getFortState() == 0)
-				{
-					_fortInst.setFortState(1, 0);
-				}
-				_fortInst.despawnSpecialEnvoys();
-			}
-			catch (Exception e)
-			{
-				_log.log(Level.WARNING, "Exception: ScheduleSpecialEnvoysSpawn() for Fort " + _fortInst.getName() + ": " + e.getMessage(), e);
-			}
-		}
 	}
 	
 	public void endOfSiege(L2Clan clan)
@@ -460,7 +431,6 @@ public final class Fort extends AbstractResidence
 		}
 		
 		spawnSpecialEnvoys();
-		ThreadPoolManager.getInstance().scheduleGeneral(new ScheduleSpecialEnvoysDeSpawn(this), 3600000); // Prepare 1hr task for special envoys despawn
 		// if clan have already fortress, remove it
 		if (clan.getFortId() > 0)
 		{
@@ -1184,15 +1154,6 @@ public final class Fort extends AbstractResidence
 		{
 			spawnDat.doSpawn();
 			spawnDat.startRespawn();
-		}
-	}
-	
-	public void despawnSpecialEnvoys()
-	{
-		for (L2Spawn spawnDat : _specialEnvoys)
-		{
-			spawnDat.stopRespawn();
-			spawnDat.getLastSpawn().deleteMe();
 		}
 	}
 	

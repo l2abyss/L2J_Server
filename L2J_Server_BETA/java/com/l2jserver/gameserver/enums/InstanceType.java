@@ -83,7 +83,6 @@ public enum InstanceType
 	// Fort Siege
 	L2FortCommanderInstance(L2DefenderInstance),
 	// Fort NPCs
-	L2FortEnvoyInstance(L2Npc),
 	L2FortLogisticsInstance(L2MerchantInstance),
 	L2FortManagerInstance(L2MerchantInstance),
 	L2FortSiegeNpcInstance(L2Npc),

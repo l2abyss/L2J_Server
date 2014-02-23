@@ -279,7 +279,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 				clan.broadcastToOnlineMembers(new PledgeSkillList(clan));
 				activeChar.sendPacket(new AcquireSkillDone());
 				
-				showSUbUnitSkillList(activeChar);
+				showSubUnitSkillList(activeChar);
 				break;
 			}
 			case TRANSFER:
@@ -376,7 +376,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 		}
 	}
 	
-	public static void showSUbUnitSkillList(L2PcInstance activeChar)
+	public static void showSubUnitSkillList(L2PcInstance activeChar)
 	{
 		final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableSubPledgeSkills(activeChar.getClan());
 		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.SUBPLEDGE);
