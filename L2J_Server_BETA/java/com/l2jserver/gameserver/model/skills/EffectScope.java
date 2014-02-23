@@ -24,6 +24,7 @@ package com.l2jserver.gameserver.model.skills;
 public enum EffectScope
 {
 	GENERAL,
+	START,
 	SELF,
 	PASSIVE,
 	CHANNELING,

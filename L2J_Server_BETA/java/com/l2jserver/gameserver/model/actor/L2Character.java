@@ -108,6 +108,7 @@ import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.AbnormalVisualEffect;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
+import com.l2jserver.gameserver.model.skills.EffectScope;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.SkillChannelized;
@@ -116,6 +117,7 @@ import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.stats.BaseStats;
 import com.l2jserver.gameserver.model.stats.Calculator;
+import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.model.zone.ZoneId;
@@ -1763,7 +1765,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		// Get the Base Casting Time of the Skills.
 		int skillTime = (skill.getHitTime() + skill.getCoolTime());
 		
-		if (!skill.isChanneling())
+		if (!skill.isChanneling() || (skill.getChannelingSkillId() == 0))
 		{
 			// Calculate the Casting Time of the "Non-Static" Skills (with caster PAtk/MAtkSpd).
 			if (!skill.isStatic())
@@ -1928,6 +1930,17 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			sendPacket(sm);
 		}
 		
+		if (skill.hasEffects(EffectScope.START))
+		{
+			final Env env = new Env();
+			env.setSkillMastery(Formulas.calcSkillMastery(this, skill));
+			env.setCharacter(this);
+			env.setTarget(target);
+			env.setSkill(skill);
+			final BuffInfo info = new BuffInfo(env);
+			skill.applyEffectScope(EffectScope.START, info, true, false);
+		}
+		
 		// Before start AI Cast Broadcast Fly Effect is Need
 		if (skill.getFlyType() != null)
 		{
@@ -1945,7 +1958,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				sendPacket(new SetupGauge(SetupGauge.BLUE, skillTime));
 			}
 			
-			if (skill.isChanneling())
+			if (skill.isChanneling() && (skill.getChannelingSkillId() > 0))
 			{
 				getSkillChannelizer().startChanneling(skill);
 			}
@@ -2046,7 +2059,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		}
 		
 		// prevent casting signets to peace zone
-		if (skill.isChanneling())
+		if (skill.isChanneling() && (skill.getChannelingSkillId() > 0))
 		{
 			L2WorldRegion region = getWorldRegion();
 			if (region == null)
@@ -5791,7 +5804,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			return;
 		}
 		
-		if (!skill.isChanneling() && !skill.isToggle())
+		if (!skill.isToggle())
 		{
 			broadcastPacket(new MagicSkillLaunched(this, skill.getDisplayId(), skill.getDisplayLevel(), targets));
 		}
