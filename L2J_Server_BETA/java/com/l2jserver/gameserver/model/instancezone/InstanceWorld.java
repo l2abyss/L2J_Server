@@ -84,6 +84,11 @@ public class InstanceWorld
 		return _status;
 	}
 	
+	public boolean isStatus(int status)
+	{
+		return _status == status;
+	}
+	
 	public void setStatus(int status)
 	{
 		_status = status;
