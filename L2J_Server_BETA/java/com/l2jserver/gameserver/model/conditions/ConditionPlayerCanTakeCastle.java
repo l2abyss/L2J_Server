@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 
 /**
- * Player Can Possess Holything condition implementation.
+ * Player Can Take Castle condition implementation.
  * @author Adry_85
  */
 public class ConditionPlayerCanTakeCastle extends Condition
