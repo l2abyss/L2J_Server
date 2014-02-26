@@ -523,7 +523,7 @@ public abstract class L2Summon extends L2Playable
 	@Override
 	public boolean isAutoAttackable(L2Character attacker)
 	{
-		return _owner.isAutoAttackable(attacker);
+		return (_owner != null) && _owner.isAutoAttackable(attacker);
 	}
 	
 	public int getControlObjectId()
