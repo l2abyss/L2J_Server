@@ -67,7 +67,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
-public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
+public class L2Skill implements IChanceSkillTrigger, IIdentifiable
 {
 	protected static final Logger _log = Logger.getLogger(L2Skill.class.getName());
 	
@@ -231,7 +231,7 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	private final int _channelingTickInitialDelay;
 	private final int _channelingTickInterval;
 	
-	protected L2Skill(StatsSet set)
+	public L2Skill(StatsSet set)
 	{
 		_id = set.getInt("skill_id");
 		_level = set.getInt("level");
@@ -388,8 +388,6 @@ public abstract class L2Skill implements IChanceSkillTrigger, IIdentifiable
 		_channelingTickInterval = set.getInt("channelingTickInterval", 2) * 1000;
 		_channelingTickInitialDelay = set.getInt("channelingTickInitialDelay", _channelingTickInterval / 1000) * 1000;
 	}
-	
-	public abstract void useSkill(L2Character caster, L2Object[] targets);
 	
 	public final L2SkillType getSkillType()
 	{

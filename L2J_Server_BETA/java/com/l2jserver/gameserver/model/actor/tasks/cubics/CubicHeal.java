@@ -87,10 +87,6 @@ public class CubicHeal implements Runnable
 						{
 							handler.useSkill(_cubic.getOwner(), skill, targets);
 						}
-						else
-						{
-							skill.useSkill(_cubic.getOwner(), targets);
-						}
 						
 						_cubic.getOwner().broadcastPacket(new MagicSkillUse(_cubic.getOwner(), target, skill.getId(), skill.getLevel(), 0, 0));
 					}

@@ -18,10 +18,6 @@
  */
 package com.l2jserver.gameserver.model.skills;
 
-import java.lang.reflect.Constructor;
-
-import com.l2jserver.gameserver.model.StatsSet;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDefault;
 
 /**
  * Skill type enumerated.
@@ -50,30 +46,4 @@ public enum L2SkillType
 	NORNILS_POWER,
 	// unimplemented
 	NOTDONE;
-	
-	private final Class<? extends L2Skill> _class;
-	
-	public L2Skill makeSkill(StatsSet set)
-	{
-		try
-		{
-			Constructor<? extends L2Skill> c = _class.getConstructor(StatsSet.class);
-			
-			return c.newInstance(set);
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
-	
-	private L2SkillType()
-	{
-		_class = L2SkillDefault.class;
-	}
-	
-	private L2SkillType(Class<? extends L2Skill> classType)
-	{
-		_class = classType;
-	}
 }

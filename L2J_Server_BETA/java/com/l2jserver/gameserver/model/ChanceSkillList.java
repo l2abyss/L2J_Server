@@ -193,10 +193,6 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			{
 				handler.useSkill(caster, triggered, targets);
 			}
-			else
-			{
-				triggered.useSkill(caster, targets);
-			}
 		}
 		catch (Exception e)
 		{

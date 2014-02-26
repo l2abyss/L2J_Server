@@ -382,10 +382,6 @@ public final class L2Weapon extends L2Item
 		{
 			handler.useSkill(caster, onCritSkill, targets);
 		}
-		else
-		{
-			onCritSkill.useSkill(caster, targets);
-		}
 	}
 	
 	/**
@@ -450,10 +446,6 @@ public final class L2Weapon extends L2Item
 		if (handler != null)
 		{
 			handler.useSkill(caster, onMagicSkill, targets);
-		}
-		else
-		{
-			onMagicSkill.useSkill(caster, targets);
 		}
 		
 		// notify quests of a skill use

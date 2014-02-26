@@ -388,10 +388,6 @@ public abstract class Inventory extends ItemContainer
 				{
 					handler.useSkill(player, unequipSkill, targets);
 				}
-				else
-				{
-					unequipSkill.useSkill(player, targets);
-				}
 			}
 			
 			if (update)
