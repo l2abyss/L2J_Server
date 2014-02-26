@@ -33,8 +33,6 @@ public enum L2SkillType
 	
 	// Skill is done within the core.
 	COREDONE,
-	// Nornil's Power (Nornil's Garden instance)
-	NORNILS_POWER,
 	// unimplemented
 	NOTDONE;
 }
