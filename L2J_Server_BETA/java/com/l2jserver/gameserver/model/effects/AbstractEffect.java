@@ -58,7 +58,6 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 	private final int _triggeredId;
 	private final int _triggeredLevel;
 	private final ChanceCondition _chanceCondition;
-	private final StatsSet _parameters;
 	
 	/**
 	 * Abstract effect constructor.
@@ -77,7 +76,6 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 		_triggeredId = set.getInt("triggeredId", 0);
 		_triggeredLevel = set.getInt("triggeredLevel", 1);
 		_chanceCondition = ChanceCondition.parse(set.getString("chanceType", null), set.getInt("activationChance", -1), set.getInt("activationMinDamage", -1), set.getString("activationElements", null), set.getString("activationSkills", null), set.getBoolean("pvpChanceOnly", false));
-		_parameters = params;
 	}
 	
 	public static final AbstractEffect createEffect(Condition attachCond, Condition applyCond, StatsSet set, StatsSet params)
@@ -189,24 +187,6 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 	public ChanceCondition getTriggeredChanceCondition()
 	{
 		return _chanceCondition;
-	}
-	
-	/**
-	 * Verify if this effect template has parameters.
-	 * @return {@code true} if this effect template has parameters, {@code false} otherwise
-	 */
-	public boolean hasParameters()
-	{
-		return _parameters != null;
-	}
-	
-	/**
-	 * Get the parameters.
-	 * @return the parameters of this effect template
-	 */
-	public StatsSet getParameters()
-	{
-		return _parameters;
 	}
 	
 	/**
