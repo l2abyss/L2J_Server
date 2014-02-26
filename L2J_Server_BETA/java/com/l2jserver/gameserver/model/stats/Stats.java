@@ -186,7 +186,10 @@ public enum Stats
 	VITALITY_CONSUME_RATE("vitalityConsumeRate"),
 	
 	// Souls
-	MAX_SOULS("maxSouls");
+	MAX_SOULS("maxSouls"),
+	
+	// Fishing
+	FISHING_EXPERTISE("fishingExpertise");
 	
 	public static final int NUM_STATS = values().length;
 	

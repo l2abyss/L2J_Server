@@ -237,7 +237,6 @@ import com.l2jserver.gameserver.model.quest.State;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.gameserver.model.stats.Stats;
@@ -8721,8 +8720,6 @@ public final class L2PcInstance extends L2Playable
 	
 	private boolean checkUseMagicConditions(L2Skill skill, boolean forceUse, boolean dontMove)
 	{
-		L2SkillType sklType = skill.getSkillType();
-		
 		// ************************************* Check Player State *******************************************
 		
 		// Abnormal effects(ex : Stun, Sleep...) are checked in L2Character useMagic()
@@ -8740,7 +8737,7 @@ public final class L2PcInstance extends L2Playable
 			return false;
 		}
 		
-		if (isFishing() && ((sklType != L2SkillType.PUMPING) && (sklType != L2SkillType.REELING) && (sklType != L2SkillType.FISHING)))
+		if (isFishing() && !skill.hasEffectType(L2EffectType.FISHING, L2EffectType.FISHING_START))
 		{
 			// Only fishing skills are available
 			sendPacket(SystemMessageId.ONLY_FISHING_SKILLS_NOW);

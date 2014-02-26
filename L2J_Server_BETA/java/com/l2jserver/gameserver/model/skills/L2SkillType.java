@@ -18,17 +18,12 @@
  */
 package com.l2jserver.gameserver.model.skills;
 
-
 /**
  * Skill type enumerated.
  * @author nBd
  */
 public enum L2SkillType
 {
-	// Fishing
-	FISHING,
-	PUMPING,
-	REELING,
 	// Misc
 	UNLOCK,
 	UNLOCK_SPECIAL,

@@ -904,7 +904,7 @@ public class L2Skill implements IChanceSkillTrigger, IIdentifiable
 	
 	public final boolean useFishShot()
 	{
-		return ((getSkillType() == L2SkillType.PUMPING) || (getSkillType() == L2SkillType.REELING));
+		return hasEffectType(L2EffectType.FISHING);
 	}
 	
 	public int getMinPledgeClass()
