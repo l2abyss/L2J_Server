@@ -32,9 +32,6 @@ public enum L2SkillType
 	DETECTION,
 	DUMMY,
 	
-	DETECT_TRAP,
-	REMOVE_TRAP,
-	
 	// Skill is done within the core.
 	COREDONE,
 	// Nornil's Power (Nornil's Garden instance)
