@@ -28,7 +28,6 @@ public enum L2SkillType
 	UNLOCK,
 	UNLOCK_SPECIAL,
 	DELUXE_KEY_UNLOCK,
-	SOW,
 	DUMMY,
 	
 	// Skill is done within the core.
