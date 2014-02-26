@@ -538,7 +538,7 @@ public class L2ServitorInstance extends L2Summon implements Runnable
 				if (destroyItemByItemId("Consume", getItemConsume().getId(), getItemConsume().getCount(), this, false))
 				{
 					final SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.SUMMONED_MOB_USES_S1);
-					msg.addSkillName(getItemConsume().getId());
+					msg.addItemName(getItemConsume().getId());
 					sendPacket(msg);
 					
 					// Reset
