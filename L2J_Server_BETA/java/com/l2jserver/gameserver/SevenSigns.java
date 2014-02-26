@@ -1724,7 +1724,7 @@ public class SevenSigns
 			{
 				if (getPlayerCabal(activeChar.getObjectId()) == CABAL_DUSK)
 				{
-					activeChar.sendMessage("You cannot summon Siege Golem or Cannon while Seal of Strife posessed by Lords of Dawn.");
+					activeChar.sendPacket(SystemMessageId.SEAL_OF_STRIFE_FORBIDS_SUMMONING);
 					return true;
 				}
 			}

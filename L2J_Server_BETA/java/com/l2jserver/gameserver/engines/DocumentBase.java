@@ -55,11 +55,15 @@ import com.l2jserver.gameserver.model.conditions.ConditionPlayerActiveEffectId;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerActiveSkillId;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerAgathionId;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCallPc;
+import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanCreateBase;
+import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanCreateOutpost;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanEscape;
-import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanPossessHolything;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanRefuelAirship;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanSummon;
+import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanSummonSiegeGolem;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanSweep;
+import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanTakeCastle;
+import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanTakeFort;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanTransform;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanUntransform;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCharges;
@@ -780,13 +784,17 @@ public abstract class DocumentBase
 			{
 				cond = joinAnd(cond, new ConditionPlayerCallPc(Boolean.parseBoolean(a.getNodeValue())));
 			}
+			else if ("canCreateBase".equalsIgnoreCase(a.getNodeName()))
+			{
+				cond = joinAnd(cond, new ConditionPlayerCanCreateBase(Boolean.parseBoolean(a.getNodeValue())));
+			}
+			else if ("canCreateOutpost".equalsIgnoreCase(a.getNodeName()))
+			{
+				cond = joinAnd(cond, new ConditionPlayerCanCreateOutpost(Boolean.parseBoolean(a.getNodeValue())));
+			}
 			else if ("canEscape".equalsIgnoreCase(a.getNodeName()))
 			{
 				cond = joinAnd(cond, new ConditionPlayerCanEscape(Boolean.parseBoolean(a.getNodeValue())));
-			}
-			else if ("canPossessHolything".equalsIgnoreCase(a.getNodeName()))
-			{
-				cond = joinAnd(cond, new ConditionPlayerCanPossessHolything(Boolean.parseBoolean(a.getNodeValue())));
 			}
 			else if ("canRefuelAirship".equalsIgnoreCase(a.getNodeName()))
 			{
@@ -796,9 +804,21 @@ public abstract class DocumentBase
 			{
 				cond = joinAnd(cond, new ConditionPlayerCanSummon(Boolean.parseBoolean(a.getNodeValue())));
 			}
+			else if ("canSummonSiegeGolem".equalsIgnoreCase(a.getNodeName()))
+			{
+				cond = joinAnd(cond, new ConditionPlayerCanSummonSiegeGolem(Boolean.parseBoolean(a.getNodeValue())));
+			}
 			else if ("canSweep".equalsIgnoreCase(a.getNodeName()))
 			{
 				cond = joinAnd(cond, new ConditionPlayerCanSweep(Boolean.parseBoolean(a.getNodeValue())));
+			}
+			else if ("canTakeCastle".equalsIgnoreCase(a.getNodeName()))
+			{
+				cond = joinAnd(cond, new ConditionPlayerCanTakeCastle(Boolean.parseBoolean(a.getNodeValue())));
+			}
+			else if ("canTakeFort".equalsIgnoreCase(a.getNodeName()))
+			{
+				cond = joinAnd(cond, new ConditionPlayerCanTakeFort(Boolean.parseBoolean(a.getNodeValue())));
 			}
 			else if ("canTransform".equalsIgnoreCase(a.getNodeName()))
 			{

@@ -29,11 +29,11 @@ import com.l2jserver.gameserver.util.Util;
  * Player Can Possess Holything condition implementation.
  * @author Adry_85
  */
-public class ConditionPlayerCanPossessHolything extends Condition
+public class ConditionPlayerCanTakeCastle extends Condition
 {
 	private final boolean _val;
 	
-	public ConditionPlayerCanPossessHolything(boolean val)
+	public ConditionPlayerCanTakeCastle(boolean val)
 	{
 		_val = val;
 	}
@@ -41,14 +41,14 @@ public class ConditionPlayerCanPossessHolything extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		boolean canPossessHolything = true;
+		boolean canTakeCastle = true;
 		if ((env.getPlayer() == null) || env.getPlayer().isAlikeDead() || env.getPlayer().isCursedWeaponEquipped())
 		{
-			canPossessHolything = false;
+			canTakeCastle = false;
 		}
 		else if ((env.getPlayer().getClan() == null) || (env.getPlayer().getClan().getLeaderId() != env.getPlayer().getObjectId()))
 		{
-			canPossessHolything = false;
+			canTakeCastle = false;
 		}
 		
 		Castle castle = CastleManager.getInstance().getCastle(env.getPlayer());
@@ -58,18 +58,18 @@ public class ConditionPlayerCanPossessHolything extends Condition
 			sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addSkillName(env.getSkill());
 			env.getPlayer().sendPacket(sm);
-			canPossessHolything = false;
+			canTakeCastle = false;
 		}
 		else if (!castle.getArtefacts().contains(env.getTarget()))
 		{
 			env.getPlayer().sendPacket(SystemMessageId.INCORRECT_TARGET);
-			canPossessHolything = false;
+			canTakeCastle = false;
 		}
 		else if (!Util.checkIfInRange(200, env.getPlayer(), env.getTarget(), true))
 		{
 			env.getPlayer().sendPacket(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED);
-			canPossessHolything = false;
+			canTakeCastle = false;
 		}
-		return (_val == canPossessHolything);
+		return (_val == canTakeCastle);
 	}
 }

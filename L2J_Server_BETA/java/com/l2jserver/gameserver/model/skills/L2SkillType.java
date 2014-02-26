@@ -22,7 +22,6 @@ import java.lang.reflect.Constructor;
 
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDefault;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSiegeFlag;
 
 /**
  * Skill type enumerated.
@@ -37,8 +36,6 @@ public enum L2SkillType
 	// Misc
 	UNLOCK,
 	UNLOCK_SPECIAL,
-	SIEGEFLAG(L2SkillSiegeFlag.class),
-	TAKEFORT,
 	DELUXE_KEY_UNLOCK,
 	SOW,
 	DETECTION,

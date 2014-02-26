@@ -238,7 +238,6 @@ import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.model.skills.L2SkillType;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSiegeFlag;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.gameserver.model.stats.Stats;
@@ -8868,13 +8867,6 @@ public final class L2PcInstance extends L2Playable
 		
 		// ************************************* Check skill availability *******************************************
 		
-		// Check if it's ok to summon
-		// siege golem (13), Wild Hog Cannon (299), Swoop Cannon (448)
-		if (((skill.getId() == 13) || (skill.getId() == 299) || (skill.getId() == 448)) && ((!SiegeManager.getInstance().checkIfOkToSummon(this, false) && !FortSiegeManager.getInstance().checkIfOkToSummon(this, false)) || (SevenSigns.getInstance().checkSummonConditions(this))))
-		{
-			return false;
-		}
-		
 		// Check if this skill is enabled (ex : reuse time)
 		if (isSkillDisabled(skill))
 		{
@@ -9091,14 +9083,6 @@ public final class L2PcInstance extends L2Playable
 				}
 		}
 		
-		// TODO: Unhardcode skillId 844 which is the outpost construct skill
-		if (((sklTargetType == L2TargetType.FLAGPOLE) && !checkIfOkToCastFlagDisplay(FortManager.getInstance().getFort(this), false, skill, target)) || ((sklType == L2SkillType.SIEGEFLAG) && !L2SkillSiegeFlag.checkIfOkToPlaceFlag(this, false, skill.getId() == 844)))
-		{
-			sendPacket(ActionFailed.STATIC_PACKET);
-			abortCast();
-			return false;
-		}
-		
 		// GeoData Los Check here
 		if (skill.getCastRange() > 0)
 		{
@@ -9127,46 +9111,6 @@ public final class L2PcInstance extends L2Playable
 		
 		// finally, after passing all conditions
 		return true;
-	}
-	
-	public boolean checkIfOkToCastFlagDisplay(Fort fort, boolean isCheckOnly, L2Skill skill, L2Object target)
-	{
-		SystemMessage sm;
-		
-		if ((fort == null) || (fort.getResidenceId() <= 0))
-		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-			sm.addSkillName(skill);
-		}
-		else if (fort.getFlagPole() != target)
-		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.INCORRECT_TARGET);
-		}
-		else if (!fort.getSiege().getIsInProgress())
-		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-			sm.addSkillName(skill);
-		}
-		else if (!Util.checkIfInRange(200, this, target, true))
-		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.DIST_TOO_FAR_CASTING_STOPPED);
-		}
-		else if (fort.getSiege().getAttackerClan(getClan()) == null)
-		{
-			sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
-			sm.addSkillName(skill);
-		}
-		else
-		{
-			if (!isCheckOnly)
-			{
-				fort.getSiege().announceToPlayer(SystemMessage.getSystemMessage(SystemMessageId.S1_TRYING_RAISE_FLAG), getClan().getName());
-			}
-			return true;
-		}
-		
-		sendPacket(sm);
-		return false;
 	}
 	
 	public boolean isInLooterParty(int LooterId)
