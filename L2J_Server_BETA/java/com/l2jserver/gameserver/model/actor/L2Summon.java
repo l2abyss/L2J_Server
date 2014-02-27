@@ -444,26 +444,32 @@ public abstract class L2Summon extends L2Playable
 		if (isVisible() && !isDead())
 		{
 			getAI().stopFollow();
-			owner.sendPacket(new PetDelete(getSummonType(), getObjectId()));
-			final L2Party party = owner.getParty();
-			if (party != null)
+			if (owner != null)
 			{
-				party.broadcastToPartyMembers(owner, new ExPartyPetWindowDelete(this));
-			}
-			
-			if ((getInventory() != null) && (getInventory().getSize() > 0))
-			{
-				getOwner().setPetInvItems(true);
-				sendPacket(SystemMessageId.ITEMS_IN_PET_INVENTORY);
-			}
-			else
-			{
-				getOwner().setPetInvItems(false);
+				owner.sendPacket(new PetDelete(getSummonType(), getObjectId()));
+				final L2Party party = owner.getParty();
+				if (party != null)
+				{
+					party.broadcastToPartyMembers(owner, new ExPartyPetWindowDelete(this));
+				}
+				
+				if ((getInventory() != null) && (getInventory().getSize() > 0))
+				{
+					getOwner().setPetInvItems(true);
+					sendPacket(SystemMessageId.ITEMS_IN_PET_INVENTORY);
+				}
+				else
+				{
+					getOwner().setPetInvItems(false);
+				}
 			}
 			
 			storeMe();
 			storeEffect(true);
-			owner.setPet(null);
+			if (owner != null)
+			{
+				owner.setPet(null);
+			}
 			setOwner(null);
 			
 			// Stop AI tasks
@@ -481,12 +487,15 @@ public abstract class L2Summon extends L2Playable
 			}
 			getKnownList().removeAllKnownObjects();
 			setTarget(null);
-			for (int itemId : owner.getAutoSoulShot())
+			if (owner != null)
 			{
-				String handler = ((L2EtcItem) ItemTable.getInstance().getTemplate(itemId)).getHandlerName();
-				if ((handler != null) && handler.contains("Beast"))
+				for (int itemId : owner.getAutoSoulShot())
 				{
-					owner.disableAutoShot(itemId);
+					String handler = ((L2EtcItem) ItemTable.getInstance().getTemplate(itemId)).getHandlerName();
+					if ((handler != null) && handler.contains("Beast"))
+					{
+						owner.disableAutoShot(itemId);
+					}
 				}
 			}
 		}
