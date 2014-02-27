@@ -44,8 +44,11 @@ public class FuncShare extends Func
 			{
 				final L2Summon summon = (L2Summon) ch;
 				final L2PcInstance player = summon.getOwner();
-				final double value = player.calcStat(stat, 0, null, null) * _lambda.calc(env);
-				env.addValue(value);
+				if (player != null)
+				{
+					final double value = player.calcStat(stat, 0, null, null) * _lambda.calc(env);
+					env.addValue(value);
+				}
 			}
 		}
 	}
