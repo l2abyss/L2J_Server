@@ -5989,24 +5989,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			}
 		}
 		
-		if (skill.isBad())
-		{
-			switch (skill.getSkillType())
-			{
-				case UNLOCK:
-				case UNLOCK_SPECIAL:
-				case DELUXE_KEY_UNLOCK:
-				{
-					break;
-				}
-				default:
-				{
-					getAI().clientStartAutoAttack();
-					break;
-				}
-			}
-		}
-		
 		// Notify the AI of the L2Character with EVT_FINISH_CASTING
 		getAI().notifyEvent(CtrlEvent.EVT_FINISH_CASTING);
 		

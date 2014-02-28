@@ -8949,24 +8949,11 @@ public final class L2PcInstance extends L2Playable
 				return false;
 			}
 			
-			// Check if the target is attackable
-			switch (skill.getSkillType())
+			if (!target.canBeAttacked() && !getAccessLevel().allowPeaceAttack())
 			{
-				case UNLOCK:
-				case UNLOCK_SPECIAL:
-				case DELUXE_KEY_UNLOCK:
-				{
-					break;
-				}
-				default:
-				{
-					if (!target.canBeAttacked() && !getAccessLevel().allowPeaceAttack())
-					{
-						// If target is not attackable, send a Server->Client packet ActionFailed
-						sendPacket(ActionFailed.STATIC_PACKET);
-						return false;
-					}
-				}
+				// If target is not attackable, send a Server->Client packet ActionFailed
+				sendPacket(ActionFailed.STATIC_PACKET);
+				return false;
 			}
 			
 			// Check for Event Mob's
