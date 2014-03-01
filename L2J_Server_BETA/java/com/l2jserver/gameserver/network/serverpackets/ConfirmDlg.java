@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
@@ -167,7 +167,7 @@ public class ConfirmDlg extends L2GameServerPacket
 		return addSkillName(info.getSkill());
 	}
 	
-	public ConfirmDlg addSkillName(L2Skill skill)
+	public ConfirmDlg addSkillName(Skill skill)
 	{
 		if (skill.getId() != skill.getDisplayId())
 		{

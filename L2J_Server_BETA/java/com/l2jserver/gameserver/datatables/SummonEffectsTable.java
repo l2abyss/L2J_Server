@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.datatables;
 import java.util.List;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 
@@ -62,16 +62,16 @@ public class SummonEffectsTable
 	
 	public class SummonEffect
 	{
-		L2Skill _skill;
+		Skill _skill;
 		int _effectCurTime;
 		
-		public SummonEffect(L2Skill skill, int effectCurTime)
+		public SummonEffect(Skill skill, int effectCurTime)
 		{
 			_skill = skill;
 			_effectCurTime = effectCurTime;
 		}
 		
-		public L2Skill getSkill()
+		public Skill getSkill()
 		{
 			return _skill;
 		}

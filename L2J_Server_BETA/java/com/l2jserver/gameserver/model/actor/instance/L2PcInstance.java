@@ -84,8 +84,8 @@ import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.RecipeData;
-import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.datatables.SkillTable.FrequentSkill;
+import com.l2jserver.gameserver.datatables.SkillData;
+import com.l2jserver.gameserver.datatables.SkillData.FrequentSkill;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.HtmlActionScope;
@@ -236,7 +236,7 @@ import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.quest.State;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.gameserver.model.stats.Stats;
@@ -425,7 +425,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		@Override
-		public void doCast(L2Skill skill)
+		public void doCast(Skill skill)
 		{
 			super.doCast(skill);
 			
@@ -842,7 +842,7 @@ public final class L2PcInstance extends L2Playable
 	private long _notMoveUntil = 0;
 	
 	/** Map containing all custom skills of this player. */
-	private Map<Integer, L2Skill> _customSkills = null;
+	private Map<Integer, Skill> _customSkills = null;
 	
 	private boolean _canRevive = true;
 	
@@ -2025,12 +2025,12 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean hasDwarvenCraft()
 	{
-		return getSkillLevel(L2Skill.SKILL_CREATE_DWARVEN) >= 1;
+		return getSkillLevel(Skill.SKILL_CREATE_DWARVEN) >= 1;
 	}
 	
 	public int getDwarvenCraft()
 	{
-		return getSkillLevel(L2Skill.SKILL_CREATE_DWARVEN);
+		return getSkillLevel(Skill.SKILL_CREATE_DWARVEN);
 	}
 	
 	/**
@@ -2038,12 +2038,12 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean hasCommonCraft()
 	{
-		return getSkillLevel(L2Skill.SKILL_CREATE_COMMON) >= 1;
+		return getSkillLevel(Skill.SKILL_CREATE_COMMON) >= 1;
 	}
 	
 	public int getCommonCraft()
 	{
-		return getSkillLevel(L2Skill.SKILL_CREATE_COMMON);
+		return getSkillLevel(Skill.SKILL_CREATE_COMMON);
 	}
 	
 	/**
@@ -2277,7 +2277,7 @@ public final class L2PcInstance extends L2Playable
 				_curWeightPenalty = newWeightPenalty;
 				if ((newWeightPenalty > 0) && !_dietMode)
 				{
-					addSkill(SkillTable.getInstance().getInfo(4270, newWeightPenalty));
+					addSkill(SkillData.getInstance().getSkill(4270, newWeightPenalty));
 					setIsOverloaded(getCurrentLoad() > maxLoad);
 				}
 				else
@@ -2337,7 +2337,7 @@ public final class L2PcInstance extends L2Playable
 			_expertiseWeaponPenalty = weaponPenalty;
 			if (_expertiseWeaponPenalty > 0)
 			{
-				addSkill(SkillTable.getInstance().getInfo(FrequentSkill.WEAPON_GRADE_PENALTY.getId(), _expertiseWeaponPenalty));
+				addSkill(SkillData.getInstance().getSkill(FrequentSkill.WEAPON_GRADE_PENALTY.getId(), _expertiseWeaponPenalty));
 			}
 			else
 			{
@@ -2355,7 +2355,7 @@ public final class L2PcInstance extends L2Playable
 			_expertiseArmorPenalty = armorPenalty;
 			if (_expertiseArmorPenalty > 0)
 			{
-				addSkill(SkillTable.getInstance().getInfo(FrequentSkill.ARMOR_GRADE_PENALTY.getId(), _expertiseArmorPenalty));
+				addSkill(SkillData.getInstance().getSkill(FrequentSkill.ARMOR_GRADE_PENALTY.getId(), _expertiseArmorPenalty));
 			}
 			else
 			{
@@ -2833,8 +2833,8 @@ public final class L2PcInstance extends L2Playable
 	{
 		int skillCounter = 0;
 		// Get available skills
-		Collection<L2Skill> skills = SkillTreesData.getInstance().getAllAvailableSkills(this, getClassId(), includedByFs, includeAutoGet);
-		for (L2Skill sk : skills)
+		Collection<Skill> skills = SkillTreesData.getInstance().getAllAvailableSkills(this, getClassId(), includedByFs, includeAutoGet);
+		for (Skill sk : skills)
 		{
 			if (getKnownSkill(sk.getId()) == sk)
 			{
@@ -2869,11 +2869,11 @@ public final class L2PcInstance extends L2Playable
 	{
 		// Get available skills
 		final List<L2SkillLearn> autoGetSkills = SkillTreesData.getInstance().getAvailableAutoGetSkills(this);
-		final SkillTable st = SkillTable.getInstance();
-		L2Skill skill;
+		final SkillData st = SkillData.getInstance();
+		Skill skill;
 		for (L2SkillLearn s : autoGetSkills)
 		{
-			skill = st.getInfo(s.getSkillId(), s.getSkillLevel());
+			skill = st.getSkill(s.getSkillId(), s.getSkillLevel());
 			if (skill != null)
 			{
 				addSkill(skill, true);
@@ -4269,14 +4269,14 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	@Override
-	public void enableSkill(L2Skill skill)
+	public void enableSkill(Skill skill)
 	{
 		super.enableSkill(skill);
 		removeTimeStamp(skill);
 	}
 	
 	@Override
-	public boolean checkDoCastConditions(L2Skill skill)
+	public boolean checkDoCastConditions(Skill skill)
 	{
 		if (!super.checkDoCastConditions(skill))
 		{
@@ -5801,7 +5801,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean isLucky()
 	{
-		return (getLevel() <= 9) && isAffectedBySkill(L2Skill.SKILL_LUCKY);
+		return (getLevel() <= 9) && isAffectedBySkill(Skill.SKILL_LUCKY);
 	}
 	
 	/**
@@ -5831,7 +5831,7 @@ public final class L2PcInstance extends L2Playable
 		// Get the level of the L2PcInstance
 		final int lvl = getLevel();
 		
-		int clan_luck = getSkillLevel(L2Skill.SKILL_CLAN_LUCK);
+		int clan_luck = getSkillLevel(Skill.SKILL_CLAN_LUCK);
 		
 		double clan_luck_modificator = 1.0;
 		
@@ -6755,7 +6755,7 @@ public final class L2PcInstance extends L2Playable
 		clearPetData();
 		if (wasFlying)
 		{
-			removeSkill(SkillTable.FrequentSkill.WYVERN_BREATH.getSkill());
+			removeSkill(SkillData.FrequentSkill.WYVERN_BREATH.getSkill());
 		}
 		broadcastPacket(new Ride(this));
 		setMountObjectID(0);
@@ -7742,7 +7742,7 @@ public final class L2PcInstance extends L2Playable
 						continue;
 					}
 					
-					final L2Skill skill = info.getSkill();
+					final Skill skill = info.getSkill();
 					// Do not save heals.
 					if (skill.getAbnormalType() == AbnormalType.LIFE_FORCE_OTHERS)
 					{
@@ -7875,7 +7875,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	@Override
-	public L2Skill addSkill(L2Skill newSkill)
+	public Skill addSkill(Skill newSkill)
 	{
 		addCustomSkill(newSkill);
 		return super.addSkill(newSkill);
@@ -7888,10 +7888,10 @@ public final class L2PcInstance extends L2Playable
 	 * @param store
 	 * @return The L2Skill replaced or null if just added a new L2Skill
 	 */
-	public L2Skill addSkill(L2Skill newSkill, boolean store)
+	public Skill addSkill(Skill newSkill, boolean store)
 	{
 		// Add a skill to the L2PcInstance _skills and its Func objects to the calculator set of the L2PcInstance
-		final L2Skill oldSkill = addSkill(newSkill);
+		final Skill oldSkill = addSkill(newSkill);
 		// Add or update a L2PcInstance skill in the character_skills table of the database
 		if (store)
 		{
@@ -7901,13 +7901,13 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	@Override
-	public L2Skill removeSkill(L2Skill skill, boolean store)
+	public Skill removeSkill(Skill skill, boolean store)
 	{
 		removeCustomSkill(skill);
 		return store ? removeSkill(skill) : super.removeSkill(skill, true);
 	}
 	
-	public L2Skill removeSkill(L2Skill skill, boolean store, boolean cancelEffect)
+	public Skill removeSkill(Skill skill, boolean store, boolean cancelEffect)
 	{
 		removeCustomSkill(skill);
 		return store ? removeSkill(skill) : super.removeSkill(skill, cancelEffect);
@@ -7919,11 +7919,11 @@ public final class L2PcInstance extends L2Playable
 	 * @param skill The L2Skill to remove from the L2Character
 	 * @return The L2Skill removed
 	 */
-	public L2Skill removeSkill(L2Skill skill)
+	public Skill removeSkill(Skill skill)
 	{
 		removeCustomSkill(skill);
 		// Remove a skill from the L2Character and its Func objects from calculator set of the L2Character
-		final L2Skill oldSkill = super.removeSkill(skill, true);
+		final Skill oldSkill = super.removeSkill(skill, true);
 		if (oldSkill != null)
 		{
 			try (Connection con = L2DatabaseFactory.getInstance().getConnection();
@@ -7964,7 +7964,7 @@ public final class L2PcInstance extends L2Playable
 	 * @param oldSkill
 	 * @param newClassIndex
 	 */
-	private void storeSkill(L2Skill newSkill, L2Skill oldSkill, int newClassIndex)
+	private void storeSkill(Skill newSkill, Skill oldSkill, int newClassIndex)
 	{
 		int classIndex = _classIndex;
 		
@@ -8027,7 +8027,7 @@ public final class L2PcInstance extends L2Playable
 					final int level = rset.getInt("skill_level");
 					
 					// Create a L2Skill object for each record
-					final L2Skill skill = SkillTable.getInstance().getInfo(id, level);
+					final Skill skill = SkillData.getInstance().getSkill(id, level);
 					
 					if (skill == null)
 					{
@@ -8078,7 +8078,7 @@ public final class L2PcInstance extends L2Playable
 					long systime = rset.getLong("systime");
 					int restoreType = rset.getInt("restore_type");
 					
-					final L2Skill skill = SkillTable.getInstance().getInfo(rset.getInt("skill_id"), rset.getInt("skill_level"));
+					final Skill skill = SkillData.getInstance().getSkill(rset.getInt("skill_id"), rset.getInt("skill_level"));
 					if (skill == null)
 					{
 						continue;
@@ -8642,7 +8642,7 @@ public final class L2PcInstance extends L2Playable
 	 * @param dontMove used to prevent movement, if not in range
 	 */
 	@Override
-	public boolean useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
+	public boolean useMagic(Skill skill, boolean forceUse, boolean dontMove)
 	{
 		// Check if the skill is active
 		if (skill.isPassive())
@@ -8718,7 +8718,7 @@ public final class L2PcInstance extends L2Playable
 		return true;
 	}
 	
-	private boolean checkUseMagicConditions(L2Skill skill, boolean forceUse, boolean dontMove)
+	private boolean checkUseMagicConditions(Skill skill, boolean forceUse, boolean dontMove)
 	{
 		// ************************************* Check Player State *******************************************
 		
@@ -9121,7 +9121,7 @@ public final class L2PcInstance extends L2Playable
 	 * @param skill L2Skill instance with the skill being casted
 	 * @return False if the skill is a pvpSkill and target is not a valid pvp target
 	 */
-	public boolean checkPvpSkill(L2Object target, L2Skill skill)
+	public boolean checkPvpSkill(L2Object target, Skill skill)
 	{
 		return checkPvpSkill(target, skill, false);
 	}
@@ -9133,7 +9133,7 @@ public final class L2PcInstance extends L2Playable
 	 * @param srcIsSummon is L2Summon - caster?
 	 * @return {@code false} if the skill is a pvpSkill and target is not a valid pvp target, {@code true} otherwise.
 	 */
-	public boolean checkPvpSkill(L2Object target, L2Skill skill, boolean srcIsSummon)
+	public boolean checkPvpSkill(L2Object target, Skill skill, boolean srcIsSummon)
 	{
 		final L2PcInstance targetPlayer = target != null ? target.getActingPlayer() : null;
 		if (skill.isDebuff() || skill.hasEffectType(L2EffectType.STEAL_ABNORMAL) || (skill.isBad() && skill.hasEffectType(L2EffectType.DISPEL)))
@@ -9962,14 +9962,14 @@ public final class L2PcInstance extends L2Playable
 	{
 		if (hero && (_baseClass == _activeClass))
 		{
-			for (L2Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
+			for (Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
 			{
 				addSkill(skill, false); // Don't persist hero skills into database
 			}
 		}
 		else
 		{
-			for (L2Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
+			for (Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
 			{
 				removeSkill(skill, false, true); // Just remove skills from non-hero players
 			}
@@ -10123,17 +10123,17 @@ public final class L2PcInstance extends L2Playable
 	
 	public void setNoble(boolean val)
 	{
-		final Collection<L2Skill> nobleSkillTree = SkillTreesData.getInstance().getNobleSkillTree().values();
+		final Collection<Skill> nobleSkillTree = SkillTreesData.getInstance().getNobleSkillTree().values();
 		if (val)
 		{
-			for (L2Skill skill : nobleSkillTree)
+			for (Skill skill : nobleSkillTree)
 			{
 				addSkill(skill, false);
 			}
 		}
 		else
 		{
-			for (L2Skill skill : nobleSkillTree)
+			for (Skill skill : nobleSkillTree)
 			{
 				removeSkill(skill, false, true);
 			}
@@ -10195,7 +10195,7 @@ public final class L2PcInstance extends L2Playable
 		boolean isDisabled = false;
 		SkillList sl = new SkillList();
 		
-		for (L2Skill s : getAllSkills())
+		for (Skill s : getAllSkills())
 		{
 			if (s == null)
 			{
@@ -10211,7 +10211,7 @@ public final class L2PcInstance extends L2Playable
 				isDisabled = s.isClanSkill() && (getClan().getReputationScore() < 0);
 			}
 			
-			boolean isEnchantable = SkillTable.getInstance().isEnchantable(s.getId());
+			boolean isEnchantable = SkillData.getInstance().isEnchantable(s.getId());
 			if (isEnchantable)
 			{
 				L2EnchantSkillLearn esl = EnchantSkillGroupsData.getInstance().getSkillEnchantmentBySkillId(s.getId());
@@ -10291,13 +10291,13 @@ public final class L2PcInstance extends L2Playable
 			
 			final ClassId subTemplate = ClassId.getClassId(classId);
 			final Map<Integer, L2SkillLearn> skillTree = SkillTreesData.getInstance().getCompleteClassSkillTree(subTemplate);
-			final Map<Integer, L2Skill> prevSkillList = new HashMap<>();
+			final Map<Integer, Skill> prevSkillList = new HashMap<>();
 			for (L2SkillLearn skillInfo : skillTree.values())
 			{
 				if (skillInfo.getGetLevel() <= 40)
 				{
-					L2Skill prevSkill = prevSkillList.get(skillInfo.getSkillId());
-					L2Skill newSkill = SkillTable.getInstance().getInfo(skillInfo.getSkillId(), skillInfo.getSkillLevel());
+					Skill prevSkill = prevSkillList.get(skillInfo.getSkillId());
+					Skill newSkill = SkillData.getInstance().getSkill(skillInfo.getSkillId(), skillInfo.getSkillLevel());
 					
 					if ((prevSkill != null) && (prevSkill.getLevel() > newSkill.getLevel()))
 					{
@@ -10524,7 +10524,7 @@ public final class L2PcInstance extends L2Playable
 			// 7. Reset HP/MP/CP stats and send Server->Client character status packet to reflect changes.
 			// 8. Restore shortcut data related to this class.
 			// 9. Resend a class change animation effect to broadcast to all nearby players.
-			for (L2Skill oldSkill : getAllSkills())
+			for (Skill oldSkill : getAllSkills())
 			{
 				removeSkill(oldSkill, false, true);
 			}
@@ -10822,7 +10822,7 @@ public final class L2PcInstance extends L2Playable
 		doRevive();
 	}
 	
-	public void reviveRequest(L2PcInstance reviver, L2Skill skill, boolean Pet, int power)
+	public void reviveRequest(L2PcInstance reviver, Skill skill, boolean Pet, int power)
 	{
 		if (isResurrectionBlocked())
 		{
@@ -11109,7 +11109,7 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	@Override
-	public void reduceCurrentHp(double value, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
+	public void reduceCurrentHp(double value, L2Character attacker, boolean awake, boolean isDOT, Skill skill)
 	{
 		if (skill != null)
 		{
@@ -11493,7 +11493,7 @@ public final class L2PcInstance extends L2Playable
 		{
 			if (isFlying())
 			{
-				removeSkill(SkillTable.getInstance().getInfo(4289, 1));
+				removeSkill(SkillData.getInstance().getSkill(4289, 1));
 			}
 		}
 		catch (Exception e)
@@ -12366,7 +12366,7 @@ public final class L2PcInstance extends L2Playable
 	 * @param ctrlPressed
 	 * @param shiftPressed
 	 */
-	public void setCurrentSkill(L2Skill currentSkill, boolean ctrlPressed, boolean shiftPressed)
+	public void setCurrentSkill(Skill currentSkill, boolean ctrlPressed, boolean shiftPressed)
 	{
 		if (currentSkill == null)
 		{
@@ -12390,7 +12390,7 @@ public final class L2PcInstance extends L2Playable
 	 * @param ctrlPressed
 	 * @param shiftPressed
 	 */
-	public void setCurrentPetSkill(L2Skill currentSkill, boolean ctrlPressed, boolean shiftPressed)
+	public void setCurrentPetSkill(Skill currentSkill, boolean ctrlPressed, boolean shiftPressed)
 	{
 		if (currentSkill == null)
 		{
@@ -12411,7 +12411,7 @@ public final class L2PcInstance extends L2Playable
 	 * @param ctrlPressed
 	 * @param shiftPressed
 	 */
-	public void setQueuedSkill(L2Skill queuedSkill, boolean ctrlPressed, boolean shiftPressed)
+	public void setQueuedSkill(Skill queuedSkill, boolean ctrlPressed, boolean shiftPressed)
 	{
 		if (queuedSkill == null)
 		{
@@ -12540,7 +12540,7 @@ public final class L2PcInstance extends L2Playable
 	 * @param skill
 	 * @return
 	 */
-	public boolean decreaseSouls(int count, L2Skill skill)
+	public boolean decreaseSouls(int count, Skill skill)
 	{
 		_souls -= count;
 		
@@ -12625,7 +12625,7 @@ public final class L2PcInstance extends L2Playable
 		
 		if (getDeathPenaltyBuffLevel() != 0)
 		{
-			L2Skill skill = SkillTable.getInstance().getInfo(5076, getDeathPenaltyBuffLevel());
+			Skill skill = SkillData.getInstance().getSkill(5076, getDeathPenaltyBuffLevel());
 			
 			if (skill != null)
 			{
@@ -12635,7 +12635,7 @@ public final class L2PcInstance extends L2Playable
 		
 		_deathPenaltyBuffLevel++;
 		
-		addSkill(SkillTable.getInstance().getInfo(5076, getDeathPenaltyBuffLevel()), false);
+		addSkill(SkillData.getInstance().getSkill(5076, getDeathPenaltyBuffLevel()), false);
 		sendPacket(new EtcStatusUpdate(this));
 		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DEATH_PENALTY_LEVEL_S1_ADDED);
 		sm.addInt(getDeathPenaltyBuffLevel());
@@ -12649,7 +12649,7 @@ public final class L2PcInstance extends L2Playable
 			return;
 		}
 		
-		L2Skill skill = SkillTable.getInstance().getInfo(5076, getDeathPenaltyBuffLevel());
+		Skill skill = SkillData.getInstance().getSkill(5076, getDeathPenaltyBuffLevel());
 		
 		if (skill != null)
 		{
@@ -12660,7 +12660,7 @@ public final class L2PcInstance extends L2Playable
 		
 		if (getDeathPenaltyBuffLevel() > 0)
 		{
-			addSkill(SkillTable.getInstance().getInfo(5076, getDeathPenaltyBuffLevel()), false);
+			addSkill(SkillData.getInstance().getSkill(5076, getDeathPenaltyBuffLevel()), false);
 			sendPacket(new EtcStatusUpdate(this));
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DEATH_PENALTY_LEVEL_S1_ADDED);
 			sm.addInt(getDeathPenaltyBuffLevel());
@@ -12677,7 +12677,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		if (getDeathPenaltyBuffLevel() > 0)
 		{
-			addSkill(SkillTable.getInstance().getInfo(5076, getDeathPenaltyBuffLevel()), false);
+			addSkill(SkillData.getInstance().getSkill(5076, getDeathPenaltyBuffLevel()), false);
 		}
 	}
 	
@@ -13910,12 +13910,12 @@ public final class L2PcInstance extends L2Playable
 	public void checkPlayerSkills()
 	{
 		L2SkillLearn learn;
-		for (Entry<Integer, L2Skill> e : getSkills().entrySet())
+		for (Entry<Integer, Skill> e : getSkills().entrySet())
 		{
 			learn = SkillTreesData.getInstance().getClassSkill(e.getKey(), e.getValue().getLevel() % 100, getClassId());
 			if (learn != null)
 			{
-				int lvlDiff = e.getKey() == L2Skill.SKILL_EXPERTISE ? 0 : 9;
+				int lvlDiff = e.getKey() == Skill.SKILL_EXPERTISE ? 0 : 9;
 				if (getLevel() < (learn.getGetLevel() - lvlDiff))
 				{
 					deacreaseSkillLevel(e.getValue(), lvlDiff);
@@ -13924,7 +13924,7 @@ public final class L2PcInstance extends L2Playable
 		}
 	}
 	
-	private void deacreaseSkillLevel(L2Skill skill, int lvlDiff)
+	private void deacreaseSkillLevel(Skill skill, int lvlDiff)
 	{
 		int nextLevel = -1;
 		final Map<Integer, L2SkillLearn> skillTree = SkillTreesData.getInstance().getCompleteClassSkillTree(getClassId());
@@ -13944,7 +13944,7 @@ public final class L2PcInstance extends L2Playable
 		else
 		{
 			_log.info("Decreasing skill " + skill + " to " + nextLevel + " for player " + toString());
-			addSkill(SkillTable.getInstance().getInfo(skill.getId(), nextLevel), true); // replace with lower one
+			addSkill(SkillData.getInstance().getSkill(skill.getId(), nextLevel), true); // replace with lower one
 		}
 	}
 	
@@ -14308,7 +14308,7 @@ public final class L2PcInstance extends L2Playable
 	 * @param skillId the display skill Id
 	 * @return the custom skill
 	 */
-	public final L2Skill getCustomSkill(int skillId)
+	public final Skill getCustomSkill(int skillId)
 	{
 		return (_customSkills != null) ? _customSkills.get(skillId) : null;
 	}
@@ -14317,13 +14317,13 @@ public final class L2PcInstance extends L2Playable
 	 * Add a skill level to the custom skills map.
 	 * @param skill the skill to add
 	 */
-	private final void addCustomSkill(L2Skill skill)
+	private final void addCustomSkill(Skill skill)
 	{
 		if ((skill != null) && (skill.getDisplayId() != skill.getId()))
 		{
 			if (_customSkills == null)
 			{
-				_customSkills = new FastMap<Integer, L2Skill>().shared();
+				_customSkills = new FastMap<Integer, Skill>().shared();
 			}
 			_customSkills.put(skill.getDisplayId(), skill);
 		}
@@ -14333,7 +14333,7 @@ public final class L2PcInstance extends L2Playable
 	 * Remove a skill level from the custom skill map.
 	 * @param skill the skill to remove
 	 */
-	private final void removeCustomSkill(L2Skill skill)
+	private final void removeCustomSkill(Skill skill)
 	{
 		if ((skill != null) && (_customSkills != null) && (skill.getDisplayId() != skill.getId()))
 		{

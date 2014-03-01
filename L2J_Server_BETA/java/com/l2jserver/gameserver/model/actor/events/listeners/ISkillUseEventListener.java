@@ -20,12 +20,12 @@ package com.l2jserver.gameserver.model.actor.events.listeners;
 
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * @author UnAfraid
  */
 public interface ISkillUseEventListener extends IEventListener
 {
-	public boolean onSkillUse(L2Character caster, L2Skill skill, boolean simultaneously, L2Character target, L2Object[] targets);
+	public boolean onSkillUse(L2Character caster, Skill skill, boolean simultaneously, L2Character target, L2Object[] targets);
 }

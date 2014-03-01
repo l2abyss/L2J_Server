@@ -52,7 +52,7 @@ import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.DoorStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.OnEventTrigger;
@@ -146,7 +146,7 @@ public class L2DoorInstance extends L2Character
 		}
 		
 		@Override
-		public void doCast(L2Skill skill)
+		public void doCast(Skill skill)
 		{
 		}
 	}
@@ -674,7 +674,7 @@ public class L2DoorInstance extends L2Character
 	}
 	
 	@Override
-	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
+	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, Skill skill)
 	{
 		if (isWall() && (getInstanceId() == 0))
 		{
@@ -694,7 +694,7 @@ public class L2DoorInstance extends L2Character
 	}
 	
 	@Override
-	public void reduceCurrentHpByDOT(double i, L2Character attacker, L2Skill skill)
+	public void reduceCurrentHpByDOT(double i, L2Character attacker, Skill skill)
 	{
 		// doors can't be damaged by DOTs
 	}

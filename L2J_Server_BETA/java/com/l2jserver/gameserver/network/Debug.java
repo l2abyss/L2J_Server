@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.TutorialShowHtml;
 
@@ -35,7 +35,7 @@ import com.l2jserver.gameserver.network.serverpackets.TutorialShowHtml;
  */
 public class Debug
 {
-	public static void sendSkillDebug(L2Character attacker, L2Character target, L2Skill skill, StatsSet set)
+	public static void sendSkillDebug(L2Character attacker, L2Character target, Skill skill, StatsSet set)
 	{
 		if (!attacker.isPlayer())
 		{

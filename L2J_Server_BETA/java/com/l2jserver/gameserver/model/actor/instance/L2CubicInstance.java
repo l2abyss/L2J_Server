@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlEvent;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.instancemanager.DuelManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
@@ -41,8 +41,7 @@ import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.entity.TvTEventTeam;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
-import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.model.zone.ZoneId;
@@ -89,7 +88,7 @@ public final class L2CubicInstance implements IIdentifiable
 	private boolean _active;
 	private final boolean _givenByOther;
 	
-	private final List<L2Skill> _skills = new ArrayList<>();
+	private final List<Skill> _skills = new ArrayList<>();
 	
 	private Future<?> _disappearTask;
 	private Future<?> _actionTask;
@@ -109,55 +108,55 @@ public final class L2CubicInstance implements IIdentifiable
 		switch (_cubicId)
 		{
 			case STORM_CUBIC:
-				_skills.add(SkillTable.getInstance().getInfo(4049, level));
+				_skills.add(SkillData.getInstance().getSkill(4049, level));
 				break;
 			case VAMPIRIC_CUBIC:
-				_skills.add(SkillTable.getInstance().getInfo(4050, level));
+				_skills.add(SkillData.getInstance().getSkill(4050, level));
 				break;
 			case LIFE_CUBIC:
-				_skills.add(SkillTable.getInstance().getInfo(4051, level));
+				_skills.add(SkillData.getInstance().getSkill(4051, level));
 				doAction();
 				break;
 			case VIPER_CUBIC:
-				_skills.add(SkillTable.getInstance().getInfo(4052, level));
+				_skills.add(SkillData.getInstance().getSkill(4052, level));
 				break;
 			case POLTERGEIST_CUBIC:
-				_skills.add(SkillTable.getInstance().getInfo(4053, level));
-				_skills.add(SkillTable.getInstance().getInfo(4054, level));
-				_skills.add(SkillTable.getInstance().getInfo(4055, level));
+				_skills.add(SkillData.getInstance().getSkill(4053, level));
+				_skills.add(SkillData.getInstance().getSkill(4054, level));
+				_skills.add(SkillData.getInstance().getSkill(4055, level));
 				break;
 			case BINDING_CUBIC:
-				_skills.add(SkillTable.getInstance().getInfo(4164, level));
+				_skills.add(SkillData.getInstance().getSkill(4164, level));
 				break;
 			case AQUA_CUBIC:
-				_skills.add(SkillTable.getInstance().getInfo(4165, level));
+				_skills.add(SkillData.getInstance().getSkill(4165, level));
 				break;
 			case SPARK_CUBIC:
-				_skills.add(SkillTable.getInstance().getInfo(4166, level));
+				_skills.add(SkillData.getInstance().getSkill(4166, level));
 				break;
 			case ATTRACT_CUBIC:
-				_skills.add(SkillTable.getInstance().getInfo(5115, level));
-				_skills.add(SkillTable.getInstance().getInfo(5116, level));
+				_skills.add(SkillData.getInstance().getSkill(5115, level));
+				_skills.add(SkillData.getInstance().getSkill(5116, level));
 				break;
 			case SMART_CUBIC_ARCANALORD:
-				_skills.add(SkillTable.getInstance().getInfo(4051, 7));
-				_skills.add(SkillTable.getInstance().getInfo(4165, 9));
+				_skills.add(SkillData.getInstance().getSkill(4051, 7));
+				_skills.add(SkillData.getInstance().getSkill(4165, 9));
 				break;
 			case SMART_CUBIC_ELEMENTALMASTER:
-				_skills.add(SkillTable.getInstance().getInfo(4049, 8));
-				_skills.add(SkillTable.getInstance().getInfo(4166, 9));
+				_skills.add(SkillData.getInstance().getSkill(4049, 8));
+				_skills.add(SkillData.getInstance().getSkill(4166, 9));
 				break;
 			case SMART_CUBIC_SPECTRALMASTER:
-				_skills.add(SkillTable.getInstance().getInfo(4049, 8));
-				_skills.add(SkillTable.getInstance().getInfo(4052, 6));
+				_skills.add(SkillData.getInstance().getSkill(4049, 8));
+				_skills.add(SkillData.getInstance().getSkill(4052, 6));
 				break;
 			case SMART_CUBIC_EVATEMPLAR:
-				_skills.add(SkillTable.getInstance().getInfo(4053, 8));
-				_skills.add(SkillTable.getInstance().getInfo(4165, 9));
+				_skills.add(SkillData.getInstance().getSkill(4053, 8));
+				_skills.add(SkillData.getInstance().getSkill(4165, 9));
 				break;
 			case SMART_CUBIC_SHILLIENTEMPLAR:
-				_skills.add(SkillTable.getInstance().getInfo(4049, 8));
-				_skills.add(SkillTable.getInstance().getInfo(5115, 4));
+				_skills.add(SkillData.getInstance().getSkill(4049, 8));
+				_skills.add(SkillData.getInstance().getSkill(5115, 4));
 				break;
 		}
 		_disappearTask = ThreadPoolManager.getInstance().scheduleGeneral(new CubicDisappear(this), _cubicDuration); // disappear
@@ -220,7 +219,7 @@ public final class L2CubicInstance implements IIdentifiable
 		_target = target;
 	}
 	
-	public List<L2Skill> getSkills()
+	public List<Skill> getSkills()
 	{
 		return _skills;
 	}
@@ -464,7 +463,7 @@ public final class L2CubicInstance implements IIdentifiable
 		}
 	}
 	
-	public void useCubicContinuous(L2Skill skill, L2Object[] targets)
+	public void useCubicContinuous(Skill skill, L2Object[] targets)
 	{
 		for (L2Character target : (L2Character[]) targets)
 		{
@@ -501,7 +500,7 @@ public final class L2CubicInstance implements IIdentifiable
 	 * @param skill
 	 * @param targets
 	 */
-	public void useCubicMdam(L2CubicInstance activeCubic, L2Skill skill, L2Object[] targets)
+	public void useCubicMdam(L2CubicInstance activeCubic, Skill skill, L2Object[] targets)
 	{
 		for (L2Character target : (L2Character[]) targets)
 		{
@@ -554,7 +553,7 @@ public final class L2CubicInstance implements IIdentifiable
 		}
 	}
 	
-	public void useCubicDrain(L2CubicInstance activeCubic, L2Skill skill, L2Object[] targets)
+	public void useCubicDrain(L2CubicInstance activeCubic, Skill skill, L2Object[] targets)
 	{
 		if (Config.DEBUG)
 		{
@@ -600,7 +599,7 @@ public final class L2CubicInstance implements IIdentifiable
 		}
 	}
 	
-	public void useCubicDisabler(L2SkillType type, L2Skill skill, L2Object[] targets)
+	public void useCubicDisabler(Skill skill, L2Object[] targets)
 	{
 		if (Config.DEBUG)
 		{

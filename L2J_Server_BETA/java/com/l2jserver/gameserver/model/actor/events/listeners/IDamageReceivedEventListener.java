@@ -19,12 +19,12 @@
 package com.l2jserver.gameserver.model.actor.events.listeners;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * @author UnAfraid
  */
 public interface IDamageReceivedEventListener extends IEventListener
 {
-	public void onDamageReceivedEvent(L2Character attacker, L2Character target, double damage, L2Skill skill, boolean crit, boolean damageOverTime);
+	public void onDamageReceivedEvent(L2Character attacker, L2Character target, double damage, Skill skill, boolean crit, boolean damageOverTime);
 }

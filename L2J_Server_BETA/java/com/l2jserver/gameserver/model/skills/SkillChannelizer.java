@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.enums.ShotType;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -46,7 +46,7 @@ public class SkillChannelizer implements Runnable
 	private final L2Character _channelizer;
 	private L2Character _channelized;
 	
-	private L2Skill _skill;
+	private Skill _skill;
 	private volatile ScheduledFuture<?> _task = null;
 	
 	public SkillChannelizer(L2Character channelizer)
@@ -69,7 +69,7 @@ public class SkillChannelizer implements Runnable
 		return _channelized != null;
 	}
 	
-	public void startChanneling(L2Skill skill)
+	public void startChanneling(Skill skill)
 	{
 		// Verify for same status.
 		if (isChanneling())
@@ -107,7 +107,7 @@ public class SkillChannelizer implements Runnable
 		_skill = null;
 	}
 	
-	public L2Skill getSkill()
+	public Skill getSkill()
 	{
 		return _skill;
 	}
@@ -148,7 +148,7 @@ public class SkillChannelizer implements Runnable
 			// Apply channeling skills on the targets.
 			if (_skill.getChannelingSkillId() > 0)
 			{
-				final L2Skill baseSkill = SkillTable.getInstance().getInfo(_skill.getChannelingSkillId(), 1);
+				final Skill baseSkill = SkillData.getInstance().getSkill(_skill.getChannelingSkillId(), 1);
 				if (baseSkill == null)
 				{
 					_log.log(Level.WARNING, getClass().getSimpleName() + ": skill " + _skill + " couldn't find effect id skill: " + _skill.getChannelingSkillId() + " !");
@@ -182,13 +182,13 @@ public class SkillChannelizer implements Runnable
 				}
 				else
 				{
-					final int maxSkillLevel = SkillTable.getInstance().getMaxLevel(_skill.getChannelingSkillId());
+					final int maxSkillLevel = SkillData.getInstance().getMaxLevel(_skill.getChannelingSkillId());
 					final int skillLevel = Math.min(_channelized.getSkillChannelized().getChannerlizersSize(_skill.getChannelingSkillId()), maxSkillLevel);
 					
 					final BuffInfo info = _channelized.getEffectList().getBuffInfoBySkillId(_skill.getChannelingSkillId());
 					if ((info == null) || (info.getSkill().getLevel() < skillLevel))
 					{
-						final L2Skill skill = SkillTable.getInstance().getInfo(_skill.getChannelingSkillId(), skillLevel);
+						final Skill skill = SkillData.getInstance().getSkill(_skill.getChannelingSkillId(), skillLevel);
 						skill.applyEffects(getChannelizer(), _channelized);
 					}
 					_channelizer.broadcastPacket(new MagicSkillLaunched(_channelizer, _skill.getId(), _skill.getLevel(), _channelized));

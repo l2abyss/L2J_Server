@@ -34,8 +34,6 @@ import com.l2jserver.gameserver.datatables.ArmorSetsData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.enums.ItemLocation;
 import com.l2jserver.gameserver.enums.PrivateStoreType;
-import com.l2jserver.gameserver.handler.ISkillHandler;
-import com.l2jserver.gameserver.handler.SkillHandler;
 import com.l2jserver.gameserver.model.L2ArmorSet;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.PcCondOverride;
@@ -45,7 +43,7 @@ import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.util.StringUtil;
@@ -282,7 +280,7 @@ public abstract class Inventory extends ItemContainer
 			}
 			final L2PcInstance player = (L2PcInstance) inventory.getOwner();
 			
-			L2Skill enchant4Skill, itemSkill;
+			Skill enchant4Skill, itemSkill;
 			L2Item it = item.getItem();
 			boolean update = false;
 			boolean updateTimeStamp = false;
@@ -375,19 +373,15 @@ public abstract class Inventory extends ItemContainer
 			}
 			
 			// Apply skill, if weapon have "skills on unequip"
-			L2Skill unequipSkill = it.getUnequipSkill();
+			Skill unequipSkill = it.getUnequipSkill();
 			if (unequipSkill != null)
 			{
-				ISkillHandler handler = SkillHandler.getInstance().getHandler(unequipSkill.getSkillType());
 				L2PcInstance[] targets =
 				{
 					player
 				};
 				
-				if (handler != null)
-				{
-					handler.useSkill(player, unequipSkill, targets);
-				}
+				unequipSkill.activateSkill(player, targets);
 			}
 			
 			if (update)
@@ -411,7 +405,7 @@ public abstract class Inventory extends ItemContainer
 			
 			final L2PcInstance player = (L2PcInstance) inventory.getOwner();
 			
-			L2Skill enchant4Skill, itemSkill;
+			Skill enchant4Skill, itemSkill;
 			L2Item it = item.getItem();
 			boolean update = false;
 			boolean updateTimeStamp = false;
@@ -529,7 +523,7 @@ public abstract class Inventory extends ItemContainer
 			{
 				if (armorSet.containAll(player))
 				{
-					L2Skill itemSkill;
+					Skill itemSkill;
 					final List<SkillHolder> skills = armorSet.getSkills();
 					
 					if (skills != null)
@@ -635,7 +629,7 @@ public abstract class Inventory extends ItemContainer
 			final L2PcInstance player = (L2PcInstance) inventory.getOwner();
 			
 			boolean remove = false;
-			L2Skill itemSkill;
+			Skill itemSkill;
 			List<SkillHolder> skills = null;
 			List<SkillHolder> shieldSkill = null; // shield skill
 			List<SkillHolder> skillId6 = null; // enchant +6 skill

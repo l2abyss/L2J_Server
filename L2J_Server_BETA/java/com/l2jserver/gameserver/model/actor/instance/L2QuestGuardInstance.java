@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.tasks.attackable.OnKillNotifyTask;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * This class extends Guard class for quests, that require tracking of onAttack and onKill events from monsters' attacks.
@@ -44,7 +44,7 @@ public final class L2QuestGuardInstance extends L2GuardInstance
 	}
 	
 	@Override
-	public void addDamage(L2Character attacker, int damage, L2Skill skill)
+	public void addDamage(L2Character attacker, int damage, Skill skill)
 	{
 		super.addDamage(attacker, damage, skill);
 		

@@ -34,7 +34,7 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.model.AutoSpawnHandler;
 import com.l2jserver.gameserver.model.AutoSpawnHandler.AutoSpawnInstance;
@@ -1678,12 +1678,12 @@ public class SevenSigns
 				{
 					if (cabal == _strifeOwner)
 					{
-						character.addSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
+						character.addSkill(SkillData.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
 					}
 					else
 					{
 						// Gives "The Vanquished of War" passive skill to all online characters with Cabal, which does not control Seal of Strife
-						character.addSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
+						character.addSkill(SkillData.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
 					}
 				}
 			}
@@ -1704,8 +1704,8 @@ public class SevenSigns
 			if (character != null)
 			{
 				// Remove SevenSigns' buffs/debuffs.
-				character.removeSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
-				character.removeSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
+				character.removeSkill(SkillData.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
+				character.removeSkill(SkillData.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
 			}
 			return true;
 		}

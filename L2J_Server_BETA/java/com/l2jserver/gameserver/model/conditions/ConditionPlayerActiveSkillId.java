@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -54,7 +54,7 @@ public class ConditionPlayerActiveSkillId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		for (L2Skill sk : env.getCharacter().getAllSkills())
+		for (Skill sk : env.getCharacter().getAllSkills())
 		{
 			if (sk != null)
 			{

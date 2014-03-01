@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.model.actor.tasks.character;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * Task dedicated to qued magic use of character
@@ -28,11 +28,11 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 public final class QueuedMagicUseTask implements Runnable
 {
 	private final L2PcInstance _currPlayer;
-	private final L2Skill _queuedSkill;
+	private final Skill _queuedSkill;
 	private final boolean _isCtrlPressed;
 	private final boolean _isShiftPressed;
 	
-	public QueuedMagicUseTask(L2PcInstance currPlayer, L2Skill queuedSkill, boolean isCtrlPressed, boolean isShiftPressed)
+	public QueuedMagicUseTask(L2PcInstance currPlayer, Skill queuedSkill, boolean isCtrlPressed, boolean isShiftPressed)
 	{
 		_currPlayer = currPlayer;
 		_queuedSkill = queuedSkill;

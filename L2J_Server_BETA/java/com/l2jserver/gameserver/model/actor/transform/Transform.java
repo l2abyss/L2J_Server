@@ -29,7 +29,7 @@ import com.l2jserver.gameserver.model.holders.AdditionalItemHolder;
 import com.l2jserver.gameserver.model.holders.AdditionalSkillHolder;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.serverpackets.ExBasicActionList;
 
@@ -333,7 +333,7 @@ public final class Transform implements IIdentifiable
 			{
 				for (SkillHolder holder : template.getSkills())
 				{
-					final L2Skill skill = holder.getSkill();
+					final Skill skill = holder.getSkill();
 					if (!SkillTreesData.getInstance().isSkillAllowed(player, skill))
 					{
 						player.removeSkill(skill, false, skill.isPassive());
@@ -346,7 +346,7 @@ public final class Transform implements IIdentifiable
 			{
 				for (AdditionalSkillHolder holder : template.getAdditionalSkills())
 				{
-					final L2Skill skill = holder.getSkill();
+					final Skill skill = holder.getSkill();
 					if ((player.getLevel() >= holder.getMinLevel()) && !SkillTreesData.getInstance().isSkillAllowed(player, skill))
 					{
 						player.removeSkill(skill, false, skill.isPassive());

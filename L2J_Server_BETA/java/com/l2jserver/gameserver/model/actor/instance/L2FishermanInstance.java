@@ -20,13 +20,13 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.List;
 
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.AcquireSkillType;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -78,7 +78,7 @@ public final class L2FishermanInstance extends L2MerchantInstance
 		
 		for (L2SkillLearn s : skills)
 		{
-			final L2Skill sk = SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
+			final Skill sk = SkillData.getInstance().getSkill(s.getSkillId(), s.getSkillLevel());
 			
 			if (sk == null)
 			{

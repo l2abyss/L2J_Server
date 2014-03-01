@@ -78,7 +78,7 @@ import com.l2jserver.gameserver.datatables.RecipeData;
 import com.l2jserver.gameserver.datatables.SecondaryAuthData;
 import com.l2jserver.gameserver.datatables.SiegeScheduleData;
 import com.l2jserver.gameserver.datatables.SkillLearnData;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.datatables.StaticObjects;
@@ -225,7 +225,7 @@ public class GameServer
 		EffectHandler.getInstance().executeScript();
 		EnchantSkillGroupsData.getInstance();
 		SkillTreesData.getInstance();
-		SkillTable.getInstance();
+		SkillData.getInstance();
 		SummonSkillsTable.getInstance();
 		
 		printSection("Items");

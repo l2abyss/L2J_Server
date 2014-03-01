@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.engines.DocumentEngine;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.hash.TIntIntHashMap;
@@ -34,15 +34,15 @@ import gnu.trove.map.hash.TIntIntHashMap;
 /**
  * Skill table.
  */
-public final class SkillTable
+public final class SkillData
 {
-	private static Logger _log = Logger.getLogger(SkillTable.class.getName());
+	private static Logger _log = Logger.getLogger(SkillData.class.getName());
 	
-	private final Map<Integer, L2Skill> _skills = new HashMap<>();
+	private final Map<Integer, Skill> _skills = new HashMap<>();
 	private final TIntIntHashMap _skillMaxLevel = new TIntIntHashMap();
 	private final TIntArrayList _enchantable = new TIntArrayList();
 	
-	protected SkillTable()
+	protected SkillData()
 	{
 		load();
 	}
@@ -60,7 +60,7 @@ public final class SkillTable
 		DocumentEngine.getInstance().loadAllSkills(_skills);
 		
 		_skillMaxLevel.clear();
-		for (L2Skill skill : _skills.values())
+		for (Skill skill : _skills.values())
 		{
 			final int skillId = skill.getId();
 			final int skillLvl = skill.getLevel();
@@ -90,7 +90,7 @@ public final class SkillTable
 	 * @param skill The L2Skill to be hashed
 	 * @return getSkillHashCode(skill.getId(), skill.getLevel())
 	 */
-	public static int getSkillHashCode(L2Skill skill)
+	public static int getSkillHashCode(Skill skill)
 	{
 		return getSkillHashCode(skill.getId(), skill.getLevel());
 	}
@@ -106,9 +106,9 @@ public final class SkillTable
 		return (skillId * 1021) + skillLevel;
 	}
 	
-	public L2Skill getInfo(int skillId, int level)
+	public Skill getSkill(int skillId, int level)
 	{
-		final L2Skill result = _skills.get(getSkillHashCode(skillId, level));
+		final Skill result = _skills.get(getSkillHashCode(skillId, level));
 		if (result != null)
 		{
 			return result;
@@ -145,21 +145,21 @@ public final class SkillTable
 	 * @param hasCastle
 	 * @return an array with siege skills. If addNoble == true, will add also Advanced headquarters.
 	 */
-	public L2Skill[] getSiegeSkills(boolean addNoble, boolean hasCastle)
+	public Skill[] getSiegeSkills(boolean addNoble, boolean hasCastle)
 	{
-		L2Skill[] temp = new L2Skill[2 + (addNoble ? 1 : 0) + (hasCastle ? 2 : 0)];
+		Skill[] temp = new Skill[2 + (addNoble ? 1 : 0) + (hasCastle ? 2 : 0)];
 		int i = 0;
-		temp[i++] = _skills.get(SkillTable.getSkillHashCode(246, 1));
-		temp[i++] = _skills.get(SkillTable.getSkillHashCode(247, 1));
+		temp[i++] = _skills.get(SkillData.getSkillHashCode(246, 1));
+		temp[i++] = _skills.get(SkillData.getSkillHashCode(247, 1));
 		
 		if (addNoble)
 		{
-			temp[i++] = _skills.get(SkillTable.getSkillHashCode(326, 1));
+			temp[i++] = _skills.get(SkillData.getSkillHashCode(326, 1));
 		}
 		if (hasCastle)
 		{
-			temp[i++] = _skills.get(SkillTable.getSkillHashCode(844, 1));
-			temp[i++] = _skills.get(SkillTable.getSkillHashCode(845, 1));
+			temp[i++] = _skills.get(SkillData.getSkillHashCode(844, 1));
+			temp[i++] = _skills.get(SkillData.getSkillHashCode(845, 1));
 		}
 		return temp;
 	}
@@ -204,19 +204,19 @@ public final class SkillTable
 			return _holder.getSkillLvl();
 		}
 		
-		public L2Skill getSkill()
+		public Skill getSkill()
 		{
 			return _holder.getSkill();
 		}
 	}
 	
-	public static SkillTable getInstance()
+	public static SkillData getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder
 	{
-		protected static final SkillTable _instance = new SkillTable();
+		protected static final SkillData _instance = new SkillData();
 	}
 }

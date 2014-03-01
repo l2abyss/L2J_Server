@@ -41,7 +41,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2FortCommanderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
@@ -442,7 +442,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 					// heal friends
 					if (!_actor.isAttackingDisabled() && (cha.getCurrentHp() < (cha.getMaxHp() * 0.6)) && (_actor.getCurrentHp() > (_actor.getMaxHp() / 2)) && (_actor.getCurrentMp() > (_actor.getMaxMp() / 2)) && cha.isInCombat())
 					{
-						for (L2Skill sk : _selfAnalysis.healSkills)
+						for (Skill sk : _selfAnalysis.healSkills)
 						{
 							if (_actor.getCurrentMp() < sk.getMpConsume())
 							{
@@ -501,7 +501,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 				// heal friends
 				if (_selfAnalysis.hasHealOrResurrect && !_actor.isAttackingDisabled() && (npc.getCurrentHp() < (npc.getMaxHp() * 0.6)) && (_actor.getCurrentHp() > (_actor.getMaxHp() / 2)) && (_actor.getCurrentMp() > (_actor.getMaxMp() / 2)) && npc.isInCombat())
 				{
-					for (L2Skill sk : _selfAnalysis.healSkills)
+					for (Skill sk : _selfAnalysis.healSkills)
 					{
 						if (_actor.getCurrentMp() < sk.getMpConsume())
 						{
@@ -541,7 +541,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 	private void attackPrepare()
 	{
 		// Get all information needed to choose between physical or magical attack
-		Collection<L2Skill> skills = null;
+		Collection<Skill> skills = null;
 		double dist_2 = 0;
 		int range = 0;
 		L2DefenderInstance sGuard;
@@ -598,7 +598,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 		if (!_actor.isMuted() && (dist_2 > (range * range)))
 		{
 			// check for long ranged skills and heal/buff skills
-			for (L2Skill sk : skills)
+			for (Skill sk : skills)
 			{
 				int castRange = sk.getCastRange();
 				
@@ -744,7 +744,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 			// check for close combat skills && heal/buff skills
 			if (!_actor.isMuted() && (Rnd.nextInt(100) <= 5))
 			{
-				for (L2Skill sk : skills)
+				for (Skill sk : skills)
 				{
 					int castRange = sk.getCastRange();
 					

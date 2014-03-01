@@ -23,11 +23,11 @@ import java.util.Map.Entry;
 import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.TaskZoneSettings;
@@ -180,9 +180,9 @@ public class L2EffectZone extends L2ZoneType
 		}
 	}
 	
-	protected L2Skill getSkill(int skillId, int skillLvl)
+	protected Skill getSkill(int skillId, int skillLvl)
 	{
-		return SkillTable.getInstance().getInfo(skillId, skillLvl);
+		return SkillData.getInstance().getSkill(skillId, skillLvl);
 	}
 	
 	public int getChance()
@@ -258,7 +258,7 @@ public class L2EffectZone extends L2ZoneType
 						{
 							for (Entry<Integer, Integer> e : _skills.entrySet())
 							{
-								L2Skill skill = getSkill(e.getKey(), e.getValue());
+								Skill skill = getSkill(e.getKey(), e.getValue());
 								if ((skill != null) && (_bypassConditions || skill.checkCondition(temp, temp, false)))
 								{
 									if (!temp.isAffectedBySkill(e.getKey()))

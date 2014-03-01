@@ -33,7 +33,7 @@ import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.NpcData;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
@@ -49,7 +49,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.olympiad.OlympiadManager;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
@@ -997,7 +997,7 @@ public class TvTEvent
 			{
 				for (Entry<Integer, Integer> e : Config.TVT_EVENT_MAGE_BUFFS.entrySet())
 				{
-					L2Skill skill = SkillTable.getInstance().getInfo(e.getKey(), e.getValue());
+					Skill skill = SkillData.getInstance().getSkill(e.getKey(), e.getValue());
 					if (skill != null)
 					{
 						skill.applyEffects(playerInstance, playerInstance);
@@ -1011,7 +1011,7 @@ public class TvTEvent
 			{
 				for (Entry<Integer, Integer> e : Config.TVT_EVENT_FIGHTER_BUFFS.entrySet())
 				{
-					L2Skill skill = SkillTable.getInstance().getInfo(e.getKey(), e.getValue());
+					Skill skill = SkillData.getInstance().getSkill(e.getKey(), e.getValue());
 					if (skill != null)
 					{
 						skill.applyEffects(playerInstance, playerInstance);
@@ -1027,7 +1027,7 @@ public class TvTEvent
 	 * @param skill
 	 * @return true if player valid for skill
 	 */
-	public static final boolean checkForTvTSkill(L2PcInstance source, L2PcInstance target, L2Skill skill)
+	public static final boolean checkForTvTSkill(L2PcInstance source, L2PcInstance target, Skill skill)
 	{
 		if (!isStarted())
 		{

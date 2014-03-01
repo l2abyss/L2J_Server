@@ -39,7 +39,7 @@ import com.l2jserver.gameserver.communitybbs.Manager.ForumsBBSManager;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.CrestTable;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
@@ -50,7 +50,7 @@ import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.interfaces.INamable;
 import com.l2jserver.gameserver.model.itemcontainer.ClanWarehouse;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
@@ -147,10 +147,10 @@ public class L2Clan implements IIdentifiable, INamable
 	private Forum _forum;
 	
 	/** FastMap(Integer, L2Skill) containing all skills of the L2Clan */
-	private final Map<Integer, L2Skill> _skills = new FastMap<>();
+	private final Map<Integer, Skill> _skills = new FastMap<>();
 	private final Map<Integer, RankPrivs> _privs = new FastMap<>();
 	private final Map<Integer, SubPledge> _subPledges = new FastMap<>();
-	private final Map<Integer, L2Skill> _subPledgeSkills = new FastMap<>();
+	private final Map<Integer, Skill> _subPledgeSkills = new FastMap<>();
 	
 	private int _reputationScore = 0;
 	private int _rank = 0;
@@ -1246,7 +1246,7 @@ public class L2Clan implements IIdentifiable, INamable
 					int id = rset.getInt("skill_id");
 					int level = rset.getInt("skill_level");
 					// Create a L2Skill object for each record
-					L2Skill skill = SkillTable.getInstance().getInfo(id, level);
+					Skill skill = SkillData.getInstance().getSkill(id, level);
 					// Add the L2Skill object to the L2Clan _skills
 					int subType = rset.getInt("sub_pledge_id");
 					
@@ -1282,20 +1282,20 @@ public class L2Clan implements IIdentifiable, INamable
 	/**
 	 * @return all the clan skills.
 	 */
-	public final L2Skill[] getAllSkills()
+	public final Skill[] getAllSkills()
 	{
 		if (_skills == null)
 		{
-			return new L2Skill[0];
+			return new Skill[0];
 		}
 		
-		return _skills.values().toArray(new L2Skill[_skills.values().size()]);
+		return _skills.values().toArray(new Skill[_skills.values().size()]);
 	}
 	
 	/**
 	 * @return the map containing this clan skills.
 	 */
-	public Map<Integer, L2Skill> getSkills()
+	public Map<Integer, Skill> getSkills()
 	{
 		return _skills;
 	}
@@ -1305,9 +1305,9 @@ public class L2Clan implements IIdentifiable, INamable
 	 * @param newSkill
 	 * @return
 	 */
-	public L2Skill addSkill(L2Skill newSkill)
+	public Skill addSkill(Skill newSkill)
 	{
-		L2Skill oldSkill = null;
+		Skill oldSkill = null;
 		
 		if (newSkill != null)
 		{
@@ -1318,7 +1318,7 @@ public class L2Clan implements IIdentifiable, INamable
 		return oldSkill;
 	}
 	
-	public L2Skill addNewSkill(L2Skill newSkill)
+	public Skill addNewSkill(Skill newSkill)
 	{
 		return addNewSkill(newSkill, -2);
 	}
@@ -1329,9 +1329,9 @@ public class L2Clan implements IIdentifiable, INamable
 	 * @param subType
 	 * @return
 	 */
-	public L2Skill addNewSkill(L2Skill newSkill, int subType)
+	public Skill addNewSkill(Skill newSkill, int subType)
 	{
-		L2Skill oldSkill = null;
+		Skill oldSkill = null;
 		if (newSkill != null)
 		{
 			
@@ -1423,7 +1423,7 @@ public class L2Clan implements IIdentifiable, INamable
 	
 	public void addSkillEffects()
 	{
-		for (L2Skill skill : _skills.values())
+		for (Skill skill : _skills.values())
 		{
 			for (L2ClanMember temp : _members.values())
 			{
@@ -1452,7 +1452,7 @@ public class L2Clan implements IIdentifiable, INamable
 			return;
 		}
 		
-		for (L2Skill skill : _skills.values())
+		for (Skill skill : _skills.values())
 		{
 			if (skill.getMinPledgeClass() <= player.getPledgeClass())
 			{
@@ -1462,7 +1462,7 @@ public class L2Clan implements IIdentifiable, INamable
 		
 		if (player.getPledgeType() == 0)
 		{
-			for (L2Skill skill : _subPledgeSkills.values())
+			for (Skill skill : _subPledgeSkills.values())
 			{
 				player.addSkill(skill, false); // Skill is not saved to player DB
 			}
@@ -1474,7 +1474,7 @@ public class L2Clan implements IIdentifiable, INamable
 			{
 				return;
 			}
-			for (L2Skill skill : subunit.getSkills())
+			for (Skill skill : subunit.getSkills())
 			{
 				player.addSkill(skill, false); // Skill is not saved to player DB
 			}
@@ -1493,14 +1493,14 @@ public class L2Clan implements IIdentifiable, INamable
 			return;
 		}
 		
-		for (L2Skill skill : _skills.values())
+		for (Skill skill : _skills.values())
 		{
 			player.removeSkill(skill, false); // Skill is not saved to player DB
 		}
 		
 		if (player.getPledgeType() == 0)
 		{
-			for (L2Skill skill : _subPledgeSkills.values())
+			for (Skill skill : _subPledgeSkills.values())
 			{
 				player.removeSkill(skill, false); // Skill is not saved to player DB
 			}
@@ -1512,7 +1512,7 @@ public class L2Clan implements IIdentifiable, INamable
 			{
 				return;
 			}
-			for (L2Skill skill : subunit.getSkills())
+			for (Skill skill : subunit.getSkills())
 			{
 				player.removeSkill(skill, false); // Skill is not saved to player DB
 			}
@@ -1526,7 +1526,7 @@ public class L2Clan implements IIdentifiable, INamable
 			return;
 		}
 		
-		for (L2Skill skill : _skills.values())
+		for (Skill skill : _skills.values())
 		{
 			if (disable)
 			{
@@ -1540,7 +1540,7 @@ public class L2Clan implements IIdentifiable, INamable
 		
 		if (player.getPledgeType() == 0)
 		{
-			for (L2Skill skill : _subPledgeSkills.values())
+			for (Skill skill : _subPledgeSkills.values())
 			{
 				if (disable)
 				{
@@ -1557,7 +1557,7 @@ public class L2Clan implements IIdentifiable, INamable
 			final SubPledge subunit = getSubPledge(player.getPledgeType());
 			if (subunit != null)
 			{
-				for (L2Skill skill : subunit.getSkills())
+				for (Skill skill : subunit.getSkills())
 				{
 					if (disable)
 					{
@@ -1741,7 +1741,7 @@ public class L2Clan implements IIdentifiable, INamable
 		private final int _id;
 		private String _subPledgeName;
 		private int _leaderId;
-		private final Map<Integer, L2Skill> _subPledgeSkills = new FastMap<>();
+		private final Map<Integer, Skill> _subPledgeSkills = new FastMap<>();
 		
 		public SubPledge(int id, String name, int leaderId)
 		{
@@ -1775,17 +1775,17 @@ public class L2Clan implements IIdentifiable, INamable
 			_leaderId = leaderId;
 		}
 		
-		public L2Skill addNewSkill(L2Skill skill)
+		public Skill addNewSkill(Skill skill)
 		{
 			return _subPledgeSkills.put(skill.getId(), skill);
 		}
 		
-		public Collection<L2Skill> getSkills()
+		public Collection<Skill> getSkills()
 		{
 			return _subPledgeSkills.values();
 		}
 		
-		public L2Skill getSkill(int id)
+		public Skill getSkill(int id)
 		{
 			return _subPledgeSkills.get(id);
 		}
@@ -2989,7 +2989,7 @@ public class L2Clan implements IIdentifiable, INamable
 	 */
 	public boolean isLearnableSubSkill(int skillId, int skillLevel)
 	{
-		L2Skill current = _subPledgeSkills.get(skillId);
+		Skill current = _subPledgeSkills.get(skillId);
 		// is next level?
 		if ((current != null) && ((current.getLevel() + 1) == skillLevel))
 		{
@@ -3023,7 +3023,7 @@ public class L2Clan implements IIdentifiable, INamable
 		return false;
 	}
 	
-	public boolean isLearnableSubPledgeSkill(L2Skill skill, int subType)
+	public boolean isLearnableSubPledgeSkill(Skill skill, int subType)
 	{
 		// academy
 		if (subType == -1)
@@ -3032,7 +3032,7 @@ public class L2Clan implements IIdentifiable, INamable
 		}
 		
 		int id = skill.getId();
-		L2Skill current;
+		Skill current;
 		if (subType == 0)
 		{
 			current = _subPledgeSkills.get(id);
@@ -3058,13 +3058,13 @@ public class L2Clan implements IIdentifiable, INamable
 	public SubPledgeSkill[] getAllSubSkills()
 	{
 		FastList<SubPledgeSkill> list = FastList.newInstance();
-		for (L2Skill skill : _subPledgeSkills.values())
+		for (Skill skill : _subPledgeSkills.values())
 		{
 			list.add(new SubPledgeSkill(0, skill.getId(), skill.getLevel()));
 		}
 		for (SubPledge subunit : _subPledges.values())
 		{
-			for (L2Skill skill : subunit.getSkills())
+			for (Skill skill : subunit.getSkills())
 			{
 				list.add(new SubPledgeSkill(subunit.getId(), skill.getId(), skill.getLevel()));
 			}

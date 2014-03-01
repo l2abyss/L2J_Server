@@ -20,7 +20,7 @@ package com.l2jserver.gameserver.model.actor.tasks.character;
 
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * Task dedicated to magic use of character
@@ -30,13 +30,13 @@ public final class MagicUseTask implements Runnable
 {
 	private final L2Character _character;
 	private L2Object[] _targets;
-	private final L2Skill _skill;
+	private final Skill _skill;
 	private int _count;
 	private int _skillTime;
 	private int _phase;
 	private final boolean _simultaneously;
 	
-	public MagicUseTask(L2Character character, L2Object[] tgts, L2Skill s, int hit, boolean simultaneous)
+	public MagicUseTask(L2Character character, L2Object[] tgts, Skill s, int hit, boolean simultaneous)
 	{
 		_character = character;
 		_targets = tgts;
@@ -84,7 +84,7 @@ public final class MagicUseTask implements Runnable
 		return _phase;
 	}
 	
-	public L2Skill getSkill()
+	public Skill getSkill()
 	{
 		return _skill;
 	}

@@ -22,7 +22,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -54,7 +54,7 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 		}
 		
 		// Get the level of the used skill
-		L2Skill skill = activeChar.getKnownSkill(_magicId);
+		Skill skill = activeChar.getKnownSkill(_magicId);
 		if (skill == null)
 		{
 			// Player doesn't know this skill, maybe it's the display Id.

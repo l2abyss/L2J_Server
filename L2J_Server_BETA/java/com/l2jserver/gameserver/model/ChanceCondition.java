@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.enums.TriggerType;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -150,7 +150,7 @@ public final class ChanceCondition
 		return skillIds;
 	}
 	
-	public boolean trigger(int event, int damage, byte element, boolean playable, L2Skill skill)
+	public boolean trigger(int event, int damage, byte element, boolean playable, Skill skill)
 	{
 		if (_pvpOnly && !playable)
 		{

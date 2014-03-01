@@ -26,7 +26,7 @@ import java.util.logging.LogRecord;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.util.StringUtil;
 
 public class EnchantFormatter extends Formatter
@@ -69,9 +69,9 @@ public class EnchantFormatter extends Formatter
 					StringUtil.append(output, item.getItem().getName(), "(", String.valueOf(item.getCount()), ")");
 					StringUtil.append(output, " [", String.valueOf(item.getObjectId()), "]");
 				}
-				else if (p instanceof L2Skill)
+				else if (p instanceof Skill)
 				{
-					L2Skill skill = (L2Skill) p;
+					Skill skill = (Skill) p;
 					if (skill.getLevel() > 100)
 					{
 						StringUtil.append(output, "+", String.valueOf(skill.getLevel() % 100), " ");

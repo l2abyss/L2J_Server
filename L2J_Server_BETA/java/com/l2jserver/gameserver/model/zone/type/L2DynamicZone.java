@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.TaskZoneSettings;
@@ -35,9 +35,9 @@ public class L2DynamicZone extends L2ZoneType
 {
 	private final L2WorldRegion _region;
 	private final L2Character _owner;
-	private final L2Skill _skill;
+	private final Skill _skill;
 	
-	public L2DynamicZone(L2WorldRegion region, L2Character owner, L2Skill skill)
+	public L2DynamicZone(L2WorldRegion region, L2Character owner, Skill skill)
 	{
 		super(-1);
 		_region = region;

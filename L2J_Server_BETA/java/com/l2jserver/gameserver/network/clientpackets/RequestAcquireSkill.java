@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.util.List;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.enums.IllegalActionPunishmentType;
 import com.l2jserver.gameserver.enums.QuestEventType;
@@ -40,7 +40,7 @@ import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillDone;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillList;
@@ -109,7 +109,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 			return;
 		}
 		
-		final L2Skill skill = SkillTable.getInstance().getInfo(_id, _level);
+		final Skill skill = SkillData.getInstance().getSkill(_id, _level);
 		if (skill == null)
 		{
 			_log.warning(RequestAcquireSkill.class.getSimpleName() + ": Player " + activeChar.getName() + " is trying to learn a null skill Id: " + _id + " level: " + _level + "!");
@@ -384,7 +384,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 		
 		for (L2SkillLearn s : skills)
 		{
-			if (SkillTable.getInstance().getInfo(s.getSkillId(), s.getSkillLevel()) != null)
+			if (SkillData.getInstance().getSkill(s.getSkillId(), s.getSkillLevel()) != null)
 			{
 				asl.addSkill(s.getSkillId(), s.getSkillLevel(), s.getSkillLevel(), s.getLevelUpSp(), 0);
 				++count;
@@ -433,7 +433,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 					return false;
 				}
 				
-				if (!Config.DIVINE_SP_BOOK_NEEDED && (_id == L2Skill.SKILL_DIVINE_INSPIRATION))
+				if (!Config.DIVINE_SP_BOOK_NEEDED && (_id == Skill.SKILL_DIVINE_INSPIRATION))
 				{
 					return true;
 				}
@@ -445,7 +445,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 					{
 						if (player.getSkillLevel(skill.getSkillId()) != skill.getSkillLvl())
 						{
-							if (skill.getSkillId() == L2Skill.SKILL_ONYX_BEAST_TRANSFORMATION)
+							if (skill.getSkillId() == Skill.SKILL_ONYX_BEAST_TRANSFORMATION)
 							{
 								player.sendPacket(SystemMessageId.YOU_MUST_LEARN_ONYX_BEAST_SKILL);
 							}
@@ -503,7 +503,7 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 	 * @param trainer the Npc teaching a skill.
 	 * @param skill the skill to be learn.
 	 */
-	private void giveSkill(L2PcInstance player, L2Npc trainer, L2Skill skill)
+	private void giveSkill(L2PcInstance player, L2Npc trainer, Skill skill)
 	{
 		// Send message.
 		final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.LEARNED_SKILL_S1);

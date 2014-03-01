@@ -32,7 +32,7 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.CharSummonTable;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.datatables.SummonEffectsTable;
 import com.l2jserver.gameserver.datatables.SummonEffectsTable.SummonEffect;
 import com.l2jserver.gameserver.enums.InstanceType;
@@ -44,7 +44,7 @@ import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.EffectScope;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SetSummonRemainTime;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -196,7 +196,7 @@ public class L2ServitorInstance extends L2Summon implements Runnable
 	 * If the resulting skill level doesn't exist use the max that does exist!
 	 */
 	@Override
-	public void doCast(L2Skill skill)
+	public void doCast(Skill skill)
 	{
 		final int petLevel = getLevel();
 		int skillLevel = petLevel / 10;
@@ -211,7 +211,7 @@ public class L2ServitorInstance extends L2Summon implements Runnable
 			skillLevel = 1;
 		}
 		
-		final L2Skill skillToCast = SkillTable.getInstance().getInfo(skill.getId(), skillLevel);
+		final Skill skillToCast = SkillData.getInstance().getSkill(skill.getId(), skillLevel);
 		
 		if (skillToCast != null)
 		{
@@ -241,7 +241,7 @@ public class L2ServitorInstance extends L2Summon implements Runnable
 			{
 				for (SummonEffect effect : effects)
 				{
-					final L2Skill skill = effect.getSkill();
+					final Skill skill = effect.getSkill();
 					if ((skill != null) && (skill.getId() == skillId))
 					{
 						effects.remove(effect);
@@ -309,7 +309,7 @@ public class L2ServitorInstance extends L2Summon implements Runnable
 							continue;
 						}
 						
-						final L2Skill skill = info.getSkill();
+						final Skill skill = info.getSkill();
 						// Do not save heals.
 						if (skill.getAbnormalType() == AbnormalType.LIFE_FORCE_OTHERS)
 						{
@@ -391,7 +391,7 @@ public class L2ServitorInstance extends L2Summon implements Runnable
 						{
 							int effectCurTime = rset.getInt("remaining_time");
 							
-							final L2Skill skill = SkillTable.getInstance().getInfo(rset.getInt("skill_id"), rset.getInt("skill_level"));
+							final Skill skill = SkillData.getInstance().getSkill(rset.getInt("skill_id"), rset.getInt("skill_level"));
 							if (skill == null)
 							{
 								continue;

@@ -20,7 +20,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.Announcements;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.CoupleManager;
 import com.l2jserver.gameserver.model.L2World;
@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Couple;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 
@@ -137,7 +137,7 @@ public class L2WeddingManagerInstance extends L2Npc
 			ptarget.broadcastPacket(MSU);
 			
 			// Fireworks
-			L2Skill skill = SkillTable.FrequentSkill.LARGE_FIREWORK.getSkill();
+			Skill skill = SkillData.FrequentSkill.LARGE_FIREWORK.getSkill();
 			if (skill != null)
 			{
 				MSU = new MagicSkillUse(player, player, 2025, 1, 1, 0);

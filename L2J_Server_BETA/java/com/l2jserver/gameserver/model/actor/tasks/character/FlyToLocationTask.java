@@ -20,7 +20,7 @@ package com.l2jserver.gameserver.model.actor.tasks.character;
 
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.serverpackets.FlyToLocation;
 
 /**
@@ -31,9 +31,9 @@ public final class FlyToLocationTask implements Runnable
 {
 	private final L2Character _character;
 	private final L2Object _target;
-	private final L2Skill _skill;
+	private final Skill _skill;
 	
-	public FlyToLocationTask(L2Character character, L2Object target, L2Skill skill)
+	public FlyToLocationTask(L2Character character, L2Object target, Skill skill)
 	{
 		_character = character;
 		_target = target;

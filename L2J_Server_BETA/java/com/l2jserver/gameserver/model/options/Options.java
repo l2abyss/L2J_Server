@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.stats.Env;
@@ -219,7 +219,7 @@ public class Options
 		player.sendSkillList();
 	}
 	
-	private final void addSkill(L2PcInstance player, L2Skill skill)
+	private final void addSkill(L2PcInstance player, Skill skill)
 	{
 		boolean updateTimeStamp = false;
 		

@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.instancemanager.DuelManager;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -108,7 +108,7 @@ public class Duel
 		private double _cp;
 		private boolean _paDuel;
 		private int _x, _y, _z;
-		private FastList<L2Skill> _debuffs;
+		private FastList<Skill> _debuffs;
 		
 		public PlayerCondition(L2PcInstance player, boolean partyDuel)
 		{
@@ -146,7 +146,7 @@ public class Duel
 			}
 			if (_debuffs != null) // Debuff removal
 			{
-				for (L2Skill skill : _debuffs)
+				for (Skill skill : _debuffs)
 				{
 					if (skill != null)
 					{
@@ -156,7 +156,7 @@ public class Duel
 			}
 		}
 		
-		public void registerDebuff(L2Skill debuff)
+		public void registerDebuff(Skill debuff)
 		{
 			if (_debuffs == null)
 			{
@@ -1048,7 +1048,7 @@ public class Duel
 		}
 	}
 	
-	public void onBuff(L2PcInstance player, L2Skill debuff)
+	public void onBuff(L2PcInstance player, Skill debuff)
 	{
 		for (PlayerCondition cond : _playerConditions)
 		{

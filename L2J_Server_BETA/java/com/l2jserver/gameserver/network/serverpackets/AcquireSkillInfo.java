@@ -25,7 +25,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.base.AcquireSkillType;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * Acquire Skill Info server packet implementation.
@@ -80,7 +80,7 @@ public class AcquireSkillInfo extends L2GameServerPacket
 		{
 			for (ItemHolder item : skillLearn.getRequiredItems())
 			{
-				if (!Config.DIVINE_SP_BOOK_NEEDED && (_id == L2Skill.SKILL_DIVINE_INSPIRATION))
+				if (!Config.DIVINE_SP_BOOK_NEEDED && (_id == Skill.SKILL_DIVINE_INSPIRATION))
 				{
 					continue;
 				}

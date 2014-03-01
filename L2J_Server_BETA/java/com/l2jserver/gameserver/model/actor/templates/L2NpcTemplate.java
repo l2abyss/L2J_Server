@@ -44,7 +44,7 @@ import com.l2jserver.gameserver.model.drops.IDropItem;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * NPC template.
@@ -101,8 +101,8 @@ public final class L2NpcTemplate extends L2CharTemplate implements IIdentifiable
 	private int _shortRangeSkillChance;
 	private int _longRangeSkillId;
 	private int _longRangeSkillChance;
-	private Map<Integer, L2Skill> _skills;
-	private Map<AISkillScope, List<L2Skill>> _aiSkillLists;
+	private Map<Integer, Skill> _skills;
+	private Map<AISkillScope, List<Skill>> _aiSkillLists;
 	private Set<Integer> _clans;
 	private Set<Integer> _enemyClans;
 	private Map<DropListScope, List<IDropItem>> _dropLists;
@@ -436,25 +436,25 @@ public final class L2NpcTemplate extends L2CharTemplate implements IIdentifiable
 	}
 	
 	@Override
-	public Map<Integer, L2Skill> getSkills()
+	public Map<Integer, Skill> getSkills()
 	{
 		return _skills;
 	}
 	
-	public void setSkills(Map<Integer, L2Skill> skills)
+	public void setSkills(Map<Integer, Skill> skills)
 	{
-		_skills = skills != null ? Collections.unmodifiableMap(skills) : Collections.<Integer, L2Skill> emptyMap();
+		_skills = skills != null ? Collections.unmodifiableMap(skills) : Collections.<Integer, Skill> emptyMap();
 	}
 	
-	public List<L2Skill> getAISkills(AISkillScope aiSkillScope)
+	public List<Skill> getAISkills(AISkillScope aiSkillScope)
 	{
-		final List<L2Skill> aiSkills = _aiSkillLists.get(aiSkillScope);
-		return aiSkills != null ? aiSkills : Collections.<L2Skill> emptyList();
+		final List<Skill> aiSkills = _aiSkillLists.get(aiSkillScope);
+		return aiSkills != null ? aiSkills : Collections.<Skill> emptyList();
 	}
 	
-	public void setAISkillLists(Map<AISkillScope, List<L2Skill>> aiSkillLists)
+	public void setAISkillLists(Map<AISkillScope, List<Skill>> aiSkillLists)
 	{
-		_aiSkillLists = aiSkillLists != null ? Collections.unmodifiableMap(aiSkillLists) : Collections.<AISkillScope, List<L2Skill>> emptyMap();
+		_aiSkillLists = aiSkillLists != null ? Collections.unmodifiableMap(aiSkillLists) : Collections.<AISkillScope, List<Skill>> emptyMap();
 	}
 	
 	public Set<Integer> getClans()

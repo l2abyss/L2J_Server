@@ -44,7 +44,7 @@ import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.EffectScope;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.serverpackets.AbnormalStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadSpelledInfo;
 import com.l2jserver.gameserver.network.serverpackets.PartySpelled;
@@ -268,7 +268,7 @@ public final class CharEffectList
 	 * @param skill the skill
 	 * @return the effect list
 	 */
-	private Map<Integer, BuffInfo> getEffectList(L2Skill skill)
+	private Map<Integer, BuffInfo> getEffectList(Skill skill)
 	{
 		if (skill == null)
 		{
@@ -536,7 +536,7 @@ public final class CharEffectList
 	 * @param skill the skill to verify
 	 * @return {@code true} if this effect stacks with the given skill, {@code false} otherwise
 	 */
-	private boolean doesStack(L2Skill skill)
+	private boolean doesStack(Skill skill)
 	{
 		final AbnormalType type = skill.getAbnormalType();
 		if (type.isNone() || isEmpty())
@@ -1012,7 +1012,7 @@ public final class CharEffectList
 	 * Removes the stats from the character.<br>
 	 * Updates the effect flags and icons.<br>
 	 * Presents two overloads:<br>
-	 * {@link #stopSkillEffects(boolean, L2Skill)}<br>
+	 * {@link #stopSkillEffects(boolean, Skill)}<br>
 	 * {@link #stopSkillEffects(boolean, AbnormalType)}
 	 * @param removed {@code true} if the effect is removed, {@code false} otherwise
 	 * @param skillId the skill ID
@@ -1037,7 +1037,7 @@ public final class CharEffectList
 	 * @param removed {@code true} if the effect is removed, {@code false} otherwise
 	 * @param skill the skill
 	 */
-	public void stopSkillEffects(boolean removed, L2Skill skill)
+	public void stopSkillEffects(boolean removed, Skill skill)
 	{
 		if ((skill == null) || !isAffectedBySkill(skill.getId()))
 		{
@@ -1056,7 +1056,7 @@ public final class CharEffectList
 	 * It's O(1) for every effect in this effect list except passive effects.<br>
 	 * Presents two overloads:<br>
 	 * {@link #stopSkillEffects(boolean, int)}<br>
-	 * {@link #stopSkillEffects(boolean, L2Skill)}
+	 * {@link #stopSkillEffects(boolean, Skill)}
 	 * @param removed {@code true} if the effect is removed, {@code false} otherwise
 	 * @param type the skill abnormal type
 	 * @return {@code true} if there was a buff info with the given abnormal type
@@ -1380,7 +1380,7 @@ public final class CharEffectList
 		}
 		
 		// Support for blocked buff slots.
-		final L2Skill skill = info.getSkill();
+		final Skill skill = info.getSkill();
 		if ((_blockedBuffSlots != null) && _blockedBuffSlots.contains(skill.getAbnormalType()))
 		{
 			return;
@@ -1672,7 +1672,7 @@ public final class CharEffectList
 			return;
 		}
 		
-		final L2Skill skill = info.getSkill();
+		final Skill skill = info.getSkill();
 		if (asu != null)
 		{
 			asu.addSkill(info);

@@ -38,7 +38,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.type.L2OlympiadStadiumZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMode;
@@ -250,7 +250,7 @@ public abstract class AbstractOlympiadGame
 			// Remove Hero Skills
 			if (player.isHero())
 			{
-				for (L2Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
+				for (Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
 				{
 					player.removeSkill(skill, false);
 				}
@@ -307,7 +307,7 @@ public abstract class AbstractOlympiadGame
 			}
 			
 			// enable skills with cool time <= 15 minutes
-			for (L2Skill skill : player.getAllSkills())
+			for (Skill skill : player.getAllSkills())
 			{
 				if (skill.getReuseDelay() <= 900000)
 				{
@@ -400,7 +400,7 @@ public abstract class AbstractOlympiadGame
 			// Add Hero Skills
 			if (player.isHero())
 			{
-				for (L2Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
+				for (Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
 				{
 					player.addSkill(skill, false);
 				}

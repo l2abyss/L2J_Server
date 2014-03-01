@@ -38,7 +38,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -176,7 +176,7 @@ public class RecipeController
 		protected final L2RecipeList _recipeList;
 		protected final L2PcInstance _player; // "crafter"
 		protected final L2PcInstance _target; // "customer"
-		protected final L2Skill _skill;
+		protected final Skill _skill;
 		protected final int _skillId;
 		protected final int _skillLevel;
 		protected int _creationPasses = 1;
@@ -194,7 +194,7 @@ public class RecipeController
 			_recipeList = pRecipeList;
 			
 			_isValid = false;
-			_skillId = _recipeList.isDwarvenRecipe() ? L2Skill.SKILL_CREATE_DWARVEN : L2Skill.SKILL_CREATE_COMMON;
+			_skillId = _recipeList.isDwarvenRecipe() ? Skill.SKILL_CREATE_DWARVEN : Skill.SKILL_CREATE_COMMON;
 			_skillLevel = _player.getSkillLevel(_skillId);
 			_skill = _player.getKnownSkill(_skillId);
 			

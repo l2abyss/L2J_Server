@@ -54,7 +54,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2ActionType;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -631,7 +631,7 @@ public abstract class L2Summon extends L2Playable
 	 * @param dontMove used to prevent movement, if not in range
 	 */
 	@Override
-	public boolean useMagic(L2Skill skill, boolean forceUse, boolean dontMove)
+	public boolean useMagic(Skill skill, boolean forceUse, boolean dontMove)
 	{
 		// Null skill, dead summon or null owner are reasons to prevent casting.
 		if ((skill == null) || isDead() || (getOwner() == null))
@@ -847,7 +847,7 @@ public abstract class L2Summon extends L2Playable
 	}
 	
 	@Override
-	public void reduceCurrentHp(double damage, L2Character attacker, L2Skill skill)
+	public void reduceCurrentHp(double damage, L2Character attacker, Skill skill)
 	{
 		super.reduceCurrentHp(damage, attacker, skill);
 		if ((getOwner() != null) && (attacker != null))
@@ -861,7 +861,7 @@ public abstract class L2Summon extends L2Playable
 	}
 	
 	@Override
-	public void doCast(L2Skill skill)
+	public void doCast(Skill skill)
 	{
 		final L2PcInstance actingPlayer = getActingPlayer();
 		if (!actingPlayer.checkPvpSkill(getTarget(), skill, true) && !actingPlayer.getAccessLevel().allowPeaceAttack())

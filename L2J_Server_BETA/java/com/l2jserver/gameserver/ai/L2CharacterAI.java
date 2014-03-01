@@ -54,8 +54,7 @@ import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -101,9 +100,9 @@ public class L2CharacterAI extends AbstractAI
 	{
 		private final L2Character _activeChar;
 		private final L2Object _target;
-		private final L2Skill _skill;
+		private final Skill _skill;
 		
-		public CastTask(L2Character actor, L2Skill skill, L2Object target)
+		public CastTask(L2Character actor, Skill skill, L2Object target)
 		{
 			_activeChar = actor;
 			_target = target;
@@ -315,7 +314,7 @@ public class L2CharacterAI extends AbstractAI
 	 * </ul>
 	 */
 	@Override
-	protected void onIntentionCast(L2Skill skill, L2Object target)
+	protected void onIntentionCast(Skill skill, L2Object target)
 	{
 		if ((getIntention() == AI_INTENTION_REST) && skill.isMagic())
 		{
@@ -334,7 +333,7 @@ public class L2CharacterAI extends AbstractAI
 		}
 	}
 	
-	protected void changeIntentionToCast(L2Skill skill, L2Object target)
+	protected void changeIntentionToCast(Skill skill, L2Object target)
 	{
 		// Set the AI cast target
 		setCastTarget((L2Character) target);
@@ -1213,19 +1212,19 @@ public class L2CharacterAI extends AbstractAI
 		public boolean isHealer = false;
 		public boolean isFighter = false;
 		public boolean cannotMoveOnLand = false;
-		public List<L2Skill> generalSkills = new FastList<>();
-		public List<L2Skill> buffSkills = new FastList<>();
+		public List<Skill> generalSkills = new FastList<>();
+		public List<Skill> buffSkills = new FastList<>();
 		public int lastBuffTick = 0;
-		public List<L2Skill> debuffSkills = new FastList<>();
+		public List<Skill> debuffSkills = new FastList<>();
 		public int lastDebuffTick = 0;
-		public List<L2Skill> cancelSkills = new FastList<>();
-		public List<L2Skill> healSkills = new FastList<>();
+		public List<Skill> cancelSkills = new FastList<>();
+		public List<Skill> healSkills = new FastList<>();
 		// public List<L2Skill> trickSkills = new FastList<>();
-		public List<L2Skill> generalDisablers = new FastList<>();
-		public List<L2Skill> sleepSkills = new FastList<>();
-		public List<L2Skill> rootSkills = new FastList<>();
-		public List<L2Skill> muteSkills = new FastList<>();
-		public List<L2Skill> resurrectSkills = new FastList<>();
+		public List<Skill> generalDisablers = new FastList<>();
+		public List<Skill> sleepSkills = new FastList<>();
+		public List<Skill> rootSkills = new FastList<>();
+		public List<Skill> muteSkills = new FastList<>();
+		public List<Skill> resurrectSkills = new FastList<>();
 		public boolean hasHealOrResurrect = false;
 		public boolean hasLongRangeSkills = false;
 		public boolean hasLongRangeDamageSkills = false;
@@ -1274,7 +1273,7 @@ public class L2CharacterAI extends AbstractAI
 				}
 			}
 			// skill analysis
-			for (L2Skill sk : _actor.getAllSkills())
+			for (Skill sk : _actor.getAllSkills())
 			{
 				if (sk.isPassive())
 				{
@@ -1283,11 +1282,7 @@ public class L2CharacterAI extends AbstractAI
 				int castRange = sk.getCastRange();
 				boolean hasLongRangeDamageSkill = false;
 				
-				if ((sk.getSkillType() == L2SkillType.NOTDONE) || (sk.getSkillType() == L2SkillType.COREDONE))
-				{
-					continue;
-				}
-				else if (sk.isContinuous())
+				if (sk.isContinuous())
 				{
 					if (!sk.isDebuff())
 					{
@@ -1299,62 +1294,60 @@ public class L2CharacterAI extends AbstractAI
 					}
 					continue;
 				}
+				
+				if (sk.hasEffectType(L2EffectType.DISPEL, L2EffectType.DISPEL_BY_SLOT))
+				{
+					cancelSkills.add(sk);
+				}
+				else if (sk.hasEffectType(L2EffectType.HEAL, L2EffectType.HEAL_PERCENT))
+				{
+					healSkills.add(sk);
+					hasHealOrResurrect = true;
+				}
+				else if (sk.hasEffectType(L2EffectType.SLEEP))
+				{
+					sleepSkills.add(sk);
+				}
+				else if (sk.hasEffectType(L2EffectType.STUN, L2EffectType.PARALYZE))
+				{
+					// hardcoding petrification until improvements are made to
+					// EffectTemplate... petrification is totally different for
+					// AI than paralyze
+					switch (sk.getId())
+					{
+						case 367:
+						case 4111:
+						case 4383:
+						case 4616:
+						case 4578:
+							sleepSkills.add(sk);
+							break;
+						default:
+							generalDisablers.add(sk);
+							break;
+					}
+				}
+				else if (sk.hasEffectType(L2EffectType.ROOT))
+				{
+					rootSkills.add(sk);
+				}
+				else if (sk.hasEffectType(L2EffectType.FEAR))
+				{
+					debuffSkills.add(sk);
+				}
+				else if (sk.hasEffectType(L2EffectType.MUTE))
+				{
+					muteSkills.add(sk);
+				}
+				else if (sk.hasEffectType(L2EffectType.RESURRECTION))
+				{
+					resurrectSkills.add(sk);
+					hasHealOrResurrect = true;
+				}
 				else
 				{
-					if (sk.hasEffectType(L2EffectType.DISPEL, L2EffectType.DISPEL_BY_SLOT))
-					{
-						cancelSkills.add(sk);
-					}
-					else if (sk.hasEffectType(L2EffectType.HEAL, L2EffectType.HEAL_PERCENT))
-					{
-						healSkills.add(sk);
-						hasHealOrResurrect = true;
-					}
-					else if (sk.hasEffectType(L2EffectType.SLEEP))
-					{
-						sleepSkills.add(sk);
-					}
-					else if (sk.hasEffectType(L2EffectType.STUN, L2EffectType.PARALYZE))
-					{
-						// hardcoding petrification until improvements are made to
-						// EffectTemplate... petrification is totally different for
-						// AI than paralyze
-						switch (sk.getId())
-						{
-							case 367:
-							case 4111:
-							case 4383:
-							case 4616:
-							case 4578:
-								sleepSkills.add(sk);
-								break;
-							default:
-								generalDisablers.add(sk);
-								break;
-						}
-					}
-					else if (sk.hasEffectType(L2EffectType.ROOT))
-					{
-						rootSkills.add(sk);
-					}
-					else if (sk.hasEffectType(L2EffectType.FEAR))
-					{
-						debuffSkills.add(sk);
-					}
-					else if (sk.hasEffectType(L2EffectType.MUTE))
-					{
-						muteSkills.add(sk);
-					}
-					else if (sk.hasEffectType(L2EffectType.RESURRECTION))
-					{
-						resurrectSkills.add(sk);
-						hasHealOrResurrect = true;
-					}
-					else
-					{
-						generalSkills.add(sk);
-						hasLongRangeDamageSkill = true;
-					}
+					generalSkills.add(sk);
+					hasLongRangeDamageSkill = true;
 				}
 				
 				if (castRange > 70)
@@ -1468,7 +1461,7 @@ public class L2CharacterAI extends AbstractAI
 		}
 	}
 	
-	public boolean canAura(L2Skill sk)
+	public boolean canAura(Skill sk)
 	{
 		if ((sk.getTargetType() == L2TargetType.AURA) || (sk.getTargetType() == L2TargetType.BEHIND_AURA) || (sk.getTargetType() == L2TargetType.FRONT_AURA) || (sk.getTargetType() == L2TargetType.AURA_CORPSE_MOB))
 		{
@@ -1483,7 +1476,7 @@ public class L2CharacterAI extends AbstractAI
 		return false;
 	}
 	
-	public boolean canAOE(L2Skill sk)
+	public boolean canAOE(Skill sk)
 	{
 		if (sk.hasEffectType(L2EffectType.DISPEL, L2EffectType.DISPEL_BY_SLOT))
 		{
@@ -1614,7 +1607,7 @@ public class L2CharacterAI extends AbstractAI
 		return false;
 	}
 	
-	public boolean canParty(L2Skill sk)
+	public boolean canParty(Skill sk)
 	{
 		if (sk.getTargetType() == L2TargetType.PARTY)
 		{
@@ -1645,7 +1638,7 @@ public class L2CharacterAI extends AbstractAI
 		return false;
 	}
 	
-	public boolean isParty(L2Skill sk)
+	public boolean isParty(Skill sk)
 	{
 		return (sk.getTargetType() == L2TargetType.PARTY);
 	}

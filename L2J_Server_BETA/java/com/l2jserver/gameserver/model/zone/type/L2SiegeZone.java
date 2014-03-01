@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.enums.MountType;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
@@ -33,7 +33,7 @@ import com.l2jserver.gameserver.model.entity.FortSiege;
 import com.l2jserver.gameserver.model.entity.Siegable;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.ZoneId;
@@ -248,7 +248,7 @@ public class L2SiegeZone extends L2ZoneType
 					lvl = Math.min(lvl + info.getSkill().getLevel(), 5);
 				}
 				
-				final L2Skill skill = SkillTable.getInstance().getInfo(5660, lvl);
+				final Skill skill = SkillData.getInstance().getSkill(5660, lvl);
 				if (skill != null)
 				{
 					skill.applyEffects(character, character);

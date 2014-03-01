@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.model.actor.events.listeners.IDamageReceivedEven
 import com.l2jserver.gameserver.model.actor.events.listeners.IDeathEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.ISkillUseEventListener;
 import com.l2jserver.gameserver.model.actor.events.listeners.ITeleportedEventListener;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -99,7 +99,7 @@ public class CharEvents extends AbstractCharEvents
 	 * @param targets
 	 * @return {@code true} if cast can be made, {@code false} otherwise.
 	 */
-	public boolean onMagic(L2Skill skill, boolean simultaneously, L2Character target, L2Object[] targets)
+	public boolean onMagic(Skill skill, boolean simultaneously, L2Character target, L2Object[] targets)
 	{
 		if (hasListeners())
 		{
@@ -186,7 +186,7 @@ public class CharEvents extends AbstractCharEvents
 	 * @param crit
 	 * @param damageOverTime
 	 */
-	public void onDamageDealt(double damage, L2Character target, L2Skill skill, boolean crit, boolean damageOverTime)
+	public void onDamageDealt(double damage, L2Character target, Skill skill, boolean crit, boolean damageOverTime)
 	{
 		if (hasListeners())
 		{
@@ -221,7 +221,7 @@ public class CharEvents extends AbstractCharEvents
 	 * @param crit
 	 * @param damageOverTime
 	 */
-	public void onDamageReceived(double damage, L2Character attacker, L2Skill skill, boolean crit, boolean damageOverTime)
+	public void onDamageReceived(double damage, L2Character attacker, Skill skill, boolean crit, boolean damageOverTime)
 	{
 		if (hasListeners())
 		{

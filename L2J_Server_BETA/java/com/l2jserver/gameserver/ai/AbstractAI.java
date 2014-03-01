@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.AutoAttackStart;
 import com.l2jserver.gameserver.network.serverpackets.AutoAttackStop;
@@ -155,7 +155,7 @@ public abstract class AbstractAI implements Ctrl
 	protected L2Character _followTarget;
 	
 	/** The skill we are currently casting by INTENTION_CAST */
-	L2Skill _skill;
+	Skill _skill;
 	
 	/** Different internal state flags */
 	private int _moveToPawnTimeout;
@@ -286,7 +286,7 @@ public abstract class AbstractAI implements Ctrl
 				onIntentionAttack((L2Character) arg0);
 				break;
 			case AI_INTENTION_CAST:
-				onIntentionCast((L2Skill) arg0, (L2Object) arg1);
+				onIntentionCast((Skill) arg0, (L2Object) arg1);
 				break;
 			case AI_INTENTION_MOVE_TO:
 				onIntentionMoveTo((Location) arg0);
@@ -435,7 +435,7 @@ public abstract class AbstractAI implements Ctrl
 	
 	protected abstract void onIntentionAttack(L2Character target);
 	
-	protected abstract void onIntentionCast(L2Skill skill, L2Object target);
+	protected abstract void onIntentionCast(Skill skill, L2Object target);
 	
 	protected abstract void onIntentionMoveTo(Location destination);
 	

@@ -31,7 +31,7 @@ import com.l2jserver.gameserver.model.effects.EffectFlag;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.quest.QuestState;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * This class represents all Playable characters in the world.<br>
@@ -354,7 +354,7 @@ public abstract class L2Playable extends L2Character
 	
 	public abstract byte getPvpFlag();
 	
-	public abstract boolean useMagic(L2Skill skill, boolean forceUse, boolean dontMove);
+	public abstract boolean useMagic(Skill skill, boolean forceUse, boolean dontMove);
 	
 	public abstract void storeMe();
 	

@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.model;
 
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * Simple class containing all necessary information to maintain<br>
@@ -46,7 +46,7 @@ public class TimeStamp
 	 * @param reuse the reuse time for this skill.
 	 * @param systime overrides the system time with a customized one.
 	 */
-	public TimeStamp(L2Skill skill, long reuse, long systime)
+	public TimeStamp(Skill skill, long reuse, long systime)
 	{
 		_id1 = skill.getId();
 		_id2 = skill.getLevel();

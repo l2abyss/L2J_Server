@@ -35,7 +35,7 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.model.CombatFlag;
 import com.l2jserver.gameserver.model.FortSiegeSpawn;
 import com.l2jserver.gameserver.model.L2Clan;
@@ -71,8 +71,8 @@ public final class FortSiegeManager
 	
 	public final void addSiegeSkills(L2PcInstance character)
 	{
-		character.addSkill(SkillTable.FrequentSkill.SEAL_OF_RULER.getSkill(), false);
-		character.addSkill(SkillTable.FrequentSkill.BUILD_HEADQUARTERS.getSkill(), false);
+		character.addSkill(SkillData.FrequentSkill.SEAL_OF_RULER.getSkill(), false);
+		character.addSkill(SkillData.FrequentSkill.BUILD_HEADQUARTERS.getSkill(), false);
 	}
 	
 	/**
@@ -151,8 +151,8 @@ public final class FortSiegeManager
 	
 	public final void removeSiegeSkills(L2PcInstance character)
 	{
-		character.removeSkill(SkillTable.FrequentSkill.SEAL_OF_RULER.getSkill());
-		character.removeSkill(SkillTable.FrequentSkill.BUILD_HEADQUARTERS.getSkill());
+		character.removeSkill(SkillData.FrequentSkill.SEAL_OF_RULER.getSkill());
+		character.removeSkill(SkillData.FrequentSkill.BUILD_HEADQUARTERS.getSkill());
 	}
 	
 	private final void load()

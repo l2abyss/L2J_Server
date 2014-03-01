@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Character.AIAccessor;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 
 public class L2PlayerAI extends L2PlayableAI
@@ -68,7 +68,7 @@ public class L2PlayerAI extends L2PlayableAI
 	{
 		// do nothing unless CAST intention
 		// however, forget interrupted actions when starting to use an offensive skill
-		if ((intention != AI_INTENTION_CAST) || ((arg0 != null) && ((L2Skill) arg0).isBad()))
+		if ((intention != AI_INTENTION_CAST) || ((arg0 != null) && ((Skill) arg0).isBad()))
 		{
 			_nextIntention = null;
 			super.changeIntention(intention, arg0, arg1);

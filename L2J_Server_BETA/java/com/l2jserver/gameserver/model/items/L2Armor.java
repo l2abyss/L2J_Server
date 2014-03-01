@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.model.items;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.type.L2ArmorType;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.util.StringUtil;
 
 /**
@@ -109,7 +109,7 @@ public final class L2Armor extends L2Item
 	 * @return skill that player get when has equipped armor +4 or more
 	 */
 	@Override
-	public L2Skill getEnchant4Skill()
+	public Skill getEnchant4Skill()
 	{
 		if (_enchant4Skill == null)
 		{

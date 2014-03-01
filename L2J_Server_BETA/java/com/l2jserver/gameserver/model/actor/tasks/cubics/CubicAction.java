@@ -23,14 +23,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.handler.ISkillHandler;
-import com.l2jserver.gameserver.handler.SkillHandler;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
-import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 import com.l2jserver.util.Rnd;
@@ -120,7 +117,7 @@ public final class CubicAction implements Runnable
 			}
 			else if (Rnd.get(1, 100) < _chance)
 			{
-				L2Skill skill = _cubic.getSkills().get(Rnd.get(_cubic.getSkills().size()));
+				Skill skill = _cubic.getSkills().get(Rnd.get(_cubic.getSkills().size()));
 				if (skill != null)
 				{
 					if (skill.getId() == L2CubicInstance.SKILL_CUBIC_HEAL)
@@ -148,8 +145,6 @@ public final class CubicAction implements Runnable
 						
 						_cubic.getOwner().broadcastPacket(new MagicSkillUse(_cubic.getOwner(), target, skill.getId(), skill.getLevel(), 0, 0));
 						
-						L2SkillType type = skill.getSkillType();
-						ISkillHandler handler = SkillHandler.getInstance().getHandler(skill.getSkillType());
 						L2Character[] targets =
 						{
 							target
@@ -159,13 +154,13 @@ public final class CubicAction implements Runnable
 						{
 							if (Config.DEBUG)
 							{
-								_log.info("L2CubicInstance: Action.run() handler " + type);
+								_log.info("L2CubicInstance: Action.run() skill " + skill);
 							}
 							_cubic.useCubicContinuous(skill, targets);
 						}
 						else
 						{
-							handler.useSkill(_cubic.getOwner(), skill, targets);
+							skill.activateSkill(_cubic.getOwner(), targets);
 							if (Config.DEBUG)
 							{
 								_log.info("L2CubicInstance: Action.run(); other handler");
@@ -176,7 +171,7 @@ public final class CubicAction implements Runnable
 						{
 							if (Config.DEBUG)
 							{
-								_log.info("L2CubicInstance: Action.run() handler " + type);
+								_log.info("L2CubicInstance: Action.run() skill " + skill);
 							}
 							_cubic.useCubicMdam(_cubic, skill, targets);
 						}
@@ -184,7 +179,7 @@ public final class CubicAction implements Runnable
 						{
 							if (Config.DEBUG)
 							{
-								_log.info("L2CubicInstance: Action.run() skill " + type);
+								_log.info("L2CubicInstance: Action.run() skill " + skill);
 							}
 							_cubic.useCubicDrain(_cubic, skill, targets);
 						}
@@ -192,15 +187,15 @@ public final class CubicAction implements Runnable
 						{
 							if (Config.DEBUG)
 							{
-								_log.info("L2CubicInstance: Action.run() handler " + type);
+								_log.info("L2CubicInstance: Action.run() skill " + skill);
 							}
-							_cubic.useCubicDisabler(type, skill, targets);
+							_cubic.useCubicDisabler(skill, targets);
 						}
 						else if (skill.hasEffectType(L2EffectType.DMG_OVER_TIME, L2EffectType.DMG_OVER_TIME_PERCENT))
 						{
 							if (Config.DEBUG)
 							{
-								_log.info("L2CubicInstance: Action.run() handler " + type);
+								_log.info("L2CubicInstance: Action.run() skill " + skill);
 							}
 							_cubic.useCubicContinuous(skill, targets);
 						}
@@ -208,9 +203,9 @@ public final class CubicAction implements Runnable
 						{
 							if (Config.DEBUG)
 							{
-								_log.info("L2CubicInstance: Action.run() handler " + type);
+								_log.info("L2CubicInstance: Action.run() skill " + skill);
 							}
-							_cubic.useCubicDisabler(type, skill, targets);
+							_cubic.useCubicDisabler(skill, targets);
 						}
 						
 						// The cubic has done an action, increase the current count

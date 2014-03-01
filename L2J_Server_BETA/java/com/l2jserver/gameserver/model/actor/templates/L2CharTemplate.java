@@ -24,7 +24,7 @@ import java.util.Map;
 
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.stats.MoveType;
 
 /**
@@ -625,7 +625,7 @@ public class L2CharTemplate
 	 * Overridden in L2NpcTemplate
 	 * @return the characters skills
 	 */
-	public Map<Integer, L2Skill> getSkills()
+	public Map<Integer, Skill> getSkills()
 	{
 		return Collections.emptyMap();
 	}

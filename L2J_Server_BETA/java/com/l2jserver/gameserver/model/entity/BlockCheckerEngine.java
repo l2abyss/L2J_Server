@@ -29,7 +29,7 @@ import javolution.util.FastMap;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.NpcData;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager;
@@ -41,7 +41,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -327,16 +327,16 @@ public final class BlockCheckerEngine
 	public class StartEvent implements Runnable
 	{
 		// In event used skills
-		private final L2Skill _freeze, _transformationRed, _transformationBlue;
+		private final Skill _freeze, _transformationRed, _transformationBlue;
 		// Common and unparametizer packet
 		private final ExCubeGameCloseUI _closeUserInterface = new ExCubeGameCloseUI();
 		
 		public StartEvent()
 		{
 			// Initialize all used skills
-			_freeze = SkillTable.getInstance().getInfo(6034, 1);
-			_transformationRed = SkillTable.getInstance().getInfo(6035, 1);
-			_transformationBlue = SkillTable.getInstance().getInfo(6036, 1);
+			_freeze = SkillData.getInstance().getSkill(6034, 1);
+			_transformationRed = SkillData.getInstance().getSkill(6035, 1);
+			_transformationBlue = SkillData.getInstance().getSkill(6036, 1);
 		}
 		
 		/**

@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.model.holders;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * @author UnAfraid
@@ -27,9 +27,9 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 public class SummonRequestHolder
 {
 	private final L2PcInstance _target;
-	private final L2Skill _skill;
+	private final Skill _skill;
 	
-	public SummonRequestHolder(L2PcInstance destination, L2Skill skill)
+	public SummonRequestHolder(L2PcInstance destination, Skill skill)
 	{
 		_target = destination;
 		_skill = skill;
@@ -40,7 +40,7 @@ public class SummonRequestHolder
 		return _target;
 	}
 	
-	public L2Skill getSkill()
+	public Skill getSkill()
 	{
 		return _skill;
 	}

@@ -62,7 +62,7 @@ public class SummonSkillsTable
 				
 				int id = rs.getInt("skillId");
 				int lvl = rs.getInt("skillLvl");
-				skillTree.put(SkillTable.getSkillHashCode(id, lvl + 1), new L2PetSkillLearn(id, lvl, rs.getInt("minLvl")));
+				skillTree.put(SkillData.getSkillHashCode(id, lvl + 1), new L2PetSkillLearn(id, lvl, rs.getInt("minLvl")));
 				count++;
 			}
 		}
@@ -104,7 +104,7 @@ public class SummonSkillsTable
 				}
 				
 				// formula usable for skill that have 10 or more skill levels
-				int maxLvl = SkillTable.getInstance().getMaxLevel(temp.getId());
+				int maxLvl = SkillData.getInstance().getMaxLevel(temp.getId());
 				if (lvl > maxLvl)
 				{
 					lvl = maxLvl;

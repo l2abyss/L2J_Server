@@ -26,7 +26,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.NpcData;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
@@ -40,7 +40,7 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.SystemMessageId.SMLocalisation;
@@ -333,7 +333,7 @@ public final class SystemMessage extends L2GameServerPacket
 		return this;
 	}
 	
-	public final SystemMessage addSkillName(final L2Skill skill)
+	public final SystemMessage addSkillName(final Skill skill)
 	{
 		if (skill.getId() != skill.getDisplayId())
 		{
@@ -487,7 +487,7 @@ public final class SystemMessage extends L2GameServerPacket
 				case TYPE_SKILL_NAME:
 				{
 					final int[] array = param.getIntArrayValue();
-					final L2Skill skill = SkillTable.getInstance().getInfo(array[0], array[1]);
+					final Skill skill = SkillData.getInstance().getSkill(array[0], array[1]);
 					params[i] = skill == null ? "Unknown" : skill.getName();
 					break;
 				}

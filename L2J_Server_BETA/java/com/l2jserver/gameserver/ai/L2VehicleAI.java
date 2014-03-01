@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.ai;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Vehicle;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * @author DS
@@ -43,7 +43,7 @@ public abstract class L2VehicleAI extends L2CharacterAI
 	}
 	
 	@Override
-	protected void onIntentionCast(L2Skill skill, L2Object target)
+	protected void onIntentionCast(Skill skill, L2Object target)
 	{
 	}
 	

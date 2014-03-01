@@ -25,7 +25,7 @@ import java.util.concurrent.Future;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.datatables.PetDataTable;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.L2PetData.L2PetSkillLearn;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -34,7 +34,7 @@ import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Rnd;
@@ -80,7 +80,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 				continue;
 			}
 			
-			final L2Skill skill = SkillTable.getInstance().getInfo(id, lvl);
+			final Skill skill = SkillData.getInstance().getSkill(id, lvl);
 			if (skill == null)
 			{
 				continue;
@@ -203,7 +203,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 		}
 	}
 	
-	protected void castSkill(L2Skill skill)
+	protected void castSkill(Skill skill)
 	{
 		// casting automatically stops any other action (such as autofollow or a move-to).
 		// We need to gather the necessary info to restore the previous state.
@@ -239,7 +239,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 	private class CastTask implements Runnable
 	{
 		private final L2BabyPetInstance _baby;
-		private final List<L2Skill> _currentBuffs = new ArrayList<>();
+		private final List<Skill> _currentBuffs = new ArrayList<>();
 		
 		public CastTask(L2BabyPetInstance baby)
 		{
@@ -261,7 +261,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 				return;
 			}
 			
-			L2Skill skill = null;
+			Skill skill = null;
 			if (_majorHeal != null)
 			{
 				// If the owner's HP is more than 80% for Baby Pets and 70% for Improved Baby pets, do nothing.

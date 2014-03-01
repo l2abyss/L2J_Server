@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model.holders;
 
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * Effect duration holder.
@@ -35,7 +35,7 @@ public class EffectDurationHolder
 	 * @param skill the skill to get the data
 	 * @param duration the effect duration
 	 */
-	public EffectDurationHolder(L2Skill skill, int duration)
+	public EffectDurationHolder(Skill skill, int duration)
 	{
 		_skillId = skill.getDisplayId();
 		_skillLvl = skill.getDisplayLevel();

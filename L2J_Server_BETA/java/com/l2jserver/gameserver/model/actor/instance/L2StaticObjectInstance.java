@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.model.actor.status.StaticObjStatus;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.serverpackets.ShowTownMap;
 import com.l2jserver.gameserver.network.serverpackets.StaticObject;
 
@@ -76,7 +76,7 @@ public final class L2StaticObjectInstance extends L2Character
 		}
 		
 		@Override
-		public void doCast(L2Skill skill)
+		public void doCast(Skill skill)
 		{
 		}
 	}

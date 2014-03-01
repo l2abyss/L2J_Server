@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.model.actor.tasks.character;
 
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * Task dedicated to use potion of character
@@ -28,9 +28,9 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 public final class UsePotionTask implements Runnable
 {
 	private final L2Character _character;
-	private final L2Skill _skill;
+	private final Skill _skill;
 	
-	public UsePotionTask(L2Character character, L2Skill skill)
+	public UsePotionTask(L2Character character, Skill skill)
 	{
 		_character = character;
 		_skill = skill;

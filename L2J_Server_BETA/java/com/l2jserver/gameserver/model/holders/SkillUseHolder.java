@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model.holders;
 
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * @author UnAfraid
@@ -28,7 +28,7 @@ public class SkillUseHolder extends SkillHolder
 	private final boolean _ctrlPressed;
 	private final boolean _shiftPressed;
 	
-	public SkillUseHolder(L2Skill skill, boolean ctrlPressed, boolean shiftPressed)
+	public SkillUseHolder(Skill skill, boolean ctrlPressed, boolean shiftPressed)
 	{
 		super(skill);
 		_ctrlPressed = ctrlPressed;

@@ -21,11 +21,9 @@ package com.l2jserver.gameserver.model.actor.tasks.cubics;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.l2jserver.gameserver.handler.ISkillHandler;
-import com.l2jserver.gameserver.handler.SkillHandler;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 
 /**
@@ -60,8 +58,8 @@ public class CubicHeal implements Runnable
 		}
 		try
 		{
-			L2Skill skill = null;
-			for (L2Skill sk : _cubic.getSkills())
+			Skill skill = null;
+			for (Skill sk : _cubic.getSkills())
 			{
 				if (sk.getId() == L2CubicInstance.SKILL_CUBIC_HEAL)
 				{
@@ -82,11 +80,8 @@ public class CubicHeal implements Runnable
 						{
 							target
 						};
-						ISkillHandler handler = SkillHandler.getInstance().getHandler(skill.getSkillType());
-						if (handler != null)
-						{
-							handler.useSkill(_cubic.getOwner(), skill, targets);
-						}
+						
+						skill.activateSkill(_cubic.getOwner(), targets);
 						
 						_cubic.getOwner().broadcastPacket(new MagicSkillUse(_cubic.getOwner(), target, skill.getId(), skill.getLevel(), 0, 0));
 					}

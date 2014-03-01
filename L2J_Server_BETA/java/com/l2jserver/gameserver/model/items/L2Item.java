@@ -45,7 +45,7 @@ import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.model.items.type.L2ItemType;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.stats.Env;
@@ -934,7 +934,7 @@ public abstract class L2Item implements IIdentifiable
 	/**
 	 * @return skill that activates, when player unequip this weapon or armor
 	 */
-	public final L2Skill getUnequipSkill()
+	public final Skill getUnequipSkill()
 	{
 		return _unequipSkill == null ? null : _unequipSkill.getSkill();
 	}
@@ -1130,7 +1130,7 @@ public abstract class L2Item implements IIdentifiable
 		return getItemType() == L2EtcItemType.PET_COLLAR;
 	}
 	
-	public L2Skill getEnchant4Skill()
+	public Skill getEnchant4Skill()
 	{
 		return null;
 	}

@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * An Env object is just a class to pass parameters to a calculator such as L2PcInstance, L2ItemInstance, Initial value.
@@ -36,7 +36,7 @@ public final class Env
 	private L2CubicInstance _cubic;
 	private L2ItemInstance _item;
 	private byte _shield = 0;
-	private L2Skill _skill;
+	private Skill _skill;
 	private boolean _skillMastery = false;
 	private boolean _soulShot = false;
 	private boolean _spiritShot = false;
@@ -106,7 +106,7 @@ public final class Env
 	/**
 	 * @return the _skill
 	 */
-	public L2Skill getSkill()
+	public Skill getSkill()
 	{
 		return _skill;
 	}
@@ -210,7 +210,7 @@ public final class Env
 	/**
 	 * @param skill the _skill to set
 	 */
-	public void setSkill(L2Skill skill)
+	public void setSkill(Skill skill)
 	{
 		_skill = skill;
 	}

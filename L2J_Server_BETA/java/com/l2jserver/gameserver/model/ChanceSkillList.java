@@ -23,14 +23,12 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 
-import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.handler.ISkillHandler;
-import com.l2jserver.gameserver.handler.SkillHandler;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillLaunched;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
@@ -85,7 +83,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 		onEvent(ChanceCondition.EVT_EVADED_HIT, 0, attacker, null, Elementals.NONE);
 	}
 	
-	public void onSkillHit(L2Character target, L2Skill skill, boolean ownerWasHit)
+	public void onSkillHit(L2Character target, Skill skill, boolean ownerWasHit)
 	{
 		int event;
 		if (ownerWasHit)
@@ -127,7 +125,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 		onEvent(ChanceCondition.EVT_ON_EXIT, 0, _owner, null, element);
 	}
 	
-	public void onEvent(int event, int damage, L2Character target, L2Skill skill, byte element)
+	public void onEvent(int event, int damage, L2Character target, Skill skill, byte element)
 	{
 		if (_owner.isDead())
 		{
@@ -139,9 +137,9 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 		{
 			if ((e.getValue() != null) && e.getValue().trigger(event, damage, element, playable, skill))
 			{
-				if (e.getKey() instanceof L2Skill)
+				if (e.getKey() instanceof Skill)
 				{
-					_owner.makeTriggerCast((L2Skill) e.getKey(), target);
+					_owner.makeTriggerCast((Skill) e.getKey(), target);
 				}
 				else
 				{
@@ -160,7 +158,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 				return;
 			}
 			
-			final L2Skill triggered = SkillTable.getInstance().getInfo(effect.getTriggeredChanceId(), effect.getTriggeredChanceLevel());
+			final Skill triggered = SkillData.getInstance().getSkill(effect.getTriggeredChanceId(), effect.getTriggeredChanceLevel());
 			if (triggered == null)
 			{
 				return;
@@ -187,12 +185,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			_owner.broadcastPacket(new MagicSkillUse(_owner, target, triggered.getDisplayId(), triggered.getDisplayLevel(), 0, 0));
 			
 			// Launch the magic skill and calculate its effects
-			// TODO: once core will support all possible effects, use effects (not handler)
-			final ISkillHandler handler = SkillHandler.getInstance().getHandler(triggered.getSkillType());
-			if (handler != null)
-			{
-				handler.useSkill(caster, triggered, targets);
-			}
+			triggered.activateSkill(caster, targets);
 		}
 		catch (Exception e)
 		{

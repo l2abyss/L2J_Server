@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.util.StringUtil;
 
 public class DamageFormatter extends Formatter
@@ -69,9 +69,9 @@ public class DamageFormatter extends Formatter
 						}
 					}
 				}
-				else if (p instanceof L2Skill)
+				else if (p instanceof Skill)
 				{
-					StringUtil.append(output, " with skill ", ((L2Skill) p).getName(), "(", String.valueOf(((L2Skill) p).getId()), ")");
+					StringUtil.append(output, " with skill ", ((Skill) p).getName(), "(", String.valueOf(((Skill) p).getId()), ")");
 				}
 				else
 				{

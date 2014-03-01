@@ -38,7 +38,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2ControllableMobInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
@@ -149,7 +149,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 			int max_range = 0;
 			// check distant skills
 			
-			for (L2Skill sk : _actor.getAllSkills())
+			for (Skill sk : _actor.getAllSkills())
 			{
 				if (Util.checkIfInRange(sk.getCastRange(), _actor, getAttackTarget(), true) && !_actor.isSkillDisabled(sk) && (_actor.getCurrentMp() > _actor.getStat().getMpConsume(sk)))
 				{
@@ -197,7 +197,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 		if (!_actor.isMuted() && (dist2 > ((range + 20) * (range + 20))))
 		{
 			// check distant skills
-			for (L2Skill sk : _actor.getAllSkills())
+			for (Skill sk : _actor.getAllSkills())
 			{
 				int castRange = sk.getCastRange();
 				
@@ -237,7 +237,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 		if (!_actor.isMuted() && (dist2 > ((range + 20) * (range + 20))))
 		{
 			// check distant skills
-			for (L2Skill sk : _actor.getAllSkills())
+			for (Skill sk : _actor.getAllSkills())
 			{
 				int castRange = sk.getCastRange();
 				
@@ -309,7 +309,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 			if (!_actor.isMuted() && (dist2 > ((range + 20) * (range + 20))))
 			{
 				// check distant skills
-				for (L2Skill sk : _actor.getAllSkills())
+				for (Skill sk : _actor.getAllSkills())
 				{
 					int castRange = sk.getCastRange();
 					
@@ -351,7 +351,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 			
 			if (!_actor.isMuted() && (Rnd.nextInt(5) == 3))
 			{
-				for (L2Skill sk : _actor.getAllSkills())
+				for (Skill sk : _actor.getAllSkills())
 				{
 					int castRange = sk.getCastRange();
 					

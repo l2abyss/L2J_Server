@@ -20,7 +20,7 @@ package com.l2jserver.gameserver.scripting.scriptengine.events;
 
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 
 /**
@@ -29,7 +29,7 @@ import com.l2jserver.gameserver.scripting.scriptengine.events.impl.L2Event;
 public class SkillUseEvent implements L2Event
 {
 	private L2Character _caster;
-	private L2Skill _skill;
+	private Skill _skill;
 	private L2Character _target;
 	private L2Object[] _targets;
 	
@@ -68,7 +68,7 @@ public class SkillUseEvent implements L2Event
 	/**
 	 * @return the skill
 	 */
-	public L2Skill getSkill()
+	public Skill getSkill()
 	{
 		return _skill;
 	}
@@ -76,7 +76,7 @@ public class SkillUseEvent implements L2Event
 	/**
 	 * @param skill the skill to set
 	 */
-	public void setSkill(L2Skill skill)
+	public void setSkill(Skill skill)
 	{
 		_skill = skill;
 	}

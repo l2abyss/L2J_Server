@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.ai.NextAction;
 import com.l2jserver.gameserver.ai.NextAction.NextActionCallback;
 import com.l2jserver.gameserver.datatables.BotReportTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.datatables.SummonSkillsTable;
 import com.l2jserver.gameserver.enums.MountType;
 import com.l2jserver.gameserver.enums.PrivateStoreType;
@@ -867,7 +867,7 @@ public final class RequestActionUse extends L2GameClientPacket
 		if (lvl > 0)
 		{
 			summon.setTarget(target);
-			summon.useMagic(SkillTable.getInstance().getInfo(skillId, lvl), _ctrlPressed, _shiftPressed);
+			summon.useMagic(SkillData.getInstance().getSkill(skillId, lvl), _ctrlPressed, _shiftPressed);
 		}
 		
 		if (skillId == SWITCH_STANCE_ID)

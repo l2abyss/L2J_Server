@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * Skill See AI task.
@@ -33,11 +33,11 @@ public class SkillSee implements Runnable
 	private final Quest _quest;
 	private final L2Npc _npc;
 	private final L2PcInstance _caster;
-	private final L2Skill _skill;
+	private final Skill _skill;
 	private final L2Object[] _targets;
 	private final boolean _isSummon;
 	
-	public SkillSee(Quest quest, L2Npc npc, L2PcInstance caster, L2Skill skill, L2Object[] targets, boolean isSummon)
+	public SkillSee(Quest quest, L2Npc npc, L2PcInstance caster, Skill skill, L2Object[] targets, boolean isSummon)
 	{
 		_quest = quest;
 		_npc = npc;

@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.scripting.scriptengine.events.AddToInventoryEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.AttackEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.events.AugmentEvent;
@@ -283,7 +283,7 @@ public abstract class L2Script extends Quest
 		SkillUseListener listener = new SkillUseListener(character)
 		{
 			@Override
-			public boolean onSkillUse(L2Character caster, L2Skill skill, boolean simultaneously, L2Character target, L2Object[] targets)
+			public boolean onSkillUse(L2Character caster, Skill skill, boolean simultaneously, L2Character target, L2Object[] targets)
 			{
 				final SkillUseEvent event = new SkillUseEvent();
 				event.setCaster(caster);

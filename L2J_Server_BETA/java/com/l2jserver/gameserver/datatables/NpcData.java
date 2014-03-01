@@ -50,8 +50,7 @@ import com.l2jserver.gameserver.model.drops.GroupedGeneralDropItem;
 import com.l2jserver.gameserver.model.drops.IDropItem;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
-import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * @author Nos
@@ -103,7 +102,7 @@ public class NpcData extends DocumentParser
 						final StatsSet set = new StatsSet();
 						final int npcId = parseInteger(attrs, "id");
 						Map<String, Object> parameters = null;
-						Map<Integer, L2Skill> skills = null;
+						Map<Integer, Skill> skills = null;
 						Set<Integer> clans = null;
 						Set<Integer> enemyClans = null;
 						Map<DropListScope, List<IDropItem>> dropLists = null;
@@ -320,7 +319,7 @@ public class NpcData extends DocumentParser
 											attrs = skill_list_node.getAttributes();
 											final int skillId = parseInteger(attrs, "id");
 											final int skillLevel = parseInteger(attrs, "level");
-											final L2Skill skill = SkillTable.getInstance().getInfo(skillId, skillLevel);
+											final Skill skill = SkillData.getInstance().getSkill(skillId, skillLevel);
 											if (skill != null)
 											{
 												skills.put(skill.getId(), skill);
@@ -484,8 +483,8 @@ public class NpcData extends DocumentParser
 						
 						if (skills != null)
 						{
-							Map<AISkillScope, List<L2Skill>> aiSkillLists = null;
-							for (L2Skill skill : skills.values())
+							Map<AISkillScope, List<Skill>> aiSkillLists = null;
+							for (Skill skill : skills.values())
 							{
 								if (!skill.isPassive())
 								{
@@ -517,7 +516,7 @@ public class NpcData extends DocumentParser
 												aiSkillScopes.add(shortOrLongRangeScope);
 											}
 										}
-										else if (skill.getSkillType() == L2SkillType.DUMMY)
+										else
 										{
 											if (skill.hasEffectType(L2EffectType.DISPEL, L2EffectType.DISPEL_BY_SLOT))
 											{
@@ -570,7 +569,7 @@ public class NpcData extends DocumentParser
 									
 									for (AISkillScope aiSkillScope : aiSkillScopes)
 									{
-										List<L2Skill> aiSkills = aiSkillLists.get(aiSkillScope);
+										List<Skill> aiSkills = aiSkillLists.get(aiSkillScope);
 										if (aiSkills == null)
 										{
 											aiSkills = new ArrayList<>();

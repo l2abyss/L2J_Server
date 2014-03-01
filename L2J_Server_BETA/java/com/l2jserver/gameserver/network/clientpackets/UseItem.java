@@ -43,7 +43,7 @@ import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.L2ArmorType;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExUseSharedGroupItem;
@@ -170,7 +170,7 @@ public final class UseItem extends L2GameClientPacket
 			{
 				for (SkillHolder sHolder : skills)
 				{
-					L2Skill skill = sHolder.getSkill();
+					Skill skill = sHolder.getSkill();
 					if ((skill != null) && skill.hasEffectType(L2EffectType.TELEPORT))
 					{
 						return;

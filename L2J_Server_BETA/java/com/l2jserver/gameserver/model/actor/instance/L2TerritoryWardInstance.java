@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -84,7 +84,7 @@ public final class L2TerritoryWardInstance extends L2Attackable
 	}
 	
 	@Override
-	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
+	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, Skill skill)
 	{
 		if ((skill != null) || !TerritoryWarManager.getInstance().isTWInProgress())
 		{
@@ -117,7 +117,7 @@ public final class L2TerritoryWardInstance extends L2Attackable
 	}
 	
 	@Override
-	public void reduceCurrentHpByDOT(double i, L2Character attacker, L2Skill skill)
+	public void reduceCurrentHpByDOT(double i, L2Character attacker, Skill skill)
 	{
 		// wards can't be damaged by DOTs
 	}

@@ -78,7 +78,7 @@ import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.variables.NpcVariables;
 import com.l2jserver.gameserver.model.zone.type.L2TownZone;
@@ -204,9 +204,9 @@ public class L2Npc extends L2Character
 		return getTemplate().getShortRangeSkillId() > 0;
 	}
 	
-	public List<L2Skill> getLongRangeSkill()
+	public List<Skill> getLongRangeSkill()
 	{
-		final List<L2Skill> skilldata = new ArrayList<>();
+		final List<Skill> skilldata = new ArrayList<>();
 		if (getTemplate().getLongRangeSkillId() == 0)
 		{
 			return skilldata;
@@ -216,10 +216,10 @@ public class L2Npc extends L2Character
 		{
 			case -1:
 			{
-				final Collection<L2Skill> skills = getAllSkills();
+				final Collection<Skill> skills = getAllSkills();
 				if (skills != null)
 				{
-					for (L2Skill sk : skills)
+					for (Skill sk : skills)
 					{
 						if ((sk == null) || sk.isPassive() || (sk.getTargetType() == L2TargetType.SELF))
 						{
@@ -236,7 +236,7 @@ public class L2Npc extends L2Character
 			}
 			case 1:
 			{
-				for (L2Skill sk : getTemplate().getAISkills(AISkillScope.UNIVERSAL))
+				for (Skill sk : getTemplate().getAISkills(AISkillScope.UNIVERSAL))
 				{
 					if (sk.getCastRange() >= 200)
 					{
@@ -247,7 +247,7 @@ public class L2Npc extends L2Character
 			}
 			default:
 			{
-				for (L2Skill sk : getAllSkills())
+				for (Skill sk : getAllSkills())
 				{
 					if (sk.getId() == getTemplate().getLongRangeSkillId())
 					{
@@ -259,9 +259,9 @@ public class L2Npc extends L2Character
 		return skilldata;
 	}
 	
-	public List<L2Skill> getShortRangeSkill()
+	public List<Skill> getShortRangeSkill()
 	{
-		final List<L2Skill> skilldata = new ArrayList<>();
+		final List<Skill> skilldata = new ArrayList<>();
 		if (getTemplate().getShortRangeSkillId() == 0)
 		{
 			return skilldata;
@@ -271,10 +271,10 @@ public class L2Npc extends L2Character
 		{
 			case -1:
 			{
-				Collection<L2Skill> skills = getAllSkills();
+				Collection<Skill> skills = getAllSkills();
 				if (skills != null)
 				{
-					for (L2Skill sk : skills)
+					for (Skill sk : skills)
 					{
 						if ((sk == null) || sk.isPassive() || (sk.getTargetType() == L2TargetType.SELF))
 						{
@@ -290,7 +290,7 @@ public class L2Npc extends L2Character
 			}
 			case 1:
 			{
-				for (L2Skill sk : getTemplate().getAISkills(AISkillScope.UNIVERSAL))
+				for (Skill sk : getTemplate().getAISkills(AISkillScope.UNIVERSAL))
 				{
 					if (sk.getCastRange() <= 200)
 					{
@@ -301,7 +301,7 @@ public class L2Npc extends L2Character
 			}
 			default:
 			{
-				for (L2Skill sk : getAllSkills())
+				for (Skill sk : getAllSkills())
 				{
 					if (sk.getId() == getTemplate().getShortRangeSkillId())
 					{
@@ -1651,7 +1651,7 @@ public class L2Npc extends L2Character
 	}
 	
 	@Override
-	protected final void notifyQuestEventSkillFinished(L2Skill skill, L2Object target)
+	protected final void notifyQuestEventSkillFinished(Skill skill, L2Object target)
 	{
 		try
 		{

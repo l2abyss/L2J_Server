@@ -23,7 +23,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -365,7 +365,7 @@ public final class BotReportTable
 	 */
 	void addPunishment(int neededReports, int skillId, int skillLevel, int sysMsg)
 	{
-		L2Skill sk = SkillTable.getInstance().getInfo(skillId, skillLevel);
+		Skill sk = SkillData.getInstance().getSkill(skillId, skillLevel);
 		if (sk != null)
 		{
 			_punishments.put(neededReports, new PunishHolder(sk, sysMsg));
@@ -577,10 +577,10 @@ public final class BotReportTable
 	
 	class PunishHolder
 	{
-		final L2Skill _punish;
+		final Skill _punish;
 		final int _systemMessageId;
 		
-		PunishHolder(final L2Skill sk, final int sysMsg)
+		PunishHolder(final Skill sk, final int sysMsg)
 		{
 			_punish = sk;
 			_systemMessageId = sysMsg;

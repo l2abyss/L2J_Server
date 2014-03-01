@@ -37,7 +37,7 @@ import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo.TrapInfo;
@@ -161,7 +161,7 @@ public final class L2TrapInstance extends L2Npc
 	
 	public boolean checkTarget(L2Character target)
 	{
-		if (!L2Skill.checkForAreaOffensiveSkills(this, target, _skill.getSkill(), _isInArena))
+		if (!Skill.checkForAreaOffensiveSkills(this, target, _skill.getSkill(), _isInArena))
 		{
 			return false;
 		}
@@ -264,7 +264,7 @@ public final class L2TrapInstance extends L2Npc
 		return null;
 	}
 	
-	public L2Skill getSkill()
+	public Skill getSkill()
 	{
 		return _skill.getSkill();
 	}

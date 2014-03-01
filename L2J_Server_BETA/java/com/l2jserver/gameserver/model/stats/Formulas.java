@@ -52,7 +52,7 @@ import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.type.L2ArmorType;
 import com.l2jserver.gameserver.model.items.type.L2WeaponType;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncArmorSet;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncAtkAccuracy;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncAtkCritical;
@@ -575,7 +575,7 @@ public final class Formulas
 		return 1.5; // If all is true, then modifier will be 50% more
 	}
 	
-	public static double calcBlowDamage(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss)
+	public static double calcBlowDamage(L2Character attacker, L2Character target, Skill skill, byte shld, boolean ss)
 	{
 		double defence = target.getPDef(attacker);
 		
@@ -643,7 +643,7 @@ public final class Formulas
 		return Math.max(damage, 1);
 	}
 	
-	public static double calcBackstabDamage(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean ss)
+	public static double calcBackstabDamage(L2Character attacker, L2Character target, Skill skill, byte shld, boolean ss)
 	{
 		double defence = target.getPDef(attacker);
 		
@@ -709,7 +709,7 @@ public final class Formulas
 	 * @param ss if weapon item was charged by soulshot
 	 * @return
 	 */
-	public static final double calcPhysDam(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean crit, boolean ss)
+	public static final double calcPhysDam(L2Character attacker, L2Character target, Skill skill, byte shld, boolean crit, boolean ss)
 	{
 		final boolean isPvP = attacker.isPlayable() && target.isPlayable();
 		final boolean isPvE = attacker.isPlayable() && target.isAttackable();
@@ -856,7 +856,7 @@ public final class Formulas
 		return damage;
 	}
 	
-	public static final double calcMagicDam(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean sps, boolean bss, boolean mcrit)
+	public static final double calcMagicDam(L2Character attacker, L2Character target, Skill skill, byte shld, boolean sps, boolean bss, boolean mcrit)
 	{
 		int mDef = target.getMDef(attacker, skill);
 		switch (shld)
@@ -967,7 +967,7 @@ public final class Formulas
 		return damage;
 	}
 	
-	public static final double calcMagicDam(L2CubicInstance attacker, L2Character target, L2Skill skill, boolean mcrit, byte shld)
+	public static final double calcMagicDam(L2CubicInstance attacker, L2Character target, Skill skill, boolean mcrit, byte shld)
 	{
 		int mDef = target.getMDef(attacker.getOwner(), skill);
 		switch (shld)
@@ -1155,7 +1155,7 @@ public final class Formulas
 	 * @param skillTime
 	 * @return
 	 */
-	public static final int calcAtkSpd(L2Character attacker, L2Skill skill, double skillTime)
+	public static final int calcAtkSpd(L2Character attacker, Skill skill, double skillTime)
 	{
 		if (skill.isMagic())
 		{
@@ -1194,7 +1194,7 @@ public final class Formulas
 	 * @param sendSysMsg
 	 * @return
 	 */
-	public static byte calcShldUse(L2Character attacker, L2Character target, L2Skill skill, boolean sendSysMsg)
+	public static byte calcShldUse(L2Character attacker, L2Character target, Skill skill, boolean sendSysMsg)
 	{
 		if ((skill != null) && skill.ignoreShield())
 		{
@@ -1255,7 +1255,7 @@ public final class Formulas
 		return shldSuccess;
 	}
 	
-	public static byte calcShldUse(L2Character attacker, L2Character target, L2Skill skill)
+	public static byte calcShldUse(L2Character attacker, L2Character target, Skill skill)
 	{
 		return calcShldUse(attacker, target, skill, true);
 	}
@@ -1265,7 +1265,7 @@ public final class Formulas
 		return calcShldUse(attacker, target, null, true);
 	}
 	
-	public static boolean calcMagicAffected(L2Character actor, L2Character target, L2Skill skill)
+	public static boolean calcMagicAffected(L2Character actor, L2Character target, Skill skill)
 	{
 		// TODO: CHECK/FIX THIS FORMULA UP!!
 		double defence = 0;
@@ -1289,7 +1289,7 @@ public final class Formulas
 		return d > 0;
 	}
 	
-	public static double calcLvlBonusMod(L2Character attacker, L2Character target, L2Skill skill)
+	public static double calcLvlBonusMod(L2Character attacker, L2Character target, Skill skill)
 	{
 		int attackerLvl = skill.getMagicLevel() > 0 ? skill.getMagicLevel() : attacker.getLevel();
 		double skillLvlBonusRateMod = 1 + (skill.getLvlBonusRate() / 100.);
@@ -1313,7 +1313,7 @@ public final class Formulas
 		}
 		
 		final L2Character attacker = env.getCharacter();
-		final L2Skill skill = env.getSkill();
+		final Skill skill = env.getSkill();
 		if (skill.isDebuff() && (target.calcStat(Stats.DEBUFF_IMMUNITY, 0, attacker, skill) > 0))
 		{
 			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
@@ -1404,7 +1404,7 @@ public final class Formulas
 		return true;
 	}
 	
-	public static boolean calcCubicSkillSuccess(L2CubicInstance attacker, L2Character target, L2Skill skill, byte shld)
+	public static boolean calcCubicSkillSuccess(L2CubicInstance attacker, L2Character target, Skill skill, byte shld)
 	{
 		if (skill.isDebuff())
 		{
@@ -1468,7 +1468,7 @@ public final class Formulas
 		return (Rnd.get(100) < finalRate);
 	}
 	
-	public static boolean calcMagicSuccess(L2Character attacker, L2Character target, L2Skill skill)
+	public static boolean calcMagicSuccess(L2Character attacker, L2Character target, Skill skill)
 	{
 		if (skill.getPower() == -1)
 		{
@@ -1511,7 +1511,7 @@ public final class Formulas
 		return (Rnd.get(100) < rate);
 	}
 	
-	public static double calcManaDam(L2Character attacker, L2Character target, L2Skill skill, byte shld, boolean sps, boolean bss, boolean mcrit)
+	public static double calcManaDam(L2Character attacker, L2Character target, Skill skill, byte shld, boolean sps, boolean bss, boolean mcrit)
 	{
 		// Formula: (SQR(M.Atk)*Power*(Target Max MP/97))/M.Def
 		double mAtk = attacker.getMAtk(target, skill);
@@ -1599,7 +1599,7 @@ public final class Formulas
 		return restorePercent;
 	}
 	
-	public static boolean calcPhysicalSkillEvasion(L2Character activeChar, L2Character target, L2Skill skill)
+	public static boolean calcPhysicalSkillEvasion(L2Character activeChar, L2Character target, Skill skill)
 	{
 		if (skill.isMagic() || skill.isDebuff())
 		{
@@ -1624,7 +1624,7 @@ public final class Formulas
 		return false;
 	}
 	
-	public static boolean calcSkillMastery(L2Character actor, L2Skill sk)
+	public static boolean calcSkillMastery(L2Character actor, Skill sk)
 	{
 		// Static Skills are not affected by Skill Mastery.
 		if (sk.isStatic())
@@ -1648,7 +1648,7 @@ public final class Formulas
 	 * @param skill Can be {@code null} if there is no skill used for the attack.
 	 * @return The attribute bonus
 	 */
-	public static double calcAttributeBonus(L2Character attacker, L2Character target, L2Skill skill)
+	public static double calcAttributeBonus(L2Character attacker, L2Character target, Skill skill)
 	{
 		int attack_attribute;
 		int defence_attribute;
@@ -1822,7 +1822,7 @@ public final class Formulas
 		return result;
 	}
 	
-	public static void calcDamageReflected(L2Character attacker, L2Character target, L2Skill skill, boolean crit)
+	public static void calcDamageReflected(L2Character attacker, L2Character target, Skill skill, boolean crit)
 	{
 		// Only melee skills can be reflected
 		if (skill.isMagic() || (skill.getCastRange() > MELEE_ATTACK_RANGE))
@@ -1865,7 +1865,7 @@ public final class Formulas
 	 * @param skill
 	 * @return {@code true} if reflect, {@code false} otherwise.
 	 */
-	public static boolean calcBuffDebuffReflection(L2Character target, L2Skill skill)
+	public static boolean calcBuffDebuffReflection(L2Character target, Skill skill)
 	{
 		boolean reflect = false;
 		// Neither some special skills (like hero debuffs...) or those skills ignoring resistances can't be reflected
@@ -1898,7 +1898,7 @@ public final class Formulas
 		return damage;
 	}
 	
-	public static boolean calcBlowSuccess(L2Character activeChar, L2Character target, L2Skill skill)
+	public static boolean calcBlowSuccess(L2Character activeChar, L2Character target, Skill skill)
 	{
 		double dexMod = BaseStats.DEX.calcBonus(activeChar);
 		// Apply DEX Mod.
@@ -1923,7 +1923,7 @@ public final class Formulas
 		return Rnd.get(100) < rate;
 	}
 	
-	public static List<BuffInfo> calcCancelStealEffects(L2Character activeChar, L2Character target, L2Skill skill, String slot, int rate, int max)
+	public static List<BuffInfo> calcCancelStealEffects(L2Character activeChar, L2Character target, Skill skill, String slot, int rate, int max)
 	{
 		final List<BuffInfo> canceled = new ArrayList<>(max);
 		switch (slot)
@@ -1993,7 +1993,7 @@ public final class Formulas
 		return canceled;
 	}
 	
-	public static boolean calcCancelSuccess(BuffInfo info, int cancelMagicLvl, int rate, L2Skill skill)
+	public static boolean calcCancelSuccess(BuffInfo info, int cancelMagicLvl, int rate, Skill skill)
 	{
 		// Lvl Bonus Modifier.
 		rate *= info.getSkill().getMagicLevel() > 0 ? 1 + ((cancelMagicLvl - info.getSkill().getMagicLevel()) / 100.) : 1;
@@ -2010,7 +2010,7 @@ public final class Formulas
 	{
 		final L2Character caster = env.getCharacter();
 		final L2Character target = env.getTarget();
-		final L2Skill skill = env.getSkill();
+		final Skill skill = env.getSkill();
 		int time = skill.isPassive() || skill.isToggle() ? -1 : skill.getAbnormalTime();
 		
 		// An herb buff will affect both master and servitor, but the buff duration will be half of the normal duration.
@@ -2056,7 +2056,7 @@ public final class Formulas
 	 * @param skill
 	 * @return chance for effect to succeed
 	 */
-	public static boolean calcProbability(double baseChance, L2Character attacker, L2Character target, L2Skill skill)
+	public static boolean calcProbability(double baseChance, L2Character attacker, L2Character target, Skill skill)
 	{
 		return Rnd.get(100) < ((((((skill.getMagicLevel() + baseChance) - target.getLevel()) + 30) - target.getINT()) * calcAttributeBonus(attacker, target, skill)) * calcGeneralTraitBonus(attacker, target, skill.getTraitType(), false));
 	}
