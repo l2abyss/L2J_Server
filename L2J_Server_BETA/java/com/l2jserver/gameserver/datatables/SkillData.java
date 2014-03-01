@@ -74,8 +74,8 @@ public final class SkillData
 			}
 			
 			// only non-enchanted skills
-			final int maxLvl = _skillMaxLevel.get(skillId);
-			if (skillLvl > maxLvl)
+			final int maxLvl = getMaxLevel(skillId);
+			if ((maxLvl > 0) || (skillLvl > maxLvl))
 			{
 				_skillMaxLevel.put(skillId, skillLvl);
 			}
@@ -115,7 +115,7 @@ public final class SkillData
 		}
 		
 		// skill/level not found, fix for transformation scripts
-		final int maxLvl = _skillMaxLevel.get(skillId);
+		final int maxLvl = getMaxLevel(skillId);
 		// requested level too high
 		if ((maxLvl > 0) && (level > maxLvl))
 		{
@@ -132,7 +132,8 @@ public final class SkillData
 	
 	public int getMaxLevel(int skillId)
 	{
-		return _skillMaxLevel.get(skillId);
+		final Integer maxLevel = _skillMaxLevel.get(skillId);
+		return maxLevel != null ? maxLevel : 0;
 	}
 	
 	/**
