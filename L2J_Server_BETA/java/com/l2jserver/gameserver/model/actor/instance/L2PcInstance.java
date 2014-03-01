@@ -11024,13 +11024,14 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		// Modify the position of the pet if necessary
-		if (hasSummon())
+		final L2Summon summon = getSummon();
+		if (summon != null)
 		{
-			getSummon().setFollowStatus(false);
-			getSummon().teleToLocation(getLocation(), false);
-			((L2SummonAI) getSummon().getAI()).setStartFollowController(true);
-			getSummon().setFollowStatus(true);
-			getSummon().updateAndBroadcastStatus(0);
+			summon.setFollowStatus(false);
+			summon.teleToLocation(getLocation(), false);
+			((L2SummonAI) summon.getAI()).setStartFollowController(true);
+			summon.setFollowStatus(true);
+			summon.updateAndBroadcastStatus(0);
 		}
 		
 		TvTEvent.onTeleported(this);
