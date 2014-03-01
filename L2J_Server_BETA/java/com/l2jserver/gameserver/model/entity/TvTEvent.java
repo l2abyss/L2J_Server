@@ -217,7 +217,7 @@ public class TvTEvent
 			0
 		}, priority = 0, highestLevelPlayerId;
 		L2PcInstance highestLevelPlayer;
-		// XXX: allParticipants should be sorted by level instead of using highestLevelPcInstanceOf for every fetch
+		// TODO: allParticipants should be sorted by level instead of using highestLevelPcInstanceOf for every fetch
 		while (!allParticipants.isEmpty())
 		{
 			// Priority team gets one player
@@ -232,7 +232,7 @@ public class TvTEvent
 				break;
 			}
 			// The other team gets one player
-			// XXX: Code not dry
+			// TODO: Code not dry
 			priority = 1 - priority;
 			highestLevelPlayerId = highestLevelPcInstanceOf(allParticipants);
 			highestLevelPlayer = allParticipants.get(highestLevelPlayerId);

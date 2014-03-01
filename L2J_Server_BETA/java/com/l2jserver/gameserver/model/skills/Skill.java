@@ -73,7 +73,7 @@ import com.l2jserver.util.Rnd;
 
 public final class Skill implements IChanceSkillTrigger, IIdentifiable
 {
-	protected static final Logger _log = Logger.getLogger(Skill.class.getName());
+	private static final Logger _log = Logger.getLogger(Skill.class.getName());
 	
 	private static final L2Object[] EMPTY_TARGET_LIST = new L2Object[0];
 	
@@ -109,6 +109,7 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 	private final int _mpConsume;
 	/** Initial MP consumption. */
 	private final int _mpInitialConsume;
+	/** MP consumption per channeling. */
 	private final int _mpPerChanneling;
 	/** HP consumption. */
 	private final int _hpConsume;

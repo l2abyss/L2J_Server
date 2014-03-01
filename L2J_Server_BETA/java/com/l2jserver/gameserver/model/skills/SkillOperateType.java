@@ -87,7 +87,8 @@ public enum SkillOperateType
 	T;
 	
 	/**
-	 * @return {@code true} if the operative skill type is active, {@code false} otherwise.
+	 * Verifies if the operative type correspond to an active skill.
+	 * @return {@code true} if the operative skill type is active, {@code false} otherwise
 	 */
 	public boolean isActive()
 	{
@@ -108,7 +109,8 @@ public enum SkillOperateType
 	}
 	
 	/**
-	 * @return {@code true} if the operative skill type is continuous, {@code false} otherwise.
+	 * Verifies if the operative type correspond to a continuous skill.
+	 * @return {@code true} if the operative skill type is continuous, {@code false} otherwise
 	 */
 	public boolean isContinuous()
 	{
@@ -125,7 +127,8 @@ public enum SkillOperateType
 	}
 	
 	/**
-	 * @return {@code true} if the operative skill type is passive, {@code false} otherwise.
+	 * Verifies if the operative type correspond to a passive skill.
+	 * @return {@code true} if the operative skill type is passive, {@code false} otherwise
 	 */
 	public boolean isPassive()
 	{
@@ -133,7 +136,8 @@ public enum SkillOperateType
 	}
 	
 	/**
-	 * @return {@code true} if the operative skill type is toggle, {@code false} otherwise.
+	 * Verifies if the operative type correspond to a toggle skill.
+	 * @return {@code true} if the operative skill type is toggle, {@code false} otherwise
 	 */
 	public boolean isToggle()
 	{
@@ -141,7 +145,8 @@ public enum SkillOperateType
 	}
 	
 	/**
-	 * @return {@code true} if the operative skill type is channeling, {@code false} otherwise.
+	 * Verifies if the operative type correspond to a channeling skill.
+	 * @return {@code true} if the operative skill type is channeling, {@code false} otherwise
 	 */
 	public boolean isChanneling()
 	{

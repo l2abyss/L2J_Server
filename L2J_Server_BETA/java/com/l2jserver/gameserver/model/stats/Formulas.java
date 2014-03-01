@@ -1852,7 +1852,7 @@ public final class Formulas
 			counterdmg *= calcAttributeBonus(attacker, target, skill);
 			
 			attacker.reduceCurrentHp(counterdmg, target, skill);
-			if (crit) // XXX: It counters multiple times depending on how much effects skill has not on critical, but gotta be verified first!
+			if (crit) // TODO: It counters multiple times depending on how much effects skill has not on critical, but gotta be verified first!
 			{
 				attacker.reduceCurrentHp(counterdmg, target, skill);
 			}

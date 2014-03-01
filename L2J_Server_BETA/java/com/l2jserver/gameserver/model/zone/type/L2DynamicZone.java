@@ -84,7 +84,7 @@ public class L2DynamicZone extends L2ZoneType
 	{
 		if (character.isPlayer())
 		{
-			character.sendMessage("You have left a temporary zone!"); // XXX: Custom message?
+			character.sendMessage("You have left a temporary zone!"); // TODO: Custom message?
 		}
 		
 		if (character == _owner)

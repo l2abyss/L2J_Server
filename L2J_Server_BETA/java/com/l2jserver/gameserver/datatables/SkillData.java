@@ -18,7 +18,10 @@
  */
 package com.l2jserver.gameserver.datatables;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,19 +31,16 @@ import com.l2jserver.gameserver.engines.DocumentEngine;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.skills.Skill;
 
-import gnu.trove.list.array.TIntArrayList;
-import gnu.trove.map.hash.TIntIntHashMap;
-
 /**
- * Skill table.
+ * Skill data.
  */
 public final class SkillData
 {
 	private static Logger _log = Logger.getLogger(SkillData.class.getName());
 	
 	private final Map<Integer, Skill> _skills = new HashMap<>();
-	private final TIntIntHashMap _skillMaxLevel = new TIntIntHashMap();
-	private final TIntArrayList _enchantable = new TIntArrayList();
+	private final Map<Integer, Integer> _skillMaxLevel = new HashMap<>();
+	private final List<Integer> _enchantable = new ArrayList<>();
 	
 	protected SkillData()
 	{
@@ -81,8 +81,8 @@ public final class SkillData
 			}
 		}
 		
-		// Sorting for binarySearch
-		_enchantable.sort();
+		// Sorting for binary-search.
+		Collections.sort(_enchantable);
 	}
 	
 	/**
@@ -135,9 +135,14 @@ public final class SkillData
 		return _skillMaxLevel.get(skillId);
 	}
 	
+	/**
+	 * Verifies if the given skill ID correspond to an enchantable skill.
+	 * @param skillId the skill ID
+	 * @return {@code true} if the skill is enchantable, {@code false} otherwise
+	 */
 	public boolean isEnchantable(int skillId)
 	{
-		return _enchantable.binarySearch(skillId) >= 0;
+		return Collections.binarySearch(_enchantable, skillId) >= 0;
 	}
 	
 	/**
