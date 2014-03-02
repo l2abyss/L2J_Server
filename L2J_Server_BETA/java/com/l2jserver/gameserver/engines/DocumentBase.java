@@ -390,7 +390,7 @@ public abstract class DocumentBase
 			}
 			n = n.getNextSibling();
 		}
-		return parameters;
+		return parameters == null ? StatsSet.EMPTY_STATSET : parameters;
 	}
 	
 	protected Condition parseCondition(Node n, Object template)

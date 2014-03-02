@@ -19,9 +19,9 @@
 package com.l2jserver.gameserver.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,6 +38,9 @@ import com.l2jserver.gameserver.model.interfaces.IParserAdvUtils;
 public class StatsSet implements IParserAdvUtils
 {
 	private static final Logger _log = Logger.getLogger(StatsSet.class.getName());
+	/** Static empty immutable map, used to avoid multiple null checks over the source. */
+	public static final StatsSet EMPTY_STATSET = new StatsSet(Collections.<String, Object> emptyMap());
+	
 	private final Map<String, Object> _set;
 	
 	public StatsSet()
@@ -65,11 +68,16 @@ public class StatsSet implements IParserAdvUtils
 	 */
 	public void add(StatsSet newSet)
 	{
-		Map<String, Object> newMap = newSet.getSet();
-		for (Entry<String, Object> entry : newMap.entrySet())
-		{
-			_set.put(entry.getKey(), entry.getValue());
-		}
+		_set.putAll(newSet.getSet());
+	}
+	
+	/**
+	 * Verifies if the stat set is empty.
+	 * @return {@code true} if the stat set is empty, {@code false} otherwise
+	 */
+	public boolean isEmpty()
+	{
+		return _set.isEmpty();
 	}
 	
 	/**
