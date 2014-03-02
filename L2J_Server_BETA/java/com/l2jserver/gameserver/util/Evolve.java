@@ -44,7 +44,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 /**
  * UnAfraid: TODO: MOVE IT TO DP AI
- * @author Unknown
  */
 public final class Evolve
 {

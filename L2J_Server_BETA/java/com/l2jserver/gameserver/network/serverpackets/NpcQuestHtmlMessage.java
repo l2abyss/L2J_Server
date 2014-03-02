@@ -21,7 +21,8 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.enums.HtmlActionScope;
 
 /**
- * @author Unknown, FBIagent
+ * NpcQuestHtmlMessage server packet implementation.
+ * @author FBIagent
  */
 public final class NpcQuestHtmlMessage extends AbstractHtmlPacket
 {

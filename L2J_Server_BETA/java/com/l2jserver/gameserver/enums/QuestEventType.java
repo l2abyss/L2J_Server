@@ -18,9 +18,6 @@
  */
 package com.l2jserver.gameserver.enums;
 
-/**
- * @author unknown
- */
 public enum QuestEventType
 {
 	ON_FIRST_TALK(false), // control the first dialog shown by NPCs when they are clicked (some quests must override the default npc action)

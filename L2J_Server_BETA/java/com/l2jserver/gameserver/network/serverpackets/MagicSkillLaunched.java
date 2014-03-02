@@ -25,7 +25,8 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
- * @author Unknown, UnAfraid
+ * MagicSkillLaunched server packet implementation.
+ * @author UnAfraid
  */
 public class MagicSkillLaunched extends L2GameServerPacket
 {

@@ -53,7 +53,8 @@ import com.l2jserver.gameserver.util.GMAudit;
 import com.l2jserver.gameserver.util.Util;
 
 /**
- * @author Unknown, FBIagent
+ * RequestBypassToServer client packet implementation.
+ * @author FBIagent
  */
 public final class RequestBypassToServer extends L2GameClientPacket
 {

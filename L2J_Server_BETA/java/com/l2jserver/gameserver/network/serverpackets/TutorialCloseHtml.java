@@ -21,7 +21,8 @@ package com.l2jserver.gameserver.network.serverpackets;
 import com.l2jserver.gameserver.enums.HtmlActionScope;
 
 /**
- * @author Unknown, FBIagent
+ * TutorialCloseHtml server packet implementation.
+ * @author FBIagent
  */
 public class TutorialCloseHtml extends L2GameServerPacket
 {

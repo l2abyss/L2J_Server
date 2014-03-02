@@ -18,9 +18,6 @@
  */
 package com.l2jserver.gameserver.enums;
 
-/**
- * @author unknown
- */
 public enum StatType
 {
 	

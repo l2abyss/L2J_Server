@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 
 /**
  * Game Time controller class.
- * @author Unknown, Forsaiken
+ * @author Forsaiken
  */
 public final class GameTimeController extends Thread
 {

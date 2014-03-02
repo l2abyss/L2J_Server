@@ -35,7 +35,7 @@ import com.l2jserver.gameserver.model.base.ClassId;
 
 /**
  * This will be reworked Soon(tm).
- * @author Unknown, Forsaiken, Zoey76, GKR
+ * @author Forsaiken, Zoey76, GKR
  */
 public final class CharTemplateTable extends DocumentParser
 {

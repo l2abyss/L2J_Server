@@ -23,7 +23,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2ControllableAirShipInstan
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
- * @author Unknown, UnAfraid
+ * MyTargetSelected server packet implementation.
+ * @author UnAfraid
  */
 public class MyTargetSelected extends L2GameServerPacket
 {
