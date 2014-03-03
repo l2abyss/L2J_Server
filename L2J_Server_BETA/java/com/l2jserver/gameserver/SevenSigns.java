@@ -1581,13 +1581,6 @@ public class SevenSigns
 			
 			setCalendarForNextPeriodChange();
 			
-			// make sure that all the scheduled siege dates are in the Seal Validation period
-			List<Castle> castles = CastleManager.getInstance().getCastles();
-			for (Castle castle : castles)
-			{
-				castle.getSiege().correctSiegeDateTime();
-			}
-			
 			SevenSignsPeriodChange sspc = new SevenSignsPeriodChange();
 			ThreadPoolManager.getInstance().scheduleGeneral(sspc, getMilliToPeriodChange());
 		}
