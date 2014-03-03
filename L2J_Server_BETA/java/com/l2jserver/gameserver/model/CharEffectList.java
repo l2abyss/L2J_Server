@@ -63,19 +63,19 @@ public final class CharEffectList
 {
 	private static final Logger _log = Logger.getLogger(CharEffectList.class.getName());
 	/** Map containing all effects from buffs for this effect list. */
-	private FastMap<Integer, BuffInfo> _buffs;
+	private volatile FastMap<Integer, BuffInfo> _buffs;
 	/** Map containing all triggered skills for this effect list. */
-	private FastMap<Integer, BuffInfo> _triggered;
+	private volatile FastMap<Integer, BuffInfo> _triggered;
 	/** Map containing all dances/songs for this effect list. */
-	private FastMap<Integer, BuffInfo> _dances;
+	private volatile FastMap<Integer, BuffInfo> _dances;
 	/** Map containing all toggle for this effect list. */
-	private FastMap<Integer, BuffInfo> _toggles;
+	private volatile FastMap<Integer, BuffInfo> _toggles;
 	/** Map containing all debuffs for this effect list. */
-	private FastMap<Integer, BuffInfo> _debuffs;
+	private volatile FastMap<Integer, BuffInfo> _debuffs;
 	/** They bypass most of the actions, they are not included in most operations. */
-	private FastMap<Integer, BuffInfo> _passives;
+	private volatile FastMap<Integer, BuffInfo> _passives;
 	/** Map containing the all stacked effect in progress for each abnormal type. */
-	private Map<AbnormalType, BuffInfo> _stackedEffects;
+	private volatile Map<AbnormalType, BuffInfo> _stackedEffects;
 	/** Set containing all abnormal types that shouldn't be added to this character effect list. */
 	private volatile Set<AbnormalType> _blockedBuffSlots = null;
 	/** Short buff skill ID. */

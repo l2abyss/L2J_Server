@@ -63,7 +63,7 @@ public final class AbsorberInfo implements IUniqueId
 			return true;
 		}
 		
-		if (obj instanceof DamageDoneInfo)
+		if (obj instanceof AbsorberInfo)
 		{
 			return (((AbsorberInfo) obj).getObjectId() == _objectId);
 		}

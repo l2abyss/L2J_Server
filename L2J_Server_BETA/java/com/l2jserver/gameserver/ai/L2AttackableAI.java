@@ -1722,19 +1722,22 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 				if (caster.isMinion() && (sk.getTargetType() != L2TargetType.SELF))
 				{
 					L2Character leader = caster.getLeader();
-					if ((leader != null) && leader.isDead())
+					if (leader != null)
 					{
-						if (!Util.checkIfInRange((sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius()), caster, leader, false) && !isParty(sk) && !caster.isMovementDisabled())
+						if (leader.isDead())
 						{
-							moveToPawn(leader, sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius());
+							if (!Util.checkIfInRange((sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius()), caster, leader, false) && !isParty(sk) && !caster.isMovementDisabled())
+							{
+								moveToPawn(leader, sk.getCastRange() + caster.getTemplate().getCollisionRadius() + leader.getTemplate().getCollisionRadius());
+							}
 						}
-					}
-					if (GeoData.getInstance().canSeeTarget(caster, leader))
-					{
-						clientStopMoving(null);
-						caster.setTarget(leader);
-						caster.doCast(sk);
-						return true;
+						if (GeoData.getInstance().canSeeTarget(caster, leader))
+						{
+							clientStopMoving(null);
+							caster.setTarget(leader);
+							caster.doCast(sk);
+							return true;
+						}
 					}
 				}
 				

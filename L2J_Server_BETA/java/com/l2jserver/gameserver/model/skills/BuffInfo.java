@@ -52,7 +52,7 @@ public final class BuffInfo
 	private final List<AbstractEffect> _effects = new ArrayList<>(1);
 	// Tasks
 	/** Effect tasks for ticks. */
-	private Map<AbstractEffect, EffectTaskInfo> _tasks;
+	private volatile Map<AbstractEffect, EffectTaskInfo> _tasks;
 	/** Task for effect ending. */
 	private BuffTimeTask _effectTimeTask;
 	/** Scheduled future. */
