@@ -902,7 +902,7 @@ public abstract class L2Object implements IIdentifiable, INamable, ISpawnable, I
 	 */
 	public final double calculateDirectionTo(ILocational target)
 	{
-		int heading = Util.calculateHeadingFrom(this, target) - this.getHeading();
+		int heading = Util.calculateHeadingFrom(this, target) - getHeading();
 		if (heading < 0)
 		{
 			heading = 65535 + heading;

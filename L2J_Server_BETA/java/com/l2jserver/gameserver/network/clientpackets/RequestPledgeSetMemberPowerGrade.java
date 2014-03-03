@@ -18,9 +18,9 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
-import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**

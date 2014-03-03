@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model;
 
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+import static com.l2jserver.gameserver.model.itemcontainer.Inventory.MAX_ADENA;
 
 import java.util.List;
 import java.util.logging.Logger;

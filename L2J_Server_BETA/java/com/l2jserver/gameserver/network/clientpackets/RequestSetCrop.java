@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+import static com.l2jserver.gameserver.model.itemcontainer.Inventory.MAX_ADENA;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +27,8 @@ import java.util.List;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
-import com.l2jserver.gameserver.model.CropProcure;
 import com.l2jserver.gameserver.model.ClanPrivilege;
+import com.l2jserver.gameserver.model.CropProcure;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.util.Util;

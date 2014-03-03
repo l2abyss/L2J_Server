@@ -18,8 +18,8 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+import static com.l2jserver.gameserver.model.itemcontainer.Inventory.ADENA_ID;
+import static com.l2jserver.gameserver.model.itemcontainer.Inventory.MAX_ADENA;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.AdminTable;

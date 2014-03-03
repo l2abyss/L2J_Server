@@ -18,7 +18,6 @@
  */
 package com.l2jserver.gameserver.enums;
 
-
 /**
  * @author Nos
  */

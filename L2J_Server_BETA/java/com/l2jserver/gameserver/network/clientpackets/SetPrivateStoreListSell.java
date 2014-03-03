@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+import static com.l2jserver.gameserver.model.itemcontainer.Inventory.MAX_ADENA;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.enums.PrivateStoreType;
