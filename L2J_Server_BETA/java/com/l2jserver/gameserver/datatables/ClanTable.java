@@ -238,7 +238,7 @@ public class ClanTable
 		{
 			for (FortSiege siege : FortSiegeManager.getInstance().getSieges())
 			{
-				siege.removeSiegeClan(clan);
+				siege.removeAttacker(clan);
 			}
 		}
 		

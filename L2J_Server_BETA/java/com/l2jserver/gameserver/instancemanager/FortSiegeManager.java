@@ -57,6 +57,7 @@ public final class FortSiegeManager
 	// Fort Siege settings
 	private FastMap<Integer, FastList<FortSiegeSpawn>> _commanderSpawnList;
 	private FastMap<Integer, FastList<CombatFlag>> _flagList;
+	private boolean _justToTerritory = true; // Changeable in fortsiege.properties
 	private int _flagMaxCount = 1; // Changeable in fortsiege.properties
 	private int _siegeClanMinLevel = 4; // Changeable in fortsiege.properties
 	private int _siegeLength = 60; // Time in minute. Changeable in fortsiege.properties
@@ -169,6 +170,7 @@ public final class FortSiegeManager
 		}
 		
 		// Siege setting
+		_justToTerritory = Boolean.parseBoolean(siegeSettings.getProperty("JustToTerritory", "true"));
 		_attackerMaxClans = Integer.decode(siegeSettings.getProperty("AttackerMaxClans", "500"));
 		_flagMaxCount = Integer.decode(siegeSettings.getProperty("MaxFlags", "1"));
 		_siegeClanMinLevel = Integer.decode(siegeSettings.getProperty("SiegeClanMinLevel", "4"));
@@ -264,6 +266,11 @@ public final class FortSiegeManager
 	public final int getFlagMaxCount()
 	{
 		return _flagMaxCount;
+	}
+	
+	public final boolean canRegisterJustTerritory()
+	{
+		return _justToTerritory;
 	}
 	
 	public final int getSuspiciousMerchantRespawnDelay()

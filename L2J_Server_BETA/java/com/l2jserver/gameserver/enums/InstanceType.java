@@ -82,7 +82,6 @@ public enum InstanceType
 	// Fort NPCs
 	L2FortLogisticsInstance(L2MerchantInstance),
 	L2FortManagerInstance(L2MerchantInstance),
-	L2FortSiegeNpcInstance(L2Npc),
 	// Seven Signs
 	L2SignsPriestInstance(L2Npc),
 	L2DawnPriestInstance(L2SignsPriestInstance),
