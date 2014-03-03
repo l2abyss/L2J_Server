@@ -67,14 +67,13 @@ public class L2Spawn implements IPositionable, IIdentifiable, INamable
 	/** The identifier of the location area where L2NpcInstance can be spwaned */
 	private int _locationId;
 	/** The Location of this NPC spawn. */
-	private Location _location = new Location(0, 0, 0);
+	private Location _location = new Location(0, 0, 0, 0, 0);
 	/** Link to NPC spawn territory */
 	private NpcSpawnTerritory _spawnTerritory = null;
 	/** Minimum respawn delay */
 	private int _respawnMinDelay;
 	/** Maximum respawn delay */
 	private int _respawnMaxDelay;
-	private int _instanceId = 0;
 	/** The generic constructor of L2NpcInstance managed by this L2Spawn */
 	private Constructor<? extends L2Npc> _constructor;
 	/** If True a L2NpcInstance is respawned each time that another is killed */
@@ -529,7 +528,7 @@ public class L2Spawn implements IPositionable, IIdentifiable, INamable
 			
 			// Call the constructor of the L2Npc
 			L2Npc npc = _constructor.newInstance(IdFactory.getInstance().getNextId(), _template);
-			npc.setInstanceId(_instanceId); // Must be done before object is spawned into visible world
+			npc.setInstanceId(getInstanceId()); // Must be done before object is spawned into visible world
 			if (isSummonSpawn)
 			{
 				npc.setShowSummonAnimation(isSummonSpawn);
@@ -783,19 +782,19 @@ public class L2Spawn implements IPositionable, IIdentifiable, INamable
 	@Override
 	public int getInstanceId()
 	{
-		return _instanceId;
+		return _location.getInstanceId();
 	}
 	
 	@Override
 	public void setInstanceId(int instanceId)
 	{
-		_instanceId = instanceId;
+		_location.setInstanceId(instanceId);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "L2Spawn [_template=" + getId() + ", _locX=" + getX() + ", _locY=" + getY() + ", _locZ=" + getZ() + ", _heading=" + getHeading() + "]";
+		return "L2Spawn ID: " + getId() + " " + getLocation();
 	}
 	
 	public final boolean isNoRndWalk()

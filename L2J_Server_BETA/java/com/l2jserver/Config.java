@@ -460,6 +460,8 @@ public final class Config
 	public static boolean ALT_DEV_NO_HANDLERS;
 	public static boolean ALT_DEV_NO_QUESTS;
 	public static boolean ALT_DEV_NO_SPAWNS;
+	public static boolean ALT_DEV_SHOW_QUESTS_LOAD_IN_LOGS;
+	public static boolean ALT_DEV_SHOW_SCRIPTS_LOAD_IN_LOGS;
 	public static int THREAD_P_EFFECTS;
 	public static int THREAD_P_GENERAL;
 	public static int GENERAL_PACKET_THREAD_CORE_SIZE;
@@ -1744,7 +1746,6 @@ public final class Config
 			
 			// Load General L2Properties file (if exists)
 			final PropertiesParser General = new PropertiesParser(GENERAL_CONFIG_FILE);
-			
 			EVERYBODY_HAS_ADMIN_RIGHTS = General.getBoolean("EverybodyHasAdminRights", false);
 			DISPLAY_SERVER_VERSION = General.getBoolean("DisplayServerRevision", true);
 			SERVER_LIST_BRACKET = General.getBoolean("ServerListBrackets", false);
@@ -1785,6 +1786,8 @@ public final class Config
 			ALT_DEV_NO_HANDLERS = General.getBoolean("AltDevNoHandlers", false) || Boolean.getBoolean("nohandlers");
 			ALT_DEV_NO_QUESTS = General.getBoolean("AltDevNoQuests", false) || Boolean.getBoolean("noquests");
 			ALT_DEV_NO_SPAWNS = General.getBoolean("AltDevNoSpawns", false) || Boolean.getBoolean("nospawns");
+			ALT_DEV_SHOW_QUESTS_LOAD_IN_LOGS = General.getBoolean("AltDevShowQuestsLoadInLogs", false);
+			ALT_DEV_SHOW_SCRIPTS_LOAD_IN_LOGS = General.getBoolean("AltDevShowScriptsLoadInLogs", false);
 			THREAD_P_EFFECTS = General.getInt("ThreadPoolSizeEffects", 10);
 			THREAD_P_GENERAL = General.getInt("ThreadPoolSizeGeneral", 13);
 			IO_PACKET_THREAD_CORE_SIZE = General.getInt("UrgentPacketThreadCoreSize", 2);

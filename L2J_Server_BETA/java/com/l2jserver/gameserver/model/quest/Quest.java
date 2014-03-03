@@ -23,7 +23,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -105,9 +104,6 @@ public class Quest extends ManagedScript implements IIdentifiable
 {
 	public static final Logger _log = Logger.getLogger(Quest.class.getName());
 	
-	/** Map containing events from String value of the event. */
-	private static Map<String, Quest> _allEventsS = new HashMap<>();
-	
 	/** Map containing lists of timers from the name of the timer. */
 	private final Map<String, List<QuestTimer>> _allEventTimers = new L2FastMap<>(true);
 	private final Set<Integer> _questInvolvedNpcs = new HashSet<>();
@@ -152,14 +148,6 @@ public class Quest extends ManagedScript implements IIdentifiable
 	}
 	
 	/**
-	 * @return a collection of the values contained in the _allEventsS map.
-	 */
-	public static Collection<Quest> findAllEvents()
-	{
-		return _allEventsS.values();
-	}
-	
-	/**
 	 * The Quest object constructor.<br>
 	 * Constructing a quest also calls the {@code init_LoadGlobalData} convenience method.
 	 * @param questId ID of the quest
@@ -171,23 +159,24 @@ public class Quest extends ManagedScript implements IIdentifiable
 		_questId = questId;
 		_name = name;
 		_descr = descr;
-		if (questId != 0)
+		if (questId > 0)
 		{
 			QuestManager.getInstance().addQuest(this);
 		}
 		else
 		{
-			_allEventsS.put(name, this);
+			QuestManager.getInstance().addScript(this);
 		}
-		init_LoadGlobalData();
+ 		
+		loadGlobalData();
 	}
 	
 	/**
-	 * The function init_LoadGlobalData is, by default, called by the constructor of all quests.<br>
+	 * This method is, by default, called by the constructor of all scripts.<br>
 	 * Children of this class can implement this function in order to define what variables to load and what structures to save them in.<br>
 	 * By default, nothing is loaded.
 	 */
-	protected void init_LoadGlobalData()
+	protected void loadGlobalData()
 	{
 		
 	}
@@ -1528,7 +1517,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 		}
 		
 		// events
-		for (String name : _allEventsS.keySet())
+		for (String name : QuestManager.getInstance().getScripts().keySet())
 		{
 			player.processQuestEvent(name, "enter");
 		}
@@ -2970,7 +2959,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 		
 		if (removeFromList)
 		{
-			return QuestManager.getInstance().removeQuest(this);
+			return QuestManager.getInstance().removeScript(this);
 		}
 		return true;
 	}
