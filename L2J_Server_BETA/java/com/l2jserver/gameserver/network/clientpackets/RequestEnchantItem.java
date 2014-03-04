@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.EnchantItemData;
-import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.L2Armor;
@@ -33,6 +32,7 @@ import com.l2jserver.gameserver.model.items.enchant.EnchantResultType;
 import com.l2jserver.gameserver.model.items.enchant.EnchantScroll;
 import com.l2jserver.gameserver.model.items.enchant.EnchantSupportItem;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.skills.CommonSkill;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.EnchantResult;
@@ -214,7 +214,7 @@ public final class RequestEnchantItem extends L2GameClientPacket
 						sm.addItemName(item);
 						activeChar.broadcastPacket(sm);
 						
-						Skill skill = SkillData.FrequentSkill.FIREWORK.getSkill();
+						Skill skill = CommonSkill.FIREWORK.getSkill();
 						if (skill != null)
 						{
 							activeChar.broadcastPacket(new MagicSkillUse(activeChar, activeChar, skill.getId(), skill.getLevel(), skill.getHitTime(), skill.getReuseDelay()));

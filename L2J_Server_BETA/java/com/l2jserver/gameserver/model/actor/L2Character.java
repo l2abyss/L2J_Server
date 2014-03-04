@@ -106,6 +106,7 @@ import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.AbnormalVisualEffect;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
+import com.l2jserver.gameserver.model.skills.CommonSkill;
 import com.l2jserver.gameserver.model.skills.EffectScope;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.SkillChannelized;
@@ -4998,7 +4999,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		{
 			if (getLevel() > (target.getLevel() + 8))
 			{
-				Skill skill = SkillData.FrequentSkill.RAID_CURSE2.getSkill();
+				Skill skill = CommonSkill.RAID_CURSE2.getSkill();
 				
 				if (skill != null)
 				{
@@ -6058,7 +6059,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 					{
 						if (skill.isMagic())
 						{
-							Skill tempSkill = SkillData.FrequentSkill.RAID_CURSE.getSkill();
+							Skill tempSkill = CommonSkill.RAID_CURSE.getSkill();
 							if (tempSkill != null)
 							{
 								abortAttack();
@@ -6073,7 +6074,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 						}
 						else
 						{
-							Skill tempSkill = SkillData.FrequentSkill.RAID_CURSE2.getSkill();
+							Skill tempSkill = CommonSkill.RAID_CURSE2.getSkill();
 							if (tempSkill != null)
 							{
 								abortAttack();
@@ -6731,9 +6732,9 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	public int getMaxBuffCount()
 	{
 		int count = Config.BUFFS_MAX_AMOUNT;
-		if (isAffectedBySkill(Skill.SKILL_DIVINE_INSPIRATION))
+		if (isAffectedBySkill(CommonSkill.DIVINE_INSPIRATION.getId()))
 		{
-			final BuffInfo info = getEffectList().getBuffInfoBySkillId(Skill.SKILL_DIVINE_INSPIRATION);
+			final BuffInfo info = getEffectList().getBuffInfoBySkillId(CommonSkill.DIVINE_INSPIRATION.getId());
 			for (AbstractEffect effect : info.getEffects())
 			{
 				count += (int) effect.getValue();

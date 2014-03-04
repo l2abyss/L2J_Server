@@ -85,7 +85,6 @@ import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.RecipeData;
 import com.l2jserver.gameserver.datatables.SkillData;
-import com.l2jserver.gameserver.datatables.SkillData.FrequentSkill;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.HtmlActionScope;
@@ -236,6 +235,7 @@ import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.quest.State;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
+import com.l2jserver.gameserver.model.skills.CommonSkill;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.stats.Formulas;
@@ -2025,12 +2025,12 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean hasDwarvenCraft()
 	{
-		return getSkillLevel(Skill.SKILL_CREATE_DWARVEN) >= 1;
+		return getSkillLevel(CommonSkill.CREATE_DWARVEN.getId()) >= 1;
 	}
 	
 	public int getDwarvenCraft()
 	{
-		return getSkillLevel(Skill.SKILL_CREATE_DWARVEN);
+		return getSkillLevel(CommonSkill.CREATE_DWARVEN.getId());
 	}
 	
 	/**
@@ -2038,12 +2038,12 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean hasCommonCraft()
 	{
-		return getSkillLevel(Skill.SKILL_CREATE_COMMON) >= 1;
+		return getSkillLevel(CommonSkill.CREATE_COMMON.getId()) >= 1;
 	}
 	
 	public int getCommonCraft()
 	{
-		return getSkillLevel(Skill.SKILL_CREATE_COMMON);
+		return getSkillLevel(CommonSkill.CREATE_COMMON.getId());
 	}
 	
 	/**
@@ -2332,16 +2332,16 @@ public final class L2PcInstance extends L2Playable
 		weaponPenalty = weaponPenalty - expertiseLevel - bonus;
 		weaponPenalty = Math.min(Math.max(weaponPenalty, 0), 4);
 		
-		if ((getExpertiseWeaponPenalty() != weaponPenalty) || (getSkillLevel(FrequentSkill.WEAPON_GRADE_PENALTY.getId()) != weaponPenalty))
+		if ((getExpertiseWeaponPenalty() != weaponPenalty) || (getSkillLevel(CommonSkill.WEAPON_GRADE_PENALTY.getId()) != weaponPenalty))
 		{
 			_expertiseWeaponPenalty = weaponPenalty;
 			if (_expertiseWeaponPenalty > 0)
 			{
-				addSkill(SkillData.getInstance().getSkill(FrequentSkill.WEAPON_GRADE_PENALTY.getId(), _expertiseWeaponPenalty));
+				addSkill(SkillData.getInstance().getSkill(CommonSkill.WEAPON_GRADE_PENALTY.getId(), _expertiseWeaponPenalty));
 			}
 			else
 			{
-				removeSkill(getKnownSkill(FrequentSkill.WEAPON_GRADE_PENALTY.getId()), false, true);
+				removeSkill(getKnownSkill(CommonSkill.WEAPON_GRADE_PENALTY.getId()), false, true);
 			}
 			changed = true;
 		}
@@ -2350,16 +2350,16 @@ public final class L2PcInstance extends L2Playable
 		armorPenalty = armorPenalty - expertiseLevel - bonus;
 		armorPenalty = Math.min(Math.max(armorPenalty, 0), 4);
 		
-		if ((getExpertiseArmorPenalty() != armorPenalty) || (getSkillLevel(FrequentSkill.ARMOR_GRADE_PENALTY.getId()) != armorPenalty))
+		if ((getExpertiseArmorPenalty() != armorPenalty) || (getSkillLevel(CommonSkill.ARMOR_GRADE_PENALTY.getId()) != armorPenalty))
 		{
 			_expertiseArmorPenalty = armorPenalty;
 			if (_expertiseArmorPenalty > 0)
 			{
-				addSkill(SkillData.getInstance().getSkill(FrequentSkill.ARMOR_GRADE_PENALTY.getId(), _expertiseArmorPenalty));
+				addSkill(SkillData.getInstance().getSkill(CommonSkill.ARMOR_GRADE_PENALTY.getId(), _expertiseArmorPenalty));
 			}
 			else
 			{
-				removeSkill(getKnownSkill(FrequentSkill.ARMOR_GRADE_PENALTY.getId()), false, true);
+				removeSkill(getKnownSkill(CommonSkill.ARMOR_GRADE_PENALTY.getId()), false, true);
 			}
 			changed = true;
 		}
@@ -5801,7 +5801,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean isLucky()
 	{
-		return (getLevel() <= 9) && isAffectedBySkill(Skill.SKILL_LUCKY);
+		return (getLevel() <= 9) && isAffectedBySkill(CommonSkill.LUCKY.getId());
 	}
 	
 	/**
@@ -5831,7 +5831,7 @@ public final class L2PcInstance extends L2Playable
 		// Get the level of the L2PcInstance
 		final int lvl = getLevel();
 		
-		int clan_luck = getSkillLevel(Skill.SKILL_CLAN_LUCK);
+		int clan_luck = getSkillLevel(CommonSkill.CLAN_LUCK.getId());
 		
 		double clan_luck_modificator = 1.0;
 		
@@ -6755,7 +6755,7 @@ public final class L2PcInstance extends L2Playable
 		clearPetData();
 		if (wasFlying)
 		{
-			removeSkill(SkillData.FrequentSkill.WYVERN_BREATH.getSkill());
+			removeSkill(CommonSkill.WYVERN_BREATH.getSkill());
 		}
 		broadcastPacket(new Ride(this));
 		setMountObjectID(0);
@@ -9342,7 +9342,7 @@ public final class L2PcInstance extends L2Playable
 			{
 				if (isNoble())
 				{
-					addSkill(FrequentSkill.STRIDER_SIEGE_ASSAULT.getSkill(), false);
+					addSkill(CommonSkill.STRIDER_SIEGE_ASSAULT.getSkill(), false);
 				}
 				break;
 			}
@@ -13916,7 +13916,7 @@ public final class L2PcInstance extends L2Playable
 			learn = SkillTreesData.getInstance().getClassSkill(e.getKey(), e.getValue().getLevel() % 100, getClassId());
 			if (learn != null)
 			{
-				int lvlDiff = e.getKey() == Skill.SKILL_EXPERTISE ? 0 : 9;
+				int lvlDiff = e.getKey() == CommonSkill.EXPERTISE.getId() ? 0 : 9;
 				if (getLevel() < (learn.getGetLevel() - lvlDiff))
 				{
 					deacreaseSkillLevel(e.getValue(), lvlDiff);

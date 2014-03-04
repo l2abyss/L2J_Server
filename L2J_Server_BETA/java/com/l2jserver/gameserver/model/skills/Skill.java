@@ -77,19 +77,6 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 	
 	private static final L2Object[] EMPTY_TARGET_LIST = new L2Object[0];
 	
-	public static final int SKILL_CUBIC_MASTERY = 143;
-	public static final int SKILL_CREATE_DWARVEN = 172;
-	public static final int SKILL_LUCKY = 194;
-	public static final int SKILL_EXPERTISE = 239;
-	public static final int SKILL_CRYSTALLIZE = 248;
-	public static final int SKILL_CLAN_LUCK = 390;
-	public static final int SKILL_ONYX_BEAST_TRANSFORMATION = 617;
-	public static final int SKILL_CREATE_COMMON = 1320;
-	public static final int SKILL_DIVINE_INSPIRATION = 1405;
-	public static final int SKILL_SERVITOR_SHARE = 1557;
-	public static final int SKILL_CARAVANS_SECRET_MEDICINE = 2341;
-	public static final int SKILL_NPC_RACE = 4416;
-	
 	/** Skill ID. */
 	private final int _id;
 	/** Skill level. */
@@ -1424,7 +1411,7 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 			
 			// Support for buff sharing feature.
 			// Avoiding Servitor Share since it's implementation already "shares" the effect.
-			if (addContinuousEffects && effected.isPlayer() && effected.hasServitor() && isContinuous() && !isDebuff() && (getId() != SKILL_SERVITOR_SHARE))
+			if (addContinuousEffects && effected.isPlayer() && effected.hasServitor() && isContinuous() && !isDebuff() && (getId() != CommonSkill.SERVITOR_SHARE.getId()))
 			{
 				applyEffects(effector, effected.getSummon(), false, 0);
 			}
@@ -1654,7 +1641,7 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 	 */
 	public boolean canBeStolen()
 	{
-		return !isPassive() && !isToggle() && !isDebuff() && !isHeroSkill() && !isGMSkill() && !(isStatic() && (getId() != SKILL_CARAVANS_SECRET_MEDICINE)) && canBeDispeled() && (getId() != SKILL_SERVITOR_SHARE);
+		return !isPassive() && !isToggle() && !isDebuff() && !isHeroSkill() && !isGMSkill() && !(isStatic() && (getId() != CommonSkill.CARAVANS_SECRET_MEDICINE.getId())) && canBeDispeled() && (getId() != CommonSkill.SERVITOR_SHARE.getId());
 	}
 	
 	public boolean isClanSkill()

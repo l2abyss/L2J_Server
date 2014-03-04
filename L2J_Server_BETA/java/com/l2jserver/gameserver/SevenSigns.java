@@ -34,7 +34,6 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.model.AutoSpawnHandler;
 import com.l2jserver.gameserver.model.AutoSpawnHandler.AutoSpawnInstance;
@@ -44,6 +43,7 @@ import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.interfaces.IProcedure;
+import com.l2jserver.gameserver.model.skills.CommonSkill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SSQInfo;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -1671,12 +1671,12 @@ public class SevenSigns
 				{
 					if (cabal == _strifeOwner)
 					{
-						character.addSkill(SkillData.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
+						character.addSkill(CommonSkill.THE_VICTOR_OF_WAR.getSkill());
 					}
 					else
 					{
 						// Gives "The Vanquished of War" passive skill to all online characters with Cabal, which does not control Seal of Strife
-						character.addSkill(SkillData.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
+						character.addSkill(CommonSkill.THE_VANQUISHED_OF_WAR.getSkill());
 					}
 				}
 			}
@@ -1697,8 +1697,8 @@ public class SevenSigns
 			if (character != null)
 			{
 				// Remove SevenSigns' buffs/debuffs.
-				character.removeSkill(SkillData.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
-				character.removeSkill(SkillData.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
+				character.removeSkill(CommonSkill.THE_VICTOR_OF_WAR.getSkill());
+				character.removeSkill(CommonSkill.THE_VANQUISHED_OF_WAR.getSkill());
 			}
 			return true;
 		}

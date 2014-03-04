@@ -46,6 +46,7 @@ import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.holders.PlayerSkillHolder;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.interfaces.ISkillsHolder;
+import com.l2jserver.gameserver.model.skills.CommonSkill;
 import com.l2jserver.gameserver.model.skills.Skill;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -543,7 +544,7 @@ public final class SkillTreesData extends DocumentParser
 			for (L2SkillLearn s : learnable)
 			{
 				Skill sk = SkillData.getInstance().getSkill(s.getSkillId(), s.getSkillLevel());
-				if ((sk == null) || ((sk.getId() == Skill.SKILL_DIVINE_INSPIRATION) && !Config.AUTO_LEARN_DIVINE_INSPIRATION && !player.isGM()))
+				if ((sk == null) || ((sk.getId() == CommonSkill.DIVINE_INSPIRATION.getId()) && !Config.AUTO_LEARN_DIVINE_INSPIRATION && !player.isGM()))
 				{
 					unLearnable++;
 					continue;
