@@ -75,7 +75,7 @@ public final class SkillData
 			
 			// only non-enchanted skills
 			final int maxLvl = getMaxLevel(skillId);
-			if ((maxLvl > 0) || (skillLvl > maxLvl))
+			if (skillLvl > maxLvl)
 			{
 				_skillMaxLevel.put(skillId, skillLvl);
 			}
