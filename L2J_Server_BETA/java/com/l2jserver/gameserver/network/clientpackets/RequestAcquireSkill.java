@@ -301,6 +301,15 @@ public final class RequestAcquireSkill extends L2GameClientPacket
 					return;
 				}
 				
+				// Certification Skills - Exploit fix
+				if ((prevSkillLevel == -1) && (_level > 1))
+				{
+					// The previous level skill has not been learned.
+					activeChar.sendPacket(SystemMessageId.PREVIOUS_LEVEL_SKILL_NOT_LEARNED);
+					Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " is requesting skill Id: " + _id + " level " + _level + " without knowing it's previous level!", IllegalActionPunishmentType.NONE);
+					return;
+				}
+				
 				QuestState st = activeChar.getQuestState("SubClassSkills");
 				if (st == null)
 				{
