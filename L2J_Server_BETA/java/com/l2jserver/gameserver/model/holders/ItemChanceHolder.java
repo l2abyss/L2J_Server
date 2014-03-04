@@ -19,7 +19,8 @@
 package com.l2jserver.gameserver.model.holders;
 
 /**
- * Item holder, with additional parameter chance.
+ * A DTO for items; contains item ID, count and chance.<br>
+ * Complemented by {@link QuestItemHolder}.
  * @author xban1x
  */
 public class ItemChanceHolder extends ItemHolder
@@ -37,8 +38,18 @@ public class ItemChanceHolder extends ItemHolder
 		_chance = chance;
 	}
 	
+	/**
+	 * Gets the cahnce.
+	 * @return the drop chance of the item contained in this object
+	 */
 	public double getChance()
 	{
 		return _chance;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "[" + getClass().getSimpleName() + "] ID: " + getId() + ", count: " + getCount() + ", chance: " + _chance;
 	}
 }

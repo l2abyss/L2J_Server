@@ -21,7 +21,8 @@ package com.l2jserver.gameserver.model.holders;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 
 /**
- * Holder for item id and count.
+ * A simple DTO for items; contains item ID and count.<br>
+ * Extended by {@link ItemChanceHolder}, {@link QuestItemHolder}, {@link UniqueItemHolder}.
  * @author UnAfraid
  */
 public class ItemHolder implements IIdentifiable
@@ -36,7 +37,7 @@ public class ItemHolder implements IIdentifiable
 	}
 	
 	/**
-	 * @return the item/object identifier.
+	 * @return the ID of the item contained in this object
 	 */
 	@Override
 	public int getId()
@@ -45,7 +46,7 @@ public class ItemHolder implements IIdentifiable
 	}
 	
 	/**
-	 * @return the item count.
+	 * @return the count of items contained in this object
 	 */
 	public long getCount()
 	{
@@ -55,6 +56,6 @@ public class ItemHolder implements IIdentifiable
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName() + ": Id: " + _id + " Count: " + _count;
+		return "[" + getClass().getSimpleName() + "] ID: " + _id + ", count: " + _count;
 	}
 }

@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.model.holders;
 import com.l2jserver.gameserver.model.interfaces.IUniqueId;
 
 /**
- * Unique object id item holder.
+ * A DTO for items; contains item ID, object ID and count.
  * @author xban1x
  */
 public final class UniqueItemHolder extends ItemHolder implements IUniqueId
@@ -43,5 +43,11 @@ public final class UniqueItemHolder extends ItemHolder implements IUniqueId
 	public int getObjectId()
 	{
 		return _objectId;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "[" + getClass().getSimpleName() + "] ID: " + getId() + ", object ID: " + _objectId + ", count: " + getCount();
 	}
 }

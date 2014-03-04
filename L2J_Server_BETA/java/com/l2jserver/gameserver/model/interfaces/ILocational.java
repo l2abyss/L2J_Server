@@ -19,20 +19,44 @@
 package com.l2jserver.gameserver.model.interfaces;
 
 /**
- * Simple interface for location of object.
+ * Object world location storage interface.
  * @author xban1x
  */
 public interface ILocational
 {
+	/**
+	 * Gets the X coordinate of this object.
+	 * @return the X coordinate
+	 */
 	public int getX();
 	
+	/**
+	 * Gets the Y coordinate of this object.
+	 * @return the current Y coordinate
+	 */
 	public int getY();
 	
+	/**
+	 * Gets the Z coordinate of this object.
+	 * @return the current Z coordinate
+	 */
 	public int getZ();
 	
+	/**
+	 * Gets the heading of this object.
+	 * @return the current heading
+	 */
 	public int getHeading();
 	
+	/**
+	 * Gets the instance zone ID of this object.
+	 * @return the ID of the instance zone this object is currently in (0 - not in any instance)
+	 */
 	public int getInstanceId();
 	
+	/**
+	 * Gets this object's location.
+	 * @return a {@link ILocational} object containing the current position of this object
+	 */
 	public ILocational getLocation();
 }
