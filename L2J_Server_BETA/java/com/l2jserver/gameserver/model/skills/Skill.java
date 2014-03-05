@@ -173,7 +173,6 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 	private final int _triggeredLevel;
 	private final String _chanceType;
 	private final int _soulMaxConsume;
-	private final boolean _dependOnTargetBuff;
 	
 	private final boolean _isHeroSkill; // If true the skill is a Hero Skill
 	private final boolean _isGMSkill; // True if skill is GM skill
@@ -358,7 +357,6 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 		_canBeDispeled = set.getBoolean("canBeDispeled", true);
 		
 		_excludedFromCheck = set.getBoolean("excludedFromCheck", false);
-		_dependOnTargetBuff = set.getBoolean("dependOnTargetBuff", false);
 		_simultaneousCast = set.getBoolean("simultaneousCast", false);
 		
 		String capsuled_items = set.getString("capsuled_items_skill", null);
@@ -1652,11 +1650,6 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 	public boolean isExcludedFromCheck()
 	{
 		return _excludedFromCheck;
-	}
-	
-	public boolean getDependOnTargetBuff()
-	{
-		return _dependOnTargetBuff;
 	}
 	
 	public boolean isSimultaneousCast()
