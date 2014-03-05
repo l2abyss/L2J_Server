@@ -76,7 +76,6 @@ public enum InstanceType
 	L2ControlTowerInstance(L2Npc),
 	L2FlameTowerInstance(L2Npc),
 	L2SiegeFlagInstance(L2Npc),
-	L2SiegeNpcInstance(L2Npc),
 	// Fort Siege
 	L2FortCommanderInstance(L2DefenderInstance),
 	// Fort NPCs
