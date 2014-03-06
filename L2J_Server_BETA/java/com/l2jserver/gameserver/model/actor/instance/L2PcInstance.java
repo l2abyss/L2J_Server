@@ -4288,9 +4288,7 @@ public final class L2PcInstance extends L2Playable
 			return false;
 		}
 		
-		// TODO: Should possibly be checked only in L2PcInstance's useMagic
-		// Can't use Hero and resurrect skills during Olympiad
-		if (isInOlympiadMode() && (skill.isHeroSkill() || (skill.hasEffectType(L2EffectType.RESURRECTION))))
+		if (isInOlympiadMode() && skill.isBlockedInOlympiad())
 		{
 			sendPacket(SystemMessageId.THIS_SKILL_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT);
 			return false;

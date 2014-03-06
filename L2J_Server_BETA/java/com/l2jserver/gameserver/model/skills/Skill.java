@@ -160,6 +160,8 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 	private final boolean _removedOnAnyActionExceptMove;
 	private final boolean _removedOnDamage;
 	
+	private final boolean _blockedInOlympiad;
+	
 	private final byte _element;
 	private final int _elementPower;
 	
@@ -318,6 +320,8 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 		
 		_removedOnAnyActionExceptMove = set.getBoolean("removedOnAnyActionExceptMove", false);
 		_removedOnDamage = set.getBoolean("removedOnDamage", false);
+		
+		_blockedInOlympiad = set.getBoolean("blockedInOlympiad", false);
 		
 		_element = set.getByte("element", (byte) -1);
 		_elementPower = set.getInt("elementPower", 0);
@@ -597,6 +601,14 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 	public boolean isRemovedOnDamage()
 	{
 		return _removedOnDamage;
+	}
+	
+	/**
+	 * @return {@code true} if skill can not be used in olympiad.
+	 */
+	public boolean isBlockedInOlympiad()
+	{
+		return _blockedInOlympiad;
 	}
 	
 	/**
