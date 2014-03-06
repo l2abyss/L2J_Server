@@ -22,14 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.enums.MacroType;
 import com.l2jserver.gameserver.model.Macro;
 import com.l2jserver.gameserver.model.MacroCmd;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
-/**
- * packet type id 0xc1 sample c1 d // id S // macro name S // unknown desc S // unknown acronym c // icon c // count c // entry c // type d // skill id c // shortcut id S // command name format: cdSSScc (ccdcS)
- */
 public final class RequestMakeMacro extends L2GameClientPacket
 {
 	private static final String _C__CD_REQUESTMAKEMACRO = "[C] CD RequestMakeMacro";
@@ -67,11 +65,7 @@ public final class RequestMakeMacro extends L2GameClientPacket
 			int d2 = readC();
 			String command = readS();
 			_commandsLenght += command.length();
-			commands.add(new MacroCmd(entry, type, d1, d2, command));
-			if (Config.DEBUG)
-			{
-				_log.info("entry:" + entry + "\ttype:" + type + "\td1:" + d1 + "\td2:" + d2 + "\tcommand:" + command);
-			}
+			commands.add(new MacroCmd(entry, MacroType.values()[(type < 1) || (type > 6) ? 0 : type], d1, d2, command));
 		}
 		_macro = new Macro(_id, _icon, _name, _desc, _acronym, commands);
 	}

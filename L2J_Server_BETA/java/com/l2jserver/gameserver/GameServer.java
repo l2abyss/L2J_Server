@@ -64,6 +64,7 @@ import com.l2jserver.gameserver.datatables.FishingRodsData;
 import com.l2jserver.gameserver.datatables.HennaData;
 import com.l2jserver.gameserver.datatables.HitConditionBonus;
 import com.l2jserver.gameserver.datatables.InitialEquipmentData;
+import com.l2jserver.gameserver.datatables.InitialShortcutData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.KarmaData;
 import com.l2jserver.gameserver.datatables.ManorData;
@@ -248,6 +249,7 @@ public class GameServer
 		printSection("Characters");
 		ClassListData.getInstance();
 		InitialEquipmentData.getInstance();
+		InitialShortcutData.getInstance();
 		ExperienceTable.getInstance();
 		KarmaData.getInstance();
 		HitConditionBonus.getInstance();

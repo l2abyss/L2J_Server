@@ -84,7 +84,6 @@ public final class InitialEquipmentData extends DocumentParser
 	private void parseEquipment(Node d)
 	{
 		NamedNodeMap attrs = d.getAttributes();
-		Node attr;
 		final ClassId classId = ClassId.getClassId(Integer.parseInt(attrs.getNamedItem("classId").getNodeValue()));
 		final List<PcItemTemplate> equipList = new ArrayList<>();
 		for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling())
@@ -95,7 +94,7 @@ public final class InitialEquipmentData extends DocumentParser
 				attrs = c.getAttributes();
 				for (int i = 0; i < attrs.getLength(); i++)
 				{
-					attr = attrs.item(i);
+					Node attr = attrs.item(i);
 					set.set(attr.getNodeName(), attr.getNodeValue());
 				}
 				equipList.add(new PcItemTemplate(set));

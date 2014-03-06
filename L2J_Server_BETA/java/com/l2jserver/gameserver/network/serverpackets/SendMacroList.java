@@ -58,7 +58,7 @@ public class SendMacroList extends L2GameServerPacket
 			for (MacroCmd cmd : _macro.getCommands())
 			{
 				writeC(i++); // command count
-				writeC(cmd.getType()); // type 1 = skill, 3 = action, 4 = shortcut
+				writeC(cmd.getType().ordinal()); // type 1 = skill, 3 = action, 4 = shortcut
 				writeD(cmd.getD1()); // skill id
 				writeC(cmd.getD2()); // shortcut id
 				writeS(cmd.getCmd()); // command name

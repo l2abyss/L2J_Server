@@ -96,6 +96,7 @@ import com.l2jserver.gameserver.enums.PlayerAction;
 import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.enums.Sex;
+import com.l2jserver.gameserver.enums.ShortcutType;
 import com.l2jserver.gameserver.enums.ShotType;
 import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.handler.IItemHandler;
@@ -137,7 +138,6 @@ import com.l2jserver.gameserver.model.L2PremiumItem;
 import com.l2jserver.gameserver.model.L2Radar;
 import com.l2jserver.gameserver.model.L2RecipeList;
 import com.l2jserver.gameserver.model.L2Request;
-import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
@@ -149,6 +149,7 @@ import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.PartyMatchWaitingList;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.ShortCuts;
+import com.l2jserver.gameserver.model.Shortcut;
 import com.l2jserver.gameserver.model.TeleportBookmark;
 import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.TerritoryWard;
@@ -607,12 +608,10 @@ public final class L2PcInstance extends L2Playable
 	/** The table containing all Quests began by the L2PcInstance */
 	private final Map<String, QuestState> _quests = new FastMap<>();
 	
-	/** The list containing all shortCuts of this L2PcInstance */
+	/** The list containing all shortCuts of this player. */
 	private final ShortCuts _shortCuts = new ShortCuts(this);
 	
-	/**
-	 * The list containing all macros of this L2PcInstance.
-	 */
+	/** The list containing all macros of this player. */
 	private final MacroList _macros = new MacroList(this);
 	
 	private final List<L2PcInstance> _snoopListener = new FastList<>();
@@ -1396,9 +1395,9 @@ public final class L2PcInstance extends L2Playable
 			_log.warning("Attempted to remove unknown RecipeList: " + recipeId);
 		}
 		
-		for (L2ShortCut sc : getAllShortCuts())
+		for (Shortcut sc : getAllShortCuts())
 		{
-			if ((sc != null) && (sc.getId() == recipeId) && (sc.getType() == L2ShortCut.TYPE_RECIPE))
+			if ((sc != null) && (sc.getId() == recipeId) && (sc.getType() == ShortcutType.RECIPE))
 			{
 				deleteShortCut(sc.getSlot(), sc.getPage());
 			}
@@ -1766,7 +1765,7 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * @return a table containing all L2ShortCut of the L2PcInstance.
 	 */
-	public L2ShortCut[] getAllShortCuts()
+	public Shortcut[] getAllShortCuts()
 	{
 		return _shortCuts.getAllShortCuts();
 	}
@@ -1776,7 +1775,7 @@ public final class L2PcInstance extends L2Playable
 	 * @param page The page of shortCuts containing the slot
 	 * @return the L2ShortCut of the L2PcInstance corresponding to the position (page-slot).
 	 */
-	public L2ShortCut getShortCut(int slot, int page)
+	public Shortcut getShortCut(int slot, int page)
 	{
 		return _shortCuts.getShortCut(slot, page);
 	}
@@ -1785,7 +1784,7 @@ public final class L2PcInstance extends L2Playable
 	 * Add a L2shortCut to the L2PcInstance _shortCuts
 	 * @param shortcut
 	 */
-	public void registerShortCut(L2ShortCut shortcut)
+	public void registerShortCut(Shortcut shortcut)
 	{
 		_shortCuts.registerShortCut(shortcut);
 	}
@@ -7944,12 +7943,14 @@ public final class L2PcInstance extends L2Playable
 			return oldSkill;
 		}
 		
-		final L2ShortCut[] allShortCuts = getAllShortCuts();
-		for (L2ShortCut sc : allShortCuts)
+		if (skill != null)
 		{
-			if ((sc != null) && (skill != null) && (sc.getId() == skill.getId()) && (sc.getType() == L2ShortCut.TYPE_SKILL) && !((skill.getId() >= 3080) && (skill.getId() <= 3259)))
+			for (Shortcut sc : getAllShortCuts())
 			{
-				deleteShortCut(sc.getSlot(), sc.getPage());
+				if ((sc != null) && (sc.getId() == skill.getId()) && (sc.getType() == ShortcutType.SKILL) && !((skill.getId() >= 3080) && (skill.getId() <= 3259)))
+				{
+					deleteShortCut(sc.getSlot(), sc.getPage());
+				}
 			}
 		}
 		return oldSkill;
