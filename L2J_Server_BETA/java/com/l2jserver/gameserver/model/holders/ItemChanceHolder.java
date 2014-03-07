@@ -39,7 +39,7 @@ public class ItemChanceHolder extends ItemHolder
 	}
 	
 	/**
-	 * Gets the cahnce.
+	 * Gets the chance.
 	 * @return the drop chance of the item contained in this object
 	 */
 	public double getChance()

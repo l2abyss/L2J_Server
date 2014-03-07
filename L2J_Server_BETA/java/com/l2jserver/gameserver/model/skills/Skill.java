@@ -928,19 +928,7 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 	 */
 	public boolean isHealingPotionSkill()
 	{
-		switch (getId())
-		{
-			case 2031: // Lesser Healing Potion
-			case 2032: // Healing Potion
-			case 2037: // Greater Healing Potion
-			case 2863: // Highest Power Healing Potion
-			case 26025: // Powerful Healing Potion
-			case 26026: // High-grade Healing Potion
-			{
-				return true;
-			}
-		}
-		return false;
+		return getAbnormalType() == AbnormalType.HP_RECOVER;
 	}
 	
 	public int getChargeConsume()
