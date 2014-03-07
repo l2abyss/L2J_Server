@@ -530,10 +530,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		{
 			_teleportLock.unlock();
 		}
-		if (_isPendingRevive)
-		{
-			doRevive();
-		}
 	}
 	
 	/**
@@ -691,6 +687,11 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			x = newCoords[0];
 			y = newCoords[1];
 			z = newCoords[2];
+		}
+		
+		if (_isPendingRevive)
+		{
+			doRevive();
 		}
 		
 		stopMove(null, false);
