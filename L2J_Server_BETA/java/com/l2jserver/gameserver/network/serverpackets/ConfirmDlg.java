@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
+ * ConfirmDlg server packet implementation.
  * @author kombat
  */
 public class ConfirmDlg extends L2GameServerPacket
@@ -71,7 +72,13 @@ public class ConfirmDlg extends L2GameServerPacket
 	
 	public ConfirmDlg(SystemMessageId messageId)
 	{
-		_messageId = messageId.getId();
+		this(messageId.getId());
+	}
+	
+	public ConfirmDlg(String text)
+	{
+		this(SystemMessageId.S1);
+		addString(text);
 	}
 	
 	public ConfirmDlg addString(String text)
