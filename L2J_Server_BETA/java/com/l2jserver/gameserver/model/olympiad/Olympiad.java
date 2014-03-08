@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -48,8 +49,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.L2FastList;
 
-import gnu.trove.map.hash.TIntIntHashMap;
-
 /**
  * @author godson
  */
@@ -60,7 +59,7 @@ public class Olympiad
 	
 	private static final Map<Integer, StatsSet> _nobles = new FastMap<>();
 	protected static L2FastList<StatsSet> _heroesToBe;
-	private static final TIntIntHashMap _noblesRank = new TIntIntHashMap();
+	private static final Map<Integer, Integer> _noblesRank = new HashMap<>();
 	
 	public static final String OLYMPIAD_HTML_PATH = "data/html/olympiad/";
 	private static final String OLYMPIAD_LOAD_DATA = "SELECT current_cycle, period, olympiad_end, validation_end, " + "next_weekly_change FROM olympiad_data WHERE id = 0";
@@ -318,7 +317,7 @@ public class Olympiad
 	public void loadNoblesRank()
 	{
 		_noblesRank.clear();
-		TIntIntHashMap tmpPlace = new TIntIntHashMap();
+		Map<Integer, Integer> tmpPlace = new HashMap<>();
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement(GET_ALL_CLASSIFIED_NOBLESS);
 			ResultSet rset = statement.executeQuery())
@@ -345,27 +344,27 @@ public class Olympiad
 			rank3++;
 			rank4++;
 		}
-		for (int charId : tmpPlace.keys())
+		for (Entry<Integer, Integer> chr : tmpPlace.entrySet())
 		{
-			if (tmpPlace.get(charId) <= rank1)
+			if (chr.getValue() <= rank1)
 			{
-				_noblesRank.put(charId, 1);
+				_noblesRank.put(chr.getKey(), 1);
 			}
-			else if (tmpPlace.get(charId) <= rank2)
+			else if (tmpPlace.get(chr.getKey()) <= rank2)
 			{
-				_noblesRank.put(charId, 2);
+				_noblesRank.put(chr.getKey(), 2);
 			}
-			else if (tmpPlace.get(charId) <= rank3)
+			else if (tmpPlace.get(chr.getKey()) <= rank3)
 			{
-				_noblesRank.put(charId, 3);
+				_noblesRank.put(chr.getKey(), 3);
 			}
-			else if (tmpPlace.get(charId) <= rank4)
+			else if (tmpPlace.get(chr.getKey()) <= rank4)
 			{
-				_noblesRank.put(charId, 4);
+				_noblesRank.put(chr.getKey(), 4);
 			}
 			else
 			{
-				_noblesRank.put(charId, 5);
+				_noblesRank.put(chr.getKey(), 5);
 			}
 		}
 	}

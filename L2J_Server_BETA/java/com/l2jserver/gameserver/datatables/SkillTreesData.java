@@ -49,8 +49,6 @@ import com.l2jserver.gameserver.model.interfaces.ISkillsHolder;
 import com.l2jserver.gameserver.model.skills.CommonSkill;
 import com.l2jserver.gameserver.model.skills.Skill;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 /**
  * This class loads and manage the characters and pledges skills trees.<br>
  * Here can be found the following skill trees:<br>
@@ -92,8 +90,8 @@ public final class SkillTreesData extends DocumentParser
 	private static final Map<Integer, L2SkillLearn> _gameMasterAuraSkillTree = new HashMap<>();
 	
 	// Checker, sorted arrays of hash codes
-	private TIntObjectHashMap<int[]> _skillsByClassIdHashCodes; // Occupation skills
-	private TIntObjectHashMap<int[]> _skillsByRaceHashCodes; // Race-specific Transformations
+	private Map<Integer, int[]> _skillsByClassIdHashCodes; // Occupation skills
+	private Map<Integer, int[]> _skillsByRaceHashCodes; // Race-specific Transformations
 	private int[] _allSkillsHashCodes; // Fishing, Collection, Transformations, Common Skills.
 	
 	private boolean _loading = true;
@@ -1093,7 +1091,7 @@ public final class SkillTreesData extends DocumentParser
 		// Class specific skills:
 		Map<Integer, L2SkillLearn> tempMap;
 		final Set<ClassId> keySet = _classSkillTrees.keySet();
-		_skillsByClassIdHashCodes = new TIntObjectHashMap<>(keySet.size());
+		_skillsByClassIdHashCodes = new HashMap<>(keySet.size());
 		for (ClassId cls : keySet)
 		{
 			i = 0;
@@ -1110,7 +1108,7 @@ public final class SkillTreesData extends DocumentParser
 		
 		// Race specific skills from Fishing and Transformation skill trees.
 		final List<Integer> list = new ArrayList<>();
-		_skillsByRaceHashCodes = new TIntObjectHashMap<>(PcRace.values().length);
+		_skillsByRaceHashCodes = new HashMap<>(PcRace.values().length);
 		for (PcRace r : PcRace.values())
 		{
 			for (L2SkillLearn s : _fishingSkillTree.values())

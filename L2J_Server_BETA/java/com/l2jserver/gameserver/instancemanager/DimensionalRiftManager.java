@@ -22,6 +22,8 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,15 +50,14 @@ import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
-import gnu.trove.map.hash.TByteObjectHashMap;
-
 /**
+ * Dimensional Rift manager.
  * @author kombat
  */
 public final class DimensionalRiftManager
 {
 	private static Logger _log = Logger.getLogger(DimensionalRiftManager.class.getName());
-	private final TByteObjectHashMap<TByteObjectHashMap<DimensionalRiftRoom>> _rooms = new TByteObjectHashMap<>(7);
+	private final Map<Byte, Map<Byte, DimensionalRiftRoom>> _rooms = new HashMap<>(7);
 	private final int DIMENSIONAL_FRAGMENT_ITEM_ID = 7079;
 	
 	public static DimensionalRiftManager getInstance()
@@ -101,7 +102,7 @@ public final class DimensionalRiftManager
 				
 				if (!_rooms.containsKey(type))
 				{
-					_rooms.put(type, new TByteObjectHashMap<DimensionalRiftRoom>(9));
+					_rooms.put(type, new HashMap<Byte, DimensionalRiftRoom>(9));
 				}
 				
 				_rooms.get(type).put(room_id, new DimensionalRiftRoom(type, room_id, xMin, xMax, yMin, yMax, z1, z2, xT, yT, zT, isBossRoom));
@@ -112,12 +113,12 @@ public final class DimensionalRiftManager
 			_log.log(Level.WARNING, "Can't load Dimension Rift zones. " + e.getMessage(), e);
 		}
 		
-		int typeSize = _rooms.keys().length;
+		int typeSize = _rooms.keySet().size();
 		int roomSize = 0;
 		
-		for (byte b : _rooms.keys())
+		for (byte b : _rooms.keySet())
 		{
-			roomSize += _rooms.get(b).keys().length;
+			roomSize += _rooms.get(b).keySet().size();
 		}
 		
 		_log.info(getClass().getSimpleName() + ": Loaded " + typeSize + " room types with " + roomSize + " rooms.");
@@ -230,9 +231,9 @@ public final class DimensionalRiftManager
 	
 	public void reload()
 	{
-		for (byte b : _rooms.keys())
+		for (byte b : _rooms.keySet())
 		{
-			for (byte i : _rooms.get(b).keys())
+			for (byte i : _rooms.get(b).keySet())
 			{
 				_rooms.get(b).get(i).getSpawns().clear();
 			}
@@ -449,7 +450,7 @@ public final class DimensionalRiftManager
 	public boolean isAllowedEnter(byte type)
 	{
 		int count = 0;
-		for (DimensionalRiftRoom room : _rooms.get(type).valueCollection())
+		for (DimensionalRiftRoom room : _rooms.get(type).values())
 		{
 			if (room.isPartyInside())
 			{
@@ -462,7 +463,7 @@ public final class DimensionalRiftManager
 	public FastList<Byte> getFreeRooms(byte type)
 	{
 		FastList<Byte> list = new FastList<>();
-		for (DimensionalRiftRoom room : _rooms.get(type).valueCollection())
+		for (DimensionalRiftRoom room : _rooms.get(type).values())
 		{
 			if (!room.isPartyInside())
 			{

@@ -45,7 +45,7 @@ public class CompactionIDFactory extends IdFactory
 		{
 			// con.createStatement().execute("drop table if exists tmp_obj_id");
 			
-			int[] tmp_obj_ids = extractUsedObjectIDTable();
+			Integer[] tmp_obj_ids = extractUsedObjectIDTable();
 			
 			int N = tmp_obj_ids.length;
 			for (int idx = 0; idx < N; idx++)
@@ -62,7 +62,7 @@ public class CompactionIDFactory extends IdFactory
 		}
 	}
 	
-	private int insertUntil(int[] tmp_obj_ids, int idx, int N, Connection con) throws SQLException
+	private int insertUntil(Integer[] tmp_obj_ids, int idx, int N, Connection con) throws SQLException
 	{
 		int id = tmp_obj_ids[idx];
 		if (id == _curOID)

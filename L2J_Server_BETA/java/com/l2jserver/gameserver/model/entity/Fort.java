@@ -23,8 +23,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -65,8 +67,6 @@ import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-import gnu.trove.map.hash.TIntIntHashMap;
-
 public final class Fort extends AbstractResidence
 {
 	protected static final Logger _log = Logger.getLogger(Fort.class.getName());
@@ -91,7 +91,7 @@ public final class Fort extends AbstractResidence
 	private final FastList<L2Spawn> _npcCommanders = new FastList<>();
 	private final FastList<L2Spawn> _specialEnvoys = new FastList<>();
 	
-	private final TIntIntHashMap _envoyCastles = new TIntIntHashMap(2);
+	private final Map<Integer, Integer> _envoyCastles = new HashMap<>(2);
 	private final Set<Integer> _availableCastles = new HashSet<>(1);
 	
 	/** Fortress Functions */

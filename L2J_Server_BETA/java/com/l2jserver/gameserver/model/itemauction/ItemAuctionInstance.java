@@ -25,8 +25,11 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,8 +52,6 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.Rnd;
-
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 public final class ItemAuctionInstance
 {
@@ -81,7 +82,7 @@ public final class ItemAuctionInstance
 	
 	private final int _instanceId;
 	private final AtomicInteger _auctionIds;
-	private final TIntObjectHashMap<ItemAuction> _auctions;
+	private final Map<Integer, ItemAuction> _auctions;
 	private final ArrayList<AuctionItem> _items;
 	private final AuctionDateGenerator _dateGenerator;
 	
@@ -93,7 +94,7 @@ public final class ItemAuctionInstance
 	{
 		_instanceId = instanceId;
 		_auctionIds = auctionIds;
-		_auctions = new TIntObjectHashMap<>();
+		_auctions = new HashMap<>();
 		_items = new ArrayList<>();
 		
 		final NamedNodeMap nanode = node.getAttributes();
@@ -246,7 +247,7 @@ public final class ItemAuctionInstance
 	
 	final void checkAndSetCurrentAndNextAuction()
 	{
-		final ItemAuction[] auctions = _auctions.values(new ItemAuction[0]);
+		final ItemAuction[] auctions = _auctions.values().toArray(new ItemAuction[_auctions.size()]);
 		
 		ItemAuction currentAuction = null;
 		ItemAuction nextAuction = null;
@@ -301,7 +302,7 @@ public final class ItemAuctionInstance
 			{
 				Arrays.sort(auctions, itemAuctionComparator);
 				
-				// just to make sure we won`t skip any auction because of little different times
+				// just to make sure we won't skip any auction because of little different times
 				final long currentTime = System.currentTimeMillis();
 				
 				for (final ItemAuction auction : auctions)
@@ -366,8 +367,8 @@ public final class ItemAuctionInstance
 	
 	public final ItemAuction[] getAuctionsByBidder(final int bidderObjId)
 	{
-		final ItemAuction[] auctions = getAuctions();
-		final ArrayList<ItemAuction> stack = new ArrayList<>(auctions.length);
+		final Collection<ItemAuction> auctions = getAuctions();
+		final ArrayList<ItemAuction> stack = new ArrayList<>(auctions.size());
 		for (final ItemAuction auction : getAuctions())
 		{
 			if (auction.getAuctionState() != ItemAuctionState.CREATED)
@@ -382,13 +383,13 @@ public final class ItemAuctionInstance
 		return stack.toArray(new ItemAuction[stack.size()]);
 	}
 	
-	public final ItemAuction[] getAuctions()
+	public final Collection<ItemAuction> getAuctions()
 	{
-		final ItemAuction[] auctions;
+		final Collection<ItemAuction> auctions;
 		
 		synchronized (_auctions)
 		{
-			auctions = _auctions.values(new ItemAuction[0]);
+			auctions = _auctions.values();
 		}
 		
 		return auctions;

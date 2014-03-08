@@ -18,12 +18,12 @@
  */
 package com.l2jserver.gameserver.datatables;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.Skill;
-
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
  * @author Nyaran
@@ -35,16 +35,16 @@ public class SummonEffectsTable
 	// -> key: charObjectId, value: classIndex Map
 	// --> key: classIndex, value: servitors Map
 	// ---> key: servitorSkillId, value: Effects list
-	private final TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>> _servitorEffects = new TIntObjectHashMap<>();
+	private final Map<Integer, Map<Integer, Map<Integer, List<SummonEffect>>>> _servitorEffects = new HashMap<>();
 	
-	public TIntObjectHashMap<TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>>> getServitorEffectsOwner()
+	public Map<Integer, Map<Integer, Map<Integer, List<SummonEffect>>>> getServitorEffectsOwner()
 	{
 		return _servitorEffects;
 	}
 	
-	public TIntObjectHashMap<List<SummonEffect>> getServitorEffects(L2PcInstance owner)
+	public Map<Integer, List<SummonEffect>> getServitorEffects(L2PcInstance owner)
 	{
-		final TIntObjectHashMap<TIntObjectHashMap<List<SummonEffect>>> servitorMap = _servitorEffects.get(owner.getObjectId());
+		final Map<Integer, Map<Integer, List<SummonEffect>>> servitorMap = _servitorEffects.get(owner.getObjectId());
 		if (servitorMap == null)
 		{
 			return null;
@@ -53,9 +53,9 @@ public class SummonEffectsTable
 	}
 	
 	/** Pets **/
-	private final TIntObjectHashMap<List<SummonEffect>> _petEffects = new TIntObjectHashMap<>(); // key: petItemObjectId, value: Effects list
+	private final Map<Integer, List<SummonEffect>> _petEffects = new HashMap<>(); // key: petItemObjectId, value: Effects list
 	
-	public TIntObjectHashMap<List<SummonEffect>> getPetEffects()
+	public Map<Integer, List<SummonEffect>> getPetEffects()
 	{
 		return _petEffects;
 	}
@@ -82,9 +82,6 @@ public class SummonEffectsTable
 		}
 	}
 	
-	/**
-	 * @return
-	 */
 	public static SummonEffectsTable getInstance()
 	{
 		return SingletonHolder._instance;
