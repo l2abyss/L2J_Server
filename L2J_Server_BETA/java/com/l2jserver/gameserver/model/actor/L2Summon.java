@@ -120,7 +120,7 @@ public abstract class L2Summon extends L2Playable
 		
 		_showSummonAnimation = true;
 		_owner = owner;
-		_ai = new L2SummonAI(new AIAccessor());
+		getAI();
 		
 		setXYZInvisible(owner.getX() + Rnd.get(-100, 100), owner.getY() + Rnd.get(-100, 100), owner.getZ());
 	}
@@ -210,19 +210,9 @@ public abstract class L2Summon extends L2Playable
 	}
 	
 	@Override
-	public L2CharacterAI getAI()
+	protected L2CharacterAI initAI()
 	{
-		if (_ai == null)
-		{
-			synchronized (this)
-			{
-				if (_ai == null)
-				{
-					return _ai = new L2SummonAI(new L2Summon.AIAccessor());
-				}
-			}
-		}
-		return _ai;
+		return new L2SummonAI(new L2Summon.AIAccessor());
 	}
 	
 	@Override

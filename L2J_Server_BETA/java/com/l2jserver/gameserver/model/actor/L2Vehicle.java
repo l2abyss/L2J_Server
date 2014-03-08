@@ -29,7 +29,6 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
-import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2World;
@@ -505,15 +504,6 @@ public abstract class L2Vehicle extends L2Character
 	public boolean isAutoAttackable(L2Character attacker)
 	{
 		return false;
-	}
-	
-	@Override
-	public void setAI(L2CharacterAI newAI)
-	{
-		if (_ai == null)
-		{
-			_ai = newAI;
-		}
 	}
 	
 	public class AIAccessor extends L2Character.AIAccessor

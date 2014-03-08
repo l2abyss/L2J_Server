@@ -18,7 +18,6 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.ai.L2ControllableMobAI;
 import com.l2jserver.gameserver.enums.InstanceType;
@@ -31,7 +30,6 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 public class L2ControllableMobInstance extends L2MonsterInstance
 {
 	private boolean _isInvul;
-	private L2ControllableMobAI _aiBackup; // to save ai, avoiding beeing detached
 	
 	protected class ControllableAIAcessor extends AIAccessor
 	{
@@ -62,25 +60,9 @@ public class L2ControllableMobInstance extends L2MonsterInstance
 	}
 	
 	@Override
-	public L2CharacterAI getAI()
+	protected L2CharacterAI initAI()
 	{
-		if (_ai == null)
-		{
-			synchronized (this)
-			{
-				if ((_ai == null) && (_aiBackup == null))
-				{
-					_ai = new L2ControllableMobAI(new ControllableAIAcessor());
-					_aiBackup = (L2ControllableMobAI) _ai;
-				}
-				else
-				{
-					_ai = _aiBackup;
-				}
-				return _ai;
-			}
-		}
-		return _ai;
+		return new L2ControllableMobAI(new ControllableAIAcessor());
 	}
 	
 	@Override
@@ -102,30 +84,7 @@ public class L2ControllableMobInstance extends L2MonsterInstance
 			return false;
 		}
 		
-		removeAI();
+		setAI(null);
 		return true;
-	}
-	
-	@Override
-	public boolean deleteMe()
-	{
-		removeAI();
-		return super.deleteMe();
-	}
-	
-	/**
-	 * Definitively remove AI
-	 */
-	protected void removeAI()
-	{
-		synchronized (this)
-		{
-			if (_aiBackup != null)
-			{
-				_aiBackup.setIntention(CtrlIntention.AI_INTENTION_IDLE);
-				_aiBackup = null;
-				_ai = null;
-			}
-		}
 	}
 }

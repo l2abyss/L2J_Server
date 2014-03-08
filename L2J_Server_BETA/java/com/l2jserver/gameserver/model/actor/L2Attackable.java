@@ -163,24 +163,10 @@ public class L2Attackable extends L2Npc
 		return (AttackableEvents) super.getEvents();
 	}
 	
-	/**
-	 * Return the L2Character AI of the L2Attackable and if its null create a new one.
-	 */
 	@Override
-	public L2CharacterAI getAI()
+	protected L2CharacterAI initAI()
 	{
-		if (_ai == null)
-		{
-			synchronized (this)
-			{
-				if (_ai == null)
-				{
-					_ai = new L2AttackableAI(new AIAccessor());
-				}
-				return _ai;
-			}
-		}
-		return _ai;
+		return new L2AttackableAI(new AIAccessor());
 	}
 	
 	public final Map<L2Character, AggroInfo> getAggroList()

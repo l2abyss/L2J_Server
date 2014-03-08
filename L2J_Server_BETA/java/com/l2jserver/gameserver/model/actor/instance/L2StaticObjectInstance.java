@@ -82,7 +82,7 @@ public final class L2StaticObjectInstance extends L2Character
 	}
 	
 	@Override
-	public L2CharacterAI getAI()
+	protected L2CharacterAI initAI()
 	{
 		return null;
 	}
