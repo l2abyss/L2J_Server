@@ -57,6 +57,7 @@ public enum L2TargetType
 	SELF,
 	SERVITOR,
 	SUMMON,
+	TARGET_PARTY,
 	UNDEAD,
 	UNLOCKABLE
 }
