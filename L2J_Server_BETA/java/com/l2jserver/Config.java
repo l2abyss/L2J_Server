@@ -510,10 +510,6 @@ public final class Config
 	public static boolean GRIDS_ALWAYS_ON;
 	public static int GRID_NEIGHBOR_TURNON_TIME;
 	public static int GRID_NEIGHBOR_TURNOFF_TIME;
-	public static int WORLD_X_MIN;
-	public static int WORLD_X_MAX;
-	public static int WORLD_Y_MIN;
-	public static int WORLD_Y_MAX;
 	public static int GEODATA;
 	public static String GEODATA_DRIVER;
 	public static File PATHNODE_DIR;
@@ -1849,10 +1845,6 @@ public final class Config
 			GRIDS_ALWAYS_ON = General.getBoolean("GridsAlwaysOn", false);
 			GRID_NEIGHBOR_TURNON_TIME = General.getInt("GridNeighborTurnOnTime", 1);
 			GRID_NEIGHBOR_TURNOFF_TIME = General.getInt("GridNeighborTurnOffTime", 90);
-			WORLD_X_MIN = General.getInt("WorldXMin", 10);
-			WORLD_X_MAX = General.getInt("WorldXMax", 26);
-			WORLD_Y_MIN = General.getInt("WorldYMin", 10);
-			WORLD_Y_MAX = General.getInt("WorldYMax", 26);
 			GEODATA = General.getInt("GeoData", 0);
 			GEODATA_DRIVER = General.getString("GeoDataDriver", "com.l2jserver.gameserver.geoengine.NullDriver");
 			try

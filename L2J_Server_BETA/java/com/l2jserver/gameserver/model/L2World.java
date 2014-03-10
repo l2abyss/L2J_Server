@@ -51,10 +51,17 @@ public final class L2World
 	private static final int TILE_SIZE = 32768;
 	
 	/** Map dimensions */
-	public static final int MAP_MIN_X = (Config.WORLD_X_MIN - 20) * TILE_SIZE;
-	public static final int MAP_MAX_X = (Config.WORLD_X_MAX - 19) * TILE_SIZE;
-	public static final int MAP_MIN_Y = (Config.WORLD_Y_MIN - 18) * TILE_SIZE;
-	public static final int MAP_MAX_Y = (Config.WORLD_Y_MAX - 17) * TILE_SIZE;
+	public static final int TILE_X_MIN = 11;
+	public static final int TILE_Y_MIN = 10;
+	public static final int TILE_X_MAX = 26;
+	public static final int TILE_Y_MAX = 26;
+	public static final int TILE_ZERO_COORD_X = 20;
+	public static final int TILE_ZERO_COORD_Y = 18;
+	public static final int MAP_MIN_X = (TILE_X_MIN - TILE_ZERO_COORD_X) * TILE_SIZE;
+	public static final int MAP_MIN_Y = (TILE_Y_MIN - TILE_ZERO_COORD_Y) * TILE_SIZE;
+	
+	public static final int MAP_MAX_X = ((TILE_X_MAX - TILE_ZERO_COORD_X) + 1) * TILE_SIZE;
+	public static final int MAP_MAX_Y = ((TILE_Y_MAX - TILE_ZERO_COORD_Y) + 1) * TILE_SIZE;
 	
 	/** calculated offset used so top left region is 0,0 */
 	public static final int OFFSET_X = Math.abs(MAP_MIN_X >> SHIFT_BY);
