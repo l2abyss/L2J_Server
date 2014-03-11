@@ -71,9 +71,16 @@ public final class AuthLogin extends L2GameClientPacket
 		// avoid potential exploits
 		if (client.getAccountName() == null)
 		{
-			client.setAccountName(_loginName);
-			LoginServerThread.getInstance().addGameServerLogin(_loginName, client);
-			LoginServerThread.getInstance().addWaitingClientAndSendRequest(_loginName, client, key);
+			// Preventing duplicate login in case client login server socket was disconnected or this packet was not sent yet
+			if (LoginServerThread.getInstance().addGameServerLogin(_loginName, client))
+			{
+				client.setAccountName(_loginName);
+				LoginServerThread.getInstance().addWaitingClientAndSendRequest(_loginName, client, key);
+			}
+			else
+			{
+				client.close((L2GameServerPacket) null);
+			}
 		}
 	}
 	

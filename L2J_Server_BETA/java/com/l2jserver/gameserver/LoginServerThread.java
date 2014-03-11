@@ -461,10 +461,11 @@ public class LoginServerThread extends Thread
 	 * Adds the game server login.
 	 * @param account the account
 	 * @param client the client
+	 * @return {@code true} if account was not already logged in, {@code false} otherwise
 	 */
-	public void addGameServerLogin(String account, L2GameClient client)
+	public boolean addGameServerLogin(String account, L2GameClient client)
 	{
-		_accountsInGameServer.put(account, client);
+		return _accountsInGameServer.putIfAbsent(account, client) == null;
 	}
 	
 	/**
