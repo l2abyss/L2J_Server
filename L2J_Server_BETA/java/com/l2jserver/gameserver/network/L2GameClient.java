@@ -711,7 +711,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		// no long running tasks here, do it async
 		try
 		{
-			ThreadPoolManager.getInstance().executeTask(new DisconnectTask());
+			ThreadPoolManager.getInstance().executeGeneral(new DisconnectTask());
 		}
 		catch (RejectedExecutionException e)
 		{

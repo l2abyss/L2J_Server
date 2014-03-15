@@ -854,7 +854,7 @@ public class FortSiege implements Siegable
 			saveFortSiege();
 			clearSiegeClan(); // remove all clans
 			// spawn suspicious merchant immediately
-			ThreadPoolManager.getInstance().executeTask(new ScheduleSuspiciousMerchantSpawn());
+			ThreadPoolManager.getInstance().executeGeneral(new ScheduleSuspiciousMerchantSpawn());
 		}
 		else
 		{
@@ -869,12 +869,12 @@ public class FortSiege implements Siegable
 				// preparing start siege task
 				if (delay > 3600000) // more than hour, how this can happens ? spawn suspicious merchant
 				{
-					ThreadPoolManager.getInstance().executeTask(new ScheduleSuspiciousMerchantSpawn());
+					ThreadPoolManager.getInstance().executeGeneral(new ScheduleSuspiciousMerchantSpawn());
 					_siegeStartTask = ThreadPoolManager.getInstance().scheduleGeneral(new FortSiege.ScheduleStartSiegeTask(3600), delay - 3600000);
 				}
 				if (delay > 600000) // more than 10 min, spawn suspicious merchant
 				{
-					ThreadPoolManager.getInstance().executeTask(new ScheduleSuspiciousMerchantSpawn());
+					ThreadPoolManager.getInstance().executeGeneral(new ScheduleSuspiciousMerchantSpawn());
 					_siegeStartTask = ThreadPoolManager.getInstance().scheduleGeneral(new FortSiege.ScheduleStartSiegeTask(600), delay - 600000);
 				}
 				else if (delay > 300000)

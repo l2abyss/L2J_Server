@@ -96,7 +96,7 @@ public class TvTManager
 			if (nextStartTime != null)
 			{
 				_task = new TvTStartTask(nextStartTime.getTimeInMillis());
-				ThreadPoolManager.getInstance().executeTask(_task);
+				ThreadPoolManager.getInstance().executeGeneral(_task);
 			}
 		}
 		catch (Exception e)
@@ -123,7 +123,7 @@ public class TvTManager
 			
 			// schedule registration end
 			_task.setStartTime(System.currentTimeMillis() + (60000L * Config.TVT_EVENT_PARTICIPATION_TIME));
-			ThreadPoolManager.getInstance().executeTask(_task);
+			ThreadPoolManager.getInstance().executeGeneral(_task);
 		}
 	}
 	
@@ -143,7 +143,7 @@ public class TvTManager
 		{
 			TvTEvent.sysMsgToAllParticipants("TvT Event: Teleporting participants to an arena in " + Config.TVT_EVENT_START_LEAVE_TELEPORT_DELAY + " second(s).");
 			_task.setStartTime(System.currentTimeMillis() + (60000L * Config.TVT_EVENT_RUNNING_TIME));
-			ThreadPoolManager.getInstance().executeTask(_task);
+			ThreadPoolManager.getInstance().executeGeneral(_task);
 		}
 	}
 	
@@ -164,7 +164,7 @@ public class TvTManager
 		if (_task.nextRun.cancel(false))
 		{
 			_task.setStartTime(System.currentTimeMillis());
-			ThreadPoolManager.getInstance().executeTask(_task);
+			ThreadPoolManager.getInstance().executeGeneral(_task);
 		}
 	}
 	

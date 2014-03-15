@@ -1621,7 +1621,7 @@ public final class L2ItemInstance extends L2Object
 		{
 			return;
 		}
-		ThreadPoolManager.getInstance().executeTask(new ItemDropTask(this, dropper, x, y, z));
+		ThreadPoolManager.getInstance().executeGeneral(new ItemDropTask(this, dropper, x, y, z));
 	}
 	
 	/**

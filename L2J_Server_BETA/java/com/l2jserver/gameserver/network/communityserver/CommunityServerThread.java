@@ -247,8 +247,7 @@ public final class CommunityServerThread extends NetConnection
 					
 					if (packet != null)
 					{
-						// new Thread(packet).start();
-						ThreadPoolManager.getInstance().executeCommunityPacket(packet);
+						ThreadPoolManager.getInstance().executePacket(packet);
 					}
 					else
 					{

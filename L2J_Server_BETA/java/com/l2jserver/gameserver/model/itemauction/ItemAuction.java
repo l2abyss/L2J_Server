@@ -403,7 +403,7 @@ public final class ItemAuction
 	
 	public final void broadcastToAllBidders(final L2GameServerPacket packet)
 	{
-		ThreadPoolManager.getInstance().executeTask(new Runnable()
+		ThreadPoolManager.getInstance().executeGeneral(new Runnable()
 		{
 			@Override
 			public final void run()

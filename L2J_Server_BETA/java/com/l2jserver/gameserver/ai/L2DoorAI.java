@@ -91,7 +91,7 @@ public class L2DoorAI extends L2CharacterAI
 	protected void onEvtAttacked(L2Character attacker)
 	{
 		L2DoorInstance me = (L2DoorInstance) _actor;
-		ThreadPoolManager.getInstance().executeTask(new onEventAttackedDoorTask(me, attacker));
+		ThreadPoolManager.getInstance().executeGeneral(new onEventAttackedDoorTask(me, attacker));
 	}
 	
 	@Override

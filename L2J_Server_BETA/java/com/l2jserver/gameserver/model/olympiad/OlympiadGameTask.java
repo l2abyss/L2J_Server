@@ -161,7 +161,7 @@ public final class OlympiadGameTask implements Runnable
 		_game = game;
 		_state = GameState.BEGIN;
 		_needAnnounce = false;
-		ThreadPoolManager.getInstance().executeTask(this);
+		ThreadPoolManager.getInstance().executeGeneral(this);
 	}
 	
 	@Override
