@@ -779,7 +779,7 @@ public final class Fort extends AbstractResidence
 	private void removeDoorUpgrade()
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement ps = con.prepareStatement("DELETE FROM fort_doorupgrade WHERE WHERE fortId = ?"))
+			PreparedStatement ps = con.prepareStatement("DELETE FROM fort_doorupgrade WHERE fortId = ?"))
 		{
 			ps.setInt(1, getResidenceId());
 			ps.execute();
