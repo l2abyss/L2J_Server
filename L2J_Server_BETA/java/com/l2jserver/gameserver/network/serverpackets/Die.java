@@ -73,7 +73,7 @@ public class Die extends L2GameServerPacket
 			Castle castle = CastleManager.getInstance().getCastle(_activeChar);
 			Fort fort = FortManager.getInstance().getFort(_activeChar);
 			SiegableHall hall = CHSiegeManager.getInstance().getNearbyClanHall(_activeChar);
-			if ((castle != null) && castle.getSiege().getIsInProgress())
+			if ((castle != null) && castle.getSiege().isInProgress())
 			{
 				// siege in progress
 				siegeClan = castle.getSiege().getAttackerClan(_clan);
@@ -82,7 +82,7 @@ public class Die extends L2GameServerPacket
 					isInCastleDefense = true;
 				}
 			}
-			else if ((fort != null) && fort.getSiege().getIsInProgress())
+			else if ((fort != null) && fort.getSiege().isInProgress())
 			{
 				// siege in progress
 				siegeClan = fort.getSiege().getAttackerClan(_clan);

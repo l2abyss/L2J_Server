@@ -442,7 +442,7 @@ public final class Fort extends AbstractResidence
 		updateOwnerInDB(); // Update in database
 		saveFortVariables();
 		
-		if (getSiege().getIsInProgress())
+		if (getSiege().isInProgress())
 		{
 			getSiege().endSiege();
 		}

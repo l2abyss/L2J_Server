@@ -113,7 +113,7 @@ public class L2DamageZone extends L2ZoneType
 			L2PcInstance player = character.getActingPlayer();
 			if (getCastle() != null) // Castle zone
 			{
-				if (!(getCastle().getSiege().getIsInProgress() && (player != null) && (player.getSiegeState() != 2))) // Siege and no defender
+				if (!(getCastle().getSiege().isInProgress() && (player != null) && (player.getSiegeState() != 2))) // Siege and no defender
 				{
 					return;
 				}
@@ -181,7 +181,7 @@ public class L2DamageZone extends L2ZoneType
 			
 			if (_castle != null)
 			{
-				siege = _castle.getSiege().getIsInProgress();
+				siege = _castle.getSiege().isInProgress();
 				// castle zones active only during siege
 				if (!siege)
 				{

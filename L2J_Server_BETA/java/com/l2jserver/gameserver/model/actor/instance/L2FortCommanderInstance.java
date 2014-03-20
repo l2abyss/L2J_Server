@@ -59,7 +59,7 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 			return false;
 		}
 		
-		boolean isFort = ((getFort() != null) && (getFort().getResidenceId() > 0) && getFort().getSiege().getIsInProgress() && !getFort().getSiege().checkIsDefender(((L2PcInstance) attacker).getClan()));
+		boolean isFort = ((getFort() != null) && (getFort().getResidenceId() > 0) && getFort().getSiege().isInProgress() && !getFort().getSiege().checkIsDefender(((L2PcInstance) attacker).getClan()));
 		
 		// Attackable during siege by all except defenders
 		return (isFort);
@@ -87,7 +87,7 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 			return false;
 		}
 		
-		if (getFort().getSiege().getIsInProgress())
+		if (getFort().getSiege().isInProgress())
 		{
 			getFort().getSiege().killedCommander(this);
 			

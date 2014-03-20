@@ -327,7 +327,7 @@ public final class L2TeleporterInstance extends L2Npc
 			return COND_REGULAR; // Regular access
 		}
 		// Teleporter is on castle ground and siege is in progress
-		else if (getCastle().getSiege().getIsInProgress())
+		else if (getCastle().getSiege().isInProgress())
 		{
 			return COND_BUSY_BECAUSE_OF_SIEGE; // Busy because of siege
 		}

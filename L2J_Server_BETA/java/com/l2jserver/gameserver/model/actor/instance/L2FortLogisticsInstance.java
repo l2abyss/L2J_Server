@@ -137,7 +137,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 		{
 			if (isMyLord(player))
 			{
-				if (getFort().getSiege().getIsInProgress())
+				if (getFort().getSiege().isInProgress())
 				{
 					html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-siege.htm");
 				}

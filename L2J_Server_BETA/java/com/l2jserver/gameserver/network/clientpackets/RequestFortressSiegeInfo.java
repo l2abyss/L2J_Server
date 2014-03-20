@@ -44,7 +44,7 @@ public class RequestFortressSiegeInfo extends L2GameClientPacket
 		{
 			for (Fort fort : FortManager.getInstance().getForts())
 			{
-				if ((fort != null) && fort.getSiege().getIsInProgress())
+				if ((fort != null) && fort.getSiege().isInProgress())
 				{
 					client.sendPacket(new ExShowFortressSiegeInfo(fort));
 				}

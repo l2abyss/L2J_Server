@@ -101,19 +101,6 @@ public class L2SiegeFlagInstance extends L2Npc
 		setIsInvul(false);
 	}
 	
-	/**
-	 * Use L2SiegeFlagInstance(L2PcInstance, int, L2NpcTemplate, boolean) instead
-	 * @param player
-	 * @param objectId
-	 * @param template
-	 */
-	@Deprecated
-	public L2SiegeFlagInstance(L2PcInstance player, int objectId, L2NpcTemplate template)
-	{
-		super(objectId, template);
-		_isAdvanced = false;
-	}
-	
 	@Override
 	public boolean canBeAttacked()
 	{
@@ -205,7 +192,7 @@ public class L2SiegeFlagInstance extends L2Npc
 		super.reduceCurrentHp(damage, attacker, skill);
 		if (canTalk())
 		{
-			if (((getCastle() != null) && getCastle().getSiege().getIsInProgress()) || ((getFort() != null) && getFort().getSiege().getIsInProgress()) || ((getConquerableHall() != null) && getConquerableHall().isInSiege()))
+			if (((getCastle() != null) && getCastle().getSiege().isInProgress()) || ((getFort() != null) && getFort().getSiege().isInProgress()) || ((getConquerableHall() != null) && getConquerableHall().isInSiege()))
 			{
 				if (_clan != null)
 				{

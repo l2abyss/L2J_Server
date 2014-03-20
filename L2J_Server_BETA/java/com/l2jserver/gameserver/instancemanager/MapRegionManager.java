@@ -283,7 +283,7 @@ public final class MapRegionManager extends DocumentParser
 					if (castle == null)
 					{
 						castle = CastleManager.getInstance().getCastle(player);
-						if (!((castle != null) && castle.getSiege().getIsInProgress() && (castle.getSiege().getDefenderClan(player.getClan()) != null)))
+						if (!((castle != null) && castle.getSiege().isInProgress() && (castle.getSiege().getDefenderClan(player.getClan()) != null)))
 						{
 							castle = null;
 						}
@@ -308,7 +308,7 @@ public final class MapRegionManager extends DocumentParser
 					if (fort == null)
 					{
 						fort = FortManager.getInstance().getFort(player);
-						if (!((fort != null) && fort.getSiege().getIsInProgress() && (fort.getOwnerClan() == player.getClan())))
+						if (!((fort != null) && fort.getSiege().isInProgress() && (fort.getOwnerClan() == player.getClan())))
 						{
 							fort = null;
 						}
@@ -337,7 +337,7 @@ public final class MapRegionManager extends DocumentParser
 					}
 					else if (castle != null)
 					{
-						if (castle.getSiege().getIsInProgress())
+						if (castle.getSiege().isInProgress())
 						{
 							// Check if player's clan is attacker
 							List<L2Npc> flags = castle.getSiege().getFlag(player.getClan());
@@ -351,7 +351,7 @@ public final class MapRegionManager extends DocumentParser
 					}
 					else if (fort != null)
 					{
-						if (fort.getSiege().getIsInProgress())
+						if (fort.getSiege().isInProgress())
 						{
 							// Check if player's clan is attacker
 							List<L2Npc> flags = fort.getSiege().getFlag(player.getClan());
@@ -425,7 +425,7 @@ public final class MapRegionManager extends DocumentParser
 			castle = CastleManager.getInstance().getCastle(player);
 			if (castle != null)
 			{
-				if (castle.getSiege().getIsInProgress())
+				if (castle.getSiege().isInProgress())
 				{
 					// Check if player's clan is participating
 					if ((castle.getSiege().checkIsDefender(player.getClan()) || castle.getSiege().checkIsAttacker(player.getClan())) && (SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE) == SevenSigns.CABAL_DAWN))

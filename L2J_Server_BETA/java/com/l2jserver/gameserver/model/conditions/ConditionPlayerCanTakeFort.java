@@ -49,7 +49,7 @@ public class ConditionPlayerCanTakeFort extends Condition
 		
 		final Fort fort = FortManager.getInstance().getFort(env.getPlayer());
 		final SystemMessage sm;
-		if ((fort == null) || (fort.getResidenceId() <= 0) || !fort.getSiege().getIsInProgress() || (fort.getSiege().getAttackerClan(env.getPlayer().getClan()) == null))
+		if ((fort == null) || (fort.getResidenceId() <= 0) || !fort.getSiege().isInProgress() || (fort.getSiege().getAttackerClan(env.getPlayer().getClan()) == null))
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addSkillName(env.getSkill());

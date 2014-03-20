@@ -8816,14 +8816,14 @@ public final class L2PcInstance extends L2Playable
 		{
 			if ((((L2DoorInstance) target).getCastle() != null) && (((L2DoorInstance) target).getCastle().getResidenceId() > 0)) // If its castle door
 			{
-				if (!((L2DoorInstance) target).getCastle().getSiege().getIsInProgress())
+				if (!((L2DoorInstance) target).getCastle().getSiege().isInProgress())
 				{
 					return false;
 				}
 			}
 			else if ((((L2DoorInstance) target).getFort() != null) && (((L2DoorInstance) target).getFort().getResidenceId() > 0) && !((L2DoorInstance) target).getIsShowHp()) // If its fort door
 			{
-				if (!((L2DoorInstance) target).getFort().getSiege().getIsInProgress())
+				if (!((L2DoorInstance) target).getFort().getSiege().isInProgress())
 				{
 					return false;
 				}

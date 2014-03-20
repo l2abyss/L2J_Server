@@ -62,7 +62,7 @@ public class ConditionPlayerCanCreateBase extends Condition
 			player.sendPacket(sm);
 			canCreateBase = false;
 		}
-		else if (((castle != null) && !castle.getSiege().getIsInProgress()) || ((fort != null) && !fort.getSiege().getIsInProgress()))
+		else if (((castle != null) && !castle.getSiege().isInProgress()) || ((fort != null) && !fort.getSiege().isInProgress()))
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addSkillName(env.getSkill());

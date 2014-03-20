@@ -60,7 +60,7 @@ public final class TownManager
 			Castle castle = CastleManager.getInstance().getCastles().get(CastleManager.getInstance().getCastleIndex(castleIndex));
 			if (castle != null)
 			{
-				return castle.getSiege().getIsInProgress();
+				return castle.getSiege().isInProgress();
 			}
 		}
 		return false;

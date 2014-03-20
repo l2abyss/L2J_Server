@@ -96,7 +96,7 @@ public final class FortSiegeManager
 		{
 			text = "You must be on fort ground to summon this";
 		}
-		else if (!fort.getSiege().getIsInProgress())
+		else if (!fort.getSiege().isInProgress())
 		{
 			text = "You can only summon this during a siege.";
 		}
@@ -373,7 +373,7 @@ public final class FortSiegeManager
 			player.sendPacket(sm);
 			return false;
 		}
-		else if (!fort.getSiege().getIsInProgress())
+		else if (!fort.getSiege().isInProgress())
 		{
 			player.sendPacket(sm);
 			return false;
@@ -397,7 +397,7 @@ public final class FortSiegeManager
 			if (cf.getPlayerObjectId() == player.getObjectId())
 			{
 				cf.dropIt();
-				if (fort.getSiege().getIsInProgress())
+				if (fort.getSiege().isInProgress())
 				{
 					cf.spawnMe();
 				}

@@ -48,7 +48,7 @@ public class ExShowFortressInfo extends L2GameServerPacket
 			L2Clan clan = fort.getOwnerClan();
 			writeD(fort.getResidenceId());
 			writeS(clan != null ? clan.getName() : "");
-			writeD(fort.getSiege().getIsInProgress() ? 0x01 : 0x00);
+			writeD(fort.getSiege().isInProgress() ? 0x01 : 0x00);
 			// Time of possession
 			writeD(fort.getOwnedTime());
 		}

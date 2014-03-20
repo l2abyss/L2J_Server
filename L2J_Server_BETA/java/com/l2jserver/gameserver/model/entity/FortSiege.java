@@ -77,7 +77,7 @@ public class FortSiege implements Siegable
 		@Override
 		public void run()
 		{
-			if (!getIsInProgress())
+			if (!isInProgress())
 			{
 				return;
 			}
@@ -108,7 +108,7 @@ public class FortSiege implements Siegable
 		@Override
 		public void run()
 		{
-			if (getIsInProgress())
+			if (isInProgress())
 			{
 				return;
 			}
@@ -191,7 +191,7 @@ public class FortSiege implements Siegable
 		@Override
 		public void run()
 		{
-			if (getIsInProgress())
+			if (isInProgress())
 			{
 				return;
 			}
@@ -212,7 +212,7 @@ public class FortSiege implements Siegable
 		@Override
 		public void run()
 		{
-			if (!getIsInProgress())
+			if (!isInProgress())
 			{
 				return;
 			}
@@ -250,13 +250,12 @@ public class FortSiege implements Siegable
 	}
 	
 	/**
-	 * When siege ends<BR>
-	 * <BR>
+	 * When siege ends.
 	 */
 	@Override
 	public void endSiege()
 	{
-		if (getIsInProgress())
+		if (isInProgress())
 		{
 			_isInProgress = false; // Flag so that siege instance can be started
 			removeFlags(); // Removes all flags. Note: Remove flag before teleporting players
@@ -307,13 +306,12 @@ public class FortSiege implements Siegable
 	}
 	
 	/**
-	 * When siege starts<BR>
-	 * <BR>
+	 * When siege starts
 	 */
 	@Override
 	public void startSiege()
 	{
-		if (!getIsInProgress())
+		if (!isInProgress())
 		{
 			if (!fireFortSiegeEventListeners(EventStage.START))
 			{
@@ -359,8 +357,7 @@ public class FortSiege implements Siegable
 	}
 	
 	/**
-	 * Announce to player.<BR>
-	 * <BR>
+	 * Announce to player.
 	 * @param sm the system message to send to player
 	 */
 	public void announceToPlayer(SystemMessage sm)
@@ -479,7 +476,7 @@ public class FortSiege implements Siegable
 	 */
 	public boolean checkIfInZone(int x, int y, int z)
 	{
-		return (getIsInProgress() && (getFort().checkIfInZone(x, y, z))); // Fort zone during siege
+		return (isInProgress() && (getFort().checkIfInZone(x, y, z))); // Fort zone during siege
 	}
 	
 	/**
@@ -528,7 +525,7 @@ public class FortSiege implements Siegable
 			getAttackerClans().clear();
 			
 			// if siege is in progress, end siege
-			if (getIsInProgress())
+			if (isInProgress())
 			{
 				endSiege();
 			}
@@ -619,6 +616,7 @@ public class FortSiege implements Siegable
 	}
 	
 	/**
+	 * TODO: To DP AI<br>
 	 * Commander was killed
 	 * @param instance
 	 */
@@ -722,11 +720,11 @@ public class FortSiege implements Siegable
 	 * @param player The L2PcInstance of the player trying to register.
 	 * @param checkConditions True if should be checked conditions, false otherwise
 	 * @return Number that defines what happened. <BR>
-	 *         0 - Player dont have clan.<BR>
-	 *         1 - Player dont havee enough adena to register.<BR>
+	 *         0 - Player don't have clan.<BR>
+	 *         1 - Player don't have enough adena to register.<BR>
 	 *         2 - Is not right time to register Fortress now.<BR>
-	 *         3 - Players clan is already registred to siege.<BR>
-	 *         4 - Players clan is successfully registred to siege.
+	 *         3 - Players clan is already registered to siege.<BR>
+	 *         4 - Players clan is successfully registered to siege.
 	 */
 	public int addAttacker(L2PcInstance player, boolean checkConditions)
 	{
@@ -759,7 +757,7 @@ public class FortSiege implements Siegable
 					return 3; // Players clan is already registred to siege
 				}
 				
-				if ((fort.getOwnerClan() == player.getClan()) && (fort.getSiege().getIsInProgress() || (fort.getSiege()._siegeStartTask != null)))
+				if ((fort.getOwnerClan() == player.getClan()) && (fort.getSiege().isInProgress() || (fort.getSiege()._siegeStartTask != null)))
 				{
 					return 3; // Players clan is already registred to siege
 				}
@@ -779,7 +777,7 @@ public class FortSiege implements Siegable
 	}
 	
 	/**
-	 * Remove clan from siege<BR>
+	 * Remove clan from siege
 	 * @param clan The clan being removed
 	 */
 	public void removeAttacker(L2Clan clan)
@@ -792,10 +790,8 @@ public class FortSiege implements Siegable
 	}
 	
 	/**
-	 * Remove clan from siege<BR>
-	 * <BR>
 	 * This function does not do any checks and should not be called from bypass !
-	 * @param clanId The int of player's clan id
+	 * @param clanId
 	 */
 	private void removeSiegeClan(int clanId)
 	{
@@ -813,7 +809,7 @@ public class FortSiege implements Siegable
 			loadSiegeClan();
 			if (getAttackerClans().isEmpty())
 			{
-				if (getIsInProgress())
+				if (isInProgress())
 				{
 					endSiege();
 				}
@@ -836,8 +832,7 @@ public class FortSiege implements Siegable
 	}
 	
 	/**
-	 * Start the auto tasks<BR>
-	 * <BR>
+	 * Start the auto tasks
 	 */
 	public void checkAutoTask()
 	{
@@ -897,8 +892,7 @@ public class FortSiege implements Siegable
 	}
 	
 	/**
-	 * Start the auto tasks<BR>
-	 * <BR>
+	 * Start the auto task
 	 * @param setTime
 	 */
 	public void startAutoTask(boolean setTime)
@@ -954,9 +948,8 @@ public class FortSiege implements Siegable
 	}
 	
 	/**
-	 * Add clan as attacker<BR>
-	 * <BR>
-	 * @param clanId The int of clan's id
+	 * Add clan as attacker<
+	 * @param clanId
 	 */
 	private void addAttacker(int clanId)
 	{
@@ -964,8 +957,8 @@ public class FortSiege implements Siegable
 	}
 	
 	/**
-	 * @param clan The L2Clan of the player trying to register
-	 * @return true if the clan has already registered to a siege for the same day.
+	 * @param clan
+	 * @return {@code true} if the clan has already registered to a siege for the same day, {@code false} otherwise.
 	 */
 	public boolean checkIfAlreadyRegisteredForSameDay(L2Clan clan)
 	{
@@ -1086,9 +1079,8 @@ public class FortSiege implements Siegable
 	}
 	
 	/**
-	 * Save registration to database.<BR>
-	 * <BR>
-	 * @param clan The L2Clan of player
+	 * Save registration to database.
+	 * @param clan
 	 */
 	private void saveSiegeClan(L2Clan clan)
 	{
@@ -1172,8 +1164,7 @@ public class FortSiege implements Siegable
 	}
 	
 	/**
-	 * Spawn siege guard.<BR>
-	 * <BR>
+	 * Spawn siege guard.
 	 */
 	private void spawnSiegeGuard()
 	{
@@ -1216,7 +1207,7 @@ public class FortSiege implements Siegable
 		return _fort;
 	}
 	
-	public final boolean getIsInProgress()
+	public final boolean isInProgress()
 	{
 		return _isInProgress;
 	}

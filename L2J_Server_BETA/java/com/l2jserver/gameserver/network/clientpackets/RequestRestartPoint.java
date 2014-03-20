@@ -95,7 +95,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 		}
 		
 		Castle castle = CastleManager.getInstance().getCastle(activeChar.getX(), activeChar.getY(), activeChar.getZ());
-		if ((castle != null) && castle.getSiege().getIsInProgress())
+		if ((castle != null) && castle.getSiege().isInProgress())
 		{
 			if ((activeChar.getClan() != null) && castle.getSiege().checkIsAttacker(activeChar.getClan()))
 			{
@@ -151,7 +151,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 			{
 				castle = CastleManager.getInstance().getCastle(activeChar);
 				
-				if ((castle != null) && castle.getSiege().getIsInProgress())
+				if ((castle != null) && castle.getSiege().isInProgress())
 				{
 					// Siege in progress
 					if (castle.getSiege().checkIsDefender(activeChar.getClan()))
@@ -204,11 +204,11 @@ public final class RequestRestartPoint extends L2GameClientPacket
 				hall = CHSiegeManager.getInstance().getNearbyClanHall(activeChar);
 				L2SiegeFlagInstance flag = TerritoryWarManager.getInstance().getFlagForClan(activeChar.getClan());
 				
-				if ((castle != null) && castle.getSiege().getIsInProgress())
+				if ((castle != null) && castle.getSiege().isInProgress())
 				{
 					siegeClan = castle.getSiege().getAttackerClan(activeChar.getClan());
 				}
-				else if ((fort != null) && fort.getSiege().getIsInProgress())
+				else if ((fort != null) && fort.getSiege().isInProgress())
 				{
 					siegeClan = fort.getSiege().getAttackerClan(activeChar.getClan());
 				}

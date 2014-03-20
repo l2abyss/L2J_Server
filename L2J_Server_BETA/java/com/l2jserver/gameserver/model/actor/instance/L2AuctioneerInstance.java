@@ -680,7 +680,7 @@ public final class L2AuctioneerInstance extends L2Npc
 	{
 		if ((getCastle() != null) && (getCastle().getResidenceId() > 0))
 		{
-			if (getCastle().getSiege().getIsInProgress())
+			if (getCastle().getSiege().isInProgress())
 			{
 				return COND_BUSY_BECAUSE_OF_SIEGE; // Busy because of siege
 			}

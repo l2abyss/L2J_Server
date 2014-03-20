@@ -187,7 +187,7 @@ public final class MercTicketManager
 					if (NPC_IDS[i] == npcId) // Find the index of the item used
 					{
 						// only handle tickets if a siege is not ongoing in this npc's castle
-						if ((castle != null) && !(castle.getSiege().getIsInProgress()))
+						if ((castle != null) && !(castle.getSiege().isInProgress()))
 						{
 							itemId = ITEM_IDS[i];
 							// create the ticket in the gameworld

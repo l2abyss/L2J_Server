@@ -561,7 +561,7 @@ public final class Formulas
 		}
 		
 		Siege siege = SiegeManager.getInstance().getSiege(activeChar.getX(), activeChar.getY(), activeChar.getZ());
-		if ((siege == null) || !siege.getIsInProgress())
+		if ((siege == null) || !siege.isInProgress())
 		{
 			return 0;
 		}
