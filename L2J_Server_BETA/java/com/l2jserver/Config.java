@@ -825,6 +825,12 @@ public final class Config
 	public static int INVENTORY_MAXIMUM_PET;
 	public static double PET_HP_REGEN_MULTIPLIER;
 	public static double PET_MP_REGEN_MULTIPLIER;
+	public static int DROP_ADENA_MIN_LEVEL_DIFFERENCE;
+	public static int DROP_ADENA_MAX_LEVEL_DIFFERENCE;
+	public static double DROP_ADENA_MIN_LEVEL_GAP_CHANCE;
+	public static int DROP_ITEM_MIN_LEVEL_DIFFERENCE;
+	public static int DROP_ITEM_MAX_LEVEL_DIFFERENCE;
+	public static double DROP_ITEM_MIN_LEVEL_GAP_CHANCE;
 	public static List<Integer> NON_TALKING_NPCS;
 	
 	// --------------------------------------------------
@@ -1831,7 +1837,6 @@ public final class Config
 			SAVE_DROPPED_ITEM_INTERVAL = General.getInt("SaveDroppedItemInterval", 60) * 60000;
 			CLEAR_DROPPED_ITEM_TABLE = General.getBoolean("ClearDroppedItemTable", false);
 			AUTODELETE_INVALID_QUEST_DATA = General.getBoolean("AutoDeleteInvalidQuestData", false);
-			PRECISE_DROP_CALCULATION = General.getBoolean("PreciseDropCalculation", true);
 			MULTIPLE_ITEM_DROP = General.getBoolean("MultipleItemDrop", true);
 			FORCE_INVENTORY_UPDATE = General.getBoolean("ForceInventoryUpdate", false);
 			LAZY_CACHE = General.getBoolean("LazyCache", true);
@@ -2082,6 +2087,15 @@ public final class Config
 			INVENTORY_MAXIMUM_PET = NPC.getInt("MaximumSlotsForPet", 12);
 			PET_HP_REGEN_MULTIPLIER = NPC.getDouble("PetHpRegenMultiplier", 100) / 100;
 			PET_MP_REGEN_MULTIPLIER = NPC.getDouble("PetMpRegenMultiplier", 100) / 100;
+			
+			DROP_ADENA_MIN_LEVEL_DIFFERENCE = NPC.getInt("DropAdenaMinLevelDifference", 8);
+			DROP_ADENA_MAX_LEVEL_DIFFERENCE = NPC.getInt("DropAdenaMaxLevelDifference", 15);
+			DROP_ADENA_MIN_LEVEL_GAP_CHANCE = NPC.getDouble("DropAdenaMinLevelGapChance", 10);
+			
+			DROP_ITEM_MIN_LEVEL_DIFFERENCE = NPC.getInt("DropItemMinLevelDifference", 5);
+			DROP_ITEM_MAX_LEVEL_DIFFERENCE = NPC.getInt("DropItemMaxLevelDifference", 10);
+			DROP_ITEM_MIN_LEVEL_GAP_CHANCE = NPC.getDouble("DropItemMinLevelGapChance", 10);
+			
 			split = NPC.getString("NonTalkingNpcs", "18684,18685,18686,18687,18688,18689,18690,19691,18692,31202,31203,31204,31205,31206,31207,31208,31209,31266,31557,31593,31606,31671,31672,31673,31674,31758,31955,32026,32030,32031,32032,32306,32619,32620,32621").split(",");
 			NON_TALKING_NPCS = new ArrayList<>(split.length);
 			for (String npcId : split)
@@ -3031,9 +3045,6 @@ public final class Config
 				break;
 			case "cleardroppeditemtable":
 				CLEAR_DROPPED_ITEM_TABLE = Boolean.parseBoolean(pValue);
-				break;
-			case "precisedropcalculation":
-				PRECISE_DROP_CALCULATION = Boolean.parseBoolean(pValue);
 				break;
 			case "multipleitemdrop":
 				MULTIPLE_ITEM_DROP = Boolean.parseBoolean(pValue);
