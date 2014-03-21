@@ -34,8 +34,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.conditions.Condition;
-import com.l2jserver.gameserver.model.conditions.ConditionLogicOr;
-import com.l2jserver.gameserver.model.conditions.ConditionPetType;
 import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
@@ -76,14 +74,6 @@ public abstract class L2Item implements IIdentifiable
 	public static final int TYPE2_QUEST = 3;
 	public static final int TYPE2_MONEY = 4;
 	public static final int TYPE2_OTHER = 5;
-	
-	public static final int STRIDER = 0x1;
-	public static final int GROWN_UP_WOLF_GROUP = 0x2;
-	public static final int HATCHLING_GROUP = 0x4;
-	public static final int ALL_WOLF_GROUP = 0x8;
-	public static final int BABY_PET_GROUP = 0x16;
-	public static final int UPGRADE_BABY_PET_GROUP = 0x32;
-	public static final int ITEM_EQUIP_PET_GROUP = 0x64;
 	
 	public static final int SLOT_NONE = 0x0000;
 	public static final int SLOT_UNDERWEAR = 0x0001;
@@ -282,47 +272,6 @@ public abstract class L2Item implements IIdentifiable
 		_defaultEnchantLevel = set.getInt("enchanted", 0);
 		_reuseDelay = set.getInt("reuse_delay", 0);
 		_sharedReuseGroup = set.getInt("shared_reuse_group", 0);
-		
-		// TODO: This should be done with proper conditions and a categoryData.xml file.
-		String equip_condition = set.getString("equip_condition", null);
-		if (equip_condition != null)
-		{
-			// pet conditions
-			ConditionLogicOr cond = new ConditionLogicOr();
-			if (equip_condition.contains("strider"))
-			{
-				cond.add(new ConditionPetType(STRIDER));
-			}
-			if (equip_condition.contains("grown_up_wolf_group"))
-			{
-				cond.add(new ConditionPetType(GROWN_UP_WOLF_GROUP));
-			}
-			if (equip_condition.contains("hatchling_group"))
-			{
-				cond.add(new ConditionPetType(HATCHLING_GROUP));
-			}
-			if (equip_condition.contains("all_wolf_group"))
-			{
-				cond.add(new ConditionPetType(ALL_WOLF_GROUP));
-			}
-			if (equip_condition.contains("baby_pet_group"))
-			{
-				cond.add(new ConditionPetType(BABY_PET_GROUP));
-			}
-			if (equip_condition.contains("upgrade_baby_pet_group"))
-			{
-				cond.add(new ConditionPetType(UPGRADE_BABY_PET_GROUP));
-			}
-			if (equip_condition.contains("item_equip_pet_group"))
-			{
-				cond.add(new ConditionPetType(ITEM_EQUIP_PET_GROUP));
-			}
-			
-			if (cond.conditions.length > 0)
-			{
-				attach(cond);
-			}
-		}
 		
 		String skills = set.getString("item_skill", null);
 		if (skills != null)
