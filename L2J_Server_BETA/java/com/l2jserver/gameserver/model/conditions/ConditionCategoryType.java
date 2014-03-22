@@ -40,7 +40,7 @@ public class ConditionCategoryType extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		final int id = env.getCharacter().getId();
+		final int id = env.getCharacter().isPlayer() ? env.getPlayer().getClassId().getId() : env.getCharacter().getId();
 		for (CategoryType type : _categoryTypes)
 		{
 			if (CategoryData.getInstance().isInCategory(type, id))
