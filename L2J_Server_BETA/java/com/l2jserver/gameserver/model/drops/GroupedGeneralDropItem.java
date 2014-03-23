@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2RaidBossInstance;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
+import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -98,22 +100,7 @@ public class GroupedGeneralDropItem implements IDropItem
 		{
 			chanceModifier = 1;
 			
-			double levelGapChanceToDrop;
-			if (levelDifference >= -5)
-			{
-				levelGapChanceToDrop = 100;
-			}
-			else if (levelDifference >= -10)
-			{
-				levelGapChanceToDrop = levelDifference;
-				levelGapChanceToDrop *= 18;
-				levelGapChanceToDrop += 190;
-			}
-			else
-			{
-				levelGapChanceToDrop = 10;
-			}
-			
+			double levelGapChanceToDrop = Util.map(levelDifference, -Config.DROP_ITEM_MAX_LEVEL_DIFFERENCE, -Config.DROP_ITEM_MIN_LEVEL_DIFFERENCE, Config.DROP_ITEM_MIN_LEVEL_GAP_CHANCE, 100.0);
 			// There is a chance of level gap that it wont drop this item
 			if (levelGapChanceToDrop < (Rnd.nextDouble() * 100))
 			{
