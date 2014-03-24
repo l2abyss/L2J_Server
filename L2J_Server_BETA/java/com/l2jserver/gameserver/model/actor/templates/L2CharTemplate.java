@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import com.l2jserver.gameserver.model.StatsSet;
-import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.model.items.type.WeaponType;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.stats.MoveType;
 
@@ -53,7 +53,7 @@ public class L2CharTemplate
 	private int _baseMAtkSpd;
 	private int _baseAttackRange;
 	private int _randomDamage;
-	private L2WeaponType _baseAttackType;
+	private WeaponType _baseAttackType;
 	private int _baseShldDef;
 	private int _baseShldRate;
 	private int _baseCritRate;
@@ -116,7 +116,7 @@ public class L2CharTemplate
 		_baseShldDef = set.getInt("baseShldDef", 0);
 		_baseAttackRange = set.getInt("baseAtkRange", 40);
 		_randomDamage = set.getInt("baseRndDam", 0);
-		_baseAttackType = L2WeaponType.findByName(set.getString("baseAtkType", "Fist"));
+		_baseAttackType = WeaponType.findByName(set.getString("baseAtkType", "Fist"));
 		_baseShldRate = set.getInt("baseShldRate", 0);
 		_baseCritRate = set.getInt("baseCritRate", 4);
 		_baseMCritRate = set.getInt("baseMCritRate", 0);
@@ -590,7 +590,7 @@ public class L2CharTemplate
 	/**
 	 * @return the base attack type (Sword, Fist, Blunt, etc..)
 	 */
-	public L2WeaponType getBaseAttackType()
+	public WeaponType getBaseAttackType()
 	{
 		return _baseAttackType;
 	}
@@ -599,7 +599,7 @@ public class L2CharTemplate
 	 * Sets base attack type.
 	 * @param type
 	 */
-	public void setBaseAttackType(L2WeaponType type)
+	public void setBaseAttackType(WeaponType type)
 	{
 		_baseAttackType = type;
 	}

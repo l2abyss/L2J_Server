@@ -49,8 +49,8 @@ import com.l2jserver.gameserver.model.entity.Siege;
 import com.l2jserver.gameserver.model.items.L2Armor;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
-import com.l2jserver.gameserver.model.items.type.L2ArmorType;
-import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.model.items.type.ArmorType;
+import com.l2jserver.gameserver.model.items.type.WeaponType;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.funcs.formulas.FuncArmorSet;
@@ -800,7 +800,7 @@ public final class Formulas
 		if (target.isAttackable())
 		{
 			final L2Weapon weapon = attacker.getActiveWeaponItem();
-			if ((weapon != null) && ((weapon.getItemType() == L2WeaponType.BOW) || (weapon.getItemType() == L2WeaponType.CROSSBOW)))
+			if ((weapon != null) && ((weapon.getItemType() == WeaponType.BOW) || (weapon.getItemType() == WeaponType.CROSSBOW)))
 			{
 				if (skill != null)
 				{
@@ -1104,7 +1104,7 @@ public final class Formulas
 		if (Config.ALT_GAME_CANCEL_BOW && target.isAttackingNow())
 		{
 			L2Weapon wpn = target.getActiveWeaponItem();
-			if ((wpn != null) && (wpn.getItemType() == L2WeaponType.BOW))
+			if ((wpn != null) && (wpn.getItemType() == WeaponType.BOW))
 			{
 				init = 15;
 			}
@@ -1202,7 +1202,7 @@ public final class Formulas
 		}
 		
 		L2Item item = target.getSecondaryWeaponItem();
-		if ((item == null) || !(item instanceof L2Armor) || (((L2Armor) item).getItemType() == L2ArmorType.SIGIL))
+		if ((item == null) || !(item instanceof L2Armor) || (((L2Armor) item).getItemType() == ArmorType.SIGIL))
 		{
 			return 0;
 		}
@@ -1223,7 +1223,7 @@ public final class Formulas
 		// if attacker
 		// if attacker use bow and target wear shield, shield block rate is multiplied by 1.3 (30%)
 		L2Weapon at_weapon = attacker.getActiveWeaponItem();
-		if ((at_weapon != null) && (at_weapon.getItemType() == L2WeaponType.BOW))
+		if ((at_weapon != null) && (at_weapon.getItemType() == WeaponType.BOW))
 		{
 			shldRate *= 1.3;
 		}

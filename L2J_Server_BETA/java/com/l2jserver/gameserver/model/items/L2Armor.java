@@ -20,7 +20,7 @@ package com.l2jserver.gameserver.model.items;
 
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
-import com.l2jserver.gameserver.model.items.type.L2ArmorType;
+import com.l2jserver.gameserver.model.items.type.ArmorType;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.util.StringUtil;
 
@@ -33,7 +33,7 @@ public final class L2Armor extends L2Item
 	 * Skill that activates when armor is enchanted +4.
 	 */
 	private SkillHolder _enchant4Skill = null;
-	private L2ArmorType _type;
+	private ArmorType _type;
 	
 	/**
 	 * Constructor for Armor.
@@ -42,7 +42,7 @@ public final class L2Armor extends L2Item
 	public L2Armor(StatsSet set)
 	{
 		super(set);
-		_type = L2ArmorType.valueOf(set.getString("armor_type", "none").toUpperCase());
+		_type = ArmorType.valueOf(set.getString("armor_type", "none").toUpperCase());
 		
 		int _bodyPart = getBodyPart();
 		if ((_bodyPart == L2Item.SLOT_NECK) || ((_bodyPart & L2Item.SLOT_L_EAR) != 0) || ((_bodyPart & L2Item.SLOT_L_FINGER) != 0) || ((_bodyPart & L2Item.SLOT_R_BRACELET) != 0) || ((_bodyPart & L2Item.SLOT_L_BRACELET) != 0))
@@ -52,9 +52,9 @@ public final class L2Armor extends L2Item
 		}
 		else
 		{
-			if ((_type == L2ArmorType.NONE) && (getBodyPart() == L2Item.SLOT_L_HAND))
+			if ((_type == ArmorType.NONE) && (getBodyPart() == L2Item.SLOT_L_HAND))
 			{
-				_type = L2ArmorType.SHIELD;
+				_type = ArmorType.SHIELD;
 			}
 			_type1 = L2Item.TYPE1_SHIELD_ARMOR;
 			_type2 = L2Item.TYPE2_SHIELD_ARMOR;
@@ -91,7 +91,7 @@ public final class L2Armor extends L2Item
 	 * @return the type of the armor.
 	 */
 	@Override
-	public L2ArmorType getItemType()
+	public ArmorType getItemType()
 	{
 		return _type;
 	}

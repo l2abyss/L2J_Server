@@ -29,6 +29,7 @@ import org.w3c.dom.Node;
 import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.type.CrystalType;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.skills.funcs.LambdaConst;
 import com.l2jserver.gameserver.model.stats.Stats;
@@ -85,7 +86,7 @@ public class EnchantItemHPBonusData extends DocumentParser
 			for (Integer itemId : armorIds)
 			{
 				item = it.getTemplate(itemId);
-				if ((item != null) && (item.getCrystalType() != L2Item.CRYSTAL_NONE))
+				if ((item != null) && (item.getCrystalType() != CrystalType.NONE))
 				{
 					switch (item.getBodyPart())
 					{
@@ -111,7 +112,7 @@ public class EnchantItemHPBonusData extends DocumentParser
 			for (Integer itemId : shieldIds)
 			{
 				item = it.getTemplate(itemId);
-				if ((item != null) && (item.getCrystalType() != L2Item.CRYSTAL_NONE))
+				if ((item != null) && (item.getCrystalType() != CrystalType.NONE))
 				{
 					switch (item.getBodyPart())
 					{

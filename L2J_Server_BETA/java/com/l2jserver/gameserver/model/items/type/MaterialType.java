@@ -19,34 +19,37 @@
 package com.l2jserver.gameserver.model.items.type;
 
 /**
- * @author nBd
+ * Material Type enumerated.
+ * @author Adry_85
  */
-public enum L2ActionType
+public enum MaterialType
 {
-	calc,
-	call_skill,
-	capsule,
-	create_mpcc,
-	dice,
-	equip,
-	fishingshot,
-	harvest,
-	hide_name,
-	keep_exp,
-	nick_color,
-	none,
-	peel,
-	recipe,
-	seed,
-	show_adventurer_guide_book,
-	show_html,
-	show_ssq_status,
-	skill_maintain,
-	skill_reduce,
-	soulshot,
-	spiritshot,
-	start_quest,
-	summon_soulshot,
-	summon_spiritshot,
-	xmas_open,
+	STEEL,
+	FINE_STEEL,
+	COTTON,
+	BLOOD_STEEL,
+	BRONZE,
+	SILVER,
+	GOLD,
+	MITHRIL,
+	ORIHARUKON,
+	PAPER,
+	WOOD,
+	CLOTH,
+	LEATHER,
+	BONE,
+	HORN,
+	DAMASCUS,
+	ADAMANTAITE,
+	CHRYSOLITE,
+	CRYSTAL,
+	LIQUID,
+	SCALE_OF_DRAGON,
+	DYESTUFF,
+	COBWEB,
+	SEED,
+	FISH,
+	RUNE_XP,
+	RUNE_SP,
+	RUNE_REMOVE_PENALTY;
 }

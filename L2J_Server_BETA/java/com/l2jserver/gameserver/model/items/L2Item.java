@@ -38,9 +38,11 @@ import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.type.L2ActionType;
-import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
-import com.l2jserver.gameserver.model.items.type.L2ItemType;
+import com.l2jserver.gameserver.model.items.type.ActionType;
+import com.l2jserver.gameserver.model.items.type.CrystalType;
+import com.l2jserver.gameserver.model.items.type.EtcItemType;
+import com.l2jserver.gameserver.model.items.type.ItemType;
+import com.l2jserver.gameserver.model.items.type.MaterialType;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.Skill;
@@ -110,85 +112,14 @@ public abstract class L2Item implements IIdentifiable
 	
 	public static final int SLOT_MULTI_ALLWEAPON = SLOT_LR_HAND | SLOT_R_HAND;
 	
-	public static final int MATERIAL_STEEL = 0x00; // ??
-	public static final int MATERIAL_FINE_STEEL = 0x01; // ??
-	public static final int MATERIAL_BLOOD_STEEL = 0x02; // ??
-	public static final int MATERIAL_BRONZE = 0x03; // ??
-	public static final int MATERIAL_SILVER = 0x04; // ??
-	public static final int MATERIAL_GOLD = 0x05; // ??
-	public static final int MATERIAL_MITHRIL = 0x06; // ??
-	public static final int MATERIAL_ORIHARUKON = 0x07; // ??
-	public static final int MATERIAL_PAPER = 0x08; // ??
-	public static final int MATERIAL_WOOD = 0x09; // ??
-	public static final int MATERIAL_CLOTH = 0x0a; // ??
-	public static final int MATERIAL_LEATHER = 0x0b; // ??
-	public static final int MATERIAL_BONE = 0x0c; // ??
-	public static final int MATERIAL_HORN = 0x0d; // ??
-	public static final int MATERIAL_DAMASCUS = 0x0e; // ??
-	public static final int MATERIAL_ADAMANTAITE = 0x0f; // ??
-	public static final int MATERIAL_CHRYSOLITE = 0x10; // ??
-	public static final int MATERIAL_CRYSTAL = 0x11; // ??
-	public static final int MATERIAL_LIQUID = 0x12; // ??
-	public static final int MATERIAL_SCALE_OF_DRAGON = 0x13; // ??
-	public static final int MATERIAL_DYESTUFF = 0x14; // ??
-	public static final int MATERIAL_COBWEB = 0x15; // ??
-	public static final int MATERIAL_SEED = 0x16; // ??
-	public static final int MATERIAL_FISH = 0x17; // ??
-	public static final int MATERIAL_RUNE_XP = 0x18; // ??
-	public static final int MATERIAL_RUNE_SP = 0x19; // ??
-	public static final int MATERIAL_RUNE_PENALTY = 0x20; // ??
-	
-	public static final int CRYSTAL_NONE = 0x00; // ??
-	public static final int CRYSTAL_D = 0x01; // ??
-	public static final int CRYSTAL_C = 0x02; // ??
-	public static final int CRYSTAL_B = 0x03; // ??
-	public static final int CRYSTAL_A = 0x04; // ??
-	public static final int CRYSTAL_S = 0x05; // ??
-	public static final int CRYSTAL_S80 = 0x06; // ??
-	public static final int CRYSTAL_S84 = 0x07; // ??
-	
-	private static final int[] CRYSTAL_ITEM_ID =
-	{
-		0,
-		1458,
-		1459,
-		1460,
-		1461,
-		1462,
-		1462,
-		1462
-	};
-	private static final int[] CRYSTAL_ENCHANT_BONUS_ARMOR =
-	{
-		0,
-		11,
-		6,
-		11,
-		19,
-		25,
-		25,
-		25
-	};
-	private static final int[] CRYSTAL_ENCHANT_BONUS_WEAPON =
-	{
-		0,
-		90,
-		45,
-		67,
-		144,
-		250,
-		250,
-		250
-	};
-	
 	private final int _itemId;
 	private final int _displayId;
 	private final String _name;
 	private final String _icon;
 	private final int _weight;
 	private final boolean _stackable;
-	private final int _materialType;
-	private final int _crystalType; // default to none-grade
+	private final MaterialType _materialType;
+	private final CrystalType _crystalType;
 	private final int _equipReuseDelay;
 	private final int _duration;
 	private final int _time;
@@ -213,7 +144,7 @@ public abstract class L2Item implements IIdentifiable
 	private final boolean _immediate_effect;
 	private final boolean _ex_immediate_effect;
 	private final int _defaultEnchantLevel;
-	private final L2ActionType _defaultAction;
+	private final ActionType _defaultAction;
 	
 	protected int _type1; // needed for item list (inventory)
 	protected int _type2; // different lists for armor, weapon, etc
@@ -241,14 +172,14 @@ public abstract class L2Item implements IIdentifiable
 		_name = set.getString("name");
 		_icon = set.getString("icon", null);
 		_weight = set.getInt("weight", 0);
-		_materialType = ItemTable._materials.get(set.getString("material", "steel")); // default is steel, yeah and what?
+		_materialType = set.getEnum("material", MaterialType.class, MaterialType.STEEL);
 		_equipReuseDelay = set.getInt("equip_reuse_delay", 0) * 1000;
 		_duration = set.getInt("duration", -1);
 		_time = set.getInt("time", -1);
 		_autoDestroyTime = set.getInt("auto_destroy_time", -1) * 1000;
 		_bodyPart = ItemTable._slots.get(set.getString("bodypart", "none"));
 		_referencePrice = set.getInt("price", 0);
-		_crystalType = ItemTable._crystalTypes.get(set.getString("crystal_type", "none")); // default to none-grade
+		_crystalType = set.getEnum("crystal_type", CrystalType.class, CrystalType.NONE);
 		_crystalCount = set.getInt("crystal_count", 0);
 		
 		_stackable = set.getBoolean("is_stackable", false);
@@ -267,7 +198,7 @@ public abstract class L2Item implements IIdentifiable
 		_immediate_effect = set.getBoolean("immediate_effect", false);
 		_ex_immediate_effect = set.getBoolean("ex_immediate_effect", false);
 		
-		_defaultAction = set.getEnum("default_action", L2ActionType.class, L2ActionType.none);
+		_defaultAction = set.getEnum("default_action", ActionType.class, ActionType.NONE);
 		_useSkillDisTime = set.getInt("useSkillDisTime", 0);
 		_defaultEnchantLevel = set.getInt("enchanted", 0);
 		_reuseDelay = set.getInt("reuse_delay", 0);
@@ -352,7 +283,7 @@ public abstract class L2Item implements IIdentifiable
 	 * Returns the itemType.
 	 * @return Enum
 	 */
-	public abstract L2ItemType getItemType();
+	public abstract ItemType getItemType();
 	
 	/**
 	 * Verifies if the item is a magic weapon.
@@ -420,9 +351,9 @@ public abstract class L2Item implements IIdentifiable
 	
 	/**
 	 * Return the type of material of the item
-	 * @return int
+	 * @return MaterialType
 	 */
-	public final int getMaterialType()
+	public final MaterialType getMaterialType()
 	{
 		return _materialType;
 	}
@@ -451,25 +382,25 @@ public abstract class L2Item implements IIdentifiable
 	 */
 	public final boolean isCrystallizable()
 	{
-		return (_crystalType != L2Item.CRYSTAL_NONE) && (_crystalCount > 0);
+		return (_crystalType != CrystalType.NONE) && (_crystalCount > 0);
 	}
 	
 	/**
 	 * Return the type of crystal if item is crystallizable
-	 * @return int
+	 * @return CrystalType
 	 */
-	public final int getCrystalType()
+	public final CrystalType getCrystalType()
 	{
 		return _crystalType;
 	}
 	
 	/**
-	 * Return the type of crystal if item is crystallizable
+	 * Return the ID of crystal if item is crystallizable
 	 * @return int
 	 */
 	public final int getCrystalItemId()
 	{
-		return CRYSTAL_ITEM_ID[_crystalType];
+		return _crystalType.getCrystalId();
 	}
 	
 	/**
@@ -477,9 +408,9 @@ public abstract class L2Item implements IIdentifiable
 	 * <BR>
 	 * <U><I>Concept :</I></U><BR>
 	 * In fact, this function returns the type of crystal of the item.
-	 * @return int
+	 * @return CrystalType
 	 */
-	public final int getItemGrade()
+	public final CrystalType getItemGrade()
 	{
 		return getCrystalType();
 	}
@@ -488,13 +419,13 @@ public abstract class L2Item implements IIdentifiable
 	 * For grades S80 and S84 return S
 	 * @return the grade of the item.
 	 */
-	public final int getItemGradeSPlus()
+	public final CrystalType getItemGradeSPlus()
 	{
 		switch (getItemGrade())
 		{
-			case CRYSTAL_S80:
-			case CRYSTAL_S84:
-				return CRYSTAL_S;
+			case S80:
+			case S84:
+				return CrystalType.S;
 			default:
 				return getItemGrade();
 		}
@@ -520,9 +451,9 @@ public abstract class L2Item implements IIdentifiable
 			{
 				case TYPE2_SHIELD_ARMOR:
 				case TYPE2_ACCESSORY:
-					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_ARMOR[getCrystalType()] * ((3 * enchantLevel) - 6));
+					return _crystalCount + (getCrystalType().getCrystalEnchantBonusArmor() * ((3 * enchantLevel) - 6));
 				case TYPE2_WEAPON:
-					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_WEAPON[getCrystalType()] * ((2 * enchantLevel) - 3));
+					return _crystalCount + (getCrystalType().getCrystalEnchantBonusWeapon() * ((2 * enchantLevel) - 3));
 				default:
 					return _crystalCount;
 			}
@@ -533,9 +464,9 @@ public abstract class L2Item implements IIdentifiable
 			{
 				case TYPE2_SHIELD_ARMOR:
 				case TYPE2_ACCESSORY:
-					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_ARMOR[getCrystalType()] * enchantLevel);
+					return _crystalCount + (getCrystalType().getCrystalEnchantBonusArmor() * enchantLevel);
 				case TYPE2_WEAPON:
-					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_WEAPON[getCrystalType()] * enchantLevel);
+					return _crystalCount + (getCrystalType().getCrystalEnchantBonusWeapon() * enchantLevel);
 				default:
 					return _crystalCount;
 			}
@@ -632,7 +563,7 @@ public abstract class L2Item implements IIdentifiable
 	 */
 	public boolean isEquipable()
 	{
-		return (getBodyPart() != 0) && !(getItemType() instanceof L2EtcItemType);
+		return (getBodyPart() != 0) && !(getItemType() instanceof EtcItemType);
 	}
 	
 	/**
@@ -729,12 +660,12 @@ public abstract class L2Item implements IIdentifiable
 	
 	public boolean isPotion()
 	{
-		return (getItemType() == L2EtcItemType.POTION);
+		return (getItemType() == EtcItemType.POTION);
 	}
 	
 	public boolean isElixir()
 	{
-		return (getItemType() == L2EtcItemType.ELIXIR);
+		return (getItemType() == EtcItemType.ELIXIR);
 	}
 	
 	/**
@@ -1017,7 +948,7 @@ public abstract class L2Item implements IIdentifiable
 	/**
 	 * @return the _default_action
 	 */
-	public L2ActionType getDefaultAction()
+	public ActionType getDefaultAction()
 	{
 		return _defaultAction;
 	}
@@ -1076,7 +1007,7 @@ public abstract class L2Item implements IIdentifiable
 	
 	public boolean isPetItem()
 	{
-		return getItemType() == L2EtcItemType.PET_COLLAR;
+		return getItemType() == EtcItemType.PET_COLLAR;
 	}
 	
 	public Skill getEnchant4Skill()

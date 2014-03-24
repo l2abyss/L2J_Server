@@ -61,7 +61,7 @@ public class ShopPreviewList extends L2GameServerPacket
 		int newlength = 0;
 		for (Product product : _list)
 		{
-			if ((product.getItem().getCrystalType() <= _expertise) && product.getItem().isEquipable())
+			if ((product.getItem().getCrystalType().getId() <= _expertise) && product.getItem().isEquipable())
 			{
 				newlength++;
 			}
@@ -70,7 +70,7 @@ public class ShopPreviewList extends L2GameServerPacket
 		
 		for (Product product : _list)
 		{
-			if ((product.getItem().getCrystalType() <= _expertise) && product.getItem().isEquipable())
+			if ((product.getItem().getCrystalType().getId() <= _expertise) && product.getItem().isEquipable())
 			{
 				writeD(product.getItemId());
 				writeH(product.getItem().getType2()); // item type2

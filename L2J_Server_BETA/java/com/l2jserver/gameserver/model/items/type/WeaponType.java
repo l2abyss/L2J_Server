@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.model.stats.TraitType;
  * @author mkizub <BR>
  *         Description of Weapon Type
  */
-public enum L2WeaponType implements L2ItemType
+public enum WeaponType implements ItemType
 {
 	SWORD("Sword", TraitType.SWORD),
 	BLUNT("Blunt", TraitType.BLUNT),
@@ -51,17 +51,17 @@ public enum L2WeaponType implements L2ItemType
 	BIGBLUNT("Big Blunt", TraitType.BLUNT),
 	BIGSWORD("Big Sword", TraitType.SWORD);
 	
-	private static final Logger _log = Logger.getLogger(L2WeaponType.class.getName());
+	private static final Logger _log = Logger.getLogger(WeaponType.class.getName());
 	private final int _mask;
 	private final String _name;
 	private final TraitType _traitType;
 	
 	/**
-	 * Constructor of the L2WeaponType.
+	 * Constructor of the WeaponType.
 	 * @param name : String designating the name of the WeaponType
 	 * @param traitType
 	 */
-	private L2WeaponType(String name, TraitType traitType)
+	private WeaponType(String name, TraitType traitType)
 	{
 		_mask = 1 << ordinal();
 		_name = name;
@@ -94,7 +94,7 @@ public enum L2WeaponType implements L2ItemType
 		return _traitType;
 	}
 	
-	public static L2WeaponType findByName(String name)
+	public static WeaponType findByName(String name)
 	{
 		if (name.equalsIgnoreCase("DUAL"))
 		{
@@ -104,14 +104,14 @@ public enum L2WeaponType implements L2ItemType
 		{
 			name = "Dual Fist";
 		}
-		for (L2WeaponType type : values())
+		for (WeaponType type : values())
 		{
 			if (type.getName().equalsIgnoreCase(name))
 			{
 				return type;
 			}
 		}
-		_log.log(Level.WARNING, L2WeaponType.class.getSimpleName() + ": Requested unexistent enum member: " + name, new IllegalStateException());
+		_log.log(Level.WARNING, WeaponType.class.getSimpleName() + ": Requested unexistent enum member: " + name, new IllegalStateException());
 		return FIST;
 	}
 }

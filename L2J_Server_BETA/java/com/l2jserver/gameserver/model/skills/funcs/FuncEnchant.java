@@ -20,9 +20,8 @@ package com.l2jserver.gameserver.model.skills.funcs;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.model.items.type.WeaponType;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Stats;
 
@@ -84,20 +83,20 @@ public class FuncEnchant extends Func
 		{
 			switch (item.getItem().getItemGradeSPlus())
 			{
-				case L2Item.CRYSTAL_S:
+				case S:
 					// M. Atk. increases by 4 for all weapons.
 					// Starting at +4, M. Atk. bonus double.
 					env.addValue((4 * enchant) + (8 * overenchant));
 					break;
-				case L2Item.CRYSTAL_A:
-				case L2Item.CRYSTAL_B:
-				case L2Item.CRYSTAL_C:
+				case A:
+				case B:
+				case C:
 					// M. Atk. increases by 3 for all weapons.
 					// Starting at +4, M. Atk. bonus double.
 					env.addValue((3 * enchant) + (6 * overenchant));
 					break;
-				case L2Item.CRYSTAL_D:
-				case L2Item.CRYSTAL_NONE:
+				case D:
+				case NONE:
 					// M. Atk. increases by 2 for all weapons. Starting at +4, M. Atk. bonus double.
 					// Starting at +4, M. Atk. bonus double.
 					env.addValue((2 * enchant) + (4 * overenchant));
@@ -108,10 +107,10 @@ public class FuncEnchant extends Func
 		
 		if (item.isWeapon())
 		{
-			final L2WeaponType type = (L2WeaponType) item.getItemType();
+			final WeaponType type = (WeaponType) item.getItemType();
 			switch (item.getItem().getItemGradeSPlus())
 			{
-				case L2Item.CRYSTAL_S:
+				case S:
 					switch (type)
 					{
 						case BOW:
@@ -137,7 +136,7 @@ public class FuncEnchant extends Func
 							break;
 					}
 					break;
-				case L2Item.CRYSTAL_A:
+				case A:
 					switch (type)
 					{
 						case BOW:
@@ -163,8 +162,8 @@ public class FuncEnchant extends Func
 							break;
 					}
 					break;
-				case L2Item.CRYSTAL_B:
-				case L2Item.CRYSTAL_C:
+				case B:
+				case C:
 					switch (type)
 					{
 						case BOW:
@@ -190,8 +189,8 @@ public class FuncEnchant extends Func
 							break;
 					}
 					break;
-				case L2Item.CRYSTAL_D:
-				case L2Item.CRYSTAL_NONE:
+				case D:
+				case NONE:
 					switch (type)
 					{
 						case BOW:

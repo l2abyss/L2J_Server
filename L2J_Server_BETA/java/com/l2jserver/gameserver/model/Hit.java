@@ -18,6 +18,7 @@
  */
 package com.l2jserver.gameserver.model;
 
+
 /**
  * @author UnAfraid
  */

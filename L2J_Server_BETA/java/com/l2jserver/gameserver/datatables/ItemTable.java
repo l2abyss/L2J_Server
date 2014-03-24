@@ -48,8 +48,8 @@ import com.l2jserver.gameserver.model.items.L2EtcItem;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.type.L2ArmorType;
-import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.model.items.type.ArmorType;
+import com.l2jserver.gameserver.model.items.type.WeaponType;
 import com.l2jserver.gameserver.scripting.scriptengine.events.ItemCreateEvent;
 import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.NewItemListener;
 import com.l2jserver.gameserver.util.GMAudit;
@@ -64,11 +64,9 @@ public class ItemTable
 	
 	private static FastList<NewItemListener> newItemListeners = new FastList<NewItemListener>().shared();
 	
-	public static final Map<String, Integer> _materials = new FastMap<>();
-	public static final Map<String, Integer> _crystalTypes = new FastMap<>();
 	public static final Map<String, Integer> _slots = new FastMap<>();
-	public static final Map<String, L2WeaponType> _weaponTypes = new FastMap<>();
-	public static final Map<String, L2ArmorType> _armorTypes = new FastMap<>();
+	public static final Map<String, WeaponType> _weaponTypes = new FastMap<>();
+	public static final Map<String, ArmorType> _armorTypes = new FastMap<>();
 	
 	private L2Item[] _allTemplates;
 	private final Map<Integer, L2EtcItem> _etcItems;
@@ -77,52 +75,14 @@ public class ItemTable
 	
 	static
 	{
-		_materials.put("adamantaite", L2Item.MATERIAL_ADAMANTAITE);
-		_materials.put("blood_steel", L2Item.MATERIAL_BLOOD_STEEL);
-		_materials.put("bone", L2Item.MATERIAL_BONE);
-		_materials.put("bronze", L2Item.MATERIAL_BRONZE);
-		_materials.put("cloth", L2Item.MATERIAL_CLOTH);
-		_materials.put("chrysolite", L2Item.MATERIAL_CHRYSOLITE);
-		_materials.put("cobweb", L2Item.MATERIAL_COBWEB);
-		_materials.put("cotton", L2Item.MATERIAL_FINE_STEEL);
-		_materials.put("crystal", L2Item.MATERIAL_CRYSTAL);
-		_materials.put("damascus", L2Item.MATERIAL_DAMASCUS);
-		_materials.put("dyestuff", L2Item.MATERIAL_DYESTUFF);
-		_materials.put("fine_steel", L2Item.MATERIAL_FINE_STEEL);
-		_materials.put("fish", L2Item.MATERIAL_FISH);
-		_materials.put("gold", L2Item.MATERIAL_GOLD);
-		_materials.put("horn", L2Item.MATERIAL_HORN);
-		_materials.put("leather", L2Item.MATERIAL_LEATHER);
-		_materials.put("liquid", L2Item.MATERIAL_LIQUID);
-		_materials.put("mithril", L2Item.MATERIAL_MITHRIL);
-		_materials.put("oriharukon", L2Item.MATERIAL_ORIHARUKON);
-		_materials.put("paper", L2Item.MATERIAL_PAPER);
-		_materials.put("rune_xp", L2Item.MATERIAL_RUNE_XP);
-		_materials.put("rune_sp", L2Item.MATERIAL_RUNE_SP);
-		_materials.put("rune_remove_penalty", L2Item.MATERIAL_RUNE_PENALTY);
-		_materials.put("scale_of_dragon", L2Item.MATERIAL_SCALE_OF_DRAGON);
-		_materials.put("seed", L2Item.MATERIAL_SEED);
-		_materials.put("silver", L2Item.MATERIAL_SILVER);
-		_materials.put("steel", L2Item.MATERIAL_STEEL);
-		_materials.put("wood", L2Item.MATERIAL_WOOD);
-		
-		_crystalTypes.put("s84", L2Item.CRYSTAL_S84);
-		_crystalTypes.put("s80", L2Item.CRYSTAL_S80);
-		_crystalTypes.put("s", L2Item.CRYSTAL_S);
-		_crystalTypes.put("a", L2Item.CRYSTAL_A);
-		_crystalTypes.put("b", L2Item.CRYSTAL_B);
-		_crystalTypes.put("c", L2Item.CRYSTAL_C);
-		_crystalTypes.put("d", L2Item.CRYSTAL_D);
-		_crystalTypes.put("none", L2Item.CRYSTAL_NONE);
-		
 		// weapon types
-		for (L2WeaponType type : L2WeaponType.values())
+		for (WeaponType type : WeaponType.values())
 		{
 			_weaponTypes.put(type.getName(), type);
 		}
 		
 		// armor types
-		for (L2ArmorType type : L2ArmorType.values())
+		for (ArmorType type : ArmorType.values())
 		{
 			_armorTypes.put(type.getName(), type);
 		}

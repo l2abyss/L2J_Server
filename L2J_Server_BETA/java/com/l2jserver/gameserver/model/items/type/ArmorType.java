@@ -19,12 +19,48 @@
 package com.l2jserver.gameserver.model.items.type;
 
 /**
- * Created for allow comparing different item types
- * @author DS
+ * Description of Armor Type
  */
-public interface L2ItemType
+
+public enum ArmorType implements ItemType
 {
-	public int mask();
+	NONE("None"),
+	LIGHT("Light"),
+	HEAVY("Heavy"),
+	MAGIC("Magic"),
+	SIGIL("Sigil"),
 	
-	public String getName();
+	// L2J CUSTOM
+	SHIELD("Shield");
+	
+	final int _mask;
+	final String _name;
+	
+	/**
+	 * Constructor of the ArmorType.
+	 * @param name : String designating the name of the ArmorType
+	 */
+	private ArmorType(String name)
+	{
+		_mask = 1 << (ordinal() + WeaponType.values().length);
+		_name = name;
+	}
+	
+	/**
+	 * @return the ID of the ArmorType after applying a mask.
+	 */
+	@Override
+	public int mask()
+	{
+		return _mask;
+	}
+	
+	/**
+	 * @return the name of the ArmorType
+	 */
+	@Override
+	public String getName()
+	{
+		return _name;
+	}
 }

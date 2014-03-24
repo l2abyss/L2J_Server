@@ -30,6 +30,7 @@ import com.l2jserver.gameserver.model.items.L2Armor;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.model.items.type.CrystalType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
 public abstract class AbstractRefinePacket extends L2GameClientPacket
@@ -226,7 +227,7 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 			return false;
 		}
 		
-		final int grade = item.getItem().getItemGrade();
+		final CrystalType grade = item.getItem().getItemGrade();
 		final LifeStone ls = _lifeStones.get(refinerItem.getId());
 		
 		// Check for item id
@@ -338,7 +339,7 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 		{
 			return false;
 		}
-		if (item.getItem().getCrystalType() < L2Item.CRYSTAL_C)
+		if (item.getItem().getCrystalType().isLesser(CrystalType.C))
 		{
 			return false;
 		}
@@ -444,18 +445,18 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 	 * @param itemGrade
 	 * @return GemStone itemId based on item grade
 	 */
-	protected static final int getGemStoneId(int itemGrade)
+	protected static final int getGemStoneId(CrystalType itemGrade)
 	{
 		switch (itemGrade)
 		{
-			case L2Item.CRYSTAL_C:
-			case L2Item.CRYSTAL_B:
+			case C:
+			case B:
 				return GEMSTONE_D;
-			case L2Item.CRYSTAL_A:
-			case L2Item.CRYSTAL_S:
+			case A:
+			case S:
 				return GEMSTONE_C;
-			case L2Item.CRYSTAL_S80:
-			case L2Item.CRYSTAL_S84:
+			case S80:
+			case S84:
 				return GEMSTONE_B;
 			default:
 				return 0;
@@ -468,24 +469,24 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 	 * @param lifeStoneGrade
 	 * @return GemStone count based on item grade and life stone grade
 	 */
-	protected static final int getGemStoneCount(int itemGrade, int lifeStoneGrade)
+	protected static final int getGemStoneCount(CrystalType itemGrade, int lifeStoneGrade)
 	{
 		switch (lifeStoneGrade)
 		{
 			case GRADE_ACC:
 				switch (itemGrade)
 				{
-					case L2Item.CRYSTAL_C:
+					case C:
 						return 200;
-					case L2Item.CRYSTAL_B:
+					case B:
 						return 300;
-					case L2Item.CRYSTAL_A:
+					case A:
 						return 200;
-					case L2Item.CRYSTAL_S:
+					case S:
 						return 250;
-					case L2Item.CRYSTAL_S80:
+					case S80:
 						return 360;
-					case L2Item.CRYSTAL_S84:
+					case S84:
 						return 480;
 					default:
 						return 0;
@@ -493,16 +494,16 @@ public abstract class AbstractRefinePacket extends L2GameClientPacket
 			default:
 				switch (itemGrade)
 				{
-					case L2Item.CRYSTAL_C:
+					case C:
 						return 20;
-					case L2Item.CRYSTAL_B:
+					case B:
 						return 30;
-					case L2Item.CRYSTAL_A:
+					case A:
 						return 20;
-					case L2Item.CRYSTAL_S:
+					case S:
 						return 25;
-					case L2Item.CRYSTAL_S80:
-					case L2Item.CRYSTAL_S84:
+					case S80:
+					case S84:
 						return 36;
 					default:
 						return 0;

@@ -16,27 +16,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.items.enchant;
-
-import com.l2jserver.gameserver.model.StatsSet;
-import com.l2jserver.gameserver.model.items.type.EtcItemType;
+package com.l2jserver.gameserver.model.items.type;
 
 /**
- * @author UnAfraid
+ * Action Type enumerated.
+ * @author nBd
  */
-public final class EnchantSupportItem extends AbstractEnchantItem
+public enum ActionType
 {
-	private final boolean _isWeapon;
-	
-	public EnchantSupportItem(StatsSet set)
-	{
-		super(set);
-		_isWeapon = getItem().getItemType() == EtcItemType.SCRL_INC_ENCHANT_PROP_WP;
-	}
-	
-	@Override
-	public boolean isWeapon()
-	{
-		return _isWeapon;
-	}
+	CALC,
+	CALL_SKILL,
+	CAPSULE,
+	CREATE_MPCC,
+	DICE,
+	EQUIP,
+	FISHINGSHOT,
+	HARVEST,
+	HIDE_NAME,
+	KEEP_EXP,
+	NICK_COLOR,
+	NONE,
+	PEEL,
+	RECIPE,
+	SEED,
+	SHOW_ADVENTURER_GUIDE_BOOK,
+	SHOW_HTML,
+	SHOW_SSQ_STATUS,
+	SKILL_MAINTAIN,
+	SKILL_REDUCE,
+	SOULSHOT,
+	SPIRITSHOT,
+	START_QUEST,
+	SUMMON_SOULSHOT,
+	SUMMON_SPIRITSHOT,
+	XMAS_OPEN,
 }

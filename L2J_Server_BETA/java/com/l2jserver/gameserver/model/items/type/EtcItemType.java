@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.model.items.type;
 /**
  * Description of EtcItem Type
  */
-public enum L2EtcItemType implements L2ItemType
+public enum EtcItemType implements ItemType
 {
 	NONE(1, "none"),
 	ARROW(2, "arrow"),
@@ -63,11 +63,11 @@ public enum L2EtcItemType implements L2ItemType
 	private final String _name;
 	
 	/**
-	 * Constructor of the L2EtcItemType.
+	 * Constructor of the EtcItemType.
 	 * @param id : int designating the ID of the EtcItemType
 	 * @param name : String designating the name of the EtcItemType
 	 */
-	private L2EtcItemType(int id, String name)
+	private EtcItemType(int id, String name)
 	{
 		_id = id;
 		_name = name;
