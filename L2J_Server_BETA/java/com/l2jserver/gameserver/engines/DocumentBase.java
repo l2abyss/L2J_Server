@@ -123,6 +123,7 @@ import com.l2jserver.gameserver.model.conditions.ConditionTargetUsesWeaponKind;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetWeight;
 import com.l2jserver.gameserver.model.conditions.ConditionUsingItemType;
 import com.l2jserver.gameserver.model.conditions.ConditionUsingSkill;
+import com.l2jserver.gameserver.model.conditions.ConditionUsingSlotType;
 import com.l2jserver.gameserver.model.conditions.ConditionWithSkill;
 import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
@@ -1193,6 +1194,27 @@ public abstract class DocumentBase
 						}
 					}
 					cond = joinAnd(cond, new ConditionUsingItemType(mask));
+					break;
+				}
+				case "slot":
+				{
+					int mask = 0;
+					StringTokenizer st = new StringTokenizer(a.getNodeValue(), ",");
+					while (st.hasMoreTokens())
+					{
+						int old = mask;
+						String item = st.nextToken().trim();
+						if (ItemTable._slots.containsKey(item))
+						{
+							mask |= ItemTable._slots.get(item);
+						}
+						
+						if (old == mask)
+						{
+							_log.info("[parseUsingCondition=\"slot\"] Unknown item slot name: " + item);
+						}
+					}
+					cond = joinAnd(cond, new ConditionUsingSlotType(mask));
 					break;
 				}
 				case "skill":

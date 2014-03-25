@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.model.skills.funcs;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.WeaponType;
 import com.l2jserver.gameserver.model.stats.Env;
@@ -111,82 +112,73 @@ public class FuncEnchant extends Func
 			switch (item.getItem().getItemGradeSPlus())
 			{
 				case S:
-					switch (type)
+					if (item.getWeaponItem().getBodyPart() == L2Item.SLOT_LR_HAND)
 					{
-						case BOW:
-						case CROSSBOW:
+						if ((type == WeaponType.BOW) || (type == WeaponType.CROSSBOW))
+						{
 							// P. Atk. increases by 10 for bows.
 							// Starting at +4, P. Atk. bonus double.
 							env.addValue((10 * enchant) + (20 * overenchant));
-							break;
-						case BIGSWORD:
-						case BIGBLUNT:
-						case DUAL:
-						case DUALFIST:
-						case ANCIENTSWORD:
-						case DUALDAGGER:
+						}
+						else
+						{
 							// P. Atk. increases by 6 for two-handed swords, two-handed blunts, dualswords, and two-handed combat weapons.
 							// Starting at +4, P. Atk. bonus double.
 							env.addValue((6 * enchant) + (12 * overenchant));
-							break;
-						default:
-							// P. Atk. increases by 5 for one-handed swords, one-handed blunts, daggers, spears, and other weapons.
-							// Starting at +4, P. Atk. bonus double.
-							env.addValue((5 * enchant) + (10 * overenchant));
-							break;
+						}
+					}
+					else
+					{
+						// P. Atk. increases by 5 for one-handed swords, one-handed blunts, daggers, spears, and other weapons.
+						// Starting at +4, P. Atk. bonus double.
+						env.addValue((5 * enchant) + (10 * overenchant));
 					}
 					break;
 				case A:
-					switch (type)
+					if (item.getWeaponItem().getBodyPart() == L2Item.SLOT_LR_HAND)
 					{
-						case BOW:
-						case CROSSBOW:
+						if ((type == WeaponType.BOW) || (type == WeaponType.CROSSBOW))
+						{
 							// P. Atk. increases by 8 for bows.
 							// Starting at +4, P. Atk. bonus double.
 							env.addValue((8 * enchant) + (16 * overenchant));
-							break;
-						case BIGSWORD:
-						case BIGBLUNT:
-						case DUAL:
-						case DUALFIST:
-						case ANCIENTSWORD:
-						case DUALDAGGER:
+						}
+						else
+						{
 							// P. Atk. increases by 5 for two-handed swords, two-handed blunts, dualswords, and two-handed combat weapons.
 							// Starting at +4, P. Atk. bonus double.
 							env.addValue((5 * enchant) + (10 * overenchant));
-							break;
-						default:
-							// P. Atk. increases by 4 for one-handed swords, one-handed blunts, daggers, spears, and other weapons.
-							// Starting at +4, P. Atk. bonus double.
-							env.addValue((4 * enchant) + (8 * overenchant));
-							break;
+						}
+					}
+					else
+					{
+						// P. Atk. increases by 4 for one-handed swords, one-handed blunts, daggers, spears, and other weapons.
+						// Starting at +4, P. Atk. bonus double.
+						env.addValue((4 * enchant) + (8 * overenchant));
 					}
 					break;
 				case B:
 				case C:
-					switch (type)
+					if (item.getWeaponItem().getBodyPart() == L2Item.SLOT_LR_HAND)
 					{
-						case BOW:
-						case CROSSBOW:
+						if ((type == WeaponType.BOW) || (type == WeaponType.CROSSBOW))
+						{
 							// P. Atk. increases by 6 for bows.
 							// Starting at +4, P. Atk. bonus double.
 							env.addValue((6 * enchant) + (12 * overenchant));
-							break;
-						case BIGSWORD:
-						case BIGBLUNT:
-						case DUAL:
-						case DUALFIST:
-						case ANCIENTSWORD:
-						case DUALDAGGER:
+						}
+						else
+						{
 							// P. Atk. increases by 4 for two-handed swords, two-handed blunts, dualswords, and two-handed combat weapons.
 							// Starting at +4, P. Atk. bonus double.
 							env.addValue((4 * enchant) + (8 * overenchant));
-							break;
-						default:
-							// P. Atk. increases by 3 for one-handed swords, one-handed blunts, daggers, spears, and other weapons.
-							// Starting at +4, P. Atk. bonus double.
-							env.addValue((3 * enchant) + (6 * overenchant));
-							break;
+						}
+					}
+					else
+					{
+						// P. Atk. increases by 3 for one-handed swords, one-handed blunts, daggers, spears, and other weapons.
+						// Starting at +4, P. Atk. bonus double.
+						env.addValue((3 * enchant) + (6 * overenchant));
 					}
 					break;
 				case D:

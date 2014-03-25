@@ -45,11 +45,7 @@ public enum WeaponType implements ItemType
 	CROSSBOW("Crossbow", TraitType.CROSSBOW),
 	FLAG("Flag", TraitType.NONE),
 	OWNTHING("Ownthing", TraitType.NONE),
-	DUALDAGGER("Dual Dagger", TraitType.DUALDAGGER),
-	
-	// L2J CUSTOM, BACKWARD COMPATIBILITY
-	BIGBLUNT("Big Blunt", TraitType.BLUNT),
-	BIGSWORD("Big Sword", TraitType.SWORD);
+	DUALDAGGER("Dual Dagger", TraitType.DUALDAGGER);
 	
 	private static final Logger _log = Logger.getLogger(WeaponType.class.getName());
 	private final int _mask;
