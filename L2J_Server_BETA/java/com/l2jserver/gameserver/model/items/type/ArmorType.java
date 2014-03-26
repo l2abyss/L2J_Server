@@ -19,31 +19,27 @@
 package com.l2jserver.gameserver.model.items.type;
 
 /**
- * Description of Armor Type
+ * Armor Type enumerated.
  */
-
 public enum ArmorType implements ItemType
 {
-	NONE("None"),
-	LIGHT("Light"),
-	HEAVY("Heavy"),
-	MAGIC("Magic"),
-	SIGIL("Sigil"),
+	NONE,
+	LIGHT,
+	HEAVY,
+	MAGIC,
+	SIGIL,
 	
 	// L2J CUSTOM
-	SHIELD("Shield");
+	SHIELD;
 	
 	final int _mask;
-	final String _name;
 	
 	/**
 	 * Constructor of the ArmorType.
-	 * @param name : String designating the name of the ArmorType
 	 */
-	private ArmorType(String name)
+	private ArmorType()
 	{
 		_mask = 1 << (ordinal() + WeaponType.values().length);
-		_name = name;
 	}
 	
 	/**
@@ -53,14 +49,5 @@ public enum ArmorType implements ItemType
 	public int mask()
 	{
 		return _mask;
-	}
-	
-	/**
-	 * @return the name of the ArmorType
-	 */
-	@Override
-	public String getName()
-	{
-		return _name;
 	}
 }

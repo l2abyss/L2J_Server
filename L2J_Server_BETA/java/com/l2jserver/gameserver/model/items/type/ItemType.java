@@ -25,6 +25,4 @@ package com.l2jserver.gameserver.model.items.type;
 public interface ItemType
 {
 	public int mask();
-	
-	public String getName();
 }

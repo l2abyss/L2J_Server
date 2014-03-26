@@ -44,7 +44,7 @@ public final class L2EtcItem extends L2Item
 	public L2EtcItem(StatsSet set)
 	{
 		super(set);
-		_type = EtcItemType.valueOf(set.getString("etcitem_type", "none").toUpperCase());
+		_type = set.getEnum("etcitem_type", EtcItemType.class, EtcItemType.NONE);
 		
 		// l2j custom - L2EtcItemType.SHOT
 		switch (getDefaultAction())

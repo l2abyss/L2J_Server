@@ -59,7 +59,7 @@ public final class TransformTemplate
 	{
 		_collisionRadius = set.getDouble("radius", 0);
 		_collisionHeight = set.getDouble("height", 0);
-		_baseAttackType = WeaponType.findByName(set.getString("attackType", "FIST"));
+		_baseAttackType = set.getEnum("attackType", WeaponType.class, WeaponType.FIST);
 		_baseAttackRange = set.getInt("range", 40);
 		_baseRandomDamage = set.getDouble("randomDamage", 0);
 		

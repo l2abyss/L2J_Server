@@ -1091,7 +1091,7 @@ public abstract class DocumentBase
 						String item = st.nextToken().trim();
 						for (WeaponType wt : WeaponType.values())
 						{
-							if (wt.getName().equals(item))
+							if (wt.name().equals(item))
 							{
 								mask |= wt.mask();
 								break;
@@ -1099,7 +1099,7 @@ public abstract class DocumentBase
 						}
 						for (ArmorType at : ArmorType.values())
 						{
-							if (at.getName().equals(item))
+							if (at.name().equals(item))
 							{
 								mask |= at.mask();
 								break;
@@ -1178,14 +1178,20 @@ public abstract class DocumentBase
 					{
 						int old = mask;
 						String item = st.nextToken().trim();
-						if (ItemTable._weaponTypes.containsKey(item))
+						for (WeaponType wt : WeaponType.values())
 						{
-							mask |= ItemTable._weaponTypes.get(item).mask();
+							if (wt.name().equals(item))
+							{
+								mask |= wt.mask();
+							}
 						}
 						
-						if (ItemTable._armorTypes.containsKey(item))
+						for (ArmorType at : ArmorType.values())
 						{
-							mask |= ItemTable._armorTypes.get(item).mask();
+							if (at.name().equals(item))
+							{
+								mask |= at.mask();
+							}
 						}
 						
 						if (old == mask)

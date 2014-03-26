@@ -116,7 +116,7 @@ public class L2CharTemplate
 		_baseShldDef = set.getInt("baseShldDef", 0);
 		_baseAttackRange = set.getInt("baseAtkRange", 40);
 		_randomDamage = set.getInt("baseRndDam", 0);
-		_baseAttackType = WeaponType.findByName(set.getString("baseAtkType", "Fist"));
+		_baseAttackType = set.getEnum("baseAtkType", WeaponType.class, WeaponType.FIST);
 		_baseShldRate = set.getInt("baseShldRate", 0);
 		_baseCritRate = set.getInt("baseCritRate", 4);
 		_baseMCritRate = set.getInt("baseMCritRate", 0);

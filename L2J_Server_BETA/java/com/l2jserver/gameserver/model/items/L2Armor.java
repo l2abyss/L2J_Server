@@ -42,7 +42,7 @@ public final class L2Armor extends L2Item
 	public L2Armor(StatsSet set)
 	{
 		super(set);
-		_type = ArmorType.valueOf(set.getString("armor_type", "none").toUpperCase());
+		_type = set.getEnum("armor_type", ArmorType.class, ArmorType.NONE);
 		
 		int _bodyPart = getBodyPart();
 		if ((_bodyPart == L2Item.SLOT_NECK) || ((_bodyPart & L2Item.SLOT_L_EAR) != 0) || ((_bodyPart & L2Item.SLOT_L_FINGER) != 0) || ((_bodyPart & L2Item.SLOT_R_BRACELET) != 0) || ((_bodyPart & L2Item.SLOT_L_BRACELET) != 0))

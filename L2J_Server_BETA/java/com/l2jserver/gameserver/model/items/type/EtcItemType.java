@@ -19,59 +19,45 @@
 package com.l2jserver.gameserver.model.items.type;
 
 /**
- * Description of EtcItem Type
+ * EtcItem Type enumerated.
  */
 public enum EtcItemType implements ItemType
 {
-	NONE(1, "none"),
-	ARROW(2, "arrow"),
-	POTION(3, "potion"),
-	SCRL_ENCHANT_WP(4, "scrl_enchant_wp"),
-	SCRL_ENCHANT_AM(5, "scrl_enchant_am"),
-	SCROLL(6, "scroll"),
-	RECIPE(7, "recipe"),
-	MATERIAL(8, "material"),
-	PET_COLLAR(9, "pet_collar"),
-	CASTLE_GUARD(10, "castle_guard"),
-	LOTTO(11, "lotto"),
-	RACE_TICKET(12, "race_ticket"),
-	DYE(13, "dye"),
-	SEED(14, "seed"),
-	CROP(15, "crop"),
-	MATURECROP(16, "maturecrop"),
-	HARVEST(17, "harvest"),
-	SEED2(18, "seed2"),
-	TICKET_OF_LORD(19, "ticket_of_lord"),
-	LURE(20, "lure"),
-	BLESS_SCRL_ENCHANT_WP(21, "bless_scrl_enchant_wp"),
-	BLESS_SCRL_ENCHANT_AM(22, "bless_scrl_enchant_am"),
-	COUPON(23, "coupon"),
-	ELIXIR(24, "elixir"),
-	SCRL_ENCHANT_ATTR(25, "scrl_enchant_attr"),
-	BOLT(26, "bolt"),
-	SCRL_INC_ENCHANT_PROP_WP(27, "scrl_inc_enchant_prop_wp"),
-	SCRL_INC_ENCHANT_PROP_AM(28, "scrl_inc_enchant_prop_am"),
-	ANCIENT_CRYSTAL_ENCHANT_WP(29, "ancient_crystal_enchant_wp"),
-	ANCIENT_CRYSTAL_ENCHANT_AM(30, "ancient_crystal_enchant_am"),
-	RUNE_SELECT(31, "rune_select"),
-	RUNE(32, "rune"),
+	NONE,
+	ARROW,
+	POTION,
+	SCRL_ENCHANT_WP,
+	SCRL_ENCHANT_AM,
+	SCROLL,
+	RECIPE,
+	MATERIAL,
+	PET_COLLAR,
+	CASTLE_GUARD,
+	LOTTO,
+	RACE_TICKET,
+	DYE,
+	SEED,
+	CROP,
+	MATURECROP,
+	HARVEST,
+	SEED2,
+	TICKET_OF_LORD,
+	LURE,
+	BLESS_SCRL_ENCHANT_WP,
+	BLESS_SCRL_ENCHANT_AM,
+	COUPON,
+	ELIXIR,
+	SCRL_ENCHANT_ATTR,
+	BOLT,
+	SCRL_INC_ENCHANT_PROP_WP,
+	SCRL_INC_ENCHANT_PROP_AM,
+	ANCIENT_CRYSTAL_ENCHANT_WP,
+	ANCIENT_CRYSTAL_ENCHANT_AM,
+	RUNE_SELECT,
+	RUNE,
 	
 	// L2J CUSTOM, BACKWARD COMPATIBILITY
-	SHOT(33, "Shot");
-	
-	private final int _id;
-	private final String _name;
-	
-	/**
-	 * Constructor of the EtcItemType.
-	 * @param id : int designating the ID of the EtcItemType
-	 * @param name : String designating the name of the EtcItemType
-	 */
-	private EtcItemType(int id, String name)
-	{
-		_id = id;
-		_name = name;
-	}
+	SHOT;
 	
 	/**
 	 * @return the ID of the item after applying the mask.
@@ -80,23 +66,5 @@ public enum EtcItemType implements ItemType
 	public int mask()
 	{
 		return 0;
-	}
-	
-	/**
-	 * Gets the EtcItem type ID.
-	 * @return the EtcItem type ID
-	 */
-	public int getId()
-	{
-		return _id;
-	}
-	
-	/**
-	 * @return the name of the EtcItemType
-	 */
-	@Override
-	public String getName()
-	{
-		return _name;
 	}
 }
