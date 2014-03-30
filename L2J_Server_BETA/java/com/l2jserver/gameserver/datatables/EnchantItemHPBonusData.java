@@ -20,7 +20,7 @@ package com.l2jserver.gameserver.datatables;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +40,7 @@ import com.l2jserver.gameserver.model.stats.Stats;
  */
 public class EnchantItemHPBonusData extends DocumentParser
 {
-	private final Map<Integer, List<Integer>> _armorHPBonuses = new HashMap<>();
+	private final Map<CrystalType, List<Integer>> _armorHPBonuses = new EnumMap<>(CrystalType.class);
 	
 	private static final float fullArmorModifier = 1.5f; // TODO: Move it to config!
 	
@@ -57,21 +57,21 @@ public class EnchantItemHPBonusData extends DocumentParser
 	{
 		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
-			if ("list".equals(n.getNodeName()))
+			if ("list".equalsIgnoreCase(n.getNodeName()))
 			{
 				for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 				{
-					if ("enchantHP".equals(d.getNodeName()))
+					if ("enchantHP".equalsIgnoreCase(d.getNodeName()))
 					{
 						List<Integer> bonuses = new ArrayList<>();
 						for (Node e = d.getFirstChild(); e != null; e = e.getNextSibling())
 						{
-							if ("bonus".equals(e.getNodeName()))
+							if ("bonus".equalsIgnoreCase(e.getNodeName()))
 							{
 								bonuses.add(Integer.valueOf(e.getTextContent()));
 							}
 						}
-						_armorHPBonuses.put(parseInteger(d.getAttributes(), "grade"), bonuses);
+						_armorHPBonuses.put(parseEnum(d.getAttributes(), CrystalType.class, "grade"), bonuses);
 					}
 				}
 			}
