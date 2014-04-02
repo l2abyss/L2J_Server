@@ -18,6 +18,8 @@
  */
 package com.l2jserver.log.formatter;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
@@ -25,21 +27,15 @@ import com.l2jserver.Config;
 import com.l2jserver.util.StringUtil;
 import com.l2jserver.util.Util;
 
-/**
- * This class ...
- * @version $Revision: 1.1.4.2 $ $Date: 2005/03/27 15:30:08 $
- */
 public class ConsoleLogFormatter extends Formatter
 {
+	private final SimpleDateFormat dateFmt = new SimpleDateFormat("dd MMM H:mm:ss");
+	
 	@Override
 	public String format(LogRecord record)
 	{
 		final StringBuilder output = new StringBuilder(500);
-		// output.append(record.getLevel().getName());
-		// output.append(_);
-		// output.append(record.getLoggerName());
-		// output.append(_);
-		StringUtil.append(output, record.getMessage(), Config.EOL);
+		StringUtil.append(output, "[", dateFmt.format(new Date(record.getMillis())), "] " + record.getMessage(), Config.EOL);
 		
 		if (record.getThrown() != null)
 		{
