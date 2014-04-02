@@ -31,12 +31,10 @@ import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.SevenSignsFestival;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.cache.HtmCache;
-import com.l2jserver.gameserver.datatables.CategoryData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.NpcPersonalAIData;
 import com.l2jserver.gameserver.enums.AISkillScope;
 import com.l2jserver.gameserver.enums.AIType;
-import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.NpcRace;
 import com.l2jserver.gameserver.enums.PrivateStoreType;
@@ -1901,12 +1899,6 @@ public class L2Npc extends L2Character
 		final double angle = Rnd.nextDouble() * 2 * Math.PI;
 		
 		return new Location((int) (getX() + (radius * Math.cos(angle))), (int) (getY() + (radius * Math.sin(angle))), getZ());
-	}
-	
-	@Override
-	public boolean isInCategory(CategoryType type)
-	{
-		return CategoryData.getInstance().isInCategory(type, getId());
 	}
 	
 	/**

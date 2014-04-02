@@ -44,6 +44,7 @@ import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2AttackableAI;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
+import com.l2jserver.gameserver.datatables.CategoryData;
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.SkillData;
@@ -6982,9 +6983,9 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		return getTemplate().getBaseAttackType();
 	}
 	
-	public boolean isInCategory(CategoryType type)
+	public final boolean isInCategory(CategoryType type)
 	{
-		return false;
+		return CategoryData.getInstance().isInCategory(type, getId());
 	}
 	
 	/**

@@ -23,10 +23,8 @@ import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.ai.L2SummonAI;
-import com.l2jserver.gameserver.datatables.CategoryData;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.NpcRace;
 import com.l2jserver.gameserver.enums.QuestEventType;
@@ -1240,11 +1238,5 @@ public abstract class L2Summon extends L2Playable
 	public int getAllyId()
 	{
 		return (getOwner() != null) ? getOwner().getAllyId() : 0;
-	}
-	
-	@Override
-	public boolean isInCategory(CategoryType type)
-	{
-		return CategoryData.getInstance().isInCategory(type, getId());
 	}
 }

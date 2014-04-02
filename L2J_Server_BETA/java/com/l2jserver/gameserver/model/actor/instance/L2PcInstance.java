@@ -70,7 +70,6 @@ import com.l2jserver.gameserver.communitybbs.BB.Forum;
 import com.l2jserver.gameserver.communitybbs.Manager.ForumsBBSManager;
 import com.l2jserver.gameserver.communitybbs.Manager.RegionBBSManager;
 import com.l2jserver.gameserver.datatables.AdminTable;
-import com.l2jserver.gameserver.datatables.CategoryData;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.CharSummonTable;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
@@ -86,7 +85,6 @@ import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.datatables.RecipeData;
 import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
-import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.HtmlActionScope;
 import com.l2jserver.gameserver.enums.IllegalActionPunishmentType;
 import com.l2jserver.gameserver.enums.InstanceType;
@@ -14706,15 +14704,9 @@ public final class L2PcInstance extends L2Playable
 	}
 	
 	@Override
-	public boolean isInCategory(CategoryType type)
-	{
-		return CategoryData.getInstance().isInCategory(type, getClassId().getId());
-	}
-	
-	@Override
 	public int getId()
 	{
-		return 0;
+		return getClassId().getId();
 	}
 	
 	public boolean isPartyBanned()
