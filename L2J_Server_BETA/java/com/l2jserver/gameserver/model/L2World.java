@@ -129,38 +129,17 @@ public final class L2World
 		_allObjectsDebug.remove(object.getObjectId());
 	}
 	
-	public void removeObjects(List<L2Object> list)
-	{
-		for (L2Object o : list)
-		{
-			if (o != null)
-			{
-				_allObjects.remove(o.getObjectId());
-				_allObjectsDebug.remove(o.getObjectId());
-			}
-		}
-	}
-	
-	public void removeObjects(L2Object[] objects)
-	{
-		for (L2Object o : objects)
-		{
-			_allObjects.remove(o.getObjectId());
-			_allObjectsDebug.remove(o.getObjectId());
-		}
-	}
-	
 	/**
 	 * <B><U> Example of use</U>:</B>
 	 * <ul>
 	 * <li>Client packets : Action, AttackRequest, RequestJoinParty, RequestJoinPledge...</li>
 	 * </ul>
-	 * @param oID Identifier of the L2Object
+	 * @param objectId Identifier of the L2Object
 	 * @return the L2Object object that belongs to an ID or null if no object found.
 	 */
-	public L2Object findObject(int oID)
+	public L2Object findObject(int objectId)
 	{
-		return _allObjects.get(oID);
+		return _allObjects.get(objectId);
 	}
 	
 	public Collection<L2Object> getVisibleObjects()
@@ -231,12 +210,12 @@ public final class L2World
 	}
 	
 	/**
-	 * @param playerObjId Object ID of the player to get Instance
+	 * @param objectId of the player to get Instance
 	 * @return the player instance corresponding to the given object ID.
 	 */
-	public L2PcInstance getPlayer(int playerObjId)
+	public L2PcInstance getPlayer(int objectId)
 	{
-		return _allPlayers.get(playerObjId);
+		return _allPlayers.get(objectId);
 	}
 	
 	/**

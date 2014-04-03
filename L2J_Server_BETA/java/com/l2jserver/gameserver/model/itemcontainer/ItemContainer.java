@@ -33,7 +33,6 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.enums.ItemLocation;
-import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -584,13 +583,11 @@ public abstract class ItemContainer
 				{
 					item.updateDatabase(true);
 					item.deleteMe();
+					L2World.getInstance().removeObject(item);
 				}
 			}
 		}
-		final List<L2Object> items = new ArrayList<L2Object>(_items);
 		_items.clear();
-		
-		L2World.getInstance().removeObjects(items);
 	}
 	
 	/**
