@@ -576,13 +576,16 @@ public abstract class ItemContainer
 	 */
 	public void deleteMe()
 	{
-		try
+		if (getOwner() != null)
 		{
-			updateDatabase();
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "deletedMe()", e);
+			for (L2ItemInstance item : _items)
+			{
+				if (item != null)
+				{
+					item.updateDatabase(true);
+					item.deleteMe();
+				}
+			}
 		}
 		final List<L2Object> items = new ArrayList<L2Object>(_items);
 		_items.clear();
@@ -602,7 +605,6 @@ public abstract class ItemContainer
 				if (item != null)
 				{
 					item.updateDatabase(true);
-					item.deleteMe();
 				}
 			}
 		}
