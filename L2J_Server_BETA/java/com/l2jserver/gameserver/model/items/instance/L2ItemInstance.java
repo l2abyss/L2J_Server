@@ -171,7 +171,7 @@ public final class L2ItemInstance extends L2Object
 	private Elementals[] _elementals = null;
 	
 	private ScheduledFuture<?> itemLootShedule = null;
-	public ScheduledFuture<?> _lifeTimeTask;
+	private ScheduledFuture<?> _lifeTimeTask;
 	
 	private final DropProtection _dropProtection = new DropProtection();
 	
@@ -2408,5 +2408,14 @@ public final class L2ItemInstance extends L2Object
 	@Override
 	public void setHeading(int heading)
 	{
+	}
+	
+	public void deleteMe()
+	{
+		if ((_lifeTimeTask != null) && !_lifeTimeTask.isDone())
+		{
+			_lifeTimeTask.cancel(false);
+			_lifeTimeTask = null;
+		}
 	}
 }

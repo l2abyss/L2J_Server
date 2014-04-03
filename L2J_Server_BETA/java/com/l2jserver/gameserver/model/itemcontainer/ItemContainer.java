@@ -468,6 +468,7 @@ public abstract class ItemContainer
 				item.updateDatabase();
 				refreshWeight();
 			}
+			item.deleteMe();
 		}
 		return item;
 	}
@@ -507,7 +508,7 @@ public abstract class ItemContainer
 		{
 			return null;
 		}
-		return this.destroyItem(process, item, count, actor, reference);
+		return destroyItem(process, item, count, actor, reference);
 	}
 	
 	/**
@@ -601,6 +602,7 @@ public abstract class ItemContainer
 				if (item != null)
 				{
 					item.updateDatabase(true);
+					item.deleteMe();
 				}
 			}
 		}
