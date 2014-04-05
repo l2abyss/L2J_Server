@@ -20,7 +20,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.Collection;
 
-import com.l2jserver.gameserver.TaskPriority;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -31,15 +30,6 @@ import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 public class RequestRecordInfo extends L2GameClientPacket
 {
 	private static final String _C__6E_REQUEST_RECORD_INFO = "[C] 6E RequestRecordInfo";
-	
-	/**
-	 * urgent messages, execute immediately
-	 * @return
-	 */
-	public TaskPriority getPriority()
-	{
-		return TaskPriority.PR_NORMAL;
-	}
 	
 	@Override
 	protected void readImpl()

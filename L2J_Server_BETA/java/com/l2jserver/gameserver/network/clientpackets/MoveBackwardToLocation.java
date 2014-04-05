@@ -21,7 +21,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.nio.BufferUnderflowException;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.TaskPriority;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -52,11 +51,6 @@ public class MoveBackwardToLocation extends L2GameClientPacket
 	private int _curY;
 	@SuppressWarnings("unused")
 	private int _curZ;
-	
-	public TaskPriority getPriority()
-	{
-		return TaskPriority.PR_HIGH;
-	}
 	
 	@Override
 	protected void readImpl()

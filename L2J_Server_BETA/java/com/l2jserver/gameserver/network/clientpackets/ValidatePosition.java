@@ -19,7 +19,6 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.TaskPriority;
 import com.l2jserver.gameserver.geoeditorcon.GeoEditorListener;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.ZoneId;
@@ -33,15 +32,6 @@ import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 public class ValidatePosition extends L2GameClientPacket
 {
 	private static final String _C__59_VALIDATEPOSITION = "[C] 59 ValidatePosition";
-	
-	/**
-	 * urgent messages, execute immediately
-	 * @return
-	 */
-	public TaskPriority getPriority()
-	{
-		return TaskPriority.PR_HIGH;
-	}
 	
 	private int _x;
 	private int _y;
