@@ -286,7 +286,12 @@ public final class InitialShortcutData extends DocumentParser
 				}
 				case MACRO:
 				{
-					player.registerMacro(_macroPresets.get(shortcutId));
+					final Macro macro = _macroPresets.get(shortcutId);
+					if (macro == null)
+					{
+						continue;
+					}
+					player.registerMacro(macro);
 					break;
 				}
 			}
@@ -325,7 +330,12 @@ public final class InitialShortcutData extends DocumentParser
 					}
 					case MACRO:
 					{
-						player.registerMacro(_macroPresets.get(shortcut.getId()));
+						final Macro macro = _macroPresets.get(shortcutId);
+						if (macro == null)
+						{
+							continue;
+						}
+						player.registerMacro(macro);
 						break;
 					}
 				}
