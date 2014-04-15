@@ -298,7 +298,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	
 	public boolean isTooFarFromHome()
 	{
-		return !(this.isInsideRadius(_homeX, _homeY, _homeZ, MAX_DISTANCE_FROM_HOME, true, true));
+		return !isInsideRadius(_homeX, _homeY, _homeZ, MAX_DISTANCE_FROM_HOME, true, true);
 	}
 	
 	@Override

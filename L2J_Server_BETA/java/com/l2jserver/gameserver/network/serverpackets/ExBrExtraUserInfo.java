@@ -38,7 +38,7 @@ public class ExBrExtraUserInfo extends L2GameServerPacket
 		_charObjId = player.getObjectId();
 		_abnormalVisualEffectsEvent = player.getAbnormalVisualEffectEvent();
 		_lectureMark = 1; // TODO: Implement.
-		_invisible = player.getAppearance().getInvisible();
+		_invisible = player.isInvisible();
 	}
 	
 	@Override

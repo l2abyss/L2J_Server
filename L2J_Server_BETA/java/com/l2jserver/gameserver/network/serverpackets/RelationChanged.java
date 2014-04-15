@@ -63,7 +63,7 @@ public final class RelationChanged extends L2GameServerPacket
 		_singled._autoAttackable = autoattackable ? 1 : 0;
 		_singled._karma = activeChar.getKarma();
 		_singled._pvpFlag = activeChar.getPvpFlag();
-		_invisible = activeChar.getActingPlayer().getAppearance().getInvisible();
+		_invisible = activeChar.isInvisible();
 	}
 	
 	public RelationChanged()
@@ -73,7 +73,7 @@ public final class RelationChanged extends L2GameServerPacket
 	
 	public void addRelation(L2Playable activeChar, int relation, boolean autoattackable)
 	{
-		if (activeChar.getActingPlayer().getAppearance().getInvisible())
+		if (activeChar.isInvisible())
 		{
 			throw new IllegalArgumentException("Cannot add insivisble character to multi relation packet");
 		}

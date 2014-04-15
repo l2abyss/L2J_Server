@@ -487,7 +487,7 @@ public class L2DoorInstance extends L2Character
 		
 		for (L2PcInstance player : knownPlayers)
 		{
-			if (player == null)
+			if ((player == null) || !isVisibleFor(player))
 			{
 				continue;
 			}
@@ -710,12 +710,15 @@ public class L2DoorInstance extends L2Character
 	@Override
 	public void sendInfo(L2PcInstance activeChar)
 	{
-		if (getEmitter() > 0)
+		if (isVisibleFor(activeChar))
 		{
-			activeChar.sendPacket(new OnEventTrigger(this, getOpen()));
+			if (getEmitter() > 0)
+			{
+				activeChar.sendPacket(new OnEventTrigger(this, getOpen()));
+			}
+			
+			activeChar.sendPacket(new StaticObject(this, activeChar.isGM()));
 		}
-		
-		activeChar.sendPacket(new StaticObject(this, activeChar.isGM()));
 	}
 	
 	public void setTargetable(boolean b)

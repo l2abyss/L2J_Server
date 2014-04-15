@@ -121,7 +121,7 @@ public final class Action extends L2GameClientPacket
 		}
 		
 		// Only GMs can directly interact with invisible characters
-		if (obj.isPlayer() && obj.getActingPlayer().getAppearance().getInvisible() && !activeChar.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
+		if (!obj.isVisibleFor(activeChar))
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;

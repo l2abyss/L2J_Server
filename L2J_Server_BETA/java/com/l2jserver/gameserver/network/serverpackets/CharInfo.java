@@ -94,7 +94,7 @@ public class CharInfo extends L2GameServerPacket
 		_mAtkSpd = _activeChar.getMAtkSpd();
 		_pAtkSpd = _activeChar.getPAtkSpd();
 		_attackSpeedMultiplier = _activeChar.getAttackSpeedMultiplier();
-		_invisible = cha.getAppearance().getInvisible();
+		_invisible = cha.isInvisible();
 		
 		_moveMultiplier = cha.getMovementSpeedMultiplier();
 		_runSpd = Math.round(cha.getRunSpeed() / _moveMultiplier);
@@ -122,8 +122,8 @@ public class CharInfo extends L2GameServerPacket
 		
 		if (_invisible)
 		{
-			final L2PcInstance player = getClient().getActiveChar();
-			if ((player != null) && player.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
+			final L2PcInstance activeChar = getClient().getActiveChar();
+			if ((activeChar != null) && activeChar.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
 			{
 				gmSeeInvis = true;
 			}

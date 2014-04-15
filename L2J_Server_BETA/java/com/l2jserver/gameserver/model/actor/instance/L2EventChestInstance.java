@@ -75,6 +75,7 @@ public final class L2EventChestInstance extends L2EventMonsterInstance
 	@Override
 	public void broadcastPacket(L2GameServerPacket mov)
 	{
+		mov.setInvisible(isInvisible());
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
 		for (L2PcInstance player : plrs)
 		{
@@ -88,6 +89,7 @@ public final class L2EventChestInstance extends L2EventMonsterInstance
 	@Override
 	public void broadcastPacket(L2GameServerPacket mov, int radiusInKnownlist)
 	{
+		mov.setInvisible(isInvisible());
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
 		for (L2PcInstance player : plrs)
 		{

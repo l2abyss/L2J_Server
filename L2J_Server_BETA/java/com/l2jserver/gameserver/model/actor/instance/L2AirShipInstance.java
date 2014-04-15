@@ -186,6 +186,9 @@ public class L2AirShipInstance extends L2Vehicle
 	@Override
 	public void sendInfo(L2PcInstance activeChar)
 	{
-		activeChar.sendPacket(new ExAirShipInfo(this));
+		if (isVisibleFor(activeChar))
+		{
+			activeChar.sendPacket(new ExAirShipInfo(this));
+		}
 	}
 }

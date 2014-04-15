@@ -119,7 +119,7 @@ public final class Attack extends L2GameClientPacket
 		}
 		
 		// Only GMs can directly attack invisible characters
-		else if (target.isPlayer() && target.getActingPlayer().getAppearance().getInvisible() && !activeChar.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
+		else if (!target.isVisibleFor(activeChar))
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;

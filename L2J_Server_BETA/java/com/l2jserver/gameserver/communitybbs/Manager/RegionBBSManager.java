@@ -298,7 +298,7 @@ public class RegionBBSManager extends BaseBBSManager
 				if (!page.contains(player))
 				{
 					page.add(player);
-					if (!player.getAppearance().getInvisible())
+					if (!player.isInvisible())
 					{
 						_onlineCount++;
 					}
@@ -321,7 +321,7 @@ public class RegionBBSManager extends BaseBBSManager
 			if (temp.add(player))
 			{
 				_onlinePlayers.put(page, temp);
-				if (!player.getAppearance().getInvisible())
+				if (!player.isInvisible())
 				{
 					_onlineCount++;
 				}
@@ -432,7 +432,7 @@ public class RegionBBSManager extends BaseBBSManager
 				cell = 0;
 				for (L2PcInstance player : getOnlinePlayers(page))
 				{
-					if ((player == null) || (player.getAppearance().getInvisible()))
+					if ((player == null) || (player.isInvisible()))
 					{
 						continue; // Go to next
 					}

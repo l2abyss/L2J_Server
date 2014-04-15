@@ -4442,12 +4442,12 @@ public final class L2PcInstance extends L2Playable
 			sendPacket(mov);
 		}
 		
-		mov.setInvisible(getAppearance().getInvisible());
+		mov.setInvisible(isInvisible());
 		
-		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
+		final Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
 		for (L2PcInstance player : plrs)
 		{
-			if (player == null)
+			if ((player == null) || !isVisibleFor(player))
 			{
 				continue;
 			}
@@ -4476,7 +4476,7 @@ public final class L2PcInstance extends L2Playable
 			sendPacket(mov);
 		}
 		
-		mov.setInvisible(getAppearance().getInvisible());
+		mov.setInvisible(isInvisible());
 		
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
 		for (L2PcInstance player : plrs)
@@ -9722,7 +9722,7 @@ public final class L2PcInstance extends L2Playable
 		setIsParalyzed(true);
 		startParalyze();
 		setIsInvul(true);
-		getAppearance().setInvisible();
+		setInvisible(true);
 		sendPacket(new ObservationMode(loc));
 		
 		teleToLocation(loc, false);
@@ -9778,7 +9778,7 @@ public final class L2PcInstance extends L2Playable
 		_observerMode = true;
 		setTarget(null);
 		setIsInvul(true);
-		getAppearance().setInvisible();
+		setInvisible(true);
 		teleToLocation(loc, false);
 		sendPacket(new ExOlympiadMode(3));
 		
@@ -9796,7 +9796,7 @@ public final class L2PcInstance extends L2Playable
 		setIsParalyzed(false);
 		if (!isGM())
 		{
-			getAppearance().setVisible();
+			setInvisible(false);
 			setIsInvul(false);
 		}
 		if (hasAI())
@@ -9824,7 +9824,7 @@ public final class L2PcInstance extends L2Playable
 		teleToLocation(_lastLoc, true);
 		if (!isGM())
 		{
-			getAppearance().setVisible();
+			setInvisible(false);
 			setIsInvul(false);
 		}
 		if (hasAI())
@@ -10712,7 +10712,7 @@ public final class L2PcInstance extends L2Playable
 			{
 				sendMessage("Entering world in Invulnerable mode.");
 			}
-			if (getAppearance().getInvisible())
+			if (isInvisible())
 			{
 				sendMessage("Entering world in Invisible mode.");
 			}

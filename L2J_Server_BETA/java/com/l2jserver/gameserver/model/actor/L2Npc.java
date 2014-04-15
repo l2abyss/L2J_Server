@@ -552,7 +552,7 @@ public class L2Npc extends L2Character
 		Collection<L2PcInstance> plrs = getKnownList().getKnownPlayers().values();
 		for (L2PcInstance player : plrs)
 		{
-			if (player == null)
+			if ((player == null) || !isVisibleFor(player))
 			{
 				continue;
 			}
@@ -1582,18 +1582,21 @@ public class L2Npc extends L2Character
 	@Override
 	public void sendInfo(L2PcInstance activeChar)
 	{
-		if (Config.CHECK_KNOWN && activeChar.isGM())
+		if (isVisibleFor(activeChar))
 		{
-			activeChar.sendMessage("Added NPC: " + getName());
-		}
-		
-		if (getRunSpeed() == 0)
-		{
-			activeChar.sendPacket(new ServerObjectInfo(this, activeChar));
-		}
-		else
-		{
-			activeChar.sendPacket(new AbstractNpcInfo.NpcInfo(this, activeChar));
+			if (Config.CHECK_KNOWN && activeChar.isGM())
+			{
+				activeChar.sendMessage("Added NPC: " + getName());
+			}
+			
+			if (getRunSpeed() == 0)
+			{
+				activeChar.sendPacket(new ServerObjectInfo(this, activeChar));
+			}
+			else
+			{
+				activeChar.sendPacket(new AbstractNpcInfo.NpcInfo(this, activeChar));
+			}
 		}
 	}
 	
@@ -1712,10 +1715,7 @@ public class L2Npc extends L2Character
 	public void setTeam(Team team)
 	{
 		super.setTeam(team);
-		for (L2PcInstance player : getKnownList().getKnownPlayers().values())
-		{
-			player.sendPacket(new AbstractNpcInfo.NpcInfo(this, player));
-		}
+		broadcastInfo();
 	}
 	
 	/**
@@ -1971,5 +1971,18 @@ public class L2Npc extends L2Character
 	public final String getName()
 	{
 		return getTemplate().getName();
+	}
+	
+	@Override
+	public boolean isVisibleFor(L2PcInstance player)
+	{
+		if (getTemplate().getEventQuests(QuestEventType.ON_CAN_SEE_ME) != null)
+		{
+			for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_CAN_SEE_ME))
+			{
+				return quest.notifyOnCanSeeMe(this, player);
+			}
+		}
+		return super.isVisibleFor(player);
 	}
 }

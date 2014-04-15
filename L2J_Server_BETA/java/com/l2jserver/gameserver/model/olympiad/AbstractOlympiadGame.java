@@ -245,7 +245,7 @@ public abstract class AbstractOlympiadGame
 			player.abortCast();
 			
 			// Force the character to be visible
-			player.getAppearance().setVisible();
+			player.setInvisible(false);
 			
 			// Remove Hero Skills
 			if (player.isHero())

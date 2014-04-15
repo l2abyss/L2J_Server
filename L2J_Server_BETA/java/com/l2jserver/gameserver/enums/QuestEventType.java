@@ -41,7 +41,8 @@ public enum QuestEventType
 	ON_SEE_CREATURE(true), // onSeeCreature action, triggered when NPC's known list include the character
 	ON_ROUTE_FINISHED(true), // onRouteFinished action, triggered when NPC, controlled by Walking Manager, arrives to last node
 	ON_NPC_HATE(true),
-	ON_SUMMON(true);
+	ON_SUMMON(true),
+	ON_CAN_SEE_ME(false);
 	
 	// control whether this event type is allowed for the same npc template in multiple quests
 	// or if the npc must be registered in at most one quest for the specified event
