@@ -98,7 +98,7 @@ public abstract class AbstractOlympiadGame
 		sm.addInt(points);
 		broadcastPacket(sm);
 		
-		for (Quest quest : QuestManager.getInstance().getAllManagedScripts())
+		for (Quest quest : QuestManager.getInstance().getQuests().values())
 		{
 			if ((quest != null) && quest.isOlympiadUse())
 			{
@@ -115,7 +115,7 @@ public abstract class AbstractOlympiadGame
 		sm.addInt(points);
 		broadcastPacket(sm);
 		
-		for (Quest quest : QuestManager.getInstance().getAllManagedScripts())
+		for (Quest quest : QuestManager.getInstance().getQuests().values())
 		{
 			if ((quest != null) && quest.isOlympiadUse())
 			{

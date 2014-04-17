@@ -19,23 +19,20 @@
 package com.l2jserver.gameserver.model.quest;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.scripting.scriptengine.impl.L2Script;
 
 /**
+ * Abstract event class.
  * @author JIV
  */
-public abstract class Event extends Quest
+public abstract class Event extends L2Script
 {
-	/**
-	 * @param questId
-	 * @param name
-	 * @param descr
-	 */
-	public Event(int questId, String name, String descr)
+	public Event(String name, String descr)
 	{
-		super(questId, name, descr);
+		super(-1, name, descr);
 	}
 	
-	public abstract boolean eventStart();
+	public abstract boolean eventStart(L2PcInstance eventMaker);
 	
 	public abstract boolean eventStop();
 	

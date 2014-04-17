@@ -18,13 +18,15 @@
  */
 package com.l2jserver.gameserver.scripting;
 
+import java.util.Map;
+
 /**
  * @author KenM
  * @param <S>
  */
 public abstract class ScriptManager<S extends ManagedScript>
 {
-	public abstract Iterable<S> getAllManagedScripts();
+	public abstract Map<String, S> getScripts();
 	
 	public boolean reload(S ms)
 	{

@@ -30,7 +30,6 @@ import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
  */
 public final class L2EventChestInstance extends L2EventMonsterInstance
 {
-	private final boolean _isVisible = false;
 	private boolean _isTriggered = false;
 	
 	public L2EventChestInstance(int objectId, L2NpcTemplate template)
@@ -46,15 +45,7 @@ public final class L2EventChestInstance extends L2EventMonsterInstance
 	
 	public boolean canSee(L2Character cha)
 	{
-		if (cha == null)
-		{
-			return false;
-		}
-		if (cha.isGM())
-		{
-			return true;
-		}
-		return _isVisible;
+		return (cha != null) && (cha.isGM() || !isInvisible());
 	}
 	
 	public void trigger()
@@ -111,5 +102,17 @@ public final class L2EventChestInstance extends L2EventMonsterInstance
 	public boolean isAutoAttackable(L2Character attacker)
 	{
 		return !canSee(attacker);
+	}
+	
+	@Override
+	public void reduceHate(L2Character target, int amount)
+	{
+		// Do nothing.
+	}
+	
+	@Override
+	public boolean isAttackable()
+	{
+		return false;
 	}
 }

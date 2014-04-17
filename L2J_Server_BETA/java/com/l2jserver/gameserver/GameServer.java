@@ -506,7 +506,7 @@ public class GameServer
 	public static void printSection(String s)
 	{
 		s = "=[ " + s + " ]";
-		while (s.length() < 78)
+		while (s.length() < 61)
 		{
 			s = "-" + s;
 		}

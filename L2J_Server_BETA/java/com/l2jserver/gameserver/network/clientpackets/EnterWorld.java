@@ -384,13 +384,23 @@ public class EnterWorld extends L2GameClientPacket
 			loadTutorial(activeChar);
 		}
 		
-		for (Quest quest : QuestManager.getInstance().getAllManagedScripts())
+		// Notify quests.
+		for (Quest quest : QuestManager.getInstance().getQuests().values())
 		{
 			if ((quest != null) && quest.getOnEnterWorld())
 			{
 				quest.notifyEnterWorld(activeChar);
 			}
 		}
+		// Notify scripts.
+		for (Quest quest : QuestManager.getInstance().getScripts().values())
+		{
+			if ((quest != null) && quest.getOnEnterWorld())
+			{
+				quest.notifyEnterWorld(activeChar);
+			}
+		}
+		
 		activeChar.sendPacket(new QuestList());
 		
 		if (Config.PLAYER_SPAWN_PROTECTION > 0)
