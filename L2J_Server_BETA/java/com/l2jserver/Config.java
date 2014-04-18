@@ -1509,7 +1509,7 @@ public final class Config
 			STARTING_VITALITY_POINTS = Character.getInt("StartingVitalityPoints", 20000);
 			MAX_BONUS_EXP = Character.getDouble("MaxExpBonus", 3.5);
 			MAX_BONUS_SP = Character.getDouble("MaxSpBonus", 3.5);
-			MAX_RUN_SPEED = Character.getInt("MaxRunSpeed", 300);
+			MAX_RUN_SPEED = Character.getInt("MaxRunSpeed", 250);
 			MAX_PCRIT_RATE = Character.getInt("MaxPCritRate", 500);
 			MAX_MCRIT_RATE = Character.getInt("MaxMCritRate", 200);
 			MAX_PATK_SPEED = Character.getInt("MaxPAtkSpeed", 1500);
