@@ -1632,7 +1632,7 @@ public final class Formulas
 			return false;
 		}
 		
-		double val = actor.getStat().calcStat(Stats.SKILL_MASTERY, 0, null, null);
+		double val = actor.getStat().calcStat(Stats.SKILL_MASTERY, 1, null, null);
 		if (actor.isPlayer())
 		{
 			val *= (actor.getActingPlayer().isMageClass() ? BaseStats.INT : BaseStats.STR).calcBonus(actor);
