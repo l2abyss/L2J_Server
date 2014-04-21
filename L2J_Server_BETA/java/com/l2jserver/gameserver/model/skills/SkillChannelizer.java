@@ -189,6 +189,12 @@ public class SkillChannelizer implements Runnable
 					if ((info == null) || (info.getSkill().getLevel() < skillLevel))
 					{
 						final Skill skill = SkillData.getInstance().getSkill(_skill.getChannelingSkillId(), skillLevel);
+						if (skill == null)
+						{
+							_log.log(Level.WARNING, getClass().getSimpleName() + ": Non existent channeling skill requested: " + _skill);
+							_channelizer.abortCast();
+							return;
+						}
 						skill.applyEffects(getChannelizer(), _channelized);
 					}
 					_channelizer.broadcastPacket(new MagicSkillLaunched(_channelizer, _skill.getId(), _skill.getLevel(), _channelized));
