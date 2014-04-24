@@ -8932,7 +8932,7 @@ public final class L2PcInstance extends L2Playable
 				return false;
 			}
 			
-			if (!target.canBeAttacked() && !getAccessLevel().allowPeaceAttack())
+			if (!target.canBeAttacked() && !getAccessLevel().allowPeaceAttack() && !target.isDoor())
 			{
 				// If target is not attackable, send a Server->Client packet ActionFailed
 				sendPacket(ActionFailed.STATIC_PACKET);
