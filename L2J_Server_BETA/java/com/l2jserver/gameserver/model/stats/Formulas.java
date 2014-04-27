@@ -597,7 +597,6 @@ public final class Formulas
 		double power = skill.getPower(isPvP, isPvE);
 		double damage = 0;
 		double proximityBonus = attacker.isBehindTarget() ? 1.2 : attacker.isInFrontOfTarget() ? 1 : 1.1; // Behind: +20% - Side: +10% (TODO: values are unconfirmed, possibly custom, remove or update when confirmed);
-		double graciaPhysSkillBonus = skill.isMagic() ? 1 : 1.10113; // Gracia final physical skill bonus 10.113%
 		double ssboost = ss ? 2 : 1;
 		double pvpBonus = 1;
 		
@@ -610,11 +609,11 @@ public final class Formulas
 		}
 		
 		// Initial damage
-		double baseMod = ((70 * graciaPhysSkillBonus * (power + (attacker.getPAtk(target) * ssboost))) / defence);
+		double baseMod = ((77 * (power + (attacker.getPAtk(target) * ssboost))) / defence);
 		// Critical
 		double criticalMod = (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill));
 		double criticalVulnMod = (target.calcStat(Stats.CRIT_VULN, 1, target, skill));
-		double criticalAddMod = (((attacker.getStat().calcStat(Stats.CRITICAL_DAMAGE_ADD, 0) * 6.1 * 70) / defence) * graciaPhysSkillBonus);
+		double criticalAddMod = ((attacker.getStat().calcStat(Stats.CRITICAL_DAMAGE_ADD, 0) * 6.1 * 77) / defence);
 		double criticalAddVuln = target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill);
 		// Trait, elements
 		double weaponTraitMod = calcWeaponTraitBonus(attacker, target);
@@ -688,7 +687,6 @@ public final class Formulas
 		boolean isPvE = attacker.isPlayable() && target.isAttackable();
 		double damage = 0;
 		double proximityBonus = attacker.isBehindTarget() ? 1.2 : attacker.isInFrontOfTarget() ? 1 : 1.1; // Behind: +20% - Side: +10% (TODO: values are unconfirmed, possibly custom, remove or update when confirmed)
-		double graciaPhysSkillBonus = 1.10113; // Gracia final physical skill bonus 10.113%
 		double ssboost = ss ? 2 : 1;
 		double pvpBonus = 1;
 		
@@ -701,11 +699,11 @@ public final class Formulas
 		}
 		
 		// Initial damage
-		double baseMod = ((70 * graciaPhysSkillBonus * (skill.getPower(isPvP, isPvE) + attacker.getPAtk(target))) / defence) * ssboost;
+		double baseMod = ((77 * (skill.getPower(isPvP, isPvE) + attacker.getPAtk(target))) / defence) * ssboost;
 		// Critical
 		double criticalMod = (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill));
 		double criticalVulnMod = (target.calcStat(Stats.CRIT_VULN, 1, target, skill));
-		double criticalAddMod = (((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70) / defence) * graciaPhysSkillBonus);
+		double criticalAddMod = ((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 77) / defence);
 		double criticalAddVuln = target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill);
 		// Trait, elements
 		double generalTraitMod = calcGeneralTraitBonus(attacker, target, skill.getTraitType(), false);
