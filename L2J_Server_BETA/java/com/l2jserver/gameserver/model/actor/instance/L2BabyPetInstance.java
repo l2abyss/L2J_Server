@@ -316,12 +316,17 @@ public final class L2BabyPetInstance extends L2PetInstance
 							continue;
 						}
 						
+						// If owner already have the buff, continue.
 						final BuffInfo buffInfo = owner.getEffectList().getBuffInfoByAbnormalType(skill.getAbnormalType());
 						if ((buffInfo != null) && (skill.getAbnormalLvl() <= buffInfo.getSkill().getAbnormalLvl()))
 						{
 							continue;
 						}
-						
+						// If owner have the buff blocked, continue.
+						if (owner.getEffectList().getAllBlockedBuffSlots().contains(skill.getAbnormalType()))
+						{
+							continue;
+						}
 						_currentBuffs.add(skill);
 					}
 				}
