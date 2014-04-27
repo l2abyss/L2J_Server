@@ -596,9 +596,9 @@ public final class Formulas
 		final boolean isPvE = attacker.isPlayable() && target.isAttackable();
 		double power = skill.getPower(isPvP, isPvE);
 		double damage = 0;
-		double proximityBonus = 1;
+		double proximityBonus = attacker.isBehindTarget() ? 1.2 : attacker.isInFrontOfTarget() ? 1 : 1.1; // Behind: +20% - Side: +10% (TODO: values are unconfirmed, possibly custom, remove or update when confirmed);
 		double graciaPhysSkillBonus = skill.isMagic() ? 1 : 1.10113; // Gracia final physical skill bonus 10.113%
-		double ssboost = ss ? 2.04 : 1; // 104% bonus with SS
+		double ssboost = ss ? 2 : 1;
 		double pvpBonus = 1;
 		
 		if (isPvP)
@@ -609,35 +609,59 @@ public final class Formulas
 			defence *= target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);
 		}
 		
-		if (attacker.isBehind(target))
-		{
-			proximityBonus = 1.2; // +20% crit dmg when back stabbed
-		}
-		else if (attacker.isInFrontOf(target))
-		{
-			proximityBonus = 1.1; // +10% crit dmg when side stabbed
-		}
+		// Initial damage
+		double baseMod = ((70 * graciaPhysSkillBonus * (power + (attacker.getPAtk(target) * ssboost))) / defence);
+		// Critical
+		double criticalMod = (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill));
+		double criticalVulnMod = (target.calcStat(Stats.CRIT_VULN, 1, target, skill));
+		double criticalAddMod = (((attacker.getStat().calcStat(Stats.CRITICAL_DAMAGE_ADD, 0) * 6.1 * 70) / defence) * graciaPhysSkillBonus);
+		double criticalAddVuln = target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill);
+		// Trait, elements
+		double weaponTraitMod = calcWeaponTraitBonus(attacker, target);
+		double generalTraitMod = calcGeneralTraitBonus(attacker, target, skill.getTraitType(), false);
+		double attributeMod = calcAttributeBonus(attacker, target, skill);
+		double weaponMod = attacker.getRandomDamageMultiplier();
 		
-		// Initial damage.
-		damage = (((70. * graciaPhysSkillBonus * (power + (attacker.getPAtk(target) * ssboost))) / defence) * (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill)) * (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * proximityBonus * pvpBonus) + (((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70) / defence) * graciaPhysSkillBonus);
-		damage += target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill);
-		// Traits, elements
-		damage *= calcWeaponTraitBonus(attacker, target) * calcGeneralTraitBonus(attacker, target, skill.getTraitType(), false) * calcAttributeBonus(attacker, target, skill);
-		
-		// Random weapon damage
-		damage *= attacker.getRandomDamageMultiplier();
-		
+		double penaltyMod = 1;
 		if ((target instanceof L2Attackable) && !target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2))
 		{
 			int lvlDiff = target.getLevel() - attacker.getActingPlayer().getLevel() - 1;
 			if (lvlDiff >= Config.NPC_SKILL_DMG_PENALTY.size())
 			{
-				damage *= Config.NPC_SKILL_DMG_PENALTY.get(Config.NPC_SKILL_DMG_PENALTY.size() - 1);
+				penaltyMod *= Config.NPC_SKILL_DMG_PENALTY.get(Config.NPC_SKILL_DMG_PENALTY.size() - 1);
 			}
 			else
 			{
-				damage *= Config.NPC_SKILL_DMG_PENALTY.get(lvlDiff);
+				penaltyMod *= Config.NPC_SKILL_DMG_PENALTY.get(lvlDiff);
 			}
+		}
+		
+		damage = (baseMod * criticalMod * criticalVulnMod * proximityBonus * pvpBonus) + criticalAddMod + criticalAddVuln;
+		damage *= weaponTraitMod;
+		damage *= generalTraitMod;
+		damage *= attributeMod;
+		damage *= weaponMod;
+		damage *= penaltyMod;
+		
+		if (attacker.isDebug())
+		{
+			final StatsSet set = new StatsSet();
+			set.set("skillPower", skill.getPower(isPvP, isPvE));
+			set.set("ssboost", ssboost);
+			set.set("proximityBonus", proximityBonus);
+			set.set("pvpBonus", pvpBonus);
+			set.set("baseMod", baseMod);
+			set.set("criticalMod", criticalMod);
+			set.set("criticalVulnMod", criticalVulnMod);
+			set.set("criticalAddMod", criticalAddMod);
+			set.set("criticalAddVuln", criticalAddVuln);
+			set.set("weaponTraitMod", weaponTraitMod);
+			set.set("generalTraitMod", generalTraitMod);
+			set.set("attributeMod", attributeMod);
+			set.set("weaponMod", weaponMod);
+			set.set("penaltyMod", penaltyMod);
+			set.set("damage", (int) damage);
+			Debug.sendSkillDebug(attacker, target, skill, set);
 		}
 		
 		return Math.max(damage, 1);
@@ -664,11 +688,11 @@ public final class Formulas
 		boolean isPvE = attacker.isPlayable() && target.isAttackable();
 		double damage = 0;
 		double proximityBonus = attacker.isBehindTarget() ? 1.2 : attacker.isInFrontOfTarget() ? 1 : 1.1; // Behind: +20% - Side: +10% (TODO: values are unconfirmed, possibly custom, remove or update when confirmed)
-		double graciaPhysSkillBonus = skill.isMagic() ? 1 : 1.10113; // Gracia final physical skill bonus 10.113%
+		double graciaPhysSkillBonus = 1.10113; // Gracia final physical skill bonus 10.113%
 		double ssboost = ss ? 2 : 1;
 		double pvpBonus = 1;
 		
-		if (attacker.isPlayable() && target.isPlayable())
+		if (isPvP)
 		{
 			// Damage bonuses in PvP fight
 			pvpBonus = attacker.calcStat(Stats.PVP_PHYS_SKILL_DMG, 1, null, null);
@@ -676,26 +700,59 @@ public final class Formulas
 			defence *= target.calcStat(Stats.PVP_PHYS_SKILL_DEF, 1, null, null);
 		}
 		
-		damage = (((70. * graciaPhysSkillBonus * (skill.getPower(isPvP, isPvE) + attacker.getPAtk(target))) / defence) * ssboost * (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill)) * (target.calcStat(Stats.CRIT_VULN, 1, target, skill)) * proximityBonus * pvpBonus) + (((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70) / defence) * graciaPhysSkillBonus);
-		damage += target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill);
-		// get the vulnerability for the instance due to skills (buffs, passives, toggles, etc)
+		// Initial damage
+		double baseMod = ((70 * graciaPhysSkillBonus * (skill.getPower(isPvP, isPvE) + attacker.getPAtk(target))) / defence) * ssboost;
+		// Critical
+		double criticalMod = (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill));
+		double criticalVulnMod = (target.calcStat(Stats.CRIT_VULN, 1, target, skill));
+		double criticalAddMod = (((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 70) / defence) * graciaPhysSkillBonus);
+		double criticalAddVuln = target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill);
+		// Trait, elements
+		double generalTraitMod = calcGeneralTraitBonus(attacker, target, skill.getTraitType(), false);
+		double attributeMod = calcAttributeBonus(attacker, target, skill);
+		double weaponMod = attacker.getRandomDamageMultiplier();
 		
-		damage *= calcGeneralTraitBonus(attacker, target, skill.getTraitType(), false) * calcAttributeBonus(attacker, target, skill);
-		damage *= attacker.getRandomDamageMultiplier();
-		
+		double penaltyMod = 1;
 		if (target.isAttackable() && !target.isRaid() && !target.isRaidMinion() && (target.getLevel() >= Config.MIN_NPC_LVL_DMG_PENALTY) && (attacker.getActingPlayer() != null) && ((target.getLevel() - attacker.getActingPlayer().getLevel()) >= 2))
 		{
 			int lvlDiff = target.getLevel() - attacker.getActingPlayer().getLevel() - 1;
 			if (lvlDiff >= Config.NPC_SKILL_DMG_PENALTY.size())
 			{
-				damage *= Config.NPC_SKILL_DMG_PENALTY.get(Config.NPC_SKILL_DMG_PENALTY.size() - 1);
+				penaltyMod *= Config.NPC_SKILL_DMG_PENALTY.get(Config.NPC_SKILL_DMG_PENALTY.size() - 1);
 			}
 			else
 			{
-				damage *= Config.NPC_SKILL_DMG_PENALTY.get(lvlDiff);
+				penaltyMod *= Config.NPC_SKILL_DMG_PENALTY.get(lvlDiff);
 			}
 			
 		}
+		
+		damage = (baseMod * criticalMod * criticalVulnMod * proximityBonus * pvpBonus) + criticalAddMod + criticalAddVuln;
+		damage *= generalTraitMod;
+		damage *= attributeMod;
+		damage *= weaponMod;
+		damage *= penaltyMod;
+		
+		if (attacker.isDebug())
+		{
+			final StatsSet set = new StatsSet();
+			set.set("skillPower", skill.getPower(isPvP, isPvE));
+			set.set("ssboost", ssboost);
+			set.set("proximityBonus", proximityBonus);
+			set.set("pvpBonus", pvpBonus);
+			set.set("baseMod", baseMod);
+			set.set("criticalMod", criticalMod);
+			set.set("criticalVulnMod", criticalVulnMod);
+			set.set("criticalAddMod", criticalAddMod);
+			set.set("criticalAddVuln", criticalAddVuln);
+			set.set("generalTraitMod", generalTraitMod);
+			set.set("attributeMod", attributeMod);
+			set.set("weaponMod", weaponMod);
+			set.set("penaltyMod", penaltyMod);
+			set.set("damage", (int) damage);
+			Debug.sendSkillDebug(attacker, target, skill, set);
+		}
+		
 		return Math.max(damage, 1);
 	}
 	
