@@ -256,6 +256,7 @@ public final class L2BabyPetInstance extends L2PetInstance
 			{
 				return;
 			}
+			
 			// If the pet doesn't meet the conditions avoid casting.
 			if (_baby.isCastingNow() || _baby.isBetrayed() || _baby.isMuted() || _baby.isOutOfControl() || !_bufferMode || (_baby.getAI().getIntention() == CtrlIntention.AI_INTENTION_CAST))
 			{
@@ -322,8 +323,9 @@ public final class L2BabyPetInstance extends L2PetInstance
 						{
 							continue;
 						}
+						
 						// If owner have the buff blocked, continue.
-						if (owner.getEffectList().getAllBlockedBuffSlots().contains(skill.getAbnormalType()))
+						if ((owner.getEffectList().getAllBlockedBuffSlots() != null) && owner.getEffectList().getAllBlockedBuffSlots().contains(skill.getAbnormalType()))
 						{
 							continue;
 						}
