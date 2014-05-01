@@ -52,6 +52,7 @@ public enum Stats
 	ATK_REUSE("atkReuse"), // Bows Hits Reuse Rate
 	P_REUSE("pReuse"), // Physical Skill Reuse Rate
 	MAGIC_REUSE_RATE("mReuse"), // Magic Skill Reuse Rate
+	DANCE_REUSE("dReuse"), // Dance Skill Reuse Rate
 	SHIELD_DEFENCE("sDef"),
 	CRITICAL_DAMAGE("cAtk"),
 	CRITICAL_DAMAGE_ADD("cAtkAdd"), // this is another type for special critical damage mods - vicious stance, critical power and critical damage SA

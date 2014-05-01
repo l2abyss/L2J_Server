@@ -1838,9 +1838,13 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		{
 			reuseDelay = (int) (skill.getReuseDelay() * calcStat(Stats.MAGIC_REUSE_RATE, 1, null, null));
 		}
-		else
+		else if (skill.isPhysical())
 		{
 			reuseDelay = (int) (skill.getReuseDelay() * calcStat(Stats.P_REUSE, 1, null, null));
+		}
+		else
+		{
+			reuseDelay = (int) (skill.getReuseDelay() * calcStat(Stats.DANCE_REUSE, 1, null, null));
 		}
 		
 		boolean skillMastery = Formulas.calcSkillMastery(this, skill);
