@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -53,15 +52,13 @@ import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
+ * NPC data parser.
  * @author Nos
  */
 public class NpcData extends DocumentParser
 {
-	private static final Logger _log = Logger.getLogger(NpcData.class.getName());
-	
 	private final Map<Integer, L2NpcTemplate> _npcs = new ConcurrentHashMap<>();
 	private final Map<String, Integer> _clans = new ConcurrentHashMap<>();
-	
 	// SQL Queries
 	private static final String SELECT_MINION_ALL = "SELECT * FROM minions ORDER BY boss_id";
 	

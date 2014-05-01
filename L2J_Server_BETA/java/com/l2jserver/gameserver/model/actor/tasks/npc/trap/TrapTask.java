@@ -20,7 +20,6 @@ package com.l2jserver.gameserver.model.actor.tasks.npc.trap;
 
 import java.util.logging.Logger;
 
-import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2TrapInstance;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
@@ -54,38 +53,39 @@ public class TrapTask implements Runnable
 					{
 						_trap.broadcastPacket(new SocialAction(_trap.getObjectId(), 2));
 					}
-					if (_trap.getRemainingTime() < 0)
+					if (_trap.getRemainingTime() <= 0)
 					{
 						switch (_trap.getSkill().getTargetType())
 						{
 							case AURA:
 							case FRONT_AURA:
 							case BEHIND_AURA:
+							{
 								_trap.triggerTrap(_trap);
 								break;
+							}
 							default:
+							{
 								_trap.unSummon();
+							}
 						}
 						return;
 					}
 				}
 				
-				for (L2Character target : _trap.getKnownList().getKnownCharactersInRadius(_trap.getSkill().getAffectRange()))
+				for (L2Character target : _trap.getKnownList().getKnownCharacters())
 				{
-					if (!_trap.checkTarget(target))
+					if (_trap.checkTarget(target))
 					{
-						continue;
+						_trap.triggerTrap(target);
+						break;
 					}
-					_trap.triggerTrap(target);
-					return;
 				}
-				
-				ThreadPoolManager.getInstance().scheduleGeneral(new TrapTask(_trap), TICK);
 			}
 		}
 		catch (Exception e)
 		{
-			_log.severe(L2TrapInstance.class.getSimpleName() + ": " + e.getMessage());
+			_log.severe(TrapTask.class.getSimpleName() + ": " + e.getMessage());
 			_trap.unSummon();
 		}
 	}
