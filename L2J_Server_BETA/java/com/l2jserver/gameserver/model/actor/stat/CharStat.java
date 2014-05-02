@@ -45,6 +45,8 @@ public class CharStat
 	private final float[] _defenceTraits = new float[TraitType.values().length];
 	private final int[] _defenceTraitsCount = new int[TraitType.values().length];
 	private final int[] _traitsInvul = new int[TraitType.values().length];
+	/** Creature's maximum buff count. */
+	private int _maxBuffCount = Config.BUFFS_MAX_AMOUNT;
 	
 	public CharStat(L2Character activeChar)
 	{
@@ -795,5 +797,23 @@ public class CharStat
 	public int[] getTraitsInvul()
 	{
 		return _traitsInvul;
+	}
+	
+	/**
+	 * Gets the maximum buff count.
+	 * @return the maximum buff count
+	 */
+	public int getMaxBuffCount()
+	{
+		return _maxBuffCount;
+	}
+	
+	/**
+	 * Sets the maximum buff count.
+	 * @param buffCount the buff count
+	 */
+	public void setMaxBuffCount(int buffCount)
+	{
+		_maxBuffCount = buffCount;
 	}
 }

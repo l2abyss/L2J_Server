@@ -746,9 +746,8 @@ public final class L2PcInstance extends L2Playable
 	private long _activeEnchantTimestamp = 0;
 	
 	protected boolean _inventoryDisable = false;
-	
+	/** Player's cubics. */
 	private final Map<Integer, L2CubicInstance> _cubics = new ConcurrentSkipListMap<>();
-	
 	/** Active shots. */
 	protected FastSet<Integer> _activeSoulShots = new FastSet<Integer>().shared();
 	
@@ -7551,10 +7550,6 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public synchronized void store(boolean storeActiveEffects)
 	{
-		// update client coords, if these look like true
-		// if (isInsideRadius(getClientX(), getClientY(), 1000, true))
-		// setXYZ(getClientX(), getClientY(), getClientZ());
-		
 		storeCharBase();
 		storeCharSub();
 		storeEffect(storeActiveEffects);

@@ -85,7 +85,6 @@ import com.l2jserver.gameserver.model.actor.tasks.character.UsePotionTask;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.model.actor.transform.Transform;
 import com.l2jserver.gameserver.model.actor.transform.TransformTemplate;
-import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.effects.EffectFlag;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Instance;
@@ -231,9 +230,8 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	private volatile Map<Integer, OptionsSkillHolder> _triggerSkills;
 	
 	private volatile Map<Integer, InvulSkillHolder> _invulAgainst;
-	
+	/** Creatures effect list. */
 	private final CharEffectList _effectList = new CharEffectList(this);
-	
 	/** The character that summons this character. */
 	private L2Character _summoner = null;
 	
@@ -6662,24 +6660,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	public boolean isChampion()
 	{
 		return false;
-	}
-	
-	/**
-	 * Check player max buff count
-	 * @return max buff count
-	 */
-	public int getMaxBuffCount()
-	{
-		int count = Config.BUFFS_MAX_AMOUNT;
-		if (isAffectedBySkill(CommonSkill.DIVINE_INSPIRATION.getId()))
-		{
-			final BuffInfo info = getEffectList().getBuffInfoBySkillId(CommonSkill.DIVINE_INSPIRATION.getId());
-			for (AbstractEffect effect : info.getEffects())
-			{
-				count += (int) effect.getValue();
-			}
-		}
-		return count;
 	}
 	
 	/**

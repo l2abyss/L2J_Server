@@ -1491,7 +1491,7 @@ public final class CharEffectList
 			}
 			else if (!skill.isHealingPotionSkill())
 			{
-				buffsToRemove = getBuffCount() - _owner.getMaxBuffCount();
+				buffsToRemove = getBuffCount() - _owner.getStat().getMaxBuffCount();
 			}
 			
 			for (Entry<Integer, BuffInfo> entry : effects.entrySet())

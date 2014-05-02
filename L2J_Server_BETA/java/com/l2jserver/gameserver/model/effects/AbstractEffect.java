@@ -54,9 +54,8 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 	// Apply condition
 	// private final Condition _applyCond; // TODO: Use or cleanup.
 	private List<FuncTemplate> _funcTemplates;
-	/** Effect class name. */
+	/** Effect name. */
 	private final String _name;
-	private final double _val;
 	/** Ticks. */
 	private final int _ticks;
 	private final int _triggeredId;
@@ -75,7 +74,6 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 		_attachCond = attachCond;
 		// _applyCond = applyCond;
 		_name = set.getString("name");
-		_val = set.getDouble("val", 0);
 		_ticks = set.getInt("ticks", 0);
 		_triggeredId = set.getInt("triggeredId", 0);
 		_triggeredLevel = set.getInt("triggeredLevel", 1);
@@ -152,15 +150,6 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 	public String getName()
 	{
 		return _name;
-	}
-	
-	/**
-	 * Gets the generic value.
-	 * @return the value
-	 */
-	public double getValue()
-	{
-		return _val;
 	}
 	
 	/**
