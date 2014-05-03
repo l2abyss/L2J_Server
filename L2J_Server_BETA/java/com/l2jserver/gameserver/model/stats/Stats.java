@@ -76,7 +76,10 @@ public enum Stats
 	// ATTACK & DEFENCE RATES
 	EVASION_RATE("rEvas"),
 	P_SKILL_EVASION("pSkillEvas"),
-	CRIT_DAMAGE_EVASION("critDamEvas"),
+	DEFENCE_CRITICAL_RATE("defCritRate"),
+	DEFENCE_CRITICAL_RATE_ADD("defCritRateAdd"),
+	DEFENCE_CRITICAL_DAMAGE("defCritDamage"),
+	DEFENCE_CRITICAL_DAMAGE_ADD("defCritDamageAdd"), // Resistance to critical damage in value (Example: +100 will be 100 more critical damage, NOT 100% more).
 	SHIELD_RATE("rShld"),
 	CRITICAL_RATE("rCrit"),
 	BLOW_RATE("blowRate"),
@@ -115,8 +118,6 @@ public enum Stats
 	CANCEL_VULN("cancelVuln"), // Resistance for cancel type skills
 	DEBUFF_VULN("debuffVuln"),
 	BUFF_VULN("buffVuln"),
-	CRIT_VULN("critVuln"), // Resistance to critical damage in percent.
-	CRIT_ADD_VULN("critAddVuln"), // Resistance to critical damage in value (Example: +100 will be 100 more critical damage, NOT 100% more).
 	MAGIC_DAMAGE_VULN("magicDamVul"),
 	
 	// RESISTANCES
@@ -139,9 +140,7 @@ public enum Stats
 	DARK_POWER("darkPower"),
 	
 	// PROFICIENCY
-	PROF("movementProf"),
 	CANCEL_PROF("cancelProf"),
-	DEBUFF_PROF("debuffProf"),
 	
 	REFLECT_DAMAGE_PERCENT("reflectDam"),
 	REFLECT_SKILL_MAGIC("reflectSkillMagic"),

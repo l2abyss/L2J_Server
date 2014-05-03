@@ -612,9 +612,9 @@ public final class Formulas
 		double baseMod = ((77 * (power + (attacker.getPAtk(target) * ssboost))) / defence);
 		// Critical
 		double criticalMod = (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill));
-		double criticalVulnMod = (target.calcStat(Stats.CRIT_VULN, 1, target, skill));
+		double criticalVulnMod = (target.calcStat(Stats.DEFENCE_CRITICAL_DAMAGE, 1, target, skill));
 		double criticalAddMod = ((attacker.getStat().calcStat(Stats.CRITICAL_DAMAGE_ADD, 0) * 6.1 * 77) / defence);
-		double criticalAddVuln = target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill);
+		double criticalAddVuln = target.calcStat(Stats.DEFENCE_CRITICAL_DAMAGE_ADD, 0, target, skill);
 		// Trait, elements
 		double weaponTraitMod = calcWeaponTraitBonus(attacker, target);
 		double generalTraitMod = calcGeneralTraitBonus(attacker, target, skill.getTraitType(), false);
@@ -702,9 +702,9 @@ public final class Formulas
 		double baseMod = ((77 * (skill.getPower(isPvP, isPvE) + attacker.getPAtk(target))) / defence) * ssboost;
 		// Critical
 		double criticalMod = (attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill));
-		double criticalVulnMod = (target.calcStat(Stats.CRIT_VULN, 1, target, skill));
+		double criticalVulnMod = (target.calcStat(Stats.DEFENCE_CRITICAL_DAMAGE, 1, target, skill));
 		double criticalAddMod = ((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 6.1 * 77) / defence);
-		double criticalAddVuln = target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill);
+		double criticalAddVuln = target.calcStat(Stats.DEFENCE_CRITICAL_DAMAGE_ADD, 0, target, skill);
 		// Trait, elements
 		double generalTraitMod = calcGeneralTraitBonus(attacker, target, skill.getTraitType(), false);
 		double attributeMod = calcAttributeBonus(attacker, target, skill);
@@ -800,10 +800,10 @@ public final class Formulas
 		if (crit)
 		{
 			// Finally retail like formula
-			damage = 2 * attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill) * target.calcStat(Stats.CRIT_VULN, 1, target, null) * ((70 * damage) / defence);
+			damage = 2 * attacker.calcStat(Stats.CRITICAL_DAMAGE, 1, target, skill) * target.calcStat(Stats.DEFENCE_CRITICAL_DAMAGE, 1, target, null) * ((70 * damage) / defence);
 			// Crit dmg add is almost useless in normal hits...
 			damage += ((attacker.calcStat(Stats.CRITICAL_DAMAGE_ADD, 0, target, skill) * 70) / defence);
-			damage += target.calcStat(Stats.CRIT_ADD_VULN, 0, target, skill);
+			damage += target.calcStat(Stats.DEFENCE_CRITICAL_DAMAGE_ADD, 0, target, skill);
 		}
 		else
 		{
@@ -1119,18 +1119,8 @@ public final class Formulas
 	 */
 	public static final boolean calcCrit(double rate, boolean skill, L2Character target)
 	{
-		// support for critical damage evade
-		if (rate > Rnd.get(1000))
-		{
-			if ((target == null) || skill)
-			{
-				return true; // no effect
-			}
-			
-			// little weird, but remember what CRIT_DAMAGE_EVASION > 1 increase chances to _evade_ crit hits
-			return Rnd.get((int) target.getStat().calcStat(Stats.CRIT_DAMAGE_EVASION, 100, null, null)) < 100;
-		}
-		return false;
+		double finalRate = target.getStat().calcStat(Stats.DEFENCE_CRITICAL_RATE, rate, null, null) + target.getStat().calcStat(Stats.DEFENCE_CRITICAL_RATE_ADD, 0, null, null);
+		return finalRate > Rnd.get(1000);
 	}
 	
 	public static final boolean calcMCrit(double mRate)
