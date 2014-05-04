@@ -107,7 +107,6 @@ public enum InstanceType
 	// Custom
 	L2ClassMasterInstance(L2NpcInstance),
 	L2NpcBufferInstance(L2Npc),
-	L2TvTEventNpcInstance(L2Npc),
 	L2WeddingManagerInstance(L2Npc),
 	L2EventMobInstance(L2Npc);
 	

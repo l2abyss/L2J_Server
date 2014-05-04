@@ -48,7 +48,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
-import com.l2jserver.gameserver.model.olympiad.OlympiadManager;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
@@ -685,114 +684,6 @@ public class TvTEvent
 			{
 				playerInstance.setXYZInvisible((Config.TVT_EVENT_PARTICIPATION_NPC_COORDINATES[0] + Rnd.get(101)) - 50, (Config.TVT_EVENT_PARTICIPATION_NPC_COORDINATES[1] + Rnd.get(101)) - 50, Config.TVT_EVENT_PARTICIPATION_NPC_COORDINATES[2]);
 			}
-		}
-	}
-	
-	/**
-	 * Called on every bypass by npc of type L2TvTEventNpc<br>
-	 * Needs synchronization cause of the max player check<br>
-	 * <br>
-	 * @param command as String<br>
-	 * @param playerInstance as L2PcInstance<br>
-	 */
-	public static synchronized void onBypass(String command, L2PcInstance playerInstance)
-	{
-		if ((playerInstance == null) || !isParticipating())
-		{
-			return;
-		}
-		
-		final String htmContent;
-		
-		if (command.equals("tvt_event_participation"))
-		{
-			final NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage();
-			int playerLevel = playerInstance.getLevel();
-			
-			if (playerInstance.isCursedWeaponEquipped())
-			{
-				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath + "CursedWeaponEquipped.htm");
-				if (htmContent != null)
-				{
-					npcHtmlMessage.setHtml(htmContent);
-				}
-			}
-			else if (OlympiadManager.getInstance().isRegistered(playerInstance))
-			{
-				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath + "Olympiad.htm");
-				if (htmContent != null)
-				{
-					npcHtmlMessage.setHtml(htmContent);
-				}
-			}
-			else if (playerInstance.getKarma() > 0)
-			{
-				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath + "Karma.htm");
-				if (htmContent != null)
-				{
-					npcHtmlMessage.setHtml(htmContent);
-				}
-			}
-			else if ((playerLevel < Config.TVT_EVENT_MIN_LVL) || (playerLevel > Config.TVT_EVENT_MAX_LVL))
-			{
-				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath + "Level.htm");
-				if (htmContent != null)
-				{
-					npcHtmlMessage.setHtml(htmContent);
-					npcHtmlMessage.replace("%min%", String.valueOf(Config.TVT_EVENT_MIN_LVL));
-					npcHtmlMessage.replace("%max%", String.valueOf(Config.TVT_EVENT_MAX_LVL));
-				}
-			}
-			else if ((_teams[0].getParticipatedPlayerCount() == Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS) && (_teams[1].getParticipatedPlayerCount() == Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS))
-			{
-				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath + "TeamsFull.htm");
-				if (htmContent != null)
-				{
-					npcHtmlMessage.setHtml(htmContent);
-					npcHtmlMessage.replace("%max%", String.valueOf(Config.TVT_EVENT_MAX_PLAYERS_IN_TEAMS));
-				}
-			}
-			else if ((Config.TVT_EVENT_MAX_PARTICIPANTS_PER_IP > 0) && !AntiFeedManager.getInstance().tryAddPlayer(AntiFeedManager.TVT_ID, playerInstance, Config.TVT_EVENT_MAX_PARTICIPANTS_PER_IP))
-			{
-				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath + "IPRestriction.htm");
-				if (htmContent != null)
-				{
-					npcHtmlMessage.setHtml(htmContent);
-					npcHtmlMessage.replace("%max%", String.valueOf(AntiFeedManager.getInstance().getLimit(playerInstance, Config.TVT_EVENT_MAX_PARTICIPANTS_PER_IP)));
-				}
-			}
-			else if (needParticipationFee() && !hasParticipationFee(playerInstance))
-			{
-				htmContent = HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath + "ParticipationFee.htm");
-				if (htmContent != null)
-				{
-					npcHtmlMessage.setHtml(htmContent);
-					npcHtmlMessage.replace("%fee%", getParticipationFee());
-				}
-			}
-			else if (addParticipant(playerInstance))
-			{
-				npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath + "Registered.htm"));
-			}
-			else
-			{
-				return;
-			}
-			
-			playerInstance.sendPacket(npcHtmlMessage);
-		}
-		else if (command.equals("tvt_event_remove_participation"))
-		{
-			removeParticipant(playerInstance.getObjectId());
-			if (Config.TVT_EVENT_MAX_PARTICIPANTS_PER_IP > 0)
-			{
-				AntiFeedManager.getInstance().removePlayer(AntiFeedManager.TVT_ID, playerInstance);
-			}
-			
-			final NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage();
-			
-			npcHtmlMessage.setHtml(HtmCache.getInstance().getHtm(playerInstance.getHtmlPrefix(), htmlPath + "Unregistered.htm"));
-			playerInstance.sendPacket(npcHtmlMessage);
 		}
 	}
 	
