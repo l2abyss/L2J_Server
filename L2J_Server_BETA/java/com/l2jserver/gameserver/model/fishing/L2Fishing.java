@@ -22,10 +22,9 @@ import java.util.concurrent.Future;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.FishingMonstersData;
-import com.l2jserver.gameserver.datatables.NpcData;
-import com.l2jserver.gameserver.model.L2Spawn;
+import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExFishingHpRegen;
 import com.l2jserver.gameserver.network.serverpackets.ExFishingStartCombat;
@@ -118,8 +117,7 @@ public class L2Fishing implements Runnable
 			_fishCurHp = 0;
 		}
 		
-		ExFishingHpRegen efhr = new ExFishingHpRegen(_fisher, _time, _fishCurHp, _mode, _goodUse, _anim, pen, _deceptiveMode);
-		_fisher.broadcastPacket(efhr);
+		_fisher.broadcastPacket(new ExFishingHpRegen(_fisher, _time, _fishCurHp, _mode, _goodUse, _anim, pen, _deceptiveMode));
 		_anim = 0;
 		if (_fishCurHp > (_fishMaxHp * 2))
 		{
@@ -155,7 +153,8 @@ public class L2Fishing implements Runnable
 				if (Rnd.get(100) <= fishingMonster.getProbability())
 				{
 					_fisher.sendPacket(SystemMessageId.YOU_CAUGHT_SOMETHING_SMELLY_THROW_IT_BACK);
-					spawnMonster(fishingMonster.getFishingMonsterId());
+					final L2Npc monster = Quest.addSpawn(fishingMonster.getFishingMonsterId(), _fisher);
+					monster.setTarget(_fisher);
 				}
 				else
 				{
@@ -366,30 +365,6 @@ public class L2Fishing implements Runnable
 				}
 				_goodUse = 1;
 				changeHp(dmg, pen);
-			}
-		}
-	}
-	
-	private void spawnMonster(int npcId)
-	{
-		final L2NpcTemplate monster = NpcData.getInstance().getTemplate(npcId);
-		if (monster != null)
-		{
-			try
-			{
-				L2Spawn spawn = new L2Spawn(monster);
-				spawn.setX(_fisher.getX());
-				spawn.setY(_fisher.getY());
-				spawn.setZ(_fisher.getZ());
-				spawn.setAmount(1);
-				spawn.setHeading(_fisher.getHeading());
-				spawn.stopRespawn();
-				spawn.doSpawn();
-				spawn.getLastSpawn().setTarget(_fisher);
-			}
-			catch (Exception e)
-			{
-				// Nothing
 			}
 		}
 	}
