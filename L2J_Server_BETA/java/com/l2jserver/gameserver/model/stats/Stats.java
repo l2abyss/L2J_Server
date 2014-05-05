@@ -88,7 +88,6 @@ public enum Stats
 	BONUS_EXP("bonusExp"),
 	BONUS_SP("bonusSp"),
 	ATTACK_CANCEL("cancel"),
-	MAGIC_FAILURE_RATE("magicFailureRate"),
 	
 	// ACCURACY & RANGE
 	ACCURACY_COMBAT("accCombat"),
@@ -118,7 +117,6 @@ public enum Stats
 	CANCEL_VULN("cancelVuln"), // Resistance for cancel type skills
 	DEBUFF_VULN("debuffVuln"),
 	BUFF_VULN("buffVuln"),
-	MAGIC_DAMAGE_VULN("magicDamVul"),
 	
 	// RESISTANCES
 	FIRE_RES("fireRes"),

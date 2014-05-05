@@ -999,8 +999,6 @@ public final class Formulas
 			damage *= attacker.calcStat(stat, 1, null, null);
 		}
 		
-		// CT2.3 general magic vuln
-		damage *= target.calcStat(Stats.MAGIC_DAMAGE_VULN, 1, null, null);
 		damage *= calcAttributeBonus(attacker, target, skill);
 		
 		if (target.isAttackable())
@@ -1087,8 +1085,6 @@ public final class Formulas
 			damage *= 3;
 		}
 		
-		// CT2.3 general magic vuln
-		damage *= target.calcStat(Stats.MAGIC_DAMAGE_VULN, 1, null, null);
 		damage *= calcAttributeBonus(owner, target, skill);
 		
 		if (target.isAttackable())
@@ -1538,8 +1534,7 @@ public final class Formulas
 		}
 		// general magic resist
 		final double resModifier = target.calcStat(Stats.MAGIC_SUCCESS_RES, 1, null, skill);
-		final double failureModifier = attacker.calcStat(Stats.MAGIC_FAILURE_RATE, 1, target, skill);
-		int rate = 100 - Math.round((float) (lvlModifier * targetModifier * resModifier * failureModifier));
+		int rate = 100 - Math.round((float) (lvlModifier * targetModifier * resModifier));
 		
 		if (attacker.isDebug())
 		{
@@ -1547,7 +1542,6 @@ public final class Formulas
 			set.set("lvlDifference", lvlDifference);
 			set.set("lvlModifier", lvlModifier);
 			set.set("resModifier", resModifier);
-			set.set("failureModifier", failureModifier);
 			set.set("targetModifier", targetModifier);
 			set.set("rate", rate);
 			Debug.sendSkillDebug(attacker, target, skill, set);
