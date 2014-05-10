@@ -25,13 +25,13 @@ import com.l2jserver.gameserver.model.stats.Env;
  */
 public class ConditionPlayerCloakStatus extends Condition
 {
-	private final int _val;
+	private final boolean _val;
 	
 	/**
 	 * Instantiates a new condition player cloak status.
 	 * @param val the val
 	 */
-	public ConditionPlayerCloakStatus(int val)
+	public ConditionPlayerCloakStatus(boolean val)
 	{
 		_val = val;
 	}
@@ -39,6 +39,6 @@ public class ConditionPlayerCloakStatus extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return (env.getPlayer() != null) && (env.getPlayer().getInventory().getCloakStatus() >= _val);
+		return (env.getPlayer() != null) && (env.getPlayer().getInventory().canEquipCloak() == _val);
 	}
 }

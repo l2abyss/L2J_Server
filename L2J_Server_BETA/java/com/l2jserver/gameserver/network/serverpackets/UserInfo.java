@@ -136,7 +136,7 @@ public final class UserInfo extends L2GameServerPacket
 		}
 		
 		writeD(_activeChar.getInventory().getMaxTalismanCount());
-		writeD(_activeChar.getInventory().getCloakStatus());
+		writeD(_activeChar.getInventory().canEquipCloak() ? 1 : 0);
 		writeD(_activeChar.getPAtk(null));
 		writeD(_activeChar.getPAtkSpd());
 		writeD(_activeChar.getPDef(null));

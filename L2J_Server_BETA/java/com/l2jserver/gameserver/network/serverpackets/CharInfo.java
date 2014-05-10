@@ -221,7 +221,7 @@ public class CharInfo extends L2GameServerPacket
 			}
 			
 			writeD(_activeChar.getInventory().getMaxTalismanCount());
-			writeD(_activeChar.getInventory().getCloakStatus());
+			writeD(_activeChar.getInventory().canEquipCloak() ? 1 : 0);
 			
 			writeD(_activeChar.getPvpFlag());
 			writeD(_activeChar.getKarma());

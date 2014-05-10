@@ -93,7 +93,7 @@ public class GMViewCharacterInfo extends L2GameServerPacket
 		}
 		
 		writeD(_activeChar.getInventory().getMaxTalismanCount()); // CT2.3
-		writeD(_activeChar.getInventory().getCloakStatus()); // CT2.3
+		writeD(_activeChar.getInventory().canEquipCloak() ? 1 : 0); // CT2.3
 		writeD(_activeChar.getPAtk(null));
 		writeD(_activeChar.getPAtkSpd());
 		writeD(_activeChar.getPDef(null));

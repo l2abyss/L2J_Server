@@ -54,6 +54,7 @@ public class PcStat extends PlayableStat
 	private long _startingXp;
 	/** Player's maximum cubic count. */
 	private int _maxCubicCount = 1;
+	private boolean _cloakSlot = false;
 	
 	public static final int VITALITY_LEVELS[] =
 	{
@@ -414,6 +415,16 @@ public class PcStat extends PlayableStat
 	public void setMaxCubicCount(int cubicCount)
 	{
 		_maxCubicCount = cubicCount;
+	}
+	
+	public boolean canEquipCloak()
+	{
+		return _cloakSlot;
+	}
+	
+	public void setCloakSlotStatus(boolean cloakSlot)
+	{
+		_cloakSlot = cloakSlot;
 	}
 	
 	@Override

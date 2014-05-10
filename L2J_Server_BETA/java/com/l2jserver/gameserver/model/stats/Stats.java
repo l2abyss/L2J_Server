@@ -172,7 +172,6 @@ public enum Stats
 	
 	// T1 stats
 	TALISMAN_SLOTS("talisman"),
-	CLOAK_SLOT("cloak"),
 	
 	// Shield Stats
 	SHIELD_DEFENCE_ANGLE("shieldDefAngle"),

@@ -802,7 +802,7 @@ public abstract class DocumentBase
 				}
 				case "cloakstatus":
 				{
-					int val = Integer.parseInt(a.getNodeValue());
+					boolean val = Boolean.parseBoolean(a.getNodeValue());
 					cond = joinAnd(cond, new ConditionPlayerCloakStatus(val));
 					break;
 				}
