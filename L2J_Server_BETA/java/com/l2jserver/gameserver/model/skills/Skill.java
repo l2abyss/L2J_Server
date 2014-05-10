@@ -1512,7 +1512,7 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 		{
 			caster.setChargedShot(caster.isChargedShot(ShotType.BLESSED_SPIRITSHOTS) ? ShotType.BLESSED_SPIRITSHOTS : ShotType.SPIRITSHOTS, false);
 		}
-		else
+		else if (useSoulShot())
 		{
 			caster.setChargedShot(ShotType.SOULSHOTS, false);
 		}
