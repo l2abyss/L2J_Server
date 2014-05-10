@@ -44,7 +44,6 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.EtcItemType;
 import com.l2jserver.gameserver.model.items.type.WeaponType;
 import com.l2jserver.gameserver.model.skills.Skill;
-import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.util.StringUtil;
 
@@ -1699,20 +1698,20 @@ public abstract class Inventory extends ItemContainer
 		}
 	}
 	
-	public int getMaxTalismanCount()
+	public int getTalismanSlots()
 	{
-		return (int) getOwner().getStat().calcStat(Stats.TALISMAN_SLOTS, 0, null, null);
+		return getOwner().getActingPlayer().getStat().getTalismanSlots();
 	}
 	
 	private void equipTalisman(L2ItemInstance item)
 	{
-		if (getMaxTalismanCount() == 0)
+		if (getTalismanSlots() == 0)
 		{
 			return;
 		}
 		
 		// find same (or incompatible) talisman type
-		for (int i = PAPERDOLL_DECO1; i < (PAPERDOLL_DECO1 + getMaxTalismanCount()); i++)
+		for (int i = PAPERDOLL_DECO1; i < (PAPERDOLL_DECO1 + getTalismanSlots()); i++)
 		{
 			if (_paperdoll[i] != null)
 			{
@@ -1726,7 +1725,7 @@ public abstract class Inventory extends ItemContainer
 		}
 		
 		// no free slot found - put on first free
-		for (int i = PAPERDOLL_DECO1; i < (PAPERDOLL_DECO1 + getMaxTalismanCount()); i++)
+		for (int i = PAPERDOLL_DECO1; i < (PAPERDOLL_DECO1 + getTalismanSlots()); i++)
 		{
 			if (_paperdoll[i] == null)
 			{

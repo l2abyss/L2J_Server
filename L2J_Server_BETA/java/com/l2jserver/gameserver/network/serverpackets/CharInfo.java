@@ -220,7 +220,7 @@ public class CharInfo extends L2GameServerPacket
 				writeD(_activeChar.getInventory().getPaperdollAugmentationId(slot));
 			}
 			
-			writeD(_activeChar.getInventory().getMaxTalismanCount());
+			writeD(_activeChar.getInventory().getTalismanSlots());
 			writeD(_activeChar.getInventory().canEquipCloak() ? 1 : 0);
 			
 			writeD(_activeChar.getPvpFlag());
