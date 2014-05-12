@@ -464,7 +464,6 @@ public abstract class L2Summon extends L2Playable
 			{
 				owner.setPet(null);
 			}
-			setOwner(null);
 			
 			// Stop AI tasks
 			if (hasAI())

@@ -30,6 +30,7 @@ import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.effects.EffectTaskInfo;
 import com.l2jserver.gameserver.model.effects.EffectTickTask;
@@ -349,17 +350,20 @@ public final class BuffInfo
 		
 		// Sends the proper system message.
 		SystemMessageId smId = null;
-		if (_env.getSkill().isToggle())
+		if (!(_env.getTarget().isSummon() && !((L2Summon) _env.getTarget()).getOwner().hasSummon()))
 		{
-			smId = SystemMessageId.S1_HAS_BEEN_ABORTED;
-		}
-		else if (isRemoved())
-		{
-			smId = SystemMessageId.EFFECT_S1_HAS_BEEN_REMOVED;
-		}
-		else if (!_env.getSkill().isPassive())
-		{
-			smId = SystemMessageId.S1_HAS_WORN_OFF;
+			if (_env.getSkill().isToggle())
+			{
+				smId = SystemMessageId.S1_HAS_BEEN_ABORTED;
+			}
+			else if (isRemoved())
+			{
+				smId = SystemMessageId.EFFECT_S1_HAS_BEEN_REMOVED;
+			}
+			else if (!_env.getSkill().isPassive())
+			{
+				smId = SystemMessageId.S1_HAS_WORN_OFF;
+			}
 		}
 		
 		if (smId != null)
