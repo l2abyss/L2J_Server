@@ -68,8 +68,7 @@ public class RecipeData extends DocumentParser
 		{
 			if ("list".equalsIgnoreCase(n.getNodeName()))
 			{
-				recipesFile:
-				for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
+				RECIPES_FILE: for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
 				{
 					if ("item".equalsIgnoreCase(d.getNodeName()))
 					{
@@ -144,7 +143,7 @@ public class RecipeData extends DocumentParser
 								catch (Exception e)
 								{
 									_log.severe(getClass().getSimpleName() + ": Error in StatUse parameter for recipe item id: " + id + ", skipping");
-									continue recipesFile;
+									continue RECIPES_FILE;
 								}
 							}
 							else if ("altStatChange".equalsIgnoreCase(c.getNodeName()))
@@ -158,7 +157,7 @@ public class RecipeData extends DocumentParser
 								catch (Exception e)
 								{
 									_log.severe(getClass().getSimpleName() + ": Error in AltStatChange parameter for recipe item id: " + id + ", skipping");
-									continue recipesFile;
+									continue RECIPES_FILE;
 								}
 							}
 							else if ("ingredient".equalsIgnoreCase(c.getNodeName()))

@@ -41,8 +41,7 @@ public abstract class Builder
 		final int arrayLength = array.length;
 		
 		char c, c2, c3;
-		LOOP:
-		for (; index1 < arrayLength; index1++)
+		LOOP: for (; index1 < arrayLength; index1++)
 		{
 			c = array[index1];
 			if ((c == '$') && (index1 < (arrayLength - 2)))
