@@ -92,7 +92,7 @@ public class JavaCompiler
 		options.add("-warn:-enumSwitch");
 		options.add("-g");
 		options.add("-deprecation");
-		options.add("-1.7");
+		options.add("-1.8");
 		if (sourcePath != null)
 		{
 			options.add("-sourcepath");

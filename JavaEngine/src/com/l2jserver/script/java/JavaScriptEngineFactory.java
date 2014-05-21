@@ -45,7 +45,7 @@ public class JavaScriptEngineFactory implements ScriptEngineFactory
 	@Override
 	public String getEngineVersion()
 	{
-		return "1.7";
+		return "1.8";
 	}
 	
 	@Override
@@ -63,7 +63,7 @@ public class JavaScriptEngineFactory implements ScriptEngineFactory
 	@Override
 	public String getLanguageVersion()
 	{
-		return "1.7";
+		return "1.8";
 	}
 	
 	@Override
