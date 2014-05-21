@@ -216,7 +216,7 @@ public class MultiSellChoose extends L2GameClientPacket
 					}
 					if (e.getItemId() < 0)
 					{
-						if (!MultisellData.checkSpecialIngredient(e.getItemId(), e.getItemCount() * _amount, player))
+						if (!MultisellData.hasSpecialIngredient(e.getItemId(), e.getItemCount() * _amount, player))
 						{
 							return;
 						}
@@ -247,7 +247,7 @@ public class MultiSellChoose extends L2GameClientPacket
 					{
 						if (e.getItemId() < 0)
 						{
-							if (!MultisellData.getSpecialIngredient(e.getItemId(), e.getItemCount() * _amount, player))
+							if (!MultisellData.takeSpecialIngredient(e.getItemId(), e.getItemCount() * _amount, player))
 							{
 								return;
 							}
@@ -387,7 +387,7 @@ public class MultiSellChoose extends L2GameClientPacket
 					{
 						if (e.getItemId() < 0)
 						{
-							MultisellData.addSpecialProduct(e.getItemId(), e.getItemCount() * _amount, player);
+							MultisellData.giveSpecialProduct(e.getItemId(), e.getItemCount() * _amount, player);
 						}
 						else
 						{

@@ -61,7 +61,7 @@
 	</target>
 
 	<target name="compile" depends="dist" description="Compile the source.">
-		<javac srcdir="${src}" classpathref="classpath" destdir="${build.bin}" compiler="javac1.7" debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="1.7" target="1.7" />
+		<javac srcdir="${src}" classpathref="classpath" destdir="${build.bin}" compiler="javac1.8" debug="true" debuglevel="lines,vars,source" includeantruntime="false" source="1.8" target="1.8" />
 	</target>
 
 	<target name="jar" depends="compile" description="Create the jar files.">
@@ -199,21 +199,22 @@
 	</target>
 
 	<target name="checkRequirements" description="Check Requirements.">
-		<fail message="Ant 1.8.2 is required. But your version is ${ant.version} and if you are using Eclipse probably is outdated.">
+		<fail message="Ant 1.9.1 is required. But your version is ${ant.version} and if you are using Eclipse probably is outdated.">
 			<condition>
 				<not>
-					<antversion atleast="1.8.2" />
+					<antversion atleast="1.9.1" />
 				</not>
 			</condition>
 		</fail>
-		<available classname="java.lang.AutoCloseable" property="JDK7.present" />
-		<fail unless="JDK7.present" message="Java 1.7 is required. But your version is Java ${ant.java.version} and probably JDK is not installed." />
+		<available classname="java.util.stream.Stream" property="JDK8.present" />
+		<fail unless="JDK8.present" message="Java 1.8 is required. But your version is Java ${ant.java.version} and probably JDK is not installed." />
 	</target>
 
 	<target name="getChangelogDateVersion" description="Get Changelog, Date, Version.">
 		<exec dir="${basedir}" executable="svn" outputproperty="l2j.changelog">
 			<arg value="log" />
 			<arg value="--stop-on-copy" />
+			<arg value="--limit=50" />
 		</exec>
 		<tstamp>
 			<format property="build.tstamp" pattern="dd/MM/yyyy HH:mm" />
