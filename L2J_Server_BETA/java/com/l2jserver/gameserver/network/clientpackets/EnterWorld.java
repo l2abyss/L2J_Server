@@ -18,6 +18,8 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import java.util.Base64;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.LoginServerThread;
@@ -87,7 +89,6 @@ import com.l2jserver.gameserver.network.serverpackets.QuestList;
 import com.l2jserver.gameserver.network.serverpackets.ShortCutInit;
 import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.util.Base64;
 
 /**
  * Enter World Packet Handler
@@ -699,7 +700,7 @@ public class EnterWorld extends L2GameClientPacket
 	 */
 	private String getText(String string)
 	{
-		return new String(Base64.decode(string));
+		return new String(Base64.getDecoder().decode(string));
 	}
 	
 	private void loadTutorial(L2PcInstance player)
