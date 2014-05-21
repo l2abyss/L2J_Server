@@ -26,6 +26,7 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,7 +40,6 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Message;
 import com.l2jserver.gameserver.network.serverpackets.ExNoticePostArrived;
-import com.l2jserver.util.L2FastMap;
 
 /**
  * @author Migi, DS
@@ -48,7 +48,7 @@ public final class MailManager
 {
 	private static final Logger _log = Logger.getLogger(MailManager.class.getName());
 	
-	private final Map<Integer, Message> _messages = new L2FastMap<>(true);
+	private final Map<Integer, Message> _messages = new ConcurrentHashMap<>();
 	
 	protected MailManager()
 	{

@@ -21,13 +21,13 @@ package com.l2jserver.gameserver.model.actor.knownlist;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.util.Util;
-import com.l2jserver.util.L2FastMap;
 
 public class ObjectKnownList
 {
@@ -214,7 +214,7 @@ public class ObjectKnownList
 	{
 		if (_knownObjects == null)
 		{
-			_knownObjects = new L2FastMap<>(true);
+			_knownObjects = new ConcurrentHashMap<>();
 		}
 		return _knownObjects;
 	}

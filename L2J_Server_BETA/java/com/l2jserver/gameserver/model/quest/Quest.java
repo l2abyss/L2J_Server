@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
@@ -67,7 +68,6 @@ import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.interfaces.IPositionable;
-import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.L2Item;
@@ -92,7 +92,6 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.scripting.ManagedScript;
 import com.l2jserver.gameserver.scripting.ScriptManager;
 import com.l2jserver.gameserver.util.MinionList;
-import com.l2jserver.util.L2FastMap;
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.Util;
 
@@ -105,7 +104,7 @@ public class Quest extends ManagedScript implements IIdentifiable
 	public static final Logger _log = Logger.getLogger(Quest.class.getName());
 	
 	/** Map containing lists of timers from the name of the timer. */
-	private final Map<String, List<QuestTimer>> _allEventTimers = new L2FastMap<>(true);
+	private final Map<String, List<QuestTimer>> _allEventTimers = new ConcurrentHashMap<>();
 	private final Set<Integer> _questInvolvedNpcs = new HashSet<>();
 	
 	private final ReentrantReadWriteLock _rwLock = new ReentrantReadWriteLock();
@@ -279,30 +278,19 @@ public class Quest extends ManagedScript implements IIdentifiable
 	 */
 	public void startQuestTimer(String name, long time, L2Npc npc, L2PcInstance player, boolean repeating)
 	{
-		List<QuestTimer> timers = _allEventTimers.get(name);
-		// Add quest timer if timer doesn't already exist
-		if (timers == null)
+		final List<QuestTimer> timers = _allEventTimers.computeIfAbsent(name, k -> new ArrayList<>());
+		// if there exists a timer with this name, allow the timer only if the [npc, player] set is unique
+		// nulls act as wildcards
+		if (getQuestTimer(name, npc, player) == null)
 		{
-			timers = new ArrayList<>();
-			timers.add(new QuestTimer(this, name, time, npc, player, repeating));
-			_allEventTimers.put(name, timers);
-		}
-		// a timer with this name exists, but may not be for the same set of npc and player
-		else
-		{
-			// if there exists a timer with this name, allow the timer only if the [npc, player] set is unique
-			// nulls act as wildcards
-			if (getQuestTimer(name, npc, player) == null)
+			_writeLock.lock();
+			try
 			{
-				_writeLock.lock();
-				try
-				{
-					timers.add(new QuestTimer(this, name, time, npc, player, repeating));
-				}
-				finally
-				{
-					_writeLock.unlock();
-				}
+				timers.add(new QuestTimer(this, name, time, npc, player, repeating));
+			}
+			finally
+			{
+				_writeLock.unlock();
 			}
 		}
 	}
@@ -3780,26 +3768,18 @@ public class Quest extends ManagedScript implements IIdentifiable
 		{
 			if (includeCommandChannel && player.getParty().isInCommandChannel())
 			{
-				player.getParty().getCommandChannel().forEachMember(new IProcedure<L2PcInstance, Boolean>()
+				player.getParty().getCommandChannel().forEachMember(member ->
 				{
-					@Override
-					public Boolean execute(L2PcInstance member)
-					{
-						actionForEachPlayer(member, npc, isSummon);
-						return true;
-					}
+					actionForEachPlayer(member, npc, isSummon);
+					return true;
 				});
 			}
 			else if (includeParty)
 			{
-				player.getParty().forEachMember(new IProcedure<L2PcInstance, Boolean>()
+				player.getParty().forEachMember(member ->
 				{
-					@Override
-					public Boolean execute(L2PcInstance member)
-					{
-						actionForEachPlayer(member, npc, isSummon);
-						return true;
-					}
+					actionForEachPlayer(member, npc, isSummon);
+					return true;
 				});
 			}
 		}

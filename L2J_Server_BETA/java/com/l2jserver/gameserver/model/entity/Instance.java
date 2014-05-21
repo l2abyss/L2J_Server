@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,7 +66,6 @@ import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.util.L2FastList;
-import com.l2jserver.util.L2FastMap;
 
 /**
  * Main class for game instances.
@@ -82,7 +82,7 @@ public final class Instance
 	private boolean _allowRandomWalk = true;
 	private final L2FastList<Integer> _players = new L2FastList<>(true);
 	private final List<L2Npc> _npcs = new L2FastList<>(true);
-	private final Map<Integer, L2DoorInstance> _doors = new L2FastMap<>(true);
+	private final Map<Integer, L2DoorInstance> _doors = new ConcurrentHashMap<>();
 	private final Map<String, List<L2Spawn>> _manualSpawn = new HashMap<>();
 	private Location _spawnLoc = null;
 	private boolean _allowSummon = true;

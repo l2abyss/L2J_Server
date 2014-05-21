@@ -26,8 +26,6 @@ import com.l2jserver.gameserver.model.interfaces.IProcedure;
 
 /**
  * A custom version of HashMap: Extension for iterating without using temporary collection<br>
- * Note that this implementation is not synchronized. If multiple threads access a hash map concurrently, and at least one of the threads modifies the map structurally, it must be synchronized externally. This is typically accomplished by synchronizing on some object that naturally encapsulates the
- * map. If no such object exists, the map should be "wrapped" using the {@link L2FastMap}. This is best done at creation time, to prevent accidental unsynchronized access.
  * @author UnAfraid
  * @param <K>
  * @param <V>

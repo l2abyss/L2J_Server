@@ -23,16 +23,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.util.L2FastMap;
 
 /**
  * This class ...
@@ -42,8 +41,8 @@ public class CharNameTable
 {
 	private static Logger _log = Logger.getLogger(CharNameTable.class.getName());
 	
-	private final Map<Integer, String> _chars = new L2FastMap<>();
-	private final Map<Integer, Integer> _accessLevels = new L2FastMap<>();
+	private final Map<Integer, String> _chars = new ConcurrentHashMap<>();
+	private final Map<Integer, Integer> _accessLevels = new ConcurrentHashMap<>();
 	
 	protected CharNameTable()
 	{
@@ -86,15 +85,11 @@ public class CharNameTable
 			return -1;
 		}
 		
-		Iterator<Entry<Integer, String>> it = _chars.entrySet().iterator();
-		
-		Map.Entry<Integer, String> pair;
-		while (it.hasNext())
+		for (Entry<Integer, String> entry : _chars.entrySet())
 		{
-			pair = it.next();
-			if (pair.getValue().equalsIgnoreCase(name))
+			if (entry.getValue().equalsIgnoreCase(name))
 			{
-				return pair.getKey();
+				return entry.getKey();
 			}
 		}
 		
@@ -152,30 +147,24 @@ public class CharNameTable
 			return null;
 		}
 		
-		int accessLevel = 0;
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT char_name,accesslevel FROM characters WHERE charId=?"))
 		{
 			ps.setInt(1, id);
 			try (ResultSet rset = ps.executeQuery())
 			{
-				while (rset.next())
+				if (rset.next())
 				{
 					name = rset.getString(1);
-					accessLevel = rset.getInt(2);
+					_chars.put(id, name);
+					_accessLevels.put(id, rset.getInt(2));
+					return name;
 				}
 			}
 		}
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not check existing char id: " + e.getMessage(), e);
-		}
-		
-		if ((name != null) && !name.isEmpty())
-		{
-			_chars.put(id, name);
-			_accessLevels.put(id, accessLevel);
-			return name;
 		}
 		
 		return null; // not found
@@ -210,9 +199,8 @@ public class CharNameTable
 		return result;
 	}
 	
-	public int accountCharNumber(String account)
+	public int getAccountCharacterCount(String account)
 	{
-		int number = 0;
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT COUNT(char_name) FROM characters WHERE account_name=?"))
 		{
@@ -221,33 +209,28 @@ public class CharNameTable
 			{
 				while (rset.next())
 				{
-					number = rset.getInt(1);
+					return rset.getInt(1);
 				}
 			}
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not check existing char number: " + e.getMessage(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Could not check existing char count: " + e.getMessage(), e);
 		}
-		return number;
+		return 0;
 	}
 	
 	private void loadAll()
 	{
-		String name;
-		int id = -1;
-		int accessLevel = 0;
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			Statement s = con.createStatement();
-			ResultSet rs = s.executeQuery("SELECT charId,char_name,accesslevel FROM characters"))
+			ResultSet rs = s.executeQuery("SELECT charId, char_name, accesslevel FROM characters"))
 		{
 			while (rs.next())
 			{
-				id = rs.getInt(1);
-				name = rs.getString(2);
-				accessLevel = rs.getInt(3);
-				_chars.put(id, name);
-				_accessLevels.put(id, accessLevel);
+				final int id = rs.getInt(1);
+				_chars.put(id, rs.getString(2));
+				_accessLevels.put(id, rs.getInt(3));
 			}
 		}
 		catch (SQLException e)

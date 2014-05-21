@@ -21,13 +21,14 @@ package com.l2jserver.gameserver.cache;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.util.Util;
-import com.l2jserver.util.L2FastMap;
 import com.l2jserver.util.file.filter.HTMLFilter;
 
 /**
@@ -39,7 +40,7 @@ public class HtmCache
 	
 	private static final HTMLFilter htmlFilter = new HTMLFilter();
 	
-	private static final Map<String, String> _cache = new L2FastMap<>(Config.LAZY_CACHE);
+	private static final Map<String, String> _cache = Config.LAZY_CACHE ? new ConcurrentHashMap<>() : new HashMap<>();
 	
 	private int _loadedFiles;
 	private long _bytesBuffLen;
@@ -122,7 +123,7 @@ public class HtmCache
 			content = new String(raw, "UTF-8");
 			content = content.replaceAll("(?s)<!--.*?-->", ""); // Remove html comments
 			
-			String oldContent = _cache.get(relpath);
+			String oldContent = _cache.put(relpath, content);
 			if (oldContent == null)
 			{
 				_bytesBuffLen += bytes;
@@ -132,7 +133,6 @@ public class HtmCache
 			{
 				_bytesBuffLen = (_bytesBuffLen - oldContent.length()) + bytes;
 			}
-			_cache.put(relpath, content);
 		}
 		catch (Exception e)
 		{
