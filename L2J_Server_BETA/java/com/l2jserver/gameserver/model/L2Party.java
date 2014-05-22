@@ -80,7 +80,7 @@ public class L2Party extends AbstractPlayerGroup
 	// @formatter:on
 	
 	private static final Duration PARTY_POSITION_BROADCAST_INTERVAL = Duration.ofSeconds(12);
-	private static final Duration PARTY_DISTRIBUTION_TYPE_REQUEST_TIMEOUT = Duration.ofSeconds(45);
+	private static final Duration PARTY_DISTRIBUTION_TYPE_REQUEST_TIMEOUT = Duration.ofSeconds(15);
 	
 	private final FastList<L2PcInstance> _members;
 	private boolean _pendingInvitation = false;
