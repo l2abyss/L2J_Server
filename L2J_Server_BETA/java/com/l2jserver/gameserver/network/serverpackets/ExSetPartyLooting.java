@@ -18,18 +18,20 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import com.l2jserver.gameserver.enums.PartyDistributionType;
+
 /**
  * @author JIV
  */
 public class ExSetPartyLooting extends L2GameServerPacket
 {
 	private final int _result;
-	private final byte _mode;
+	private final PartyDistributionType _partyDistributionType;
 	
-	public ExSetPartyLooting(int result, byte mode)
+	public ExSetPartyLooting(int result, PartyDistributionType partyDistributionType)
 	{
 		_result = result;
-		_mode = mode;
+		_partyDistributionType = partyDistributionType;
 	}
 	
 	@Override
@@ -38,6 +40,6 @@ public class ExSetPartyLooting extends L2GameServerPacket
 		writeC(0xFE);
 		writeH(0xC0);
 		writeD(_result);
-		writeD(_mode);
+		writeD(_partyDistributionType.getId());
 	}
 }

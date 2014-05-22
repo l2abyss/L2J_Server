@@ -41,7 +41,7 @@ public class ItemsAutoDestroy
 		{
 			_sleep = 3600000;
 		}
-		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new CheckItemsForDestroy(), 5000, 5000);
+		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this::removeItems, 5000, 5000);
 	}
 	
 	public static ItemsAutoDestroy getInstance()
@@ -108,15 +108,6 @@ public class ItemsAutoDestroy
 					}
 				}
 			}
-		}
-	}
-	
-	protected class CheckItemsForDestroy extends Thread
-	{
-		@Override
-		public void run()
-		{
-			removeItems();
 		}
 	}
 	

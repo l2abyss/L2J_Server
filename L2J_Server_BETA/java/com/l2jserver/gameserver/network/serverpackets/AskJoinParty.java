@@ -18,19 +18,21 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import com.l2jserver.gameserver.enums.PartyDistributionType;
+
 public class AskJoinParty extends L2GameServerPacket
 {
 	private final String _requestorName;
-	private final int _itemDistribution;
+	private final PartyDistributionType _partyDistributionType;
 	
 	/**
 	 * @param requestorName
-	 * @param itemDistribution
+	 * @param partyDistributionType
 	 */
-	public AskJoinParty(String requestorName, int itemDistribution)
+	public AskJoinParty(String requestorName, PartyDistributionType partyDistributionType)
 	{
 		_requestorName = requestorName;
-		_itemDistribution = itemDistribution;
+		_partyDistributionType = partyDistributionType;
 	}
 	
 	@Override
@@ -38,6 +40,6 @@ public class AskJoinParty extends L2GameServerPacket
 	{
 		writeC(0x39);
 		writeS(_requestorName);
-		writeD(_itemDistribution);
+		writeD(_partyDistributionType.getId());
 	}
 }
