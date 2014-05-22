@@ -288,7 +288,7 @@ public final class ItemAuctionInstance
 			
 			default:
 			{
-				Arrays.sort(auctions, Comparator.comparingLong(ItemAuction::getStartingTime));
+				Arrays.sort(auctions, Comparator.comparingLong(ItemAuction::getStartingTime).reversed());
 				
 				// just to make sure we won't skip any auction because of little different times
 				final long currentTime = System.currentTimeMillis();
