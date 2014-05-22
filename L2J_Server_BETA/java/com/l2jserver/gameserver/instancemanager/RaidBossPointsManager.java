@@ -24,7 +24,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,15 +44,6 @@ public class RaidBossPointsManager
 	private static final Logger _log = Logger.getLogger(RaidBossPointsManager.class.getName());
 	
 	private FastMap<Integer, Map<Integer, Integer>> _list;
-	
-	private final Comparator<Map.Entry<Integer, Integer>> _comparator = new Comparator<Map.Entry<Integer, Integer>>()
-	{
-		@Override
-		public int compare(Map.Entry<Integer, Integer> entry, Map.Entry<Integer, Integer> entry1)
-		{
-			return entry.getValue().equals(entry1.getValue()) ? 0 : entry.getValue() < entry1.getValue() ? 1 : -1;
-		}
-	};
 	
 	public RaidBossPointsManager()
 	{
@@ -186,7 +176,7 @@ public class RaidBossPointsManager
 		}
 		ArrayList<Entry<Integer, Integer>> list = new ArrayList<>(tmpPoints.entrySet());
 		
-		Collections.sort(list, _comparator);
+		list.sort(Comparator.comparing(Entry<Integer, Integer>::getValue).reversed());
 		
 		int ranking = 1;
 		for (Map.Entry<Integer, Integer> entry : list)

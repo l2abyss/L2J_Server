@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.communitybbs.Manager;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -41,7 +42,6 @@ import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.ShowBoard;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.util.Comparators;
 import com.l2jserver.util.StringUtil;
 
 public class RegionBBSManager extends BaseBBSManager
@@ -274,7 +274,7 @@ public class RegionBBSManager extends BaseBBSManager
 		_onlineCount = 0;
 		_onlineCountGm = 0;
 		
-		for (L2PcInstance player : L2World.getInstance().getPlayersSortedBy(Comparators.PLAYER_NAME_COMPARATOR))
+		for (L2PcInstance player : L2World.getInstance().getPlayersSortedBy(Comparator.comparing(L2PcInstance::getName, String::compareToIgnoreCase)))
 		{
 			addOnlinePlayer(player);
 		}
