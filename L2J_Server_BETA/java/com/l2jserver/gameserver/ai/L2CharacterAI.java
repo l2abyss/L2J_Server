@@ -1299,7 +1299,7 @@ public class L2CharacterAI extends AbstractAI
 				{
 					cancelSkills.add(sk);
 				}
-				else if (sk.hasEffectType(L2EffectType.HEAL, L2EffectType.HEAL_PERCENT))
+				else if (sk.hasEffectType(L2EffectType.HEAL))
 				{
 					healSkills.add(sk);
 					hasHealOrResurrect = true;

@@ -889,7 +889,7 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 	
 	public boolean useSoulShot()
 	{
-		return (hasEffectType(L2EffectType.PHYSICAL_ATTACK, L2EffectType.PHYSICAL_ATTACK_HP_LINK, L2EffectType.FATAL_BLOW, L2EffectType.ENERGY_ATTACK));
+		return (hasEffectType(L2EffectType.PHYSICAL_ATTACK, L2EffectType.PHYSICAL_ATTACK_HP_LINK));
 	}
 	
 	public boolean useSpiritShot()

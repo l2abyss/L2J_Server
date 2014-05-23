@@ -522,11 +522,11 @@ public class NpcData extends DocumentParser
 												aiSkillScopes.add(AISkillScope.NEGATIVE);
 												aiSkillScopes.add(shortOrLongRangeScope);
 											}
-											else if (skill.hasEffectType(L2EffectType.HEAL, L2EffectType.HEAL_PERCENT))
+											else if (skill.hasEffectType(L2EffectType.HEAL))
 											{
 												aiSkillScopes.add(AISkillScope.HEAL);
 											}
-											else if (skill.hasEffectType(L2EffectType.PHYSICAL_ATTACK, L2EffectType.PHYSICAL_ATTACK_HP_LINK, L2EffectType.FATAL_BLOW, L2EffectType.ENERGY_ATTACK, L2EffectType.MAGICAL_ATTACK_MP, L2EffectType.MAGICAL_ATTACK, L2EffectType.DEATH_LINK, L2EffectType.HP_DRAIN))
+											else if (skill.hasEffectType(L2EffectType.PHYSICAL_ATTACK, L2EffectType.PHYSICAL_ATTACK_HP_LINK, L2EffectType.MAGICAL_ATTACK, L2EffectType.DEATH_LINK, L2EffectType.HP_DRAIN))
 											{
 												aiSkillScopes.add(AISkillScope.ATTACK);
 												aiSkillScopes.add(AISkillScope.UNIVERSAL);
