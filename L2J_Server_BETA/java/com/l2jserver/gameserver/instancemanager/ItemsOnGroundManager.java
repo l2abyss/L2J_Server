@@ -27,13 +27,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ItemsAutoDestroy;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.util.L2FastList;
 
 /**
  * This class manage all items on ground.
@@ -43,7 +44,7 @@ public final class ItemsOnGroundManager implements Runnable
 {
 	private static final Logger _log = Logger.getLogger(ItemsOnGroundManager.class.getName());
 	
-	private final List<L2ItemInstance> _items = new L2FastList<>(true);
+	private final List<L2ItemInstance> _items = new FastList<L2ItemInstance>().shared();
 	
 	protected ItemsOnGroundManager()
 	{

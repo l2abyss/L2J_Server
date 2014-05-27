@@ -36,6 +36,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskBirthday;
@@ -51,7 +53,6 @@ import com.l2jserver.gameserver.taskmanager.tasks.TaskRestart;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskScript;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskSevenSignsUpdate;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskShutdown;
-import com.l2jserver.util.L2FastList;
 
 /**
  * @author Layane
@@ -61,7 +62,7 @@ public final class TaskManager
 	protected static final Logger _log = Logger.getLogger(TaskManager.class.getName());
 	
 	private final Map<Integer, Task> _tasks = new ConcurrentHashMap<>();
-	protected final List<ExecutedTask> _currentTasks = new L2FastList<>(true);
+	protected final List<ExecutedTask> _currentTasks = new FastList<ExecutedTask>().shared();
 	
 	protected static final String[] SQL_STATEMENTS =
 	{

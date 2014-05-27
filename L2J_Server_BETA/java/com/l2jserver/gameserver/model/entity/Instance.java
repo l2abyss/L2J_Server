@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import org.w3c.dom.Document;
@@ -63,7 +64,6 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.util.L2FastList;
 
 /**
  * Main class for game instances.
@@ -78,8 +78,8 @@ public final class Instance
 	private int _ejectTime = Config.EJECT_DEAD_PLAYER_TIME;
 	/** Allow random walk for NPCs, global parameter. */
 	private boolean _allowRandomWalk = true;
-	private final L2FastList<Integer> _players = new L2FastList<>(true);
-	private final List<L2Npc> _npcs = new L2FastList<>(true);
+	private final List<Integer> _players = new FastList<Integer>().shared();
+	private final List<L2Npc> _npcs = new FastList<L2Npc>().shared();
 	private final Map<Integer, L2DoorInstance> _doors = new ConcurrentHashMap<>();
 	private final Map<String, List<L2Spawn>> _manualSpawn = new HashMap<>();
 	private Location _spawnLoc = null;

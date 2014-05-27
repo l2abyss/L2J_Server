@@ -23,13 +23,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -44,7 +47,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2GrandBossInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.interfaces.IStorable;
 import com.l2jserver.gameserver.model.zone.type.L2BossZone;
-import com.l2jserver.util.L2FastList;
 
 /**
  * Grand Boss manager.
@@ -66,7 +68,7 @@ public final class GrandBossManager implements IStorable
 	
 	private final Map<Integer, Integer> _bossStatus = new HashMap<>();
 	
-	private final L2FastList<L2BossZone> _zones = new L2FastList<>();
+	private final List<L2BossZone> _zones = new FastList<>();
 	
 	protected GrandBossManager()
 	{
@@ -123,7 +125,7 @@ public final class GrandBossManager implements IStorable
 	 */
 	public void initZones()
 	{
-		FastMap<Integer, L2FastList<Integer>> zones = new FastMap<>();
+		Map<Integer, List<Integer>> zones = new HashMap<>();
 		
 		if (_zones == null)
 		{
@@ -137,7 +139,7 @@ public final class GrandBossManager implements IStorable
 			{
 				continue;
 			}
-			zones.put(zone.getId(), new L2FastList<Integer>());
+			zones.put(zone.getId(), new ArrayList<>());
 		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
@@ -314,7 +316,7 @@ public final class GrandBossManager implements IStorable
 						continue;
 					}
 					Integer id = zone.getId();
-					L2FastList<Integer> list = zone.getAllowedPlayers();
+					List<Integer> list = zone.getAllowedPlayers();
 					if ((list == null) || list.isEmpty())
 					{
 						continue;
@@ -435,7 +437,7 @@ public final class GrandBossManager implements IStorable
 		_zones.clear();
 	}
 	
-	public L2FastList<L2BossZone> getZones()
+	public List<L2BossZone> getZones()
 	{
 		return _zones;
 	}
