@@ -42,7 +42,6 @@ import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
-import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.model.skills.CommonSkill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SSQInfo;
@@ -1429,46 +1428,28 @@ public class SevenSigns
 	 */
 	protected void teleLosingCabalFromDungeons(String compWinner)
 	{
-		L2World.getInstance().forEachPlayer(new TeleLosingCabalFromDungeons(compWinner));
-	}
-	
-	private final class TeleLosingCabalFromDungeons implements IProcedure<L2PcInstance, Boolean>
-	{
-		private final String _cmpWinner;
-		
-		protected TeleLosingCabalFromDungeons(final String compWinner)
+		for (L2PcInstance player : L2World.getInstance().getPlayers())
 		{
-			_cmpWinner = compWinner;
-		}
-		
-		@Override
-		public final Boolean execute(final L2PcInstance onlinePlayer)
-		{
-			if (onlinePlayer != null)
+			StatsSet currPlayer = _signsPlayerData.get(player.getObjectId());
+			
+			if (isSealValidationPeriod() || isCompResultsPeriod())
 			{
-				StatsSet currPlayer = _signsPlayerData.get(onlinePlayer.getObjectId());
-				
-				if (isSealValidationPeriod() || isCompResultsPeriod())
+				if (!player.isGM() && player.isIn7sDungeon() && ((currPlayer == null) || !currPlayer.getString("cabal").equals(compWinner)))
 				{
-					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && ((currPlayer == null) || !currPlayer.getString("cabal").equals(_cmpWinner)))
-					{
-						onlinePlayer.teleToLocation(TeleportWhereType.TOWN);
-						onlinePlayer.setIsIn7sDungeon(false);
-						onlinePlayer.sendMessage("You have been teleported to the nearest town due to the beginning of the Seal Validation period.");
-					}
-				}
-				else
-				{
-					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && ((currPlayer == null) || !currPlayer.getString("cabal").isEmpty()))
-					{
-						onlinePlayer.teleToLocation(TeleportWhereType.TOWN);
-						onlinePlayer.setIsIn7sDungeon(false);
-						onlinePlayer.sendMessage("You have been teleported to the nearest town because you have not signed for any cabal.");
-					}
+					player.teleToLocation(TeleportWhereType.TOWN);
+					player.setIsIn7sDungeon(false);
+					player.sendMessage("You have been teleported to the nearest town due to the beginning of the Seal Validation period.");
 				}
 			}
-			
-			return true;
+			else
+			{
+				if (!player.isGM() && player.isIn7sDungeon() && ((currPlayer == null) || !currPlayer.getString("cabal").isEmpty()))
+				{
+					player.teleToLocation(TeleportWhereType.TOWN);
+					player.setIsIn7sDungeon(false);
+					player.sendMessage("You have been teleported to the nearest town because you have not signed for any cabal.");
+				}
+			}
 		}
 	}
 	
@@ -1646,61 +1627,34 @@ public class SevenSigns
 		return false;
 	}
 	
-	public void giveCPMult(int StrifeOwner)
+	public void giveCPMult(int strifeOwner)
 	{
-		L2World.getInstance().forEachPlayer(new GiveCPMult(StrifeOwner));
-	}
-	
-	private final class GiveCPMult implements IProcedure<L2PcInstance, Boolean>
-	{
-		private final int _strifeOwner;
-		
-		protected GiveCPMult(int strifeOwner)
+		for (L2PcInstance player : L2World.getInstance().getPlayers())
 		{
-			_strifeOwner = strifeOwner;
-		}
-		
-		@Override
-		public final Boolean execute(final L2PcInstance character)
-		{
-			if (character != null)
+			// Gives "Victor of War" passive skill to all online characters with Cabal, which controls Seal of Strife
+			int cabal = getPlayerCabal(player.getObjectId());
+			if (cabal != SevenSigns.CABAL_NULL)
 			{
-				// Gives "Victor of War" passive skill to all online characters with Cabal, which controls Seal of Strife
-				int cabal = getPlayerCabal(character.getObjectId());
-				if (cabal != SevenSigns.CABAL_NULL)
+				if (cabal == strifeOwner)
 				{
-					if (cabal == _strifeOwner)
-					{
-						character.addSkill(CommonSkill.THE_VICTOR_OF_WAR.getSkill());
-					}
-					else
-					{
-						// Gives "The Vanquished of War" passive skill to all online characters with Cabal, which does not control Seal of Strife
-						character.addSkill(CommonSkill.THE_VANQUISHED_OF_WAR.getSkill());
-					}
+					player.addSkill(CommonSkill.THE_VICTOR_OF_WAR.getSkill());
+				}
+				else
+				{
+					// Gives "The Vanquished of War" passive skill to all online characters with Cabal, which does not control Seal of Strife
+					player.addSkill(CommonSkill.THE_VANQUISHED_OF_WAR.getSkill());
 				}
 			}
-			return true;
 		}
 	}
 	
 	public void removeCPMult()
 	{
-		L2World.getInstance().forEachPlayer(new RemoveCPMult());
-	}
-	
-	protected final class RemoveCPMult implements IProcedure<L2PcInstance, Boolean>
-	{
-		@Override
-		public final Boolean execute(final L2PcInstance character)
+		// Remove SevenSigns' buffs/debuffs.
+		for (L2PcInstance player : L2World.getInstance().getPlayers())
 		{
-			if (character != null)
-			{
-				// Remove SevenSigns' buffs/debuffs.
-				character.removeSkill(CommonSkill.THE_VICTOR_OF_WAR.getSkill());
-				character.removeSkill(CommonSkill.THE_VANQUISHED_OF_WAR.getSkill());
-			}
-			return true;
+			player.removeSkill(CommonSkill.THE_VICTOR_OF_WAR.getSkill());
+			player.removeSkill(CommonSkill.THE_VANQUISHED_OF_WAR.getSkill());
 		}
 	}
 	

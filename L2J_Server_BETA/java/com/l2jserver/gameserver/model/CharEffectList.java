@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
@@ -38,7 +39,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.effects.EffectFlag;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
-import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameTask;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
@@ -1284,17 +1284,17 @@ public final class CharEffectList
 	/**
 	 * Executes a procedure for all effects.<br>
 	 * Prevents initialization.
-	 * @param procedure the procedure to execute
+	 * @param function the function to execute
 	 * @param dances if {@code true} dances/songs will be included
 	 * @return {@code true} if the procedure is executed successfully for every element, {@code false} otherwise
 	 */
-	public boolean forEach(IProcedure<BuffInfo, Boolean> procedure, boolean dances)
+	public boolean forEach(Function<BuffInfo, Boolean> function, boolean dances)
 	{
 		if (hasBuffs())
 		{
 			for (BuffInfo info : getBuffs().values())
 			{
-				if (!procedure.execute(info))
+				if (!function.apply(info))
 				{
 					return false;
 				}
@@ -1305,7 +1305,7 @@ public final class CharEffectList
 		{
 			for (BuffInfo info : getTriggered().values())
 			{
-				if (!procedure.execute(info))
+				if (!function.apply(info))
 				{
 					return false;
 				}
@@ -1316,7 +1316,7 @@ public final class CharEffectList
 		{
 			for (BuffInfo info : getDances().values())
 			{
-				if (!procedure.execute(info))
+				if (!function.apply(info))
 				{
 					return false;
 				}
@@ -1327,7 +1327,7 @@ public final class CharEffectList
 		{
 			for (BuffInfo info : getToggles().values())
 			{
-				if (!procedure.execute(info))
+				if (!function.apply(info))
 				{
 					return false;
 				}
@@ -1338,7 +1338,7 @@ public final class CharEffectList
 		{
 			for (BuffInfo info : getDebuffs().values())
 			{
-				if (!procedure.execute(info))
+				if (!function.apply(info))
 				{
 					return false;
 				}

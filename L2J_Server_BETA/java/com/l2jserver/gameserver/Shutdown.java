@@ -39,7 +39,6 @@ import com.l2jserver.gameserver.instancemanager.RaidBossSpawnManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Hero;
-import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -596,36 +595,24 @@ public class Shutdown extends Thread
 	 */
 	private void disconnectAllCharacters()
 	{
-		L2World.getInstance().forEachPlayer(new DisconnectAllCharacters());
-	}
-	
-	protected final class DisconnectAllCharacters implements IProcedure<L2PcInstance, Boolean>
-	{
-		private final Logger _log = Logger.getLogger(DisconnectAllCharacters.class.getName());
-		
-		@Override
-		public final Boolean execute(final L2PcInstance player)
+		for (L2PcInstance player : L2World.getInstance().getPlayers())
 		{
-			if (player != null)
+			// Logout Character
+			try
 			{
-				// Logout Character
-				try
+				L2GameClient client = player.getClient();
+				if ((client != null) && !client.isDetached())
 				{
-					L2GameClient client = player.getClient();
-					if ((client != null) && !client.isDetached())
-					{
-						client.close(ServerClose.STATIC_PACKET);
-						client.setActiveChar(null);
-						player.setClient(null);
-					}
-					player.deleteMe();
+					client.close(ServerClose.STATIC_PACKET);
+					client.setActiveChar(null);
+					player.setClient(null);
 				}
-				catch (Throwable t)
-				{
-					_log.log(Level.WARNING, "Failed logour char " + player, t);
-				}
+				player.deleteMe();
 			}
-			return true;
+			catch (Throwable t)
+			{
+				_log.log(Level.WARNING, "Failed logour char " + player, t);
+			}
 		}
 	}
 	

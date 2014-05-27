@@ -19,13 +19,13 @@
 package com.l2jserver.gameserver.model;
 
 import java.util.List;
+import java.util.function.Function;
 
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExCloseMPCC;
 import com.l2jserver.gameserver.network.serverpackets.ExMPCCPartyInfoUpdate;
@@ -236,16 +236,16 @@ public class L2CommandChannel extends AbstractPlayerGroup
 	
 	/**
 	 * Iterates over all command channel members without the need to allocate a new list
-	 * @see com.l2jserver.gameserver.model.AbstractPlayerGroup#forEachMember(IProcedure)
+	 * @see com.l2jserver.gameserver.model.AbstractPlayerGroup#forEachMember(Function)
 	 */
 	@Override
-	public boolean forEachMember(IProcedure<L2PcInstance, Boolean> procedure)
+	public boolean forEachMember(Function<L2PcInstance, Boolean> function)
 	{
 		if ((_parties != null) && !_parties.isEmpty())
 		{
 			for (L2Party party : _parties)
 			{
-				if (!party.forEachMember(procedure))
+				if (!party.forEachMember(function))
 				{
 					return false;
 				}

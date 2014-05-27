@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,7 +44,6 @@ import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.interfaces.IProcedure;
 
 /**
  * Spawn data retriever.
@@ -494,16 +494,16 @@ public final class SpawnTable extends DocumentParser
 	/**
 	 * Execute a procedure over all spawns.<br>
 	 * <font size="4" color="red">Do not use it!</font>
-	 * @param procedure the procedure to execute
+	 * @param function the function to execute
 	 * @return {@code true} if all procedures were executed, {@code false} otherwise
 	 */
-	public boolean forEachSpawn(IProcedure<L2Spawn, Boolean> procedure)
+	public boolean forEachSpawn(Function<L2Spawn, Boolean> function)
 	{
 		for (Set<L2Spawn> set : _spawnTable.values())
 		{
 			for (L2Spawn spawn : set)
 			{
-				if (!procedure.execute(spawn))
+				if (!function.apply(spawn))
 				{
 					return false;
 				}

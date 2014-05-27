@@ -22,9 +22,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
@@ -143,28 +141,15 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
 		// leader.sendPacket(new StartPledgeWar(_clan.getName(),player.getName()));
 		
 		ClanTable.getInstance().storeclanswars(player.getClanId(), clan.getId());
-		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcastUserInfo(player, clan));
-	}
-	
-	private final class ForEachPlayerBroadcastUserInfo implements IProcedure<L2PcInstance, Boolean>
-	{
-		private final L2Clan _cln;
-		private final L2PcInstance _ply;
 		
-		protected ForEachPlayerBroadcastUserInfo(L2PcInstance player, L2Clan clan)
+		for (L2PcInstance member : _clan.getOnlineMembers(0))
 		{
-			_ply = player;
-			_cln = clan;
+			member.broadcastUserInfo();
 		}
 		
-		@Override
-		public final Boolean execute(final L2PcInstance cha)
+		for (L2PcInstance member : clan.getOnlineMembers(0))
 		{
-			if ((cha.getClan() == _ply.getClan()) || (cha.getClan() == _cln))
-			{
-				cha.broadcastUserInfo();
-			}
-			return true;
+			member.broadcastUserInfo();
 		}
 	}
 	

@@ -22,19 +22,9 @@ import java.util.Collection;
 
 import javolution.util.FastList;
 
-import com.l2jserver.gameserver.model.interfaces.IProcedure;
-
 /**
- * A custom version of FastList with extension for iterating without using temporary collection<br>
- * It's provide synchronization lock when iterating if needed<br>
- * <br>
+ * A custom version of {@code FastList} with constructors that allow the constructed {@code FastList} to be shared without calling {@link FastList#shared()} method. <br>
  * @author Julian
- * @version 1.0.1 (2008-02-07)<br>
- *          1.0.0 - Initial version.<br>
- *          1.0.1 - Made forEachP() final.<br>
- * @author UnAfraid
- * @version 1.0.2 (20012-08-19)<br>
- *          1.0.2 - Using IL2Procedure instead of IForEach.
  * @param <T>
  */
 public class L2FastList<T> extends FastList<T>
@@ -81,24 +71,5 @@ public class L2FastList<T> extends FastList<T>
 		{
 			shared();
 		}
-	}
-	
-	/**
-	 * Public method that iterate entire collection.<br>
-	 * <br>
-	 * @param proc - a class method that must be executed on every element of collection.<br>
-	 * @return - returns true if entire collection is iterated, false if it`s been interrupted by<br>
-	 *         check method (IL2Procedure.execute(T))<br>
-	 */
-	public boolean executeForEach(IProcedure<T, Boolean> proc)
-	{
-		for (T e : this)
-		{
-			if (!proc.execute(e))
-			{
-				return false;
-			}
-		}
-		return true;
 	}
 }

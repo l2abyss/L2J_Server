@@ -54,7 +54,6 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2FestivalMonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -1236,7 +1235,14 @@ public class SevenSignsFestival implements SpawnListener
 		saveFestivalData(updateSettings);
 		
 		// Remove any unused blood offerings from online players.
-		L2World.getInstance().forEachPlayer(new ForEachPlayerRemoveUnusedBloodOfferings());
+		for (L2PcInstance player : L2World.getInstance().getPlayers())
+		{
+			final L2ItemInstance bloodOfferings = player.getInventory().getItemByItemId(FESTIVAL_OFFERING_ID);
+			if (bloodOfferings != null)
+			{
+				player.destroyItem("SevenSigns", bloodOfferings, null, false);
+			}
+		}
 		
 		_log.info("SevenSignsFestival: Reinitialized engine for next competition period.");
 	}
@@ -2468,27 +2474,6 @@ public class SevenSignsFestival implements SpawnListener
 			{
 				_npcId = -1;
 			}
-		}
-	}
-	
-	protected final class ForEachPlayerRemoveUnusedBloodOfferings implements IProcedure<L2PcInstance, Boolean>
-	{
-		@Override
-		public final Boolean execute(final L2PcInstance onlinePlayer)
-		{
-			try
-			{
-				L2ItemInstance bloodOfferings = onlinePlayer.getInventory().getItemByItemId(FESTIVAL_OFFERING_ID);
-				
-				if (bloodOfferings != null)
-				{
-					onlinePlayer.destroyItem("SevenSigns", bloodOfferings, null, false);
-				}
-			}
-			catch (NullPointerException e)
-			{
-			}
-			return true;
 		}
 	}
 	

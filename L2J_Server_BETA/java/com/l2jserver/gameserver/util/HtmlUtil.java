@@ -20,9 +20,9 @@ package com.l2jserver.gameserver.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.Function;
 
 import com.l2jserver.gameserver.model.PageResult;
-import com.l2jserver.gameserver.model.interfaces.IProcedure;
 
 /**
  * A class containing useful methods for constructing HTML
@@ -223,17 +223,17 @@ public class HtmlUtil
 		return sb.toString();
 	}
 	
-	public static <T> PageResult createPage(Collection<T> elements, int page, int elementsPerPage, IProcedure<Integer, String> pagerProcedure, IProcedure<T, String> bodyProcedure)
+	public static <T> PageResult createPage(Collection<T> elements, int page, int elementsPerPage, Function<Integer, String> pagerFunction, Function<T, String> bodyFunction)
 	{
-		return createPage(elements, elements.size(), page, elementsPerPage, pagerProcedure, bodyProcedure);
+		return createPage(elements, elements.size(), page, elementsPerPage, pagerFunction, bodyFunction);
 	}
 	
-	public static <T> PageResult createPage(T[] elements, int page, int elementsPerPage, IProcedure<Integer, String> pagerProcedure, IProcedure<T, String> bodyProcedure)
+	public static <T> PageResult createPage(T[] elements, int page, int elementsPerPage, Function<Integer, String> pagerFunction, Function<T, String> bodyFunction)
 	{
-		return createPage(Arrays.asList(elements), elements.length, page, elementsPerPage, pagerProcedure, bodyProcedure);
+		return createPage(Arrays.asList(elements), elements.length, page, elementsPerPage, pagerFunction, bodyFunction);
 	}
 	
-	public static <T> PageResult createPage(Iterable<T> elements, int size, int page, int elementsPerPage, IProcedure<Integer, String> pagerProcedure, IProcedure<T, String> bodyProcedure)
+	public static <T> PageResult createPage(Iterable<T> elements, int size, int page, int elementsPerPage, Function<Integer, String> pagerFunction, Function<T, String> bodyFunction)
 	{
 		int pages = size / elementsPerPage;
 		if ((elementsPerPage * pages) < size)
@@ -246,7 +246,7 @@ public class HtmlUtil
 		{
 			for (int i = 0; i < pages; i++)
 			{
-				pagerTemplate.append(pagerProcedure.execute(i));
+				pagerTemplate.append(pagerFunction.apply(i));
 			}
 		}
 		
@@ -270,7 +270,7 @@ public class HtmlUtil
 				continue;
 			}
 			
-			sb.append(bodyProcedure.execute(element));
+			sb.append(bodyFunction.apply(element));
 			
 			if (i >= (elementsPerPage + start))
 			{

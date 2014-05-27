@@ -58,7 +58,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.interfaces.IProcedure;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.zone.type.L2FortZone;
 import com.l2jserver.gameserver.model.zone.type.L2SiegeZone;
@@ -839,7 +838,7 @@ public final class Fort extends AbstractResidence
 				sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CLAN_IS_VICTORIOUS_IN_THE_FORTRESS_BATTLE_OF_S2);
 				sm.addString(clan.getName());
 				sm.addCastleId(getResidenceId());
-				L2World.getInstance().forEachPlayer(new ForEachPlayerSendMessage(sm));
+				L2World.getInstance().getPlayers().forEach(p -> p.sendPacket(sm));
 				clan.broadcastToOnlineMembers(new PledgeShowInfoUpdate(clan));
 				clan.broadcastToOnlineMembers(new PlaySound(1, "Siege_Victory", 0, 0, 0, 0, 0));
 				if (_FortUpdater[0] != null)
@@ -1325,23 +1324,6 @@ public final class Fort extends AbstractResidence
 		{
 			// problem with initializing spawn, go to next one
 			_log.log(Level.WARNING, "Fort " + getResidenceId() + " initSpecialEnvoys: Spawn could not be initialized: " + e.getMessage(), e);
-		}
-	}
-	
-	private final class ForEachPlayerSendMessage implements IProcedure<L2PcInstance, Boolean>
-	{
-		SystemMessage _sm;
-		
-		protected ForEachPlayerSendMessage(SystemMessage sm)
-		{
-			_sm = sm;
-		}
-		
-		@Override
-		public final Boolean execute(final L2PcInstance character)
-		{
-			character.sendPacket(_sm);
-			return true;
 		}
 	}
 	
