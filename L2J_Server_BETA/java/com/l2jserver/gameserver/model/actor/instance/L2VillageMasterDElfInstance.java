@@ -37,6 +37,6 @@ public final class L2VillageMasterDElfInstance extends L2VillageMasterInstance
 			return false;
 		}
 		
-		return pclass.isOfRace(PcRace.DarkElf);
+		return pclass.isOfRace(PcRace.DARK_ELF);
 	}
 }

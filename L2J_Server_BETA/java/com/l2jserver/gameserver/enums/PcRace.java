@@ -18,16 +18,12 @@
  */
 package com.l2jserver.gameserver.enums;
 
-/**
- * This class defines all races (human, elf, darkelf, orc, dwarf) that a player can chose.
- * @version $Revision: 1.2.4.2 $ $Date: 2005/03/27 15:29:32 $
- */
 public enum PcRace
 {
-	Human,
-	Elf,
-	DarkElf,
-	Orc,
-	Dwarf,
-	Kamael;
+	HUMAN,
+	ELF,
+	DARK_ELF,
+	ORC,
+	DWARF,
+	KAMAEL;
 }

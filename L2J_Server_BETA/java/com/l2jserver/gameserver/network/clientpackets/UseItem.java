@@ -258,7 +258,7 @@ public final class UseItem extends L2GameClientPacket
 						
 						switch (activeChar.getRace())
 						{
-							case Kamael:
+							case KAMAEL:
 							{
 								switch (wpn.getItemType())
 								{
@@ -268,11 +268,11 @@ public final class UseItem extends L2GameClientPacket
 								}
 								break;
 							}
-							case Human:
-							case Dwarf:
-							case Elf:
-							case DarkElf:
-							case Orc:
+							case HUMAN:
+							case DWARF:
+							case ELF:
+							case DARK_ELF:
+							case ORC:
 							{
 								switch (wpn.getItemType())
 								{
@@ -296,7 +296,7 @@ public final class UseItem extends L2GameClientPacket
 				case L2Item.SLOT_FULL_ARMOR:
 				case L2Item.SLOT_LEGS:
 				{
-					if ((activeChar.getRace() == PcRace.Kamael) && ((item.getItem().getItemType() == ArmorType.HEAVY) || (item.getItem().getItemType() == ArmorType.MAGIC)))
+					if ((activeChar.getRace() == PcRace.KAMAEL) && ((item.getItem().getItemType() == ArmorType.HEAVY) || (item.getItem().getItemType() == ArmorType.MAGIC)))
 					{
 						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 						return;
@@ -316,14 +316,7 @@ public final class UseItem extends L2GameClientPacket
 			if (activeChar.isCastingNow() || activeChar.isCastingSimultaneouslyNow())
 			{
 				// Creating next action class.
-				final NextAction nextAction = new NextAction(CtrlEvent.EVT_FINISH_CASTING, CtrlIntention.AI_INTENTION_CAST, new NextActionCallback()
-				{
-					@Override
-					public void doWork()
-					{
-						activeChar.useEquippableItem(item, true);
-					}
-				});
+				final NextAction nextAction = new NextAction(CtrlEvent.EVT_FINISH_CASTING, CtrlIntention.AI_INTENTION_CAST, (NextActionCallback) () -> activeChar.useEquippableItem(item, true));
 				
 				// Binding next action to AI.
 				activeChar.getAI().setNextAction(nextAction);

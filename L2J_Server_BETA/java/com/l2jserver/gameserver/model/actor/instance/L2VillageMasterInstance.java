@@ -385,12 +385,12 @@ public class L2VillageMasterInstance extends L2NpcInstance
 					}
 					else
 					{
-						if ((player.getRace() == PcRace.Elf) || (player.getRace() == PcRace.DarkElf))
+						if ((player.getRace() == PcRace.ELF) || (player.getRace() == PcRace.DARK_ELF))
 						{
 							html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/SubClass_Fail_Elves.htm");
 							player.sendPacket(html);
 						}
-						else if (player.getRace() == PcRace.Kamael)
+						else if (player.getRace() == PcRace.KAMAEL)
 						{
 							html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/SubClass_Fail_Kamael.htm");
 							player.sendPacket(html);
@@ -686,7 +686,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 	
 	protected String getSubClassMenu(PcRace pRace)
 	{
-		if (Config.ALT_GAME_SUBCLASS_EVERYWHERE || (pRace != PcRace.Kamael))
+		if (Config.ALT_GAME_SUBCLASS_EVERYWHERE || (pRace != PcRace.KAMAEL))
 		{
 			return "data/html/villagemaster/SubClass.htm";
 		}

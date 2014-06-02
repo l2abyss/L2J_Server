@@ -34,7 +34,7 @@ public final class L2VillageMasterKamaelInstance extends L2VillageMasterInstance
 	@Override
 	protected final String getSubClassMenu(PcRace pRace)
 	{
-		if (Config.ALT_GAME_SUBCLASS_EVERYWHERE || (pRace == PcRace.Kamael))
+		if (Config.ALT_GAME_SUBCLASS_EVERYWHERE || (pRace == PcRace.KAMAEL))
 		{
 			return "data/html/villagemaster/SubClass.htm";
 		}
@@ -80,6 +80,6 @@ public final class L2VillageMasterKamaelInstance extends L2VillageMasterInstance
 			return false;
 		}
 		
-		return pclass.isOfRace(PcRace.Kamael);
+		return pclass.isOfRace(PcRace.KAMAEL);
 	}
 }

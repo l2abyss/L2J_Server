@@ -37,6 +37,6 @@ public final class L2VillageMasterDwarfInstance extends L2VillageMasterInstance
 			return false;
 		}
 		
-		return pclass.isOfRace(PcRace.Dwarf);
+		return pclass.isOfRace(PcRace.DWARF);
 	}
 }

@@ -1248,7 +1248,7 @@ public final class SkillTreesData extends DocumentParser
 		int dwarvenOnlyFishingSkillCount = 0;
 		for (L2SkillLearn fishSkill : _fishingSkillTree.values())
 		{
-			if (fishSkill.getRaces().contains(PcRace.Dwarf))
+			if (fishSkill.getRaces().contains(PcRace.DWARF))
 			{
 				dwarvenOnlyFishingSkillCount++;
 			}

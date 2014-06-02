@@ -38,7 +38,7 @@ public final class L2VillageMasterMysticInstance extends L2VillageMasterInstance
 			return false;
 		}
 		
-		return pclass.isOfRace(PcRace.Human) || pclass.isOfRace(PcRace.Elf);
+		return pclass.isOfRace(PcRace.HUMAN) || pclass.isOfRace(PcRace.ELF);
 	}
 	
 	@Override

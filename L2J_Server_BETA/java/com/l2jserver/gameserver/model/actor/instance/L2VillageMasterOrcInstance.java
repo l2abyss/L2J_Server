@@ -37,6 +37,6 @@ public final class L2VillageMasterOrcInstance extends L2VillageMasterInstance
 			return false;
 		}
 		
-		return pclass.isOfRace(PcRace.Orc);
+		return pclass.isOfRace(PcRace.ORC);
 	}
 }

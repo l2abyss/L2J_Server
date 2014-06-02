@@ -12227,7 +12227,7 @@ public final class L2PcInstance extends L2Playable
 		{
 			ivlim = Config.INVENTORY_MAXIMUM_GM;
 		}
-		else if (getRace() == PcRace.Dwarf)
+		else if (getRace() == PcRace.DWARF)
 		{
 			ivlim = Config.INVENTORY_MAXIMUM_DWARF;
 		}
@@ -12243,7 +12243,7 @@ public final class L2PcInstance extends L2Playable
 	public int getWareHouseLimit()
 	{
 		int whlim;
-		if (getRace() == PcRace.Dwarf)
+		if (getRace() == PcRace.DWARF)
 		{
 			whlim = Config.WAREHOUSE_SLOTS_DWARF;
 		}
@@ -12261,7 +12261,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		int pslim;
 		
-		if (getRace() == PcRace.Dwarf)
+		if (getRace() == PcRace.DWARF)
 		{
 			pslim = Config.MAX_PVTSTORESELL_SLOTS_DWARF;
 		}
@@ -12279,7 +12279,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		int pblim;
 		
-		if (getRace() == PcRace.Dwarf)
+		if (getRace() == PcRace.DWARF)
 		{
 			pblim = Config.MAX_PVTSTOREBUY_SLOTS_DWARF;
 		}
