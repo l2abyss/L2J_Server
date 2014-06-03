@@ -21,12 +21,10 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.util.logging.Level;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.NextAction;
-import com.l2jserver.gameserver.ai.NextAction.NextActionCallback;
 import com.l2jserver.gameserver.enums.PcRace;
 import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.handler.IItemHandler;
@@ -316,14 +314,14 @@ public final class UseItem extends L2GameClientPacket
 			if (activeChar.isCastingNow() || activeChar.isCastingSimultaneouslyNow())
 			{
 				// Creating next action class.
-				final NextAction nextAction = new NextAction(CtrlEvent.EVT_FINISH_CASTING, CtrlIntention.AI_INTENTION_CAST, (NextActionCallback) () -> activeChar.useEquippableItem(item, true));
+				final NextAction nextAction = new NextAction(CtrlEvent.EVT_FINISH_CASTING, CtrlIntention.AI_INTENTION_CAST, () -> activeChar.useEquippableItem(item, true));
 				
 				// Binding next action to AI.
 				activeChar.getAI().setNextAction(nextAction);
 			}
 			else if (activeChar.isAttackingNow())
 			{
-				ThreadPoolManager.getInstance().scheduleGeneral(new WeaponEquipTask(item, activeChar), (activeChar.getAttackEndTime() - GameTimeController.getInstance().getGameTicks()) * GameTimeController.MILLIS_IN_TICK);
+				ThreadPoolManager.getInstance().scheduleGeneral(new WeaponEquipTask(item, activeChar), activeChar.getAttackEndTime() - System.currentTimeMillis());
 			}
 			else
 			{
