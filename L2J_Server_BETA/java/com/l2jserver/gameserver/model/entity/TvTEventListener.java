@@ -31,7 +31,6 @@ public final class TvTEventListener implements IEventListener
 	protected TvTEventListener(L2PcInstance player)
 	{
 		_player = player;
-		player.addEventListener(this);
 	}
 	
 	@Override
@@ -50,6 +49,12 @@ public final class TvTEventListener implements IEventListener
 	public boolean isBlockingDeathPenalty()
 	{
 		return true;
+	}
+	
+	@Override
+	public boolean canRevive()
+	{
+		return false;
 	}
 	
 	@Override

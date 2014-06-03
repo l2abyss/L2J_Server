@@ -40,5 +40,10 @@ public interface IEventListener
 	 */
 	public boolean isBlockingDeathPenalty();
 	
+	/**
+	 * @return {@code true} if player can revive after death, {@code false} otherwise.
+	 */
+	public boolean canRevive();
+	
 	public L2PcInstance getPlayer();
 }

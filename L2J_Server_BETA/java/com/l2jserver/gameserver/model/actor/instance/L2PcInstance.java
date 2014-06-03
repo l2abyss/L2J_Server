@@ -14233,6 +14233,13 @@ public final class L2PcInstance extends L2Playable
 	@Override
 	public boolean canRevive()
 	{
+		for (IEventListener listener : _eventListeners)
+		{
+			if (listener.isOnEvent() && !listener.canRevive())
+			{
+				return false;
+			}
+		}
 		return _canRevive;
 	}
 	

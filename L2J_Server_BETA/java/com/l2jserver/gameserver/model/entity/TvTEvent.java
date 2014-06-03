@@ -525,7 +525,6 @@ public class TvTEvent
 			{
 				player.removeEventListener(TvTEventListener.class);
 			}
-			
 			return true;
 		}
 		
