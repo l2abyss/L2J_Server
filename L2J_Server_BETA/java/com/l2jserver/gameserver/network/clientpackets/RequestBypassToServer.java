@@ -18,11 +18,8 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
-
-import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
@@ -40,6 +37,8 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Hero;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerBypass;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
@@ -47,8 +46,6 @@ import com.l2jserver.gameserver.network.communityserver.writepackets.RequestShow
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ConfirmDlg;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
-import com.l2jserver.gameserver.scripting.scriptengine.events.RequestBypassToServerEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.RequestBypassToServerListener;
 import com.l2jserver.gameserver.util.GMAudit;
 import com.l2jserver.gameserver.util.Util;
 
@@ -59,7 +56,6 @@ import com.l2jserver.gameserver.util.Util;
 public final class RequestBypassToServer extends L2GameClientPacket
 {
 	private static final String _C__23_REQUESTBYPASSTOSERVER = "[C] 23 RequestBypassToServer";
-	private static final List<RequestBypassToServerListener> _listeners = new FastList<RequestBypassToServerListener>().shared();
 	// FIXME: This is for compatibility, will be changed when bypass functionallity got an overhaul by Nos
 	private static final String[] _possibleNonHtmlCommands =
 	{
@@ -215,8 +211,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 				}
 				try
 				{
-					L2ItemInstance item = activeChar.getInventory().getItemByObjectId(Integer.parseInt(id));
-					
+					final L2ItemInstance item = activeChar.getInventory().getItemByObjectId(Integer.parseInt(id));
 					if ((item != null) && (endOfId > 0))
 					{
 						item.onBypassFeedback(activeChar, _command.substring(endOfId + 1));
@@ -381,7 +376,7 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			}
 		}
 		
-		fireBypassListeners();
+		EventDispatcher.getInstance().notifyEventAsync(new OnPlayerBypass(activeChar, _command), activeChar);
 	}
 	
 	/**
@@ -399,43 +394,6 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			L2Npc temp = (L2Npc) obj;
 			temp.setTarget(activeChar);
 			temp.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, activeChar.getLocation());
-		}
-	}
-	
-	/**
-	 * Fires the event when packet arrived.
-	 */
-	private void fireBypassListeners()
-	{
-		RequestBypassToServerEvent event = new RequestBypassToServerEvent();
-		event.setActiveChar(getActiveChar());
-		event.setCommand(_command);
-		
-		for (RequestBypassToServerListener listener : _listeners)
-		{
-			listener.onRequestBypassToServer(event);
-		}
-	}
-	
-	/**
-	 * @param listener
-	 */
-	public static void addBypassListener(RequestBypassToServerListener listener)
-	{
-		if (!_listeners.contains(listener))
-		{
-			_listeners.add(listener);
-		}
-	}
-	
-	/**
-	 * @param listener
-	 */
-	public static void removeBypassListener(RequestBypassToServerListener listener)
-	{
-		if (_listeners.contains(listener))
-		{
-			_listeners.remove(listener);
 		}
 	}
 	

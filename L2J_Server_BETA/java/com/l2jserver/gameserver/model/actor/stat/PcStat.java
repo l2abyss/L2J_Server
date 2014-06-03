@@ -30,6 +30,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.transform.TransformTemplate;
 import com.l2jserver.gameserver.model.entity.RecoBonus;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerLevelChanged;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.stats.Formulas;
 import com.l2jserver.gameserver.model.stats.MoveType;
@@ -112,26 +114,6 @@ public class PcStat extends PlayableStat
 		return true;
 	}
 	
-	/**
-	 * Add Experience and SP rewards to the L2PcInstance, remove its Karma (if necessary) and Launch increase level task.<br>
-	 * <B><U>Actions </U>:</B>
-	 * <ul>
-	 * <li>Remove Karma when the player kills L2MonsterInstance</li>
-	 * <li>Send a Server->Client packet StatusUpdate to the L2PcInstance</li>
-	 * <li>Send a Server->Client System Message to the L2PcInstance</li>
-	 * <li>If the L2PcInstance increases it's level, send a Server->Client packet SocialAction (broadcast)</li>
-	 * <li>If the L2PcInstance increases it's level, manage the increase level task (Max MP, Max MP, Recommendation, Expertise and beginner skills...)</li>
-	 * <li>If the L2PcInstance increases it's level, send a Server->Client packet UserInfo to the L2PcInstance</li>
-	 * </ul>
-	 * @param addToExp The Experience value to add
-	 * @param addToSp The SP value to add
-	 */
-	@Override
-	public boolean addExpAndSp(long addToExp, int addToSp)
-	{
-		return addExpAndSp(addToExp, addToSp, false);
-	}
-	
 	public boolean addExpAndSp(long addToExp, int addToSp, boolean useBonuses)
 	{
 		L2PcInstance activeChar = getActiveChar();
@@ -182,7 +164,17 @@ public class PcStat extends PlayableStat
 			addToSp = (int) (addToSp * ratioTakenByPlayer);
 		}
 		
-		if (!super.addExpAndSp(addToExp, addToSp))
+		if (!addExp(addToExp))
+		{
+			addToExp = 0;
+		}
+		
+		if (!addSp(addToSp))
+		{
+			addToSp = 0;
+		}
+		
+		if ((addToExp == 0) && (addToSp == 0))
 		{
 			return false;
 		}
@@ -258,10 +250,8 @@ public class PcStat extends PlayableStat
 			return false;
 		}
 		
-		if (!getActiveChar().getEvents().onLevelChange(value))
-		{
-			return false;
-		}
+		// Notify to scripts
+		EventDispatcher.getInstance().notifyEventAsync(new OnPlayerLevelChanged(getActiveChar(), getLevel(), getLevel() + value), getActiveChar());
 		
 		boolean levelIncreased = super.addLevel(value);
 		if (levelIncreased)

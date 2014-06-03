@@ -19,23 +19,19 @@
 package com.l2jserver.gameserver.model.entity;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.EventListener;
+import com.l2jserver.gameserver.model.interfaces.IEventListener;
 
 /**
  * @author UnAfraid
  */
-public final class TvTEventListener extends EventListener
+public final class TvTEventListener implements IEventListener
 {
+	private final L2PcInstance _player;
+	
 	protected TvTEventListener(L2PcInstance player)
 	{
-		super(player);
-	}
-	
-	@Override
-	public void unregister()
-	{
-		super.unregister();
-		getPlayer().setCanRevive(true);
+		_player = player;
+		player.addEventListener(this);
 	}
 	
 	@Override
@@ -54,5 +50,11 @@ public final class TvTEventListener extends EventListener
 	public boolean isBlockingDeathPenalty()
 	{
 		return true;
+	}
+	
+	@Override
+	public L2PcInstance getPlayer()
+	{
+		return _player;
 	}
 }

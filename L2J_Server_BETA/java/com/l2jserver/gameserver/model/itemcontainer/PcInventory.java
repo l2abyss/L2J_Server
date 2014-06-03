@@ -34,17 +34,17 @@ import com.l2jserver.gameserver.enums.ItemLocation;
 import com.l2jserver.gameserver.model.TradeItem;
 import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.player.inventory.OnPlayerItemAdd;
+import com.l2jserver.gameserver.model.events.impl.character.player.inventory.OnPlayerItemDestroy;
+import com.l2jserver.gameserver.model.events.impl.character.player.inventory.OnPlayerItemDrop;
+import com.l2jserver.gameserver.model.events.impl.character.player.inventory.OnPlayerItemTransfer;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
-import com.l2jserver.gameserver.scripting.scriptengine.events.AddToInventoryEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ItemDestroyEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ItemDropEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ItemTransferEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.ItemTracker;
 import com.l2jserver.gameserver.util.Util;
 
 public class PcInventory extends Inventory
@@ -69,8 +69,6 @@ public class PcInventory extends Inventory
 	 * </UL>
 	 */
 	private int _blockMode = -1;
-	
-	private static FastList<ItemTracker> itemTrackers = new FastList<ItemTracker>().shared();
 	
 	public PcInventory(L2PcInstance owner)
 	{
@@ -521,7 +519,11 @@ public class PcInventory extends Inventory
 			_ancientAdena = item;
 		}
 		
-		fireTrackerEvents(TrackerEvent.ADD_TO_INVENTORY, actor, item, null);
+		if (item != null)
+		{
+			// Notify to scripts
+			EventDispatcher.getInstance().notifyEventAsync(new OnPlayerItemAdd(actor, item), item.getItem());
+		}
 		return item;
 	}
 	
@@ -567,7 +569,8 @@ public class PcInventory extends Inventory
 			su.addAttribute(StatusUpdate.CUR_LOAD, actor.getCurrentLoad());
 			actor.sendPacket(su);
 			
-			fireTrackerEvents(TrackerEvent.ADD_TO_INVENTORY, actor, item, null);
+			// Notify to scripts
+			EventDispatcher.getInstance().notifyEventAsync(new OnPlayerItemAdd(actor, item), item.getItem());
 		}
 		
 		return item;
@@ -598,7 +601,8 @@ public class PcInventory extends Inventory
 			_ancientAdena = null;
 		}
 		
-		fireTrackerEvents(TrackerEvent.TRANSFER, actor, item, target);
+		// Notify to scripts
+		EventDispatcher.getInstance().notifyEventAsync(new OnPlayerItemTransfer(actor, item, target), item.getItem());
 		return item;
 	}
 	
@@ -639,8 +643,11 @@ public class PcInventory extends Inventory
 			_ancientAdena = null;
 		}
 		
-		fireTrackerEvents(TrackerEvent.DESTROY, actor, item, null);
-		
+		// Notify to scripts
+		if (item != null)
+		{
+			EventDispatcher.getInstance().notifyEventAsync(new OnPlayerItemDestroy(actor, item), item.getItem());
+		}
 		return item;
 	}
 	
@@ -707,7 +714,11 @@ public class PcInventory extends Inventory
 			_ancientAdena = null;
 		}
 		
-		fireTrackerEvents(TrackerEvent.DROP, actor, item, null);
+		// Notify to scripts
+		if (item != null)
+		{
+			EventDispatcher.getInstance().notifyEventAsync(new OnPlayerItemDrop(actor, item, item.getLocation()), item.getItem());
+		}
 		return item;
 	}
 	
@@ -735,7 +746,11 @@ public class PcInventory extends Inventory
 			_ancientAdena = null;
 		}
 		
-		fireTrackerEvents(TrackerEvent.DROP, actor, item, null);
+		// Notify to scripts
+		if (item != null)
+		{
+			EventDispatcher.getInstance().notifyEventAsync(new OnPlayerItemDrop(actor, item, item.getLocation()), item.getItem());
+		}
 		return item;
 	}
 	
@@ -1036,113 +1051,5 @@ public class PcInventory extends Inventory
 			item.giveSkillsToOwner();
 			item.applyEnchantStats();
 		}
-	}
-	
-	// LISTENERS
-	private static enum TrackerEvent
-	{
-		DROP,
-		ADD_TO_INVENTORY,
-		DESTROY,
-		TRANSFER
-	}
-	
-	/**
-	 * Fires the appropriate item tracker events, if any
-	 * @param tEvent
-	 * @param actor
-	 * @param item
-	 * @param target
-	 */
-	private void fireTrackerEvents(TrackerEvent tEvent, L2PcInstance actor, L2ItemInstance item, ItemContainer target)
-	{
-		if ((item != null) && (actor != null) && !itemTrackers.isEmpty())
-		{
-			switch (tEvent)
-			{
-				case ADD_TO_INVENTORY:
-				{
-					AddToInventoryEvent event = new AddToInventoryEvent();
-					event.setItem(item);
-					event.setPlayer(actor);
-					for (ItemTracker tracker : itemTrackers)
-					{
-						if (tracker.containsItemId(item.getId()))
-						{
-							tracker.onAddToInventory(event);
-						}
-					}
-					return;
-				}
-				case DROP:
-				{
-					ItemDropEvent event = new ItemDropEvent();
-					event.setItem(item);
-					event.setDropper(actor);
-					event.setLocation(actor.getLocation());
-					for (ItemTracker tracker : itemTrackers)
-					{
-						if (tracker.containsItemId(item.getId()))
-						{
-							tracker.onDrop(event);
-						}
-					}
-					return;
-				}
-				case DESTROY:
-				{
-					ItemDestroyEvent event = new ItemDestroyEvent();
-					event.setItem(item);
-					event.setPlayer(actor);
-					for (ItemTracker tracker : itemTrackers)
-					{
-						if (tracker.containsItemId(item.getId()))
-						{
-							tracker.onDestroy(event);
-						}
-					}
-					return;
-				}
-				case TRANSFER:
-				{
-					if (target != null)
-					{
-						ItemTransferEvent event = new ItemTransferEvent();
-						event.setItem(item);
-						event.setPlayer(actor);
-						event.setTarget(target);
-						for (ItemTracker tracker : itemTrackers)
-						{
-							if (tracker.containsItemId(item.getId()))
-							{
-								tracker.onTransfer(event);
-							}
-						}
-					}
-					return;
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Adds an item tracker
-	 * @param tracker
-	 */
-	public static void addItemTracker(ItemTracker tracker)
-	{
-		if (!itemTrackers.contains(tracker))
-		{
-			itemTrackers.add(tracker);
-		}
-	}
-	
-	/**
-	 * Removes an item tracker
-	 * @param tracker
-	 */
-	public static void removeItemTracker(ItemTracker tracker)
-	{
-		itemTrackers.remove(tracker);
 	}
 }

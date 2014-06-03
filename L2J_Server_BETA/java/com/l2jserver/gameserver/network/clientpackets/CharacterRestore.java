@@ -18,13 +18,10 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.List;
-
-import javolution.util.FastList;
-
+import com.l2jserver.gameserver.model.CharSelectInfoPackage;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerRestore;
 import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
-import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerListener;
 
 /**
  * This class ...
@@ -33,7 +30,6 @@ import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerLi
 public final class CharacterRestore extends L2GameClientPacket
 {
 	private static final String _C__7B_CHARACTERRESTORE = "[C] 7B CharacterRestore";
-	private static final List<PlayerListener> _listeners = new FastList<PlayerListener>().shared();
 	
 	// cd
 	private int _charSlot;
@@ -56,32 +52,8 @@ public final class CharacterRestore extends L2GameClientPacket
 		CharSelectionInfo cl = new CharSelectionInfo(getClient().getAccountName(), getClient().getSessionId().playOkID1, 0);
 		sendPacket(cl);
 		getClient().setCharSelection(cl.getCharInfo());
-		PlayerEvent event = new PlayerEvent();
-		event.setClient(getClient());
-		event.setObjectId(getClient().getCharSelection(_charSlot).getObjectId());
-		event.setName(getClient().getCharSelection(_charSlot).getName());
-		firePlayerListener(event);
-	}
-	
-	private void firePlayerListener(PlayerEvent event)
-	{
-		for (PlayerListener listener : _listeners)
-		{
-			listener.onCharRestore(event);
-		}
-	}
-	
-	public static void addPlayerListener(PlayerListener listener)
-	{
-		if (!_listeners.contains(listener))
-		{
-			_listeners.add(listener);
-		}
-	}
-	
-	public static void removePlayerListener(PlayerListener listener)
-	{
-		_listeners.remove(listener);
+		final CharSelectInfoPackage charInfo = getClient().getCharSelection(_charSlot);
+		EventDispatcher.getInstance().notifyEvent(new OnPlayerRestore(charInfo.getObjectId(), charInfo.getName(), getClient()));
 	}
 	
 	@Override

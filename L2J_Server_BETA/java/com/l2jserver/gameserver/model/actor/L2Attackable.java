@@ -38,7 +38,6 @@ import com.l2jserver.gameserver.datatables.EventDroplist.DateDrop;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.enums.InstanceType;
-import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.model.AbsorberInfo;
@@ -47,7 +46,6 @@ import com.l2jserver.gameserver.model.DamageDoneInfo;
 import com.l2jserver.gameserver.model.L2CommandChannel;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
-import com.l2jserver.gameserver.model.actor.events.AttackableEvents;
 import com.l2jserver.gameserver.model.actor.instance.L2GrandBossInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -55,13 +53,15 @@ import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.AttackableKnownList;
 import com.l2jserver.gameserver.model.actor.status.AttackableStatus;
 import com.l2jserver.gameserver.model.actor.tasks.attackable.CommandChannelTimer;
-import com.l2jserver.gameserver.model.actor.tasks.attackable.OnKillNotifyTask;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.drops.DropListScope;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.npc.attackable.OnAttackableAggroRangeEnter;
+import com.l2jserver.gameserver.model.events.impl.character.npc.attackable.OnAttackableAttack;
+import com.l2jserver.gameserver.model.events.impl.character.npc.attackable.OnAttackableKill;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -149,18 +149,6 @@ public class L2Attackable extends L2Npc
 	public void initCharStatus()
 	{
 		setStatus(new AttackableStatus(this));
-	}
-	
-	@Override
-	public void initCharEvents()
-	{
-		setCharEvents(new AttackableEvents(this));
-	}
-	
-	@Override
-	public AttackableEvents getEvents()
-	{
-		return (AttackableEvents) super.getEvents();
 	}
 	
 	@Override
@@ -351,30 +339,10 @@ public class L2Attackable extends L2Npc
 			return false;
 		}
 		
-		// Notify the Quest Engine of the L2Attackable death if necessary
-		try
+		if ((killer != null) && killer.isPlayable())
 		{
-			L2PcInstance player = null;
-			
-			if (killer != null)
-			{
-				player = killer.getActingPlayer();
-			}
-			
-			if (player != null)
-			{
-				if (getTemplate().getEventQuests(QuestEventType.ON_KILL) != null)
-				{
-					for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_KILL))
-					{
-						ThreadPoolManager.getInstance().scheduleEffect(new OnKillNotifyTask(this, quest, player, (killer != null) && killer.isSummon()), _onKillDelay);
-					}
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "", e);
+			// Delayed notification
+			EventDispatcher.getInstance().notifyEventAsyncDelayed(new OnAttackableKill(killer.getActingPlayer(), this, killer.isSummon()), this, _onKillDelay);
 		}
 		return true;
 	}
@@ -677,16 +645,10 @@ public class L2Attackable extends L2Npc
 					WalkingManager.getInstance().stopMoving(this, false, true);
 				}
 				
-				L2PcInstance player = attacker.getActingPlayer();
+				final L2PcInstance player = attacker.getActingPlayer();
 				if (player != null)
 				{
-					if (getTemplate().getEventQuests(QuestEventType.ON_ATTACK) != null)
-					{
-						for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_ATTACK))
-						{
-							quest.notifyAttack(this, player, damage, attacker.isSummon(), skill);
-						}
-					}
+					EventDispatcher.getInstance().notifyEventAsync(new OnAttackableAttack(player, this, damage, skill, attacker.isSummon()), this);
 				}
 				// for now hard code damage hate caused by an L2Attackable
 				else
@@ -734,13 +696,7 @@ public class L2Attackable extends L2Npc
 		
 		if ((targetPlayer != null) && (aggro == 0))
 		{
-			if (getTemplate().getEventQuests(QuestEventType.ON_AGGRO_RANGE_ENTER) != null)
-			{
-				for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_AGGRO_RANGE_ENTER))
-				{
-					quest.notifyAggroRangeEnter(this, targetPlayer, attacker.isSummon());
-				}
-			}
+			EventDispatcher.getInstance().notifyEventAsync(new OnAttackableAggroRangeEnter(this, targetPlayer, attacker.isSummon()), this);
 		}
 		else if ((targetPlayer == null) && (aggro == 0))
 		{

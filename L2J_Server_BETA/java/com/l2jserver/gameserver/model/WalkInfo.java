@@ -20,10 +20,10 @@ package com.l2jserver.gameserver.model;
 
 import java.util.concurrent.ScheduledFuture;
 
-import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.instancemanager.WalkingManager;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.npc.OnNpcMoveRouteFinished;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -96,13 +96,7 @@ public class WalkInfo
 			if (_currentNode == getRoute().getNodesCount()) // Last node arrived
 			{
 				// Notify quest
-				if (npc.getTemplate().getEventQuests(QuestEventType.ON_ROUTE_FINISHED) != null)
-				{
-					for (Quest quest : npc.getTemplate().getEventQuests(QuestEventType.ON_ROUTE_FINISHED))
-					{
-						quest.notifyRouteFinished(npc);
-					}
-				}
+				EventDispatcher.getInstance().notifyEventAsync(new OnNpcMoveRouteFinished(npc), npc);
 				npc.sendDebugMessage("Route: " + getRoute().getName() + ", last node arrived");
 				
 				if (!getRoute().repeatWalk())

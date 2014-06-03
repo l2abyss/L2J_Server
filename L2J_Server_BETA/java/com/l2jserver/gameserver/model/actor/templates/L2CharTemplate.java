@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import com.l2jserver.gameserver.model.StatsSet;
+import com.l2jserver.gameserver.model.events.ListenersContainer;
 import com.l2jserver.gameserver.model.items.type.WeaponType;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.stats.MoveType;
@@ -31,7 +32,7 @@ import com.l2jserver.gameserver.model.stats.MoveType;
  * Character template.
  * @author Zoey76
  */
-public class L2CharTemplate
+public class L2CharTemplate extends ListenersContainer
 {
 	// BaseStats
 	private int _baseSTR;

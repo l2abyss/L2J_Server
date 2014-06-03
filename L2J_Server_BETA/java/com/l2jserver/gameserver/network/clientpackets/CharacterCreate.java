@@ -18,15 +18,12 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.CharNameTable;
@@ -43,6 +40,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.stat.PcStat;
 import com.l2jserver.gameserver.model.actor.templates.L2PcTemplate;
 import com.l2jserver.gameserver.model.base.ClassId;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerCreate;
 import com.l2jserver.gameserver.model.items.PcItemTemplate;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
@@ -52,8 +51,6 @@ import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.serverpackets.CharCreateFail;
 import com.l2jserver.gameserver.network.serverpackets.CharCreateOk;
 import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
-import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerListener;
 import com.l2jserver.gameserver.util.Util;
 
 @SuppressWarnings("unused")
@@ -61,7 +58,6 @@ public final class CharacterCreate extends L2GameClientPacket
 {
 	private static final String _C__0C_CHARACTERCREATE = "[C] 0C CharacterCreate";
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
-	private static final List<PlayerListener> _listeners = new FastList<PlayerListener>().shared();
 	
 	// cSdddddddddddd
 	private String _name;
@@ -312,11 +308,7 @@ public final class CharacterCreate extends L2GameClientPacket
 			startTutorialQuest(newChar);
 		}
 		
-		PlayerEvent event = new PlayerEvent();
-		event.setObjectId(newChar.getObjectId());
-		event.setName(newChar.getName());
-		event.setClient(client);
-		firePlayerListener(event);
+		EventDispatcher.getInstance().notifyEvent(new OnPlayerCreate(newChar, newChar.getObjectId(), newChar.getName(), client));
 		
 		newChar.setOnlineStatus(true, false);
 		newChar.deleteMe();
@@ -346,27 +338,6 @@ public final class CharacterCreate extends L2GameClientPacket
 		{
 			q.newQuestState(player).setState(State.STARTED);
 		}
-	}
-	
-	private void firePlayerListener(PlayerEvent event)
-	{
-		for (PlayerListener listener : _listeners)
-		{
-			listener.onCharCreate(event);
-		}
-	}
-	
-	public static void addPlayerListener(PlayerListener listener)
-	{
-		if (!_listeners.contains(listener))
-		{
-			_listeners.add(listener);
-		}
-	}
-	
-	public static void removePlayerListener(PlayerListener listener)
-	{
-		_listeners.remove(listener);
 	}
 	
 	@Override

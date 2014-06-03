@@ -29,7 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.Config;
@@ -43,13 +42,13 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.instance.L2EventMonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.item.OnItemCreate;
 import com.l2jserver.gameserver.model.items.L2Armor;
 import com.l2jserver.gameserver.model.items.L2EtcItem;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ItemCreateEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.NewItemListener;
 import com.l2jserver.gameserver.util.GMAudit;
 
 /**
@@ -59,8 +58,6 @@ public class ItemTable
 {
 	private static Logger _log = Logger.getLogger(ItemTable.class.getName());
 	private static Logger _logItems = Logger.getLogger("item");
-	
-	private static FastList<NewItemListener> newItemListeners = new FastList<NewItemListener>().shared();
 	
 	public static final Map<String, Integer> _slots = new FastMap<>();
 	
@@ -213,11 +210,6 @@ public class ItemTable
 	 */
 	public L2ItemInstance createItem(String process, int itemId, long count, L2PcInstance actor, Object reference)
 	{
-		if (!fireNewItemListeners(process, itemId, count, actor, reference))
-		{
-			return null;
-		}
-		
 		// Create and Init the L2ItemInstance corresponding to the Item Identifier
 		L2ItemInstance item = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
 		
@@ -294,6 +286,8 @@ public class ItemTable
 			}
 		}
 		
+		// Notify to scripts
+		EventDispatcher.getInstance().notifyEventAsync(new OnItemCreate(process, item, actor, reference), item.getItem());
 		return item;
 	}
 	
@@ -443,61 +437,5 @@ public class ItemTable
 	private static class SingletonHolder
 	{
 		protected static final ItemTable _instance = new ItemTable();
-	}
-	
-	// Listeners
-	
-	/**
-	 * Fires all the new item listeners, if any
-	 * @param process
-	 * @param itemId
-	 * @param count
-	 * @param actor
-	 * @param reference
-	 * @return
-	 */
-	private boolean fireNewItemListeners(String process, int itemId, long count, L2PcInstance actor, Object reference)
-	{
-		if (!newItemListeners.isEmpty() && (actor != null))
-		{
-			ItemCreateEvent event = new ItemCreateEvent();
-			event.setItemId(itemId);
-			event.setPlayer(actor);
-			event.setCount(count);
-			event.setProcess(process);
-			event.setReference(reference);
-			for (NewItemListener listener : newItemListeners)
-			{
-				if (listener.containsItemId(itemId))
-				{
-					if (!listener.onCreate(event))
-					{
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Adds a new item listener
-	 * @param listener
-	 */
-	public static void addNewItemListener(NewItemListener listener)
-	{
-		if (!newItemListeners.contains(listener))
-		{
-			newItemListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a new item listener
-	 * @param listener
-	 */
-	public static void removeNewItemListener(NewItemListener listener)
-	{
-		newItemListeners.remove(listener);
 	}
 }

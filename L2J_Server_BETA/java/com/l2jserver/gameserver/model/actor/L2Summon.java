@@ -26,7 +26,6 @@ import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.NpcRace;
-import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.enums.ShotType;
 import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.handler.IItemHandler;
@@ -36,7 +35,6 @@ import com.l2jserver.gameserver.model.AggroInfo;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2WorldRegion;
-import com.l2jserver.gameserver.model.actor.events.SummonEvents;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.SummonKnownList;
@@ -44,13 +42,14 @@ import com.l2jserver.gameserver.model.actor.stat.SummonStat;
 import com.l2jserver.gameserver.model.actor.status.SummonStatus;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerSummonSpawn;
 import com.l2jserver.gameserver.model.itemcontainer.PetInventory;
 import com.l2jserver.gameserver.model.items.L2EtcItem;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.ActionType;
 import com.l2jserver.gameserver.model.olympiad.OlympiadGameManager;
-import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.zone.ZoneId;
@@ -148,14 +147,8 @@ public abstract class L2Summon extends L2Playable
 		// if someone comes into range now, the animation shouldn't show any more
 		_restoreSummon = false;
 		
-		// Notify DP scripts.
-		if (getTemplate().getEventQuests(QuestEventType.ON_SUMMON) != null)
-		{
-			for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_SUMMON))
-			{
-				quest.onSummon(this);
-			}
-		}
+		// Notify to scripts
+		EventDispatcher.getInstance().notifyEventAsync(new OnPlayerSummonSpawn(this), this);
 	}
 	
 	@Override
@@ -192,18 +185,6 @@ public abstract class L2Summon extends L2Playable
 	public void initCharStatus()
 	{
 		setStatus(new SummonStatus(this));
-	}
-	
-	@Override
-	public void initCharEvents()
-	{
-		setCharEvents(new SummonEvents(this));
-	}
-	
-	@Override
-	public SummonEvents getEvents()
-	{
-		return (SummonEvents) super.getEvents();
 	}
 	
 	@Override

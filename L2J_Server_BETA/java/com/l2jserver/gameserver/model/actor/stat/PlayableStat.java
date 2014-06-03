@@ -27,6 +27,9 @@ import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.playable.OnPlayableExpChanged;
+import com.l2jserver.gameserver.model.events.returns.TerminateReturn;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.model.zone.type.L2SwampZone;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
@@ -43,6 +46,12 @@ public class PlayableStat extends CharStat
 	
 	public boolean addExp(long value)
 	{
+		final TerminateReturn term = EventDispatcher.getInstance().notifyEvent(new OnPlayableExpChanged(getActiveChar(), getExp(), getExp() + value), getActiveChar(), TerminateReturn.class);
+		if ((term != null) && term.terminate())
+		{
+			return false;
+		}
+		
 		if (((getExp() + value) < 0) || ((value > 0) && (getExp() == (getExpForLevel(getMaxLevel()) - 1))))
 		{
 			return true;
@@ -51,11 +60,6 @@ public class PlayableStat extends CharStat
 		if ((getExp() + value) >= getExpForLevel(getMaxLevel()))
 		{
 			value = getExpForLevel(getMaxLevel()) - 1 - getExp();
-		}
-		
-		if (!getActiveChar().getEvents().onExperienceReceived(value))
-		{
-			return false;
 		}
 		
 		setExp(getExp() + value);
@@ -117,22 +121,6 @@ public class PlayableStat extends CharStat
 			addLevel((byte) (level - getLevel()));
 		}
 		return true;
-	}
-	
-	public boolean addExpAndSp(long addToExp, int addToSp)
-	{
-		boolean expAdded = false;
-		boolean spAdded = false;
-		if (addToExp >= 0)
-		{
-			expAdded = addExp(addToExp);
-		}
-		if (addToSp >= 0)
-		{
-			spAdded = addSp(addToSp);
-		}
-		
-		return expAdded || spAdded;
 	}
 	
 	public boolean removeExpAndSp(long removeExp, int removeSp)

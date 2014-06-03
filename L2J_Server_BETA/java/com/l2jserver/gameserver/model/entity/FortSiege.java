@@ -53,20 +53,18 @@ import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FortCommanderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.sieges.fort.OnFortSiegeFinish;
+import com.l2jserver.gameserver.model.events.impl.sieges.fort.OnFortSiegeStart;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.scripting.scriptengine.events.FortSiegeEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.impl.L2Script.EventStage;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.events.FortSiegeListener;
 
 public class FortSiege implements Siegable
 {
 	protected static final Logger _log = Logger.getLogger(FortSiege.class.getName());
-	
-	private static FastList<FortSiegeListener> fortSiegeListeners = new FastList<FortSiegeListener>().shared();
 	
 	// SQL
 	private static final String DELETE_FORT_SIEGECLANS_BY_CLAN_ID = "DELETE FROM fortsiege_clans WHERE fort_id = ? AND clan_id = ?";
@@ -301,7 +299,9 @@ public class FortSiege implements Siegable
 			}
 			
 			_log.info("Siege of " + getFort().getName() + " fort finished.");
-			fireFortSiegeEventListeners(EventStage.END);
+			
+			// Notify to scripts.
+			EventDispatcher.getInstance().notifyEventAsync(new OnFortSiegeFinish(this), getFort());
 		}
 	}
 	
@@ -313,10 +313,6 @@ public class FortSiege implements Siegable
 	{
 		if (!isInProgress())
 		{
-			if (!fireFortSiegeEventListeners(EventStage.START))
-			{
-				return;
-			}
 			if (_siegeStartTask != null) // used admin command "admin_startfortsiege"
 			{
 				_siegeStartTask.cancel(true);
@@ -353,6 +349,9 @@ public class FortSiege implements Siegable
 			saveFortSiege();
 			
 			_log.info("Siege of " + getFort().getName() + " fort started.");
+			
+			// Notify to scripts.
+			EventDispatcher.getInstance().notifyEventAsync(new OnFortSiegeStart(this), getFort());
 		}
 	}
 	
@@ -1295,66 +1294,5 @@ public class FortSiege implements Siegable
 	@Override
 	public void updateSiege()
 	{
-	}
-	
-	// Listeners
-	/**
-	 * Fires all the FortSiegeListener.onStart() or onEnd() methods<br>
-	 * depending on the EventStage<br>
-	 * @param stage
-	 * @return if onStart() returns false, the siege is cancelled
-	 */
-	private boolean fireFortSiegeEventListeners(EventStage stage)
-	{
-		if (!fortSiegeListeners.isEmpty())
-		{
-			FortSiegeEvent event = new FortSiegeEvent();
-			event.setSiege(this);
-			event.setStage(stage);
-			switch (stage)
-			{
-				case START:
-				{
-					for (FortSiegeListener listener : fortSiegeListeners)
-					{
-						if (!listener.onStart(event))
-						{
-							return false;
-						}
-					}
-					break;
-				}
-				case END:
-				{
-					for (FortSiegeListener listener : fortSiegeListeners)
-					{
-						listener.onEnd(event);
-					}
-					break;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Adds a fort siege listener
-	 * @param listener
-	 */
-	public static void addFortSiegeListener(FortSiegeListener listener)
-	{
-		if (!fortSiegeListeners.contains(listener))
-		{
-			fortSiegeListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a fort siege listener
-	 * @param listener
-	 */
-	public static void removeFortSiegeListener(FortSiegeListener listener)
-	{
-		fortSiegeListeners.remove(listener);
 	}
 }

@@ -35,6 +35,7 @@ import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.conditions.Condition;
 import com.l2jserver.gameserver.model.effects.AbstractEffect;
+import com.l2jserver.gameserver.model.events.ListenersContainer;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -62,7 +63,7 @@ import com.l2jserver.util.StringUtil;
  * <li>L2Weapon</li>
  * </ul>
  */
-public abstract class L2Item implements IIdentifiable
+public abstract class L2Item extends ListenersContainer implements IIdentifiable
 {
 	protected static final Logger _log = Logger.getLogger(L2Item.class.getName());
 	

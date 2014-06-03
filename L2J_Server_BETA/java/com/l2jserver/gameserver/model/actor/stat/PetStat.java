@@ -50,10 +50,9 @@ public class PetStat extends SummonStat
 		return true;
 	}
 	
-	@Override
 	public boolean addExpAndSp(long addToExp, int addToSp)
 	{
-		if (!super.addExpAndSp(addToExp, addToSp))
+		if (!addExp(addToExp))
 		{
 			return false;
 		}
@@ -62,7 +61,6 @@ public class PetStat extends SummonStat
 		sm.addLong(addToExp);
 		getActiveChar().updateAndBroadcastStatus(1);
 		getActiveChar().sendPacket(sm);
-		
 		return true;
 	}
 	

@@ -58,22 +58,21 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2ControlTowerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FlameTowerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.sieges.castle.OnCastleSiegeFinish;
+import com.l2jserver.gameserver.model.events.impl.sieges.castle.OnCastleSiegeOwnerChange;
+import com.l2jserver.gameserver.model.events.impl.sieges.castle.OnCastleSiegeStart;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.RelationChanged;
 import com.l2jserver.gameserver.network.serverpackets.SiegeInfo;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
-import com.l2jserver.gameserver.scripting.scriptengine.events.SiegeEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.impl.L2Script.EventStage;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.events.SiegeListener;
 import com.l2jserver.gameserver.util.Broadcast;
 
 public class Siege implements Siegable
 {
 	protected static final Logger _log = Logger.getLogger(Siege.class.getName());
-	
-	private static final List<SiegeListener> siegeListeners = new FastList<SiegeListener>().shared();
 	
 	// typeId's
 	public static final byte OWNER = -1;
@@ -334,7 +333,9 @@ public class Siege implements Siegable
 			getCastle().getZone().setIsActive(false);
 			getCastle().getZone().updateZoneStatusForCharactersInside();
 			getCastle().getZone().setSiegeInstance(null);
-			fireSiegeListeners(EventStage.END);
+			
+			// Notify to scripts.
+			EventDispatcher.getInstance().notifyEventAsync(new OnCastleSiegeFinish(this), getCastle());
 		}
 	}
 	
@@ -462,7 +463,9 @@ public class Siege implements Siegable
 				spawnControlTower();
 				spawnFlameTower();
 				updatePlayerSiegeStateFlags(false);
-				fireSiegeListeners(EventStage.CONTROL_CHANGE);
+				
+				// Notify to scripts.
+				EventDispatcher.getInstance().notifyEventAsync(new OnCastleSiegeOwnerChange(this), getCastle());
 			}
 		}
 	}
@@ -476,10 +479,6 @@ public class Siege implements Siegable
 	{
 		if (!isInProgress())
 		{
-			if (!fireSiegeListeners(EventStage.START))
-			{
-				return;
-			}
 			_firstOwnerClanId = getCastle().getOwnerId();
 			
 			if (getAttackerClans().isEmpty())
@@ -525,6 +524,9 @@ public class Siege implements Siegable
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.SIEGE_OF_S1_HAS_STARTED);
 			sm.addCastleId(getCastle().getResidenceId());
 			Announcements.getInstance().announceToAll(sm);
+			
+			// Notify to scripts.
+			EventDispatcher.getInstance().notifyEventAsync(new OnCastleSiegeStart(this), getCastle());
 		}
 	}
 	
@@ -1780,74 +1782,5 @@ public class Siege implements Siegable
 	@Override
 	public void updateSiege()
 	{
-	}
-	
-	// Listeners
-	/**
-	 * Fires the appropriate SiegeListener<br>
-	 * If it returns false on EventStage.start, the siege is cancelled
-	 * @param stage
-	 * @return
-	 */
-	private boolean fireSiegeListeners(EventStage stage)
-	{
-		if (!siegeListeners.isEmpty())
-		{
-			SiegeEvent event = new SiegeEvent();
-			event.setSiege(this);
-			event.setStage(stage);
-			switch (stage)
-			{
-				case START:
-				{
-					for (SiegeListener listener : siegeListeners)
-					{
-						if (!listener.onStart(event))
-						{
-							return false;
-						}
-					}
-					break;
-				}
-				case END:
-				{
-					for (SiegeListener listener : siegeListeners)
-					{
-						listener.onEnd(event);
-					}
-					break;
-				}
-				case CONTROL_CHANGE:
-				{
-					for (SiegeListener listener : siegeListeners)
-					{
-						listener.onControlChange(event);
-					}
-					break;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Adds a siege listener
-	 * @param listener
-	 */
-	public static void addSiegeListener(SiegeListener listener)
-	{
-		if (!siegeListeners.contains(listener))
-		{
-			siegeListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a siege listener
-	 * @param listener
-	 */
-	public static void removeSiegeListener(SiegeListener listener)
-	{
-		siegeListeners.remove(listener);
 	}
 }

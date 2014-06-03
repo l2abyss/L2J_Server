@@ -46,6 +46,11 @@ import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager.Territory;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.player.clan.OnPlayerClanJoin;
+import com.l2jserver.gameserver.model.events.impl.character.player.clan.OnPlayerClanLeaderChange;
+import com.l2jserver.gameserver.model.events.impl.character.player.clan.OnPlayerClanLeft;
+import com.l2jserver.gameserver.model.events.impl.character.player.clan.OnPlayerClanLvlUp;
 import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.interfaces.INamable;
 import com.l2jserver.gameserver.model.itemcontainer.ClanWarehouse;
@@ -71,13 +76,6 @@ import com.l2jserver.gameserver.network.serverpackets.PledgeSkillListAdd;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ClanCreationEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ClanJoinEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLeaderChangeEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLeaveEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ClanLevelUpEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanCreationListener;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanMembershipListener;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.EnumIntBitmask;
 
@@ -113,9 +111,6 @@ public class L2Clan implements IIdentifiable, INamable
 	public static final int SUBUNIT_KNIGHT3 = 2001;
 	/** Clan subunit type of Order of Knights B-2 */
 	public static final int SUBUNIT_KNIGHT4 = 2002;
-	
-	private static List<ClanCreationListener> clanCreationListeners = new FastList<ClanCreationListener>().shared();
-	private static List<ClanMembershipListener> clanMembershipListeners = new FastList<ClanMembershipListener>().shared();
 	
 	private String _name;
 	private int _clanId;
@@ -185,7 +180,6 @@ public class L2Clan implements IIdentifiable, INamable
 		_clanId = clanId;
 		_name = clanName;
 		initializePrivs();
-		fireClanCreationListeners();
 	}
 	
 	/**
@@ -236,10 +230,8 @@ public class L2Clan implements IIdentifiable, INamable
 		final L2ClanMember exMember = getLeader();
 		final L2PcInstance exLeader = exMember.getPlayerInstance();
 		
-		if (!fireClanLeaderChangeListeners(newLeader, exLeader))
-		{
-			return;
-		}
+		// Notify to scripts
+		EventDispatcher.getInstance().notifyEventAsync(new OnPlayerClanLeaderChange(exMember, member, this));
 		
 		if (exLeader != null)
 		{
@@ -366,11 +358,6 @@ public class L2Clan implements IIdentifiable, INamable
 	 */
 	public void addClanMember(L2PcInstance player)
 	{
-		if (!fireClanJoinListeners(player))
-		{
-			return;
-		}
-		
 		final L2ClanMember member = new L2ClanMember(this, player);
 		// store in memory
 		addClanMember(member);
@@ -382,6 +369,9 @@ public class L2Clan implements IIdentifiable, INamable
 		addSkillEffects(player);
 		// notify CB server about the change
 		CommunityServerThread.getInstance().sendPacket(new WorldInfo(null, this, WorldInfo.TYPE_UPDATE_CLAN_DATA));
+		
+		// Notify to scripts
+		EventDispatcher.getInstance().notifyEventAsync(new OnPlayerClanJoin(member, this));
 	}
 	
 	/**
@@ -432,11 +422,6 @@ public class L2Clan implements IIdentifiable, INamable
 	 */
 	public void removeClanMember(int objectId, long clanJoinExpiryTime)
 	{
-		if (!fireClanLeaveListeners(objectId))
-		{
-			return;
-		}
-		
 		final L2ClanMember exMember = _members.remove(objectId);
 		if (exMember == null)
 		{
@@ -542,6 +527,9 @@ public class L2Clan implements IIdentifiable, INamable
 		{
 			CommunityServerThread.getInstance().sendPacket(new WorldInfo(null, this, WorldInfo.TYPE_UPDATE_CLAN_DATA));
 		}
+		
+		// Notify to scripts
+		EventDispatcher.getInstance().notifyEventAsync(new OnPlayerClanLeft(exMember, this));
 	}
 	
 	public L2ClanMember[] getMembers()
@@ -2597,11 +2585,6 @@ public class L2Clan implements IIdentifiable, INamable
 		
 		boolean increaseClanLevel = false;
 		
-		if (!fireClanLevelUpListeners())
-		{
-			return false;
-		}
-		
 		switch (getLevel())
 		{
 			case 0:
@@ -2821,6 +2804,9 @@ public class L2Clan implements IIdentifiable, INamable
 		player.sendPacket(il);
 		
 		changeLevel(getLevel() + 1);
+		
+		// Notify to scripts
+		EventDispatcher.getInstance().notifyEventAsync(new OnPlayerClanLvlUp(player, this));
 		return true;
 	}
 	
@@ -2843,12 +2829,12 @@ public class L2Clan implements IIdentifiable, INamable
 		if (getLeader().isOnline())
 		{
 			L2PcInstance leader = getLeader().getPlayerInstance();
-			if (4 < level)
+			if (level > 4)
 			{
 				SiegeManager.getInstance().addSiegeSkills(leader);
 				leader.sendPacket(SystemMessageId.CLAN_CAN_ACCUMULATE_CLAN_REPUTATION_POINTS);
 			}
-			else if (5 > level)
+			else if (level < 5)
 			{
 				SiegeManager.getInstance().removeSiegeSkills(leader);
 			}
@@ -3126,160 +3112,5 @@ public class L2Clan implements IIdentifiable, INamable
 	public void clearSiegeDeaths()
 	{
 		_siegeDeaths.set(0);
-	}
-	
-	// Listeners
-	/**
-	 * Fires the clan creation listeners, if any.
-	 */
-	private void fireClanCreationListeners()
-	{
-		if (!clanCreationListeners.isEmpty())
-		{
-			ClanCreationEvent event = new ClanCreationEvent();
-			event.setClan(this);
-			for (ClanCreationListener listener : clanCreationListeners)
-			{
-				listener.onClanCreate(event);
-			}
-		}
-	}
-	
-	/**
-	 * Fires all the ClanMemberShipListener.onLeaderChange() methods, if any. Prevents the clan leader change if it returns false;
-	 * @param newLeader
-	 * @param exLeader
-	 * @return
-	 */
-	private boolean fireClanLeaderChangeListeners(L2PcInstance newLeader, L2PcInstance exLeader)
-	{
-		if (!clanMembershipListeners.isEmpty() && (newLeader != null) && (exLeader != null))
-		{
-			ClanLeaderChangeEvent event = new ClanLeaderChangeEvent();
-			event.setClan(this);
-			event.setNewLeader(newLeader);
-			event.setOldLeader(exLeader);
-			for (ClanMembershipListener listener : clanMembershipListeners)
-			{
-				if (!listener.onLeaderChange(event))
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Fires all the ClanMembershipListener.onJoin() methods, if any<br>
-	 * Returns true/false -> allow the player to join or not
-	 * @param player
-	 * @return
-	 */
-	private boolean fireClanJoinListeners(L2PcInstance player)
-	{
-		if (!clanMembershipListeners.isEmpty() && (player != null))
-		{
-			ClanJoinEvent event = new ClanJoinEvent();
-			event.setClan(this);
-			event.setPlayer(player);
-			for (ClanMembershipListener listener : clanMembershipListeners)
-			{
-				if (!listener.onJoin(event))
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Fires all the ClanMembershipListener.onLeave() methods, if any<br>
-	 * Returns true/false -> the player can leave the clan or not
-	 * @param objectId - the clan member's objectId
-	 * @return
-	 */
-	private boolean fireClanLeaveListeners(int objectId)
-	{
-		if (!clanMembershipListeners.isEmpty())
-		{
-			ClanLeaveEvent event = new ClanLeaveEvent();
-			event.setPlayerId(objectId);
-			event.setClan(this);
-			for (ClanMembershipListener listener : clanMembershipListeners)
-			{
-				if (!listener.onLeave(event))
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Fires all the ClanCreationListener.onClanLevelUp() methods, if any<br>
-	 * Blocks the level up if it returns false
-	 * @return
-	 */
-	private boolean fireClanLevelUpListeners()
-	{
-		if (!clanCreationListeners.isEmpty())
-		{
-			ClanLevelUpEvent event = new ClanLevelUpEvent();
-			event.setClan(this);
-			event.setOldLevel(_level);
-			for (ClanCreationListener listener : clanCreationListeners)
-			{
-				if (!listener.onClanLevelUp(event))
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Adds a clan creation listener
-	 * @param listener
-	 */
-	public static void addClanCreationListener(ClanCreationListener listener)
-	{
-		if (!clanCreationListeners.contains(listener))
-		{
-			clanCreationListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a clan creation listener
-	 * @param listener
-	 */
-	public static void removeClanCreationListener(ClanCreationListener listener)
-	{
-		clanCreationListeners.remove(listener);
-	}
-	
-	/**
-	 * Adds a clan join listener (a player just joined the clan)
-	 * @param listener
-	 */
-	public static void addClanMembershipListener(ClanMembershipListener listener)
-	{
-		if (!clanMembershipListeners.contains(listener))
-		{
-			clanMembershipListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a clan join listener (a player left the clan)
-	 * @param listener
-	 */
-	public static void removeClanMembershipListener(ClanMembershipListener listener)
-	{
-		clanMembershipListeners.remove(listener);
 	}
 }

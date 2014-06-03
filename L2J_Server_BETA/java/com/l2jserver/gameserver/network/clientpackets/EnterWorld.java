@@ -39,7 +39,6 @@ import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.MailManager;
 import com.l2jserver.gameserver.instancemanager.PetitionManager;
-import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2Clan;
@@ -383,23 +382,6 @@ public class EnterWorld extends L2GameClientPacket
 		if (!Config.DISABLE_TUTORIAL)
 		{
 			loadTutorial(activeChar);
-		}
-		
-		// Notify quests.
-		for (Quest quest : QuestManager.getInstance().getQuests().values())
-		{
-			if ((quest != null) && quest.getOnEnterWorld())
-			{
-				quest.notifyEnterWorld(activeChar);
-			}
-		}
-		// Notify scripts.
-		for (Quest quest : QuestManager.getInstance().getScripts().values())
-		{
-			if ((quest != null) && quest.getOnEnterWorld())
-			{
-				quest.notifyEnterWorld(activeChar);
-			}
 		}
 		
 		activeChar.sendPacket(new QuestList());

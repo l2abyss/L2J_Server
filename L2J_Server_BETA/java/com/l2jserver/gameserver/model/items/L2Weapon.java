@@ -18,19 +18,18 @@
  */
 package com.l2jserver.gameserver.model.items;
 
-import java.util.Collection;
+import java.util.Objects;
 
-import com.l2jserver.gameserver.enums.QuestEventType;
-import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.conditions.Condition;
 import com.l2jserver.gameserver.model.conditions.ConditionGameChance;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.npc.OnNpcSkillSee;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.items.type.WeaponType;
-import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Formulas;
@@ -441,22 +440,16 @@ public final class L2Weapon extends L2Item
 		// notify quests of a skill use
 		if (caster instanceof L2PcInstance)
 		{
-			// Mobs in range 1000 see spell
-			Collection<L2Object> objs = caster.getKnownList().getKnownObjects().values();
-			for (L2Object spMob : objs)
-			{
-				if (spMob instanceof L2Npc)
+			//@formatter:off
+			caster.getKnownList().getKnownObjects().values().stream()
+				.filter(Objects::nonNull)
+				.filter(npc -> npc.isNpc())
+				.filter(npc -> Util.checkIfInRange(1000, npc, caster, false))
+				.forEach(npc -> 
 				{
-					L2Npc npcMob = (L2Npc) spMob;
-					if (npcMob.getTemplate().getEventQuests(QuestEventType.ON_SKILL_SEE) != null)
-					{
-						for (Quest quest : npcMob.getTemplate().getEventQuests(QuestEventType.ON_SKILL_SEE))
-						{
-							quest.notifySkillSee(npcMob, caster.getActingPlayer(), onMagicSkill, targets, false);
-						}
-					}
-				}
-			}
+					EventDispatcher.getInstance().notifyEventAsync(new OnNpcSkillSee((L2Npc) npc, caster.getActingPlayer(), onMagicSkill, targets, false), npc);
+				});
+			//@formatter:on
 		}
 		return true;
 	}

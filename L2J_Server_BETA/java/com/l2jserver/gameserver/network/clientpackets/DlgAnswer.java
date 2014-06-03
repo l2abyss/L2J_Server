@@ -24,6 +24,9 @@ import com.l2jserver.gameserver.enums.PlayerAction;
 import com.l2jserver.gameserver.handler.AdminCommandHandler;
 import com.l2jserver.gameserver.handler.IAdminCommandHandler;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerDlgAnswer;
+import com.l2jserver.gameserver.model.events.returns.TerminateReturn;
 import com.l2jserver.gameserver.model.holders.DoorRequestHolder;
 import com.l2jserver.gameserver.model.holders.SummonRequestHolder;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -56,7 +59,8 @@ public final class DlgAnswer extends L2GameClientPacket
 			return;
 		}
 		
-		if (!activeChar.getEvents().onDlgAnswer(_messageId, _answer, _requesterId))
+		final TerminateReturn term = EventDispatcher.getInstance().notifyEvent(new OnPlayerDlgAnswer(activeChar, _messageId, _answer, _requesterId), activeChar, TerminateReturn.class);
+		if ((term != null) && term.terminate())
 		{
 			return;
 		}

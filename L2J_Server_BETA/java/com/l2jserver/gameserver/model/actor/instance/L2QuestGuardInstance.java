@@ -18,14 +18,13 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.enums.InstanceType;
-import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.tasks.attackable.OnKillNotifyTask;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.npc.attackable.OnAttackableAttack;
+import com.l2jserver.gameserver.model.events.impl.character.npc.attackable.OnAttackableKill;
 import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
@@ -50,13 +49,7 @@ public final class L2QuestGuardInstance extends L2GuardInstance
 		
 		if (attacker instanceof L2Attackable)
 		{
-			if (getTemplate().getEventQuests(QuestEventType.ON_ATTACK) != null)
-			{
-				for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_ATTACK))
-				{
-					quest.notifyAttack(this, null, damage, false, skill);
-				}
-			}
+			EventDispatcher.getInstance().notifyEventAsync(new OnAttackableAttack(null, this, damage, skill, false), this);
 		}
 	}
 	
@@ -71,15 +64,9 @@ public final class L2QuestGuardInstance extends L2GuardInstance
 		
 		if (killer instanceof L2Attackable)
 		{
-			if (getTemplate().getEventQuests(QuestEventType.ON_KILL) != null)
-			{
-				for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_KILL))
-				{
-					ThreadPoolManager.getInstance().scheduleEffect(new OnKillNotifyTask(this, quest, null, false), _onKillDelay);
-				}
-			}
+			// Delayed notification
+			EventDispatcher.getInstance().notifyEventAsyncDelayed(new OnAttackableKill(null, this, false), this, _onKillDelay);
 		}
-		
 		return true;
 	}
 	

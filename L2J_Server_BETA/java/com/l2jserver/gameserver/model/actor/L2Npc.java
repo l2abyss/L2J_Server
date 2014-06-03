@@ -38,7 +38,6 @@ import com.l2jserver.gameserver.enums.AIType;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.NpcRace;
 import com.l2jserver.gameserver.enums.PrivateStoreType;
-import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.enums.ShotType;
 import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.handler.BypassHandler;
@@ -70,12 +69,18 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.EventType;
+import com.l2jserver.gameserver.model.events.impl.character.npc.OnNpcCanBeSeen;
+import com.l2jserver.gameserver.model.events.impl.character.npc.OnNpcEventReceived;
+import com.l2jserver.gameserver.model.events.impl.character.npc.OnNpcSkillFinished;
+import com.l2jserver.gameserver.model.events.impl.character.npc.OnNpcSpawn;
+import com.l2jserver.gameserver.model.events.returns.TerminateReturn;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
-import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.model.variables.NpcVariables;
@@ -1386,13 +1391,7 @@ public class L2Npc extends L2Character
 		_soulshotamount = getTemplate().getSoulShot();
 		_spiritshotamount = getTemplate().getSpiritShot();
 		
-		if (getTemplate().getEventQuests(QuestEventType.ON_SPAWN) != null)
-		{
-			for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_SPAWN))
-			{
-				quest.notifySpawn(this);
-			}
-		}
+		EventDispatcher.getInstance().notifyEventAsync(new OnNpcSpawn(this, isTeleporting()), this);
 		
 		if (!isTeleporting())
 		{
@@ -1655,24 +1654,9 @@ public class L2Npc extends L2Character
 	@Override
 	protected final void notifyQuestEventSkillFinished(Skill skill, L2Object target)
 	{
-		try
+		if ((target != null) && target.isPlayable())
 		{
-			if (getTemplate().getEventQuests(QuestEventType.ON_SPELL_FINISHED) != null)
-			{
-				L2PcInstance player = null;
-				if (target != null)
-				{
-					player = target.getActingPlayer();
-				}
-				for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_SPELL_FINISHED))
-				{
-					quest.notifySpellFinished(this, player, skill);
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "", e);
+			EventDispatcher.getInstance().notifyEventAsync(new OnNpcSkillFinished(this, target.getActingPlayer(), skill), this);
 		}
 	}
 	
@@ -1873,12 +1857,9 @@ public class L2Npc extends L2Character
 	{
 		for (L2Object obj : L2World.getInstance().getVisibleObjects(this, radius))
 		{
-			if (obj.isNpc() && (((L2Npc) obj).getTemplate().getEventQuests(QuestEventType.ON_EVENT_RECEIVED) != null))
+			if (obj.isNpc() && obj.hasListener(EventType.ON_NPC_EVENT_RECEIVED))
 			{
-				for (Quest quest : ((L2Npc) obj).getTemplate().getEventQuests(QuestEventType.ON_EVENT_RECEIVED))
-				{
-					quest.notifyEventReceived(eventName, this, (L2Npc) obj, reference);
-				}
+				EventDispatcher.getInstance().notifyEventAsync(new OnNpcEventReceived(eventName, this, (L2Npc) obj, reference), obj);
 			}
 		}
 	}
@@ -1977,11 +1958,12 @@ public class L2Npc extends L2Character
 	@Override
 	public boolean isVisibleFor(L2PcInstance player)
 	{
-		if (getTemplate().getEventQuests(QuestEventType.ON_CAN_SEE_ME) != null)
+		if (hasListener(EventType.ON_NPC_CAN_BE_SEEN))
 		{
-			for (Quest quest : getTemplate().getEventQuests(QuestEventType.ON_CAN_SEE_ME))
+			final TerminateReturn term = EventDispatcher.getInstance().notifyEvent(new OnNpcCanBeSeen(this, player), this, TerminateReturn.class);
+			if (term != null)
 			{
-				return quest.notifyOnCanSeeMe(this, player);
+				return term.terminate();
 			}
 		}
 		return super.isVisibleFor(player);

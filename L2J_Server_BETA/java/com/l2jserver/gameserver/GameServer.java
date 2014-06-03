@@ -129,6 +129,7 @@ import com.l2jserver.gameserver.model.PartyMatchRoomList;
 import com.l2jserver.gameserver.model.PartyMatchWaitingList;
 import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.model.entity.TvTManager;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
 import com.l2jserver.gameserver.model.olympiad.Olympiad;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.L2GamePacketHandler;
@@ -201,6 +202,7 @@ public class GameServer
 		}
 		
 		ThreadPoolManager.getInstance();
+		EventDispatcher.getInstance();
 		
 		new File("log/game").mkdirs();
 		

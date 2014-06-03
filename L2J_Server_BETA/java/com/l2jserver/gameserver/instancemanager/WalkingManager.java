@@ -29,7 +29,6 @@ import org.w3c.dom.Node;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.engines.DocumentParser;
-import com.l2jserver.gameserver.enums.QuestEventType;
 import com.l2jserver.gameserver.instancemanager.tasks.StartMovingTask;
 import com.l2jserver.gameserver.model.L2NpcWalkerNode;
 import com.l2jserver.gameserver.model.L2WalkRoute;
@@ -38,8 +37,9 @@ import com.l2jserver.gameserver.model.WalkInfo;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.tasks.npc.walker.ArrivedTask;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.npc.OnNpcMoveNodeArrived;
 import com.l2jserver.gameserver.model.holders.NpcRoutesHolder;
-import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
@@ -411,13 +411,7 @@ public final class WalkingManager extends DocumentParser
 		if (_activeRoutes.containsKey(npc.getObjectId()))
 		{
 			// Notify quest
-			if (npc.getTemplate().getEventQuests(QuestEventType.ON_NODE_ARRIVED) != null)
-			{
-				for (Quest quest : npc.getTemplate().getEventQuests(QuestEventType.ON_NODE_ARRIVED))
-				{
-					quest.notifyNodeArrived(npc);
-				}
-			}
+			EventDispatcher.getInstance().notifyEventAsync(new OnNpcMoveNodeArrived(npc), npc);
 			
 			final WalkInfo walk = _activeRoutes.get(npc.getObjectId());
 			
