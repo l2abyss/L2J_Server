@@ -202,7 +202,7 @@ public final class RequestRestartPoint extends L2GameClientPacket
 				castle = CastleManager.getInstance().getCastle(activeChar);
 				fort = FortManager.getInstance().getFort(activeChar);
 				hall = CHSiegeManager.getInstance().getNearbyClanHall(activeChar);
-				L2SiegeFlagInstance flag = TerritoryWarManager.getInstance().getFlagForClan(activeChar.getClan());
+				L2SiegeFlagInstance flag = TerritoryWarManager.getInstance().getHQForClan(activeChar.getClan());
 				
 				if ((castle != null) && castle.getSiege().isInProgress())
 				{
