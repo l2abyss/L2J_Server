@@ -47,11 +47,15 @@ public class AnnotationEventListener extends AbstractEventListener
 	{
 		try
 		{
-			return returnBackClass.cast(_callback.invoke(getOwner(), event));
+			final Object result = _callback.invoke(getOwner(), event);
+			if (_callback.getReturnType() == returnBackClass)
+			{
+				return returnBackClass.cast(result);
+			}
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while invoking " + _callback.getName(), e);
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while invoking " + _callback.getName() + " on " + getOwner(), e);
 		}
 		return null;
 	}

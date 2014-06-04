@@ -19,6 +19,8 @@
 package com.l2jserver.gameserver.model.events.listeners;
 
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.model.events.EventType;
 import com.l2jserver.gameserver.model.events.ListenersContainer;
@@ -31,6 +33,7 @@ import com.l2jserver.gameserver.model.events.returns.AbstractEventReturn;
  */
 public class FunctionEventListener extends AbstractEventListener
 {
+	private static final Logger _log = Logger.getLogger(FunctionEventListener.class.getName());
 	private final Function<IBaseEvent, ? extends AbstractEventReturn> _callback;
 	
 	@SuppressWarnings("unchecked")
@@ -43,6 +46,15 @@ public class FunctionEventListener extends AbstractEventListener
 	@Override
 	public <R extends AbstractEventReturn> R executeEvent(IBaseEvent event, Class<R> returnBackClass)
 	{
-		return returnBackClass.cast(_callback.apply(event));
+		try
+		{
+			return returnBackClass.cast(_callback.apply(event));
+			
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, getClass().getSimpleName() + ": Error while invoking " + event + " on " + getOwner(), e);
+		}
+		return null;
 	}
 }

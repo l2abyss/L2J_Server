@@ -58,9 +58,14 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.Instance;
+import com.l2jserver.gameserver.model.events.annotations.Item;
+import com.l2jserver.gameserver.model.events.annotations.Items;
 import com.l2jserver.gameserver.model.events.annotations.Npc;
 import com.l2jserver.gameserver.model.events.annotations.Npcs;
 import com.l2jserver.gameserver.model.events.annotations.RegisterEvent;
+import com.l2jserver.gameserver.model.events.annotations.RegisterType;
+import com.l2jserver.gameserver.model.events.annotations.Residence;
+import com.l2jserver.gameserver.model.events.annotations.Residences;
 import com.l2jserver.gameserver.model.events.impl.IBaseEvent;
 import com.l2jserver.gameserver.model.events.impl.character.OnCreatureKill;
 import com.l2jserver.gameserver.model.events.impl.character.OnCreatureZoneEnter;
@@ -137,12 +142,15 @@ public abstract class AbstractScript extends ManagedScript
 	
 	private void initializeAnnotationListeners()
 	{
-		final List<Integer> npcIds = new ArrayList<>();
+		final List<Integer> ids = new ArrayList<>();
 		for (Method method : getClass().getMethods())
 		{
-			if (method.isAnnotationPresent(RegisterEvent.class))
+			if (method.isAnnotationPresent(RegisterEvent.class) && method.isAnnotationPresent(RegisterType.class))
 			{
 				final RegisterEvent listener = method.getAnnotation(RegisterEvent.class);
+				final RegisterType regType = method.getAnnotation(RegisterType.class);
+				
+				final ListenerRegisterType type = regType.value();
 				final EventType eventType = listener.value();
 				if (method.getParameterCount() != 1)
 				{
@@ -161,7 +169,7 @@ public abstract class AbstractScript extends ManagedScript
 				}
 				
 				// Clear the list
-				npcIds.clear();
+				ids.clear();
 				
 				// Scan for possible Npc ID filters
 				for (Annotation annotation : method.getAnnotations())
@@ -171,7 +179,7 @@ public abstract class AbstractScript extends ManagedScript
 						final Npc npc = (Npc) annotation;
 						for (int id : npc.value())
 						{
-							npcIds.add(id);
+							ids.add(id);
 						}
 					}
 					else if (annotation instanceof Npcs)
@@ -181,22 +189,60 @@ public abstract class AbstractScript extends ManagedScript
 						{
 							for (int id : npc.value())
 							{
-								npcIds.add(id);
+								ids.add(id);
+							}
+						}
+					}
+					else if (annotation instanceof Item)
+					{
+						final Item item = (Item) annotation;
+						for (int id : item.value())
+						{
+							ids.add(id);
+						}
+					}
+					else if (annotation instanceof Items)
+					{
+						final Items items = (Items) annotation;
+						for (Item item : items.value())
+						{
+							for (int id : item.value())
+							{
+								ids.add(id);
+							}
+						}
+					}
+					else if (annotation instanceof Residence)
+					{
+						final Item item = (Item) annotation;
+						for (int id : item.value())
+						{
+							ids.add(id);
+						}
+					}
+					else if (annotation instanceof Residences)
+					{
+						final Residences residences = (Residences) annotation;
+						for (Residence residence : residences.value())
+						{
+							for (int id : residence.value())
+							{
+								ids.add(id);
 							}
 						}
 					}
 				}
 				
-				if (!npcIds.isEmpty())
+				if (!ids.isEmpty())
 				{
-					if (!_registeredIds.containsKey(ListenerRegisterType.NPC))
+					if (!_registeredIds.containsKey(type))
 					{
-						_registeredIds.put(ListenerRegisterType.NPC, new FastList<Integer>().shared());
+						_registeredIds.put(type, new FastList<Integer>().shared());
 					}
-					_registeredIds.get(ListenerRegisterType.NPC).addAll(npcIds);
+					_registeredIds.get(type).addAll(ids);
 				}
 				
-				registerAnnotation(method, eventType, ListenerRegisterType.NPC, npcIds);
+				registerAnnotation(method, eventType, type, ids);
 			}
 		}
 	}
