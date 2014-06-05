@@ -766,7 +766,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 							sevenSignFaction = true;
 						}
 						
-						if (!sevenSignFaction)
+						if (!getActiveChar().getTemplate().isClan(called.getTemplate().getClans()) && !sevenSignFaction)
 						{
 							continue;
 						}
