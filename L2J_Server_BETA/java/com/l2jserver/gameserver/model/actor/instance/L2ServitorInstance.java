@@ -83,7 +83,10 @@ public class L2ServitorInstance extends L2Summon implements Runnable
 	public void onSpawn()
 	{
 		super.onSpawn();
-		_summonLifeTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, 0, 5000);
+		if (_summonLifeTask == null)
+		{
+			_summonLifeTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this, 0, 5000);
+		}
 	}
 	
 	@Override
@@ -181,7 +184,6 @@ public class L2ServitorInstance extends L2Summon implements Runnable
 		if (_summonLifeTask != null)
 		{
 			_summonLifeTask.cancel(false);
-			_summonLifeTask = null;
 		}
 		
 		CharSummonTable.getInstance().removeServitor(getOwner());
@@ -455,7 +457,6 @@ public class L2ServitorInstance extends L2Summon implements Runnable
 		if (_summonLifeTask != null)
 		{
 			_summonLifeTask.cancel(false);
-			_summonLifeTask = null;
 		}
 		
 		super.unSummon(owner);
@@ -525,7 +526,6 @@ public class L2ServitorInstance extends L2Summon implements Runnable
 			if (_summonLifeTask != null)
 			{
 				_summonLifeTask.cancel(false);
-				_summonLifeTask = null;
 			}
 			return;
 		}
