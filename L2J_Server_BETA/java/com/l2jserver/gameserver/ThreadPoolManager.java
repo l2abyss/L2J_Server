@@ -375,7 +375,14 @@ public class ThreadPoolManager
 	 */
 	public void executePacket(Runnable task)
 	{
-		_generalPacketsThreadPool.execute(task);
+		try
+		{
+			_generalPacketsThreadPool.execute(task);
+		}
+		catch (RejectedExecutionException e)
+		{
+			/* shutdown, ignore */
+		}
 	}
 	
 	/**
@@ -384,7 +391,14 @@ public class ThreadPoolManager
 	 */
 	public void executeIOPacket(Runnable task)
 	{
-		_ioPacketsThreadPool.execute(task);
+		try
+		{
+			_ioPacketsThreadPool.execute(task);
+		}
+		catch (RejectedExecutionException e)
+		{
+			/* shutdown, ignore */
+		}
 	}
 	
 	/**
@@ -393,7 +407,14 @@ public class ThreadPoolManager
 	 */
 	public void executeGeneral(Runnable task)
 	{
-		_generalThreadPool.execute(new RunnableWrapper(task));
+		try
+		{
+			_generalThreadPool.execute(new RunnableWrapper(task));
+		}
+		catch (RejectedExecutionException e)
+		{
+			/* shutdown, ignore */
+		}
 	}
 	
 	/**
@@ -402,7 +423,14 @@ public class ThreadPoolManager
 	 */
 	public void executeAi(Runnable task)
 	{
-		_aiScheduledThreadPool.execute(new RunnableWrapper(task));
+		try
+		{
+			_aiScheduledThreadPool.execute(new RunnableWrapper(task));
+		}
+		catch (RejectedExecutionException e)
+		{
+			/* shutdown, ignore */
+		}
 	}
 	
 	/**
@@ -411,7 +439,14 @@ public class ThreadPoolManager
 	 */
 	public void executeEvent(Runnable task)
 	{
-		_eventThreadPool.execute(new RunnableWrapper(task));
+		try
+		{
+			_eventThreadPool.execute(new RunnableWrapper(task));
+		}
+		catch (RejectedExecutionException e)
+		{
+			/* shutdown, ignore */
+		}
 	}
 	
 	public String[] getStats()
