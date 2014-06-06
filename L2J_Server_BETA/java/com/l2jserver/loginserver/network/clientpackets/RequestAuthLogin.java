@@ -18,6 +18,7 @@
  */
 package com.l2jserver.loginserver.network.clientpackets;
 
+import java.net.InetAddress;
 import java.security.GeneralSecurityException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +29,7 @@ import com.l2jserver.Config;
 import com.l2jserver.loginserver.GameServerTable.GameServerInfo;
 import com.l2jserver.loginserver.LoginController;
 import com.l2jserver.loginserver.LoginController.AuthLoginResult;
+import com.l2jserver.loginserver.model.data.AccountInfo;
 import com.l2jserver.loginserver.network.L2LoginClient;
 import com.l2jserver.loginserver.network.L2LoginClient.LoginClientState;
 import com.l2jserver.loginserver.network.serverpackets.AccountKicked;
@@ -118,15 +120,25 @@ public class RequestAuthLogin extends L2LoginClientPacket
 			return;
 		}
 		
+		InetAddress clientAddr = getClient().getConnection().getInetAddress();
+		
 		final LoginController lc = LoginController.getInstance();
-		AuthLoginResult result = lc.tryAuthLogin(_user, _password, client);
+		AccountInfo info = lc.retriveAccountInfo(clientAddr, _user, _password);
+		if (info == null)
+		{
+			// user or pass wrong
+			client.close(LoginFailReason.REASON_USER_OR_PASS_WRONG);
+			return;
+		}
+		
+		AuthLoginResult result = lc.tryCheckinAccount(client, clientAddr, info);
 		switch (result)
 		{
 			case AUTH_SUCCESS:
-				client.setAccount(_user);
+				client.setAccount(info.getLogin());
 				client.setState(LoginClientState.AUTHED_LOGIN);
-				client.setSessionKey(lc.assignSessionKeyToClient(_user, client));
-				lc.getCharactersOnAccount(_user);
+				client.setSessionKey(lc.assignSessionKeyToClient(info.getLogin(), client));
+				lc.getCharactersOnAccount(info.getLogin());
 				if (Config.SHOW_LICENCE)
 				{
 					client.sendPacket(new LoginOk(getClient().getSessionKey()));
@@ -141,28 +153,28 @@ public class RequestAuthLogin extends L2LoginClientPacket
 				break;
 			case ACCOUNT_BANNED:
 				client.close(new AccountKicked(AccountKickedReason.REASON_PERMANENTLY_BANNED));
-				break;
+				return;
 			case ALREADY_ON_LS:
 				L2LoginClient oldClient;
-				if ((oldClient = lc.getAuthedClient(_user)) != null)
+				if ((oldClient = lc.getAuthedClient(info.getLogin())) != null)
 				{
 					// kick the other client
 					oldClient.close(LoginFailReason.REASON_ACCOUNT_IN_USE);
-					lc.removeAuthedLoginClient(_user);
+					lc.removeAuthedLoginClient(info.getLogin());
 				}
 				// kick also current client
 				client.close(LoginFailReason.REASON_ACCOUNT_IN_USE);
 				break;
 			case ALREADY_ON_GS:
 				GameServerInfo gsi;
-				if ((gsi = lc.getAccountOnGameServer(_user)) != null)
+				if ((gsi = lc.getAccountOnGameServer(info.getLogin())) != null)
 				{
 					client.close(LoginFailReason.REASON_ACCOUNT_IN_USE);
 					
 					// kick from there
 					if (gsi.isAuthed())
 					{
-						gsi.getGameServerThread().kickPlayer(_user);
+						gsi.getGameServerThread().kickPlayer(info.getLogin());
 					}
 				}
 				break;
