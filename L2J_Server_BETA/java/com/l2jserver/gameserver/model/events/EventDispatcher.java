@@ -46,7 +46,7 @@ public class EventDispatcher extends ListenersContainer
 	 */
 	public <T extends AbstractEventReturn> T notifyEvent(IBaseEvent event)
 	{
-		return notifyEvent(event, null, null);
+		return hasListener(event.getType()) ? notifyEvent(event, null, null) : null;
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public class EventDispatcher extends ListenersContainer
 	 */
 	public <T extends AbstractEventReturn> T notifyEvent(IBaseEvent event, Class<T> callbackClass)
 	{
-		return notifyEvent(event, null, callbackClass);
+		return hasListener(event.getType()) ? notifyEvent(event, null, callbackClass) : null;
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public class EventDispatcher extends ListenersContainer
 	{
 		try
 		{
-			return notifyEventImpl(event, container, callbackClass);
+			return hasListener(event.getType()) || container.hasListener(event.getType()) ? notifyEventImpl(event, container, callbackClass) : null;
 		}
 		catch (Exception e)
 		{
@@ -87,7 +87,7 @@ public class EventDispatcher extends ListenersContainer
 	 * @param callbackClass
 	 * @return
 	 */
-	public <T extends AbstractEventReturn> T notifyEventToMultipleContainers(IBaseEvent event, ListenersContainer[] containers, Class<T> callbackClass)
+	private <T extends AbstractEventReturn> T notifyEventToMultipleContainers(IBaseEvent event, ListenersContainer[] containers, Class<T> callbackClass)
 	{
 		try
 		{
@@ -212,7 +212,23 @@ public class EventDispatcher extends ListenersContainer
 			throw new NullPointerException("Event cannot be null!");
 		}
 		
-		ThreadPoolManager.getInstance().executeEvent(() -> notifyEventToMultipleContainers(event, containers, null));
+		boolean hasListeners = hasListener(event.getType());
+		if (!hasListeners)
+		{
+			for (ListenersContainer container : containers)
+			{
+				if (container.hasListener(event.getType()))
+				{
+					hasListeners = true;
+					break;
+				}
+			}
+		}
+		
+		if (hasListeners)
+		{
+			ThreadPoolManager.getInstance().executeEvent(() -> notifyEventToMultipleContainers(event, containers, null));
+		}
 	}
 	
 	/**
@@ -223,7 +239,10 @@ public class EventDispatcher extends ListenersContainer
 	 */
 	public void notifyEventAsyncDelayed(final IBaseEvent event, ListenersContainer container, long delay)
 	{
-		ThreadPoolManager.getInstance().scheduleEvent(() -> notifyEvent(event, container, null), delay);
+		if (hasListener(event.getType()) || container.hasListener(event.getType()))
+		{
+			ThreadPoolManager.getInstance().scheduleEvent(() -> notifyEvent(event, container, null), delay);
+		}
 	}
 	
 	/**
@@ -235,7 +254,10 @@ public class EventDispatcher extends ListenersContainer
 	 */
 	public void notifyEventAsyncDelayed(final IBaseEvent event, ListenersContainer container, long delay, TimeUnit unit)
 	{
-		ThreadPoolManager.getInstance().scheduleEvent(() -> notifyEvent(event, container, null), delay, unit);
+		if (hasListener(event.getType()) || container.hasListener(event.getType()))
+		{
+			ThreadPoolManager.getInstance().scheduleEvent(() -> notifyEvent(event, container, null), delay, unit);
+		}
 	}
 	
 	public static final EventDispatcher getInstance()

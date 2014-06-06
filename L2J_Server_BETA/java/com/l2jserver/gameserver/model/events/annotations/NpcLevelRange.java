@@ -27,10 +27,12 @@ import java.lang.annotation.Target;
 /**
  * @author UnAfraid
  */
-@Repeatable(Items.class)
+@Repeatable(NpcLevelRanges.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Item
+public @interface NpcLevelRange
 {
-	public int[] value();
+	public int from();
+	
+	public int to();
 }

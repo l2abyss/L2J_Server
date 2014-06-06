@@ -58,14 +58,14 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.Instance;
-import com.l2jserver.gameserver.model.events.annotations.Item;
-import com.l2jserver.gameserver.model.events.annotations.Items;
-import com.l2jserver.gameserver.model.events.annotations.Npc;
-import com.l2jserver.gameserver.model.events.annotations.Npcs;
+import com.l2jserver.gameserver.model.events.annotations.Id;
+import com.l2jserver.gameserver.model.events.annotations.Ids;
+import com.l2jserver.gameserver.model.events.annotations.NpcLevelRange;
+import com.l2jserver.gameserver.model.events.annotations.NpcLevelRanges;
+import com.l2jserver.gameserver.model.events.annotations.Range;
+import com.l2jserver.gameserver.model.events.annotations.Ranges;
 import com.l2jserver.gameserver.model.events.annotations.RegisterEvent;
 import com.l2jserver.gameserver.model.events.annotations.RegisterType;
-import com.l2jserver.gameserver.model.events.annotations.Residence;
-import com.l2jserver.gameserver.model.events.annotations.Residences;
 import com.l2jserver.gameserver.model.events.impl.IBaseEvent;
 import com.l2jserver.gameserver.model.events.impl.character.OnCreatureKill;
 import com.l2jserver.gameserver.model.events.impl.character.OnCreatureZoneEnter;
@@ -171,21 +171,21 @@ public abstract class AbstractScript extends ManagedScript
 				// Clear the list
 				ids.clear();
 				
-				// Scan for possible Npc ID filters
+				// Scan for possible Id filters
 				for (Annotation annotation : method.getAnnotations())
 				{
-					if (annotation instanceof Npc)
+					if (annotation instanceof Id)
 					{
-						final Npc npc = (Npc) annotation;
+						final Id npc = (Id) annotation;
 						for (int id : npc.value())
 						{
 							ids.add(id);
 						}
 					}
-					else if (annotation instanceof Npcs)
+					else if (annotation instanceof Ids)
 					{
-						final Npcs npcs = (Npcs) annotation;
-						for (Npc npc : npcs.value())
+						final Ids npcs = (Ids) annotation;
+						for (Id npc : npcs.value())
 						{
 							for (int id : npc.value())
 							{
@@ -193,41 +193,78 @@ public abstract class AbstractScript extends ManagedScript
 							}
 						}
 					}
-					else if (annotation instanceof Item)
+					else if (annotation instanceof Range)
 					{
-						final Item item = (Item) annotation;
-						for (int id : item.value())
+						final Range range = (Range) annotation;
+						if (range.from() > range.to())
+						{
+							_log.log(Level.WARNING, getClass().getSimpleName() + ": Wrong " + annotation.getClass().getSimpleName() + " from is higher then to!");
+							continue;
+						}
+						
+						for (int id = range.from(); id <= range.to(); id++)
 						{
 							ids.add(id);
 						}
 					}
-					else if (annotation instanceof Items)
+					else if (annotation instanceof Ranges)
 					{
-						final Items items = (Items) annotation;
-						for (Item item : items.value())
+						final Ranges ranges = (Ranges) annotation;
+						for (Range range : ranges.value())
 						{
-							for (int id : item.value())
+							if (range.from() > range.to())
+							{
+								_log.log(Level.WARNING, getClass().getSimpleName() + ": Wrong " + annotation.getClass().getSimpleName() + " from is higher then to!");
+								continue;
+							}
+							
+							for (int id = range.from(); id <= range.to(); id++)
 							{
 								ids.add(id);
 							}
 						}
 					}
-					else if (annotation instanceof Residence)
+					else if (annotation instanceof NpcLevelRange)
 					{
-						final Item item = (Item) annotation;
-						for (int id : item.value())
+						final NpcLevelRange range = (NpcLevelRange) annotation;
+						if (range.from() > range.to())
 						{
-							ids.add(id);
+							_log.log(Level.WARNING, getClass().getSimpleName() + ": Wrong " + annotation.getClass().getSimpleName() + " from is higher then to!");
+							continue;
 						}
-					}
-					else if (annotation instanceof Residences)
-					{
-						final Residences residences = (Residences) annotation;
-						for (Residence residence : residences.value())
+						else if (type != ListenerRegisterType.NPC)
 						{
-							for (int id : residence.value())
+							_log.log(Level.WARNING, getClass().getSimpleName() + ": ListenerRegisterType " + type + " for " + annotation.getClass().getSimpleName() + " NPC is expected!");
+							continue;
+						}
+						
+						for (int level = range.from(); level <= range.to(); level++)
+						{
+							final List<L2NpcTemplate> templates = NpcData.getInstance().getAllOfLevel(level);
+							templates.forEach(template -> ids.add(template.getId()));
+						}
+						
+					}
+					else if (annotation instanceof NpcLevelRanges)
+					{
+						final NpcLevelRanges ranges = (NpcLevelRanges) annotation;
+						for (NpcLevelRange range : ranges.value())
+						{
+							if (range.from() > range.to())
 							{
-								ids.add(id);
+								_log.log(Level.WARNING, getClass().getSimpleName() + ": Wrong " + annotation.getClass().getSimpleName() + " from is higher then to!");
+								continue;
+							}
+							else if (type != ListenerRegisterType.NPC)
+							{
+								_log.log(Level.WARNING, getClass().getSimpleName() + ": ListenerRegisterType " + type + " for " + annotation.getClass().getSimpleName() + " NPC is expected!");
+								continue;
+							}
+							
+							for (int level = range.from(); level <= range.to(); level++)
+							{
+								final List<L2NpcTemplate> templates = NpcData.getInstance().getAllOfLevel(level);
+								templates.forEach(template -> ids.add(template.getId()));
 							}
 						}
 					}
