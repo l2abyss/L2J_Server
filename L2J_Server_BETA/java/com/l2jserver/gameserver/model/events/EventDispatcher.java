@@ -81,6 +81,66 @@ public final class EventDispatcher extends ListenersContainer
 	}
 	
 	/**
+	 * Executing current listener notification asynchronously
+	 * @param event
+	 * @param containers
+	 */
+	public void notifyEventAsync(IBaseEvent event, ListenersContainer... containers)
+	{
+		if (event == null)
+		{
+			throw new NullPointerException("Event cannot be null!");
+		}
+		
+		boolean hasListeners = hasListener(event.getType());
+		if (!hasListeners)
+		{
+			for (ListenersContainer container : containers)
+			{
+				if (container.hasListener(event.getType()))
+				{
+					hasListeners = true;
+					break;
+				}
+			}
+		}
+		
+		if (hasListeners)
+		{
+			ThreadPoolManager.getInstance().executeEvent(() -> notifyEventToMultipleContainers(event, containers, null));
+		}
+	}
+	
+	/**
+	 * Scheduling current listener notification asynchronously after specified delay.
+	 * @param event
+	 * @param container
+	 * @param delay
+	 */
+	public void notifyEventAsyncDelayed(IBaseEvent event, ListenersContainer container, long delay)
+	{
+		if (hasListener(event.getType()) || container.hasListener(event.getType()))
+		{
+			ThreadPoolManager.getInstance().scheduleEvent(() -> notifyEvent(event, container, null), delay);
+		}
+	}
+	
+	/**
+	 * Scheduling current listener notification asynchronously after specified delay.
+	 * @param event
+	 * @param container
+	 * @param delay
+	 * @param unit
+	 */
+	public void notifyEventAsyncDelayed(IBaseEvent event, ListenersContainer container, long delay, TimeUnit unit)
+	{
+		if (hasListener(event.getType()) || container.hasListener(event.getType()))
+		{
+			ThreadPoolManager.getInstance().scheduleEvent(() -> notifyEvent(event, container, null), delay, unit);
+		}
+	}
+	
+	/**
 	 * @param <T>
 	 * @param event
 	 * @param containers
@@ -189,75 +249,6 @@ public final class EventDispatcher extends ListenersContainer
 		}
 		
 		return callback;
-	}
-	
-	/**
-	 * Executing global listener notification asynchronously
-	 * @param event
-	 */
-	public void notifyEventAsync(IBaseEvent event)
-	{
-		notifyEventAsync(event, new ListenersContainer[0]);
-	}
-	
-	/**
-	 * Executing current listener notification asynchronously
-	 * @param event
-	 * @param containers
-	 */
-	public void notifyEventAsync(IBaseEvent event, ListenersContainer... containers)
-	{
-		if (event == null)
-		{
-			throw new NullPointerException("Event cannot be null!");
-		}
-		
-		boolean hasListeners = hasListener(event.getType());
-		if (!hasListeners)
-		{
-			for (ListenersContainer container : containers)
-			{
-				if (container.hasListener(event.getType()))
-				{
-					hasListeners = true;
-					break;
-				}
-			}
-		}
-		
-		if (hasListeners)
-		{
-			ThreadPoolManager.getInstance().executeEvent(() -> notifyEventToMultipleContainers(event, containers, null));
-		}
-	}
-	
-	/**
-	 * Scheduling current listener notification asynchronously after specified delay.
-	 * @param event
-	 * @param container
-	 * @param delay
-	 */
-	public void notifyEventAsyncDelayed(IBaseEvent event, ListenersContainer container, long delay)
-	{
-		if (hasListener(event.getType()) || container.hasListener(event.getType()))
-		{
-			ThreadPoolManager.getInstance().scheduleEvent(() -> notifyEvent(event, container, null), delay);
-		}
-	}
-	
-	/**
-	 * Scheduling current listener notification asynchronously after specified delay.
-	 * @param event
-	 * @param container
-	 * @param delay
-	 * @param unit
-	 */
-	public void notifyEventAsyncDelayed(IBaseEvent event, ListenersContainer container, long delay, TimeUnit unit)
-	{
-		if (hasListener(event.getType()) || container.hasListener(event.getType()))
-		{
-			ThreadPoolManager.getInstance().scheduleEvent(() -> notifyEvent(event, container, null), delay, unit);
-		}
 	}
 	
 	public static EventDispatcher getInstance()
