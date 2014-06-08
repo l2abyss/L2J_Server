@@ -31,7 +31,7 @@ import com.l2jserver.gameserver.model.events.returns.AbstractEventReturn;
 /**
  * @author UnAfraid
  */
-public class EventDispatcher extends ListenersContainer
+public final class EventDispatcher extends ListenersContainer
 {
 	private static final Logger _log = Logger.getLogger(EventDispatcher.class.getName());
 	
@@ -195,9 +195,9 @@ public class EventDispatcher extends ListenersContainer
 	 * Executing global listener notification asynchronously
 	 * @param event
 	 */
-	public void notifyEventAsync(final IBaseEvent event)
+	public void notifyEventAsync(IBaseEvent event)
 	{
-		notifyEventAsync(event);
+		notifyEventAsync(event, new ListenersContainer[0]);
 	}
 	
 	/**
@@ -205,7 +205,7 @@ public class EventDispatcher extends ListenersContainer
 	 * @param event
 	 * @param containers
 	 */
-	public void notifyEventAsync(final IBaseEvent event, ListenersContainer... containers)
+	public void notifyEventAsync(IBaseEvent event, ListenersContainer... containers)
 	{
 		if (event == null)
 		{
@@ -237,7 +237,7 @@ public class EventDispatcher extends ListenersContainer
 	 * @param container
 	 * @param delay
 	 */
-	public void notifyEventAsyncDelayed(final IBaseEvent event, ListenersContainer container, long delay)
+	public void notifyEventAsyncDelayed(IBaseEvent event, ListenersContainer container, long delay)
 	{
 		if (hasListener(event.getType()) || container.hasListener(event.getType()))
 		{
@@ -252,7 +252,7 @@ public class EventDispatcher extends ListenersContainer
 	 * @param delay
 	 * @param unit
 	 */
-	public void notifyEventAsyncDelayed(final IBaseEvent event, ListenersContainer container, long delay, TimeUnit unit)
+	public void notifyEventAsyncDelayed(IBaseEvent event, ListenersContainer container, long delay, TimeUnit unit)
 	{
 		if (hasListener(event.getType()) || container.hasListener(event.getType()))
 		{
@@ -260,7 +260,7 @@ public class EventDispatcher extends ListenersContainer
 		}
 	}
 	
-	public static final EventDispatcher getInstance()
+	public static EventDispatcher getInstance()
 	{
 		return SingletonHolder._instance;
 	}
