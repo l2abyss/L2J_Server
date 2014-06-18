@@ -52,6 +52,7 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.L2Event;
+import com.l2jserver.gameserver.model.olympiad.OlympiadManager;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
@@ -777,6 +778,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 					if (offlineMode(getActiveChar()))
 					{
 						getActiveChar().leaveParty();
+						OlympiadManager.getInstance().unRegisterNoble(getActiveChar());
 						
 						// If the L2PcInstance has Pet, unsummon it
 						if (getActiveChar().hasSummon())
