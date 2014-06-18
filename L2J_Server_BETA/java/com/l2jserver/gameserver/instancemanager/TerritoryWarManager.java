@@ -74,6 +74,7 @@ public final class TerritoryWarManager implements Siegable
 	private static final String INSERT = "INSERT INTO territory_registrations (castleId, registeredId) values (?, ?)";
 	
 	public static String qn = "TerritoryWarSuperClass";
+	public static String GLOBAL_VARIABLE = "nextTWStartDate";
 	public static int DEFENDERMAXCLANS; // Max number of clans
 	public static int DEFENDERMAXPLAYERS; // Max number of individual player
 	public static int CLANMINLEVEL;
