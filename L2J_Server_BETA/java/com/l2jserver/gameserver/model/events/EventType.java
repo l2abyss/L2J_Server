@@ -20,7 +20,9 @@ package com.l2jserver.gameserver.model.events;
 
 import com.l2jserver.gameserver.model.events.impl.IBaseEvent;
 import com.l2jserver.gameserver.model.events.impl.character.OnCreatureAttack;
-import com.l2jserver.gameserver.model.events.impl.character.OnCreatureDamage;
+import com.l2jserver.gameserver.model.events.impl.character.OnCreatureAttacked;
+import com.l2jserver.gameserver.model.events.impl.character.OnCreatureDamageDealt;
+import com.l2jserver.gameserver.model.events.impl.character.OnCreatureDamageReceived;
 import com.l2jserver.gameserver.model.events.impl.character.OnCreatureKill;
 import com.l2jserver.gameserver.model.events.impl.character.OnCreatureSkillUse;
 import com.l2jserver.gameserver.model.events.impl.character.OnCreatureTeleported;
@@ -64,6 +66,7 @@ import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerResto
 import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerSelect;
 import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerSkillLearn;
 import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerSummonSpawn;
+import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerSummonTalk;
 import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerTransform;
 import com.l2jserver.gameserver.model.events.impl.character.player.clan.OnPlayerClanCreate;
 import com.l2jserver.gameserver.model.events.impl.character.player.clan.OnPlayerClanDestroy;
@@ -121,7 +124,9 @@ public enum EventType
 	
 	// Creature events
 	ON_CREATURE_ATTACK(OnCreatureAttack.class, void.class, TerminateReturn.class),
-	ON_CREATURE_DAMAGE(OnCreatureDamage.class, void.class, TerminateReturn.class),
+	ON_CREATURE_ATTACKED(OnCreatureAttacked.class, void.class, TerminateReturn.class),
+	ON_CREATURE_DAMAGE_RECEIVED(OnCreatureDamageReceived.class, void.class),
+	ON_CREATURE_DAMAGE_DEALT(OnCreatureDamageDealt.class, void.class),
 	ON_CREATURE_KILL(OnCreatureKill.class, void.class, TerminateReturn.class),
 	ON_CREATURE_SKILL_USE(OnCreatureSkillUse.class, void.class, TerminateReturn.class),
 	ON_CREATURE_TELEPORTED(OnCreatureTeleported.class, void.class),
@@ -200,6 +205,7 @@ public enum EventType
 	ON_PLAYER_SELECT(OnPlayerSelect.class, void.class),
 	ON_PLAYER_SKILL_LEARN(OnPlayerSkillLearn.class, void.class),
 	ON_PLAYER_SUMMON_SPAWN(OnPlayerSummonSpawn.class, void.class),
+	ON_PLAYER_SUMMON_TALK(OnPlayerSummonTalk.class, void.class),
 	ON_PLAYER_TRANSFORM(OnPlayerTransform.class, void.class),
 	
 	// Trap events

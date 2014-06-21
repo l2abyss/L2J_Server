@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.function.Predicate;
 
 import com.l2jserver.gameserver.model.events.listeners.AbstractEventListener;
 import com.l2jserver.util.EmptyQueue;
@@ -79,6 +80,19 @@ public class ListenersContainer
 	public Queue<AbstractEventListener> getListeners(EventType type)
 	{
 		return (_listeners != null) && _listeners.containsKey(type) ? _listeners.get(type) : EmptyQueue.emptyQueue();
+	}
+	
+	public void removeListenerIf(EventType type, Predicate<? super AbstractEventListener> filter)
+	{
+		getListeners(type).stream().filter(filter).forEach(AbstractEventListener::unregisterMe);
+	}
+	
+	public void removeListenerIf(Predicate<? super AbstractEventListener> filter)
+	{
+		if (_listeners != null)
+		{
+			getListeners().values().forEach(queue -> queue.stream().filter(filter).forEach(AbstractEventListener::unregisterMe));
+		}
 	}
 	
 	public boolean hasListener(EventType type)

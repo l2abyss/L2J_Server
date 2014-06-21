@@ -27,7 +27,7 @@ import com.l2jserver.gameserver.model.skills.Skill;
  * An instantly executed event when L2Character is attacked by L2Character.
  * @author UnAfraid
  */
-public class OnCreatureDamage implements IBaseEvent
+public class OnCreatureDamageDealt implements IBaseEvent
 {
 	private final L2Character _attacker;
 	private final L2Character _target;
@@ -36,7 +36,7 @@ public class OnCreatureDamage implements IBaseEvent
 	private final boolean _crit;
 	private final boolean _damageOverTime;
 	
-	public OnCreatureDamage(L2Character attacker, L2Character target, double damage, Skill skill, boolean crit, boolean damageOverTime)
+	public OnCreatureDamageDealt(L2Character attacker, L2Character target, double damage, Skill skill, boolean crit, boolean damageOverTime)
 	{
 		_attacker = attacker;
 		_target = target;
@@ -79,6 +79,6 @@ public class OnCreatureDamage implements IBaseEvent
 	@Override
 	public EventType getType()
 	{
-		return EventType.ON_CREATURE_DAMAGE;
+		return EventType.ON_CREATURE_DAMAGE_DEALT;
 	}
 }
