@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -713,17 +714,27 @@ public class NpcData extends DocumentParser
 	}
 	
 	/**
+	 * Gets all templates matching the filter.
+	 * @param filter
+	 * @return the template list for the given filter
+	 */
+	public List<L2NpcTemplate> getTemplates(Predicate<L2NpcTemplate> filter)
+	{
+		//@formatter:off
+			return _npcs.values().stream()
+			.filter(filter)
+			.collect(Collectors.toList());
+		//@formatter:on
+	}
+	
+	/**
 	 * Gets the all of level.
 	 * @param lvls of all the templates to get.
 	 * @return the template list for the given level.
 	 */
 	public List<L2NpcTemplate> getAllOfLevel(int... lvls)
 	{
-		//@formatter:off
-		return _npcs.values().stream()
-			.filter(template -> Util.contains(lvls, template.getLevel()))
-			.collect(Collectors.toList());
-		//@formatter:on
+		return getTemplates(template -> Util.contains(lvls, template.getLevel()));
 	}
 	
 	/**
@@ -733,12 +744,7 @@ public class NpcData extends DocumentParser
 	 */
 	public List<L2NpcTemplate> getAllMonstersOfLevel(int... lvls)
 	{
-		//@formatter:off
-		return _npcs.values().stream()
-			.filter(template -> Util.contains(lvls, template.getLevel()))
-			.filter(template -> template.isType("L2Monster"))
-			.collect(Collectors.toList());
-		//@formatter:on
+		return getTemplates(template -> Util.contains(lvls, template.getLevel()) && template.isType("L2Monster"));
 	}
 	
 	/**
@@ -748,12 +754,7 @@ public class NpcData extends DocumentParser
 	 */
 	public List<L2NpcTemplate> getAllNpcStartingWith(String... letters)
 	{
-		//@formatter:off
-		return _npcs.values().stream()
-			.filter(template -> Util.startsWith(letters, template.getName()))
-			.filter(template -> template.isType("L2Npc"))
-			.collect(Collectors.toList());
-		//@formatter:on
+		return getTemplates(template -> Util.startsWith(letters, template.getName()) && template.isType("L2Npc"));
 	}
 	
 	/**
@@ -763,11 +764,7 @@ public class NpcData extends DocumentParser
 	 */
 	public List<L2NpcTemplate> getAllNpcOfClassType(String... classTypes)
 	{
-		//@formatter:off
-		return _npcs.values().stream()
-			.filter(template -> Util.contains(classTypes, template.getType(), true))
-			.collect(Collectors.toList());
-		//@formatter:on
+		return getTemplates(template -> Util.contains(classTypes, template.getType(), true));
 	}
 	
 	public void loadNpcsSkillLearn()

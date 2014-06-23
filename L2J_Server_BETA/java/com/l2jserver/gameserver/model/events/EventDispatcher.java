@@ -64,6 +64,17 @@ public final class EventDispatcher extends ListenersContainer
 	 * @param <T>
 	 * @param event
 	 * @param container
+	 * @return
+	 */
+	public <T extends AbstractEventReturn> T notifyEvent(IBaseEvent event, ListenersContainer container)
+	{
+		return hasListener(event.getType()) ? notifyEvent(event, container, null) : null;
+	}
+	
+	/**
+	 * @param <T>
+	 * @param event
+	 * @param container
 	 * @param callbackClass
 	 * @return
 	 */
