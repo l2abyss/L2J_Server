@@ -60,21 +60,37 @@ public class InstanceWorld
 		return _allowed.contains(id);
 	}
 	
+	/**
+	 * Gets the dynamically generated instance ID.
+	 * @return the instance ID
+	 */
 	public int getInstanceId()
 	{
 		return _instanceId;
 	}
 	
+	/**
+	 * Sets the instance ID.
+	 * @param instanceId the instance ID
+	 */
 	public void setInstanceId(int instanceId)
 	{
 		_instanceId = instanceId;
 	}
 	
+	/**
+	 * Gets the client's template instance ID.
+	 * @return the template ID
+	 */
 	public int getTemplateId()
 	{
 		return _templateId;
 	}
 	
+	/**
+	 * Sets the template ID.
+	 * @param templateId the template ID
+	 */
 	public void setTemplateId(int templateId)
 	{
 		_templateId = templateId;

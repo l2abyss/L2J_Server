@@ -18,9 +18,8 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
+import java.util.HashMap;
 import java.util.Map;
-
-import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.enums.PcRace;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -28,11 +27,12 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
+ * Respawn zone implementation.
  * @author Nyaran
  */
 public class L2RespawnZone extends L2ZoneType
 {
-	private final Map<PcRace, String> _raceRespawnPoint = new FastMap<>();
+	private final Map<PcRace, String> _raceRespawnPoint = new HashMap<>();
 	
 	public L2RespawnZone(int id)
 	{
