@@ -35,7 +35,7 @@ import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.interfaces.ILocational;
 import com.l2jserver.gameserver.util.GeoUtils;
 import com.l2jserver.gameserver.util.LinePointIterator;
-import com.l2jserver.gameserver.util.Util;
+import com.l2jserver.gameserver.util.LinePointIterator3D;
 
 /**
  * @author -Nemesiss-, FBIagent
@@ -52,9 +52,9 @@ public class GeoData implements IGeoDriver
 		}
 	}
 	
-	private static final Logger _LOGGER = Logger.getLogger(GeoData.class.getName());
-	private static final int _ELEVATED_SEE_OVER_DISTANCE = 2;
-	private static final int _MAX_SEE_OVER_HEIGHT = 48;
+	private static final Logger LOGGER = Logger.getLogger(GeoData.class.getName());
+	private static final int ELEVATED_SEE_OVER_DISTANCE = 2;
+	private static final int MAX_SEE_OVER_HEIGHT = 48;
 	
 	public static GeoData getInstance()
 	{
@@ -85,7 +85,7 @@ public class GeoData implements IGeoDriver
 			}
 			catch (Exception ex)
 			{
-				_LOGGER.log(Level.SEVERE, "Failed to load geodata driver!", ex);
+				LOGGER.log(Level.SEVERE, "Failed to load geodata driver!", ex);
 				System.exit(1);
 			}
 			// we do it this way so it's predictable for the compiler
@@ -317,8 +317,6 @@ public class GeoData implements IGeoDriver
 			return true;
 		}
 		
-		double fullDist = Util.calculateDistance(geoX, geoY, 0, tGeoX, tGeoY, 0, false, false);
-		
 		if (tz > z)
 		{
 			int tmp = tx;
@@ -342,38 +340,42 @@ public class GeoData implements IGeoDriver
 			geoY = tmp;
 		}
 		
-		int fullZDiff = tz - z;
-		
-		LinePointIterator pointIter = new LinePointIterator(geoX, geoY, tGeoX, tGeoY);
+		LinePointIterator3D pointIter = new LinePointIterator3D(geoX, geoY, z, tGeoX, tGeoY, tz);
 		// first point is guaranteed to be available, skip it, we can always see our own position
 		pointIter.next();
 		int prevX = pointIter.x();
 		int prevY = pointIter.y();
-		int prevGeoZ = z;
+		int prevZ = pointIter.z();
+		int prevGeoZ = prevZ;
 		int ptIndex = 0;
 		
 		while (pointIter.next())
 		{
 			int curX = pointIter.x();
 			int curY = pointIter.y();
+			
+			if ((curX == prevX) && (curY == prevY))
+			{
+				continue;
+			}
+			
+			int beeCurZ = pointIter.z();
 			int curGeoZ = prevGeoZ;
 			
-			// check only when it's not the last point & the current position has geodata
-			if (/* ((curX != tGeoX) || (curY != tGeoY)) && */hasGeoPos(curX, curY))
+			// the current position has geodata
+			if (hasGeoPos(curX, curY))
 			{
-				double percentageDist = Util.calculateDistance(geoX, geoY, 0, curX, curY, 0, false, false) / fullDist;
-				int beeCurZ = (int) (z + (fullZDiff * percentageDist));
 				int beeCurGeoZ = getNearestZ(curX, curY, beeCurZ);
 				Direction dir = GeoUtils.computeDirection(prevX, prevY, curX, curY);
 				curGeoZ = getLosGeoZ(prevX, prevY, prevGeoZ, curX, curY, dir);
 				int maxHeight;
-				if (ptIndex < _ELEVATED_SEE_OVER_DISTANCE)
+				if (ptIndex < ELEVATED_SEE_OVER_DISTANCE)
 				{
-					maxHeight = z + _MAX_SEE_OVER_HEIGHT;
+					maxHeight = z + MAX_SEE_OVER_HEIGHT;
 				}
 				else
 				{
-					maxHeight = beeCurZ + _MAX_SEE_OVER_HEIGHT;
+					maxHeight = beeCurZ + MAX_SEE_OVER_HEIGHT;
 				}
 				
 				boolean canSeeThrough = false;

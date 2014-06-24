@@ -1,73 +1,96 @@
 /*
  * Copyright (C) 2004-2014 L2J Server
- * 
+ *
  * This file is part of L2J Server.
- * 
+ *
  * L2J Server is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * L2J Server is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.util;
 
+import java.awt.Color;
+
+import com.l2jserver.gameserver.GeoData;
 import com.l2jserver.gameserver.geoengine.Direction;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.network.serverpackets.ExServerPrimitive;
 
 /**
  * @author FBIagent
  */
 public final class GeoUtils
 {
-	public interface PointListener
+	public static void debug2DLine(L2PcInstance player, int x, int y, int tx, int ty, int z)
 	{
-		/**
-		 * @param x
-		 * @param y
-		 * @return true proceed, false abort
-		 */
-		boolean onPoint(int x, int y);
+		int gx = GeoData.getInstance().getGeoX(x);
+		int gy = GeoData.getInstance().getGeoY(y);
+		
+		int tgx = GeoData.getInstance().getGeoX(tx);
+		int tgy = GeoData.getInstance().getGeoY(ty);
+		
+		ExServerPrimitive prim = new ExServerPrimitive("Debug2DLine", x, y, z);
+		prim.addLine(Color.BLUE, GeoData.getInstance().getWorldX(gx), GeoData.getInstance().getWorldY(gy), z, GeoData.getInstance().getWorldX(tgx), GeoData.getInstance().getWorldY(tgy), z);
+		
+		LinePointIterator iter = new LinePointIterator(gx, gy, tgx, tgy);
+		
+		while (iter.next())
+		{
+			int wx = GeoData.getInstance().getWorldX(iter.x());
+			int wy = GeoData.getInstance().getWorldY(iter.y());
+			
+			prim.addPoint(Color.RED, wx, wy, z);
+		}
+		player.sendPacket(prim);
 	}
 	
-	public static boolean forEachLinePoint(int srcX, int srcY, int dstX, int dstY, PointListener listener)
+	public static void debug3DLine(L2PcInstance player, int x, int y, int z, int tx, int ty, int tz)
 	{
-		int dx = Math.abs(dstX - srcX), sx = srcX < dstX ? 1 : -1;
-		int dy = -Math.abs(dstY - srcY), sy = srcY < dstY ? 1 : -1;
-		int err = dx + dy, e2;
+		int gx = GeoData.getInstance().getGeoX(x);
+		int gy = GeoData.getInstance().getGeoY(y);
 		
-		for (;;)
+		int tgx = GeoData.getInstance().getGeoX(tx);
+		int tgy = GeoData.getInstance().getGeoY(ty);
+		
+		ExServerPrimitive prim = new ExServerPrimitive("Debug3DLine", x, y, z);
+		prim.addLine(Color.BLUE, GeoData.getInstance().getWorldX(gx), GeoData.getInstance().getWorldY(gy), z, GeoData.getInstance().getWorldX(tgx), GeoData.getInstance().getWorldY(tgy), tz);
+		
+		LinePointIterator3D iter = new LinePointIterator3D(gx, gy, z, tgx, tgy, tz);
+		iter.next();
+		int prevX = iter.x();
+		int prevY = iter.y();
+		int wx = GeoData.getInstance().getWorldX(prevX);
+		int wy = GeoData.getInstance().getWorldY(prevY);
+		int wz = iter.z();
+		prim.addPoint(Color.RED, wx, wy, wz);
+		
+		while (iter.next())
 		{
-			if (!listener.onPoint(srcX, srcY))
-			{
-				return false;
-			}
+			int curX = iter.x();
+			int curY = iter.y();
 			
-			if ((srcX == dstX) && (srcY == dstY))
+			if ((curX != prevX) || (curY != prevY))
 			{
-				break;
-			}
-			
-			e2 = 2 * err;
-			if (e2 > dy)
-			{
-				err += dy;
-				srcX += sx;
-			}
-			
-			if (e2 < dx)
-			{
-				err += dx;
-				srcY += sy;
+				wx = GeoData.getInstance().getWorldX(curX);
+				wy = GeoData.getInstance().getWorldY(curY);
+				wz = iter.z();
+				
+				prim.addPoint(Color.RED, wx, wy, wz);
+				
+				prevX = curX;
+				prevY = curY;
 			}
 		}
-		
-		return true;
+		player.sendPacket(prim);
 	}
 	
 	/**
