@@ -28,8 +28,6 @@ import java.io.File;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
 import java.net.URI;
 import java.nio.CharBuffer;
 import java.util.HashMap;
@@ -91,12 +89,6 @@ public final class MemoryJavaFileManager extends EclipseFileManager
 		public CharBuffer getCharContent(boolean ignoreEncodingErrors)
 		{
 			return CharBuffer.wrap(code);
-		}
-		
-		@SuppressWarnings("unused")
-		public Reader openReader()
-		{
-			return new StringReader(code);
 		}
 	}
 	
