@@ -1395,6 +1395,12 @@ public final class CharEffectList
 				_log.warning("Passive " + skill + " with abnormal type: " + skill.getAbnormalType() + "!");
 			}
 			
+			// Check for passive skill conditions.
+			if (!skill.checkCondition(info.getEffector(), info.getEffected(), false))
+			{
+				return;
+			}
+			
 			// Puts the effects in the list.
 			final BuffInfo infoToRemove = getPassives().put(skill.getId(), info);
 			if (infoToRemove != null)
