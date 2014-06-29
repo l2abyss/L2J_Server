@@ -142,6 +142,11 @@ public final class InitialShortcutData extends DocumentParser
 			if ("macro".equals(c.getNodeName()))
 			{
 				NamedNodeMap attrs = c.getAttributes();
+				if (!parseBoolean(attrs, "enabled", true))
+				{
+					continue;
+				}
+				
 				final int macroId = parseInteger(attrs, "macroId");
 				final int icon = parseInteger(attrs, "icon");
 				final String name = parseString(attrs, "name");
