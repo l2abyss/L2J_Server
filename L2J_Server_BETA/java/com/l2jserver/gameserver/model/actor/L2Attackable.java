@@ -344,6 +344,22 @@ public class L2Attackable extends L2Npc
 			// Delayed notification
 			EventDispatcher.getInstance().notifyEventAsyncDelayed(new OnAttackableKill(killer.getActingPlayer(), this, killer.isSummon()), this, _onKillDelay);
 		}
+		
+		// Notify to minions if there are.
+		if (isMonster())
+		{
+			final L2MonsterInstance mob = (L2MonsterInstance) this;
+			if ((mob.getLeader() != null) && mob.getLeader().hasMinions())
+			{
+				final int respawnTime = Config.MINIONS_RESPAWN_TIME.containsKey(getId()) ? Config.MINIONS_RESPAWN_TIME.get(getId()) * 1000 : -1;
+				mob.getLeader().getMinionList().onMinionDie(mob, respawnTime);
+			}
+			
+			if (mob.hasMinions())
+			{
+				mob.getMinionList().onMasterDie(false);
+			}
+		}
 		return true;
 	}
 	
@@ -645,16 +661,13 @@ public class L2Attackable extends L2Npc
 					WalkingManager.getInstance().stopMoving(this, false, true);
 				}
 				
+				getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, attacker);
+				addDamageHate(attacker, damage, (damage * 100) / (getLevel() + 7));
+				
 				final L2PcInstance player = attacker.getActingPlayer();
 				if (player != null)
 				{
 					EventDispatcher.getInstance().notifyEventAsync(new OnAttackableAttack(player, this, damage, skill, attacker.isSummon()), this);
-				}
-				// for now hard code damage hate caused by an L2Attackable
-				else
-				{
-					getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, attacker);
-					addDamageHate(attacker, damage, (damage * 100) / (getLevel() + 7));
 				}
 			}
 			catch (Exception e)
@@ -696,6 +709,15 @@ public class L2Attackable extends L2Npc
 		
 		if ((targetPlayer != null) && (aggro == 0))
 		{
+			addDamageHate(attacker, 0, 1);
+			
+			// Set the intention to the L2Attackable to AI_INTENTION_ACTIVE
+			if (getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
+			{
+				getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
+			}
+			
+			// Notify to scripts
 			EventDispatcher.getInstance().notifyEventAsync(new OnAttackableAggroRangeEnter(this, targetPlayer, attacker.isSummon()), this);
 		}
 		else if ((targetPlayer == null) && (aggro == 0))
