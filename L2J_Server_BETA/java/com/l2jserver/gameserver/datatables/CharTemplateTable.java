@@ -141,8 +141,7 @@ public final class CharTemplateTable extends DocumentParser
 						set.set("basePDef", (set.getInt("basePDefchest", 0) + set.getInt("basePDeflegs", 0) + set.getInt("basePDefhead", 0) + set.getInt("basePDeffeet", 0) + set.getInt("basePDefgloves", 0) + set.getInt("basePDefunderwear", 0) + set.getInt("basePDefcloak", 0)));
 						set.set("baseMDef", (set.getInt("baseMDefrear", 0) + set.getInt("baseMDeflear", 0) + set.getInt("baseMDefrfinger", 0) + set.getInt("baseMDefrfinger", 0) + set.getInt("baseMDefneck", 0)));
 						
-						final L2PcTemplate ct = new L2PcTemplate(set, creationPoints);
-						_charTemplates.put(ClassId.getClassId(classId), ct);
+						_charTemplates.put(ClassId.getClassId(classId), new L2PcTemplate(set, creationPoints));
 					}
 					else if ("lvlUpgainData".equalsIgnoreCase(d.getNodeName()))
 					{

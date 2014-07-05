@@ -39,8 +39,7 @@ import org.w3c.dom.Node;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.InstanceType;
-import com.l2jserver.gameserver.enums.NpcRace;
-import com.l2jserver.gameserver.enums.PcRace;
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.PlayerState;
 import com.l2jserver.gameserver.model.conditions.Condition;
@@ -115,7 +114,6 @@ import com.l2jserver.gameserver.model.conditions.ConditionTargetLevel;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetLevelRange;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetMyPartyExceptMe;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetNpcId;
-import com.l2jserver.gameserver.model.conditions.ConditionTargetNpcRace;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetNpcType;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetPlayable;
 import com.l2jserver.gameserver.model.conditions.ConditionTargetRace;
@@ -509,12 +507,12 @@ public abstract class DocumentBase
 				case "races":
 				{
 					final String[] racesVal = a.getNodeValue().split(",");
-					final PcRace[] races = new PcRace[racesVal.length];
+					final Race[] races = new Race[racesVal.length];
 					for (int r = 0; r < racesVal.length; r++)
 					{
 						if (racesVal[r] != null)
 						{
-							races[r] = PcRace.valueOf(racesVal[r]);
+							races[r] = Race.valueOf(racesVal[r]);
 						}
 					}
 					cond = joinAnd(cond, new ConditionPlayerRace(races));
@@ -1055,31 +1053,9 @@ public abstract class DocumentBase
 					cond = joinAnd(cond, new ConditionMinDistance(distance * distance));
 					break;
 				}
-				case "npcrace":
+				case "race":
 				{
-					// used for npc race
-					final String[] values = a.getNodeValue().split(",");
-					final Set<NpcRace> array = new HashSet<>(values.length);
-					for (String value : values)
-					{
-						array.add(NpcRace.valueOf(getValue(value, null)));
-					}
-					cond = joinAnd(cond, new ConditionTargetNpcRace(array));
-					break;
-				}
-				case "races":
-				{
-					// used for pc race
-					final String[] racesVal = a.getNodeValue().split(",");
-					final PcRace[] races = new PcRace[racesVal.length];
-					for (int r = 0; r < racesVal.length; r++)
-					{
-						if (racesVal[r] != null)
-						{
-							races[r] = PcRace.valueOf(racesVal[r]);
-						}
-					}
-					cond = joinAnd(cond, new ConditionTargetRace(races));
+					cond = joinAnd(cond, new ConditionTargetRace(Race.valueOf(a.getNodeValue())));
 					break;
 				}
 				case "using":

@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.ClassListData;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.enums.InstanceType;
-import com.l2jserver.gameserver.enums.PcRace;
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
@@ -385,12 +385,12 @@ public class L2VillageMasterInstance extends L2NpcInstance
 					}
 					else
 					{
-						if ((player.getRace() == PcRace.ELF) || (player.getRace() == PcRace.DARK_ELF))
+						if ((player.getRace() == Race.ELF) || (player.getRace() == Race.DARK_ELF))
 						{
 							html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/SubClass_Fail_Elves.htm");
 							player.sendPacket(html);
 						}
-						else if (player.getRace() == PcRace.KAMAEL)
+						else if (player.getRace() == Race.KAMAEL)
 						{
 							html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/SubClass_Fail_Kamael.htm");
 							player.sendPacket(html);
@@ -684,9 +684,9 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		}
 	}
 	
-	protected String getSubClassMenu(PcRace pRace)
+	protected String getSubClassMenu(Race race)
 	{
-		if (Config.ALT_GAME_SUBCLASS_EVERYWHERE || (pRace != PcRace.KAMAEL))
+		if (Config.ALT_GAME_SUBCLASS_EVERYWHERE || (race != Race.KAMAEL))
 		{
 			return "data/html/villagemaster/SubClass.htm";
 		}

@@ -24,7 +24,6 @@ import java.util.Map;
 
 import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.InitialEquipmentData;
-import com.l2jserver.gameserver.enums.PcRace;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.ClassId;
@@ -60,7 +59,7 @@ public class L2PcTemplate extends L2CharTemplate
 	{
 		super(set);
 		_classId = ClassId.getClassId(set.getInt("classId"));
-		
+		setRace(_classId.getRace());
 		_baseHp = new float[ExperienceTable.getInstance().getMaxLevel()];
 		_baseMp = new float[ExperienceTable.getInstance().getMaxLevel()];
 		_baseCp = new float[ExperienceTable.getInstance().getMaxLevel()];
@@ -97,14 +96,6 @@ public class L2PcTemplate extends L2CharTemplate
 	public ClassId getClassId()
 	{
 		return _classId;
-	}
-	
-	/**
-	 * @return the template race.
-	 */
-	public PcRace getRace()
-	{
-		return _classId.getRace();
 	}
 	
 	/**

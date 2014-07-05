@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.enums.PcRace;
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.util.Util;
 
@@ -28,13 +28,13 @@ import com.l2jserver.gameserver.util.Util;
  */
 public class ConditionPlayerRace extends Condition
 {
-	private final PcRace[] _races;
+	private final Race[] _races;
 	
 	/**
 	 * Instantiates a new condition player race.
 	 * @param races the list containing the allowed races.
 	 */
-	public ConditionPlayerRace(PcRace[] races)
+	public ConditionPlayerRace(Race[] races)
 	{
 		_races = races;
 	}

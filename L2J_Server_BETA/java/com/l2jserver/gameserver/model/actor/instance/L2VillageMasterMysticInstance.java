@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import com.l2jserver.gameserver.enums.PcRace;
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.ClassType;
 import com.l2jserver.gameserver.model.base.PlayerClass;
@@ -38,7 +38,7 @@ public final class L2VillageMasterMysticInstance extends L2VillageMasterInstance
 			return false;
 		}
 		
-		return pclass.isOfRace(PcRace.HUMAN) || pclass.isOfRace(PcRace.ELF);
+		return pclass.isOfRace(Race.HUMAN) || pclass.isOfRace(Race.ELF);
 	}
 	
 	@Override

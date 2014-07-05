@@ -18,12 +18,34 @@
  */
 package com.l2jserver.gameserver.enums;
 
-public enum PcRace
+/**
+ * Creature races enumerated.
+ * @author Zealar
+ */
+public enum Race
 {
 	HUMAN,
 	ELF,
 	DARK_ELF,
 	ORC,
 	DWARF,
-	KAMAEL;
+	KAMAEL,
+	ANIMAL,
+	BEAST,
+	BUG,
+	CASTLE_GUARD,
+	CONSTRUCT,
+	DEMONIC,
+	DIVINE,
+	DRAGON,
+	ELEMENTAL,
+	ETC,
+	FAIRY,
+	GIANT,
+	HUMANOID,
+	MERCENARY,
+	NONE,
+	PLANT,
+	SIEGE_WEAPON,
+	UNDEAD;
 }

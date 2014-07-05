@@ -28,7 +28,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.enums.AISkillScope;
 import com.l2jserver.gameserver.enums.AIType;
-import com.l2jserver.gameserver.enums.NpcRace;
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.enums.Sex;
 import com.l2jserver.gameserver.model.L2MinionData;
 import com.l2jserver.gameserver.model.StatsSet;
@@ -55,7 +55,6 @@ public final class L2NpcTemplate extends L2CharTemplate implements IIdentifiable
 	private String _title;
 	private boolean _usingServerSideTitle;
 	private StatsSet _parameters;
-	private NpcRace _race;
 	private Sex _sex;
 	private int _chestId;
 	private int _rhandId;
@@ -125,7 +124,7 @@ public final class L2NpcTemplate extends L2CharTemplate implements IIdentifiable
 		_usingServerSideName = set.getBoolean("usingServerSideName", false);
 		_title = set.getString("title", "");
 		_usingServerSideTitle = set.getBoolean("usingServerSideTitle", false);
-		_race = set.getEnum("race", NpcRace.class, NpcRace.ETC);
+		setRace(set.getEnum("race", Race.class, Race.NONE));
 		_sex = set.getEnum("sex", Sex.class, Sex.ETC);
 		
 		_chestId = set.getInt("chestId", 0);
@@ -234,11 +233,6 @@ public final class L2NpcTemplate extends L2CharTemplate implements IIdentifiable
 	public void setParameters(StatsSet set)
 	{
 		_parameters = set;
-	}
-	
-	public NpcRace getRace()
-	{
-		return _race;
 	}
 	
 	public Sex getSex()

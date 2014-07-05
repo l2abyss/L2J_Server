@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.model.zone.type;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.l2jserver.gameserver.enums.PcRace;
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.model.zone.L2ZoneType;
  */
 public class L2RespawnZone extends L2ZoneType
 {
-	private final Map<PcRace, String> _raceRespawnPoint = new HashMap<>();
+	private final Map<Race, String> _raceRespawnPoint = new HashMap<>();
 	
 	public L2RespawnZone(int id)
 	{
@@ -51,10 +51,10 @@ public class L2RespawnZone extends L2ZoneType
 	
 	public void addRaceRespawnPoint(String race, String point)
 	{
-		_raceRespawnPoint.put(PcRace.valueOf(race), point);
+		_raceRespawnPoint.put(Race.valueOf(race), point);
 	}
 	
-	public Map<PcRace, String> getAllRespawnPoints()
+	public Map<Race, String> getAllRespawnPoints()
 	{
 		return _raceRespawnPoint;
 	}

@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.enums.PcRace;
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.PlayerClass;
 import com.l2jserver.gameserver.model.quest.QuestState;
@@ -32,9 +32,9 @@ public final class L2VillageMasterKamaelInstance extends L2VillageMasterInstance
 	}
 	
 	@Override
-	protected final String getSubClassMenu(PcRace pRace)
+	protected final String getSubClassMenu(Race race)
 	{
-		if (Config.ALT_GAME_SUBCLASS_EVERYWHERE || (pRace == PcRace.KAMAEL))
+		if (Config.ALT_GAME_SUBCLASS_EVERYWHERE || (race == Race.KAMAEL))
 		{
 			return "data/html/villagemaster/SubClass.htm";
 		}
@@ -80,6 +80,6 @@ public final class L2VillageMasterKamaelInstance extends L2VillageMasterInstance
 			return false;
 		}
 		
-		return pclass.isOfRace(PcRace.KAMAEL);
+		return pclass.isOfRace(Race.KAMAEL);
 	}
 }

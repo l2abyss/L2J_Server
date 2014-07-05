@@ -53,6 +53,7 @@ import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.InstanceType;
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.enums.ShotType;
 import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.instancemanager.DimensionalRiftManager;
@@ -7151,5 +7152,10 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		both.addAll(objectListenres);
 		both.addAll(templateListeners);
 		return both;
+	}
+	
+	public Race getRace()
+	{
+		return getTemplate().getRace();
 	}
 }

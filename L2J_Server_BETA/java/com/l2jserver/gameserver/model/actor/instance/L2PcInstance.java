@@ -90,9 +90,9 @@ import com.l2jserver.gameserver.enums.IllegalActionPunishmentType;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.MountType;
 import com.l2jserver.gameserver.enums.PartyDistributionType;
-import com.l2jserver.gameserver.enums.PcRace;
 import com.l2jserver.gameserver.enums.PlayerAction;
 import com.l2jserver.gameserver.enums.PrivateStoreType;
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.enums.Sex;
 import com.l2jserver.gameserver.enums.ShortcutType;
 import com.l2jserver.gameserver.enums.ShotType;
@@ -2795,7 +2795,8 @@ public final class L2PcInstance extends L2Playable
 	/**
 	 * @return the Race object of the L2PcInstance.
 	 */
-	public PcRace getRace()
+	@Override
+	public Race getRace()
 	{
 		if (!isSubClassActive())
 		{
@@ -12133,7 +12134,7 @@ public final class L2PcInstance extends L2Playable
 		{
 			ivlim = Config.INVENTORY_MAXIMUM_GM;
 		}
-		else if (getRace() == PcRace.DWARF)
+		else if (getRace() == Race.DWARF)
 		{
 			ivlim = Config.INVENTORY_MAXIMUM_DWARF;
 		}
@@ -12149,7 +12150,7 @@ public final class L2PcInstance extends L2Playable
 	public int getWareHouseLimit()
 	{
 		int whlim;
-		if (getRace() == PcRace.DWARF)
+		if (getRace() == Race.DWARF)
 		{
 			whlim = Config.WAREHOUSE_SLOTS_DWARF;
 		}
@@ -12167,7 +12168,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		int pslim;
 		
-		if (getRace() == PcRace.DWARF)
+		if (getRace() == Race.DWARF)
 		{
 			pslim = Config.MAX_PVTSTORESELL_SLOTS_DWARF;
 		}
@@ -12185,7 +12186,7 @@ public final class L2PcInstance extends L2Playable
 	{
 		int pblim;
 		
-		if (getRace() == PcRace.DWARF)
+		if (getRace() == Race.DWARF)
 		{
 			pblim = Config.MAX_PVTSTOREBUY_SLOTS_DWARF;
 		}
