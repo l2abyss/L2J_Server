@@ -18,9 +18,13 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -44,6 +48,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public class L2OlympiadStadiumZone extends L2ZoneRespawn
 {
+	private List<Location> _spectatorLocations;
 	
 	public L2OlympiadStadiumZone(int id)
 	{
@@ -283,5 +288,27 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 				_player = null;
 			}
 		}
+	}
+	
+	@Override
+	public void parseLoc(int x, int y, int z, String type)
+	{
+		if ((type != null) && type.equals("spectatorSpawn"))
+		{
+			if (_spectatorLocations == null)
+			{
+				_spectatorLocations = new ArrayList<>();
+			}
+			_spectatorLocations.add(new Location(x, y, z));
+		}
+		else
+		{
+			super.parseLoc(x, y, z, type);
+		}
+	}
+	
+	public List<Location> getSpectatorSpawns()
+	{
+		return _spectatorLocations;
 	}
 }
