@@ -67,6 +67,7 @@ import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
+import com.l2jserver.gameserver.network.serverpackets.ExChangeNpcState;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.PetInventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
@@ -141,7 +142,6 @@ public class L2PetInstance extends L2Summon
 				}
 				else if (getCurrentFed() > getFeedConsume())
 				{
-					// eat
 					setCurrentFed(getCurrentFed() - getFeedConsume());
 				}
 				else
@@ -154,7 +154,7 @@ public class L2PetInstance extends L2Summon
 				List<Integer> foodIds = getPetData().getFood();
 				if (foodIds.isEmpty())
 				{
-					if (getCurrentFed() == 0)
+					if (isUncontrollable())
 					{
 						// Owl Monk remove PK
 						if ((getTemplate().getId() == 16050) && (getOwner() != null))
@@ -170,6 +170,7 @@ public class L2PetInstance extends L2Summon
 					}
 					return;
 				}
+				
 				L2ItemInstance food = null;
 				for (int id : foodIds)
 				{
@@ -179,55 +180,24 @@ public class L2PetInstance extends L2Summon
 						break;
 					}
 				}
-				if (isRunning() && isHungry())
-				{
-					setWalking();
-				}
-				else if (!isHungry() && !isRunning())
-				{
-					setRunning();
-				}
+				
 				if ((food != null) && isHungry())
 				{
-					IItemHandler handler = ItemHandler.getInstance().getHandler(food.getEtcItem());
+					final IItemHandler handler = ItemHandler.getInstance().getHandler(food.getEtcItem());
 					if (handler != null)
 					{
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PET_TOOK_S1_BECAUSE_HE_WAS_HUNGRY);
 						sm.addItemName(food.getId());
 						sendPacket(sm);
 						handler.useItem(L2PetInstance.this, food, false);
+						broadcastPacket(new ExChangeNpcState(getObjectId(), 0x65));
 					}
 				}
-				else
+				
+				if (isUncontrollable())
 				{
-					if (getCurrentFed() == 0)
-					{
-						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOUR_PET_IS_VERY_HUNGRY);
-						sendPacket(sm);
-						// High Five: Your Pet won't be gone even when you don't feed it.
-						// if (Rnd.get(100) < 30)
-						// {
-						// stopFeed();
-						// sm = SystemMessage.getSystemMessage(SystemMessageId.STARVING_GRUMPY_AND_FED_UP_YOUR_PET_HAS_LEFT);
-						// sendPacket(sm);
-						// _log.info("Hungry pet [" + getTemplate().getName() + "][" + getLevel() + "] deleted for player: " + getOwner() + " Control Item Id :" + getControlObjectId());
-						// deleteMe(getOwner());
-						// }
-					}
-					// High Five: Your Pet won't be gone even when you don't feed it.
-					// /else if (getCurrentFed() < (0.10 * getPetLevelData().getPetMaxFeed()))
-					// {
-					// SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PET_CAN_RUN_AWAY_WHEN_HUNGER_BELOW_10_PERCENT);
-					// sendPacket(sm);
-					// if (Rnd.get(100) < 3)
-					// {
-					// stopFeed();
-					// sm = SystemMessage.getSystemMessage(SystemMessageId.STARVING_GRUMPY_AND_FED_UP_YOUR_PET_HAS_LEFT);
-					// sendPacket(sm);
-					// _log.info("Hungry pet [" + getTemplate().getName() + "][" + getLevel() + "] deleted for player: " + getOwner() + " Control Item Id :" + getControlObjectId());
-					// deleteMe(getOwner());
-					// }
-					// }
+					sendPacket(SystemMessageId.YOUR_PET_IS_STARVING_AND_WILL_NOT_OBEY_UNTIL_IT_GETS_ITS_FOOD_FEED_YOUR_PET);
+					broadcastPacket(new ExChangeNpcState(getObjectId(), 0x64));
 				}
 			}
 			catch (Exception e)
@@ -236,9 +206,6 @@ public class L2PetInstance extends L2Summon
 			}
 		}
 		
-		/**
-		 * @return
-		 */
 		private int getFeedConsume()
 		{
 			// if pet is attacking
@@ -269,8 +236,12 @@ public class L2PetInstance extends L2Summon
 				pet.getStat().setExp(pet.getStat().getExpForLevel(owner.getLevel()));
 			}
 			L2World.getInstance().addPet(owner.getObjectId(), pet);
+			
+			if (pet.isUncontrollable())
+			{
+				owner.sendPacket(new ExChangeNpcState(pet.getObjectId(), 0x64));
+			}
 		}
-		
 		return pet;
 	}
 	
@@ -1383,6 +1354,16 @@ public class L2PetInstance extends L2Summon
 	public final boolean isHungry()
 	{
 		return getCurrentFed() < ((getPetData().getHungryLimit() / 100f) * getPetLevelData().getPetMaxFeed());
+	}
+	
+	/**
+	 * Verifies if a pet can be controlled by it's owner.<br>
+	 * Starving pets cannot be controlled.
+	 * @return {@code true} if the per cannot be controlled
+	 */
+	public boolean isUncontrollable()
+	{
+		return getCurrentFed() <= 0;
 	}
 	
 	@Override

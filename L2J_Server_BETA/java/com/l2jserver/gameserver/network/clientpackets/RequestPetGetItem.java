@@ -24,6 +24,7 @@ import com.l2jserver.gameserver.instancemanager.MercTicketManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
+import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 
 public final class RequestPetGetItem extends L2GameClientPacket
@@ -66,6 +67,12 @@ public final class RequestPetGetItem extends L2GameClientPacket
 		if (pet.isDead() || pet.isOutOfControl())
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
+			return;
+		}
+		
+		if (pet.isUncontrollable())
+		{
+			sendPacket(SystemMessageId.WHEN_YOUR_PETS_HUNGER_GAUGE_IS_AT_0_YOU_CANNOT_USE_YOUR_PET);
 			return;
 		}
 		

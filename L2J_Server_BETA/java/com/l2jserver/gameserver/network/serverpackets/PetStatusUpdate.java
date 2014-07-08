@@ -29,14 +29,11 @@ import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
 public class PetStatusUpdate extends L2GameServerPacket
 {
 	private final L2Summon _summon;
-	private final int _maxHp, _maxMp;
 	private int _maxFed, _curFed;
 	
 	public PetStatusUpdate(L2Summon summon)
 	{
 		_summon = summon;
-		_maxHp = _summon.getMaxHp();
-		_maxMp = _summon.getMaxMp();
 		if (_summon instanceof L2PetInstance)
 		{
 			L2PetInstance pet = (L2PetInstance) _summon;
@@ -60,13 +57,13 @@ public class PetStatusUpdate extends L2GameServerPacket
 		writeD(_summon.getX());
 		writeD(_summon.getY());
 		writeD(_summon.getZ());
-		writeS("");
+		writeS(_summon.getTitle());
 		writeD(_curFed);
 		writeD(_maxFed);
 		writeD((int) _summon.getCurrentHp());
-		writeD(_maxHp);
+		writeD(_summon.getMaxHp());
 		writeD((int) _summon.getCurrentMp());
-		writeD(_maxMp);
+		writeD(_summon.getMaxMp());
 		writeD(_summon.getLevel());
 		writeQ(_summon.getStat().getExp());
 		writeQ(_summon.getExpForThisLevel()); // 0% absolute value

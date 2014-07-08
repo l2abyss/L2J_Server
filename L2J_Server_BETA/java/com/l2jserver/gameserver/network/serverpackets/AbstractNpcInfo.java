@@ -295,65 +295,28 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 	}
 	
 	/**
-	 * Packet for summons
+	 * Packet for summons.
 	 */
 	public static class SummonInfo extends AbstractNpcInfo
 	{
 		private final L2Summon _summon;
-		private int _form = 0;
-		private int _val = 0;
+		private final int _form;
+		private final int _val;
 		
 		public SummonInfo(L2Summon cha, L2Character attacker, int val)
 		{
 			super(cha);
 			_summon = cha;
 			_val = val;
-			if (_summon.isShowSummonAnimation())
-			{
-				_val = 2; // override for spawn
-			}
+			_form = cha.getFormId();
 			
-			int npcId = cha.getTemplate().getId();
-			
-			if ((npcId == 16041) || (npcId == 16042))
-			{
-				if (cha.getLevel() > 69)
-				{
-					_form = 3;
-				}
-				else if (cha.getLevel() > 64)
-				{
-					_form = 2;
-				}
-				else if (cha.getLevel() > 59)
-				{
-					_form = 1;
-				}
-			}
-			else if ((npcId == 16025) || (npcId == 16037))
-			{
-				if (cha.getLevel() > 69)
-				{
-					_form = 3;
-				}
-				else if (cha.getLevel() > 64)
-				{
-					_form = 2;
-				}
-				else if (cha.getLevel() > 59)
-				{
-					_form = 1;
-				}
-			}
-			
-			// fields not set on AbstractNpcInfo
 			_isAttackable = cha.isAutoAttackable(attacker);
 			_rhand = cha.getWeapon();
 			_lhand = 0;
 			_chest = cha.getArmor();
 			_enchantEffect = cha.getTemplate().getWeaponEnchant();
 			_name = cha.getName();
-			_title = cha.getOwner() != null ? ((!cha.getOwner().isOnline()) ? "" : cha.getOwner().getName()) : ""; // when owner online, summon will show in title owner name
+			_title = (cha.getOwner() != null) && cha.getOwner().isOnline() ? cha.getOwner().getName() : "";
 			_idTemplate = cha.getTemplate().getDisplayId();
 			_collisionHeight = cha.getTemplate().getfCollisionHeight();
 			_collisionRadius = cha.getTemplate().getfCollisionRadius();

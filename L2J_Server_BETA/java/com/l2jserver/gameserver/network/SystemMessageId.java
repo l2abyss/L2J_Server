@@ -15087,6 +15087,18 @@ public final class SystemMessageId
 	public static final SystemMessageId YOU_OBTAINED_S1_RECOMMENDATIONS;
 	
 	/**
+	 * ID: 3212<br>
+	 * Message: When your pet's hunger gauge is at 0%, you cannot use your pet.
+	 */
+	public static final SystemMessageId WHEN_YOUR_PETS_HUNGER_GAUGE_IS_AT_0_YOU_CANNOT_USE_YOUR_PET;
+	
+	/**
+	 * ID: 3213<br>
+	 * Message: Your pet is starving and will not obey until it gets it's food. Feed your pet!
+	 */
+	public static final SystemMessageId YOUR_PET_IS_STARVING_AND_WILL_NOT_OBEY_UNTIL_IT_GETS_ITS_FOOD_FEED_YOUR_PET;
+	
+	/**
 	 * ID: 3214<br>
 	 * Message: $s1 was successfully added to your Contact List.
 	 */
@@ -17709,6 +17721,8 @@ public final class SystemMessageId
 		C1_IS_SET_TO_REFUSE_DUEL_REQUEST = new SystemMessageId(3169);
 		YOU_CURRENTLY_DO_NOT_HAVE_ANY_RECOMMENDATIONS = new SystemMessageId(3206);
 		YOU_OBTAINED_S1_RECOMMENDATIONS = new SystemMessageId(3207);
+		WHEN_YOUR_PETS_HUNGER_GAUGE_IS_AT_0_YOU_CANNOT_USE_YOUR_PET = new SystemMessageId(3212);
+		YOUR_PET_IS_STARVING_AND_WILL_NOT_OBEY_UNTIL_IT_GETS_ITS_FOOD_FEED_YOUR_PET = new SystemMessageId(3213);
 		S1_SUCCESSFULLY_ADDED_TO_CONTACT_LIST = new SystemMessageId(3214);
 		NAME_S1_NOT_EXIST_TRY_ANOTHER_NAME = new SystemMessageId(3215);
 		NAME_ALREADY_EXIST_ON_CONTACT_LIST = new SystemMessageId(3216);

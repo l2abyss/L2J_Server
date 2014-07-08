@@ -147,14 +147,7 @@ public final class RequestActionUse extends L2GameClientPacket
 				{
 					// Sit when arrive using next action.
 					// Creating next action class.
-					final NextAction nextAction = new NextAction(CtrlEvent.EVT_ARRIVED, CtrlIntention.AI_INTENTION_MOVE_TO, new NextActionCallback()
-					{
-						@Override
-						public void doWork()
-						{
-							useSit(activeChar, target);
-						}
-					});
+					final NextAction nextAction = new NextAction(CtrlEvent.EVT_ARRIVED, CtrlIntention.AI_INTENTION_MOVE_TO, (NextActionCallback) () -> useSit(activeChar, target));
 					
 					// Binding next action to AI.
 					activeChar.getAI().setNextAction(nextAction);
@@ -195,35 +188,37 @@ public final class RequestActionUse extends L2GameClientPacket
 				}
 				break;
 			case 19: // Unsummon Pet
-				if (validateSummon(summon, true))
+				if (summon.isDead())
 				{
-					// returns pet to control item
-					if (summon.isDead())
-					{
-						sendPacket(SystemMessageId.DEAD_PET_CANNOT_BE_RETURNED);
-						break;
-					}
-					
-					if (summon.isAttackingNow() || summon.isInCombat() || summon.isMovementDisabled())
-					{
-						sendPacket(SystemMessageId.PET_CANNOT_SENT_BACK_DURING_BATTLE);
-						break;
-					}
-					
-					if (summon.isHungry())
-					{
-						if (!((L2PetInstance) summon).getPetData().getFood().isEmpty())
-						{
-							sendPacket(SystemMessageId.YOU_CANNOT_RESTORE_HUNGRY_PETS);
-						}
-						else
-						{
-							sendPacket(SystemMessageId.THE_HELPER_PET_CANNOT_BE_RETURNED);
-						}
-						break;
-					}
-					summon.unSummon(activeChar);
+					sendPacket(SystemMessageId.DEAD_PET_CANNOT_BE_RETURNED);
+					break;
 				}
+				
+				if (summon.isAttackingNow() || summon.isInCombat() || summon.isMovementDisabled())
+				{
+					sendPacket(SystemMessageId.PET_CANNOT_SENT_BACK_DURING_BATTLE);
+					break;
+				}
+				
+				if (summon.isHungry())
+				{
+					if (summon.isPet() && !((L2PetInstance) summon).getPetData().getFood().isEmpty())
+					{
+						sendPacket(SystemMessageId.YOU_CANNOT_RESTORE_HUNGRY_PETS);
+					}
+					else
+					{
+						sendPacket(SystemMessageId.THE_HELPER_PET_CANNOT_BE_RETURNED);
+					}
+					break;
+				}
+				
+				if (!validateSummon(summon, true))
+				{
+					break;
+				}
+				
+				summon.unSummon(activeChar);
 				break;
 			case 21: // Change Movement Mode (Servitors)
 				if (validateSummon(summon, false))
@@ -903,6 +898,11 @@ public final class RequestActionUse extends L2GameClientPacket
 	{
 		if ((summon != null) && ((checkPet && summon.isPet()) || summon.isServitor()))
 		{
+			if (summon.isPet() && ((L2PetInstance) summon).isUncontrollable())
+			{
+				sendPacket(SystemMessageId.WHEN_YOUR_PETS_HUNGER_GAUGE_IS_AT_0_YOU_CANNOT_USE_YOUR_PET);
+				return false;
+			}
 			if (summon.isBetrayed())
 			{
 				sendPacket(SystemMessageId.PET_REFUSING_ORDER);
@@ -1160,28 +1160,14 @@ public final class RequestActionUse extends L2GameClientPacket
 		
 		if ((requester.getAI().getIntention() != CtrlIntention.AI_INTENTION_IDLE) || (partner.getAI().getIntention() != CtrlIntention.AI_INTENTION_IDLE))
 		{
-			final NextAction nextAction = new NextAction(CtrlEvent.EVT_ARRIVED, CtrlIntention.AI_INTENTION_MOVE_TO, new NextActionCallback()
-			{
-				@Override
-				public void doWork()
-				{
-					partner.sendPacket(new ExAskCoupleAction(requester.getObjectId(), id));
-				}
-			});
+			final NextAction nextAction = new NextAction(CtrlEvent.EVT_ARRIVED, CtrlIntention.AI_INTENTION_MOVE_TO, (NextActionCallback) () -> partner.sendPacket(new ExAskCoupleAction(requester.getObjectId(), id)));
 			requester.getAI().setNextAction(nextAction);
 			return;
 		}
 		
 		if (requester.isCastingNow() || requester.isCastingSimultaneouslyNow())
 		{
-			final NextAction nextAction = new NextAction(CtrlEvent.EVT_FINISH_CASTING, CtrlIntention.AI_INTENTION_CAST, new NextActionCallback()
-			{
-				@Override
-				public void doWork()
-				{
-					partner.sendPacket(new ExAskCoupleAction(requester.getObjectId(), id));
-				}
-			});
+			final NextAction nextAction = new NextAction(CtrlEvent.EVT_FINISH_CASTING, CtrlIntention.AI_INTENTION_CAST, (NextActionCallback) () -> partner.sendPacket(new ExAskCoupleAction(requester.getObjectId(), id)));
 			requester.getAI().setNextAction(nextAction);
 			return;
 		}

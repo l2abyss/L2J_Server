@@ -63,7 +63,7 @@ public class PetInfo extends L2GameServerPacket
 		_val = val;
 		if (summon.isPet())
 		{
-			final L2PetInstance pet = (L2PetInstance) summon;
+			final L2PetInstance pet = (L2PetInstance) _summon;
 			_curFed = pet.getCurrentFed(); // how fed it is
 			_maxFed = pet.getMaxFed(); // max fed it can be
 		}
@@ -112,7 +112,7 @@ public class PetInfo extends L2GameServerPacket
 		writeC(_summon.isAlikeDead() ? 1 : 0); // dead 1=true
 		writeC(_isSummoned ? 2 : _val); // 0=teleported 1=default 2=summoned
 		writeD(-1); // High Five NPCString ID
-		if (_summon instanceof L2PetInstance)
+		if (_summon.isPet())
 		{
 			writeS(_summon.getName()); // Pet name.
 		}
@@ -145,7 +145,7 @@ public class PetInfo extends L2GameServerPacket
 		}
 		
 		writeQ(_summon.getExpForNextLevel());// 100% absoulte value
-		writeD(_summon instanceof L2PetInstance ? _summon.getInventory().getTotalWeight() : 0);// weight
+		writeD(_summon.isPet() ? _summon.getInventory().getTotalWeight() : 0);// weight
 		writeD(_summon.getMaxLoad());// max weight it can carry
 		writeD(_summon.getPAtk(null));// patk
 		writeD(_summon.getPDef(null));// pdef
@@ -168,40 +168,7 @@ public class PetInfo extends L2GameServerPacket
 		writeC(_summon.getTeam().getId());
 		writeD(_summon.getSoulShotsPerHit()); // How many soulshots this servitor uses per hit
 		writeD(_summon.getSpiritShotsPerHit()); // How many spiritshots this servitor uses per hit
-		
-		int form = 0;
-		final int npcId = _summon.getId();
-		if ((npcId == 16041) || (npcId == 16042))
-		{
-			if (_summon.getLevel() > 69)
-			{
-				form = 3;
-			}
-			else if (_summon.getLevel() > 64)
-			{
-				form = 2;
-			}
-			else if (_summon.getLevel() > 59)
-			{
-				form = 1;
-			}
-		}
-		else if ((npcId == 16025) || (npcId == 16037))
-		{
-			if (_summon.getLevel() > 69)
-			{
-				form = 3;
-			}
-			else if (_summon.getLevel() > 64)
-			{
-				form = 2;
-			}
-			else if (_summon.getLevel() > 59)
-			{
-				form = 1;
-			}
-		}
-		writeD(form);// CT1.5 Pet form and skills
+		writeD(_summon.getFormId());// CT1.5 Pet form and skills
 		writeD(_summon.getAbnormalVisualEffectSpecial());
 	}
 }
