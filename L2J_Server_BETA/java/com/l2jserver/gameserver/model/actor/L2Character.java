@@ -6913,6 +6913,15 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 					return;
 				}
 				
+				for (L2Object obj : targets)
+				{
+					if ((obj != null) && obj.isCharacter())
+					{
+						target = (L2Character) obj;
+						break;
+					}
+				}
+				
 				if (Config.ALT_VALIDATE_TRIGGER_SKILLS && isPlayable() && (target != null) && target.isPlayable())
 				{
 					final L2PcInstance player = getActingPlayer();

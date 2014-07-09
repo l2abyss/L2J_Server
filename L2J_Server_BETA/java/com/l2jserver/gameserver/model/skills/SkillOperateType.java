@@ -117,13 +117,21 @@ public enum SkillOperateType
 		switch (this)
 		{
 			case A2:
-			case A3:
 			case A4:
 			case DA2:
 				return true;
 			default:
 				return false;
 		}
+	}
+	
+	/**
+	 * Verifies if the operative type correspond to a continuous skill.
+	 * @return {@code true} if the operative skill type is continuous, {@code false} otherwise
+	 */
+	public boolean isSelfContinuous()
+	{
+		return (this == A3);
 	}
 	
 	/**

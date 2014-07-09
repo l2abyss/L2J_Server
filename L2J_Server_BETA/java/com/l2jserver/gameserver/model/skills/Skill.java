@@ -855,7 +855,12 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 	
 	public boolean isContinuous()
 	{
-		return (_operateType != null) && _operateType.isContinuous();
+		return ((_operateType != null) && _operateType.isContinuous()) || isSelfContinuous();
+	}
+	
+	public boolean isSelfContinuous()
+	{
+		return (_operateType != null) && _operateType.isSelfContinuous();
 	}
 	
 	public boolean isChance()
@@ -1363,7 +1368,7 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 		env.setCubic(cubic);
 		env.setTarget(effected);
 		env.setSkill(this);
-		final boolean addContinuousEffects = !passive && (_operateType.isToggle() || (_operateType.isContinuous() && Formulas.calcEffectSuccess(env)));
+		boolean addContinuousEffects = !passive && (_operateType.isToggle() || (_operateType.isContinuous() && Formulas.calcEffectSuccess(env)));
 		if (!self && !passive)
 		{
 			final BuffInfo info = new BuffInfo(env);
@@ -1393,6 +1398,8 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 		
 		if (self)
 		{
+			addContinuousEffects = !passive && (_operateType.isToggle() || ((_operateType.isContinuous() || _operateType.isSelfContinuous()) && Formulas.calcEffectSuccess(env)));
+			
 			env.setTarget(effector);
 			final BuffInfo info = new BuffInfo(env);
 			if (addContinuousEffects && (abnormalTime > 0))
@@ -1404,14 +1411,14 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 			
 			if (addContinuousEffects)
 			{
-				effector.getEffectList().add(info);
+				info.getEffector().getEffectList().add(info);
 			}
 			
 			// Support for buff sharing feature.
 			// Avoiding Servitor Share since it's implementation already "shares" the effect.
-			if (addContinuousEffects && effected.isPlayer() && effected.hasServitor() && isContinuous() && !isDebuff() && (getId() != CommonSkill.SERVITOR_SHARE.getId()))
+			if (addContinuousEffects && info.getEffected().isPlayer() && info.getEffected().hasServitor() && isContinuous() && !isDebuff() && (getId() != CommonSkill.SERVITOR_SHARE.getId()))
 			{
-				applyEffects(effector, effected.getSummon(), false, 0);
+				applyEffects(effector, info.getEffected().getSummon(), false, 0);
 			}
 		}
 		
