@@ -503,6 +503,7 @@ public final class SkillTreesData extends DocumentParser
 	{
 		final List<L2SkillLearn> result = new ArrayList<>();
 		final Map<Integer, L2SkillLearn> skills = getCompleteClassSkillTree(classId);
+		
 		if (skills.isEmpty())
 		{
 			// The Skill Tree for this class is undefined.
@@ -512,6 +513,11 @@ public final class SkillTreesData extends DocumentParser
 		
 		for (L2SkillLearn skill : skills.values())
 		{
+			if (((skill.getSkillId() == CommonSkill.DIVINE_INSPIRATION.getId()) && !Config.AUTO_LEARN_DIVINE_INSPIRATION && !player.isGM()))
+			{
+				continue;
+			}
+			
 			if (((includeAutoGet && skill.isAutoGet()) || skill.isLearnedByNpc() || (includeByFs && skill.isLearnedByFS())) && (player.getLevel() >= skill.getGetLevel()))
 			{
 				final Skill oldSkill = holder.getKnownSkill(skill.getSkillId());
@@ -534,20 +540,13 @@ public final class SkillTreesData extends DocumentParser
 	public Collection<Skill> getAllAvailableSkills(L2PcInstance player, ClassId classId, boolean includeByFs, boolean includeAutoGet)
 	{
 		// Get available skills
-		int unLearnable = 0;
 		PlayerSkillHolder holder = new PlayerSkillHolder(player);
 		List<L2SkillLearn> learnable = getAvailableSkills(player, classId, includeByFs, includeAutoGet, holder);
-		while (learnable.size() > unLearnable)
+		while (learnable.size() > 0)
 		{
 			for (L2SkillLearn s : learnable)
 			{
 				Skill sk = SkillData.getInstance().getSkill(s.getSkillId(), s.getSkillLevel());
-				if ((sk == null) || ((sk.getId() == CommonSkill.DIVINE_INSPIRATION.getId()) && !Config.AUTO_LEARN_DIVINE_INSPIRATION && !player.isGM()))
-				{
-					unLearnable++;
-					continue;
-				}
-				
 				holder.addSkill(sk);
 			}
 			
@@ -731,6 +730,7 @@ public final class SkillTreesData extends DocumentParser
 	public List<L2SkillLearn> getAvailablePledgeSkills(L2Clan clan)
 	{
 		final List<L2SkillLearn> result = new ArrayList<>();
+		
 		for (L2SkillLearn skill : _pledgeSkillTree.values())
 		{
 			if (!skill.isResidencialSkill() && (clan.getLevel() >= skill.getGetLevel()))
@@ -738,7 +738,7 @@ public final class SkillTreesData extends DocumentParser
 				final Skill oldSkill = clan.getSkills().get(skill.getSkillId());
 				if (oldSkill != null)
 				{
-					if (oldSkill.getLevel() == (skill.getSkillLevel() - 1))
+					if (oldSkill.getLevel() < skill.getSkillLevel())
 					{
 						result.add(skill);
 					}
@@ -746,6 +746,44 @@ public final class SkillTreesData extends DocumentParser
 				else if (skill.getSkillLevel() == 1)
 				{
 					result.add(skill);
+				}
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Gets the available pledge skills.
+	 * @param clan the pledge skill learning clan
+	 * @param includeSquad if squad skill will be added too
+	 * @return all the available pledge skills for a given {@code clan}
+	 */
+	public Map<Integer, L2SkillLearn> getMaxPledgeSkills(L2Clan clan, boolean includeSquad)
+	{
+		final Map<Integer, L2SkillLearn> result = new HashMap<>();
+		for (L2SkillLearn skill : _pledgeSkillTree.values())
+		{
+			if (!skill.isResidencialSkill() && (clan.getLevel() >= skill.getGetLevel()))
+			{
+				final Skill oldSkill = clan.getSkills().get(skill.getSkillId());
+				if ((oldSkill == null) || (oldSkill.getLevel() < skill.getSkillLevel()))
+				{
+					result.put(skill.getSkillId(), skill);
+				}
+			}
+		}
+		
+		if (includeSquad)
+		{
+			for (L2SkillLearn skill : _subPledgeSkillTree.values())
+			{
+				if ((clan.getLevel() >= skill.getGetLevel()))
+				{
+					final Skill oldSkill = clan.getSkills().get(skill.getSkillId());
+					if ((oldSkill == null) || (oldSkill.getLevel() < skill.getSkillLevel()))
+					{
+						result.put(skill.getSkillId(), skill);
+					}
 				}
 			}
 		}
