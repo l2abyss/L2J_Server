@@ -519,7 +519,7 @@ public class L2Spawn implements IPositionable, IIdentifiable, INamable
 		try
 		{
 			// Check if the L2Spawn is not a L2Pet or L2Minion or L2Decoy spawn
-			if (_template.isType("L2Pet") || _template.isType("L2Decoy") || _template.isType("L2Trap") || _template.isType("L2EffectPoint"))
+			if (_template.isType("L2Pet") || _template.isType("L2Decoy") || _template.isType("L2Trap"))
 			{
 				_currentCount++;
 				
