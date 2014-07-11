@@ -93,6 +93,92 @@ public final class GeoUtils
 		player.sendPacket(prim);
 	}
 	
+	private static Color getDirectionColor(int x, int y, int z, Direction dir)
+	{
+		if (GeoData.getInstance().canEnterNeighbors(x, y, z, dir))
+		{
+			return Color.GREEN;
+		}
+		return Color.RED;
+	}
+	
+	public static void debugGrid(L2PcInstance player)
+	{
+		int geoRadius = 10;
+		int blocksPerPacket = 49;
+		if (geoRadius < 0)
+		{
+			throw new IllegalArgumentException("geoRadius < 0");
+		}
+		
+		int iBlock = blocksPerPacket;
+		int iPacket = 0;
+		
+		ExServerPrimitive exsp = null;
+		GeoData gd = GeoData.getInstance();
+		int playerGx = gd.getGeoX(player.getX());
+		int playerGy = gd.getGeoY(player.getY());
+		for (int dx = -geoRadius; dx <= geoRadius; ++dx)
+		{
+			for (int dy = -geoRadius; dy <= geoRadius; ++dy)
+			{
+				if (iBlock >= blocksPerPacket)
+				{
+					iBlock = 0;
+					if (exsp != null)
+					{
+						++iPacket;
+						player.sendPacket(exsp);
+					}
+					exsp = new ExServerPrimitive("DebugGrid_" + iPacket, player.getX(), player.getY(), -16000);
+				}
+				
+				if (exsp == null)
+				{
+					throw new IllegalStateException();
+				}
+				
+				int gx = playerGx + dx;
+				int gy = playerGy + dy;
+				
+				int x = gd.getWorldX(gx);
+				int y = gd.getWorldY(gy);
+				int z = gd.getNearestZ(gx, gy, player.getZ());
+				
+				// north arrow
+				Color col = getDirectionColor(gx, gy, z, Direction.NORTH);
+				exsp.addLine(col, x - 1, y - 7, z, x + 1, y - 7, z);
+				exsp.addLine(col, x - 2, y - 6, z, x + 2, y - 6, z);
+				exsp.addLine(col, x - 3, y - 5, z, x + 3, y - 5, z);
+				exsp.addLine(col, x - 4, y - 4, z, x + 4, y - 4, z);
+				
+				// east arrow
+				col = getDirectionColor(gx, gy, z, Direction.EAST);
+				exsp.addLine(col, x + 7, y - 1, z, x + 7, y + 1, z);
+				exsp.addLine(col, x + 6, y - 2, z, x + 6, y + 2, z);
+				exsp.addLine(col, x + 5, y - 3, z, x + 5, y + 3, z);
+				exsp.addLine(col, x + 4, y - 4, z, x + 4, y + 4, z);
+				
+				// south arrow
+				col = getDirectionColor(gx, gy, z, Direction.SOUTH);
+				exsp.addLine(col, x - 1, y + 7, z, x + 1, y + 7, z);
+				exsp.addLine(col, x - 2, y + 6, z, x + 2, y + 6, z);
+				exsp.addLine(col, x - 3, y + 5, z, x + 3, y + 5, z);
+				exsp.addLine(col, x - 4, y + 4, z, x + 4, y + 4, z);
+				
+				col = getDirectionColor(gx, gy, z, Direction.WEST);
+				exsp.addLine(col, x - 7, y - 1, z, x - 7, y + 1, z);
+				exsp.addLine(col, x - 6, y - 2, z, x - 6, y + 2, z);
+				exsp.addLine(col, x - 5, y - 3, z, x - 5, y + 3, z);
+				exsp.addLine(col, x - 4, y - 4, z, x - 4, y + 4, z);
+				
+				++iBlock;
+			}
+		}
+		
+		player.sendPacket(exsp);
+	}
+	
 	/**
 	 * difference between x values: never abover 1<br>
 	 * difference between y values: never above 1
