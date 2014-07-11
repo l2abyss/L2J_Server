@@ -80,9 +80,9 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	public ScheduledFuture<?> _siegeTask;
 	public boolean _missionAccomplished = false;
 	
-	public ClanHallSiegeEngine(int questId, String name, String descr, final int hallId)
+	public ClanHallSiegeEngine(String name, String descr, final int hallId)
 	{
-		super(questId, name, descr);
+		super(-1, name, descr);
 		_log = Logger.getLogger(getClass().getName());
 		
 		_hall = CHSiegeManager.getInstance().getSiegableHall(hallId);
