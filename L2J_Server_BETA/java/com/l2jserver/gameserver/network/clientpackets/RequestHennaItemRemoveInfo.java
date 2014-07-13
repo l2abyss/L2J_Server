@@ -42,7 +42,7 @@ public final class RequestHennaItemRemoveInfo extends L2GameClientPacket
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		if (activeChar == null)
+		if ((activeChar == null) || (_symbolId == 0))
 		{
 			return;
 		}
