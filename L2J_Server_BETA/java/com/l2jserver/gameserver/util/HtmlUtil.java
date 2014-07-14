@@ -244,9 +244,17 @@ public class HtmlUtil
 		final StringBuilder pagerTemplate = new StringBuilder();
 		if (pages > 1)
 		{
+			int breakit = 0;
 			for (int i = 0; i < pages; i++)
 			{
 				pagerTemplate.append(pagerFunction.apply(i));
+				breakit++;
+				
+				if (breakit > 5)
+				{
+					pagerTemplate.append("</tr><tr>");
+					breakit = 0;
+				}
 			}
 		}
 		
