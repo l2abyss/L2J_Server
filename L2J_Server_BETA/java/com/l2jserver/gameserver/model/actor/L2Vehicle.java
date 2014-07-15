@@ -515,7 +515,7 @@ public abstract class L2Vehicle extends L2Character
 	}
 	
 	@Override
-	public boolean isWalker()
+	public boolean isVehicle()
 	{
 		return true;
 	}

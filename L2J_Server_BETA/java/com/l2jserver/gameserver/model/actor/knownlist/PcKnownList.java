@@ -140,7 +140,7 @@ public class PcKnownList extends PlayableKnownList
 	@Override
 	public int getDistanceToForgetObject(L2Object object)
 	{
-		if (object.isWalker())
+		if (object.isVehicle())
 		{
 			return 10000;
 		}
@@ -167,7 +167,7 @@ public class PcKnownList extends PlayableKnownList
 	@Override
 	public int getDistanceToWatchObject(L2Object object)
 	{
-		if (object.isWalker())
+		if (object.isVehicle())
 		{
 			return 9000;
 		}

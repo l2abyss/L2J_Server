@@ -452,9 +452,19 @@ public abstract class L2Object extends ListenersContainer implements IIdentifiab
 	}
 	
 	/**
-	 * @return {@code true} if object Npc Walker or Vehicle
+	 * Verifies if the object is a walker NPC.
+	 * @return {@code true} if object is a walker NPC, {@code false} otherwise
 	 */
 	public boolean isWalker()
+	{
+		return false;
+	}
+	
+	/**
+	 * Verifies if this object is a vehicle.
+	 * @return {@code true} if object is Vehicle, {@code false} otherwise
+	 */
+	public boolean isVehicle()
 	{
 		return false;
 	}
