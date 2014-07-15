@@ -347,6 +347,7 @@ public final class L2PcInstance extends L2Playable
 	private static final String RESTORE_SKILLS_FOR_CHAR = "SELECT skill_id,skill_level FROM character_skills WHERE charId=? AND class_index=?";
 	private static final String ADD_NEW_SKILL = "INSERT INTO character_skills (charId,skill_id,skill_level,class_index) VALUES (?,?,?,?)";
 	private static final String UPDATE_CHARACTER_SKILL_LEVEL = "UPDATE character_skills SET skill_level=? WHERE skill_id=? AND charId=? AND class_index=?";
+	private static final String ADD_NEW_SKILLS = "REPLACE INTO character_skills (charId,skill_id,skill_level,class_index) VALUES (?,?,?,?)";
 	private static final String DELETE_SKILL_FROM_CHAR = "DELETE FROM character_skills WHERE skill_id=? AND charId=? AND class_index=?";
 	private static final String DELETE_CHAR_SKILLS = "DELETE FROM character_skills WHERE charId=? AND class_index=?";
 	
@@ -2727,6 +2728,8 @@ public final class L2PcInstance extends L2Playable
 		int skillCounter = 0;
 		// Get available skills
 		Collection<Skill> skills = SkillTreesData.getInstance().getAllAvailableSkills(this, getClassId(), includedByFs, includeAutoGet);
+		List<Skill> skillsForStore = new ArrayList<>();
+		
 		for (Skill sk : skills)
 		{
 			if (getKnownSkill(sk.getId()) == sk)
@@ -2745,9 +2748,10 @@ public final class L2PcInstance extends L2Playable
 				stopSkillEffects(true, sk.getId());
 			}
 			
-			addSkill(sk, true);
+			addSkill(sk, false);
+			skillsForStore.add(sk);
 		}
-		
+		storeSkills(skillsForStore, -1);
 		if (Config.AUTO_LEARN_SKILLS && (skillCounter > 0))
 		{
 			sendMessage("You have learned " + skillCounter + " new skills.");
@@ -7853,13 +7857,7 @@ public final class L2PcInstance extends L2Playable
 	 */
 	private void storeSkill(Skill newSkill, Skill oldSkill, int newClassIndex)
 	{
-		int classIndex = _classIndex;
-		
-		if (newClassIndex > -1)
-		{
-			classIndex = newClassIndex;
-		}
-		
+		final int classIndex = (newClassIndex > -1) ? newClassIndex : _classIndex;
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
 			if ((oldSkill != null) && (newSkill != null))
@@ -7890,6 +7888,41 @@ public final class L2PcInstance extends L2Playable
 			}
 		}
 		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Error could not store char skills: " + e.getMessage(), e);
+		}
+	}
+	
+	/**
+	 * Adds or updates player's skills in the database.
+	 * @param newSkills the list of skills to store
+	 * @param newClassIndex if newClassIndex > -1, the skills will be stored for that class index, not the current one
+	 */
+	private void storeSkills(List<Skill> newSkills, int newClassIndex)
+	{
+		if (newSkills.isEmpty())
+		{
+			return;
+		}
+		
+		final int classIndex = (newClassIndex > -1) ? newClassIndex : _classIndex;
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(ADD_NEW_SKILLS))
+		{
+			con.setAutoCommit(false);
+			for (final Skill addSkill : newSkills)
+			{
+				
+				ps.setInt(1, getObjectId());
+				ps.setInt(2, addSkill.getId());
+				ps.setInt(3, addSkill.getLevel());
+				ps.setInt(4, classIndex);
+				ps.addBatch();
+			}
+			ps.executeBatch();
+			con.commit();
+		}
+		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, "Error could not store char skills: " + e.getMessage(), e);
 		}
