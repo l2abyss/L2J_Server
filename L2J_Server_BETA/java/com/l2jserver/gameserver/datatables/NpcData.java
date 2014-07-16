@@ -749,12 +749,12 @@ public class NpcData extends DocumentParser
 	
 	/**
 	 * Gets the all npc starting with.
-	 * @param letters of all the NPC templates which its name start with.
+	 * @param text of all the NPC templates which its name start with.
 	 * @return the template list for the given letter.
 	 */
-	public List<L2NpcTemplate> getAllNpcStartingWith(String... letters)
+	public List<L2NpcTemplate> getAllNpcStartingWith(String text)
 	{
-		return getTemplates(template -> Util.startsWith(letters, template.getName()) && template.isType("L2Npc"));
+		return getTemplates(template -> template.isType("L2Npc") && template.getName().startsWith(text));
 	}
 	
 	/**
