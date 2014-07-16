@@ -126,6 +126,8 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 	private final boolean _stayAfterDeath;
 	/** If {@code true} this skill's effect should stay after class-subclass change. */
 	private final boolean _stayOnSubclassChange;
+	/** If {@code true} this skill's effect recovery HP/MP or CP from herb. */
+	private final boolean _isRecoveryHerb;
 	
 	private final int _refId;
 	// all times in milliseconds
@@ -272,6 +274,7 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 		_hitTime = set.getInt("hitTime", 0);
 		_coolTime = set.getInt("coolTime", 0);
 		_isDebuff = set.getBoolean("isDebuff", false);
+		_isRecoveryHerb = set.getBoolean("isRecoveryHerb", false);
 		_feed = set.getInt("feed", 0);
 		_reuseHashCode = SkillData.getSkillHashCode(_id, _level);
 		
@@ -670,6 +673,15 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 	public boolean isDebuff()
 	{
 		return _isDebuff;
+	}
+	
+	/**
+	 * Verify if this skill is coming from Recovery Herb.
+	 * @return {@code true} if this skill is a recover herb, {@code false} otherwise
+	 */
+	public boolean isRecoveryHerb()
+	{
+		return _isRecoveryHerb;
 	}
 	
 	public int getDisplayId()
@@ -1389,10 +1401,13 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 				effected.getEffectList().add(info);
 			}
 			
-			// Support for buff sharing feature.
-			if (addContinuousEffects && effected.isPlayer() && effected.hasServitor() && isContinuous() && !isDebuff())
+			// Support for buff sharing feature including healing herbs.
+			if (effected.isPlayer() && effected.hasServitor())
 			{
-				applyEffects(effector, effected.getSummon(), false, 0);
+				if ((addContinuousEffects && isContinuous() && !isDebuff()) || isRecoveryHerb())
+				{
+					applyEffects(effector, effected.getSummon(), isRecoveryHerb(), 0);
+				}
 			}
 		}
 		

@@ -387,6 +387,11 @@ public final class L2PcInstance extends L2Playable
 	// Character Shortcut SQL String Definitions:
 	private static final String DELETE_CHAR_SHORTCUTS = "DELETE FROM character_shortcuts WHERE charId=? AND class_index=?";
 	
+	// Character Recipe List Save
+	private static final String DELETE_CHAR_RECIPE_SHOP = "DELETE FROM character_recipeshoplist WHERE charId=?";
+	private static final String INSERT_CHAR_RECIPE_SHOP = "REPLACE INTO character_recipeshoplist (`charId`, `recipeId`, `price`, `index`) VALUES (?, ?, ?, ?)";
+	private static final String RESTORE_CHAR_RECIPE_SHOP = "SELECT * FROM character_recipeshoplist WHERE charId=? ORDER BY `index`";
+	
 	private static final String COND_OVERRIDE_KEY = "cond_override";
 	
 	public static final String NEWBIE_KEY = "NEWBIE";
@@ -13534,24 +13539,26 @@ public final class L2PcInstance extends L2Playable
 		{
 			try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 			{
-				try (PreparedStatement st = con.prepareStatement("DELETE FROM character_recipeshoplist WHERE charId=?"))
+				try (PreparedStatement st = con.prepareStatement(DELETE_CHAR_RECIPE_SHOP))
 				{
 					st.setInt(1, getObjectId());
 					st.execute();
 				}
 				
-				try (PreparedStatement st = con.prepareStatement("INSERT INTO character_recipeshoplist (`charId`, `recipeId`, `price`, `index`) VALUES (?, ?, ?, ?)"))
+				try (PreparedStatement st = con.prepareStatement(INSERT_CHAR_RECIPE_SHOP))
 				{
-					int i = 1;
+					AtomicInteger slot = new AtomicInteger(1);
+					con.setAutoCommit(false);
 					for (L2ManufactureItem item : _manufactureItems.values())
 					{
 						st.setInt(1, getObjectId());
 						st.setInt(2, item.getRecipeId());
 						st.setLong(3, item.getCost());
-						st.setInt(4, i++);
+						st.setInt(4, slot.getAndIncrement());
 						st.addBatch();
 					}
 					st.executeBatch();
+					con.commit();
 				}
 			}
 			catch (Exception e)
@@ -13569,7 +13576,7 @@ public final class L2PcInstance extends L2Playable
 		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM character_recipeshoplist WHERE charId=? ORDER BY `index`"))
+			PreparedStatement statement = con.prepareStatement(RESTORE_CHAR_RECIPE_SHOP))
 		{
 			statement.setInt(1, getObjectId());
 			try (ResultSet rset = statement.executeQuery())

@@ -95,7 +95,7 @@ public final class UserInfo extends L2GameServerPacket
 		writeD(_activeChar.getVehicle() != null ? _activeChar.getVehicle().getObjectId() : 0);
 		
 		writeD(_activeChar.getObjectId());
-		writeS(_activeChar.getName());
+		writeS(_activeChar.getAppearance().getVisibleName());
 		writeD(_activeChar.getRace().ordinal());
 		writeD(_activeChar.getAppearance().getSex() ? 1 : 0);
 		
