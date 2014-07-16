@@ -190,14 +190,12 @@ public class L2PetInstance extends L2Summon
 						sm.addItemName(food.getId());
 						sendPacket(sm);
 						handler.useItem(L2PetInstance.this, food, false);
-						broadcastPacket(new ExChangeNpcState(getObjectId(), 0x65));
 					}
 				}
 				
 				if (isUncontrollable())
 				{
 					sendPacket(SystemMessageId.YOUR_PET_IS_STARVING_AND_WILL_NOT_OBEY_UNTIL_IT_GETS_ITS_FOOD_FEED_YOUR_PET);
-					broadcastPacket(new ExChangeNpcState(getObjectId(), 0x64));
 				}
 			}
 			catch (Exception e)
@@ -236,11 +234,6 @@ public class L2PetInstance extends L2Summon
 				pet.getStat().setExp(pet.getStat().getExpForLevel(owner.getLevel()));
 			}
 			L2World.getInstance().addPet(owner.getObjectId(), pet);
-			
-			if (pet.isUncontrollable())
-			{
-				owner.sendPacket(new ExChangeNpcState(pet.getObjectId(), 0x64));
-			}
 		}
 		return pet;
 	}
@@ -324,6 +317,14 @@ public class L2PetInstance extends L2Summon
 	
 	public void setCurrentFed(int num)
 	{
+		if (num <= 0)
+		{
+			sendPacket(new ExChangeNpcState(this.getObjectId(), 0x64));
+		}
+		else if ((_curFed <= 0) && (num > 0))
+		{
+			sendPacket(new ExChangeNpcState(this.getObjectId(), 0x65));
+		}
 		_curFed = num > getMaxFed() ? getMaxFed() : num;
 	}
 	
@@ -1442,5 +1443,33 @@ public class L2PetInstance extends L2Summon
 	public boolean isPet()
 	{
 		return true;
+	}
+	
+	@Override
+	public final double getRunSpeed()
+	{
+		return super.getRunSpeed() * (isUncontrollable() ? 0.5d : 1.0d);
+	}
+	
+	@Override
+	public final double getWalkSpeed()
+	{
+		return super.getWalkSpeed() * (isUncontrollable() ? 0.5d : 1.0d);
+	}
+	
+	@Override
+	public final double getMovementSpeedMultiplier()
+	{
+		return super.getMovementSpeedMultiplier() * (isUncontrollable() ? 0.5d : 1.0d);
+	}
+	
+	@Override
+	public final double getMoveSpeed()
+	{
+		if (isInsideZone(ZoneId.WATER))
+		{
+			return isRunning() ? getSwimRunSpeed() : getSwimWalkSpeed();
+		}
+		return isRunning() ? getRunSpeed() : getWalkSpeed();
 	}
 }

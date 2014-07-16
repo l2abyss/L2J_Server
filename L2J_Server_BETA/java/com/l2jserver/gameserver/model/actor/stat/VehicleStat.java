@@ -31,7 +31,7 @@ public class VehicleStat extends CharStat
 	}
 	
 	@Override
-	public float getMoveSpeed()
+	public double getMoveSpeed()
 	{
 		return _moveSpeed;
 	}
@@ -41,7 +41,7 @@ public class VehicleStat extends CharStat
 		_moveSpeed = speed;
 	}
 	
-	public final int getRotationSpeed()
+	public final double getRotationSpeed()
 	{
 		return _rotationSpeed;
 	}

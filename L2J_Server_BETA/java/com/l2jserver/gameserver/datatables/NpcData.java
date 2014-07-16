@@ -271,16 +271,16 @@ public class NpcData extends DocumentParser
 													{
 														case "walk":
 														{
-															set.set("baseWalkSpd", parseFloat(attrs, "ground"));
-															set.set("baseSwimWalkSpd", parseFloat(attrs, "swim"));
-															set.set("baseFlyWalkSpd", parseFloat(attrs, "fly"));
+															set.set("baseWalkSpd", parseDouble(attrs, "ground"));
+															set.set("baseSwimWalkSpd", parseDouble(attrs, "swim"));
+															set.set("baseFlyWalkSpd", parseDouble(attrs, "fly"));
 															break;
 														}
 														case "run":
 														{
-															set.set("baseRunSpd", parseFloat(attrs, "ground"));
-															set.set("baseSwimRunSpd", parseFloat(attrs, "swim"));
-															set.set("baseFlyRunSpd", parseFloat(attrs, "fly"));
+															set.set("baseRunSpd", parseDouble(attrs, "ground"));
+															set.set("baseSwimRunSpd", parseDouble(attrs, "swim"));
+															set.set("baseFlyRunSpd", parseDouble(attrs, "fly"));
 															break;
 														}
 													}

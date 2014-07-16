@@ -31,13 +31,9 @@ public class PetInfo extends L2GameServerPacket
 	private final int _val;
 	private final int _mAtkSpd, _pAtkSpd;
 	private final int _runSpd, _walkSpd;
-	private final int _swimRunSpd;
-	private final int _swimWalkSpd;
-	private final int _flRunSpd = 0;
-	private final int _flWalkSpd = 0;
-	private final int _flyRunSpd;
-	private final int _flyWalkSpd;
-	private final float _moveMultiplier;
+	private final int _swimRunSpd, _swimWalkSpd;
+	private final int _flyRunSpd, _flyWalkSpd;
+	private final double _moveMultiplier;
 	private final int _maxHp, _maxMp;
 	private int _maxFed, _curFed;
 	
@@ -52,10 +48,10 @@ public class PetInfo extends L2GameServerPacket
 		_mAtkSpd = summon.getMAtkSpd();
 		_pAtkSpd = summon.getPAtkSpd();
 		_moveMultiplier = summon.getMovementSpeedMultiplier();
-		_runSpd = Math.round(summon.getRunSpeed() / _moveMultiplier);
-		_walkSpd = Math.round(summon.getWalkSpeed() / _moveMultiplier);
-		_swimRunSpd = Math.round(summon.getSwimRunSpeed() / _moveMultiplier);
-		_swimWalkSpd = Math.round(summon.getSwimWalkSpeed() / _moveMultiplier);
+		_runSpd = (int) Math.round(summon.getRunSpeed() / _moveMultiplier);
+		_walkSpd = (int) Math.round(summon.getWalkSpeed() / _moveMultiplier);
+		_swimRunSpd = (int) Math.round(summon.getSwimRunSpeed() / _moveMultiplier);
+		_swimWalkSpd = (int) Math.round(summon.getSwimWalkSpeed() / _moveMultiplier);
 		_flyRunSpd = summon.isFlying() ? _runSpd : 0;
 		_flyWalkSpd = summon.isFlying() ? _walkSpd : 0;
 		_maxHp = summon.getMaxHp();
@@ -95,8 +91,8 @@ public class PetInfo extends L2GameServerPacket
 		writeD(_walkSpd);
 		writeD(_swimRunSpd);
 		writeD(_swimWalkSpd);
-		writeD(_flRunSpd);
-		writeD(_flWalkSpd);
+		writeD(_flyRunSpd);
+		writeD(_flyWalkSpd);
 		writeD(_flyRunSpd);
 		writeD(_flyWalkSpd);
 		writeF(_moveMultiplier);
@@ -154,7 +150,7 @@ public class PetInfo extends L2GameServerPacket
 		writeD(_summon.getAccuracy());// accuracy
 		writeD(_summon.getEvasionRate(null));// evasion
 		writeD(_summon.getCriticalHit(null, null));// critical
-		writeD((int) _summon.getStat().getMoveSpeed());// speed
+		writeD((int) _summon.getMoveSpeed());// speed
 		writeD(_summon.getPAtkSpd());// atkspeed
 		writeD(_summon.getMAtkSpd());// casting speed
 		

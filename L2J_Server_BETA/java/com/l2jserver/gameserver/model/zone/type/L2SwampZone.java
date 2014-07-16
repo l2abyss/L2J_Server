@@ -31,7 +31,7 @@ import com.l2jserver.gameserver.model.zone.ZoneId;
  */
 public class L2SwampZone extends L2ZoneType
 {
-	private int _move_bonus;
+	private double _move_bonus;
 	
 	private int _castleId;
 	private Castle _castle;
@@ -41,7 +41,7 @@ public class L2SwampZone extends L2ZoneType
 		super(id);
 		
 		// Setup default speed reduce (in %)
-		_move_bonus = -50;
+		_move_bonus = 0.5;
 		
 		// no castle by default
 		_castleId = 0;
@@ -53,7 +53,7 @@ public class L2SwampZone extends L2ZoneType
 	{
 		if (name.equals("move_bonus"))
 		{
-			_move_bonus = Integer.parseInt(value);
+			_move_bonus = Double.parseDouble(value);
 		}
 		else if (name.equals("castleId"))
 		{
@@ -115,7 +115,7 @@ public class L2SwampZone extends L2ZoneType
 		}
 	}
 	
-	public int getMoveBonus()
+	public double getMoveBonus()
 	{
 		return _move_bonus;
 	}

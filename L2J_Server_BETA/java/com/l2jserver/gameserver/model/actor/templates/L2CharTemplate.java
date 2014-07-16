@@ -83,7 +83,7 @@ public class L2CharTemplate extends ListenersContainer
 	private double _fCollisionRadius;
 	private double _fCollisionHeight;
 	
-	private final float[] _moveType = new float[MoveType.values().length];
+	private final double[] _moveType = new double[MoveType.values().length];
 	/** The creature's race. */
 	private Race _race;
 	
@@ -144,12 +144,12 @@ public class L2CharTemplate extends ListenersContainer
 		
 		// speed.
 		Arrays.fill(_moveType, 1);
-		setBaseMoveSpeed(MoveType.RUN, set.getFloat("baseRunSpd", 120));
-		setBaseMoveSpeed(MoveType.WALK, set.getFloat("baseWalkSpd", 50));
-		setBaseMoveSpeed(MoveType.FAST_SWIM, set.getFloat("baseSwimRunSpd", getBaseMoveSpeed(MoveType.RUN)));
-		setBaseMoveSpeed(MoveType.SLOW_SWIM, set.getFloat("baseSwimWalkSpd", getBaseMoveSpeed(MoveType.WALK)));
-		setBaseMoveSpeed(MoveType.FAST_FLY, set.getFloat("baseFlyRunSpd", getBaseMoveSpeed(MoveType.RUN)));
-		setBaseMoveSpeed(MoveType.SLOW_FLY, set.getFloat("baseFlyWalkSpd", getBaseMoveSpeed(MoveType.WALK)));
+		setBaseMoveSpeed(MoveType.RUN, set.getDouble("baseRunSpd", 120));
+		setBaseMoveSpeed(MoveType.WALK, set.getDouble("baseWalkSpd", 50));
+		setBaseMoveSpeed(MoveType.FAST_SWIM, set.getDouble("baseSwimRunSpd", getBaseMoveSpeed(MoveType.RUN)));
+		setBaseMoveSpeed(MoveType.SLOW_SWIM, set.getDouble("baseSwimWalkSpd", getBaseMoveSpeed(MoveType.WALK)));
+		setBaseMoveSpeed(MoveType.FAST_FLY, set.getDouble("baseFlyRunSpd", getBaseMoveSpeed(MoveType.RUN)));
+		setBaseMoveSpeed(MoveType.SLOW_FLY, set.getDouble("baseFlyWalkSpd", getBaseMoveSpeed(MoveType.WALK)));
 	}
 	
 	/**
@@ -432,12 +432,12 @@ public class L2CharTemplate extends ListenersContainer
 		return _baseMCritRate;
 	}
 	
-	public void setBaseMoveSpeed(MoveType type, float val)
+	public void setBaseMoveSpeed(MoveType type, double val)
 	{
 		_moveType[type.ordinal()] = val;
 	}
 	
-	public float getBaseMoveSpeed(MoveType mt)
+	public double getBaseMoveSpeed(MoveType mt)
 	{
 		return _moveType[mt.ordinal()];
 	}

@@ -380,9 +380,9 @@ public class CharStat
 		return (int) calcStat(Stats.STAT_MEN, _activeChar.getTemplate().getBaseMEN());
 	}
 	
-	public float getMovementSpeedMultiplier()
+	public double getMovementSpeedMultiplier()
 	{
-		float baseSpeed;
+		double baseSpeed;
 		if (_activeChar.isInsideZone(ZoneId.WATER))
 		{
 			baseSpeed = getBaseMoveSpeed(_activeChar.isRunning() ? MoveType.FAST_SWIM : MoveType.SLOW_SWIM);
@@ -391,14 +391,70 @@ public class CharStat
 		{
 			baseSpeed = getBaseMoveSpeed(_activeChar.isRunning() ? MoveType.RUN : MoveType.WALK);
 		}
-		return (float) (getMoveSpeed() * (1. / baseSpeed));
+		return getMoveSpeed() * (1. / baseSpeed);
+	}
+	
+	/**
+	 * @return the RunSpeed (base+modifier) of the L2Character in function of the Armour Expertise Penalty.
+	 */
+	public double getRunSpeed()
+	{
+		final double baseRunSpd = _activeChar.isInsideZone(ZoneId.WATER) ? getSwimRunSpeed() : getBaseMoveSpeed(MoveType.RUN);
+		if (baseRunSpd <= 0)
+		{
+			return 0;
+		}
+		
+		return calcStat(Stats.MOVE_SPEED, baseRunSpd, null, null);
+	}
+	
+	/**
+	 * @return the WalkSpeed (base+modifier) of the L2Character.
+	 */
+	public double getWalkSpeed()
+	{
+		final double baseWalkSpd = _activeChar.isInsideZone(ZoneId.WATER) ? getSwimWalkSpeed() : getBaseMoveSpeed(MoveType.WALK);
+		if (baseWalkSpd <= 0)
+		{
+			return 0;
+		}
+		
+		return calcStat(Stats.MOVE_SPEED, baseWalkSpd);
+	}
+	
+	/**
+	 * @return the SwimRunSpeed (base+modifier) of the L2Character.
+	 */
+	public double getSwimRunSpeed()
+	{
+		final double baseRunSpd = getBaseMoveSpeed(MoveType.FAST_SWIM);
+		if (baseRunSpd <= 0)
+		{
+			return 0;
+		}
+		
+		return calcStat(Stats.MOVE_SPEED, baseRunSpd, null, null);
+	}
+	
+	/**
+	 * @return the SwimWalkSpeed (base+modifier) of the L2Character.
+	 */
+	public double getSwimWalkSpeed()
+	{
+		final double baseWalkSpd = getBaseMoveSpeed(MoveType.SLOW_SWIM);
+		if (baseWalkSpd <= 0)
+		{
+			return 0;
+		}
+		
+		return calcStat(Stats.MOVE_SPEED, baseWalkSpd);
 	}
 	
 	/**
 	 * @param type movement type
 	 * @return the base move speed of given movement type.
 	 */
-	public float getBaseMoveSpeed(MoveType type)
+	public double getBaseMoveSpeed(MoveType type)
 	{
 		return _activeChar.getTemplate().getBaseMoveSpeed(type);
 	}
@@ -406,7 +462,7 @@ public class CharStat
 	/**
 	 * @return the RunSpeed (base+modifier) or WalkSpeed (base+modifier) of the L2Character in function of the movement type.
 	 */
-	public float getMoveSpeed()
+	public double getMoveSpeed()
 	{
 		if (_activeChar.isInsideZone(ZoneId.WATER))
 		{
@@ -513,31 +569,6 @@ public class CharStat
 	}
 	
 	/**
-	 * @return the RunSpeed (base+modifier) of the L2Character in function of the Armour Expertise Penalty.
-	 */
-	public int getRunSpeed()
-	{
-		final float baseRunSpd = _activeChar.isInsideZone(ZoneId.WATER) ? getSwimRunSpeed() : getBaseMoveSpeed(MoveType.RUN);
-		if (baseRunSpd == 0)
-		{
-			return 0;
-		}
-		
-		return (int) Math.round(calcStat(Stats.MOVE_SPEED, baseRunSpd, null, null));
-	}
-	
-	public int getSwimRunSpeed()
-	{
-		final float baseRunSpd = getBaseMoveSpeed(MoveType.FAST_SWIM);
-		if (baseRunSpd == 0)
-		{
-			return 0;
-		}
-		
-		return (int) Math.round(calcStat(Stats.MOVE_SPEED, baseRunSpd, null, null));
-	}
-	
-	/**
 	 * @return the ShieldDef rate (base+modifier) of the L2Character.
 	 */
 	public final int getShldDef()
@@ -561,34 +592,6 @@ public class CharStat
 	public final int getSTR()
 	{
 		return (int) calcStat(Stats.STAT_STR, _activeChar.getTemplate().getBaseSTR());
-	}
-	
-	/**
-	 * @return the WalkSpeed (base+modifier) of the L2Character.
-	 */
-	public int getWalkSpeed()
-	{
-		final float baseWalkSpd = _activeChar.isInsideZone(ZoneId.WATER) ? getSwimWalkSpeed() : getBaseMoveSpeed(MoveType.WALK);
-		if (baseWalkSpd == 0)
-		{
-			return 0;
-		}
-		
-		return (int) Math.round(calcStat(Stats.MOVE_SPEED, baseWalkSpd));
-	}
-	
-	/**
-	 * @return the WalkSpeed (base+modifier) of the L2Character.
-	 */
-	public int getSwimWalkSpeed()
-	{
-		final float baseWalkSpd = getBaseMoveSpeed(MoveType.SLOW_SWIM);
-		if (baseWalkSpd == 0)
-		{
-			return 0;
-		}
-		
-		return (int) Math.round(calcStat(Stats.MOVE_SPEED, baseWalkSpd));
 	}
 	
 	/**

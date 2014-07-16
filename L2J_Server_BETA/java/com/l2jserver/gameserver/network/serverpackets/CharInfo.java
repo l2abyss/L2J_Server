@@ -39,11 +39,9 @@ public class CharInfo extends L2GameServerPacket
 	private final int _runSpd, _walkSpd;
 	private final int _swimRunSpd;
 	private final int _swimWalkSpd;
-	private final int _flRunSpd = 0;
-	private final int _flWalkSpd = 0;
 	private final int _flyRunSpd;
 	private final int _flyWalkSpd;
-	private final float _moveMultiplier;
+	private final double _moveMultiplier;
 	private final float _attackSpeedMultiplier;
 	
 	private int _vehicleId = 0;
@@ -97,10 +95,10 @@ public class CharInfo extends L2GameServerPacket
 		_invisible = cha.isInvisible();
 		
 		_moveMultiplier = cha.getMovementSpeedMultiplier();
-		_runSpd = Math.round(cha.getRunSpeed() / _moveMultiplier);
-		_walkSpd = Math.round(cha.getWalkSpeed() / _moveMultiplier);
-		_swimRunSpd = Math.round(cha.getSwimRunSpeed() / _moveMultiplier);
-		_swimWalkSpd = Math.round(cha.getSwimWalkSpeed() / _moveMultiplier);
+		_runSpd = (int) Math.round(cha.getRunSpeed() / _moveMultiplier);
+		_walkSpd = (int) Math.round(cha.getWalkSpeed() / _moveMultiplier);
+		_swimRunSpd = (int) Math.round(cha.getSwimRunSpeed() / _moveMultiplier);
+		_swimWalkSpd = (int) Math.round(cha.getSwimWalkSpeed() / _moveMultiplier);
 		_flyRunSpd = cha.isFlying() ? _runSpd : 0;
 		_flyWalkSpd = cha.isFlying() ? _walkSpd : 0;
 	}
@@ -147,8 +145,8 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_walkSpd);
 			writeD(_swimRunSpd);
 			writeD(_swimWalkSpd);
-			writeD(_flRunSpd);
-			writeD(_flWalkSpd);
+			writeD(_flyRunSpd);
+			writeD(_flyWalkSpd);
 			writeD(_flyRunSpd);
 			writeD(_flyWalkSpd);
 			writeF(_moveMultiplier);
@@ -235,8 +233,8 @@ public class CharInfo extends L2GameServerPacket
 			writeD(_walkSpd);
 			writeD(_swimRunSpd);
 			writeD(_swimWalkSpd);
-			writeD(_flRunSpd);
-			writeD(_flWalkSpd);
+			writeD(_flyRunSpd);
+			writeD(_flyWalkSpd);
 			writeD(_flyRunSpd);
 			writeD(_flyWalkSpd);
 			writeF(_moveMultiplier);

@@ -222,29 +222,33 @@ public class PlayableStat extends CharStat
 	}
 	
 	@Override
-	public int getRunSpeed()
+	public double getRunSpeed()
 	{
-		int val = super.getRunSpeed();
 		if (getActiveChar().isInsideZone(ZoneId.SWAMP))
 		{
 			final L2SwampZone zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
-			int bonus = zone == null ? 0 : zone.getMoveBonus();
-			val += val * (bonus / 100.0f);
+			if (zone == null)
+			{
+				return super.getRunSpeed();
+			}
+			return super.getRunSpeed() * zone.getMoveBonus();
 		}
-		return val;
+		return super.getRunSpeed();
 	}
 	
 	@Override
-	public int getWalkSpeed()
+	public double getWalkSpeed()
 	{
-		int val = super.getWalkSpeed();
 		if (getActiveChar().isInsideZone(ZoneId.SWAMP))
 		{
 			final L2SwampZone zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
-			int bonus = zone == null ? 0 : zone.getMoveBonus();
-			val += val * (bonus / 100.0f);
+			if (zone == null)
+			{
+				return super.getWalkSpeed();
+			}
+			return super.getWalkSpeed() * zone.getMoveBonus();
 		}
-		return val;
+		return super.getRunSpeed();
 	}
 	
 	@Override

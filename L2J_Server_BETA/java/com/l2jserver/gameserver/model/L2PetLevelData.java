@@ -41,12 +41,12 @@ public class L2PetLevelData
 	private final float _petRegenMP;
 	private final short _petSoulShot;
 	private final short _petSpiritShot;
-	private final int _walkSpeedOnRide;
-	private final int _runSpeedOnRide;
-	private final int _slowSwimSpeedOnRide;
-	private final int _fastSwimSpeedOnRide;
-	private final int _slowFlySpeedOnRide;
-	private final int _fastFlySpeedOnRide;
+	private final double _walkSpeedOnRide;
+	private final double _runSpeedOnRide;
+	private final double _slowSwimSpeedOnRide;
+	private final double _fastSwimSpeedOnRide;
+	private final double _slowFlySpeedOnRide;
+	private final double _fastFlySpeedOnRide;
 	
 	public L2PetLevelData(StatsSet set)
 	{
@@ -65,12 +65,12 @@ public class L2PetLevelData
 		_petRegenMP = set.getFloat("org_mp_regen");
 		_petSoulShot = set.getShort("soulshot_count");
 		_petSpiritShot = set.getShort("spiritshot_count");
-		_walkSpeedOnRide = set.getInt("walkSpeedOnRide", 0);
-		_runSpeedOnRide = set.getInt("runSpeedOnRide", 0);
-		_slowSwimSpeedOnRide = set.getInt("slowSwimSpeedOnRide", 0);
-		_fastSwimSpeedOnRide = set.getInt("fastSwimSpeedOnRide", 0);
-		_slowFlySpeedOnRide = set.getInt("slowFlySpeedOnRide", 0);
-		_fastFlySpeedOnRide = set.getInt("fastFlySpeedOnRide", 0);
+		_walkSpeedOnRide = set.getDouble("walkSpeedOnRide", 0);
+		_runSpeedOnRide = set.getDouble("runSpeedOnRide", 0);
+		_slowSwimSpeedOnRide = set.getDouble("slowSwimSpeedOnRide", 0);
+		_fastSwimSpeedOnRide = set.getDouble("fastSwimSpeedOnRide", 0);
+		_slowFlySpeedOnRide = set.getDouble("slowFlySpeedOnRide", 0);
+		_fastFlySpeedOnRide = set.getDouble("fastFlySpeedOnRide", 0);
 	}
 	
 	/**
@@ -197,7 +197,7 @@ public class L2PetLevelData
 	 * @param mt movement type
 	 * @return the base riding speed of given movement type.
 	 */
-	public int getSpeedOnRide(MoveType mt)
+	public double getSpeedOnRide(MoveType mt)
 	{
 		switch (mt)
 		{

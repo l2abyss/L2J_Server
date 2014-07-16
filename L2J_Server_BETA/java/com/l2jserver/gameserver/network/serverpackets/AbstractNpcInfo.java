@@ -40,13 +40,9 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 	protected boolean _isAttackable, _isSummoned;
 	protected int _mAtkSpd, _pAtkSpd;
 	protected final int _runSpd, _walkSpd;
-	protected final int _swimRunSpd;
-	protected final int _swimWalkSpd;
-	protected final int _flRunSpd = 0;
-	protected final int _flWalkSpd = 0;
-	protected final int _flyRunSpd;
-	protected final int _flyWalkSpd;
-	protected float _moveMultiplier;
+	protected final int _swimRunSpd, _swimWalkSpd;
+	protected final int _flyRunSpd, _flyWalkSpd;
+	protected double _moveMultiplier;
 	
 	protected int _rhand, _lhand, _chest, _enchantEffect;
 	protected double _collisionHeight, _collisionRadius;
@@ -63,10 +59,10 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 		_mAtkSpd = cha.getMAtkSpd();
 		_pAtkSpd = cha.getPAtkSpd();
 		_moveMultiplier = cha.getMovementSpeedMultiplier();
-		_runSpd = Math.round(cha.getRunSpeed() / _moveMultiplier);
-		_walkSpd = Math.round(cha.getWalkSpeed() / _moveMultiplier);
-		_swimRunSpd = Math.round(cha.getSwimRunSpeed() / _moveMultiplier);
-		_swimWalkSpd = Math.round(cha.getSwimWalkSpeed() / _moveMultiplier);
+		_runSpd = (int) Math.round(cha.getRunSpeed() / _moveMultiplier);
+		_walkSpd = (int) Math.round(cha.getWalkSpeed() / _moveMultiplier);
+		_swimRunSpd = (int) Math.round(cha.getSwimRunSpeed() / _moveMultiplier);
+		_swimWalkSpd = (int) Math.round(cha.getSwimWalkSpeed() / _moveMultiplier);
 		_flyRunSpd = cha.isFlying() ? _runSpd : 0;
 		_flyWalkSpd = cha.isFlying() ? _walkSpd : 0;
 	}
@@ -162,8 +158,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_walkSpd);
 			writeD(_swimRunSpd);
 			writeD(_swimWalkSpd);
-			writeD(_flRunSpd);
-			writeD(_flWalkSpd);
+			writeD(_flyRunSpd);
+			writeD(_flyWalkSpd);
 			writeD(_flyRunSpd);
 			writeD(_flyWalkSpd);
 			writeF(_moveMultiplier);
@@ -248,8 +244,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_walkSpd);
 			writeD(_swimRunSpd);
 			writeD(_swimWalkSpd);
-			writeD(_flRunSpd);
-			writeD(_flWalkSpd);
+			writeD(_flyRunSpd);
+			writeD(_flyWalkSpd);
 			writeD(_flyRunSpd);
 			writeD(_flyWalkSpd);
 			writeF(_moveMultiplier);
@@ -351,8 +347,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_walkSpd);
 			writeD(_swimRunSpd);
 			writeD(_swimWalkSpd);
-			writeD(_flRunSpd);
-			writeD(_flWalkSpd);
+			writeD(_flyRunSpd);
+			writeD(_flyWalkSpd);
 			writeD(_flyRunSpd);
 			writeD(_flyWalkSpd);
 			writeF(_moveMultiplier);

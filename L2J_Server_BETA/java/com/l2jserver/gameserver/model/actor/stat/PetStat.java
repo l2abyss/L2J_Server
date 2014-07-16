@@ -217,11 +217,4 @@ public class PetStat extends SummonStat
 	{
 		return ExperienceTable.getInstance().getMaxPetLevel();
 	}
-	
-	@Override
-	public float getMovementSpeedMultiplier()
-	{
-		// If the pet is starving, the moving speed is drastically reduced.
-		return super.getMovementSpeedMultiplier() * (getActiveChar().isUncontrollable() ? 0.5f : 1f);
-	}
 }

@@ -560,7 +560,7 @@ public class PcStat extends PlayableStat
 	 * @return the base move speed of given movement type.
 	 */
 	@Override
-	public float getBaseMoveSpeed(MoveType type)
+	public double getBaseMoveSpeed(MoveType type)
 	{
 		final L2PcInstance player = getActiveChar();
 		if (player.isTransformed())
@@ -583,9 +583,9 @@ public class PcStat extends PlayableStat
 	}
 	
 	@Override
-	public int getRunSpeed()
+	public double getRunSpeed()
 	{
-		int val = super.getRunSpeed() + Config.RUN_SPD_BOOST;
+		double val = super.getRunSpeed() + Config.RUN_SPD_BOOST;
 		
 		// Apply max run speed cap.
 		if ((val > Config.MAX_RUN_SPEED) && !getActiveChar().canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
@@ -612,9 +612,9 @@ public class PcStat extends PlayableStat
 	}
 	
 	@Override
-	public int getWalkSpeed()
+	public double getWalkSpeed()
 	{
-		int val = super.getWalkSpeed() + Config.RUN_SPD_BOOST;
+		double val = super.getWalkSpeed() + Config.RUN_SPD_BOOST;
 		
 		// Apply max run speed cap.
 		if ((val > Config.MAX_RUN_SPEED) && !getActiveChar().canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
