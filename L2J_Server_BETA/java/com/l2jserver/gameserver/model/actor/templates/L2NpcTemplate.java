@@ -95,7 +95,7 @@ public final class L2NpcTemplate extends L2CharTemplate implements IIdentifiable
 	private Map<Integer, Skill> _skills;
 	private Map<AISkillScope, List<Skill>> _aiSkillLists;
 	private Set<Integer> _clans;
-	private Set<Integer> _enemyClans;
+	private Set<Integer> _ignoreClanNpcIds;
 	private Map<DropListScope, List<IDropItem>> _dropLists;
 	private double _collisionRadiusGrown;
 	private double _collisionHeightGrown;
@@ -523,85 +523,17 @@ public final class L2NpcTemplate extends L2CharTemplate implements IIdentifiable
 		return false;
 	}
 	
-	public Set<Integer> getEnemyClans()
+	public Set<Integer> getIgnoreClanNpcIds()
 	{
-		return _enemyClans;
+		return _ignoreClanNpcIds;
 	}
 	
 	/**
-	 * @param enemyClans A sorted array of enemy clan ids
+	 * @param ignoreClanNpcIds the ignore clan npc ids
 	 */
-	public void setEnemyClans(Set<Integer> enemyClans)
+	public void setIgnoreClanNpcIds(Set<Integer> ignoreClanNpcIds)
 	{
-		_enemyClans = enemyClans != null ? Collections.unmodifiableSet(enemyClans) : null;
-	}
-	
-	/**
-	 * @param clanName clan name to check if it belongs to this NPC template enemy clans.
-	 * @param clanNames clan names to check if they belong to this NPC template enemy clans.
-	 * @return {@code true} if at least one of the clan names belong to this NPC template enemy clans, {@code false} otherwise.
-	 */
-	public boolean isEnemyClan(String clanName, String... clanNames)
-	{
-		// Using local variable for the sake of reloading since it can be turned to null.
-		final Set<Integer> enemyClans = _enemyClans;
-		
-		if (enemyClans == null)
-		{
-			return false;
-		}
-		
-		int clanId = NpcData.getInstance().getClanId("ALL");
-		if (enemyClans.contains(clanId))
-		{
-			return true;
-		}
-		
-		clanId = NpcData.getInstance().getClanId(clanName);
-		if (enemyClans.contains(clanId))
-		{
-			return true;
-		}
-		
-		for (String name : clanNames)
-		{
-			clanId = NpcData.getInstance().getClanId(name);
-			if (enemyClans.contains(clanId))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * @param clans A set of clan names to check if they belong to this NPC template enemy clans.
-	 * @return {@code true} if at least one of the clan names belong to this NPC template enemy clans, {@code false} otherwise.
-	 */
-	public boolean isEnemyClan(Set<Integer> clans)
-	{
-		// Using local variable for the sake of reloading since it can be turned to null.
-		final Set<Integer> enemyClans = _enemyClans;
-		
-		if ((enemyClans == null) || (clans == null))
-		{
-			return false;
-		}
-		
-		int clanId = NpcData.getInstance().getClanId("ALL");
-		if (enemyClans.contains(clanId))
-		{
-			return true;
-		}
-		
-		for (Integer id : clans)
-		{
-			if (enemyClans.contains(id))
-			{
-				return true;
-			}
-		}
-		return false;
+		_ignoreClanNpcIds = ignoreClanNpcIds != null ? Collections.unmodifiableSet(ignoreClanNpcIds) : null;
 	}
 	
 	public Map<DropListScope, List<IDropItem>> getDropLists()

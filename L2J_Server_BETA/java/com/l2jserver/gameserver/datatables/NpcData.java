@@ -104,7 +104,7 @@ public class NpcData extends DocumentParser
 						Map<String, Object> parameters = null;
 						Map<Integer, Skill> skills = null;
 						Set<Integer> clans = null;
-						Set<Integer> enemyClans = null;
+						Set<Integer> ignoreClanNpcIds = null;
 						Map<DropListScope, List<IDropItem>> dropLists = null;
 						set.set("id", npcId);
 						set.set("displayId", parseInteger(attrs, "displayId"));
@@ -389,13 +389,13 @@ public class NpcData extends DocumentParser
 															clans.add(getOrCreateClanId(clan_list_node.getTextContent()));
 															break;
 														}
-														case "enemy_clan":
+														case "ignore_npc_id":
 														{
-															if (enemyClans == null)
+															if (ignoreClanNpcIds == null)
 															{
-																enemyClans = new HashSet<>(1);
+																ignoreClanNpcIds = new HashSet<>(1);
 															}
-															enemyClans.add(getOrCreateClanId(clan_list_node.getTextContent()));
+															ignoreClanNpcIds.add(Integer.parseInt(clan_list_node.getTextContent()));
 															break;
 														}
 													}
@@ -591,7 +591,7 @@ public class NpcData extends DocumentParser
 						}
 						
 						template.setClans(clans);
-						template.setEnemyClans(enemyClans);
+						template.setIgnoreClanNpcIds(ignoreClanNpcIds);
 						
 						template.setDropLists(dropLists);
 					}

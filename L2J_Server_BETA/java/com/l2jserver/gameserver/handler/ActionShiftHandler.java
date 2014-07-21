@@ -26,7 +26,7 @@ import com.l2jserver.gameserver.enums.InstanceType;
 /**
  * @author UnAfraid
  */
-public class ActionShiftHandler
+public class ActionShiftHandler implements IHandler<IActionHandler, InstanceType>
 {
 	private final Map<InstanceType, IActionHandler> _actionsShift;
 	
@@ -35,16 +35,19 @@ public class ActionShiftHandler
 		_actionsShift = new HashMap<>();
 	}
 	
+	@Override
 	public void registerHandler(IActionHandler handler)
 	{
 		_actionsShift.put(handler.getInstanceType(), handler);
 	}
 	
+	@Override
 	public synchronized void removeHandler(IActionHandler handler)
 	{
 		_actionsShift.remove(handler.getInstanceType());
 	}
 	
+	@Override
 	public IActionHandler getHandler(InstanceType iType)
 	{
 		IActionHandler result = null;
@@ -59,6 +62,7 @@ public class ActionShiftHandler
 		return result;
 	}
 	
+	@Override
 	public int size()
 	{
 		return _actionsShift.size();

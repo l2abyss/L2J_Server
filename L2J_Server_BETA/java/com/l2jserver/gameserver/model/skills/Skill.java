@@ -1201,10 +1201,7 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 			// target is mob
 			if ((targetPlayer == null) && (target instanceof L2Attackable) && (caster instanceof L2Attackable))
 			{
-				if (!((L2Attackable) caster).isInEnemyClan((L2Attackable) target))
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 		

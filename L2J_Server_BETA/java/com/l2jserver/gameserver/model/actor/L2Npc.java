@@ -534,11 +534,6 @@ public class L2Npc extends L2Character
 		return getTemplate().isClan(npc.getTemplate().getClans());
 	}
 	
-	public boolean isInEnemyClan(L2Npc npc)
-	{
-		return getTemplate().isEnemyClan(npc.getTemplate().getClans());
-	}
-	
 	/**
 	 * Return True if this L2NpcInstance is undead in function of the L2NpcTemplate.
 	 */
