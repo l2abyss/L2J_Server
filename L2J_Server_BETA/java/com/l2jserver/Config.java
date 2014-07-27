@@ -1085,7 +1085,6 @@ public final class Config
 	public static int BELETH_SPAWN_RANDOM;
 	
 	// Gracia Seeds Settings
-	
 	public static int SOD_TIAT_KILL_COUNT;
 	public static long SOD_STAGE_2_LENGTH;
 	
