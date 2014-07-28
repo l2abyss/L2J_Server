@@ -26,9 +26,9 @@ import com.l2jserver.gameserver.enums.InstanceType;
 /**
  * @author UnAfraid
  */
-public class ActionShiftHandler implements IHandler<IActionHandler, InstanceType>
+public class ActionShiftHandler implements IHandler<IActionShiftHandler, InstanceType>
 {
-	private final Map<InstanceType, IActionHandler> _actionsShift;
+	private final Map<InstanceType, IActionShiftHandler> _actionsShift;
 	
 	protected ActionShiftHandler()
 	{
@@ -36,21 +36,21 @@ public class ActionShiftHandler implements IHandler<IActionHandler, InstanceType
 	}
 	
 	@Override
-	public void registerHandler(IActionHandler handler)
+	public void registerHandler(IActionShiftHandler handler)
 	{
 		_actionsShift.put(handler.getInstanceType(), handler);
 	}
 	
 	@Override
-	public synchronized void removeHandler(IActionHandler handler)
+	public synchronized void removeHandler(IActionShiftHandler handler)
 	{
 		_actionsShift.remove(handler.getInstanceType());
 	}
 	
 	@Override
-	public IActionHandler getHandler(InstanceType iType)
+	public IActionShiftHandler getHandler(InstanceType iType)
 	{
-		IActionHandler result = null;
+		IActionShiftHandler result = null;
 		for (InstanceType t = iType; t != null; t = t.getParent())
 		{
 			result = _actionsShift.get(t);
