@@ -513,7 +513,7 @@ public final class SkillTreesData extends DocumentParser
 		
 		for (L2SkillLearn skill : skills.values())
 		{
-			if (((skill.getSkillId() == CommonSkill.DIVINE_INSPIRATION.getId()) && !Config.AUTO_LEARN_DIVINE_INSPIRATION && !player.isGM()))
+			if (((skill.getSkillId() == CommonSkill.DIVINE_INSPIRATION.getId()) && (!Config.AUTO_LEARN_DIVINE_INSPIRATION && includeAutoGet) && !player.isGM()))
 			{
 				continue;
 			}
