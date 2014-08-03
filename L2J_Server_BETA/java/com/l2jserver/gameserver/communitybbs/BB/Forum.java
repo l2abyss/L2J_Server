@@ -35,6 +35,8 @@ import com.l2jserver.gameserver.communitybbs.Manager.TopicBBSManager;
 
 public class Forum
 {
+	private static final Logger _log = Logger.getLogger(Forum.class.getName());
+	
 	// type
 	public static final int ROOT = 0;
 	public static final int NORMAL = 1;
@@ -47,7 +49,6 @@ public class Forum
 	public static final int CLANMEMBERONLY = 2;
 	public static final int OWNERONLY = 3;
 	
-	private static Logger _log = Logger.getLogger(Forum.class.getName());
 	private final List<Forum> _children;
 	private final Map<Integer, Topic> _topic;
 	private final int _forumId;

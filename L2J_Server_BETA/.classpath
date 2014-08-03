@@ -2,11 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="java" />
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8" />
-	<classpathentry kind="lib" path="dist/libs/c3p0-0.9.5-pre6.jar" />
+	<classpathentry kind="lib" path="dist/libs/c3p0-0.9.5-pre8.jar" />
 	<classpathentry kind="lib" path="dist/libs/javolution-5.5.1.jar" sourcepath="dist/libs/javolution-5.5.1-src.zip" />
 	<classpathentry kind="lib" path="dist/libs/jython.jar" />
 	<classpathentry kind="lib" path="dist/libs/jython-engine-2.2.1.jar" />
-	<classpathentry kind="lib" path="dist/libs/mail-1.5.0.jar" />
+	<classpathentry kind="lib" path="dist/libs/mail-1.5.2.jar" />
 	<classpathentry kind="lib" path="dist/libs/mmocore.jar" />
 	<classpathentry kind="lib" path="dist/libs/netcon-1.7.jar" />
 	<classpathentry kind="lib" path="dist/libs/Subnet-1.0.jar" />

@@ -47,7 +47,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public final class Evolve
 {
-	public static final Logger _log = Logger.getLogger(Evolve.class.getName());
+	protected static final Logger _log = Logger.getLogger(Evolve.class.getName());
 	
 	public static final boolean doEvolve(L2PcInstance player, L2Npc npc, int itemIdtake, int itemIdgive, int petminlvl)
 	{
