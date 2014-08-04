@@ -103,6 +103,9 @@ public final class RequestRecipeShopListSet extends L2GameClientPacket
 		
 		List<L2RecipeList> dwarfRecipes = Arrays.asList(player.getDwarvenRecipeBook());
 		List<L2RecipeList> commonRecipes = Arrays.asList(player.getCommonRecipeBook());
+		
+		player.getManufactureItems().clear();
+		
 		for (L2ManufactureItem i : _items)
 		{
 			final L2RecipeList list = RecipeData.getInstance().getRecipeList(i.getRecipeId());
