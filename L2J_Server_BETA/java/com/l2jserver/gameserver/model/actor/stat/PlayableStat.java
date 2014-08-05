@@ -227,11 +227,10 @@ public class PlayableStat extends CharStat
 		if (getActiveChar().isInsideZone(ZoneId.SWAMP))
 		{
 			final L2SwampZone zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
-			if (zone == null)
+			if (zone != null)
 			{
-				return super.getRunSpeed();
+				return super.getRunSpeed() * zone.getMoveBonus();
 			}
-			return super.getRunSpeed() * zone.getMoveBonus();
 		}
 		return super.getRunSpeed();
 	}
@@ -242,13 +241,12 @@ public class PlayableStat extends CharStat
 		if (getActiveChar().isInsideZone(ZoneId.SWAMP))
 		{
 			final L2SwampZone zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
-			if (zone == null)
+			if (zone != null)
 			{
-				return super.getWalkSpeed();
+				return super.getWalkSpeed() * zone.getMoveBonus();
 			}
-			return super.getWalkSpeed() * zone.getMoveBonus();
 		}
-		return super.getRunSpeed();
+		return super.getWalkSpeed();
 	}
 	
 	@Override
