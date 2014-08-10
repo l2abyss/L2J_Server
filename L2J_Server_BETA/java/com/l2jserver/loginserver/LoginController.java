@@ -52,10 +52,6 @@ import com.l2jserver.loginserver.network.serverpackets.LoginFail.LoginFailReason
 import com.l2jserver.util.Rnd;
 import com.l2jserver.util.crypt.ScrambledKeyPair;
 
-/**
- * This class ...
- * @version $Revision: 1.7.4.3 $ $Date: 2005/03/27 15:30:09 $
- */
 public class LoginController
 {
 	protected static final Logger _log = Logger.getLogger(LoginController.class.getName());
@@ -203,7 +199,7 @@ public class LoginController
 		if (failedLoginAttemps >= Config.LOGIN_TRY_BEFORE_BAN)
 		{
 			addBanForAddress(addr, Config.LOGIN_BLOCK_AFTER_BAN * 1000);
-			// we need to clear the failed login attemps here, so after the ip ban is over the client has another 5 attemps
+			// we need to clear the failed login attempts here, so after the ip ban is over the client has another 5 attempts
 			clearFailedLoginAttemps(addr);
 			_log.warning("Added banned address " + addr.getHostAddress() + "! Too many login attemps.");
 		}
@@ -255,7 +251,7 @@ public class LoginController
 			
 			if (!autoCreateIfEnabled || !Config.AUTO_CREATE_ACCOUNTS)
 			{
-				// account does not exist and auto create accoutn is not desired
+				// account does not exist and auto create account is not desired
 				recordFailedLoginAttemp(addr);
 				return null;
 			}
@@ -314,9 +310,9 @@ public class LoginController
 	}
 	
 	/**
-	 * Adds the address to the ban list of the login server, with the given end tiem in millis.
+	 * Adds the address to the ban list of the login server, with the given end time in milliseconds.
 	 * @param address The Address to be banned.
-	 * @param expiration Timestamp in miliseconds when this ban expires
+	 * @param expiration Timestamp in milliseconds when this ban expires
 	 * @throws UnknownHostException if the address is invalid.
 	 */
 	public void addBanForAddress(String address, long expiration) throws UnknownHostException
@@ -327,7 +323,7 @@ public class LoginController
 	/**
 	 * Adds the address to the ban list of the login server, with the given duration.
 	 * @param address The Address to be banned.
-	 * @param duration is miliseconds
+	 * @param duration is milliseconds
 	 */
 	public void addBanForAddress(InetAddress address, long duration)
 	{
