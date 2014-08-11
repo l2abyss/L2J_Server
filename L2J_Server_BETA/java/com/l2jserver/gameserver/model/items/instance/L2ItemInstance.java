@@ -826,6 +826,11 @@ public final class L2ItemInstance extends L2Object
 		return _item.isElixir();
 	}
 	
+	public boolean isScroll()
+	{
+		return _item.isScroll();
+	}
+	
 	public boolean isHeroItem()
 	{
 		return _item.isHeroItem();

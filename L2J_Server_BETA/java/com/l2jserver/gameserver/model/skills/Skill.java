@@ -719,15 +719,15 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 	}
 	
 	/**
-	 * @return Returns the itemConsume.
+	 * @return Returns the how much items will be consumed.
 	 */
-	public int getItemConsume()
+	public int getItemConsumeCount()
 	{
 		return _itemConsumeCount;
 	}
 	
 	/**
-	 * @return Returns the itemConsumeId.
+	 * @return Returns the ID of item for consume.
 	 */
 	public int getItemConsumeId()
 	{
