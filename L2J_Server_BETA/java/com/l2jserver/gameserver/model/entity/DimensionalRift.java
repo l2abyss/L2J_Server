@@ -174,17 +174,13 @@ public class DimensionalRift
 			long jumpTime = calcTimeToNextJump();
 			teleporterTimer.schedule(teleporterTimerTask, jumpTime); // Teleporter task, 8-10 minutes
 			
-			earthQuakeTask = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
+			earthQuakeTask = ThreadPoolManager.getInstance().scheduleGeneral(() ->
 			{
-				@Override
-				public void run()
+				for (L2PcInstance p : _party.getMembers())
 				{
-					for (L2PcInstance p : _party.getMembers())
+					if (!revivedInWaitingRoom.contains(p))
 					{
-						if (!revivedInWaitingRoom.contains(p))
-						{
-							p.sendPacket(new Earthquake(p.getX(), p.getY(), p.getZ(), 65, 9));
-						}
+						p.sendPacket(new Earthquake(p.getX(), p.getY(), p.getZ(), 65, 9));
 					}
 				}
 			}, jumpTime - 7000);

@@ -319,11 +319,11 @@ public class L2PetInstance extends L2Summon
 	{
 		if (num <= 0)
 		{
-			sendPacket(new ExChangeNpcState(this.getObjectId(), 0x64));
+			sendPacket(new ExChangeNpcState(getObjectId(), 0x64));
 		}
 		else if ((_curFed <= 0) && (num > 0))
 		{
-			sendPacket(new ExChangeNpcState(this.getObjectId(), 0x65));
+			sendPacket(new ExChangeNpcState(getObjectId(), 0x65));
 		}
 		_curFed = num > getMaxFed() ? getMaxFed() : num;
 	}

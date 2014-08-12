@@ -23,7 +23,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -79,14 +78,7 @@ public class JIPTextField extends JPanel implements FocusListener
 	
 	private void initIPTextField(String textIp)
 	{
-		final ActionListener nextfocusaction = new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent evt)
-			{
-				((Component) evt.getSource()).transferFocus();
-			}
-		};
+		final ActionListener nextfocusaction = evt -> ((Component) evt.getSource()).transferFocus();
 		
 		setLayout(new GridBagLayout());
 		_textFields = new JTextField[4];

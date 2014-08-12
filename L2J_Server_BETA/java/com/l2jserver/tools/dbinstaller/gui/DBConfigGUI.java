@@ -20,7 +20,6 @@ package com.l2jserver.tools.dbinstaller.gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.prefs.Preferences;
 
@@ -118,69 +117,58 @@ public class DBConfigGUI extends JFrame
 		labelDbDbse.setLabelFor(_dbDbse);
 		add(_dbDbse);
 		
-		ActionListener cancelListener = new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				System.exit(0);
-			}
-		};
+		ActionListener cancelListener = e -> System.exit(0);
 		
 		// Cancel
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(cancelListener);
 		add(btnCancel);
 		
-		ActionListener connectListener = new ActionListener()
+		ActionListener connectListener = e ->
 		{
-			@Override
-			public void actionPerformed(ActionEvent e)
+			MySqlConnect connector = new MySqlConnect(_dbHost.getText(), _dbPort.getText(), _dbUser.getText(), new String(_dbPass.getPassword()), _dbDbse.getText(), false);
+			
+			if (connector.getConnection() != null)
 			{
-				MySqlConnect connector = new MySqlConnect(_dbHost.getText(), _dbPort.getText(), _dbUser.getText(), new String(_dbPass.getPassword()), _dbDbse.getText(), false);
+				_prop.put("dbHost_" + _db, _dbHost.getText());
+				_prop.put("dbPort_" + _db, _dbPort.getText());
+				_prop.put("dbUser_" + _db, _dbUser.getText());
+				_prop.put("dbDbse_" + _db, _dbDbse.getText());
 				
-				if (connector.getConnection() != null)
+				boolean cleanInstall = false;
+				DBInstallerGUI dbi = new DBInstallerGUI(connector.getConnection());
+				setVisible(false);
+				
+				Object[] options =
 				{
-					_prop.put("dbHost_" + _db, _dbHost.getText());
-					_prop.put("dbPort_" + _db, _dbPort.getText());
-					_prop.put("dbUser_" + _db, _dbUser.getText());
-					_prop.put("dbDbse_" + _db, _dbDbse.getText());
+					"Full Install",
+					"Upgrade",
+					"Exit"
+				};
+				int n = JOptionPane.showOptionDialog(null, "Select Installation Type", "Installation Type", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+				
+				if ((n == 2) || (n == -1))
+				{
+					System.exit(0);
+				}
+				
+				if (n == 0)
+				{
+					int conf = JOptionPane.showConfirmDialog(null, "Do you really want to destroy your db?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 					
-					boolean cleanInstall = false;
-					DBInstallerGUI dbi = new DBInstallerGUI(connector.getConnection());
-					setVisible(false);
-					
-					Object[] options =
-					{
-						"Full Install",
-						"Upgrade",
-						"Exit"
-					};
-					int n = JOptionPane.showOptionDialog(null, "Select Installation Type", "Installation Type", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
-					
-					if ((n == 2) || (n == -1))
+					if (conf == 1)
 					{
 						System.exit(0);
 					}
 					
-					if (n == 0)
-					{
-						int conf = JOptionPane.showConfirmDialog(null, "Do you really want to destroy your db?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-						
-						if (conf == 1)
-						{
-							System.exit(0);
-						}
-						
-						cleanInstall = true;
-					}
-					
-					dbi.setVisible(true);
-					
-					RunTasks task = new RunTasks(dbi, _db, _dir, _cleanUp, cleanInstall);
-					task.setPriority(Thread.MAX_PRIORITY);
-					task.start();
+					cleanInstall = true;
 				}
+				
+				dbi.setVisible(true);
+				
+				RunTasks task = new RunTasks(dbi, _db, _dir, _cleanUp, cleanInstall);
+				task.setPriority(Thread.MAX_PRIORITY);
+				task.start();
 			}
 		};
 		

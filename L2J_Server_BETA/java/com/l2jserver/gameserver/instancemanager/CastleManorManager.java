@@ -197,37 +197,29 @@ public final class CastleManorManager
 	{
 		_log.info("Manor System: Manor refresh updated");
 		
-		_scheduledManorRefresh = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
+		_scheduledManorRefresh = ThreadPoolManager.getInstance().scheduleGeneral(() ->
 		{
-			@Override
-			public void run()
+			if (!isDisabled())
 			{
-				if (!isDisabled())
+				setUnderMaintenance(true);
+				_log.info("Manor System: Under maintenance mode started");
+				
+				_scheduledMaintenanceEnd = ThreadPoolManager.getInstance().scheduleGeneral(() ->
 				{
-					setUnderMaintenance(true);
-					_log.info("Manor System: Under maintenance mode started");
-					
-					_scheduledMaintenanceEnd = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
+					_log.info("Manor System: Next period started");
+					setNextPeriod();
+					try
 					{
-						@Override
-						public void run()
-						{
-							_log.info("Manor System: Next period started");
-							setNextPeriod();
-							try
-							{
-								save();
-							}
-							catch (Exception e)
-							{
-								_log.log(Level.WARNING, "Manor System: Failed to save manor data: " + e.getMessage(), e);
-							}
-							setUnderMaintenance(false);
-						}
-					}, MAINTENANCE_PERIOD);
-				}
-				updateManorRefresh();
+						save();
+					}
+					catch (Exception e)
+					{
+						_log.log(Level.WARNING, "Manor System: Failed to save manor data: " + e.getMessage(), e);
+					}
+					setUnderMaintenance(false);
+				}, MAINTENANCE_PERIOD);
 			}
+			updateManorRefresh();
 		}, getMillisToManorRefresh());
 	}
 	
@@ -235,18 +227,14 @@ public final class CastleManorManager
 	{
 		_log.info("Manor System: Manor period approve updated");
 		
-		_scheduledNextPeriodapprove = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
+		_scheduledNextPeriodapprove = ThreadPoolManager.getInstance().scheduleGeneral(() ->
 		{
-			@Override
-			public void run()
+			if (!isDisabled())
 			{
-				if (!isDisabled())
-				{
-					approveNextPeriod();
-					_log.info("Manor System: Next period approved");
-				}
-				updatePeriodApprove();
+				approveNextPeriod();
+				_log.info("Manor System: Next period approved");
 			}
+			updatePeriodApprove();
 		}, getMillisToNextPeriodApprove());
 	}
 	

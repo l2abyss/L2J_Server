@@ -151,24 +151,20 @@ public final class GameTimeController extends Thread
 			return;
 		}
 		
-		ThreadPoolManager.getInstance().executeAi(new Runnable()
+		ThreadPoolManager.getInstance().executeAi(() ->
 		{
-			@Override
-			public final void run()
+			try
 			{
-				try
+				if (Config.MOVE_BASED_KNOWNLIST)
 				{
-					if (Config.MOVE_BASED_KNOWNLIST)
-					{
-						character.getKnownList().findObjects();
-					}
-					
-					ai.notifyEvent(CtrlEvent.EVT_ARRIVED);
+					character.getKnownList().findObjects();
 				}
-				catch (final Throwable e)
-				{
-					_log.log(Level.WARNING, "", e);
-				}
+				
+				ai.notifyEvent(CtrlEvent.EVT_ARRIVED);
+			}
+			catch (final Throwable e)
+			{
+				_log.log(Level.WARNING, "", e);
 			}
 		});
 	}
@@ -189,14 +185,7 @@ public final class GameTimeController extends Thread
 		
 		if (isNight)
 		{
-			ThreadPoolManager.getInstance().executeAi(new Runnable()
-			{
-				@Override
-				public final void run()
-				{
-					DayNightSpawnManager.getInstance().notifyChangeMode();
-				}
-			});
+			ThreadPoolManager.getInstance().executeAi(() -> DayNightSpawnManager.getInstance().notifyChangeMode());
 		}
 		
 		while (true)
@@ -229,14 +218,7 @@ public final class GameTimeController extends Thread
 			{
 				isNight = !isNight;
 				
-				ThreadPoolManager.getInstance().executeAi(new Runnable()
-				{
-					@Override
-					public final void run()
-					{
-						DayNightSpawnManager.getInstance().notifyChangeMode();
-					}
-				});
+				ThreadPoolManager.getInstance().executeAi(() -> DayNightSpawnManager.getInstance().notifyChangeMode());
 			}
 		}
 	}

@@ -49,15 +49,8 @@ public class L2DynamicZone extends L2ZoneType
 			settings = new TaskZoneSettings();
 		}
 		setSettings(settings);
-		Runnable r = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				remove();
-			}
-		};
-		getSettings().setTask(ThreadPoolManager.getInstance().scheduleGeneral(r, skill.getAbnormalTime() * 1000));
+		
+		getSettings().setTask(ThreadPoolManager.getInstance().scheduleGeneral(() -> remove(), skill.getAbnormalTime() * 1000));
 	}
 	
 	@Override
