@@ -2663,7 +2663,11 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 	@Override
 	protected void onEvtAggression(L2Character target, int aggro)
 	{
-		L2Attackable me = getActiveChar();
+		final L2Attackable me = getActiveChar();
+		if (me.isDead())
+		{
+			return;
+		}
 		
 		if (target != null)
 		{
