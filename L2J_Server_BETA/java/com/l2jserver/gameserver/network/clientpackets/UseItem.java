@@ -186,7 +186,7 @@ public final class UseItem extends L2GameClientPacket
 			final long reuse = activeChar.getItemRemainingReuseTime(item.getObjectId());
 			if (reuse > 0)
 			{
-				reuseData(activeChar, item, reuseDelay);
+				reuseData(activeChar, item, reuse);
 				sendSharedGroupUpdate(activeChar, sharedReuseGroup, reuse, reuseDelay);
 				return;
 			}
