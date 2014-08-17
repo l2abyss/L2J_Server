@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.gameserver.model.Location;
-import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 /**
@@ -61,12 +60,11 @@ public final class L2SiegableHallZone extends L2ClanHallZone
 	
 	public void banishNonSiegeParticipants()
 	{
-		final TeleportWhereType type = TeleportWhereType.CLANHALL_BANISH;
 		for (L2PcInstance player : getPlayersInside())
 		{
 			if ((player != null) && player.isInHideoutSiege())
 			{
-				player.teleToLocation(type);
+				player.teleToLocation(getBanishSpawnLoc(), true);
 			}
 		}
 	}

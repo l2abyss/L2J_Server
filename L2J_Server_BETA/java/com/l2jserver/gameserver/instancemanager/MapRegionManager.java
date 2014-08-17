@@ -246,9 +246,9 @@ public final class MapRegionManager extends DocumentParser
 	{
 		Location loc;
 		
-		if (activeChar instanceof L2PcInstance)
+		if (activeChar.isPlayer())
 		{
-			L2PcInstance player = ((L2PcInstance) activeChar);
+			final L2PcInstance player = activeChar.getActingPlayer();
 			
 			Castle castle = null;
 			Fort fort = null;
@@ -371,31 +371,6 @@ public final class MapRegionManager extends DocumentParser
 							return flags.get(0).getLocation();
 						}
 					}
-				}
-			}
-			
-			if (teleportWhere == TeleportWhereType.CASTLE_BANISH)
-			{
-				castle = CastleManager.getInstance().getCastle(player);
-				if (castle != null)
-				{
-					return castle.getResidenceZone().getBanishSpawnLoc();
-				}
-			}
-			else if (teleportWhere == TeleportWhereType.FORTRESS_BANISH)
-			{
-				fort = FortManager.getInstance().getFort(activeChar);
-				if (fort != null)
-				{
-					return fort.getResidenceZone().getBanishSpawnLoc();
-				}
-			}
-			else if (teleportWhere == TeleportWhereType.CLANHALL_BANISH)
-			{
-				clanhall = ClanHallManager.getInstance().getClanHall(activeChar);
-				if (clanhall != null)
-				{
-					return clanhall.getZone().getBanishSpawnLoc();
 				}
 			}
 			

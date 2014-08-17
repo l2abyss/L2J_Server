@@ -18,7 +18,6 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 
@@ -57,10 +56,5 @@ public final class L2CastleZone extends L2ResidenceZone
 	protected void onExit(L2Character character)
 	{
 		character.setInsideZone(ZoneId.CASTLE, false);
-	}
-	
-	public void banishForeigners(int owningClanId)
-	{
-		super.banishForeigners(owningClanId, TeleportWhereType.CASTLE_BANISH);
 	}
 }
