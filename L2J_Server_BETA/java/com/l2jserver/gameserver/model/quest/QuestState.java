@@ -611,6 +611,42 @@ public final class QuestState
 	}
 	
 	/**
+	 * Gets the memo state ex.
+	 * @param slot the slot where the value was saved
+	 * @return the memo state ex
+	 */
+	public int getMemoStateEx(int slot)
+	{
+		if (isStarted())
+		{
+			return getInt("memoStateEx" + slot);
+		}
+		return 0;
+	}
+	
+	/**
+	 * Sets the memo state ex.
+	 * @param slot the slot where the value will be saved
+	 * @param value the value
+	 * @return this QuestState
+	 */
+	public QuestState setMemoStateEx(int slot, int value)
+	{
+		set("memoStateEx" + slot, String.valueOf(value));
+		return this;
+	}
+	
+	/**
+	 * Verifies if the given value is equal to the current memos state ex.
+	 * @param memoStateEx the value to verify
+	 * @return {@code true} if the values are equal, {@code false} otherwise
+	 */
+	public boolean isMemoStateEx(int memoStateEx)
+	{
+		return (getInt("memoStateEx") == memoStateEx);
+	}
+	
+	/**
 	 * Add player to get notification of characters death
 	 * @param character the {@link L2Character} object of the character to get notification of death
 	 */
