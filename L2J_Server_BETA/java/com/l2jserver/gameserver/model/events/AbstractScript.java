@@ -64,6 +64,7 @@ import com.l2jserver.gameserver.model.events.annotations.Id;
 import com.l2jserver.gameserver.model.events.annotations.Ids;
 import com.l2jserver.gameserver.model.events.annotations.NpcLevelRange;
 import com.l2jserver.gameserver.model.events.annotations.NpcLevelRanges;
+import com.l2jserver.gameserver.model.events.annotations.Priority;
 import com.l2jserver.gameserver.model.events.annotations.Range;
 import com.l2jserver.gameserver.model.events.annotations.Ranges;
 import com.l2jserver.gameserver.model.events.annotations.RegisterEvent;
@@ -171,6 +172,8 @@ public abstract class AbstractScript extends ManagedScript
 					continue;
 				}
 				
+				int priority = 0;
+				
 				// Clear the list
 				ids.clear();
 				
@@ -271,6 +274,11 @@ public abstract class AbstractScript extends ManagedScript
 							}
 						}
 					}
+					else if (annotation instanceof Priority)
+					{
+						final Priority p = (Priority) annotation;
+						priority = p.value();
+					}
 				}
 				
 				if (!ids.isEmpty())
@@ -282,7 +290,7 @@ public abstract class AbstractScript extends ManagedScript
 					_registeredIds.get(type).addAll(ids);
 				}
 				
-				registerAnnotation(method, eventType, type, ids);
+				registerAnnotation(method, eventType, type, priority, ids);
 			}
 		}
 	}
@@ -1180,12 +1188,13 @@ public abstract class AbstractScript extends ManagedScript
 	 * @param callback
 	 * @param type
 	 * @param registerType
+	 * @param priority
 	 * @param npcIds
 	 * @return
 	 */
-	protected final List<AbstractEventListener> registerAnnotation(Method callback, EventType type, ListenerRegisterType registerType, int... npcIds)
+	protected final List<AbstractEventListener> registerAnnotation(Method callback, EventType type, ListenerRegisterType registerType, int priority, int... npcIds)
 	{
-		return registerListener((container) -> new AnnotationEventListener(container, type, callback, this), registerType, npcIds);
+		return registerListener((container) -> new AnnotationEventListener(container, type, callback, this, priority), registerType, npcIds);
 	}
 	
 	/**
@@ -1193,12 +1202,13 @@ public abstract class AbstractScript extends ManagedScript
 	 * @param callback
 	 * @param type
 	 * @param registerType
+	 * @param priority
 	 * @param npcIds
 	 * @return
 	 */
-	protected final List<AbstractEventListener> registerAnnotation(Method callback, EventType type, ListenerRegisterType registerType, Collection<Integer> npcIds)
+	protected final List<AbstractEventListener> registerAnnotation(Method callback, EventType type, ListenerRegisterType registerType, int priority, Collection<Integer> npcIds)
 	{
-		return registerListener((container) -> new AnnotationEventListener(container, type, callback, this), registerType, npcIds);
+		return registerListener((container) -> new AnnotationEventListener(container, type, callback, this, priority), registerType, npcIds);
 	}
 	
 	/**
@@ -1313,10 +1323,29 @@ public abstract class AbstractScript extends ManagedScript
 					listeners.add(template.addListener(action.apply(template)));
 					break;
 				}
-				default: // Global Listener
+				case GLOBAL: // Global Listener
 				{
-					final EventDispatcher template = EventDispatcher.getInstance();
+					final ListenersContainer template = Containers.Global();
 					listeners.add(template.addListener(action.apply(template)));
+					break;
+				}
+				case GLOBAL_NPCS: // Global Npcs Listener
+				{
+					final ListenersContainer template = Containers.Npcs();
+					listeners.add(template.addListener(action.apply(template)));
+					break;
+				}
+				case GLOBAL_MONSTERS: // Global Monsters Listener
+				{
+					final ListenersContainer template = Containers.Monsters();
+					listeners.add(template.addListener(action.apply(template)));
+					break;
+				}
+				case GLOBAL_PLAYERS: // Global Players Listener
+				{
+					final ListenersContainer template = Containers.Players();
+					listeners.add(template.addListener(action.apply(template)));
+					break;
 				}
 			}
 		}
@@ -1408,10 +1437,29 @@ public abstract class AbstractScript extends ManagedScript
 					listeners.add(template.addListener(action.apply(template)));
 					break;
 				}
-				default: // Global Listener
+				case GLOBAL: // Global Listener
 				{
-					final EventDispatcher template = EventDispatcher.getInstance();
+					final ListenersContainer template = Containers.Global();
 					listeners.add(template.addListener(action.apply(template)));
+					break;
+				}
+				case GLOBAL_NPCS: // Global Npcs Listener
+				{
+					final ListenersContainer template = Containers.Npcs();
+					listeners.add(template.addListener(action.apply(template)));
+					break;
+				}
+				case GLOBAL_MONSTERS: // Global Monsters Listener
+				{
+					final ListenersContainer template = Containers.Monsters();
+					listeners.add(template.addListener(action.apply(template)));
+					break;
+				}
+				case GLOBAL_PLAYERS: // Global Players Listener
+				{
+					final ListenersContainer template = Containers.Players();
+					listeners.add(template.addListener(action.apply(template)));
+					break;
 				}
 			}
 		}

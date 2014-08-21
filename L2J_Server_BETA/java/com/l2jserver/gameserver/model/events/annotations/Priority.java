@@ -16,21 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.l2jserver.gameserver.model.events;
+package com.l2jserver.gameserver.model.events.annotations;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author UnAfraid
  */
-public enum ListenerRegisterType
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Priority
 {
-	NPC,
-	ZONE,
-	ITEM,
-	CASTLE,
-	FORTRESS,
-	OLYMPIAD,
-	GLOBAL,
-	GLOBAL_NPCS,
-	GLOBAL_MONSTERS,
-	GLOBAL_PLAYERS;
+	public int value() default 0;
 }

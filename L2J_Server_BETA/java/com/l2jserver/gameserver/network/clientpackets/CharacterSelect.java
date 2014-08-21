@@ -29,8 +29,10 @@ import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.instancemanager.PunishmentManager;
 import com.l2jserver.gameserver.model.CharSelectInfoPackage;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.events.Containers;
 import com.l2jserver.gameserver.model.events.EventDispatcher;
 import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerSelect;
+import com.l2jserver.gameserver.model.events.returns.TerminateReturn;
 import com.l2jserver.gameserver.model.punishment.PunishmentAffect;
 import com.l2jserver.gameserver.model.punishment.PunishmentType;
 import com.l2jserver.gameserver.network.L2GameClient;
@@ -138,13 +140,18 @@ public class CharacterSelect extends L2GameClientPacket
 						return; // handled in L2GameClient
 					}
 					
-					EventDispatcher.getInstance().notifyEvent(new OnPlayerSelect(cha, cha.getObjectId(), cha.getName(), getClient()));
-					
 					CharNameTable.getInstance().addName(cha);
 					
 					cha.setClient(client);
 					client.setActiveChar(cha);
 					cha.setOnlineStatus(true, true);
+					
+					final TerminateReturn terminate = EventDispatcher.getInstance().notifyEvent(new OnPlayerSelect(cha, cha.getObjectId(), cha.getName(), getClient()), Containers.Players(), TerminateReturn.class);
+					if ((terminate != null) && terminate.terminate())
+					{
+						cha.deleteMe();
+						return;
+					}
 					
 					sendPacket(new SSQInfo());
 					

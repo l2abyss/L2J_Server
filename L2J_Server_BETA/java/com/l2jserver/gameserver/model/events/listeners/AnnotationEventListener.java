@@ -36,10 +36,11 @@ public class AnnotationEventListener extends AbstractEventListener
 	private static final Logger _log = Logger.getLogger(AnnotationEventListener.class.getName());
 	private final Method _callback;
 	
-	public AnnotationEventListener(ListenersContainer container, EventType type, Method callback, Object owner)
+	public AnnotationEventListener(ListenersContainer container, EventType type, Method callback, Object owner, int priority)
 	{
 		super(container, type, owner);
 		_callback = callback;
+		setPriority(priority);
 	}
 	
 	@Override

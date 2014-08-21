@@ -31,7 +31,7 @@ import com.l2jserver.gameserver.model.events.returns.AbstractEventReturn;
 /**
  * @author UnAfraid
  */
-public final class EventDispatcher extends ListenersContainer
+public final class EventDispatcher
 {
 	private static final Logger _log = Logger.getLogger(EventDispatcher.class.getName());
 	
@@ -46,7 +46,7 @@ public final class EventDispatcher extends ListenersContainer
 	 */
 	public <T extends AbstractEventReturn> T notifyEvent(IBaseEvent event)
 	{
-		return hasListener(event.getType()) ? notifyEvent(event, null, null) : null;
+		return Containers.Global().hasListener(event.getType()) ? notifyEvent(event, null, null) : null;
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public final class EventDispatcher extends ListenersContainer
 	 */
 	public <T extends AbstractEventReturn> T notifyEvent(IBaseEvent event, Class<T> callbackClass)
 	{
-		return hasListener(event.getType()) ? notifyEvent(event, null, callbackClass) : null;
+		return Containers.Global().hasListener(event.getType()) ? notifyEvent(event, null, callbackClass) : null;
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public final class EventDispatcher extends ListenersContainer
 	 */
 	public <T extends AbstractEventReturn> T notifyEvent(IBaseEvent event, ListenersContainer container)
 	{
-		return hasListener(event.getType()) ? notifyEvent(event, container, null) : null;
+		return Containers.Global().hasListener(event.getType()) ? notifyEvent(event, container, null) : null;
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public final class EventDispatcher extends ListenersContainer
 	{
 		try
 		{
-			return hasListener(event.getType()) || container.hasListener(event.getType()) ? notifyEventImpl(event, container, callbackClass) : null;
+			return Containers.Global().hasListener(event.getType()) || container.hasListener(event.getType()) ? notifyEventImpl(event, container, callbackClass) : null;
 		}
 		catch (Exception e)
 		{
@@ -103,7 +103,7 @@ public final class EventDispatcher extends ListenersContainer
 			throw new NullPointerException("Event cannot be null!");
 		}
 		
-		boolean hasListeners = hasListener(event.getType());
+		boolean hasListeners = Containers.Global().hasListener(event.getType());
 		if (!hasListeners)
 		{
 			for (ListenersContainer container : containers)
@@ -130,7 +130,7 @@ public final class EventDispatcher extends ListenersContainer
 	 */
 	public void notifyEventAsyncDelayed(IBaseEvent event, ListenersContainer container, long delay)
 	{
-		if (hasListener(event.getType()) || container.hasListener(event.getType()))
+		if (Containers.Global().hasListener(event.getType()) || container.hasListener(event.getType()))
 		{
 			ThreadPoolManager.getInstance().scheduleEvent(() -> notifyEvent(event, container, null), delay);
 		}
@@ -145,7 +145,7 @@ public final class EventDispatcher extends ListenersContainer
 	 */
 	public void notifyEventAsyncDelayed(IBaseEvent event, ListenersContainer container, long delay, TimeUnit unit)
 	{
-		if (hasListener(event.getType()) || container.hasListener(event.getType()))
+		if (Containers.Global().hasListener(event.getType()) || container.hasListener(event.getType()))
 		{
 			ThreadPoolManager.getInstance().scheduleEvent(() -> notifyEvent(event, container, null), delay, unit);
 		}
@@ -183,7 +183,7 @@ public final class EventDispatcher extends ListenersContainer
 			// Global listener container.
 			if ((callback == null) || !callback.abort())
 			{
-				callback = notifyToListeners(getListeners(event.getType()), event, callbackClass, callback);
+				callback = notifyToListeners(Containers.Global().getListeners(event.getType()), event, callbackClass, callback);
 			}
 			
 			return callback;
@@ -219,7 +219,7 @@ public final class EventDispatcher extends ListenersContainer
 		// Global listener container.
 		if ((callback == null) || !callback.abort())
 		{
-			callback = notifyToListeners(getListeners(event.getType()), event, callbackClass, callback);
+			callback = notifyToListeners(Containers.Global().getListeners(event.getType()), event, callbackClass, callback);
 		}
 		
 		return callback;
