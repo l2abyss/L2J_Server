@@ -437,7 +437,8 @@ public abstract class L2Summon extends L2Playable
 					getOwner().setPetInvItems(false);
 				}
 			}
-			
+			abortAttack();
+			abortCast();
 			storeMe();
 			storeEffect(true);
 			if (owner != null)
