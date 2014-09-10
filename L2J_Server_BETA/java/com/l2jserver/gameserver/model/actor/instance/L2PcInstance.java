@@ -123,7 +123,6 @@ import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
-import com.l2jserver.gameserver.model.L2CommandChannel;
 import com.l2jserver.gameserver.model.L2ContactList;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.L2ManufactureItem;
@@ -9045,180 +9044,146 @@ public final class L2PcInstance extends L2Playable
 	 * Check if the requested casting is a Pc->Pc skill cast and if it's a valid pvp condition
 	 * @param target L2Object instance containing the target
 	 * @param skill L2Skill instance with the skill being casted
-	 * @return False if the skill is a pvpSkill and target is not a valid pvp target
+	 * @return {@code false} if the skill is a pvpSkill and target is not a valid pvp target, {@code true} otherwise.
 	 */
 	public boolean checkPvpSkill(L2Object target, Skill skill)
 	{
-		return checkPvpSkill(target, skill, false);
-	}
-	
-	/**
-	 * Check if the requested casting is a Pc->Pc skill cast and if it's a valid pvp condition
-	 * @param target L2Object instance containing the target
-	 * @param skill L2Skill instance with the skill being casted
-	 * @param srcIsSummon is L2Summon - caster?
-	 * @return {@code false} if the skill is a pvpSkill and target is not a valid pvp target, {@code true} otherwise.
-	 */
-	public boolean checkPvpSkill(L2Object target, Skill skill, boolean srcIsSummon)
-	{
-		final L2PcInstance targetPlayer = target != null ? target.getActingPlayer() : null;
+		if ((target == null) || (skill == null) || (this == target))
+		{
+			return false;
+		}
+		
+		final L2PcInstance targetPlayer = target.getActingPlayer();
+		
+		if (targetPlayer == null)
+		{
+			return false;
+		}
 		if (skill.isDebuff() || skill.hasEffectType(L2EffectType.STEAL_ABNORMAL) || (skill.isBad() && skill.hasEffectType(L2EffectType.DISPEL)))
 		{
-			if (this == targetPlayer)
+			final boolean isCtrlPressed = (getCurrentSkill() != null) && getCurrentSkill().isCtrlPressed();
+			
+			// Pece Zone
+			if (target.isInsideZone(ZoneId.PEACE))
 			{
 				return false;
 			}
 			
-			final boolean isCtrlPressed = (getCurrentSkill() != null) && getCurrentSkill().isCtrlPressed();
-			final boolean isInsideSiegeZone = isInsideZone(ZoneId.SIEGE);
-			if (targetPlayer != null)
+			// Siege
+			if ((getSiegeState() != 0) && (targetPlayer.getSiegeState() != 0))
 			{
-				if (isInDuel())
+				// Register for same siege
+				if (getSiegeSide() == targetPlayer.getSiegeSide())
 				{
-					if (!targetPlayer.isInDuel())
+					// Same side
+					if (getSiegeState() == targetPlayer.getSiegeState())
 					{
-						return false;
-					}
-					
-					if ((getDuelId() != 0) && (getDuelId() == targetPlayer.getDuelId()))
-					{
-						return true;
-					}
-				}
-				
-				if (isInOlympiadMode())
-				{
-					if (!targetPlayer.isInOlympiadMode())
-					{
-						return false;
-					}
-					
-					if ((getOlympiadGameId() != 0) && (getOlympiadGameId() == targetPlayer.getOlympiadGameId()))
-					{
-						return true;
-					}
-				}
-				else if (targetPlayer.isInOlympiadMode())
-				{
-					return false;
-				}
-				
-				if (targetPlayer.isInsideZone(ZoneId.PEACE))
-				{
-					return false;
-				}
-				
-				// On retail, you can't debuff party members at all unless you're in duel.
-				if (isInParty() && targetPlayer.isInParty() && (getParty().getLeader() == targetPlayer.getParty().getLeader()))
-				{
-					return false;
-				}
-				
-				final L2Party activeCharParty = getParty();
-				if (activeCharParty != null)
-				{
-					final L2CommandChannel chan = activeCharParty.getCommandChannel();
-					if ((chan != null) && chan.containsPlayer(targetPlayer))
-					{
+						sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS));
 						return false;
 					}
 				}
 				
-				// During Fortress/Castle Sieges, they can't debuff eachothers if they are in the same side.
-				if (isInsideSiegeZone && isInSiege() && (getSiegeState() != 0) && (targetPlayer.getSiegeState() != 0))
-				{
-					final Siege siege = SiegeManager.getInstance().getSiege(getX(), getY(), getZ());
-					if (siege != null)
-					{
-						if ((siege.checkIsDefender(getClan()) && siege.checkIsDefender(targetPlayer.getClan())) || (siege.checkIsAttacker(getClan()) && siege.checkIsAttacker(targetPlayer.getClan())))
-						{
-							sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS));
-							return false;
-						}
-					}
-				}
-				
-				// You can debuff anyone except party members while in an arena...
-				if (isInsideZone(ZoneId.PVP) && targetPlayer.isInsideZone(ZoneId.PVP))
+			}
+			
+			// Duel
+			if (isInDuel() && targetPlayer.isInDuel())
+			{
+				if (getDuelId() == targetPlayer.getDuelId())
 				{
 					return true;
 				}
-				
-				final L2Clan aClan = getClan();
-				final L2Clan tClan = targetPlayer.getClan();
-				
-				if ((aClan != null) && (tClan != null))
+			}
+			
+			// Party
+			if (isInParty() && targetPlayer.isInParty())
+			{
+				// Same Party
+				if (getParty().getLeader() == targetPlayer.getParty().getLeader())
 				{
-					if (aClan.isAtWarWith(tClan.getId()) && tClan.isAtWarWith(aClan.getId()))
+					if ((skill.getEffectRange() > 0) && isCtrlPressed && (getTarget() == target))
 					{
-						return true;
-					}
-				}
-				
-				if ((getClanId() != 0) && (getClanId() == targetPlayer.getClanId()))
-				{
-					return false;
-				}
-				
-				if ((getAllyId() != 0) && (getAllyId() == targetPlayer.getAllyId()))
-				{
-					return false;
-				}
-				
-				// On retail, it is impossible to debuff a "peaceful" player.
-				if ((targetPlayer.getPvpFlag() == 0) && (targetPlayer.getKarma() == 0))
-				{
-					return false;
-				}
-				
-				if ((targetPlayer.getPvpFlag() > 0) || (targetPlayer.getKarma() > 0))
-				{
-					if (!isCtrlPressed)
-					{
-						switch (skill.getTargetType())
+						if (skill.isDamage())
 						{
-							case AREA:
-							case AURA:
-							case BEHIND_AREA:
-							case BEHIND_AURA:
-							case FRONT_AREA:
-							case FRONT_AURA:
-							{
-								if ((getPvpFlag() > 0) || (getKarma() > 0))
-								{
-									return true;
-								}
-								return false;
-							}
-							default:
-								return true;
+							return true;
 						}
 					}
+					return false;
+				}
+				else if ((getParty().getCommandChannel() != null) && getParty().getCommandChannel().containsPlayer(targetPlayer))
+				{
+					if ((skill.getEffectRange() > 0) && isCtrlPressed && (getTarget() == target))
+					{
+						if (skill.isDamage())
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+			}
+			
+			// You can debuff anyone except party members while in an arena...
+			if (isInsideZone(ZoneId.PVP) && targetPlayer.isInsideZone(ZoneId.PVP))
+			{
+				return true;
+			}
+			
+			// Olympiad
+			if (isInOlympiadMode() && targetPlayer.isInOlympiadMode())
+			{
+				if (getOlympiadGameId() == targetPlayer.getOlympiadGameId())
+				{
 					return true;
 				}
 			}
-		}
-		
-		if ((targetPlayer != null) && (target != this) && !(isInDuel() && (targetPlayer.getDuelId() == getDuelId())) && !isInsideZone(ZoneId.PVP) && !targetPlayer.isInsideZone(ZoneId.PVP))
-		{
-			SkillUseHolder skilldat = getCurrentSkill();
-			SkillUseHolder skilldatpet = getCurrentPetSkill();
-			if (((skilldat != null) && !skilldat.isCtrlPressed() && skill.isBad() && !srcIsSummon) || ((skilldatpet != null) && !skilldatpet.isCtrlPressed() && skill.isBad() && srcIsSummon))
+			
+			final L2Clan aClan = getClan();
+			final L2Clan tClan = targetPlayer.getClan();
+			
+			if ((aClan != null) && (tClan != null))
 			{
-				if ((getClan() != null) && (targetPlayer.getClan() != null))
+				if (aClan.isAtWarWith(tClan.getId()) && tClan.isAtWarWith(aClan.getId()))
 				{
-					if (getClan().isAtWarWith(targetPlayer.getClan().getId()) && targetPlayer.getClan().isAtWarWith(getClan().getId()))
+					// Check if skill can do dmg
+					if ((skill.isAOE() && (skill.getEffectRange() > 0)) && isCtrlPressed && (getTarget() == target))
 					{
 						return true;
 					}
 				}
-				if ((targetPlayer.getPvpFlag() == 0) && (targetPlayer.getKarma() == 0))
+				else if ((getClanId() == targetPlayer.getClanId()) || ((getAllyId() > 0) && (getAllyId() == targetPlayer.getAllyId())))
 				{
+					// Check if skill can do dmg
+					if ((skill.getEffectRange() > 0) && isCtrlPressed && (getTarget() == target))
+					{
+						if (skill.isDamage())
+						{
+							return true;
+						}
+					}
 					return false;
 				}
 			}
+			
+			// On retail, it is impossible to debuff a "peaceful" player.
+			if ((targetPlayer.getPvpFlag() == 0) && (targetPlayer.getKarma() == 0))
+			{
+				// Check if skill can do dmg
+				if ((skill.getEffectRange() > 0) && isCtrlPressed && (getTarget() == target))
+				{
+					if (skill.isDamage())
+					{
+						return true;
+					}
+				}
+				return false;
+			}
+			
+			if ((targetPlayer.getPvpFlag() > 0) || (targetPlayer.getKarma() > 0))
+			{
+				return true;
+			}
 		}
-		return true;
+		return false;
 	}
 	
 	/**

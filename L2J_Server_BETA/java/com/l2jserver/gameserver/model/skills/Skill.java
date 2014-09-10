@@ -47,7 +47,6 @@ import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
-import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2BlockInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -406,6 +405,28 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 	public L2TargetType getTargetType()
 	{
 		return _targetType;
+	}
+	
+	public boolean isAOE()
+	{
+		switch (_targetType)
+		{
+			case AREA:
+			case AURA:
+			case BEHIND_AREA:
+			case BEHIND_AURA:
+			case FRONT_AREA:
+			case FRONT_AURA:
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean isDamage()
+	{
+		return hasEffectType(L2EffectType.MAGICAL_ATTACK, L2EffectType.PHYSICAL_ATTACK, L2EffectType.PHYSICAL_ATTACK_HP_LINK);
 	}
 	
 	public boolean isOverhit()
@@ -1189,7 +1210,7 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 						return false;
 					}
 					
-					if (!player.checkPvpSkill(targetPlayer, skill, (caster instanceof L2Summon)))
+					if (!player.checkPvpSkill(targetPlayer, skill))
 					{
 						return false;
 					}

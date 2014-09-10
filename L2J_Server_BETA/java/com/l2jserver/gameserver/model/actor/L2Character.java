@@ -6922,7 +6922,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				if (Config.ALT_VALIDATE_TRIGGER_SKILLS && isPlayable() && (target != null) && target.isPlayable())
 				{
 					final L2PcInstance player = getActingPlayer();
-					if (!player.checkPvpSkill(target, skill, isSummon()))
+					if (!player.checkPvpSkill(target, skill))
 					{
 						return;
 					}
