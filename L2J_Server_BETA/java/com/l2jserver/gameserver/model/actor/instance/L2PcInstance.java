@@ -9183,7 +9183,7 @@ public final class L2PcInstance extends L2Playable
 				return true;
 			}
 		}
-		return false;
+		return true;
 	}
 	
 	/**
