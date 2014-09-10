@@ -29,7 +29,6 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
 import com.l2jserver.gameserver.model.skills.Skill;
-import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillLaunched;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 
@@ -164,18 +163,17 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 				return;
 			}
 			
-			final L2Character caster = triggered.getTargetType() == L2TargetType.SELF ? _owner : target;
-			if ((caster == null) || caster.isSkillDisabled(triggered))
+			if ((_owner == null) || _owner.isSkillDisabled(triggered))
 			{
 				return;
 			}
 			
 			if (triggered.getReuseDelay() > 0)
 			{
-				caster.disableSkill(triggered, triggered.getReuseDelay());
+				_owner.disableSkill(triggered, triggered.getReuseDelay());
 			}
 			
-			final L2Object[] targets = triggered.getTargetList(caster, false, target);
+			final L2Object[] targets = triggered.getTargetList(_owner, false, target);
 			if (targets.length == 0)
 			{
 				return;
@@ -185,7 +183,7 @@ public class ChanceSkillList extends FastMap<IChanceSkillTrigger, ChanceConditio
 			_owner.broadcastPacket(new MagicSkillUse(_owner, target, triggered.getDisplayId(), triggered.getDisplayLevel(), 0, 0));
 			
 			// Launch the magic skill and calculate its effects
-			triggered.activateSkill(caster, targets);
+			triggered.activateSkill(_owner, targets);
 		}
 		catch (Exception e)
 		{
