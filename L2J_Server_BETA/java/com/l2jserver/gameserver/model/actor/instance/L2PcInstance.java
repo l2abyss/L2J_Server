@@ -5637,14 +5637,14 @@ public final class L2PcInstance extends L2Playable
 			return;
 		}
 		
+		// Calculate new karma. (calculate karma before incrase pk count!)
+		setKarma(getKarma() + Formulas.calculateKarmaGain(getPkKills(), target.isSummon()));
+		
 		// PK Points are increased only if you kill a player.
 		if (target.isPlayer())
 		{
 			setPkKills(getPkKills() + 1);
 		}
-		
-		// Calculate new karma.
-		setKarma(getKarma() + Formulas.calculateKarmaGain(getPkKills(), target.isSummon()));
 		
 		// Update player's UI.
 		sendPacket(new UserInfo(this));

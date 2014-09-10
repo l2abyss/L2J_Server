@@ -2110,26 +2110,32 @@ public final class Formulas
 	}
 	
 	/**
-	 * Calculates karma gain upon player kill.
+	 * Calculates karma gain upon playable kill.</br> Updated to High Five on 10.09.2014 by Zealar tested in retail.
 	 * @param pkCount
 	 * @param isSummon
 	 * @return karma points that will be added to the player.
 	 */
 	public static int calculateKarmaGain(int pkCount, boolean isSummon)
 	{
-		int result = 14400;
-		if (pkCount < 100)
-		{
-			result = (int) (((((pkCount - 1) * 0.5) + 1) * 60) * 4);
-		}
-		else if (pkCount < 180)
-		{
-			result = (int) (((((pkCount + 1) * 0.125) + 37.5) * 60) * 4);
-		}
+		int result = 43200;
 		
 		if (isSummon)
 		{
-			result = ((pkCount & 3) + result) >> 2;
+			result = (int) ((((pkCount * 0.375) + 1) * 60) * 4) - 150;
+			
+			if (result > 10800)
+			{
+				return 10800;
+			}
+		}
+		
+		if (pkCount < 99)
+		{
+			result = (int) ((((pkCount * 0.5) + 1) * 60) * 12);
+		}
+		else if (pkCount < 180)
+		{
+			result = (int) ((((pkCount * 0.125) + 37.75) * 60) * 12);
 		}
 		
 		return result;
