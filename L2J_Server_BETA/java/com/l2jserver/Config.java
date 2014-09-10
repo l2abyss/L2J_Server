@@ -74,6 +74,7 @@ public final class Config
 	// Constants
 	// --------------------------------------------------
 	public static final String EOL = System.getProperty("line.separator");
+	
 	// --------------------------------------------------
 	// L2J Property File Definitions
 	// --------------------------------------------------
