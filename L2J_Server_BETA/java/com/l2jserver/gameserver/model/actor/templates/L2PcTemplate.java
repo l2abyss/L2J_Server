@@ -23,12 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.l2jserver.gameserver.datatables.ExperienceTable;
-import com.l2jserver.gameserver.datatables.InitialEquipmentData;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
-import com.l2jserver.gameserver.model.items.PcItemTemplate;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -51,7 +49,6 @@ public class L2PcTemplate extends L2CharTemplate
 	
 	private final int _baseSafeFallHeight;
 	
-	private final List<PcItemTemplate> _initialEquipment;
 	private final List<Location> _creationPoints;
 	private final Map<Integer, Integer> _baseSlotDef;
 	
@@ -85,8 +82,6 @@ public class L2PcTemplate extends L2CharTemplate
 		_fCollisionHeightFemale = set.getDouble("collisionFemaleheight");
 		
 		_baseSafeFallHeight = set.getInt("baseSafeFall", 333);
-		
-		_initialEquipment = InitialEquipmentData.getInstance().getEquipmentList(_classId);
 		_creationPoints = creationPoints;
 	}
 	
@@ -234,21 +229,5 @@ public class L2PcTemplate extends L2CharTemplate
 	public int getSafeFallHeight()
 	{
 		return _baseSafeFallHeight;
-	}
-	
-	/**
-	 * @return the initial equipment for this Pc template.
-	 */
-	public List<PcItemTemplate> getInitialEquipment()
-	{
-		return _initialEquipment;
-	}
-	
-	/**
-	 * @return {@code true} if this Pc template has an initial equipment associated, {@code false} otherwise.
-	 */
-	public boolean hasInitialEquipment()
-	{
-		return _initialEquipment != null;
 	}
 }
