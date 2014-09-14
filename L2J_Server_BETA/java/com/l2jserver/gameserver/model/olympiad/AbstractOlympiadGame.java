@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
-import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
@@ -229,15 +228,6 @@ public abstract class AbstractOlympiadGame
 			// Force the character to be visible
 			player.setInvisible(false);
 			
-			// Remove Hero Skills
-			if (player.isHero())
-			{
-				for (Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
-				{
-					player.removeSkill(skill, false);
-				}
-			}
-			
 			// Heal Player fully
 			player.setCurrentCp(player.getMaxCp());
 			player.setCurrentHp(player.getMaxHp());
@@ -377,17 +367,8 @@ public abstract class AbstractOlympiadGame
 				{
 					FortManager.getInstance().getFortByOwner(player.getClan()).giveResidentialSkills(player);
 				}
+				player.sendSkillList();
 			}
-			
-			// Add Hero Skills
-			if (player.isHero())
-			{
-				for (Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
-				{
-					player.addSkill(skill, false);
-				}
-			}
-			player.sendSkillList();
 			
 			// heal again after adding clan skills
 			player.setCurrentCp(player.getMaxCp());
