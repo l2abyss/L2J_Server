@@ -18,6 +18,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -28,6 +29,7 @@ import java.util.regex.PatternSyntaxException;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
+import com.l2jserver.gameserver.datatables.InitialEquipmentData;
 import com.l2jserver.gameserver.datatables.InitialShortcutData;
 import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
@@ -272,9 +274,10 @@ public final class CharacterCreate extends L2GameClientPacket
 			newChar.getStat().addSp(Config.STARTING_SP);
 		}
 		
-		if (template.hasInitialEquipment())
+		final List<PcItemTemplate> initialItems = InitialEquipmentData.getInstance().getEquipmentList(newChar.getClassId());
+		if (initialItems != null)
 		{
-			for (PcItemTemplate ie : template.getInitialEquipment())
+			for (PcItemTemplate ie : initialItems)
 			{
 				final L2ItemInstance item = newChar.getInventory().addItem("Init", ie.getId(), ie.getCount(), newChar, null);
 				if (item == null)
