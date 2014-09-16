@@ -160,7 +160,7 @@ public class L2SiegeGuardAI extends L2CharacterAI implements Runnable
 		if (target instanceof L2Playable)
 		{
 			// Check if the target isn't in silent move mode AND too far (>100)
-			if (((L2Playable) target).isSilentMoving() && !_actor.isInsideRadius(target, 250, false, false))
+			if (((L2Playable) target).isSilentMovingAffected() && !_actor.isInsideRadius(target, 250, false, false))
 			{
 				return false;
 			}

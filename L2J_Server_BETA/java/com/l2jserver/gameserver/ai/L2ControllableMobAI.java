@@ -422,7 +422,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 		if (target.isPlayable())
 		{
 			// Check if the target isn't in silent move mode
-			if (((L2Playable) target).isSilentMoving())
+			if (((L2Playable) target).isSilentMovingAffected())
 			{
 				return false;
 			}

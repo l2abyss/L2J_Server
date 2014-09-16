@@ -654,6 +654,11 @@ public class L2PetInstance extends L2Summon
 	@Override
 	public boolean doDie(L2Character killer)
 	{
+		L2PcInstance owner = getOwner();
+		if ((owner != null) && !owner.isInDuel() && (!isInsideZone(ZoneId.PVP) || isInsideZone(ZoneId.SIEGE)))
+		{
+			deathPenalty();
+		}
 		if (!super.doDie(killer, true))
 		{
 			return false;
@@ -662,11 +667,6 @@ public class L2PetInstance extends L2Summon
 		sendPacket(SystemMessageId.MAKE_SURE_YOU_RESSURECT_YOUR_PET_WITHIN_24_HOURS);
 		DecayTaskManager.getInstance().add(this);
 		// do not decrease exp if is in duel, arena
-		L2PcInstance owner = getOwner();
-		if ((owner != null) && !owner.isInDuel() && (!isInsideZone(ZoneId.PVP) || isInsideZone(ZoneId.SIEGE)))
-		{
-			deathPenalty();
-		}
 		return true;
 	}
 	

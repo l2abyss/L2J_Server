@@ -34,6 +34,7 @@ import com.l2jserver.gameserver.model.events.impl.character.OnCreatureKill;
 import com.l2jserver.gameserver.model.events.returns.TerminateReturn;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.skills.Skill;
+import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 
 /**
  * This class represents all Playable characters in the world.<br>
@@ -130,30 +131,39 @@ public abstract class L2Playable extends L2Character
 		// Stop HP/MP/CP Regeneration task
 		getStatus().stopHpMpRegeneration();
 		
-		// Stop all active skills effects in progress on the L2Character,
-		// if the Character isn't affected by Soul of The Phoenix or Salvation
-		if (isPhoenixBlessed())
+		if (isCharmOfLuckAffected())
 		{
-			if (isCharmOfLuckAffected())
-			{
-				stopEffects(L2EffectType.CHARM_OF_LUCK);
-			}
-			if (isNoblesseBlessed())
-			{
-				stopEffects(L2EffectType.NOBLESSE_BLESSING);
-			}
+			stopEffects(L2EffectType.CHARM_OF_LUCK);
 		}
-		// Same thing if the Character isn't a Noblesse Blessed L2Playable
-		else if (isNoblesseBlessed())
+		
+		boolean deleteBuffs = true;
+		
+		if (isNoblesseBlessedAffected())
 		{
 			stopEffects(L2EffectType.NOBLESSE_BLESSING);
+			deleteBuffs = false;
+		}
+		if (isResurrectSpecialAffected())
+		{
+			stopEffects(L2EffectType.RESURRECTION_SPECIAL);
+			deleteBuffs = false;
+		}
+		if (isPlayer())
+		{
+			L2PcInstance activeChar = getActingPlayer();
 			
-			if (isCharmOfLuckAffected())
+			if (activeChar.hasCharmOfCourage())
 			{
-				stopEffects(L2EffectType.CHARM_OF_LUCK);
+				if (activeChar.isInSiege())
+				{
+					getActingPlayer().reviveRequest(getActingPlayer(), null, false, 0);
+				}
+				activeChar.setCharmOfCourage(false);
+				activeChar.sendPacket(new EtcStatusUpdate(activeChar));
 			}
 		}
-		else
+		
+		if (deleteBuffs)
 		{
 			stopAllEffectsExceptThoseThatLastThroughDeath();
 		}
@@ -168,6 +178,7 @@ public abstract class L2Playable extends L2Character
 		
 		// Notify Quest of L2Playable's death
 		L2PcInstance actingPlayer = getActingPlayer();
+		
 		if (!actingPlayer.isNotifyQuestOfDeathEmpty())
 		{
 			for (QuestState qs : actingPlayer.getNotifyQuestOfDeath())
@@ -197,7 +208,7 @@ public abstract class L2Playable extends L2Character
 		
 		// Notify L2Character AI
 		getAI().notifyEvent(CtrlEvent.EVT_DEAD);
-		
+		super.updateEffectIcons();
 		return true;
 	}
 	
@@ -273,21 +284,23 @@ public abstract class L2Playable extends L2Character
 	}
 	
 	// Support for Noblesse Blessing skill, where buffs are retained after resurrect
-	public final boolean isNoblesseBlessed()
+	public final boolean isNoblesseBlessedAffected()
 	{
 		return isAffected(EffectFlag.NOBLESS_BLESSING);
 	}
 	
-	// Support for Soul of the Phoenix and Salvation skills
-	public final boolean isPhoenixBlessed()
+	/**
+	 * @return {@code true} if char can resurrect by himself, {@code false} otherwise
+	 */
+	public final boolean isResurrectSpecialAffected()
 	{
-		return isAffected(EffectFlag.PHOENIX_BLESSING);
+		return isAffected(EffectFlag.RESURRECTION_SPECIAL);
 	}
 	
 	/**
 	 * @return {@code true} if the Silent Moving mode is active, {@code false} otherwise
 	 */
-	public boolean isSilentMoving()
+	public boolean isSilentMovingAffected()
 	{
 		return isAffected(EffectFlag.SILENT_MOVE);
 	}

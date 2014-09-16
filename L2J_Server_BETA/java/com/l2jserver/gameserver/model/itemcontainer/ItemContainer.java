@@ -102,6 +102,21 @@ public abstract class ItemContainer
 	}
 	
 	/**
+	 * @return true if player got item for self resurrection
+	 */
+	public final boolean haveItemForSelfResurrection()
+	{
+		for (L2ItemInstance item : _items)
+		{
+			if ((item != null) && (item.getItem().isAllowSelfResurrection()))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * @param itemId the item Id
 	 * @return the items list from inventory by using its itemId
 	 */

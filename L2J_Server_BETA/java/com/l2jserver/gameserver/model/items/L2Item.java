@@ -137,6 +137,7 @@ public abstract class L2Item extends ListenersContainer implements IIdentifiable
 	private final boolean _elementable;
 	private final boolean _questItem;
 	private final boolean _freightable;
+	private final boolean _allow_self_resurrection;
 	private final boolean _is_oly_restricted;
 	private final boolean _for_npc;
 	private final boolean _common;
@@ -193,6 +194,7 @@ public abstract class L2Item extends ListenersContainer implements IIdentifiable
 		_enchantable = set.getInt("enchant_enabled", 0);
 		_questItem = set.getBoolean("is_questitem", false);
 		_freightable = set.getBoolean("is_freightable", false);
+		_allow_self_resurrection = set.getBoolean("allow_self_resurrection", false);
 		_is_oly_restricted = set.getBoolean("is_oly_restricted", false);
 		_for_npc = set.getBoolean("for_npc", false);
 		
@@ -910,6 +912,11 @@ public abstract class L2Item extends ListenersContainer implements IIdentifiable
 	public boolean isFreightable()
 	{
 		return _freightable;
+	}
+	
+	public boolean isAllowSelfResurrection()
+	{
+		return _allow_self_resurrection;
 	}
 	
 	public boolean isOlyRestrictedItem()
