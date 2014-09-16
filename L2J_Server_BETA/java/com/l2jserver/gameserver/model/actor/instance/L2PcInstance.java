@@ -8981,8 +8981,9 @@ public final class L2PcInstance extends L2Playable
 			case SELF:
 				break;
 			default:
-				if (!checkPvpSkill(target, skill) && !getAccessLevel().allowPeaceAttack())
+				if (!checkPvpSkill(target, skill) && !getAccessLevel().allowPeaceAttack() && target.isPlayable())
 				{
+					
 					// Send a System Message to the L2PcInstance
 					sendPacket(SystemMessageId.TARGET_IS_INCORRECT);
 					
@@ -9048,19 +9049,21 @@ public final class L2PcInstance extends L2Playable
 	 */
 	public boolean checkPvpSkill(L2Object target, Skill skill)
 	{
-		if ((target == null) || (skill == null) || (this == target))
+		if ((skill == null) || (target == null))
 		{
 			return false;
 		}
 		
-		final L2PcInstance targetPlayer = target.getActingPlayer();
-		
-		if (targetPlayer == null)
-		{
-			return false;
-		}
 		if (skill.isDebuff() || skill.hasEffectType(L2EffectType.STEAL_ABNORMAL) || (skill.isBad() && skill.hasEffectType(L2EffectType.DISPEL)))
 		{
+			
+			final L2PcInstance targetPlayer = target.getActingPlayer();
+			
+			if ((targetPlayer == null) || (this == target))
+			{
+				return false;
+			}
+			
 			final boolean isCtrlPressed = (getCurrentSkill() != null) && getCurrentSkill().isCtrlPressed();
 			
 			// Pece Zone
@@ -9078,7 +9081,7 @@ public final class L2PcInstance extends L2Playable
 					// Same side
 					if (getSiegeState() == targetPlayer.getSiegeState())
 					{
-						sendPacket(SystemMessage.getSystemMessage(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS));
+						sendPacket(SystemMessageId.FORCED_ATTACK_IS_IMPOSSIBLE_AGAINST_SIEGE_SIDE_TEMPORARY_ALLIED_MEMBERS);
 						return false;
 					}
 				}
@@ -9182,6 +9185,7 @@ public final class L2PcInstance extends L2Playable
 			{
 				return true;
 			}
+			return false;
 		}
 		return true;
 	}

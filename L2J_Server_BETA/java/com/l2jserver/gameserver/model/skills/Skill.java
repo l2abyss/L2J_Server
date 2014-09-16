@@ -426,7 +426,7 @@ public final class Skill implements IChanceSkillTrigger, IIdentifiable
 	
 	public boolean isDamage()
 	{
-		return hasEffectType(L2EffectType.MAGICAL_ATTACK, L2EffectType.PHYSICAL_ATTACK, L2EffectType.PHYSICAL_ATTACK_HP_LINK);
+		return hasEffectType(L2EffectType.MAGICAL_ATTACK, L2EffectType.HP_DRAIN, L2EffectType.PHYSICAL_ATTACK, L2EffectType.PHYSICAL_ATTACK_HP_LINK);
 	}
 	
 	public boolean isOverhit()
