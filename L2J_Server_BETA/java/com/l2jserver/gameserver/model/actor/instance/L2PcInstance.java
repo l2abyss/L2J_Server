@@ -9051,7 +9051,7 @@ public final class L2PcInstance extends L2Playable
 			return false;
 		}
 		
-		if (skill.isDebuff() || skill.hasEffectType(L2EffectType.STEAL_ABNORMAL) || (skill.isBad() && skill.hasEffectType(L2EffectType.DISPEL)))
+		if (skill.isDebuff() || skill.hasEffectType(L2EffectType.STEAL_ABNORMAL) || skill.isBad())
 		{
 			
 			final L2PcInstance targetPlayer = target.getActingPlayer();
