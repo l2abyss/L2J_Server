@@ -751,16 +751,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 					{
 						L2Npc called = (L2Npc) obj;
 						
-						boolean sevenSignFaction = false;
-						
-						// TODO: Unhardcode this by AI scripts (DrHouse)
-						// Catacomb mobs should assist lilim and nephilim other than dungeon
-						if (getActiveChar().getTemplate().isClan("c_dungeon_clan", "c_dungeon_lilim", "c_dungeon_nephi") && called.getTemplate().isClan("c_dungeon_clan", "c_dungeon_lilim", "c_dungeon_nephi"))
-						{
-							sevenSignFaction = true;
-						}
-						
-						if (!getActiveChar().getTemplate().isClan(called.getTemplate().getClans()) && !sevenSignFaction)
+						if (!getActiveChar().getTemplate().isClan(called.getTemplate().getClans()))
 						{
 							continue;
 						}
@@ -785,7 +776,7 @@ public class L2AttackableAI extends L2CharacterAI implements Runnable
 									
 									// By default, when a faction member calls for help, attack the caller's attacker.
 									// Notify the AI with EVT_AGGRESSION
-									npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, originalAttackTarget, 1);
+									called.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, originalAttackTarget, 1);
 									EventDispatcher.getInstance().notifyEventAsync(new OnAttackableFactionCall(called, getActiveChar(), originalAttackTarget.getActingPlayer(), originalAttackTarget.isSummon()), called);
 								}
 								else if ((called instanceof L2Attackable) && (getAttackTarget() != null) && (called.getAI()._intention != CtrlIntention.AI_INTENTION_ATTACK))
