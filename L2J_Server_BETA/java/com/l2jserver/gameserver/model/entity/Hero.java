@@ -319,7 +319,7 @@ public class Hero
 				int charTwoClass;
 				int winner;
 				long start;
-				int time;
+				long time;
 				int classed;
 				while (rset.next())
 				{
@@ -329,7 +329,7 @@ public class Hero
 					charTwoClass = rset.getInt("charTwoClass");
 					winner = rset.getInt("winner");
 					start = rset.getLong("start");
-					time = rset.getInt("time");
+					time = rset.getLong("time");
 					classed = rset.getInt("classed");
 					
 					if (charId == charOneId)
