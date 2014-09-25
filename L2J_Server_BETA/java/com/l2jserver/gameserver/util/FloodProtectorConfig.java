@@ -47,7 +47,7 @@ public final class FloodProtectorConfig
 	/**
 	 * For how long should the char/account be punished.
 	 */
-	public int PUNISHMENT_TIME;
+	public long PUNISHMENT_TIME;
 	
 	/**
 	 * Creates new instance of FloodProtectorConfig.
