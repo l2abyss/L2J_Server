@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,7 +20,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.model.Elementals;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -93,7 +92,7 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 				{
 					sm = SystemMessage.getSystemMessage(SystemMessageId.S1_S2_ELEMENTAL_POWER_REMOVED);
 				}
-				sm.addNumber(targetItem.getEnchantLevel());
+				sm.addInt(targetItem.getEnchantLevel());
 				sm.addItemName(targetItem);
 				if (targetItem.isArmor())
 				{
@@ -131,7 +130,7 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 	{
 		switch (item.getItem().getCrystalType())
 		{
-			case L2Item.CRYSTAL_S:
+			case S:
 				if (item.getItem() instanceof L2Weapon)
 				{
 					_price = 50000;
@@ -141,7 +140,7 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 					_price = 40000;
 				}
 				break;
-			case L2Item.CRYSTAL_S80:
+			case S80:
 				if (item.getItem() instanceof L2Weapon)
 				{
 					_price = 100000;
@@ -151,7 +150,7 @@ public class RequestExRemoveItemAttribute extends L2GameClientPacket
 					_price = 80000;
 				}
 				break;
-			case L2Item.CRYSTAL_S84:
+			case S84:
 				if (item.getItem() instanceof L2Weapon)
 				{
 					_price = 200000;

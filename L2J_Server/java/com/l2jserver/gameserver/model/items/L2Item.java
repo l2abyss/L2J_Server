@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,10 +20,9 @@ package com.l2jserver.gameserver.model.items;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
-
-import javolution.util.FastList;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
@@ -35,17 +34,19 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.conditions.Condition;
-import com.l2jserver.gameserver.model.conditions.ConditionLogicOr;
-import com.l2jserver.gameserver.model.conditions.ConditionPetType;
-import com.l2jserver.gameserver.model.effects.EffectTemplate;
-import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.AbstractEffect;
+import com.l2jserver.gameserver.model.events.ListenersContainer;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.type.L2ActionType;
-import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
-import com.l2jserver.gameserver.model.items.type.L2ItemType;
+import com.l2jserver.gameserver.model.items.type.ActionType;
+import com.l2jserver.gameserver.model.items.type.CrystalType;
+import com.l2jserver.gameserver.model.items.type.EtcItemType;
+import com.l2jserver.gameserver.model.items.type.ItemType;
+import com.l2jserver.gameserver.model.items.type.MaterialType;
 import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
 import com.l2jserver.gameserver.model.stats.Env;
@@ -61,9 +62,8 @@ import com.l2jserver.util.StringUtil;
  * <li>L2EtcItem</li>
  * <li>L2Weapon</li>
  * </ul>
- * @version $Revision: 1.7.2.2.2.5 $ $Date: 2005/04/06 18:25:18 $
  */
-public abstract class L2Item
+public abstract class L2Item extends ListenersContainer implements IIdentifiable
 {
 	protected static final Logger _log = Logger.getLogger(L2Item.class.getName());
 	
@@ -77,14 +77,6 @@ public abstract class L2Item
 	public static final int TYPE2_QUEST = 3;
 	public static final int TYPE2_MONEY = 4;
 	public static final int TYPE2_OTHER = 5;
-	
-	public static final int STRIDER = 0x1;
-	public static final int GROWN_UP_WOLF_GROUP = 0x2;
-	public static final int HATCHLING_GROUP = 0x4;
-	public static final int ALL_WOLF_GROUP = 0x8;
-	public static final int BABY_PET_GROUP = 0x16;
-	public static final int UPGRADE_BABY_PET_GROUP = 0x32;
-	public static final int ITEM_EQUIP_PET_GROUP = 0x64;
 	
 	public static final int SLOT_NONE = 0x0000;
 	public static final int SLOT_UNDERWEAR = 0x0001;
@@ -121,85 +113,14 @@ public abstract class L2Item
 	
 	public static final int SLOT_MULTI_ALLWEAPON = SLOT_LR_HAND | SLOT_R_HAND;
 	
-	public static final int MATERIAL_STEEL = 0x00; // ??
-	public static final int MATERIAL_FINE_STEEL = 0x01; // ??
-	public static final int MATERIAL_BLOOD_STEEL = 0x02; // ??
-	public static final int MATERIAL_BRONZE = 0x03; // ??
-	public static final int MATERIAL_SILVER = 0x04; // ??
-	public static final int MATERIAL_GOLD = 0x05; // ??
-	public static final int MATERIAL_MITHRIL = 0x06; // ??
-	public static final int MATERIAL_ORIHARUKON = 0x07; // ??
-	public static final int MATERIAL_PAPER = 0x08; // ??
-	public static final int MATERIAL_WOOD = 0x09; // ??
-	public static final int MATERIAL_CLOTH = 0x0a; // ??
-	public static final int MATERIAL_LEATHER = 0x0b; // ??
-	public static final int MATERIAL_BONE = 0x0c; // ??
-	public static final int MATERIAL_HORN = 0x0d; // ??
-	public static final int MATERIAL_DAMASCUS = 0x0e; // ??
-	public static final int MATERIAL_ADAMANTAITE = 0x0f; // ??
-	public static final int MATERIAL_CHRYSOLITE = 0x10; // ??
-	public static final int MATERIAL_CRYSTAL = 0x11; // ??
-	public static final int MATERIAL_LIQUID = 0x12; // ??
-	public static final int MATERIAL_SCALE_OF_DRAGON = 0x13; // ??
-	public static final int MATERIAL_DYESTUFF = 0x14; // ??
-	public static final int MATERIAL_COBWEB = 0x15; // ??
-	public static final int MATERIAL_SEED = 0x16; // ??
-	public static final int MATERIAL_FISH = 0x17; // ??
-	public static final int MATERIAL_RUNE_XP = 0x18; // ??
-	public static final int MATERIAL_RUNE_SP = 0x19; // ??
-	public static final int MATERIAL_RUNE_PENALTY = 0x20; // ??
-	
-	public static final int CRYSTAL_NONE = 0x00; // ??
-	public static final int CRYSTAL_D = 0x01; // ??
-	public static final int CRYSTAL_C = 0x02; // ??
-	public static final int CRYSTAL_B = 0x03; // ??
-	public static final int CRYSTAL_A = 0x04; // ??
-	public static final int CRYSTAL_S = 0x05; // ??
-	public static final int CRYSTAL_S80 = 0x06; // ??
-	public static final int CRYSTAL_S84 = 0x07; // ??
-	
-	private static final int[] CRYSTAL_ITEM_ID =
-	{
-		0,
-		1458,
-		1459,
-		1460,
-		1461,
-		1462,
-		1462,
-		1462
-	};
-	private static final int[] CRYSTAL_ENCHANT_BONUS_ARMOR =
-	{
-		0,
-		11,
-		6,
-		11,
-		19,
-		25,
-		25,
-		25
-	};
-	private static final int[] CRYSTAL_ENCHANT_BONUS_WEAPON =
-	{
-		0,
-		90,
-		45,
-		67,
-		144,
-		250,
-		250,
-		250
-	};
-	
 	private final int _itemId;
 	private final int _displayId;
 	private final String _name;
 	private final String _icon;
 	private final int _weight;
 	private final boolean _stackable;
-	private final int _materialType;
-	private final int _crystalType; // default to none-grade
+	private final MaterialType _materialType;
+	private final CrystalType _crystalType;
 	private final int _equipReuseDelay;
 	private final int _duration;
 	private final int _time;
@@ -216,28 +137,27 @@ public abstract class L2Item
 	private final boolean _elementable;
 	private final boolean _questItem;
 	private final boolean _freightable;
+	private final boolean _allow_self_resurrection;
 	private final boolean _is_oly_restricted;
 	private final boolean _for_npc;
 	private final boolean _common;
 	private final boolean _heroItem;
 	private final boolean _pvpItem;
+	private final boolean _immediate_effect;
 	private final boolean _ex_immediate_effect;
 	private final int _defaultEnchantLevel;
-	private final L2ActionType _defaultAction;
+	private final ActionType _defaultAction;
 	
 	protected int _type1; // needed for item list (inventory)
 	protected int _type2; // different lists for armor, weapon, etc
 	protected Elementals[] _elementals = null;
-	protected FuncTemplate[] _funcTemplates;
-	protected EffectTemplate[] _effectTemplates;
+	protected List<FuncTemplate> _funcTemplates;
+	protected List<AbstractEffect> _effects;
 	protected List<Condition> _preConditions;
 	private SkillHolder[] _skillHolder;
 	private SkillHolder _unequipSkill = null;
 	
-	protected static final Func[] _emptyFunctionSet = new Func[0];
-	protected static final L2Effect[] _emptyEffectSet = new L2Effect[0];
-	
-	private final List<Quest> _questEvents = new FastList<>();
+	private List<Quest> _questEvents;
 	private final int _useSkillDisTime;
 	private final int _reuseDelay;
 	private final int _sharedReuseGroup;
@@ -249,84 +169,43 @@ public abstract class L2Item
 	 */
 	protected L2Item(StatsSet set)
 	{
-		_itemId = set.getInteger("item_id");
-		_displayId = set.getInteger("displayId", _itemId);
+		_itemId = set.getInt("item_id");
+		_displayId = set.getInt("displayId", _itemId);
 		_name = set.getString("name");
 		_icon = set.getString("icon", null);
-		_weight = set.getInteger("weight", 0);
-		_materialType = ItemTable._materials.get(set.getString("material", "steel")); // default is steel, yeah and what?
-		_equipReuseDelay = set.getInteger("equip_reuse_delay", 0) * 1000;
-		_duration = set.getInteger("duration", -1);
-		_time = set.getInteger("time", -1);
-		_autoDestroyTime = set.getInteger("auto_destroy_time", -1) * 1000;
+		_weight = set.getInt("weight", 0);
+		_materialType = set.getEnum("material", MaterialType.class, MaterialType.STEEL);
+		_equipReuseDelay = set.getInt("equip_reuse_delay", 0) * 1000;
+		_duration = set.getInt("duration", -1);
+		_time = set.getInt("time", -1);
+		_autoDestroyTime = set.getInt("auto_destroy_time", -1) * 1000;
 		_bodyPart = ItemTable._slots.get(set.getString("bodypart", "none"));
-		_referencePrice = set.getInteger("price", 0);
-		_crystalType = ItemTable._crystalTypes.get(set.getString("crystal_type", "none")); // default to none-grade
-		_crystalCount = set.getInteger("crystal_count", 0);
+		_referencePrice = set.getInt("price", 0);
+		_crystalType = set.getEnum("crystal_type", CrystalType.class, CrystalType.NONE);
+		_crystalCount = set.getInt("crystal_count", 0);
 		
-		_stackable = set.getBool("is_stackable", false);
-		_sellable = set.getBool("is_sellable", true);
-		_dropable = set.getBool("is_dropable", true);
-		_destroyable = set.getBool("is_destroyable", true);
-		_tradeable = set.getBool("is_tradable", true);
-		_depositable = set.getBool("is_depositable", true);
-		_elementable = set.getBool("element_enabled", false);
-		_enchantable = set.getInteger("enchant_enabled", 0);
-		_questItem = set.getBool("is_questitem", false);
-		_freightable = set.getBool("is_freightable", false);
-		_is_oly_restricted = set.getBool("is_oly_restricted", false);
-		_for_npc = set.getBool("for_npc", false);
+		_stackable = set.getBoolean("is_stackable", false);
+		_sellable = set.getBoolean("is_sellable", true);
+		_dropable = set.getBoolean("is_dropable", true);
+		_destroyable = set.getBoolean("is_destroyable", true);
+		_tradeable = set.getBoolean("is_tradable", true);
+		_depositable = set.getBoolean("is_depositable", true);
+		_elementable = set.getBoolean("element_enabled", false);
+		_enchantable = set.getInt("enchant_enabled", 0);
+		_questItem = set.getBoolean("is_questitem", false);
+		_freightable = set.getBoolean("is_freightable", false);
+		_allow_self_resurrection = set.getBoolean("allow_self_resurrection", false);
+		_is_oly_restricted = set.getBoolean("is_oly_restricted", false);
+		_for_npc = set.getBoolean("for_npc", false);
 		
-		// _immediate_effect - herb
-		_ex_immediate_effect = set.getBool("ex_immediate_effect", false);
+		_immediate_effect = set.getBoolean("immediate_effect", false);
+		_ex_immediate_effect = set.getBoolean("ex_immediate_effect", false);
 		
-		// used for custom type select
-		_defaultAction = set.getEnum("default_action", L2ActionType.class, L2ActionType.none);
-		_useSkillDisTime = set.getInteger("useSkillDisTime", 0);
-		_defaultEnchantLevel = set.getInteger("enchanted", 0);
-		_reuseDelay = set.getInteger("reuse_delay", 0);
-		_sharedReuseGroup = set.getInteger("shared_reuse_group", 0);
-		
-		// TODO: This should be done with proper conditions and a categoryData.xml file.
-		String equip_condition = set.getString("equip_condition", null);
-		if (equip_condition != null)
-		{
-			// pet conditions
-			ConditionLogicOr cond = new ConditionLogicOr();
-			if (equip_condition.contains("strider"))
-			{
-				cond.add(new ConditionPetType(STRIDER));
-			}
-			if (equip_condition.contains("grown_up_wolf_group"))
-			{
-				cond.add(new ConditionPetType(GROWN_UP_WOLF_GROUP));
-			}
-			if (equip_condition.contains("hatchling_group"))
-			{
-				cond.add(new ConditionPetType(HATCHLING_GROUP));
-			}
-			if (equip_condition.contains("all_wolf_group"))
-			{
-				cond.add(new ConditionPetType(ALL_WOLF_GROUP));
-			}
-			if (equip_condition.contains("baby_pet_group"))
-			{
-				cond.add(new ConditionPetType(BABY_PET_GROUP));
-			}
-			if (equip_condition.contains("upgrade_baby_pet_group"))
-			{
-				cond.add(new ConditionPetType(UPGRADE_BABY_PET_GROUP));
-			}
-			if (equip_condition.contains("item_equip_pet_group"))
-			{
-				cond.add(new ConditionPetType(ITEM_EQUIP_PET_GROUP));
-			}
-			
-			if (cond.conditions.length > 0)
-			{
-				attach(cond);
-			}
-		}
+		_defaultAction = set.getEnum("default_action", ActionType.class, ActionType.NONE);
+		_useSkillDisTime = set.getInt("useSkillDisTime", 0);
+		_defaultEnchantLevel = set.getInt("enchanted", 0);
+		_reuseDelay = set.getInt("reuse_delay", 0);
+		_sharedReuseGroup = set.getInt("shared_reuse_group", 0);
 		
 		String skills = set.getString("item_skill", null);
 		if (skills != null)
@@ -407,7 +286,16 @@ public abstract class L2Item
 	 * Returns the itemType.
 	 * @return Enum
 	 */
-	public abstract L2ItemType getItemType();
+	public abstract ItemType getItemType();
+	
+	/**
+	 * Verifies if the item is a magic weapon.
+	 * @return {@code true} if the weapon is magic, {@code false} otherwise
+	 */
+	public boolean isMagicWeapon()
+	{
+		return false;
+	}
 	
 	/**
 	 * @return the _equipReuseDelay
@@ -447,7 +335,8 @@ public abstract class L2Item
 	 * Returns the ID of the item
 	 * @return int
 	 */
-	public final int getItemId()
+	@Override
+	public final int getId()
 	{
 		return _itemId;
 	}
@@ -465,9 +354,9 @@ public abstract class L2Item
 	
 	/**
 	 * Return the type of material of the item
-	 * @return int
+	 * @return MaterialType
 	 */
-	public final int getMaterialType()
+	public final MaterialType getMaterialType()
 	{
 		return _materialType;
 	}
@@ -496,25 +385,25 @@ public abstract class L2Item
 	 */
 	public final boolean isCrystallizable()
 	{
-		return (_crystalType != L2Item.CRYSTAL_NONE) && (_crystalCount > 0);
+		return (_crystalType != CrystalType.NONE) && (_crystalCount > 0);
 	}
 	
 	/**
 	 * Return the type of crystal if item is crystallizable
-	 * @return int
+	 * @return CrystalType
 	 */
-	public final int getCrystalType()
+	public final CrystalType getCrystalType()
 	{
 		return _crystalType;
 	}
 	
 	/**
-	 * Return the type of crystal if item is crystallizable
+	 * Return the ID of crystal if item is crystallizable
 	 * @return int
 	 */
 	public final int getCrystalItemId()
 	{
-		return CRYSTAL_ITEM_ID[_crystalType];
+		return _crystalType.getCrystalId();
 	}
 	
 	/**
@@ -522,9 +411,9 @@ public abstract class L2Item
 	 * <BR>
 	 * <U><I>Concept :</I></U><BR>
 	 * In fact, this function returns the type of crystal of the item.
-	 * @return int
+	 * @return CrystalType
 	 */
-	public final int getItemGrade()
+	public final CrystalType getItemGrade()
 	{
 		return getCrystalType();
 	}
@@ -533,13 +422,13 @@ public abstract class L2Item
 	 * For grades S80 and S84 return S
 	 * @return the grade of the item.
 	 */
-	public final int getItemGradeSPlus()
+	public final CrystalType getItemGradeSPlus()
 	{
 		switch (getItemGrade())
 		{
-			case CRYSTAL_S80:
-			case CRYSTAL_S84:
-				return CRYSTAL_S;
+			case S80:
+			case S84:
+				return CrystalType.S;
 			default:
 				return getItemGrade();
 		}
@@ -565,9 +454,9 @@ public abstract class L2Item
 			{
 				case TYPE2_SHIELD_ARMOR:
 				case TYPE2_ACCESSORY:
-					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_ARMOR[getCrystalType()] * ((3 * enchantLevel) - 6));
+					return _crystalCount + (getCrystalType().getCrystalEnchantBonusArmor() * ((3 * enchantLevel) - 6));
 				case TYPE2_WEAPON:
-					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_WEAPON[getCrystalType()] * ((2 * enchantLevel) - 3));
+					return _crystalCount + (getCrystalType().getCrystalEnchantBonusWeapon() * ((2 * enchantLevel) - 3));
 				default:
 					return _crystalCount;
 			}
@@ -578,9 +467,9 @@ public abstract class L2Item
 			{
 				case TYPE2_SHIELD_ARMOR:
 				case TYPE2_ACCESSORY:
-					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_ARMOR[getCrystalType()] * enchantLevel);
+					return _crystalCount + (getCrystalType().getCrystalEnchantBonusArmor() * enchantLevel);
 				case TYPE2_WEAPON:
-					return _crystalCount + (CRYSTAL_ENCHANT_BONUS_WEAPON[getCrystalType()] * enchantLevel);
+					return _crystalCount + (getCrystalType().getCrystalEnchantBonusWeapon() * enchantLevel);
 				default:
 					return _crystalCount;
 			}
@@ -673,19 +562,11 @@ public abstract class L2Item
 	}
 	
 	/**
-	 * @return {@code true} if the item is consumable, {@code false} otherwise.
-	 */
-	public boolean isConsumable()
-	{
-		return false;
-	}
-	
-	/**
 	 * @return {@code true} if the item can be equipped, {@code false} otherwise.
 	 */
 	public boolean isEquipable()
 	{
-		return (getBodyPart() != 0) && !(getItemType() instanceof L2EtcItemType);
+		return (getBodyPart() != 0) && !(getItemType() instanceof EtcItemType);
 	}
 	
 	/**
@@ -693,7 +574,7 @@ public abstract class L2Item
 	 */
 	public final int getReferencePrice()
 	{
-		return (isConsumable() ? (int) (_referencePrice * Config.RATE_CONSUMABLE_COST) : _referencePrice);
+		return _referencePrice;
 	}
 	
 	/**
@@ -742,7 +623,7 @@ public abstract class L2Item
 	 */
 	public final int isEnchantable()
 	{
-		return Arrays.binarySearch(Config.ENCHANT_BLACKLIST, getItemId()) < 0 ? _enchantable : 0;
+		return Arrays.binarySearch(Config.ENCHANT_BLACKLIST, getId()) < 0 ? _enchantable : 0;
 	}
 	
 	/**
@@ -782,91 +663,72 @@ public abstract class L2Item
 	
 	public boolean isPotion()
 	{
-		return (getItemType() == L2EtcItemType.POTION);
+		return (getItemType() == EtcItemType.POTION);
 	}
 	
 	public boolean isElixir()
 	{
-		return (getItemType() == L2EtcItemType.ELIXIR);
+		return (getItemType() == EtcItemType.ELIXIR);
+	}
+	
+	public boolean isScroll()
+	{
+		return (getItemType() == EtcItemType.SCROLL);
 	}
 	
 	/**
-	 * Returns array of Func objects containing the list of functions used by the item
+	 * Get the functions used by this item.
 	 * @param item : L2ItemInstance pointing out the item
 	 * @param player : L2Character pointing out the player
-	 * @return Func[] : array of functions
+	 * @return the list of functions
 	 */
-	public final Func[] getStatFuncs(L2ItemInstance item, L2Character player)
+	public final List<Func> getStatFuncs(L2ItemInstance item, L2Character player)
 	{
-		if ((_funcTemplates == null) || (_funcTemplates.length == 0))
+		if ((_funcTemplates == null) || _funcTemplates.isEmpty())
 		{
-			return _emptyFunctionSet;
+			return Collections.<Func> emptyList();
 		}
 		
-		ArrayList<Func> funcs = new ArrayList<>(_funcTemplates.length);
-		
-		Env env = new Env();
+		final List<Func> funcs = new ArrayList<>(_funcTemplates.size());
+		final Env env = new Env();
 		env.setCharacter(player);
 		env.setTarget(player);
 		env.setItem(item);
-		
-		Func f;
 		for (FuncTemplate t : _funcTemplates)
 		{
-			f = t.getFunc(env, item);
+			Func f = t.getFunc(env, item);
 			if (f != null)
 			{
 				funcs.add(f);
 			}
 		}
-		
-		if (funcs.isEmpty())
-		{
-			return _emptyFunctionSet;
-		}
-		return funcs.toArray(new Func[funcs.size()]);
+		return funcs;
 	}
 	
 	/**
-	 * Returns the effects associated with the item.
-	 * @param item : L2ItemInstance pointing out the item
-	 * @param player : L2Character pointing out the player
-	 * @return L2Effect[] : array of effects generated by the item
+	 * Applies the effects from this item to the creature.
+	 * @param item the item
+	 * @param creature the creature
 	 */
-	public L2Effect[] getEffects(L2ItemInstance item, L2Character player)
+	public void applyEffects(L2ItemInstance item, L2Character creature)
 	{
-		if ((_effectTemplates == null) || (_effectTemplates.length == 0))
+		if ((_effects == null) || _effects.isEmpty())
 		{
-			return _emptyEffectSet;
+			return;
 		}
 		
-		FastList<L2Effect> effects = FastList.newInstance();
-		
-		Env env = new Env();
-		env.setCharacter(player);
-		env.setTarget(player);
+		final Env env = new Env();
+		env.setCharacter(creature);
+		env.setTarget(creature);
 		env.setItem(item);
-		
-		L2Effect e;
-		for (EffectTemplate et : _effectTemplates)
+		final BuffInfo info = new BuffInfo(env);
+		for (AbstractEffect effect : _effects)
 		{
-			
-			e = et.getEffect(env);
-			if (e != null)
+			if (effect.calcSuccess(info))
 			{
-				e.scheduleEffect();
-				effects.add(e);
+				effect.onStart(info);
 			}
 		}
-		
-		if (effects.isEmpty())
-		{
-			return _emptyEffectSet;
-		}
-		
-		L2Effect[] result = effects.toArray(new L2Effect[effects.size()]);
-		FastList.recycle(effects);
-		return result;
 	}
 	
 	/**
@@ -910,56 +772,32 @@ public abstract class L2Item
 				setElementals(new Elementals(Elementals.DARK, (int) f.lambda.calc(null)));
 				break;
 		}
-		// If _functTemplates is empty, create it and add the FuncTemplate f in it
+		
 		if (_funcTemplates == null)
 		{
-			_funcTemplates = new FuncTemplate[]
-			{
-				f
-			};
+			_funcTemplates = new ArrayList<>(1);
 		}
-		else
-		{
-			int len = _funcTemplates.length;
-			FuncTemplate[] tmp = new FuncTemplate[len + 1];
-			// Definition : arraycopy(array source, begins copy at this position of source, array destination, begins copy at this position in dest,
-			// number of components to be copied)
-			System.arraycopy(_funcTemplates, 0, tmp, 0, len);
-			tmp[len] = f;
-			_funcTemplates = tmp;
-		}
+		_funcTemplates.add(f);
 	}
 	
 	/**
 	 * Add the EffectTemplate effect to the list of effects generated by the item
 	 * @param effect : EffectTemplate
 	 */
-	public void attach(EffectTemplate effect)
+	public void attach(AbstractEffect effect)
 	{
-		if (_effectTemplates == null)
+		if (_effects == null)
 		{
-			_effectTemplates = new EffectTemplate[]
-			{
-				effect
-			};
+			_effects = new ArrayList<>(1);
 		}
-		else
-		{
-			int len = _effectTemplates.length;
-			EffectTemplate[] tmp = new EffectTemplate[len + 1];
-			// Definition : arraycopy(array source, begins copy at this position of source, array destination, begins copy at this position in dest,
-			// number of components to be copied)
-			System.arraycopy(_effectTemplates, 0, tmp, 0, len);
-			tmp[len] = effect;
-			_effectTemplates = tmp;
-		}
+		_effects.add(effect);
 	}
 	
 	public final void attach(Condition c)
 	{
 		if (_preConditions == null)
 		{
-			_preConditions = new FastList<>();
+			_preConditions = new ArrayList<>(1);
 		}
 		if (!_preConditions.contains(c))
 		{
@@ -973,7 +811,7 @@ public abstract class L2Item
 	}
 	
 	/**
-	 * Method to retrive skills linked to this item armor and weapon: passive skills etcitem: skills used on item use <-- ???
+	 * Method to retrieve skills linked to this item armor and weapon: passive skills etcitem: skills used on item use <-- ???
 	 * @return Skills linked to this item as SkillHolder[]
 	 */
 	public final SkillHolder[] getSkills()
@@ -984,7 +822,7 @@ public abstract class L2Item
 	/**
 	 * @return skill that activates, when player unequip this weapon or armor
 	 */
-	public final L2Skill getUnequipSkill()
+	public final Skill getUnequipSkill()
 	{
 		return _unequipSkill == null ? null : _unequipSkill.getSkill();
 	}
@@ -1076,6 +914,11 @@ public abstract class L2Item
 		return _freightable;
 	}
 	
+	public boolean isAllowSelfResurrection()
+	{
+		return _allow_self_resurrection;
+	}
+	
 	public boolean isOlyRestrictedItem()
 	{
 		return _is_oly_restricted || Config.LIST_OLY_RESTRICTED_ITEMS.contains(_itemId);
@@ -1087,8 +930,8 @@ public abstract class L2Item
 	}
 	
 	/**
-	 * Returns the name of the item
-	 * @return String
+	 * Returns the name of the item followed by the item ID.
+	 * @return the name and the ID of the item
 	 */
 	@Override
 	public String toString()
@@ -1097,17 +940,28 @@ public abstract class L2Item
 	}
 	
 	/**
-	 * @return the _ex_immediate_effect
+	 * Verifies if the item has effects immediately.<br>
+	 * <i>Used for herbs mostly.</i>
+	 * @return {@code true} if the item applies effects immediately, {@code false} otherwise
 	 */
-	public boolean is_ex_immediate_effect()
+	public boolean hasExImmediateEffect()
 	{
 		return _ex_immediate_effect;
 	}
 	
 	/**
+	 * Verifies if the item has effects immediately.
+	 * @return {@code true} if the item applies effects immediately, {@code false} otherwise
+	 */
+	public boolean hasImmediateEffect()
+	{
+		return _immediate_effect;
+	}
+	
+	/**
 	 * @return the _default_action
 	 */
-	public L2ActionType getDefaultAction()
+	public ActionType getDefaultAction()
 	{
 		return _defaultAction;
 	}
@@ -1118,7 +972,8 @@ public abstract class L2Item
 	}
 	
 	/**
-	 * @return the Reuse Delay of item.
+	 * Gets the item reuse delay time in seconds.
+	 * @return the reuse delay time
 	 */
 	public int getReuseDelay()
 	{
@@ -1126,7 +981,9 @@ public abstract class L2Item
 	}
 	
 	/**
-	 * @return the shared reuse group.
+	 * Gets the shared reuse group.<br>
+	 * Items with the same reuse group will render reuse delay upon those items when used.
+	 * @return the shared reuse group
 	 */
 	public int getSharedReuseGroup()
 	{
@@ -1135,7 +992,7 @@ public abstract class L2Item
 	
 	/**
 	 * Usable in HTML windows.
-	 * @return the icon link in client files.
+	 * @return the icon link in client files
 	 */
 	public String getIcon()
 	{
@@ -1144,6 +1001,10 @@ public abstract class L2Item
 	
 	public void addQuestEvent(Quest q)
 	{
+		if (_questEvents == null)
+		{
+			_questEvents = new ArrayList<>();
+		}
 		_questEvents.add(q);
 	}
 	
@@ -1159,10 +1020,10 @@ public abstract class L2Item
 	
 	public boolean isPetItem()
 	{
-		return getItemType() == L2EtcItemType.PET_COLLAR;
+		return getItemType() == EtcItemType.PET_COLLAR;
 	}
 	
-	public L2Skill getEnchant4Skill()
+	public Skill getEnchant4Skill()
 	{
 		return null;
 	}

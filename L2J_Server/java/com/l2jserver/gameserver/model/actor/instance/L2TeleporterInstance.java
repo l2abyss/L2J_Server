@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -24,6 +24,7 @@ import java.util.StringTokenizer;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.TeleportLocationTable;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.TownManager;
@@ -65,9 +66,9 @@ public final class L2TeleporterInstance extends L2Npc
 		StringTokenizer st = new StringTokenizer(command, " ");
 		String actualCommand = st.nextToken(); // Get actual command
 		
-		if ((player.getFirstEffect(6201) != null) || (player.getFirstEffect(6202) != null) || (player.getFirstEffect(6203) != null))
+		if (player.isAffectedBySkill(6201) || player.isAffectedBySkill(6202) || player.isAffectedBySkill(6203))
 		{
-			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+			final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 			
 			String filename = "data/html/teleporter/epictransformed.htm";
 			
@@ -79,7 +80,7 @@ public final class L2TeleporterInstance extends L2Npc
 		}
 		else if (actualCommand.equalsIgnoreCase("goto"))
 		{
-			int npcId = getNpcId();
+			int npcId = getId();
 			
 			switch (npcId)
 			{
@@ -179,12 +180,12 @@ public final class L2TeleporterInstance extends L2Npc
 			return;
 		}
 		
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		
-		String filename = "data/html/teleporter/free/" + getTemplate().getNpcId() + ".htm";
+		String filename = "data/html/teleporter/free/" + getTemplate().getId() + ".htm";
 		if (!HtmCache.getInstance().isLoadable(filename))
 		{
-			filename = "data/html/teleporter/" + getTemplate().getNpcId() + "-1.htm";
+			filename = "data/html/teleporter/" + getTemplate().getId() + "-1.htm";
 		}
 		
 		html.setFile(player.getHtmlPrefix(), filename);
@@ -200,12 +201,12 @@ public final class L2TeleporterInstance extends L2Npc
 			return;
 		}
 		
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		
-		String filename = "data/html/teleporter/half/" + getNpcId() + ".htm";
+		String filename = "data/html/teleporter/half/" + getId() + ".htm";
 		if (!HtmCache.getInstance().isLoadable(filename))
 		{
-			filename = "data/html/teleporter/" + getNpcId() + "-1.htm";
+			filename = "data/html/teleporter/" + getId() + "-1.htm";
 		}
 		
 		html.setFile(player.getHtmlPrefix(), filename);
@@ -233,11 +234,11 @@ public final class L2TeleporterInstance extends L2Npc
 			}
 			else if (condition == COND_OWNER) // Clan owns castle
 			{
-				filename = getHtmlPath(getNpcId(), 0); // Owner message window
+				filename = getHtmlPath(getId(), 0); // Owner message window
 			}
 		}
 		
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%npcname%", getName());
@@ -273,7 +274,7 @@ public final class L2TeleporterInstance extends L2Npc
 			else if (list.getIsForNoble() && !player.isNoble())
 			{
 				String filename = "data/html/teleporter/nobleteleporter-no.htm";
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				html.setFile(player.getHtmlPrefix(), filename);
 				html.replace("%objectId%", String.valueOf(getObjectId()));
 				html.replace("%npcname%", getName());
@@ -304,10 +305,10 @@ public final class L2TeleporterInstance extends L2Npc
 			{
 				if (Config.DEBUG)
 				{
-					_log.fine("Teleporting player " + player.getName() + " to new location: " + list.getLocX() + ":" + list.getLocY() + ":" + list.getLocZ());
+					_log.info("Teleporting player " + player.getName() + " to new location: " + list.getLocX() + ":" + list.getLocY() + ":" + list.getLocZ());
 				}
 				
-				player.teleToLocation(list.getLocX(), list.getLocY(), list.getLocZ(), true);
+				player.teleToLocation(list.getLocX(), list.getLocY(), list.getLocZ(), false);
 			}
 		}
 		else
@@ -326,7 +327,7 @@ public final class L2TeleporterInstance extends L2Npc
 			return COND_REGULAR; // Regular access
 		}
 		// Teleporter is on castle ground and siege is in progress
-		else if (getCastle().getSiege().getIsInProgress())
+		else if (getCastle().getSiege().isInProgress())
 		{
 			return COND_BUSY_BECAUSE_OF_SIEGE; // Busy because of siege
 		}

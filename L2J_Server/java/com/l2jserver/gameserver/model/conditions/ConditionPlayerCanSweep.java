@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -22,7 +22,7 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
@@ -54,7 +54,7 @@ public class ConditionPlayerCanSweep extends Condition
 		if (env.getPlayer() != null)
 		{
 			final L2PcInstance sweeper = env.getPlayer();
-			final L2Skill sweep = env.getSkill();
+			final Skill sweep = env.getSkill();
 			if (sweep != null)
 			{
 				final L2Object[] targets = sweep.getTargetList(sweeper);
@@ -71,7 +71,7 @@ public class ConditionPlayerCanSweep extends Condition
 								if (target.isSpoil())
 								{
 									canSweep = target.checkSpoilOwner(sweeper, true);
-									canSweep &= !target.isOldCorpse(sweeper, Config.MAX_SWEEPER_TIME, true);
+									canSweep &= !target.isOldCorpse(sweeper, Config.CORPSE_CONSUME_SKILL_ALLOWED_TIME_BEFORE_DECAY, true);
 									canSweep &= sweeper.getInventory().checkInventorySlotsAndWeight(target.getSpoilLootItems(), true, true);
 								}
 								else

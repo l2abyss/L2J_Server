@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -34,7 +34,7 @@ public class PledgeShowInfoUpdate extends L2GameServerPacket
 	{
 		writeC(0x8E);
 		// sending empty data so client will ask all the info in response ;)
-		writeD(_clan.getClanId());
+		writeD(_clan.getId());
 		writeD(_clan.getCrestId());
 		writeD(_clan.getLevel()); // clan level
 		writeD(_clan.getCastleId());

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -26,6 +26,7 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,22 +35,20 @@ import javolution.util.FastList;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.idfactory.IdFactory;
+import com.l2jserver.gameserver.instancemanager.tasks.MessageDeletionTask;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Message;
-import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExNoticePostArrived;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.util.L2FastMap;
 
 /**
  * @author Migi, DS
  */
-public class MailManager
+public final class MailManager
 {
-	private static Logger _log = Logger.getLogger(MailManager.class.getName());
+	private static final Logger _log = Logger.getLogger(MailManager.class.getName());
 	
-	private final Map<Integer, Message> _messages = new L2FastMap<>(true);
+	private final Map<Integer, Message> _messages = new ConcurrentHashMap<>();
 	
 	protected MailManager()
 	{
@@ -66,7 +65,7 @@ public class MailManager
 			while (rs.next())
 			{
 				
-				Message msg = new Message(rs);
+				final Message msg = new Message(rs);
 				
 				int msgId = msg.getId();
 				_messages.put(msgId, msg);
@@ -143,7 +142,7 @@ public class MailManager
 	
 	public final List<Message> getInbox(int objectId)
 	{
-		List<Message> inbox = new FastList<>();
+		final List<Message> inbox = new FastList<>();
 		for (Message msg : getMessages())
 		{
 			if ((msg != null) && (msg.getReceiverId() == objectId) && !msg.isDeletedByReceiver())
@@ -156,7 +155,7 @@ public class MailManager
 	
 	public final List<Message> getOutbox(int objectId)
 	{
-		List<Message> outbox = new FastList<>();
+		final List<Message> outbox = new FastList<>();
 		for (Message msg : getMessages())
 		{
 			if ((msg != null) && (msg.getSenderId() == objectId) && !msg.isDeletedBySender())
@@ -187,61 +186,6 @@ public class MailManager
 		}
 		
 		ThreadPoolManager.getInstance().scheduleGeneral(new MessageDeletionTask(msg.getId()), msg.getExpiration() - System.currentTimeMillis());
-	}
-	
-	private class MessageDeletionTask implements Runnable
-	{
-		private final Logger _log = Logger.getLogger(MessageDeletionTask.class.getName());
-		
-		final int _msgId;
-		
-		public MessageDeletionTask(int msgId)
-		{
-			_msgId = msgId;
-		}
-		
-		@Override
-		public void run()
-		{
-			final Message msg = getMessage(_msgId);
-			if (msg == null)
-			{
-				return;
-			}
-			
-			if (msg.hasAttachments())
-			{
-				try
-				{
-					final L2PcInstance sender = L2World.getInstance().getPlayer(msg.getSenderId());
-					if (sender != null)
-					{
-						msg.getAttachments().returnToWh(sender.getWarehouse());
-						sender.sendPacket(SystemMessageId.MAIL_RETURNED);
-					}
-					else
-					{
-						msg.getAttachments().returnToWh(null);
-					}
-					
-					msg.getAttachments().deleteMe();
-					msg.removeAttachments();
-					
-					final L2PcInstance receiver = L2World.getInstance().getPlayer(msg.getReceiverId());
-					if (receiver != null)
-					{
-						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.MAIL_RETURNED);
-						// sm.addString(msg.getReceiverName());
-						receiver.sendPacket(sm);
-					}
-				}
-				catch (Exception e)
-				{
-					_log.log(Level.WARNING, getClass().getSimpleName() + ": Error returning items:" + e.getMessage(), e);
-				}
-			}
-			deleteMessageInDb(msg.getId());
-		}
 	}
 	
 	public final void markAsReadInDb(int msgId)
@@ -317,6 +261,10 @@ public class MailManager
 		IdFactory.getInstance().releaseId(msgId);
 	}
 	
+	/**
+	 * Gets the single instance of {@code MailManager}.
+	 * @return single instance of {@code MailManager}
+	 */
 	public static MailManager getInstance()
 	{
 		return SingletonHolder._instance;

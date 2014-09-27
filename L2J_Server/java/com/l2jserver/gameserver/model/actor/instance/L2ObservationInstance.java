@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,6 +18,7 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -39,30 +40,30 @@ public final class L2ObservationInstance extends L2Npc
 	{
 		String filename = null;
 		
-		if (isInsideRadius(-79884, 86529, 50, true) || isInsideRadius(-78858, 111358, 50, true) || isInsideRadius(-76973, 87136, 50, true) || isInsideRadius(-75850, 111968, 50, true))
+		if (isInsideRadius(-79884, 86529, 0, 50, false, true) || isInsideRadius(-78858, 111358, 0, 50, false, true) || isInsideRadius(-76973, 87136, 0, 50, false, true) || isInsideRadius(-75850, 111968, 0, 50, false, true))
 		{
 			if (val == 0)
 			{
-				filename = "data/html/observation/" + getNpcId() + "-Oracle.htm";
+				filename = "data/html/observation/" + getId() + "-Oracle.htm";
 			}
 			else
 			{
-				filename = "data/html/observation/" + getNpcId() + "-Oracle-" + val + ".htm";
+				filename = "data/html/observation/" + getId() + "-Oracle-" + val + ".htm";
 			}
 		}
 		else
 		{
 			if (val == 0)
 			{
-				filename = "data/html/observation/" + getNpcId() + ".htm";
+				filename = "data/html/observation/" + getId() + ".htm";
 			}
 			else
 			{
-				filename = "data/html/observation/" + getNpcId() + "-" + val + ".htm";
+				filename = "data/html/observation/" + getId() + "-" + val + ".htm";
 			}
 		}
 		
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);

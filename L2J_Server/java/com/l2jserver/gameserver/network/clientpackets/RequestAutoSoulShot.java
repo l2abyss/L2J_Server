@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -53,7 +54,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 			return;
 		}
 		
-		if ((activeChar.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_NONE) && (activeChar.getActiveRequester() == null) && !activeChar.isDead())
+		if ((activeChar.getPrivateStoreType() == PrivateStoreType.NONE) && (activeChar.getActiveRequester() == null) && !activeChar.isDead())
 		{
 			if (Config.DEBUG)
 			{
@@ -68,7 +69,7 @@ public final class RequestAutoSoulShot extends L2GameClientPacket
 			
 			if (_type == 1)
 			{
-				if (!activeChar.getInventory().canManipulateWithItemId(item.getItemId()))
+				if (!activeChar.getInventory().canManipulateWithItemId(item.getId()))
 				{
 					activeChar.sendMessage("Cannot use this item.");
 					return;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 import javolution.util.FastList;
 
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
-import com.l2jserver.gameserver.instancemanager.FortSiegeManager.SiegeSpawn;
+import com.l2jserver.gameserver.model.FortSiegeSpawn;
 import com.l2jserver.gameserver.model.entity.Fort;
 
 /**
@@ -41,9 +41,9 @@ public class ExShowFortressSiegeInfo extends L2GameServerPacket
 	public ExShowFortressSiegeInfo(Fort fort)
 	{
 		_fort = fort;
-		_fortId = fort.getFortId();
+		_fortId = fort.getResidenceId();
 		_size = fort.getFortSize();
-		FastList<SiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(_fortId);
+		FastList<FortSiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(_fortId);
 		if (commanders != null)
 		{
 			_csize = commanders.size();

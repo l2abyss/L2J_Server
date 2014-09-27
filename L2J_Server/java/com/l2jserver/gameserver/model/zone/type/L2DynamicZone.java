@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.TaskZoneSettings;
@@ -35,9 +35,9 @@ public class L2DynamicZone extends L2ZoneType
 {
 	private final L2WorldRegion _region;
 	private final L2Character _owner;
-	private final L2Skill _skill;
+	private final Skill _skill;
 	
-	public L2DynamicZone(L2WorldRegion region, L2Character owner, L2Skill skill)
+	public L2DynamicZone(L2WorldRegion region, L2Character owner, Skill skill)
 	{
 		super(-1);
 		_region = region;
@@ -49,15 +49,8 @@ public class L2DynamicZone extends L2ZoneType
 			settings = new TaskZoneSettings();
 		}
 		setSettings(settings);
-		Runnable r = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				remove();
-			}
-		};
-		getSettings().setTask(ThreadPoolManager.getInstance().scheduleGeneral(r, skill.getBuffDuration()));
+		
+		getSettings().setTask(ThreadPoolManager.getInstance().scheduleGeneral(() -> remove(), skill.getAbnormalTime() * 1000));
 	}
 	
 	@Override
@@ -75,7 +68,7 @@ public class L2DynamicZone extends L2ZoneType
 		}
 		if (_owner != null)
 		{
-			_skill.getEffects(_owner, character);
+			_skill.applyEffects(_owner, character);
 		}
 	}
 	
@@ -84,7 +77,7 @@ public class L2DynamicZone extends L2ZoneType
 	{
 		if (character.isPlayer())
 		{
-			character.sendMessage("You have left a temporary zone!"); // XXX: Custom message?
+			character.sendMessage("You have left a temporary zone!"); // TODO: Custom message?
 		}
 		
 		if (character == _owner)
@@ -93,7 +86,7 @@ public class L2DynamicZone extends L2ZoneType
 			return;
 		}
 		
-		character.stopSkillEffects(_skill.getId());
+		character.stopSkillEffects(true, _skill.getId());
 	}
 	
 	protected void remove()
@@ -108,9 +101,9 @@ public class L2DynamicZone extends L2ZoneType
 		_region.removeZone(this);
 		for (L2Character member : getCharactersInside())
 		{
-			member.stopSkillEffects(_skill.getId());
+			member.stopSkillEffects(true, _skill.getId());
 		}
-		_owner.stopSkillEffects(_skill.getId());
+		_owner.stopSkillEffects(true, _skill.getId());
 		
 	}
 	
@@ -123,13 +116,13 @@ public class L2DynamicZone extends L2ZoneType
 		}
 		else
 		{
-			character.stopSkillEffects(_skill.getId());
+			character.stopSkillEffects(true, _skill.getId());
 		}
 	}
 	
 	@Override
 	public void onReviveInside(L2Character character)
 	{
-		_skill.getEffects(_owner, character);
+		_skill.applyEffects(_owner, character);
 	}
 }

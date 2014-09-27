@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,12 +19,12 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.instancemanager.BoatManager;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.GetOnVehicle;
-import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * This class ...
@@ -35,7 +35,7 @@ public final class RequestGetOnVehicle extends L2GameClientPacket
 	private static final String _C__53_GETONVEHICLE = "[C] 53 GetOnVehicle";
 	
 	private int _boatId;
-	private Point3D _pos;
+	private Location _pos;
 	
 	@Override
 	protected void readImpl()
@@ -45,7 +45,7 @@ public final class RequestGetOnVehicle extends L2GameClientPacket
 		x = readD();
 		y = readD();
 		z = readD();
-		_pos = new Point3D(x, y, z);
+		_pos = new Location(x, y, z);
 	}
 	
 	@Override

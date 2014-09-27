@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,15 +19,14 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.concurrent.Future;
-import java.util.logging.Level;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.stat.ControllableAirShipStat;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.DeleteObject;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
 public class L2ControllableAirShipInstance extends L2AirShipInstance
@@ -252,13 +251,6 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	}
 	
 	@Override
-	public void onAction(L2PcInstance player, boolean interact)
-	{
-		player.sendPacket(new MyTargetSelected(_helmId, 0));
-		super.onAction(player, interact);
-	}
-	
-	@Override
 	public void onSpawn()
 	{
 		super.onSpawn();
@@ -267,9 +259,12 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 	}
 	
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
-		super.deleteMe();
+		if (!super.deleteMe())
+		{
+			return false;
+		}
 		
 		if (_checkTask != null)
 		{
@@ -282,14 +277,8 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 			_consumeFuelTask = null;
 		}
 		
-		try
-		{
-			broadcastPacket(new DeleteObject(_helmId));
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, "Failed decayMe():" + e.getMessage());
-		}
+		broadcastPacket(new DeleteObject(_helmId));
+		return true;
 	}
 	
 	@Override
@@ -338,7 +327,7 @@ public class L2ControllableAirShipInstance extends L2AirShipInstance
 			if (isVisible() && isEmpty() && !isInDock())
 			{
 				// deleteMe() can't be called from CheckTask because task should not cancel itself
-				ThreadPoolManager.getInstance().executeTask(new DecayTask());
+				ThreadPoolManager.getInstance().executeGeneral(new DecayTask());
 			}
 		}
 	}

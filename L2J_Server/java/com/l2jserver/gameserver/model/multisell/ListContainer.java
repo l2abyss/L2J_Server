@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,7 +19,9 @@
 package com.l2jserver.gameserver.model.multisell;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author DS
@@ -31,18 +33,10 @@ public class ListContainer
 	protected boolean _maintainEnchantment = false;
 	protected double _useRate = 1.0;
 	
-	protected List<Entry> _entries;
+	protected List<Entry> _entries = new ArrayList<>();
+	protected Set<Integer> _npcsAllowed = null;
 	
-	public ListContainer()
-	{
-		_entries = new ArrayList<>();
-	}
-	
-	/**
-	 * This constructor used in PreparedListContainer only ArrayList not created
-	 * @param listId
-	 */
-	protected ListContainer(int listId)
+	public ListContainer(int listId)
 	{
 		_listId = listId;
 	}
@@ -50,11 +44,6 @@ public class ListContainer
 	public final List<Entry> getEntries()
 	{
 		return _entries;
-	}
-	
-	public final void setListId(int listId)
-	{
-		_listId = listId;
 	}
 	
 	public final int getListId()
@@ -95,5 +84,24 @@ public class ListContainer
 	public final boolean getMaintainEnchantment()
 	{
 		return _maintainEnchantment;
+	}
+	
+	public void allowNpc(int npcId)
+	{
+		if (_npcsAllowed == null)
+		{
+			_npcsAllowed = new HashSet<>();
+		}
+		_npcsAllowed.add(npcId);
+	}
+	
+	public boolean isNpcAllowed(int npcId)
+	{
+		return (_npcsAllowed == null) || _npcsAllowed.contains(npcId);
+	}
+	
+	public boolean isNpcOnly()
+	{
+		return _npcsAllowed != null;
 	}
 }

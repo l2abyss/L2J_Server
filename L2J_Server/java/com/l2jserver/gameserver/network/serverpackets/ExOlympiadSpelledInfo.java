@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,43 +18,28 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javolution.util.FastList;
-
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
 
 /**
  * @author godson
  */
 public class ExOlympiadSpelledInfo extends L2GameServerPacket
 {
-	private final int _playerID;
-	private final List<Effect> _effects;
-	
-	private static class Effect
-	{
-		protected int _skillId;
-		protected int _level;
-		protected int _duration;
-		
-		public Effect(int pSkillId, int pLevel, int pDuration)
-		{
-			_skillId = pSkillId;
-			_level = pLevel;
-			_duration = pDuration;
-		}
-	}
+	private final int _playerId;
+	private final List<BuffInfo> _effects = new ArrayList<>();
 	
 	public ExOlympiadSpelledInfo(L2PcInstance player)
 	{
-		_effects = new FastList<>();
-		_playerID = player.getObjectId();
+		_playerId = player.getObjectId();
 	}
 	
-	public void addEffect(int skillId, int level, int duration)
+	public void addSkill(BuffInfo info)
 	{
-		_effects.add(new Effect(skillId, level, duration));
+		_effects.add(info);
 	}
 	
 	@Override
@@ -62,13 +47,16 @@ public class ExOlympiadSpelledInfo extends L2GameServerPacket
 	{
 		writeC(0xFE);
 		writeH(0x7B);
-		writeD(_playerID);
+		writeD(_playerId);
 		writeD(_effects.size());
-		for (Effect temp : _effects)
+		for (BuffInfo info : _effects)
 		{
-			writeD(temp._skillId);
-			writeH(temp._level);
-			writeD(temp._duration / 1000);
+			if ((info != null) && info.isInUse())
+			{
+				writeD(info.getSkill().getId());
+				writeH(info.getSkill().getLevel());
+				writeD(info.getTime());
+			}
 		}
 	}
 }

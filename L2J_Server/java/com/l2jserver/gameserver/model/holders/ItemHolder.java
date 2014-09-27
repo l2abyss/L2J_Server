@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,48 +18,35 @@
  */
 package com.l2jserver.gameserver.model.holders;
 
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
+
 /**
- * Holder for item id-count.
+ * A simple DTO for items; contains item ID and count.<br>
+ * Extended by {@link ItemChanceHolder}, {@link QuestItemHolder}, {@link UniqueItemHolder}.
  * @author UnAfraid
  */
-public class ItemHolder
+public class ItemHolder implements IIdentifiable
 {
 	private final int _id;
-	private final int _objectId;
 	private final long _count;
 	
 	public ItemHolder(int id, long count)
 	{
 		_id = id;
-		_objectId = -1;
-		_count = count;
-	}
-	
-	public ItemHolder(int id, int objectId, long count)
-	{
-		_id = id;
-		_objectId = objectId;
 		_count = count;
 	}
 	
 	/**
-	 * @return the item/object identifier.
+	 * @return the ID of the item contained in this object
 	 */
+	@Override
 	public int getId()
 	{
 		return _id;
 	}
 	
 	/**
-	 * @return the object Id
-	 */
-	public int getObjectId()
-	{
-		return _objectId;
-	}
-	
-	/**
-	 * @return the item count.
+	 * @return the count of items contained in this object
 	 */
 	public long getCount()
 	{
@@ -69,6 +56,6 @@ public class ItemHolder
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName() + ": Id: " + _id + " Count: " + _count;
+		return "[" + getClass().getSimpleName() + "] ID: " + _id + ", count: " + _count;
 	}
 }

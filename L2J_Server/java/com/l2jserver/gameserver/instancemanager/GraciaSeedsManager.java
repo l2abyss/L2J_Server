@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,13 +23,14 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.instancemanager.tasks.UpdateSoDStateTask;
 import com.l2jserver.gameserver.model.quest.Quest;
 
-public class GraciaSeedsManager
+public final class GraciaSeedsManager
 {
-	protected static final Logger _log = Logger.getLogger(GraciaSeedsManager.class.getName());
+	private static final Logger _log = Logger.getLogger(GraciaSeedsManager.class.getName());
 	
-	public static String qn = "EnergySeeds";
+	public static String ENERGY_SEEDS = "EnergySeeds";
 	
 	private static final byte SOITYPE = 2;
 	private static final byte SOATYPE = 3;
@@ -53,9 +54,9 @@ public class GraciaSeedsManager
 		{
 			case SODTYPE:
 				// Seed of Destruction
-				GlobalVariablesManager.getInstance().storeVariable("SoDState", String.valueOf(_SoDState));
-				GlobalVariablesManager.getInstance().storeVariable("SoDTiatKilled", String.valueOf(_SoDTiatKilled));
-				GlobalVariablesManager.getInstance().storeVariable("SoDLSCDate", String.valueOf(_SoDLastStateChangeDate.getTimeInMillis()));
+				GlobalVariablesManager.getInstance().set("SoDState", _SoDState);
+				GlobalVariablesManager.getInstance().set("SoDTiatKilled", _SoDTiatKilled);
+				GlobalVariablesManager.getInstance().set("SoDLSCDate", _SoDLastStateChangeDate.getTimeInMillis());
 				break;
 			case SOITYPE:
 				// Seed of Infinity
@@ -72,11 +73,11 @@ public class GraciaSeedsManager
 	public void loadData()
 	{
 		// Seed of Destruction variables
-		if (GlobalVariablesManager.getInstance().isVariableStored("SoDState"))
+		if (GlobalVariablesManager.getInstance().hasVariable("SoDState"))
 		{
-			_SoDState = Integer.parseInt(GlobalVariablesManager.getInstance().getStoredVariable("SoDState"));
-			_SoDTiatKilled = Integer.parseInt(GlobalVariablesManager.getInstance().getStoredVariable("SoDTiatKilled"));
-			_SoDLastStateChangeDate.setTimeInMillis(Long.parseLong(GlobalVariablesManager.getInstance().getStoredVariable("SoDLSCDate")));
+			_SoDState = GlobalVariablesManager.getInstance().getInt("SoDState");
+			_SoDTiatKilled = GlobalVariablesManager.getInstance().getInt("SoDTiatKilled");
+			_SoDLastStateChangeDate.setTimeInMillis(GlobalVariablesManager.getInstance().getLong("SoDLSCDate"));
 		}
 		else
 		{
@@ -102,23 +103,7 @@ public class GraciaSeedsManager
 				}
 				else
 				{
-					ThreadPoolManager.getInstance().scheduleEffect(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							setSoDState(1, true);
-							Quest esQuest = QuestManager.getInstance().getQuest(qn);
-							if (esQuest == null)
-							{
-								_log.warning(getClass().getSimpleName() + ": missing EnergySeeds Quest!");
-							}
-							else
-							{
-								esQuest.notifyEvent("StopSoDAi", null, null);
-							}
-						}
-					}, Config.SOD_STAGE_2_LENGTH - timePast);
+					ThreadPoolManager.getInstance().scheduleEffect(new UpdateSoDStateTask(), Config.SOD_STAGE_2_LENGTH - timePast);
 				}
 				break;
 			case 3:
@@ -127,6 +112,19 @@ public class GraciaSeedsManager
 				break;
 			default:
 				_log.warning(getClass().getSimpleName() + ": Unknown Seed of Destruction state(" + _SoDState + ")! ");
+		}
+	}
+	
+	public void updateSodState()
+	{
+		final Quest quest = QuestManager.getInstance().getQuest(ENERGY_SEEDS);
+		if (quest == null)
+		{
+			_log.warning(getClass().getSimpleName() + ": missing EnergySeeds Quest!");
+		}
+		else
+		{
+			quest.notifyEvent("StopSoDAi", null, null);
 		}
 	}
 	
@@ -140,7 +138,7 @@ public class GraciaSeedsManager
 				setSoDState(2, false);
 			}
 			saveData(SODTYPE);
-			Quest esQuest = QuestManager.getInstance().getQuest(qn);
+			Quest esQuest = QuestManager.getInstance().getQuest(ENERGY_SEEDS);
 			if (esQuest == null)
 			{
 				_log.warning(getClass().getSimpleName() + ": missing EnergySeeds Quest!");
@@ -203,6 +201,10 @@ public class GraciaSeedsManager
 		return _SoDState;
 	}
 	
+	/**
+	 * Gets the single instance of {@code GraciaSeedsManager}.
+	 * @return single instance of {@code GraciaSeedsManager}
+	 */
 	public static final GraciaSeedsManager getInstance()
 	{
 		return SingletonHolder._instance;

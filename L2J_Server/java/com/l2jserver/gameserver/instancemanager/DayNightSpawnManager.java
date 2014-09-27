@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -34,7 +34,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2RaidBossInstance;
 /**
  * @author godson
  */
-public class DayNightSpawnManager
+public final class DayNightSpawnManager
 {
 	
 	private static Logger _log = Logger.getLogger(DayNightSpawnManager.class.getName());
@@ -137,7 +137,7 @@ public class DayNightSpawnManager
 	
 	private void changeMode(int mode)
 	{
-		if (_nightCreatures.isEmpty() && _dayCreatures.isEmpty())
+		if (_nightCreatures.isEmpty() && _dayCreatures.isEmpty() && _bosses.isEmpty())
 		{
 			return;
 		}
@@ -213,7 +213,7 @@ public class DayNightSpawnManager
 					continue;
 				}
 				
-				if ((boss != null) && (boss.getNpcId() == 25328) && boss.getRaidStatus().equals(RaidBossSpawnManager.StatusEnum.ALIVE))
+				if ((boss != null) && (boss.getId() == 25328) && boss.getRaidStatus().equals(RaidBossSpawnManager.StatusEnum.ALIVE))
 				{
 					handleHellmans(boss, mode);
 				}

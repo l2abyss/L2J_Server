@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,11 +23,12 @@ import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Stats;
 
 /**
- * A Func object is a component of a Calculator created to manage and dynamically calculate the effect of a character property (ex : MAX_HP, REGENERATE_HP_RATE...). In fact, each calculator is a table of Func object in which each Func represents a mathematics function:<br>
+ * A Func object is a component of a Calculator created to manage and dynamically calculate the effect of a character property (ex : MAX_HP, REGENERATE_HP_RATE...).<br>
+ * In fact, each calculator is a table of Func object in which each Func represents a mathematics function:<br>
  * FuncAtkAccuracy -> Math.sqrt(_player.getDEX())*6+_player.getLevel()<br>
  * When the calc method of a calculator is launched, each mathematics function is called according to its priority <B>_order</B>.<br>
- * Indeed, Func with lowest priority order is executed first and Funcs with the same order are executed in unspecified order. The result of the calculation is stored in the<br>
- * value property of an Env class instance.
+ * Indeed, Func with lowest priority order is executed first and Funcs with the same order are executed in unspecified order.<br>
+ * The result of the calculation is stored in the value property of an Env class instance.
  */
 public abstract class Func
 {
@@ -57,17 +58,21 @@ public abstract class Func
 	 */
 	public Condition cond;
 	
+	public Lambda _lambda;
+	
 	/**
 	 * Constructor of Func.
 	 * @param pStat
 	 * @param pOrder
 	 * @param owner
+	 * @param lambda
 	 */
-	public Func(Stats pStat, int pOrder, Object owner)
+	public Func(Stats pStat, int pOrder, Object owner, Lambda lambda)
 	{
 		stat = pStat;
 		order = pOrder;
 		funcOwner = owner;
+		_lambda = lambda;
 	}
 	
 	/**

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,16 +18,11 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2ClanMember;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
-/**
- * This class ...
- * @version $Revision: 1.3.2.1.2.4 $ $Date: 2005/03/27 15:29:30 $
- */
 public class RequestGiveNickName extends L2GameClientPacket
 {
 	private static final String _C__0B_REQUESTGIVENICKNAME = "[C] 0B RequestGiveNickName";
@@ -52,21 +47,24 @@ public class RequestGiveNickName extends L2GameClientPacket
 		}
 		
 		// Noblesse can bestow a title to themselves
-		if (activeChar.isNoble() && _target.matches(activeChar.getName()))
+		if (activeChar.isNoble() && _target.equalsIgnoreCase(activeChar.getName()))
 		{
 			activeChar.setTitle(_title);
-			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.TITLE_CHANGED);
-			activeChar.sendPacket(sm);
+			activeChar.sendPacket(SystemMessageId.TITLE_CHANGED);
 			activeChar.broadcastTitleInfo();
 		}
-		// Can the player change/give a title?
-		else if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_GIVE_TITLE) == L2Clan.CP_CL_GIVE_TITLE)
+		else
 		{
+			// Can the player change/give a title?
+			if (!activeChar.hasClanPrivilege(ClanPrivilege.CL_GIVE_TITLE))
+			{
+				activeChar.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
+				return;
+			}
+			
 			if (activeChar.getClan().getLevel() < 3)
 			{
-				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_LVL_3_NEEDED_TO_ENDOWE_TITLE);
-				activeChar.sendPacket(sm);
-				sm = null;
+				activeChar.sendPacket(SystemMessageId.CLAN_LVL_3_NEEDED_TO_ENDOWE_TITLE);
 				return;
 			}
 			
@@ -78,19 +76,17 @@ public class RequestGiveNickName extends L2GameClientPacket
 				{
 					// is target from the same clan?
 					member.setTitle(_title);
-					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.TITLE_CHANGED);
-					member.sendPacket(sm);
+					member.sendPacket(SystemMessageId.TITLE_CHANGED);
 					member.broadcastTitleInfo();
-					sm = null;
 				}
 				else
 				{
-					activeChar.sendMessage("Target needs to be online to get a title");
+					activeChar.sendPacket(SystemMessageId.TARGET_IS_NOT_FOUND_IN_THE_GAME);
 				}
 			}
 			else
 			{
-				activeChar.sendMessage("Target does not belong to your clan");
+				activeChar.sendPacket(SystemMessageId.TARGET_MUST_BE_IN_CLAN);
 			}
 		}
 	}

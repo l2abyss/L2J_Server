@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -28,13 +28,13 @@ import java.util.logging.Logger;
 import javolution.util.FastList;
 
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Castle;
 
-public class SiegeGuardManager
+public final class SiegeGuardManager
 {
 	private static Logger _log = Logger.getLogger(SiegeGuardManager.class.getName());
 	
@@ -132,7 +132,7 @@ public class SiegeGuardManager
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("Delete From castle_siege_guards Where castleId = ? And isHired = 1"))
 		{
-			ps.setInt(1, getCastle().getCastleId());
+			ps.setInt(1, getCastle().getResidenceId());
 			ps.execute();
 		}
 		catch (Exception e)
@@ -148,7 +148,7 @@ public class SiegeGuardManager
 	{
 		try
 		{
-			int hiredCount = 0, hiredMax = MercTicketManager.getInstance().getMaxAllowedMerc(_castle.getCastleId());
+			int hiredCount = 0, hiredMax = MercTicketManager.getInstance().getMaxAllowedMerc(_castle.getResidenceId());
 			boolean isHired = (getCastle().getOwnerId() > 0) ? true : false;
 			loadSiegeGuard();
 			for (L2Spawn spawn : getSiegeGuardSpawn())
@@ -180,13 +180,11 @@ public class SiegeGuardManager
 	{
 		for (L2Spawn spawn : getSiegeGuardSpawn())
 		{
-			if (spawn == null)
+			if ((spawn != null) && (spawn.getLastSpawn() != null))
 			{
-				continue;
+				spawn.stopRespawn();
+				spawn.getLastSpawn().doDie(spawn.getLastSpawn());
 			}
-			
-			spawn.stopRespawn();
-			spawn.getLastSpawn().doDie(spawn.getLastSpawn());
 		}
 		
 		getSiegeGuardSpawn().clear();
@@ -200,7 +198,7 @@ public class SiegeGuardManager
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT * FROM castle_siege_guards Where castleId = ? And isHired = ?"))
 		{
-			ps.setInt(1, getCastle().getCastleId());
+			ps.setInt(1, getCastle().getResidenceId());
 			if (getCastle().getOwnerId() > 0)
 			{
 				ps.setInt(2, 1);
@@ -215,17 +213,17 @@ public class SiegeGuardManager
 				L2NpcTemplate template1;
 				while (rs.next())
 				{
-					template1 = NpcTable.getInstance().getTemplate(rs.getInt("npcId"));
+					template1 = NpcData.getInstance().getTemplate(rs.getInt("npcId"));
 					if (template1 != null)
 					{
 						spawn1 = new L2Spawn(template1);
 						spawn1.setAmount(1);
-						spawn1.setLocx(rs.getInt("x"));
-						spawn1.setLocy(rs.getInt("y"));
-						spawn1.setLocz(rs.getInt("z"));
+						spawn1.setX(rs.getInt("x"));
+						spawn1.setY(rs.getInt("y"));
+						spawn1.setZ(rs.getInt("z"));
 						spawn1.setHeading(rs.getInt("heading"));
 						spawn1.setRespawnDelay(rs.getInt("respawnDelay"));
-						spawn1.setLocation(0);
+						spawn1.setLocationId(0);
 						
 						_siegeGuardSpawn.add(spawn1);
 					}
@@ -256,7 +254,7 @@ public class SiegeGuardManager
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement statement = con.prepareStatement("Insert Into castle_siege_guards (castleId, npcId, x, y, z, heading, respawnDelay, isHired) Values (?, ?, ?, ?, ?, ?, ?, ?)"))
 		{
-			statement.setInt(1, getCastle().getCastleId());
+			statement.setInt(1, getCastle().getResidenceId());
 			statement.setInt(2, npcId);
 			statement.setInt(3, x);
 			statement.setInt(4, y);

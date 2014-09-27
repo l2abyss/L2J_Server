@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,9 +21,10 @@ package com.l2jserver.gameserver.network;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -690,7 +691,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 110<br>
-	 * Message: $s1 $s2's effect can be felt.
+	 * Message: $s1's effect can be felt.
 	 */
 	public static final SystemMessageId YOU_FEEL_S1_EFFECT;
 	
@@ -894,7 +895,7 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 144<br>
-	 * Message: That is the incorrect target.
+	 * Message: That is an incorrect target.
 	 */
 	public static final SystemMessageId TARGET_IS_INCORRECT;
 	
@@ -1285,6 +1286,7 @@ public final class SystemMessageId
 	 * ID: 209<br>
 	 * Message: The size of the image file is inappropriate. Please adjust to 16x12 pixels.
 	 */
+	public static final SystemMessageId THE_SIZE_OF_THE_IMAGE_FILE_IS_INAPPROPRIATE;
 	
 	/**
 	 * ID: 210<br>
@@ -4334,7 +4336,7 @@ public final class SystemMessageId
 	 * ID: 749<br>
 	 * Message: The effect of $s1 has been removed.
 	 */
-	public static final SystemMessageId EFFECT_S1_DISAPPEARED;
+	public static final SystemMessageId EFFECT_S1_HAS_BEEN_REMOVED;
 	
 	/**
 	 * ID: 750<br>
@@ -8840,7 +8842,7 @@ public final class SystemMessageId
 	 * ID: 1510<br>
 	 * Message: $c1 is making an attempt at resurrection with $s2 experience points. Do you want to be resurrected?
 	 */
-	public static final SystemMessageId RESSURECTION_REQUEST_BY_C1_FOR_S2_XP;
+	public static final SystemMessageId RESURRECTION_REQUEST_BY_C1_FOR_S2_XP;
 	
 	/**
 	 * ID: 1511<br>
@@ -12862,7 +12864,7 @@ public final class SystemMessageId
 	 * ID: 2187<br>
 	 * Message: The target is located where you cannot charge.
 	 */
-	public static final SystemMessageId CANT_REACH_TARGET_TO_CHARGE;
+	public static final SystemMessageId THE_TARGET_IS_LOCATED_WHERE_YOU_CANNOT_CHARGE;
 	
 	/**
 	 * ID: 2188<br>
@@ -13304,9 +13306,9 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 2261<br>
-	 * Message: $c1 has given $c2 damage of $s3.
+	 * Message: $c1 has done $s3 points of damage to $c2.
 	 */
-	public static final SystemMessageId C1_GAVE_C2_DAMAGE_OF_S3;
+	public static final SystemMessageId C1_DONE_S3_DAMAGE_TO_C2;
 	
 	/**
 	 * ID: 2262<br>
@@ -13664,6 +13666,12 @@ public final class SystemMessageId
 	public static final SystemMessageId TIME_LIMITED_ITEM_DELETED;
 	
 	/**
+	 * ID: 2371<br>
+	 * Message: $c1 was reported as a BOT
+	 */
+	public static final SystemMessageId C1_WAS_REPORTED_AS_BOT;
+	
+	/**
 	 * ID: 2372<br>
 	 * Message: There is not much time remaining until the hunting helper pet leaves.
 	 */
@@ -13686,6 +13694,48 @@ public final class SystemMessageId
 	 * Message: You cannot receive a vitamin item during an exchange.
 	 */
 	public static final SystemMessageId YOU_CANNOT_RECEIVE_A_VITAMIN_ITEM_DURING_AN_EXCHANGE;
+	
+	/**
+	 * ID: 2377<br>
+	 * Message: You cannot report a character who is in a peace zone or a battlefield
+	 */
+	public static final SystemMessageId YOU_CANNOT_REPORT_CHARACTER_IN_PEACE_OR_BATTLE_ZONE;
+	
+	/**
+	 * ID: 2378<br>
+	 * Message: You cannot report when a clan war has been declared
+	 */
+	public static final SystemMessageId YOU_CANNOT_REPORT_CLAN_WAR_ENEMY;
+	
+	/**
+	 * ID: 2379<br>
+	 * Message: You cannot report a character who has not acquired any Exp. after connecting
+	 */
+	public static final SystemMessageId YOU_CANNOT_REPORT_CHAR_WHO_ACQUIRED_XP;
+	
+	/**
+	 * ID 2380<br>
+	 * Message: You cannot report this person again at this time
+	 */
+	public static final SystemMessageId YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_1;
+	
+	/**
+	 * ID 2381<br>
+	 * Message: You cannot report this person again at this time
+	 */
+	public static final SystemMessageId YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_2;
+	
+	/**
+	 * ID 2382<br>
+	 * Message: You cannot report this person again at this time
+	 */
+	public static final SystemMessageId YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_3;
+	
+	/**
+	 * ID 2383<br>
+	 * Message: You cannot report this person again at this time
+	 */
+	public static final SystemMessageId YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_4;
 	
 	/**
 	 * ID: 2390<br>
@@ -13892,6 +13942,126 @@ public final class SystemMessageId
 	public static final SystemMessageId PET_AUXILIARY_MODE_CANNOT_USE_SKILLS;
 	
 	/**
+	 * ID: 2468<br>
+	 * Message: You have used a report point on $c1. You have $s2 points remaining on this account
+	 */
+	public static final SystemMessageId YOU_HAVE_USED_REPORT_POINT_ON_C1_YOU_HAVE_C2_POINTS_LEFT;
+	
+	/**
+	 * ID: 2469<br>
+	 * Message: You have used all available points. Points are reset everyday at noon
+	 */
+	public static final SystemMessageId YOU_HAVE_USED_ALL_POINTS_POINTS_ARE_RESET_AT_NOON;
+	
+	/**
+	 * ID: 2470<br>
+	 * Message: This character cannot make a report. You cannot make a report while located inside a peace zone or a battlefield, while you are an opposing clan member during a clan war, or while participating in the Olympiad
+	 */
+	public static final SystemMessageId TARGET_NOT_REPORT_CANNOT_REPORT_PEACE_PVP_ZONE_OR_OLYMPIAD_OR_CLAN_WAR_ENEMY;
+	
+	/**
+	 * ID: 2471<br>
+	 * Message: This character cannot make a report. The target has already been reported by either your clan or alliance, or has already been reported from your current IP
+	 */
+	public static final SystemMessageId CANNOT_REPORT_TARGET_ALREDY_REPORTED_BY_CLAN_ALLY_MEMBER_OR_SAME_IP;
+	
+	/**
+	 * ID: 2472<br>
+	 * Message: This character cannot make a report because another character from this account has already done so
+	 */
+	public static final SystemMessageId CANNOT_REPORT_ALREDY_REPORED_FROM_THIS_ACCOUNT;
+	
+	/**
+	 * ID: 2473<br>
+	 * Message: You have been reported as an illegal program user, so your chatting will be blocked for 10 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_10_MIN_CHAT_BLOCKED;
+	
+	/**
+	 * ID: 2474<br>
+	 * Message: You have been reported as an illegal program user, so your party participation will be blocked for 60 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_60_MIN_PARTY_BLOCKED;
+	
+	/**
+	 * ID: 2475<br>
+	 * Message: You have been reported as an illegal program user, so your party participation will be blocked for 120 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_120_MIN_PARTY_BLOCKED;
+	
+	/**
+	 * ID: 2476<br>
+	 * Message: You have been reported as an illegal program user, so your party participation will be blocked for 180 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_180_MIN_PARTY_BLOCKED;
+	
+	/**
+	 * ID: 2477<br>
+	 * Message: You have been reported as an illegal program user, so your actions will be restricted for 120 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_120_MIN_ACTION_BLOCKED;
+	
+	/**
+	 * ID: 2478<br>
+	 * Message: You have been reported as an illegal program user, so your actions will be restricted for 180 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_180_MIN_ACTION_BLOCKED;
+	
+	/**
+	 * ID: 2479<br>
+	 * Message: You have been reported as an illegal program user, so your actions will be restricted for 180 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_180_MIN_ACTION_BLOCKED_2;
+	
+	/**
+	 * ID: 2480<br>
+	 * Message: You have been reported as an illegal program user, so movement is prohibited for 120 minutes
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_120_MIN_MOVEMENT_BLOCKED;
+	
+	/**
+	 * ID: 2481<br>
+	 * Message: $c1 has been reported as an illegal program user and is currently being investigated
+	 */
+	public static final SystemMessageId C1_REPORTED_AND_IS_BEING_INVESTIGATED;
+	
+	/**
+	 * ID: 2482<br>
+	 * Message: $c1 has been reported as an illegal program user and cannot join a party
+	 */
+	public static final SystemMessageId C1_REPORTED_AND_CANNOT_PARTY;
+	
+	/**
+	 * ID: 2483<br>
+	 * Message: You have been reported as an illegal program user, so chatting is not allowed
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_SO_CHATTING_NOT_ALLOWED;
+	
+	/**
+	 * ID: 2484<br>
+	 * Message: You have been reported as an illegal program user, so participating in a party is not allowed
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_SO_PARTY_NOT_ALLOWED;
+	
+	/**
+	 * ID: 2485<br>
+	 * Message: You have been reported as an illegal program user so your actions have been restricted
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_SO_ACTIONS_NOT_ALLOWED;
+	
+	/**
+	 * ID: 2486<br>
+	 * Message: You have been blocked due to verification that you are using a third party program. Subsequent violations may result in termination of your account rather than a penalty within the game
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_BLOCKED_SUBSEQUENT_VIOLATIONS_RESULT_ACCOUNT_TERMINATION;
+	
+	/**
+	 * ID: 2487<br>
+	 * Message: You have been reported as an illegal program user, and your connection has been ended. Please contact our CS team to confirm your identity.
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_AS_BOT_CONTACT_OUR_CS_TEAM;
+	
+	/**
 	 * ID: 2491<br>
 	 * Message: Your ship cannot teleport because it does not have enough fuel for the trip.
 	 */
@@ -13995,9 +14165,9 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 2721<br>
-	 * Message: Boarding or cancellation of boarding on Airships is not allowed in the current area.
+	 * Message: You are too high to perform this action. Please lower your altitude and try again.
 	 */
-	public static final SystemMessageId BOARD_OR_CANCEL_NOT_POSSIBLE_HERE;
+	public static final SystemMessageId TOO_HIGH_TO_PERFORM_THIS_ACTION;
 	
 	/**
 	 * ID: 2722<br>
@@ -14077,6 +14247,12 @@ public final class SystemMessageId
 	public static final SystemMessageId YOU_CANNOT_CONTROL_THE_HELM_WHILE_HOLDING_A_FLAG;
 	
 	/**
+	 * ID: 2748<br>
+	 * Message: You have been reported as an illegal program user and cannot report other users
+	 */
+	public static final SystemMessageId YOU_HAVE_BEEN_REPORTED_AND_CANNOT_REPORT;
+	
+	/**
 	 * ID: 2750<br>
 	 * Message: The $s1 ward has been destroyed! $c2 now has the territory ward.
 	 */
@@ -14153,6 +14329,12 @@ public final class SystemMessageId
 	 * Message: Seed of Destruction Defense in Progress.
 	 */
 	public static final SystemMessageId SEED_OF_DESTRUCTION_DEFENSE_IN_PROGRESS;
+	
+	/**
+	 * ID: 2447<br>
+	 * Message: You can make another report in $s1-minute(s). You have $s2 points remaining on this account
+	 */
+	public static final SystemMessageId YOU_CAN_REPORT_IN_S1_MINS_YOU_HAVE_S2_POINTS_LEFT;
 	
 	/**
 	 * ID: 2777<br>
@@ -14545,6 +14727,12 @@ public final class SystemMessageId
 	public static final SystemMessageId YOU_CANT_CANCEL_RECEIVED_MAIL;
 	
 	/**
+	 * ID: 3031<br>
+	 * Message: By using the skill of Einhasad's holy sword, defeat the evil Lilims!
+	 */
+	public static final SystemMessageId USING_EINHASAD_HOLY_SWORD_DEFEAT_LILIMS;
+	
+	/**
 	 * ID: 3033<br>
 	 * Message: By using the invisible skill, sneak into the Dawn's document storage!
 	 */
@@ -14563,10 +14751,28 @@ public final class SystemMessageId
 	public static final SystemMessageId FEMALE_GUARDS_NOTICE_BETTER_THAN_MALE;
 	
 	/**
+	 * ID: 3039<br>
+	 * Message: By using the holy water of Einhasad, open the door possessed by the curse of flames.
+	 */
+	public static final SystemMessageId USING_EINHASAD_HOLY_WATER_TO_OPEN_DOOR;
+	
+	/**
+	 * ID: 3040<br>
+	 * Message: By using the Court Magician's Magic Staff, open the door on which the magician's barrier is placed.
+	 */
+	public static final SystemMessageId USING_COURT_MAGICIANS_STAFF_TO_OPEN_DOOR;
+	
+	/**
 	 * ID: 3059<br>
 	 * Message: $s1 did not receive it during the waiting time, so it was returned automatically.
 	 */
 	public static final SystemMessageId S1_NOT_RECEIVE_DURING_WAITING_TIME_MAIL_RETURNED;
+	
+	/**
+	 * ID: 3060<br>
+	 * Message: The sealing device glitters and moves. Activation complete normally!
+	 */
+	public static final SystemMessageId THE_SEALING_DEVICE_ACTIVATION_COMPLETE;
 	
 	/**
 	 * ID: 3062<br>
@@ -14803,6 +15009,12 @@ public final class SystemMessageId
 	public static final SystemMessageId C1_IS_CURRENTLY_DEAD_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION;
 	
 	/**
+	 * ID: 3140<br>
+	 * Message: The crest was successfully registered.
+	 */
+	public static final SystemMessageId CLAN_CREST_WAS_SUCCESSFULLY_REGISTRED;
+	
+	/**
 	 * ID: 3144<br>
 	 * Message: The $s2's attribute was successfully bestowed on $s1, and resistance to $s3 was increased.
 	 */
@@ -14873,6 +15085,18 @@ public final class SystemMessageId
 	 * Message: You obtained $s1 Recommendations
 	 */
 	public static final SystemMessageId YOU_OBTAINED_S1_RECOMMENDATIONS;
+	
+	/**
+	 * ID: 3212<br>
+	 * Message: When your pet's hunger gauge is at 0%, you cannot use your pet.
+	 */
+	public static final SystemMessageId WHEN_YOUR_PETS_HUNGER_GAUGE_IS_AT_0_YOU_CANNOT_USE_YOUR_PET;
+	
+	/**
+	 * ID: 3213<br>
+	 * Message: Your pet is starving and will not obey until it gets it's food. Feed your pet!
+	 */
+	public static final SystemMessageId YOUR_PET_IS_STARVING_AND_WILL_NOT_OBEY_UNTIL_IT_GETS_ITS_FOOD_FEED_YOUR_PET;
 	
 	/**
 	 * ID: 3214<br>
@@ -14995,10 +15219,9 @@ public final class SystemMessageId
 	public static final SystemMessageId THOMAS_D_TURKEY_DISAPPEARED;
 	
 	/**
-	 * Array containing all SystemMessageIds<br>
-	 * Important: Always initialize with a length of the highest SystemMessageId + 1!!!
+	 * Map containing all SystemMessageIds<br>
 	 */
-	private static SystemMessageId[] VALUES;
+	private static Map<Integer, SystemMessageId> VALUES = new HashMap<>();
 	
 	static
 	{
@@ -15207,6 +15430,7 @@ public final class SystemMessageId
 		INCORRECT_CHARACTER_NAME_TRY_AGAIN = new SystemMessageId(205);
 		ENTER_CLAN_NAME_TO_DECLARE_WAR = new SystemMessageId(206);
 		S2_OF_THE_CLAN_S1_REQUESTS_WAR = new SystemMessageId(207);
+		THE_SIZE_OF_THE_IMAGE_FILE_IS_INAPPROPRIATE = new SystemMessageId(209);
 		YOU_ARE_NOT_A_CLAN_MEMBER = new SystemMessageId(212);
 		NOT_WORKING_PLEASE_TRY_AGAIN_LATER = new SystemMessageId(213);
 		TITLE_CHANGED = new SystemMessageId(214);
@@ -15710,7 +15934,7 @@ public final class SystemMessageId
 		YOU_ARE_NOT_IN_PETITION_CHAT = new SystemMessageId(745);
 		CURRENTLY_NO_PETITION = new SystemMessageId(746);
 		DIST_TOO_FAR_CASTING_STOPPED = new SystemMessageId(748);
-		EFFECT_S1_DISAPPEARED = new SystemMessageId(749);
+		EFFECT_S1_HAS_BEEN_REMOVED = new SystemMessageId(749);
 		NO_MORE_SKILLS_TO_LEARN = new SystemMessageId(750);
 		CANNOT_INVITE_CONFLICT_CLAN = new SystemMessageId(751);
 		CANNOT_USE_NAME = new SystemMessageId(752);
@@ -16461,7 +16685,7 @@ public final class SystemMessageId
 		THIS_ITEM_CANT_BE_EQUIPPED_FOR_THE_OLYMPIAD_EVENT = new SystemMessageId(1507);
 		THIS_ITEM_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT = new SystemMessageId(1508);
 		THIS_SKILL_IS_NOT_AVAILABLE_FOR_THE_OLYMPIAD_EVENT = new SystemMessageId(1509);
-		RESSURECTION_REQUEST_BY_C1_FOR_S2_XP = new SystemMessageId(1510);
+		RESURRECTION_REQUEST_BY_C1_FOR_S2_XP = new SystemMessageId(1510);
 		MASTER_CANNOT_RES = new SystemMessageId(1511);
 		CANNOT_RES_PET = new SystemMessageId(1512);
 		RES_HAS_ALREADY_BEEN_PROPOSED = new SystemMessageId(1513);
@@ -17131,7 +17355,7 @@ public final class SystemMessageId
 		S1_CLAN_IS_VICTORIOUS_IN_THE_FORTRESS_BATTLE_OF_S2 = new SystemMessageId(2184);
 		ONLY_PARTY_LEADER_CAN_ENTER = new SystemMessageId(2185);
 		SOUL_CANNOT_BE_ABSORBED_ANYMORE = new SystemMessageId(2186);
-		CANT_REACH_TARGET_TO_CHARGE = new SystemMessageId(2187);
+		THE_TARGET_IS_LOCATED_WHERE_YOU_CANNOT_CHARGE = new SystemMessageId(2187);
 		ENCHANTMENT_ALREADY_IN_PROGRESS = new SystemMessageId(2188);
 		LOC_KAMAEL_VILLAGE_S1_S2_S3 = new SystemMessageId(2189);
 		LOC_WASTELANDS_CAMP_S1_S2_S3 = new SystemMessageId(2190);
@@ -17205,7 +17429,7 @@ public final class SystemMessageId
 		YOU_HAVE_ALREADY_BOARDED_ANOTHER_AIRSHIP = new SystemMessageId(2258);
 		LOC_FANTASY_ISLAND_S1_S2_S3 = new SystemMessageId(2259);
 		PET_CAN_RUN_AWAY_WHEN_HUNGER_BELOW_10_PERCENT = new SystemMessageId(2260);
-		C1_GAVE_C2_DAMAGE_OF_S3 = new SystemMessageId(2261);
+		C1_DONE_S3_DAMAGE_TO_C2 = new SystemMessageId(2261);
 		C1_RECEIVED_DAMAGE_OF_S3_FROM_C2 = new SystemMessageId(2262);
 		C1_RECEIVED_DAMAGE_OF_S3_THROUGH_C2 = new SystemMessageId(2263);
 		C1_EVADED_C2_ATTACK = new SystemMessageId(2264);
@@ -17259,10 +17483,19 @@ public final class SystemMessageId
 		YOU_CANNOT_TELEPORT_BECAUSE_YOU_DO_NOT_HAVE_A_TELEPORT_ITEM = new SystemMessageId(2359);
 		CURRENT_LOCATION_S1 = new SystemMessageId(2361);
 		TIME_LIMITED_ITEM_DELETED = new SystemMessageId(2366);
+		C1_WAS_REPORTED_AS_BOT = new SystemMessageId(2371);
 		THERE_NOT_MUCH_TIME_REMAINING_UNTIL_HELPER_LEAVES = new SystemMessageId(2372);
 		THE_HELPER_PET_LEAVING = new SystemMessageId(2373);
 		THE_HELPER_PET_CANNOT_BE_RETURNED = new SystemMessageId(2375);
 		YOU_CANNOT_RECEIVE_A_VITAMIN_ITEM_DURING_AN_EXCHANGE = new SystemMessageId(2376);
+		YOU_CANNOT_REPORT_CHARACTER_IN_PEACE_OR_BATTLE_ZONE = new SystemMessageId(2377);
+		YOU_CANNOT_REPORT_CLAN_WAR_ENEMY = new SystemMessageId(2378);
+		YOU_CANNOT_REPORT_CHAR_WHO_ACQUIRED_XP = new SystemMessageId(2379);
+		YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_1 = new SystemMessageId(2380);
+		YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_2 = new SystemMessageId(2381);
+		YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_3 = new SystemMessageId(2382);
+		YOU_CANNOT_REPORT_CHAR_AT_THIS_TIME_4 = new SystemMessageId(2383);
+		
 		YOUR_NUMBER_OF_MY_TELEPORTS_SLOTS_HAS_REACHED_ITS_MAXIMUM_LIMIT = new SystemMessageId(2390);
 		PET_SKILL_CANNOT_BE_USED_RECHARCHING = new SystemMessageId(2396);
 		YOU_HAVE_NO_OPEN_MY_TELEPORTS_SLOTS = new SystemMessageId(2398);
@@ -17297,6 +17530,26 @@ public final class SystemMessageId
 		THE_AIRSHIP_FUEL_RUN_OUT = new SystemMessageId(2464);
 		OLYMPIAD_3VS3_CONFIRM = new SystemMessageId(2465);
 		PET_AUXILIARY_MODE_CANNOT_USE_SKILLS = new SystemMessageId(2466);
+		YOU_HAVE_USED_REPORT_POINT_ON_C1_YOU_HAVE_C2_POINTS_LEFT = new SystemMessageId(2468);
+		YOU_HAVE_USED_ALL_POINTS_POINTS_ARE_RESET_AT_NOON = new SystemMessageId(2469);
+		TARGET_NOT_REPORT_CANNOT_REPORT_PEACE_PVP_ZONE_OR_OLYMPIAD_OR_CLAN_WAR_ENEMY = new SystemMessageId(2470);
+		CANNOT_REPORT_TARGET_ALREDY_REPORTED_BY_CLAN_ALLY_MEMBER_OR_SAME_IP = new SystemMessageId(2471);
+		CANNOT_REPORT_ALREDY_REPORED_FROM_THIS_ACCOUNT = new SystemMessageId(2472);
+		YOU_HAVE_BEEN_REPORTED_10_MIN_CHAT_BLOCKED = new SystemMessageId(2473);
+		YOU_HAVE_BEEN_REPORTED_60_MIN_PARTY_BLOCKED = new SystemMessageId(2474);
+		YOU_HAVE_BEEN_REPORTED_120_MIN_PARTY_BLOCKED = new SystemMessageId(2475);
+		YOU_HAVE_BEEN_REPORTED_180_MIN_PARTY_BLOCKED = new SystemMessageId(2476);
+		YOU_HAVE_BEEN_REPORTED_120_MIN_ACTION_BLOCKED = new SystemMessageId(2477);
+		YOU_HAVE_BEEN_REPORTED_180_MIN_ACTION_BLOCKED = new SystemMessageId(2478);
+		YOU_HAVE_BEEN_REPORTED_180_MIN_ACTION_BLOCKED_2 = new SystemMessageId(2479);
+		YOU_HAVE_BEEN_REPORTED_120_MIN_MOVEMENT_BLOCKED = new SystemMessageId(2480);
+		C1_REPORTED_AND_IS_BEING_INVESTIGATED = new SystemMessageId(2481);
+		C1_REPORTED_AND_CANNOT_PARTY = new SystemMessageId(2482);
+		YOU_HAVE_BEEN_REPORTED_SO_CHATTING_NOT_ALLOWED = new SystemMessageId(2483);
+		YOU_HAVE_BEEN_REPORTED_SO_PARTY_NOT_ALLOWED = new SystemMessageId(2484);
+		YOU_HAVE_BEEN_REPORTED_SO_ACTIONS_NOT_ALLOWED = new SystemMessageId(2485);
+		YOU_HAVE_BEEN_BLOCKED_SUBSEQUENT_VIOLATIONS_RESULT_ACCOUNT_TERMINATION = new SystemMessageId(2486);
+		YOU_HAVE_BEEN_REPORTED_AS_BOT_CONTACT_OUR_CS_TEAM = new SystemMessageId(2487);
 		THE_AIRSHIP_CANNOT_TELEPORT = new SystemMessageId(2491);
 		THE_AIRSHIP_SUMMONED = new SystemMessageId(2492);
 		THE_COLLECTION_HAS_SUCCEEDED = new SystemMessageId(2500);
@@ -17314,7 +17567,7 @@ public final class SystemMessageId
 		LOC_OUT_SEED_INFINITY_S1_S2_S3 = new SystemMessageId(2712);
 		LOC_CLEFT_S1_S2_S3 = new SystemMessageId(2716);
 		INSTANT_ZONE_S1_RESTRICTED = new SystemMessageId(2720);
-		BOARD_OR_CANCEL_NOT_POSSIBLE_HERE = new SystemMessageId(2721);
+		TOO_HIGH_TO_PERFORM_THIS_ACTION = new SystemMessageId(2721);
 		ANOTHER_AIRSHIP_ALREADY_SUMMONED = new SystemMessageId(2722);
 		YOU_CANNOT_BOARD_NOT_MEET_REQUEIREMENTS = new SystemMessageId(2727);
 		ACTION_PROHIBITED_WHILE_MOUNTED_OR_ON_AN_AIRSHIP = new SystemMessageId(2728);
@@ -17328,6 +17581,7 @@ public final class SystemMessageId
 		YOU_CANNOT_CONTROL_THE_HELM_WHILE_USING_A_SKILL = new SystemMessageId(2736);
 		YOU_CANNOT_CONTROL_THE_HELM_WHILE_A_CURSED_WEAPON_IS_EQUIPPED = new SystemMessageId(2737);
 		YOU_CANNOT_CONTROL_THE_HELM_WHILE_HOLDING_A_FLAG = new SystemMessageId(2738);
+		YOU_HAVE_BEEN_REPORTED_AND_CANNOT_REPORT = new SystemMessageId(2748);
 		THE_S1_WARD_HAS_BEEN_DESTROYED_C2_HAS_THE_WARD = new SystemMessageId(2750);
 		THE_CHAR_THAT_ACQUIRED_S1_WARD_HAS_BEEN_KILLED = new SystemMessageId(2751);
 		CANT_CONTROL_TOO_FAR = new SystemMessageId(2762);
@@ -17341,6 +17595,7 @@ public final class SystemMessageId
 		SEED_OF_DESTRUCTION_ATTACK_IN_PROGRESS = new SystemMessageId(2771);
 		SEED_OF_DESTRUCTION_CONQUEST_COMPLETE = new SystemMessageId(2772);
 		SEED_OF_DESTRUCTION_DEFENSE_IN_PROGRESS = new SystemMessageId(2773);
+		YOU_CAN_REPORT_IN_S1_MINS_YOU_HAVE_S2_POINTS_LEFT = new SystemMessageId(2774);
 		THE_AIRSHIP_SUMMON_LICENSE_ENTERED = new SystemMessageId(2777);
 		YOU_CANNOT_TELEPORT_WHILE_IN_POSSESSION_OF_A_WARD = new SystemMessageId(2778);
 		YOU_MUST_HAVE_MINIMUM_OF_S1_PEOPLE_TO_ENTER = new SystemMessageId(2793);
@@ -17406,10 +17661,14 @@ public final class SystemMessageId
 		YOU_CANNOT_USE_SKILL_ENCHANT_ATTACKING_TRANSFORMED_BOAT = new SystemMessageId(3028);
 		S1_RETURNED_MAIL = new SystemMessageId(3029);
 		YOU_CANT_CANCEL_RECEIVED_MAIL = new SystemMessageId(3030);
+		USING_EINHASAD_HOLY_SWORD_DEFEAT_LILIMS = new SystemMessageId(3031);
 		SNEAK_INTO_DAWNS_DOCUMENT_STORAGE = new SystemMessageId(3033);
 		MALE_GUARDS_CAN_DETECT_FEMALES_DONT = new SystemMessageId(3037);
 		FEMALE_GUARDS_NOTICE_BETTER_THAN_MALE = new SystemMessageId(3038);
+		USING_EINHASAD_HOLY_WATER_TO_OPEN_DOOR = new SystemMessageId(3039);
+		USING_COURT_MAGICIANS_STAFF_TO_OPEN_DOOR = new SystemMessageId(3040);
 		S1_NOT_RECEIVE_DURING_WAITING_TIME_MAIL_RETURNED = new SystemMessageId(3059);
+		THE_SEALING_DEVICE_ACTIVATION_COMPLETE = new SystemMessageId(3060);
 		DO_YOU_WANT_TO_PAY_S1_ADENA = new SystemMessageId(3062);
 		DO_YOU_WANT_TO_FORWARD = new SystemMessageId(3063);
 		UNREAD_MAIL = new SystemMessageId(3064);
@@ -17449,6 +17708,7 @@ public final class SystemMessageId
 		PARTY_LOOT_CHANGE_CANCELLED = new SystemMessageId(3137);
 		PARTY_LOOT_CHANGED_S1 = new SystemMessageId(3138);
 		C1_IS_CURRENTLY_DEAD_AND_CANNOT_BE_REQUESTED_FOR_A_COUPLE_ACTION = new SystemMessageId(3139);
+		CLAN_CREST_WAS_SUCCESSFULLY_REGISTRED = new SystemMessageId(3140);
 		THE_S2_ATTRIBUTE_WAS_SUCCESSFULLY_BESTOWED_ON_S1_RES_TO_S3_INCREASED = new SystemMessageId(3144);
 		YOU_WILL_BE_EXPELLED_IN_S1 = new SystemMessageId(3147);
 		YOU_HAVE_REQUESTED_COUPLE_ACTION_C1 = new SystemMessageId(3150);
@@ -17461,6 +17721,8 @@ public final class SystemMessageId
 		C1_IS_SET_TO_REFUSE_DUEL_REQUEST = new SystemMessageId(3169);
 		YOU_CURRENTLY_DO_NOT_HAVE_ANY_RECOMMENDATIONS = new SystemMessageId(3206);
 		YOU_OBTAINED_S1_RECOMMENDATIONS = new SystemMessageId(3207);
+		WHEN_YOUR_PETS_HUNGER_GAUGE_IS_AT_0_YOU_CANNOT_USE_YOUR_PET = new SystemMessageId(3212);
+		YOUR_PET_IS_STARVING_AND_WILL_NOT_OBEY_UNTIL_IT_GETS_ITS_FOOD_FEED_YOUR_PET = new SystemMessageId(3213);
 		S1_SUCCESSFULLY_ADDED_TO_CONTACT_LIST = new SystemMessageId(3214);
 		NAME_S1_NOT_EXIST_TRY_ANOTHER_NAME = new SystemMessageId(3215);
 		NAME_ALREADY_EXIST_ON_CONTACT_LIST = new SystemMessageId(3216);
@@ -17488,9 +17750,8 @@ public final class SystemMessageId
 	private static final void buildFastLookupTable()
 	{
 		final Field[] fields = SystemMessageId.class.getDeclaredFields();
-		final ArrayList<SystemMessageId> smIds = new ArrayList<>(fields.length);
 		
-		int maxId = 0, mod;
+		int mod;
 		SystemMessageId smId;
 		for (final Field field : fields)
 		{
@@ -17502,21 +17763,13 @@ public final class SystemMessageId
 					smId = (SystemMessageId) field.get(null);
 					smId.setName(field.getName());
 					smId.setParamCount(parseMessageParameters(field.getName()));
-					maxId = Math.max(maxId, smId.getId());
-					smIds.add(smId);
+					VALUES.put(smId.getId(), smId);
 				}
 				catch (final Exception e)
 				{
 					_log.log(Level.WARNING, "SystemMessageId: Failed field access for '" + field.getName() + "'", e);
 				}
 			}
-		}
-		
-		VALUES = new SystemMessageId[maxId + 1];
-		for (int i = smIds.size(); i-- > 0;)
-		{
-			smId = smIds.get(i);
-			VALUES[smId.getId()] = smId;
 		}
 	}
 	
@@ -17548,12 +17801,7 @@ public final class SystemMessageId
 	
 	private static final SystemMessageId getSystemMessageIdInternal(final int id)
 	{
-		if ((id < 0) || (id >= VALUES.length))
-		{
-			return null;
-		}
-		
-		return VALUES[id];
+		return VALUES.get(id);
 	}
 	
 	public static final SystemMessageId getSystemMessageId(final String name)
@@ -17570,7 +17818,7 @@ public final class SystemMessageId
 	
 	public static final void reloadLocalisations()
 	{
-		for (final SystemMessageId smId : VALUES)
+		for (final SystemMessageId smId : VALUES.values())
 		{
 			if (smId != null)
 			{

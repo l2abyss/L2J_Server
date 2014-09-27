@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 import java.util.logging.Logger;
 
 import com.l2jserver.gameserver.ai.L2BoatAI;
-import com.l2jserver.gameserver.model.L2CharPosition;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Vehicle;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
@@ -30,7 +30,7 @@ import com.l2jserver.gameserver.network.serverpackets.VehicleInfo;
 import com.l2jserver.gameserver.network.serverpackets.VehicleStarted;
 
 /**
- * @author Maktakien, reworked by DS
+ * @author Maktakien, DS
  */
 public class L2BoatInstance extends L2Vehicle
 {
@@ -47,6 +47,12 @@ public class L2BoatInstance extends L2Vehicle
 	public boolean isBoat()
 	{
 		return true;
+	}
+	
+	@Override
+	public int getId()
+	{
+		return 0;
 	}
 	
 	@Override
@@ -78,9 +84,9 @@ public class L2BoatInstance extends L2Vehicle
 	}
 	
 	@Override
-	public void stopMove(L2CharPosition pos, boolean updateKnownObjects)
+	public void stopMove(Location loc, boolean updateKnownObjects)
 	{
-		super.stopMove(pos, updateKnownObjects);
+		super.stopMove(loc, updateKnownObjects);
 		
 		broadcastPacket(new VehicleStarted(this, 0));
 		broadcastPacket(new VehicleInfo(this));

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,35 +18,29 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.base.Race;
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.model.stats.Env;
-import com.l2jserver.gameserver.util.Util;
 
 /**
  * The Class ConditionTargetRace.
- * @author mkizub, Zoey76
+ * @author Zealar
  */
 public class ConditionTargetRace extends Condition
 {
-	private final Race[] _races;
+	private final Race _race;
 	
 	/**
 	 * Instantiates a new condition target race.
-	 * @param races the list containing the allowed races.
+	 * @param race containing the allowed race.
 	 */
-	public ConditionTargetRace(Race[] races)
+	public ConditionTargetRace(Race race)
 	{
-		_races = races;
+		_race = race;
 	}
 	
 	@Override
 	public boolean testImpl(Env env)
 	{
-		if (!(env.getTarget() instanceof L2PcInstance))
-		{
-			return false;
-		}
-		return Util.contains(_races, env.getTarget().getActingPlayer().getRace());
+		return _race == env.getTarget().getRace();
 	}
 }

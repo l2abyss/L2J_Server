@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -33,8 +33,8 @@ public final class PcItemTemplate extends ItemHolder
 	 */
 	public PcItemTemplate(StatsSet set)
 	{
-		super(set.getInteger("id"), set.getInteger("count"));
-		_equipped = set.getBool("equipped", false);
+		super(set.getInt("id"), set.getInt("count"));
+		_equipped = set.getBoolean("equipped", false);
 	}
 	
 	/**

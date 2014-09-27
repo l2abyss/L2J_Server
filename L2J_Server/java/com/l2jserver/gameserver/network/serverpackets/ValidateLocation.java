@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,31 +18,26 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.Location;
 
 public class ValidateLocation extends L2GameServerPacket
 {
 	private final int _charObjId;
-	private final int _x, _y, _z, _heading;
+	private final Location _loc;
 	
-	public ValidateLocation(L2Character cha)
+	public ValidateLocation(L2Object obj)
 	{
-		_charObjId = cha.getObjectId();
-		_x = cha.getX();
-		_y = cha.getY();
-		_z = cha.getZ();
-		_heading = cha.getHeading();
+		_charObjId = obj.getObjectId();
+		_loc = obj.getLocation();
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x79);
-		
 		writeD(_charObjId);
-		writeD(_x);
-		writeD(_y);
-		writeD(_z);
-		writeD(_heading);
+		writeLoc(_loc);
+		writeD(_loc.getHeading());
 	}
 }

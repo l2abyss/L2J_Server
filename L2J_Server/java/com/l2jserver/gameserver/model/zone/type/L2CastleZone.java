@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,22 +18,15 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import com.l2jserver.gameserver.instancemanager.CastleManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.entity.Castle;
-import com.l2jserver.gameserver.model.zone.L2ZoneRespawn;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 
 /**
  * A castle zone
  * @author durgus
  */
-public class L2CastleZone extends L2ZoneRespawn
+public final class L2CastleZone extends L2ResidenceZone
 {
-	private int _castleId;
-	private Castle _castle = null;
 	
 	public L2CastleZone(int id)
 	{
@@ -45,7 +38,7 @@ public class L2CastleZone extends L2ZoneRespawn
 	{
 		if (name.equals("castleId"))
 		{
-			_castleId = Integer.parseInt(value);
+			setResidenceId(Integer.parseInt(value));
 		}
 		else
 		{
@@ -56,60 +49,12 @@ public class L2CastleZone extends L2ZoneRespawn
 	@Override
 	protected void onEnter(L2Character character)
 	{
-		if (getCastle() != null)
-		{
-			character.setInsideZone(ZoneId.CASTLE, true);
-		}
+		character.setInsideZone(ZoneId.CASTLE, true);
 	}
 	
 	@Override
 	protected void onExit(L2Character character)
 	{
-		if (getCastle() != null)
-		{
-			character.setInsideZone(ZoneId.CASTLE, false);
-		}
-	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
-	
-	/**
-	 * Removes all foreigners from the castle
-	 * @param owningClanId
-	 */
-	public void banishForeigners(int owningClanId)
-	{
-		TeleportWhereType type = TeleportWhereType.Town;
-		for (L2PcInstance temp : getPlayersInside())
-		{
-			if ((temp.getClanId() == owningClanId) && (owningClanId != 0))
-			{
-				continue;
-			}
-			
-			temp.teleToLocation(type);
-		}
-	}
-	
-	public int getCastleId()
-	{
-		return _castleId;
-	}
-	
-	private final Castle getCastle()
-	{
-		if (_castle == null)
-		{
-			_castle = CastleManager.getInstance().getCastleById(_castleId);
-		}
-		return _castle;
+		character.setInsideZone(ZoneId.CASTLE, false);
 	}
 }

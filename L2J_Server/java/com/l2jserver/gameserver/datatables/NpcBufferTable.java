@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -34,7 +34,7 @@ import com.l2jserver.gameserver.model.holders.SkillHolder;
 
 public class NpcBufferTable
 {
-	private static Logger _log = Logger.getLogger(NpcBufferTable.class.getName());
+	private static final Logger _log = Logger.getLogger(NpcBufferTable.class.getName());
 	
 	private final Map<Integer, NpcBufferSkills> _buffers = new HashMap<>();
 	
@@ -185,13 +185,10 @@ public class NpcBufferTable
 	
 	public NpcBufferData getSkillInfo(int npcId, int buffGroup)
 	{
-		if (_buffers.containsKey(npcId))
+		final NpcBufferSkills skills = _buffers.get(npcId);
+		if (skills != null)
 		{
-			final NpcBufferSkills skills = _buffers.get(npcId);
-			if (skills != null)
-			{
-				return skills.getSkillGroupInfo(buffGroup);
-			}
+			return skills.getSkillGroupInfo(buffGroup);
 		}
 		return null;
 	}

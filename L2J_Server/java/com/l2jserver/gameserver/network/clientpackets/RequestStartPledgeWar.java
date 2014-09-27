@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,14 +20,12 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2Clan;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-
-import gnu.trove.procedure.TObjectProcedure;
 
 public final class RequestStartPledgeWar extends L2GameClientPacket
 {
@@ -66,7 +64,7 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
 			sm = null;
 			return;
 		}
-		else if ((player.getClanPrivileges() & L2Clan.CP_CL_PLEDGE_WAR) != L2Clan.CP_CL_PLEDGE_WAR)
+		else if (!player.hasClanPrivilege(ClanPrivilege.CL_PLEDGE_WAR))
 		{
 			player.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
@@ -98,7 +96,7 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
 			sm = null;
 			return;
 		}
-		else if (_clan.isAtWarWith(clan.getClanId()))
+		else if (_clan.isAtWarWith(clan.getId()))
 		{
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.ALREADY_AT_WAR_WITH_S1_WAIT_5_DAYS); // msg id 628
 			sm.addString(clan.getName());
@@ -142,29 +140,16 @@ public final class RequestStartPledgeWar extends L2GameClientPacket
 		// player.setTransactionRequester(leader);
 		// leader.sendPacket(new StartPledgeWar(_clan.getName(),player.getName()));
 		
-		ClanTable.getInstance().storeclanswars(player.getClanId(), clan.getClanId());
-		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcastUserInfo(player, clan));
-	}
-	
-	private final class ForEachPlayerBroadcastUserInfo implements TObjectProcedure<L2PcInstance>
-	{
-		private final L2Clan _cln;
-		private final L2PcInstance _ply;
+		ClanTable.getInstance().storeclanswars(player.getClanId(), clan.getId());
 		
-		protected ForEachPlayerBroadcastUserInfo(L2PcInstance player, L2Clan clan)
+		for (L2PcInstance member : _clan.getOnlineMembers(0))
 		{
-			_ply = player;
-			_cln = clan;
+			member.broadcastUserInfo();
 		}
 		
-		@Override
-		public final boolean execute(final L2PcInstance cha)
+		for (L2PcInstance member : clan.getOnlineMembers(0))
 		{
-			if ((cha.getClan() == _ply.getClan()) || (cha.getClan() == _cln))
-			{
-				cha.broadcastUserInfo();
-			}
-			return true;
+			member.broadcastUserInfo();
 		}
 	}
 	

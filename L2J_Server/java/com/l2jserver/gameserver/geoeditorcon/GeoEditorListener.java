@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -31,7 +31,7 @@ public class GeoEditorListener extends Thread
 {
 	private static GeoEditorListener _instance;
 	private static final int PORT = 9011;
-	private static Logger _log = Logger.getLogger(GeoEditorListener.class.getName());
+	private static final Logger _log = Logger.getLogger(GeoEditorListener.class.getName());
 	private final ServerSocket _serverSocket;
 	private GeoEditorThread _geoEditor;
 	

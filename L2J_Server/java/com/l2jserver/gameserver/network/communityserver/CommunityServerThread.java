@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -247,8 +247,7 @@ public final class CommunityServerThread extends NetConnection
 					
 					if (packet != null)
 					{
-						// new Thread(packet).start();
-						ThreadPoolManager.getInstance().executeCommunityPacket(packet);
+						ThreadPoolManager.getInstance().executePacket(packet);
 					}
 					else
 					{

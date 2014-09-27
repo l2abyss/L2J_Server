@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -43,7 +43,7 @@ public enum BaseStats
 	WIT(new WIT()),
 	CON(new CON()),
 	MEN(new MEN()),
-	NULL(new NULL());
+	NONE(new NONE());
 	
 	private static final Logger _log = Logger.getLogger(BaseStats.class.getName());
 	
@@ -150,7 +150,7 @@ public enum BaseStats
 		}
 	}
 	
-	protected static final class NULL implements BaseStat
+	protected static final class NONE implements BaseStat
 	{
 		@Override
 		public final double calcBonus(L2Character actor)

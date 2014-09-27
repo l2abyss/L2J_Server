@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -52,6 +52,7 @@ public enum Stats
 	ATK_REUSE("atkReuse"), // Bows Hits Reuse Rate
 	P_REUSE("pReuse"), // Physical Skill Reuse Rate
 	MAGIC_REUSE_RATE("mReuse"), // Magic Skill Reuse Rate
+	DANCE_REUSE("dReuse"), // Dance Skill Reuse Rate
 	SHIELD_DEFENCE("sDef"),
 	CRITICAL_DAMAGE("cAtk"),
 	CRITICAL_DAMAGE_ADD("cAtkAdd"), // this is another type for special critical damage mods - vicious stance, critical power and critical damage SA
@@ -75,27 +76,26 @@ public enum Stats
 	// ATTACK & DEFENCE RATES
 	EVASION_RATE("rEvas"),
 	P_SKILL_EVASION("pSkillEvas"),
-	CRIT_DAMAGE_EVASION("critDamEvas"),
+	DEFENCE_CRITICAL_RATE("defCritRate"),
+	DEFENCE_CRITICAL_RATE_ADD("defCritRateAdd"),
+	DEFENCE_CRITICAL_DAMAGE("defCritDamage"),
+	DEFENCE_CRITICAL_DAMAGE_ADD("defCritDamageAdd"), // Resistance to critical damage in value (Example: +100 will be 100 more critical damage, NOT 100% more).
 	SHIELD_RATE("rShld"),
 	CRITICAL_RATE("rCrit"),
 	BLOW_RATE("blowRate"),
-	LETHAL_RATE("lethalRate"),
 	MCRITICAL_RATE("mCritRate"),
 	EXPSP_RATE("rExp"),
 	BONUS_EXP("bonusExp"),
 	BONUS_SP("bonusSp"),
 	ATTACK_CANCEL("cancel"),
-	MAGIC_FAILURE_RATE("magicFailureRate"),
 	
 	// ACCURACY & RANGE
 	ACCURACY_COMBAT("accCombat"),
 	POWER_ATTACK_RANGE("pAtkRange"),
 	MAGIC_ATTACK_RANGE("mAtkRange"),
-	POWER_ATTACK_ANGLE("pAtkAngle"),
 	ATTACK_COUNT_MAX("atkCountMax"),
 	// Run speed, walk & escape speed are calculated proportionally, magic speed is a buff
-	RUN_SPEED("runSpd"),
-	WALK_SPEED("walkSpd"),
+	MOVE_SPEED("runSpd"),
 	
 	// BASIC STATS
 	STAT_STR("STR"),
@@ -110,29 +110,13 @@ public enum Stats
 	// VARIOUS
 	BREATH("breath"),
 	FALL("fall"),
-	AGGRESSION("aggression"), // locks a mob on tank caster
 	
 	// VULNERABILITIES
-	AGGRESSION_VULN("aggressionVuln"),
-	BLEED_VULN("bleedVuln"),
-	POISON_VULN("poisonVuln"),
-	STUN_VULN("stunVuln"),
-	PARALYZE_VULN("paralyzeVuln"),
-	ROOT_VULN("rootVuln"),
-	SLEEP_VULN("sleepVuln"),
-	PHYSICALBLOCKADE_VULN("physicalBlockadeVuln"),
-	BOSS_VULN("bossVuln"),
-	GUST_VULN("gustVuln"),
 	DAMAGE_ZONE_VULN("damageZoneVuln"),
 	MOVEMENT_VULN("movementVuln"),
 	CANCEL_VULN("cancelVuln"), // Resistance for cancel type skills
-	DERANGEMENT_VULN("derangementVuln"),
 	DEBUFF_VULN("debuffVuln"),
 	BUFF_VULN("buffVuln"),
-	CRIT_VULN("critVuln"), // Resistance to critical damage in percent.
-	CRIT_ADD_VULN("critAddVuln"), // Resistance to critical damage in value (Example: +100 will be 100 more critical damage, NOT 100% more).
-	MAGIC_DAMAGE_VULN("magicDamVul"),
-	VALAKAS_VULN("valakasVuln"),
 	
 	// RESISTANCES
 	FIRE_RES("fireRes"),
@@ -154,38 +138,7 @@ public enum Stats
 	DARK_POWER("darkPower"),
 	
 	// PROFICIENCY
-	AGGRESSION_PROF("aggressionProf"),
-	BLEED_PROF("bleedProf"),
-	POISON_PROF("poisonProf"),
-	STUN_PROF("stunProf"),
-	PARALYZE_PROF("paralyzeProf"),
-	ROOT_PROF("rootProf"),
-	SLEEP_PROF("sleepProf"),
-	PROF("movementProf"),
 	CANCEL_PROF("cancelProf"),
-	DERANGEMENT_PROF("derangementProf"),
-	DEBUFF_PROF("debuffProf"),
-	CRIT_PROF("critProf"),
-	VALAKAS_PROF("valakasProf"),
-	
-	// WEAPONS VULNERABILITIES
-	NONE_WPN_VULN("noneWpnVuln"), // Shields!!!
-	SWORD_WPN_VULN("swordWpnVuln"),
-	BLUNT_WPN_VULN("bluntWpnVuln"),
-	DAGGER_WPN_VULN("daggerWpnVuln"),
-	BOW_WPN_VULN("bowWpnVuln"),
-	CROSSBOW_WPN_VULN("crossbowWpnVuln"),
-	POLE_WPN_VULN("poleWpnVuln"),
-	ETC_WPN_VULN("etcWpnVuln"),
-	FIST_WPN_VULN("fistWpnVuln"),
-	DUAL_WPN_VULN("dualWpnVuln"),
-	DUALFIST_WPN_VULN("dualFistWpnVuln"),
-	BIGSWORD_WPN_VULN("bigSwordWpnVuln"),
-	BIGBLUNT_WPN_VULN("bigBluntWpnVuln"),
-	DUALDAGGER_WPN_VULN("dualDaggerWpnVuln"),
-	RAPIER_WPN_VULN("rapierWpnVuln"),
-	ANCIENT_WPN_VULN("ancientWpnVuln"),
-	PET_WPN_VULN("petWpnVuln"),
 	
 	REFLECT_DAMAGE_PERCENT("reflectDam"),
 	REFLECT_SKILL_MAGIC("reflectSkillMagic"),
@@ -200,22 +153,6 @@ public enum Stats
 	
 	WEIGHT_LIMIT("weightLimit"),
 	WEIGHT_PENALTY("weightPenalty"),
-	
-	PATK_PLANTS("pAtk-plants"),
-	PATK_INSECTS("pAtk-insects"),
-	PATK_ANIMALS("pAtk-animals"),
-	PATK_MONSTERS("pAtk-monsters"),
-	PATK_DRAGONS("pAtk-dragons"),
-	PATK_GIANTS("pAtk-giants"),
-	PATK_MCREATURES("pAtk-magicCreature"),
-	
-	PDEF_PLANTS("pDef-plants"),
-	PDEF_INSECTS("pDef-insects"),
-	PDEF_ANIMALS("pDef-animals"),
-	PDEF_MONSTERS("pDef-monsters"),
-	PDEF_DRAGONS("pDef-dragons"),
-	PDEF_GIANTS("pDef-giants"),
-	PDEF_MCREATURES("pDef-magicCreature"),
 	
 	// ExSkill
 	INV_LIM("inventoryLimit"),
@@ -233,11 +170,6 @@ public enum Stats
 	BOW_MP_CONSUME_RATE("BowMpConsumeRate"),
 	MP_CONSUME("MpConsume"),
 	
-	// T1 stats
-	transformId("transformId"),
-	TALISMAN_SLOTS("talisman"),
-	CLOAK_SLOT("cloak"),
-	
 	// Shield Stats
 	SHIELD_DEFENCE_ANGLE("shieldDefAngle"),
 	
@@ -245,7 +177,13 @@ public enum Stats
 	SKILL_MASTERY("skillMastery"),
 	
 	// Vitality
-	VITALITY_CONSUME_RATE("vitalityConsumeRate");
+	VITALITY_CONSUME_RATE("vitalityConsumeRate"),
+	
+	// Souls
+	MAX_SOULS("maxSouls"),
+	
+	// Fishing
+	FISHING_EXPERTISE("fishingExpertise");
 	
 	public static final int NUM_STATS = values().length;
 	

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -43,7 +43,7 @@ public class ExShowCastleInfo extends L2GameServerPacket
 		writeD(castles.size());
 		for (Castle castle : castles)
 		{
-			writeD(castle.getCastleId());
+			writeD(castle.getResidenceId());
 			if (castle.getOwnerId() > 0)
 			{
 				if (ClanTable.getInstance().getClan(castle.getOwnerId()) != null)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -44,6 +44,7 @@ import com.l2jserver.gameserver.LoginServerThread.SessionKey;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.datatables.SecondaryAuthData;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.model.CharSelectInfoPackage;
 import com.l2jserver.gameserver.model.L2Clan;
@@ -51,6 +52,7 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.L2Event;
+import com.l2jserver.gameserver.model.olympiad.OlympiadManager;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
@@ -240,7 +242,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	{
 		_accountName = pAccountName;
 		
-		if (Config.SECOND_AUTH_ENABLED)
+		if (SecondaryAuthData.getInstance().isEnabled())
 		{
 			_secondaryAuth = new SecondaryPasswordAuth(this);
 		}
@@ -372,7 +374,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		{
 			if (getActiveChar() != null)
 			{
-				getActiveChar().store();
+				getActiveChar().storeMe();
 				getActiveChar().storeRecommendations();
 				if (Config.UPDATE_ITEMS_ON_CHAR_STORE)
 				{
@@ -426,125 +428,154 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
 		{
-			PreparedStatement statement = con.prepareStatement("DELETE FROM character_contacts WHERE charId=? OR contactId=?");
-			statement.setInt(1, objid);
-			statement.setInt(2, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_contacts WHERE charId=? OR contactId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.setInt(2, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_friends WHERE charId=? OR friendId=?");
-			statement.setInt(1, objid);
-			statement.setInt(2, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_friends WHERE charId=? OR friendId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.setInt(2, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_hennas WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_hennas WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_macroses WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_macroses WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_quests WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_quests WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_quest_global_data WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.executeUpdate();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_quest_global_data WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.executeUpdate();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_recipebook WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_recipebook WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_shortcuts WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_shortcuts WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_skills WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_skills WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_skills_save WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_skills_save WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_subclasses WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_subclasses WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM heroes WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM heroes WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM olympiad_nobles WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM olympiad_nobles WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM seven_signs WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM seven_signs WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM pets WHERE item_obj_id IN (SELECT object_id FROM items WHERE items.owner_id=?)");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM pets WHERE item_obj_id IN (SELECT object_id FROM items WHERE items.owner_id=?)"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM item_attributes WHERE itemId IN (SELECT object_id FROM items WHERE items.owner_id=?)");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM item_attributes WHERE itemId IN (SELECT object_id FROM items WHERE items.owner_id=?)"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM items WHERE owner_id=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM items WHERE owner_id=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM merchant_lease WHERE player_id=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM merchant_lease WHERE player_id=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_raid_points WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_raid_points WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_reco_bonus WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_reco_bonus WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM character_instance_time WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_instance_time WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
-			statement = con.prepareStatement("DELETE FROM characters WHERE charId=?");
-			statement.setInt(1, objid);
-			statement.execute();
-			statement.close();
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM character_variables WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
+			
+			try (PreparedStatement ps = con.prepareStatement("DELETE FROM characters WHERE charId=?"))
+			{
+				ps.setInt(1, objid);
+				ps.execute();
+			}
 			
 			if (Config.L2JMOD_ALLOW_WEDDING)
 			{
-				statement = con.prepareStatement("DELETE FROM mods_wedding WHERE player1Id = ? OR player2Id = ?");
-				statement.setInt(1, objid);
-				statement.setInt(2, objid);
-				statement.execute();
-				statement.close();
+				try (PreparedStatement ps = con.prepareStatement("DELETE FROM mods_wedding WHERE player1Id = ? OR player2Id = ?"))
+				{
+					ps.setInt(1, objid);
+					ps.setInt(2, objid);
+					ps.execute();
+				}
 			}
 		}
 		catch (Exception e)
@@ -681,7 +712,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 		// no long running tasks here, do it async
 		try
 		{
-			ThreadPoolManager.getInstance().executeTask(new DisconnectTask());
+			ThreadPoolManager.getInstance().executeGeneral(new DisconnectTask());
 		}
 		catch (RejectedExecutionException e)
 		{
@@ -743,11 +774,11 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 			{
 				if ((getActiveChar() != null) && !isDetached())
 				{
-					getActiveChar().storeZoneRestartLimitTime();
 					setDetached(true);
 					if (offlineMode(getActiveChar()))
 					{
 						getActiveChar().leaveParty();
+						OlympiadManager.getInstance().unRegisterNoble(getActiveChar());
 						
 						// If the L2PcInstance has Pet, unsummon it
 						if (getActiveChar().hasSummon())
@@ -798,19 +829,31 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 	 */
 	protected boolean offlineMode(L2PcInstance player)
 	{
-		boolean canSetShop = false;
-		if (player.isInOlympiadMode() || player.isFestivalParticipant() || player.isBlockedFromExit() || player.isInJail() || (player.getVehicle() != null))
+		if (player.isInOlympiadMode() || player.isFestivalParticipant() || player.isBlockedFromExit() || player.isJailed() || (player.getVehicle() != null))
 		{
 			return false;
 		}
 		
-		if (Config.OFFLINE_TRADE_ENABLE && ((player.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_SELL) || (player.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_BUY)))
+		boolean canSetShop = false;
+		switch (player.getPrivateStoreType())
 		{
-			canSetShop = true;
-		}
-		else if (Config.OFFLINE_CRAFT_ENABLE && (player.isInCraftMode() || (player.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_MANUFACTURE)))
-		{
-			canSetShop = true;
+			case SELL:
+			case PACKAGE_SELL:
+			case BUY:
+			{
+				canSetShop = Config.OFFLINE_TRADE_ENABLE;
+				break;
+			}
+			case MANUFACTURE:
+			{
+				canSetShop = Config.OFFLINE_TRADE_ENABLE;
+				break;
+			}
+			default:
+			{
+				canSetShop = Config.OFFLINE_CRAFT_ENABLE && player.isInCraftMode();
+				break;
+			}
 		}
 		
 		if (Config.OFFLINE_MODE_IN_PEACE_ZONE && !player.isInsideZone(ZoneId.PEACE))
@@ -900,7 +943,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>> i
 					saveCharToDisk();
 					if (player.hasSummon())
 					{
-						player.getSummon().store();
+						player.getSummon().storeMe();
 					}
 				}
 			}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,16 +19,15 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.TaskPriority;
 import com.l2jserver.gameserver.instancemanager.BoatManager;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.model.items.type.WeaponType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.MoveToLocationInVehicle;
 import com.l2jserver.gameserver.network.serverpackets.StopMoveInVehicle;
-import com.l2jserver.gameserver.util.Point3D;
 
 public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 {
@@ -41,11 +40,6 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 	private int _originX;
 	private int _originY;
 	private int _originZ;
-	
-	public TaskPriority getPriority()
-	{
-		return TaskPriority.PR_HIGH;
-	}
 	
 	@Override
 	protected void readImpl()
@@ -81,7 +75,7 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.isAttackingNow() && (activeChar.getActiveWeaponItem() != null) && (activeChar.getActiveWeaponItem().getItemType() == L2WeaponType.BOW))
+		if (activeChar.isAttackingNow() && (activeChar.getActiveWeaponItem() != null) && (activeChar.getActiveWeaponItem().getItemType() == WeaponType.BOW))
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -128,8 +122,8 @@ public final class RequestMoveToLocationInVehicle extends L2GameClientPacket
 			activeChar.setVehicle(boat);
 		}
 		
-		final Point3D pos = new Point3D(_targetX, _targetY, _targetZ);
-		final Point3D originPos = new Point3D(_originX, _originY, _originZ);
+		final Location pos = new Location(_targetX, _targetY, _targetZ);
+		final Location originPos = new Location(_originX, _originY, _originZ);
 		activeChar.setInVehiclePosition(pos);
 		activeChar.broadcastPacket(new MoveToLocationInVehicle(activeChar, pos, originPos));
 	}

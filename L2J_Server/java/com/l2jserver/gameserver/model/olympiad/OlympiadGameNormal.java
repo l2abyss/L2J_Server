@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -32,6 +32,8 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.olympiad.OnOlympiadMatchResult;
 import com.l2jserver.gameserver.model.zone.type.L2OlympiadStadiumZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMatchResult;
@@ -327,8 +329,8 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 		final boolean _pOneCrash = ((_playerOne.getPlayer() == null) || _playerOne.isDisconnected());
 		final boolean _pTwoCrash = ((_playerTwo.getPlayer() == null) || _playerTwo.isDisconnected());
 		
-		final int playerOnePoints = _playerOne.getStats().getInteger(POINTS);
-		final int playerTwoPoints = _playerTwo.getStats().getInteger(POINTS);
+		final int playerOnePoints = _playerOne.getStats().getInt(POINTS);
+		final int playerTwoPoints = _playerTwo.getStats().getInt(POINTS);
 		int pointDiff = Math.min(playerOnePoints, playerTwoPoints) / getDivider();
 		if (pointDiff <= 0)
 		{
@@ -475,6 +477,9 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 						});
 						_logResults.log(record);
 					}
+					
+					// Notify to scripts
+					EventDispatcher.getInstance().notifyEventAsync(new OnOlympiadMatchResult(_playerOne, _playerTwo, getType()), Olympiad.getInstance());
 				}
 				else if (_pOneCrash && !_pTwoCrash)
 				{
@@ -510,6 +515,8 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 						});
 						_logResults.log(record);
 					}
+					// Notify to scripts
+					EventDispatcher.getInstance().notifyEventAsync(new OnOlympiadMatchResult(_playerTwo, _playerOne, getType()), Olympiad.getInstance());
 				}
 				else if (_pOneCrash && _pTwoCrash)
 				{
@@ -559,6 +566,10 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 					result = new ExOlympiadMatchResult(tie, winside, list2, list1);
 				}
 				stadium.broadcastPacket(result);
+				
+				// Notify to scripts
+				EventDispatcher.getInstance().notifyEventAsync(new OnOlympiadMatchResult(null, _playerOne, getType()), Olympiad.getInstance());
+				EventDispatcher.getInstance().notifyEventAsync(new OnOlympiadMatchResult(null, _playerTwo, getType()), Olympiad.getInstance());
 				return;
 			}
 			catch (Exception e)
@@ -627,6 +638,9 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 				// Save Fight Result
 				saveResults(_playerOne, _playerTwo, 1, _startTime, _fightTime, getType());
 				rewardParticipant(_playerOne.getPlayer(), getReward());
+				
+				// Notify to scripts
+				EventDispatcher.getInstance().notifyEventAsync(new OnOlympiadMatchResult(_playerOne, _playerTwo, getType()), Olympiad.getInstance());
 			}
 			else if ((_playerOne.getPlayer() == null) || !_playerOne.getPlayer().isOnline() || ((playerOneHp == 0) && (playerTwoHp != 0)) || ((_damageP2 > _damageP1) && (playerOneHp != 0) && (playerTwoHp != 0)))
 			{
@@ -649,6 +663,9 @@ public abstract class OlympiadGameNormal extends AbstractOlympiadGame
 				// Save Fight Result
 				saveResults(_playerOne, _playerTwo, 2, _startTime, _fightTime, getType());
 				rewardParticipant(_playerTwo.getPlayer(), getReward());
+				
+				// Notify to scripts
+				EventDispatcher.getInstance().notifyEventAsync(new OnOlympiadMatchResult(_playerTwo, _playerOne, getType()), Olympiad.getInstance());
 			}
 			else
 			{

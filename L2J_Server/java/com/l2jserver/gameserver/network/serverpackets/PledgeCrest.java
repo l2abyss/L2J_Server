@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,7 +18,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.cache.CrestCache;
+import com.l2jserver.gameserver.datatables.CrestTable;
+import com.l2jserver.gameserver.model.L2Crest;
 
 public final class PledgeCrest extends L2GameServerPacket
 {
@@ -28,13 +29,20 @@ public final class PledgeCrest extends L2GameServerPacket
 	public PledgeCrest(int crestId)
 	{
 		_crestId = crestId;
-		_data = CrestCache.getInstance().getPledgeCrest(_crestId);
+		final L2Crest crest = CrestTable.getInstance().getCrest(crestId);
+		_data = crest != null ? crest.getData() : null;
+	}
+	
+	public PledgeCrest(int crestId, byte[] data)
+	{
+		_crestId = crestId;
+		_data = data;
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0x6a);
+		writeC(0x6A);
 		writeD(_crestId);
 		if (_data != null)
 		{

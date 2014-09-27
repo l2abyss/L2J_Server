@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -81,14 +81,14 @@ public class EventDroplist
 	
 	/**
 	 * @param itemId the item Id for the drop
-	 * @param minCount the minimum drop count
-	 * @param maxCount the maximum drop count
+	 * @param min the minimum drop count
+	 * @param max the maximum drop count
 	 * @param chance the drop chance
 	 * @param dateRange the event drop rate range
 	 */
-	public void addGlobalDrop(int itemId, int minCount, int maxCount, int chance, DateRange dateRange)
+	public void addGlobalDrop(int itemId, long min, long max, int chance, DateRange dateRange)
 	{
-		_allNpcDateDrops.add(new DateDrop(dateRange, new EventDrop(itemId, minCount, maxCount, chance)));
+		_allNpcDateDrops.add(new DateDrop(dateRange, new EventDrop(itemId, min, max, chance)));
 	}
 	
 	/**

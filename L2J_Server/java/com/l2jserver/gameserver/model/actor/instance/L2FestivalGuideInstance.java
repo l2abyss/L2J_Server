@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,6 +21,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.SevenSignsFestival;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -48,7 +49,7 @@ public final class L2FestivalGuideInstance extends L2Npc
 		super(objectId, template);
 		setInstanceType(InstanceType.L2FestivalGiudeInstance);
 		
-		switch (getNpcId())
+		switch (getId())
 		{
 			case 31127:
 			case 31132:
@@ -172,7 +173,7 @@ public final class L2FestivalGuideInstance extends L2Npc
 		filename += (suffix != null) ? val + suffix + ".htm" : val + ".htm";
 		
 		// Send a Server->Client NpcHtmlMessage containing the text of the L2NpcInstance to the L2PcInstance
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		html.replace("%festivalType%", SevenSignsFestival.getFestivalName(_festivalType));

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -56,19 +56,19 @@ public class L2AccessLevel
 	
 	public L2AccessLevel(StatsSet set)
 	{
-		_accessLevel = set.getInteger("level");
+		_accessLevel = set.getInt("level");
 		_name = set.getString("name");
 		_nameColor = Integer.decode("0x" + set.getString("nameColor", "FFFFFF"));
 		_titleColor = Integer.decode("0x" + set.getString("titleColor", "FFFFFF"));
-		_child = set.getInteger("childAccess", 0);
-		_isGm = set.getBool("isGM", false);
-		_allowPeaceAttack = set.getBool("allowPeaceAttack", false);
-		_allowFixedRes = set.getBool("allowFixedRes", false);
-		_allowTransaction = set.getBool("allowTransaction", true);
-		_allowAltG = set.getBool("allowAltg", false);
-		_giveDamage = set.getBool("giveDamage", true);
-		_takeAggro = set.getBool("takeAggro", true);
-		_gainExp = set.getBool("gainExp", true);
+		_child = set.getInt("childAccess", 0);
+		_isGm = set.getBoolean("isGM", false);
+		_allowPeaceAttack = set.getBoolean("allowPeaceAttack", false);
+		_allowFixedRes = set.getBoolean("allowFixedRes", false);
+		_allowTransaction = set.getBoolean("allowTransaction", true);
+		_allowAltG = set.getBoolean("allowAltg", false);
+		_giveDamage = set.getBoolean("giveDamage", true);
+		_takeAggro = set.getBoolean("takeAggro", true);
+		_gainExp = set.getBoolean("gainExp", true);
 	}
 	
 	public L2AccessLevel()

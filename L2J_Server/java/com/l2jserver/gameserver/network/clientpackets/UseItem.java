@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,28 +21,27 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.util.logging.Level;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.NextAction;
-import com.l2jserver.gameserver.ai.NextAction.NextActionCallback;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.handler.IItemHandler;
 import com.l2jserver.gameserver.handler.ItemHandler;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.base.Race;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.items.L2EtcItem;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.type.L2ArmorType;
-import com.l2jserver.gameserver.model.items.type.L2WeaponType;
-import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
+import com.l2jserver.gameserver.model.items.type.ArmorType;
+import com.l2jserver.gameserver.model.items.type.WeaponType;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExUseSharedGroupItem;
@@ -115,7 +114,7 @@ public final class UseItem extends L2GameClientPacket
 			activeChar.cancelActiveTrade();
 		}
 		
-		if (activeChar.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
+		if (activeChar.getPrivateStoreType() != PrivateStoreType.NONE)
 		{
 			activeChar.sendPacket(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE);
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
@@ -141,7 +140,7 @@ public final class UseItem extends L2GameClientPacket
 		}
 		
 		// Char cannot use item when dead
-		if (activeChar.isDead() || !activeChar.getInventory().canManipulateWithItemId(item.getItemId()))
+		if (activeChar.isDead() || !activeChar.getInventory().canManipulateWithItemId(item.getId()))
 		{
 			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_CANNOT_BE_USED);
 			sm.addItemName(item);
@@ -154,7 +153,7 @@ public final class UseItem extends L2GameClientPacket
 			return;
 		}
 		
-		_itemId = item.getItemId();
+		_itemId = item.getId();
 		if (activeChar.isFishing() && ((_itemId < 6535) || (_itemId > 6540)))
 		{
 			// You cannot do anything else while fishing
@@ -169,14 +168,13 @@ public final class UseItem extends L2GameClientPacket
 			{
 				for (SkillHolder sHolder : skills)
 				{
-					L2Skill skill = sHolder.getSkill();
-					if ((skill != null) && ((skill.getSkillType() == L2SkillType.TELEPORT) || (skill.getSkillType() == L2SkillType.RECALL)))
+					Skill skill = sHolder.getSkill();
+					if ((skill != null) && skill.hasEffectType(L2EffectType.TELEPORT))
 					{
 						return;
 					}
 				}
 			}
-			
 		}
 		
 		// If the item has reuse time and it has not passed.
@@ -188,7 +186,7 @@ public final class UseItem extends L2GameClientPacket
 			final long reuse = activeChar.getItemRemainingReuseTime(item.getObjectId());
 			if (reuse > 0)
 			{
-				reuseData(activeChar, item);
+				reuseData(activeChar, item, reuse);
 				sendSharedGroupUpdate(activeChar, sharedReuseGroup, reuse, reuseDelay);
 				return;
 			}
@@ -196,7 +194,7 @@ public final class UseItem extends L2GameClientPacket
 			final long reuseOnGroup = activeChar.getReuseDelayOnGroup(sharedReuseGroup);
 			if (reuseOnGroup > 0)
 			{
-				reuseData(activeChar, item);
+				reuseData(activeChar, item, reuseOnGroup);
 				sendSharedGroupUpdate(activeChar, sharedReuseGroup, reuseOnGroup, reuseDelay);
 				return;
 			}
@@ -228,7 +226,7 @@ public final class UseItem extends L2GameClientPacket
 				case L2Item.SLOT_R_HAND:
 				{
 					// Prevent players to equip weapon while wearing combat flag
-					if ((activeChar.getActiveWeaponItem() != null) && (activeChar.getActiveWeaponItem().getItemId() == 9819))
+					if ((activeChar.getActiveWeaponItem() != null) && (activeChar.getActiveWeaponItem().getId() == 9819))
 					{
 						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 						return;
@@ -258,7 +256,7 @@ public final class UseItem extends L2GameClientPacket
 						
 						switch (activeChar.getRace())
 						{
-							case Kamael:
+							case KAMAEL:
 							{
 								switch (wpn.getItemType())
 								{
@@ -268,11 +266,11 @@ public final class UseItem extends L2GameClientPacket
 								}
 								break;
 							}
-							case Human:
-							case Dwarf:
-							case Elf:
-							case DarkElf:
-							case Orc:
+							case HUMAN:
+							case DWARF:
+							case ELF:
+							case DARK_ELF:
+							case ORC:
 							{
 								switch (wpn.getItemType())
 								{
@@ -296,7 +294,7 @@ public final class UseItem extends L2GameClientPacket
 				case L2Item.SLOT_FULL_ARMOR:
 				case L2Item.SLOT_LEGS:
 				{
-					if ((activeChar.getRace() == Race.Kamael) && ((item.getItem().getItemType() == L2ArmorType.HEAVY) || (item.getItem().getItemType() == L2ArmorType.MAGIC)))
+					if ((activeChar.getRace() == Race.KAMAEL) && ((item.getItem().getItemType() == ArmorType.HEAVY) || (item.getItem().getItemType() == ArmorType.MAGIC)))
 					{
 						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 						return;
@@ -305,7 +303,7 @@ public final class UseItem extends L2GameClientPacket
 				}
 				case L2Item.SLOT_DECO:
 				{
-					if (!item.isEquipped() && (activeChar.getInventory().getMaxTalismanCount() == 0))
+					if (!item.isEquipped() && (activeChar.getInventory().getTalismanSlots() == 0))
 					{
 						activeChar.sendPacket(SystemMessageId.CANNOT_EQUIP_ITEM_DUE_TO_BAD_CONDITION);
 						return;
@@ -316,21 +314,14 @@ public final class UseItem extends L2GameClientPacket
 			if (activeChar.isCastingNow() || activeChar.isCastingSimultaneouslyNow())
 			{
 				// Creating next action class.
-				final NextAction nextAction = new NextAction(CtrlEvent.EVT_FINISH_CASTING, CtrlIntention.AI_INTENTION_CAST, new NextActionCallback()
-				{
-					@Override
-					public void doWork()
-					{
-						activeChar.useEquippableItem(item, true);
-					}
-				});
+				final NextAction nextAction = new NextAction(CtrlEvent.EVT_FINISH_CASTING, CtrlIntention.AI_INTENTION_CAST, () -> activeChar.useEquippableItem(item, true));
 				
 				// Binding next action to AI.
 				activeChar.getAI().setNextAction(nextAction);
 			}
 			else if (activeChar.isAttackingNow())
 			{
-				ThreadPoolManager.getInstance().scheduleGeneral(new WeaponEquipTask(item, activeChar), (activeChar.getAttackEndTime() - GameTimeController.getInstance().getGameTicks()) * GameTimeController.MILLIS_IN_TICK);
+				ThreadPoolManager.getInstance().scheduleGeneral(new WeaponEquipTask(item, activeChar), activeChar.getAttackEndTime() - System.currentTimeMillis());
 			}
 			else
 			{
@@ -339,13 +330,8 @@ public final class UseItem extends L2GameClientPacket
 		}
 		else
 		{
-			if (activeChar.isCastingNow() && !(item.isPotion() || item.isElixir()))
-			{
-				return;
-			}
-			
 			final L2Weapon weaponItem = activeChar.getActiveWeaponItem();
-			if (((weaponItem != null) && (weaponItem.getItemType() == L2WeaponType.FISHINGROD)) && (((_itemId >= 6519) && (_itemId <= 6527)) || ((_itemId >= 7610) && (_itemId <= 7613)) || ((_itemId >= 7807) && (_itemId <= 7809)) || ((_itemId >= 8484) && (_itemId <= 8486)) || ((_itemId >= 8505) && (_itemId <= 8513))))
+			if (((weaponItem != null) && (weaponItem.getItemType() == WeaponType.FISHINGROD)) && (((_itemId >= 6519) && (_itemId <= 6527)) || ((_itemId >= 7610) && (_itemId <= 7613)) || ((_itemId >= 7807) && (_itemId <= 7809)) || ((_itemId >= 8484) && (_itemId <= 8486)) || ((_itemId >= 8505) && (_itemId <= 8513))))
 			{
 				activeChar.getInventory().setPaperdollItem(Inventory.PAPERDOLL_LHAND, item);
 				activeChar.broadcastUserInfo();
@@ -382,32 +368,31 @@ public final class UseItem extends L2GameClientPacket
 		}
 	}
 	
-	private void reuseData(L2PcInstance activeChar, L2ItemInstance item)
+	private void reuseData(L2PcInstance activeChar, L2ItemInstance item, long remainingTime)
 	{
-		SystemMessage sm = null;
-		final long remainingTime = activeChar.getItemRemainingReuseTime(item.getObjectId());
 		final int hours = (int) (remainingTime / 3600000L);
 		final int minutes = (int) (remainingTime % 3600000L) / 60000;
 		final int seconds = (int) ((remainingTime / 1000) % 60);
+		final SystemMessage sm;
 		if (hours > 0)
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.S2_HOURS_S3_MINUTES_S4_SECONDS_REMAINING_FOR_REUSE_S1);
 			sm.addItemName(item);
-			sm.addNumber(hours);
-			sm.addNumber(minutes);
+			sm.addInt(hours);
+			sm.addInt(minutes);
 		}
 		else if (minutes > 0)
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.S2_MINUTES_S3_SECONDS_REMAINING_FOR_REUSE_S1);
 			sm.addItemName(item);
-			sm.addNumber(minutes);
+			sm.addInt(minutes);
 		}
 		else
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.S2_SECONDS_REMAINING_FOR_REUSE_S1);
 			sm.addItemName(item);
 		}
-		sm.addNumber(seconds);
+		sm.addInt(seconds);
 		activeChar.sendPacket(sm);
 	}
 	

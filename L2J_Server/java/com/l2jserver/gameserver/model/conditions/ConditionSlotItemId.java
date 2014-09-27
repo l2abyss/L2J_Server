@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -57,6 +57,6 @@ public final class ConditionSlotItemId extends ConditionInventory
 		{
 			return _itemId == 0;
 		}
-		return (item.getItemId() == _itemId) && (item.getEnchantLevel() >= _enchantLevel);
+		return (item.getId() == _itemId) && (item.getEnchantLevel() >= _enchantLevel);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -83,7 +83,7 @@ public final class CHSiegeManager
 		}
 		catch (Exception e)
 		{
-			_log.warning("CHSiegeManager: Could not load siegable clan halls!:");
+			_log.warning("CHSiegeManager: Could not load siegable clan halls!:" + e.getMessage());
 		}
 	}
 	
@@ -143,7 +143,7 @@ public final class CHSiegeManager
 		{
 			player.sendPacket(SystemMessageId.NOT_SIEGE_REGISTRATION_TIME2);
 		}
-		else if (hall.getOwnerId() == clan.getClanId())
+		else if (hall.getOwnerId() == clan.getId())
 		{
 			player.sendPacket(SystemMessageId.CLAN_THAT_OWNS_CASTLE_IS_AUTOMATICALLY_REGISTERED_DEFENDING);
 		}

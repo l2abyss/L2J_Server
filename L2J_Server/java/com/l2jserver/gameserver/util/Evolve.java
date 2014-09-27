@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.model.L2PetData;
 import com.l2jserver.gameserver.model.L2World;
@@ -42,9 +42,12 @@ import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
+/**
+ * UnAfraid: TODO: MOVE IT TO DP AI
+ */
 public final class Evolve
 {
-	public static final Logger _log = Logger.getLogger(Evolve.class.getName());
+	protected static final Logger _log = Logger.getLogger(Evolve.class.getName());
 	
 	public static final boolean doEvolve(L2PcInstance player, L2Npc npc, int itemIdtake, int itemIdgive, int petminlvl)
 	{
@@ -53,7 +56,7 @@ public final class Evolve
 			return false;
 		}
 		
-		if (!player.hasSummon() || !player.getSummon().isPet())
+		if (!player.hasPet())
 		{
 			return false;
 		}
@@ -81,7 +84,7 @@ public final class Evolve
 		
 		int oldnpcID = oldData.getNpcId();
 		
-		if ((currentPet.getStat().getLevel() < petminlvl) || (currentPet.getNpcId() != oldnpcID))
+		if ((currentPet.getStat().getLevel() < petminlvl) || (currentPet.getId() != oldnpcID))
 		{
 			return false;
 		}
@@ -100,7 +103,7 @@ public final class Evolve
 			return false;
 		}
 		
-		L2NpcTemplate npcTemplate = NpcTable.getInstance().getTemplate(npcID);
+		L2NpcTemplate npcTemplate = NpcData.getInstance().getTemplate(npcID);
 		
 		currentPet.unSummon(player);
 		
@@ -131,7 +134,7 @@ public final class Evolve
 		petSummon.setTitle(player.getName());
 		petSummon.setName(oldname);
 		petSummon.setRunning();
-		petSummon.store();
+		petSummon.storeMe();
 		
 		player.setPet(petSummon);
 		
@@ -193,7 +196,7 @@ public final class Evolve
 			return false;
 		}
 		
-		L2NpcTemplate npcTemplate = NpcTable.getInstance().getTemplate(npcId);
+		L2NpcTemplate npcTemplate = NpcData.getInstance().getTemplate(npcId);
 		
 		// deleting old pet item
 		L2ItemInstance removedItem = player.getInventory().destroyItem("PetRestore", item, player, npc);
@@ -219,7 +222,7 @@ public final class Evolve
 		petSummon.setCurrentFed(petSummon.getMaxFed());
 		petSummon.setTitle(player.getName());
 		petSummon.setRunning();
-		petSummon.store();
+		petSummon.storeMe();
 		
 		player.setPet(petSummon);
 		

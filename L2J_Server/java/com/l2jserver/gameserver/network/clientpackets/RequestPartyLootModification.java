@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,6 +18,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.enums.PartyDistributionType;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
@@ -28,32 +29,35 @@ public class RequestPartyLootModification extends L2GameClientPacket
 {
 	private static final String _C__D0_78_REQUESTPARTYLOOTMODIFICATION = "[C] D0:78 RequestPartyLootModification";
 	
-	private byte _mode;
+	private int _partyDistributionTypeId;
 	
 	@Override
 	protected void readImpl()
 	{
-		_mode = (byte) readD();
+		_partyDistributionTypeId = readD();
 	}
 	
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 		{
 			return;
 		}
-		if ((_mode < 0) || (_mode > L2Party.ITEM_ORDER_SPOIL))
+		
+		final PartyDistributionType partyDistributionType = PartyDistributionType.findById(_partyDistributionTypeId);
+		if (partyDistributionType == null)
 		{
 			return;
 		}
-		L2Party party = activeChar.getParty();
-		if ((party == null) || !party.isLeader(activeChar) || (_mode == party.getLootDistribution()))
+		
+		final L2Party party = activeChar.getParty();
+		if ((party == null) || !party.isLeader(activeChar) || (partyDistributionType == party.getDistributionType()))
 		{
 			return;
 		}
-		party.requestLootChange(_mode);
+		party.requestLootChange(partyDistributionType);
 	}
 	
 	@Override

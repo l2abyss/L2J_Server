@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -29,14 +29,16 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.ai.L2DoorAI;
 import com.l2jserver.gameserver.datatables.DoorTable;
+import com.l2jserver.gameserver.enums.InstanceType;
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
-import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.knownlist.DoorKnownList;
@@ -50,7 +52,7 @@ import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.DoorStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.OnEventTrigger;
@@ -94,7 +96,7 @@ public class L2DoorInstance extends L2Character
 		
 		if (getGroupName() != null)
 		{
-			DoorTable.addDoorGroup(getGroupName(), getDoorId());
+			DoorTable.addDoorGroup(getGroupName(), getId());
 		}
 		
 		if (isOpenableByTime())
@@ -134,7 +136,7 @@ public class L2DoorInstance extends L2Character
 		}
 		
 		@Override
-		public void stopMove(L2CharPosition pos)
+		public void stopMove(Location loc)
 		{
 		}
 		
@@ -144,27 +146,15 @@ public class L2DoorInstance extends L2Character
 		}
 		
 		@Override
-		public void doCast(L2Skill skill)
+		public void doCast(Skill skill)
 		{
 		}
 	}
 	
 	@Override
-	public L2CharacterAI getAI()
+	protected L2CharacterAI initAI()
 	{
-		L2CharacterAI ai = _ai; // copy handle
-		if (ai == null)
-		{
-			synchronized (this)
-			{
-				if (_ai == null)
-				{
-					_ai = new L2DoorAI(new AIAccessor());
-				}
-				return _ai;
-			}
-		}
-		return ai;
+		return new L2DoorAI(new AIAccessor());
 	}
 	
 	private void startTimerOpen()
@@ -267,11 +257,13 @@ public class L2DoorInstance extends L2Character
 	}
 	
 	/**
-	 * @return Returns the doorId.
+	 * Gets the door ID.
+	 * @return the door ID
 	 */
-	public int getDoorId()
+	@Override
+	public int getId()
 	{
-		return getTemplate().getDoorId();
+		return getTemplate().getId();
 	}
 	
 	/**
@@ -371,11 +363,11 @@ public class L2DoorInstance extends L2Character
 	
 	public boolean isEnemy()
 	{
-		if ((getCastle() != null) && (getCastle().getCastleId() > 0) && getCastle().getZone().isActive() && getIsShowHp())
+		if ((getCastle() != null) && (getCastle().getResidenceId() > 0) && getCastle().getZone().isActive() && getIsShowHp())
 		{
 			return true;
 		}
-		if ((getFort() != null) && (getFort().getFortId() > 0) && getFort().getZone().isActive() && getIsShowHp())
+		if ((getFort() != null) && (getFort().getResidenceId() > 0) && getFort().getZone().isActive() && getIsShowHp())
 		{
 			return true;
 		}
@@ -416,9 +408,9 @@ public class L2DoorInstance extends L2Character
 			return hall.isInSiege() && hall.getSiege().doorIsAutoAttackable() && hall.getSiege().checkIsAttacker(actingPlayer.getClan());
 		}
 		// Attackable only during siege by everyone (not owner)
-		boolean isCastle = ((getCastle() != null) && (getCastle().getCastleId() > 0) && getCastle().getZone().isActive());
-		boolean isFort = ((getFort() != null) && (getFort().getFortId() > 0) && getFort().getZone().isActive());
-		int activeSiegeId = (getFort() != null ? getFort().getFortId() : (getCastle() != null ? getCastle().getCastleId() : 0));
+		boolean isCastle = ((getCastle() != null) && (getCastle().getResidenceId() > 0) && getCastle().getZone().isActive());
+		boolean isFort = ((getFort() != null) && (getFort().getResidenceId() > 0) && getFort().getZone().isActive());
+		int activeSiegeId = (getFort() != null ? getFort().getResidenceId() : (getCastle() != null ? getCastle().getResidenceId() : 0));
 		
 		if (TerritoryWarManager.getInstance().isTWInProgress())
 		{
@@ -435,7 +427,7 @@ public class L2DoorInstance extends L2Character
 		else if (isCastle)
 		{
 			L2Clan clan = actingPlayer.getClan();
-			if ((clan != null) && (clan.getClanId() == getCastle().getOwnerId()))
+			if ((clan != null) && (clan.getId() == getCastle().getOwnerId()))
 			{
 				return false;
 			}
@@ -495,12 +487,12 @@ public class L2DoorInstance extends L2Character
 		
 		for (L2PcInstance player : knownPlayers)
 		{
-			if (player == null)
+			if ((player == null) || !isVisibleFor(player))
 			{
 				continue;
 			}
 			
-			if (player.isGM() || (((getCastle() != null) && (getCastle().getCastleId() > 0)) || ((getFort() != null) && (getFort().getFortId() > 0))))
+			if (player.isGM() || (((getCastle() != null) && (getCastle().getResidenceId() > 0)) || ((getFort() != null) && (getFort().getResidenceId() > 0))))
 			{
 				player.sendPacket(targetableSu);
 			}
@@ -596,7 +588,7 @@ public class L2DoorInstance extends L2Character
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName() + "[" + getTemplate().getDoorId() + "](" + getObjectId() + ")";
+		return getClass().getSimpleName() + "[" + getTemplate().getId() + "](" + getObjectId() + ")";
 	}
 	
 	public String getDoorName()
@@ -671,18 +663,27 @@ public class L2DoorInstance extends L2Character
 	}
 	
 	@Override
-	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
+	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, Skill skill)
 	{
-		if (isWall() && !(attacker instanceof L2SiegeSummonInstance) && (getInstanceId() == 0))
+		if (isWall() && (getInstanceId() == 0))
 		{
-			return;
+			if (!attacker.isServitor())
+			{
+				return;
+			}
+			
+			final L2ServitorInstance servitor = (L2ServitorInstance) attacker;
+			if (servitor.getTemplate().getRace() != Race.SIEGE_WEAPON)
+			{
+				return;
+			}
 		}
 		
 		super.reduceCurrentHp(damage, attacker, awake, isDOT, skill);
 	}
 	
 	@Override
-	public void reduceCurrentHpByDOT(double i, L2Character attacker, L2Skill skill)
+	public void reduceCurrentHpByDOT(double i, L2Character attacker, Skill skill)
 	{
 		// doors can't be damaged by DOTs
 	}
@@ -695,8 +696,8 @@ public class L2DoorInstance extends L2Character
 			return false;
 		}
 		
-		boolean isFort = ((getFort() != null) && (getFort().getFortId() > 0) && getFort().getSiege().getIsInProgress());
-		boolean isCastle = ((getCastle() != null) && (getCastle().getCastleId() > 0) && getCastle().getSiege().getIsInProgress());
+		boolean isFort = ((getFort() != null) && (getFort().getResidenceId() > 0) && getFort().getSiege().isInProgress());
+		boolean isCastle = ((getCastle() != null) && (getCastle().getResidenceId() > 0) && getCastle().getSiege().isInProgress());
 		boolean isHall = ((getClanHall() != null) && getClanHall().isSiegableHall() && ((SiegableHall) getClanHall()).isInSiege());
 		
 		if (isFort || isCastle || isHall)
@@ -709,12 +710,15 @@ public class L2DoorInstance extends L2Character
 	@Override
 	public void sendInfo(L2PcInstance activeChar)
 	{
-		if (getEmitter() > 0)
+		if (isVisibleFor(activeChar))
 		{
-			activeChar.sendPacket(new OnEventTrigger(this, getOpen()));
+			if (getEmitter() > 0)
+			{
+				activeChar.sendPacket(new OnEventTrigger(this, getOpen()));
+			}
+			
+			activeChar.sendPacket(new StaticObject(this, activeChar.isGM()));
 		}
-		
-		activeChar.sendPacket(new StaticObject(this, activeChar.isGM()));
 	}
 	
 	public void setTargetable(boolean b)

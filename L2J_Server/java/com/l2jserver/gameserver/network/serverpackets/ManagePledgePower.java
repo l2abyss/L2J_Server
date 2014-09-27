@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -42,7 +42,7 @@ public class ManagePledgePower extends L2GameServerPacket
 			writeC(0x2a);
 			writeD(0);
 			writeD(0);
-			writeD(_clan.getRankPrivs(_rank));
+			writeD(_clan.getRankPrivs(_rank).getBitmask());
 		}
 	}
 }

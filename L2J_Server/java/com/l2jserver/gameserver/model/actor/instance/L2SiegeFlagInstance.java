@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
@@ -31,13 +32,10 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.status.SiegeFlagStatus;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Siegable;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
-import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 
 public class L2SiegeFlagInstance extends L2Npc
 {
@@ -103,21 +101,8 @@ public class L2SiegeFlagInstance extends L2Npc
 		setIsInvul(false);
 	}
 	
-	/**
-	 * Use L2SiegeFlagInstance(L2PcInstance, int, L2NpcTemplate, boolean) instead
-	 * @param player
-	 * @param objectId
-	 * @param template
-	 */
-	@Deprecated
-	public L2SiegeFlagInstance(L2PcInstance player, int objectId, L2NpcTemplate template)
-	{
-		super(objectId, template);
-		_isAdvanced = false;
-	}
-	
 	@Override
-	public boolean isAttackable()
+	public boolean canBeAttacked()
 	{
 		return !isInvul();
 	}
@@ -169,19 +154,6 @@ public class L2SiegeFlagInstance extends L2Npc
 		{
 			// Set the target of the L2PcInstance player
 			player.setTarget(this);
-			
-			// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
-			MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
-			player.sendPacket(my);
-			
-			// Send a Server->Client packet StatusUpdate of the L2NpcInstance to the L2PcInstance to update its HP bar
-			StatusUpdate su = new StatusUpdate(this);
-			su.addAttribute(StatusUpdate.CUR_HP, (int) getStatus().getCurrentHp());
-			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
-			player.sendPacket(su);
-			
-			// Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
-			player.sendPacket(new ValidateLocation(this));
 		}
 		else if (interact)
 		{
@@ -215,12 +187,12 @@ public class L2SiegeFlagInstance extends L2Npc
 	}
 	
 	@Override
-	public void reduceCurrentHp(double damage, L2Character attacker, L2Skill skill)
+	public void reduceCurrentHp(double damage, L2Character attacker, Skill skill)
 	{
 		super.reduceCurrentHp(damage, attacker, skill);
 		if (canTalk())
 		{
-			if (((getCastle() != null) && getCastle().getSiege().getIsInProgress()) || ((getFort() != null) && getFort().getSiege().getIsInProgress()) || ((getConquerableHall() != null) && getConquerableHall().isInSiege()))
+			if (((getCastle() != null) && getCastle().getSiege().isInProgress()) || ((getFort() != null) && getFort().getSiege().isInProgress()) || ((getConquerableHall() != null) && getConquerableHall().isInSiege()))
 			{
 				if (_clan != null)
 				{

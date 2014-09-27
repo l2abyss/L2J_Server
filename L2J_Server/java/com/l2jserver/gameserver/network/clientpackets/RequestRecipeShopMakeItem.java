@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.RecipeController;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.util.Util;
@@ -68,12 +69,12 @@ public final class RequestRecipeShopMakeItem extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
+		if (activeChar.getPrivateStoreType() != PrivateStoreType.NONE)
 		{
 			activeChar.sendMessage("You cannot create items while trading.");
 			return;
 		}
-		if (manufacturer.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_MANUFACTURE)
+		if (manufacturer.getPrivateStoreType() != PrivateStoreType.MANUFACTURE)
 		{
 			// activeChar.sendMessage("You cannot create items while trading.");
 			return;

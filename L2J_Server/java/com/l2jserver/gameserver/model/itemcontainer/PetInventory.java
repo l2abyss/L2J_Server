@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,11 +19,10 @@
 package com.l2jserver.gameserver.model.itemcontainer;
 
 import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.enums.ItemLocation;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
-import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 
 public class PetInventory extends Inventory
 {
@@ -70,7 +69,7 @@ public class PetInventory extends Inventory
 	{
 		int slots = 0;
 		
-		if (!(item.isStackable() && (getItemByItemId(item.getItemId()) != null)) && (item.getItemType() != L2EtcItemType.HERB))
+		if (!(item.isStackable() && (getItemByItemId(item.getId()) != null)) && !item.getItem().hasExImmediateEffect())
 		{
 			slots++;
 		}
@@ -87,7 +86,7 @@ public class PetInventory extends Inventory
 	public boolean validateWeight(L2ItemInstance item, long count)
 	{
 		int weight = 0;
-		L2Item template = ItemTable.getInstance().getTemplate(item.getItemId());
+		L2Item template = ItemTable.getInstance().getTemplate(item.getId());
 		if (template == null)
 		{
 			return false;

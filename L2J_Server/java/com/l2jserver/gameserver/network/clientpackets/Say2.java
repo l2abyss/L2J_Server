@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -22,20 +22,19 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.handler.ChatHandler;
 import com.l2jserver.gameserver.handler.IChatHandler;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerChat;
+import com.l2jserver.gameserver.model.events.returns.ChatFilterReturn;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ChatEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatFilterListener;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.talk.ChatListener;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -46,9 +45,6 @@ public final class Say2 extends L2GameClientPacket
 {
 	private static final String _C__49_SAY2 = "[C] 49 Say2";
 	private static Logger _logChat = Logger.getLogger("chat");
-	
-	private static FastList<ChatListener> chatListeners = new FastList<ChatListener>().shared();
-	private static FastList<ChatFilterListener> chatFilterListeners = new FastList<ChatFilterListener>().shared();
 	
 	public static final int ALL = 0;
 	public static final int SHOUT = 1; // !
@@ -205,17 +201,24 @@ public final class Say2 extends L2GameClientPacket
 		
 		if (activeChar.isChatBanned() && (_text.charAt(0) != '.'))
 		{
-			for (int chatId : Config.BAN_CHAT_CHANNELS)
+			if (activeChar.getEffectList().getFirstEffect(L2EffectType.CHAT_BLOCK) != null)
 			{
-				if (_type == chatId)
+				activeChar.sendPacket(SystemMessageId.YOU_HAVE_BEEN_REPORTED_SO_CHATTING_NOT_ALLOWED);
+			}
+			else
+			{
+				for (int chatId : Config.BAN_CHAT_CHANNELS)
 				{
-					activeChar.sendPacket(SystemMessageId.CHATTING_IS_CURRENTLY_PROHIBITED);
-					return;
+					if (_type == chatId)
+					{
+						activeChar.sendPacket(SystemMessageId.CHATTING_IS_CURRENTLY_PROHIBITED);
+					}
 				}
 			}
+			return;
 		}
 		
-		if (activeChar.isInJail() && Config.JAIL_DISABLE_CHAT)
+		if (activeChar.isJailed() && Config.JAIL_DISABLE_CHAT)
 		{
 			if ((_type == TELL) || (_type == SHOUT) || (_type == TRADE) || (_type == HERO_VOICE))
 			{
@@ -261,7 +264,12 @@ public final class Say2 extends L2GameClientPacket
 				return;
 			}
 		}
-		fireChatListeners(activeChar);
+		
+		final ChatFilterReturn filter = EventDispatcher.getInstance().notifyEvent(new OnPlayerChat(activeChar, L2World.getInstance().getPlayer(_target), _text, _type), ChatFilterReturn.class);
+		if (filter != null)
+		{
+			_text = filter.getFilteredText();
+		}
 		
 		// Say Filter implementation
 		if (Config.USE_SAY_FILTER)
@@ -269,10 +277,7 @@ public final class Say2 extends L2GameClientPacket
 			checkText();
 		}
 		
-		// Custom chat filter
-		fireChatFilters(activeChar);
-		
-		IChatHandler handler = ChatHandler.getInstance().getHandler(_type);
+		final IChatHandler handler = ChatHandler.getInstance().getHandler(_type);
 		if (handler != null)
 		{
 			handler.handleChat(_type, activeChar, _target, _text);
@@ -357,92 +362,5 @@ public final class Say2 extends L2GameClientPacket
 	protected boolean triggersOnActionRequest()
 	{
 		return false;
-	}
-	
-	// Listeners
-	/**
-	 * Fires all the chat listeners, if any
-	 * @param activeChar
-	 */
-	private void fireChatListeners(L2PcInstance activeChar)
-	{
-		if (!chatListeners.isEmpty())
-		{
-			ChatEvent event = null;
-			event = new ChatEvent();
-			event.setOrigin(activeChar);
-			event.setTarget(_target);
-			event.setTargetType(ChatListener.getTargetType(CHAT_NAMES[_type]));
-			event.setText(_text);
-			for (ChatListener listener : chatListeners)
-			{
-				listener.onTalk(event);
-			}
-		}
-	}
-	
-	/**
-	 * Fires the custom chat filter, if any<br>
-	 * This type of listener should be registered only once since if there are many of them they might override each other!
-	 * @param activeChar
-	 */
-	private void fireChatFilters(L2PcInstance activeChar)
-	{
-		if (!chatFilterListeners.isEmpty())
-		{
-			ChatEvent event = null;
-			event = new ChatEvent();
-			event.setOrigin(activeChar);
-			event.setTarget(_target);
-			event.setTargetType(ChatListener.getTargetType(CHAT_NAMES[_type]));
-			event.setText(_text);
-			for (ChatFilterListener listener : chatFilterListeners)
-			{
-				_text = listener.onTalk(event);
-			}
-		}
-		
-	}
-	
-	/**
-	 * Adds a chat listener
-	 * @param listener
-	 */
-	public static void addChatListener(ChatListener listener)
-	{
-		if (!chatListeners.contains(listener))
-		{
-			chatListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes the given listener
-	 * @param listener
-	 */
-	public static void removeChatListener(ChatListener listener)
-	{
-		chatListeners.remove(listener);
-	}
-	
-	/**
-	 * Adds a chat listener
-	 * @param listener
-	 */
-	public static void addChatFilterListener(ChatFilterListener listener)
-	{
-		if (!chatFilterListeners.contains(listener))
-		{
-			chatFilterListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes the given listener
-	 * @param listener
-	 */
-	public static void removeChatFilterListener(ChatFilterListener listener)
-	{
-		chatFilterListeners.remove(listener);
 	}
 }

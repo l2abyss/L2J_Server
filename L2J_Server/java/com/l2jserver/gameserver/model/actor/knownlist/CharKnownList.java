@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javolution.util.FastList;
 
@@ -31,7 +32,6 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.util.Util;
-import com.l2jserver.util.L2FastMap;
 
 public class CharKnownList extends ObjectKnownList
 {
@@ -158,6 +158,10 @@ public class CharKnownList extends ObjectKnownList
 				{
 					sIter.remove();
 				}
+				else if (getActiveChar().isPlayer() && (summon.getOwner() == getActiveChar()))
+				{
+					continue;
+				}
 				else if (!summon.isVisible() || !Util.checkIfInShortRadius(getDistanceToForgetObject(summon), getActiveObject(), summon, true))
 				{
 					sIter.remove();
@@ -240,7 +244,7 @@ public class CharKnownList extends ObjectKnownList
 	{
 		if (_knownPlayers == null)
 		{
-			_knownPlayers = new L2FastMap<>(true);
+			_knownPlayers = new ConcurrentHashMap<>();
 		}
 		return _knownPlayers;
 	}
@@ -249,7 +253,7 @@ public class CharKnownList extends ObjectKnownList
 	{
 		if (_knownRelations == null)
 		{
-			_knownRelations = new L2FastMap<>(true);
+			_knownRelations = new ConcurrentHashMap<>();
 		}
 		return _knownRelations;
 	}
@@ -258,7 +262,7 @@ public class CharKnownList extends ObjectKnownList
 	{
 		if (_knownSummons == null)
 		{
-			_knownSummons = new L2FastMap<>(true);
+			_knownSummons = new ConcurrentHashMap<>();
 		}
 		return _knownSummons;
 	}

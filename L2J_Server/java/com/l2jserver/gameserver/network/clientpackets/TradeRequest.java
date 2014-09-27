@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,15 +19,19 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.BotReportTable;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.effects.AbstractEffect;
+import com.l2jserver.gameserver.model.skills.AbnormalType;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.SendTradeRequest;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.util.Util;
 
 /**
  * This packet manages the trade request.
@@ -56,6 +60,20 @@ public final class TradeRequest extends L2GameClientPacket
 			player.sendMessage("Transactions are disabled for your current Access Level.");
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
+		}
+		
+		BuffInfo info = player.getEffectList().getBuffInfoByAbnormalType(AbnormalType.BOT_PENALTY);
+		if (info != null)
+		{
+			for (AbstractEffect effect : info.getEffects())
+			{
+				if (!effect.checkCondition(BotReportTable.TRADE_ACTION_BLOCK_ID))
+				{
+					player.sendPacket(SystemMessageId.YOU_HAVE_BEEN_REPORTED_SO_ACTIONS_NOT_ALLOWED);
+					player.sendPacket(ActionFailed.STATIC_PACKET);
+					return;
+				}
+			}
 		}
 		
 		final L2Object target = L2World.getInstance().findObject(_objectId);
@@ -88,6 +106,22 @@ public final class TradeRequest extends L2GameClientPacket
 			return;
 		}
 		
+		info = partner.getEffectList().getBuffInfoByAbnormalType(AbnormalType.BOT_PENALTY);
+		if (info != null)
+		{
+			for (AbstractEffect effect : info.getEffects())
+			{
+				if (!effect.checkCondition(BotReportTable.TRADE_ACTION_BLOCK_ID))
+				{
+					final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_REPORTED_AND_IS_BEING_INVESTIGATED);
+					sm.addCharName(partner);
+					player.sendPacket(sm);
+					player.sendPacket(ActionFailed.STATIC_PACKET);
+					return;
+				}
+			}
+		}
+		
 		// L2J Customs: Karma punishment
 		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TRADE && (player.getKarma() > 0))
 		{
@@ -101,13 +135,13 @@ public final class TradeRequest extends L2GameClientPacket
 			return;
 		}
 		
-		if (Config.JAIL_DISABLE_TRANSACTION && (player.isInJail() || partner.isInJail()))
+		if (Config.JAIL_DISABLE_TRANSACTION && (player.isJailed() || partner.isJailed()))
 		{
 			player.sendMessage("You cannot trade while you are in in Jail.");
 			return;
 		}
 		
-		if ((player.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE) || (partner.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE))
+		if ((player.getPrivateStoreType() != PrivateStoreType.NONE) || (partner.getPrivateStoreType() != PrivateStoreType.NONE))
 		{
 			player.sendPacket(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE);
 			return;
@@ -150,7 +184,7 @@ public final class TradeRequest extends L2GameClientPacket
 			return;
 		}
 		
-		if (Util.calculateDistance(player, partner, true) > 150)
+		if (player.calculateDistance(partner, true, false) > 150)
 		{
 			player.sendPacket(SystemMessageId.TARGET_TOO_FAR);
 			return;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -72,7 +72,7 @@ public class SellList extends L2GameServerPacket
 	{
 		writeC(0x06);
 		writeQ(_money);
-		writeD(_lease == null ? 0x00 : 1000000 + _lease.getTemplate().getNpcId());
+		writeD(_lease == null ? 0x00 : 1000000 + _lease.getTemplate().getId());
 		writeH(_selllist.size());
 		
 		for (L2ItemInstance item : _selllist)

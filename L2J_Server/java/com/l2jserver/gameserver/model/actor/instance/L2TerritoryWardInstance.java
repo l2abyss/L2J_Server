@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,13 +23,10 @@ import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
-import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 
 public final class L2TerritoryWardInstance extends L2Attackable
 {
@@ -61,7 +58,7 @@ public final class L2TerritoryWardInstance extends L2Attackable
 		{
 			return false;
 		}
-		if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, getCastle().getCastleId()))
+		if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, getCastle().getResidenceId()))
 		{
 			return false;
 		}
@@ -87,7 +84,7 @@ public final class L2TerritoryWardInstance extends L2Attackable
 	}
 	
 	@Override
-	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, L2Skill skill)
+	public void reduceCurrentHp(double damage, L2Character attacker, boolean awake, boolean isDOT, Skill skill)
 	{
 		if ((skill != null) || !TerritoryWarManager.getInstance().isTWInProgress())
 		{
@@ -111,7 +108,7 @@ public final class L2TerritoryWardInstance extends L2Attackable
 		{
 			return;
 		}
-		if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, getCastle().getCastleId()))
+		if (TerritoryWarManager.getInstance().isAllyField(actingPlayer, getCastle().getResidenceId()))
 		{
 			return;
 		}
@@ -120,7 +117,7 @@ public final class L2TerritoryWardInstance extends L2Attackable
 	}
 	
 	@Override
-	public void reduceCurrentHpByDOT(double i, L2Character attacker, L2Skill skill)
+	public void reduceCurrentHpByDOT(double i, L2Character attacker, Skill skill)
 	{
 		// wards can't be damaged by DOTs
 	}
@@ -138,11 +135,11 @@ public final class L2TerritoryWardInstance extends L2Attackable
 		{
 			if ((((L2PcInstance) killer).getSiegeSide() > 0) && !((L2PcInstance) killer).isCombatFlagEquipped())
 			{
-				((L2PcInstance) killer).addItem("Pickup", getNpcId() - 23012, 1, null, false);
+				((L2PcInstance) killer).addItem("Pickup", getId() - 23012, 1, null, false);
 			}
 			else
 			{
-				TerritoryWarManager.getInstance().getTerritoryWard(getNpcId() - 36491).spawnMe();
+				TerritoryWarManager.getInstance().getTerritoryWard(getId() - 36491).spawnMe();
 			}
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.THE_S1_WARD_HAS_BEEN_DESTROYED_C2_HAS_THE_WARD);
 			sm.addString(getName().replaceAll(" Ward", ""));
@@ -151,7 +148,7 @@ public final class L2TerritoryWardInstance extends L2Attackable
 		}
 		else
 		{
-			TerritoryWarManager.getInstance().getTerritoryWard(getNpcId() - 36491).spawnMe();
+			TerritoryWarManager.getInstance().getTerritoryWard(getId() - 36491).spawnMe();
 		}
 		decayMe();
 		return true;
@@ -176,19 +173,6 @@ public final class L2TerritoryWardInstance extends L2Attackable
 		{
 			// Set the target of the L2PcInstance player
 			player.setTarget(this);
-			
-			// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
-			MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
-			player.sendPacket(my);
-			
-			// Send a Server->Client packet StatusUpdate of the L2NpcInstance to the L2PcInstance to update its HP bar
-			StatusUpdate su = new StatusUpdate(this);
-			su.addAttribute(StatusUpdate.CUR_HP, (int) getStatus().getCurrentHp());
-			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
-			player.sendPacket(su);
-			
-			// Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
-			player.sendPacket(new ValidateLocation(this));
 		}
 		else if (interact)
 		{

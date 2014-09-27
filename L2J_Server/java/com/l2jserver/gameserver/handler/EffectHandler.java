@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -22,15 +22,15 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.effects.AbstractEffect;
 import com.l2jserver.gameserver.scripting.L2ScriptEngineManager;
 
 /**
  * @author BiggBoss, UnAfraid
  */
-public final class EffectHandler implements IHandler<Class<? extends L2Effect>, String>
+public final class EffectHandler implements IHandler<Class<? extends AbstractEffect>, String>
 {
-	private final Map<String, Class<? extends L2Effect>> _handlers;
+	private final Map<String, Class<? extends AbstractEffect>> _handlers;
 	
 	protected EffectHandler()
 	{
@@ -38,19 +38,19 @@ public final class EffectHandler implements IHandler<Class<? extends L2Effect>, 
 	}
 	
 	@Override
-	public void registerHandler(Class<? extends L2Effect> handler)
+	public void registerHandler(Class<? extends AbstractEffect> handler)
 	{
 		_handlers.put(handler.getSimpleName(), handler);
 	}
 	
 	@Override
-	public synchronized void removeHandler(Class<? extends L2Effect> handler)
+	public synchronized void removeHandler(Class<? extends AbstractEffect> handler)
 	{
 		_handlers.remove(handler.getSimpleName());
 	}
 	
 	@Override
-	public final Class<? extends L2Effect> getHandler(String name)
+	public Class<? extends AbstractEffect> getHandler(String name)
 	{
 		return _handlers.get(name);
 	}
@@ -65,6 +65,7 @@ public final class EffectHandler implements IHandler<Class<? extends L2Effect>, 
 	{
 		try
 		{
+			
 			File file = new File(L2ScriptEngineManager.SCRIPT_FOLDER, "handlers/EffectMasterHandler.java");
 			L2ScriptEngineManager.getInstance().executeScript(file);
 		}

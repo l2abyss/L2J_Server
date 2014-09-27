@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -36,14 +36,13 @@ public class CharSelected extends L2GameServerPacket
 		_sessionId = sessionId;
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x0b);
 		
 		writeS(_activeChar.getName());
-		writeD(_activeChar.getCharId()); // ??
+		writeD(_activeChar.getObjectId());
 		writeS(_activeChar.getTitle());
 		writeD(_sessionId);
 		writeD(_activeChar.getClanId());

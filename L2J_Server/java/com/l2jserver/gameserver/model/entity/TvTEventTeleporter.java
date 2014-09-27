@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.model.entity;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.util.Rnd;
@@ -74,7 +75,7 @@ public class TvTEventTeleporter implements Runnable
 			summon.unSummon(_playerInstance);
 		}
 		
-		if ((Config.TVT_EVENT_EFFECTS_REMOVAL == 0) || ((Config.TVT_EVENT_EFFECTS_REMOVAL == 1) && ((_playerInstance.getTeam() == 0) || (_playerInstance.isInDuel() && (_playerInstance.getDuelState() != Duel.DUELSTATE_INTERRUPTED)))))
+		if ((Config.TVT_EVENT_EFFECTS_REMOVAL == 0) || ((Config.TVT_EVENT_EFFECTS_REMOVAL == 1) && ((_playerInstance.getTeam() == Team.NONE) || (_playerInstance.isInDuel() && (_playerInstance.getDuelState() != Duel.DUELSTATE_INTERRUPTED)))))
 		{
 			_playerInstance.stopAllEffectsExceptThoseThatLastThroughDeath();
 		}
@@ -107,11 +108,23 @@ public class TvTEventTeleporter implements Runnable
 		
 		if (TvTEvent.isStarted() && !_adminRemove)
 		{
-			_playerInstance.setTeam(TvTEvent.getParticipantTeamId(_playerInstance.getObjectId()) + 1);
+			int teamId = TvTEvent.getParticipantTeamId(_playerInstance.getObjectId()) + 1;
+			switch (teamId)
+			{
+				case 0:
+					_playerInstance.setTeam(Team.NONE);
+					break;
+				case 1:
+					_playerInstance.setTeam(Team.BLUE);
+					break;
+				case 2:
+					_playerInstance.setTeam(Team.RED);
+					break;
+			}
 		}
 		else
 		{
-			_playerInstance.setTeam(0);
+			_playerInstance.setTeam(Team.NONE);
 		}
 		
 		_playerInstance.setCurrentCp(_playerInstance.getMaxCp());

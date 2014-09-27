@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,11 +18,11 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Level;
-
-import com.l2jserver.gameserver.cache.CrestCache;
-import com.l2jserver.gameserver.idfactory.IdFactory;
+import com.l2jserver.gameserver.datatables.CrestTable;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.L2Crest;
+import com.l2jserver.gameserver.model.L2Crest.CrestType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
@@ -35,7 +35,7 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 	private static final String _C__D0_11_REQUESTEXSETPLEDGECRESTLARGE = "[C] D0:11 RequestExSetPledgeCrestLarge";
 	
 	private int _length;
-	private byte[] _data;
+	private byte[] _data = null;
 	
 	@Override
 	protected void readImpl()
@@ -53,68 +53,60 @@ public final class RequestExSetPledgeCrestLarge extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 		{
 			return;
 		}
 		
-		L2Clan clan = activeChar.getClan();
+		final L2Clan clan = activeChar.getClan();
 		if (clan == null)
 		{
 			return;
 		}
 		
-		if (_length < 0)
+		if ((_length < 0) || (_length > 2176))
 		{
-			activeChar.sendMessage("File transfer error.");
-			return;
-		}
-		if (_length > 2176)
-		{
-			activeChar.sendMessage("The insignia file size is greater than 2176 bytes.");
+			activeChar.sendPacket(SystemMessageId.WRONG_SIZE_UPLOADED_CREST);
 			return;
 		}
 		
-		boolean updated = false;
-		int crestLargeId = -1;
-		if ((activeChar.getClanPrivileges() & L2Clan.CP_CL_REGISTER_CREST) == L2Clan.CP_CL_REGISTER_CREST)
+		if (clan.getDissolvingExpiryTime() > System.currentTimeMillis())
 		{
-			if ((_length == 0) || (_data == null))
+			activeChar.sendPacket(SystemMessageId.CANNOT_SET_CREST_WHILE_DISSOLUTION_IN_PROGRESS);
+			return;
+		}
+		
+		if (!activeChar.hasClanPrivilege(ClanPrivilege.CL_REGISTER_CREST))
+		{
+			activeChar.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
+			return;
+		}
+		
+		if (_length == 0)
+		{
+			if (clan.getCrestLargeId() != 0)
 			{
-				if (clan.getCrestLargeId() == 0)
-				{
-					return;
-				}
-				
-				crestLargeId = 0;
-				activeChar.sendMessage("The insignia has been removed.");
-				updated = true;
+				clan.changeLargeCrest(0);
+				activeChar.sendPacket(SystemMessageId.CLAN_CREST_HAS_BEEN_DELETED);
 			}
-			else
+		}
+		else
+		{
+			if (clan.getLevel() < 3)
 			{
-				if ((clan.getCastleId() == 0) && (clan.getHideoutId() == 0))
-				{
-					activeChar.sendMessage("Only a clan that owns a clan hall or a castle can get their emblem displayed on clan related items"); // there is a system message for that but didnt found the id
-					return;
-				}
-				
-				crestLargeId = IdFactory.getInstance().getNextId();
-				if (!CrestCache.getInstance().savePledgeCrestLarge(crestLargeId, _data))
-				{
-					_log.log(Level.INFO, "Error saving large crest for clan " + clan.getName() + " [" + clan.getClanId() + "]");
-					return;
-				}
-				
+				activeChar.sendPacket(SystemMessageId.CLAN_LVL_3_NEEDED_TO_SET_CREST);
+				return;
+			}
+			
+			final L2Crest crest = CrestTable.getInstance().createCrest(_data, CrestType.PLEDGE_LARGE);
+			if (crest != null)
+			{
+				clan.changeLargeCrest(crest.getId());
 				activeChar.sendPacket(SystemMessageId.CLAN_EMBLEM_WAS_SUCCESSFULLY_REGISTERED);
-				updated = true;
 			}
 		}
 		
-		if (updated && (crestLargeId != -1))
-		{
-			clan.changeLargeCrest(crestLargeId);
-		}
 	}
 	
 	@Override

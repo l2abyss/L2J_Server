@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -29,6 +29,7 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.DimensionalRiftManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.L2Party;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
@@ -84,7 +85,7 @@ public class DimensionalRift
 					qs.startQuest();
 				}
 			}
-			p.teleToLocation(coords[0], coords[1], coords[2]);
+			p.teleToLocation(new Location(coords[0], coords[1], coords[2]));
 		}
 		createSpawnTimer(_choosenRoom);
 		createTeleporterTimer(true);
@@ -102,6 +103,11 @@ public class DimensionalRift
 	
 	protected void createTeleporterTimer(final boolean reasonTP)
 	{
+		if (_party == null)
+		{
+			return;
+		}
+		
 		if (teleporterTimerTask != null)
 		{
 			teleporterTimerTask.cancel();
@@ -168,17 +174,13 @@ public class DimensionalRift
 			long jumpTime = calcTimeToNextJump();
 			teleporterTimer.schedule(teleporterTimerTask, jumpTime); // Teleporter task, 8-10 minutes
 			
-			earthQuakeTask = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
+			earthQuakeTask = ThreadPoolManager.getInstance().scheduleGeneral(() ->
 			{
-				@Override
-				public void run()
+				for (L2PcInstance p : _party.getMembers())
 				{
-					for (L2PcInstance p : _party.getMembers())
+					if (!revivedInWaitingRoom.contains(p))
 					{
-						if (!revivedInWaitingRoom.contains(p))
-						{
-							p.sendPacket(new Earthquake(p.getX(), p.getY(), p.getZ(), 65, 9));
-						}
+						p.sendPacket(new Earthquake(p.getX(), p.getY(), p.getZ(), 65, 9));
 					}
 				}
 			}, jumpTime - 7000);
@@ -316,13 +318,13 @@ public class DimensionalRift
 				}
 				_choosenRoom = emptyRooms.get(Rnd.get(1, emptyRooms.size()) - 1);
 			}
-			while (DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).ispartyInside());
+			while (DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).isPartyInside());
 		}
 		
 		DimensionalRiftManager.getInstance().getRoom(_type, _choosenRoom).setPartyInside(true);
 		checkBossRoom(_choosenRoom);
 		int[] coords = getRoomCoord(_choosenRoom);
-		player.teleToLocation(coords[0], coords[1], coords[2]);
+		player.teleToLocation(new Location(coords[0], coords[1], coords[2]));
 	}
 	
 	protected void teleportToWaitingRoom(L2PcInstance player)
@@ -475,7 +477,7 @@ public class DimensionalRift
 	
 	public int[] getRoomCoord(byte room)
 	{
-		return DimensionalRiftManager.getInstance().getRoom(_type, room).getTeleportCoords();
+		return DimensionalRiftManager.getInstance().getRoom(_type, room).getTeleportCoorinates();
 	}
 	
 	public byte getMaxJumps()

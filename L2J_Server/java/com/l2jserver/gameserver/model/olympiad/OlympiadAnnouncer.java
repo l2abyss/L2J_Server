@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -79,7 +79,7 @@ public final class OlympiadAnnouncer implements Runnable
 					manager = spawn.getLastSpawn();
 					if (manager != null)
 					{
-						packet = new NpcSay(manager.getObjectId(), Say2.NPC_SHOUT, manager.getNpcId(), npcString);
+						packet = new NpcSay(manager.getObjectId(), Say2.NPC_SHOUT, manager.getId(), npcString);
 						packet.addStringParameter(arenaId);
 						manager.broadcastPacket(packet);
 					}

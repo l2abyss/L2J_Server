@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -28,9 +28,10 @@ import javolution.util.FastSet;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2MinionData;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -264,7 +265,7 @@ public class MinionList
 					newY = (_master.getY() - newY) + minRadius;
 				}
 				
-				minion.teleToLocation(newX, newY, _master.getZ());
+				minion.teleToLocation(new Location(newX, newY, _master.getZ()));
 			}
 		}
 	}
@@ -284,7 +285,7 @@ public class MinionList
 			while (iter.hasNext())
 			{
 				minion = iter.next();
-				if ((minion != null) && (minion.getNpcId() == minionId))
+				if ((minion != null) && (minion.getId() == minionId))
 				{
 					iter.remove();
 					minion.refreshID();
@@ -340,7 +341,7 @@ public class MinionList
 	public static final L2MonsterInstance spawnMinion(L2MonsterInstance master, int minionId)
 	{
 		// Get the template of the Minion to spawn
-		L2NpcTemplate minionTemplate = NpcTable.getInstance().getTemplate(minionId);
+		L2NpcTemplate minionTemplate = NpcData.getInstance().getTemplate(minionId);
 		if (minionTemplate == null)
 		{
 			return null;
@@ -395,7 +396,7 @@ public class MinionList
 		
 		if (Config.DEBUG)
 		{
-			_log.fine("Spawned minion template " + minion.getNpcId() + " with objid: " + minion.getObjectId() + " to boss " + master.getObjectId() + " ,at: " + minion.getX() + " x, " + minion.getY() + " y, " + minion.getZ() + " z");
+			_log.info("Spawned minion template " + minion.getId() + " with objid: " + minion.getObjectId() + " to boss " + master.getObjectId() + " ,at: " + minion.getX() + " x, " + minion.getY() + " y, " + minion.getZ() + " z");
 		}
 		
 		return minion;
@@ -408,7 +409,7 @@ public class MinionList
 		int count = 0;
 		for (L2MonsterInstance minion : _minionReferences)
 		{
-			if ((minion != null) && (minion.getNpcId() == minionId))
+			if ((minion != null) && (minion.getId() == minionId))
 			{
 				count++;
 			}
@@ -431,7 +432,7 @@ public class MinionList
 				continue;
 			}
 			
-			seenGroups.add(minion.getNpcId());
+			seenGroups.add(minion.getId());
 		}
 		return seenGroups.size();
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,6 +18,7 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.RaidBossPointsManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
@@ -87,19 +88,19 @@ public final class L2GrandBossInstance extends L2MonsterInstance
 			{
 				for (L2PcInstance member : player.getParty().getMembers())
 				{
-					RaidBossPointsManager.getInstance().addPoints(member, getNpcId(), (getLevel() / 2) + Rnd.get(-5, 5));
+					RaidBossPointsManager.getInstance().addPoints(member, getId(), (getLevel() / 2) + Rnd.get(-5, 5));
 					if (member.isNoble())
 					{
-						Hero.getInstance().setRBkilled(member.getObjectId(), getNpcId());
+						Hero.getInstance().setRBkilled(member.getObjectId(), getId());
 					}
 				}
 			}
 			else
 			{
-				RaidBossPointsManager.getInstance().addPoints(player, getNpcId(), (getLevel() / 2) + Rnd.get(-5, 5));
+				RaidBossPointsManager.getInstance().addPoints(player, getId(), (getLevel() / 2) + Rnd.get(-5, 5));
 				if (player.isNoble())
 				{
-					Hero.getInstance().setRBkilled(player.getObjectId(), getNpcId());
+					Hero.getInstance().setRBkilled(player.getObjectId(), getId());
 				}
 			}
 		}

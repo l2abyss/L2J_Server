@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,20 +18,21 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.L2Macro;
-import com.l2jserver.gameserver.model.L2Macro.L2MacroCmd;
+import com.l2jserver.gameserver.enums.MacroType;
+import com.l2jserver.gameserver.model.Macro;
+import com.l2jserver.gameserver.model.MacroCmd;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
-/**
- * packet type id 0xc1 sample c1 d // id S // macro name S // unknown desc S // unknown acronym c // icon c // count c // entry c // type d // skill id c // shortcut id S // command name format: cdSSScc (ccdcS)
- */
 public final class RequestMakeMacro extends L2GameClientPacket
 {
 	private static final String _C__CD_REQUESTMAKEMACRO = "[C] CD RequestMakeMacro";
 	
-	private L2Macro _macro;
+	private Macro _macro;
 	private int _commandsLenght = 0;
 	
 	private static final int MAX_MACRO_LENGTH = 12;
@@ -50,12 +51,12 @@ public final class RequestMakeMacro extends L2GameClientPacket
 			_count = MAX_MACRO_LENGTH;
 		}
 		
-		L2MacroCmd[] commands = new L2MacroCmd[_count];
-		
 		if (Config.DEBUG)
 		{
 			_log.info("Make macro id:" + _id + "\tname:" + _name + "\tdesc:" + _desc + "\tacronym:" + _acronym + "\ticon:" + _icon + "\tcount:" + _count);
 		}
+		
+		final List<MacroCmd> commands = new ArrayList<>(_count);
 		for (int i = 0; i < _count; i++)
 		{
 			int entry = readC();
@@ -64,13 +65,9 @@ public final class RequestMakeMacro extends L2GameClientPacket
 			int d2 = readC();
 			String command = readS();
 			_commandsLenght += command.length();
-			commands[i] = new L2MacroCmd(entry, type, d1, d2, command);
-			if (Config.DEBUG)
-			{
-				_log.info("entry:" + entry + "\ttype:" + type + "\td1:" + d1 + "\td2:" + d2 + "\tcommand:" + command);
-			}
+			commands.add(new MacroCmd(entry, MacroType.values()[(type < 1) || (type > 6) ? 0 : type], d1, d2, command));
 		}
-		_macro = new L2Macro(_id, _icon, _name, _desc, _acronym, commands);
+		_macro = new Macro(_id, _icon, _name, _desc, _acronym, commands);
 	}
 	
 	@Override
@@ -87,19 +84,19 @@ public final class RequestMakeMacro extends L2GameClientPacket
 			player.sendPacket(SystemMessageId.INVALID_MACRO);
 			return;
 		}
-		if (player.getMacros().getAllMacroses().length > 48)
+		if (player.getMacros().getAllMacroses().size() > 48)
 		{
 			// You may create up to 48 macros.
 			player.sendPacket(SystemMessageId.YOU_MAY_CREATE_UP_TO_48_MACROS);
 			return;
 		}
-		if (_macro.name.isEmpty())
+		if (_macro.getName().isEmpty())
 		{
 			// Enter the name of the macro.
 			player.sendPacket(SystemMessageId.ENTER_THE_MACRO_NAME);
 			return;
 		}
-		if (_macro.descr.length() > 32)
+		if (_macro.getDescr().length() > 32)
 		{
 			// Macro descriptions may contain up to 32 characters.
 			player.sendPacket(SystemMessageId.MACRO_DESCRIPTION_MAX_32_CHARS);

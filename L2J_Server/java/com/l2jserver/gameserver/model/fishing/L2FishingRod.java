@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -34,9 +34,9 @@ public class L2FishingRod
 	
 	public L2FishingRod(StatsSet set)
 	{
-		_fishingRodId = set.getInteger("fishingRodId");
-		_fishingRodItemId = set.getInteger("fishingRodItemId");
-		_fishingRodLevel = set.getInteger("fishingRodLevel");
+		_fishingRodId = set.getInt("fishingRodId");
+		_fishingRodItemId = set.getInt("fishingRodItemId");
+		_fishingRodLevel = set.getInt("fishingRodLevel");
 		_fishingRodName = set.getString("fishingRodName");
 		_fishingRodDamage = set.getDouble("fishingRodDamage");
 	}

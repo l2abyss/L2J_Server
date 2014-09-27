@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,7 +18,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.cache.CrestCache;
 import com.l2jserver.gameserver.network.serverpackets.ExPledgeCrestLarge;
 
 /**
@@ -40,13 +39,7 @@ public final class RequestExPledgeCrestLarge extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		byte[] data = CrestCache.getInstance().getPledgeCrestLarge(_crestId);
-		
-		if (data != null)
-		{
-			ExPledgeCrestLarge pcl = new ExPledgeCrestLarge(_crestId, data);
-			sendPacket(pcl);
-		}
+		sendPacket(new ExPledgeCrestLarge(_crestId));
 	}
 	
 	@Override

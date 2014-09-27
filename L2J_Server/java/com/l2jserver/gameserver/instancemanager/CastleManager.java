@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,6 +23,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,11 +40,13 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-public class CastleManager implements InstanceListManager
+public final class CastleManager implements InstanceListManager
 {
 	private static final Logger _log = Logger.getLogger(CastleManager.class.getName());
 	
 	private List<Castle> _castles;
+	
+	private final Map<Integer, Long> _castleSiegeDate = new ConcurrentHashMap<>();
 	
 	private static final int _castleCirclets[] =
 	{
@@ -92,7 +96,7 @@ public class CastleManager implements InstanceListManager
 	{
 		for (Castle temp : getCastles())
 		{
-			if (temp.getCastleId() == castleId)
+			if (temp.getResidenceId() == castleId)
 			{
 				return temp;
 			}
@@ -104,7 +108,7 @@ public class CastleManager implements InstanceListManager
 	{
 		for (Castle temp : getCastles())
 		{
-			if (temp.getOwnerId() == clan.getClanId())
+			if (temp.getOwnerId() == clan.getId())
 			{
 				return temp;
 			}
@@ -147,7 +151,7 @@ public class CastleManager implements InstanceListManager
 		for (int i = 0; i < getCastles().size(); i++)
 		{
 			castle = getCastles().get(i);
-			if ((castle != null) && (castle.getCastleId() == castleId))
+			if ((castle != null) && (castle.getResidenceId() == castleId))
 			{
 				return i;
 			}
@@ -183,6 +187,20 @@ public class CastleManager implements InstanceListManager
 		return _castles;
 	}
 	
+	public boolean hasOwnedCastle()
+	{
+		boolean hasOwnedCastle = false;
+		for (Castle castle : getCastles())
+		{
+			if (castle.getOwnerId() > 0)
+			{
+				hasOwnedCastle = true;
+				break;
+			}
+		}
+		return hasOwnedCastle;
+	}
+	
 	public final void validateTaxes(int sealStrifeOwner)
 	{
 		int maxTax;
@@ -207,11 +225,9 @@ public class CastleManager implements InstanceListManager
 		}
 	}
 	
-	int _castleId = 1; // from this castle
-	
 	public int getCirclet()
 	{
-		return getCircletByCastleId(_castleId);
+		return getCircletByCastleId(1);
 	}
 	
 	public int getCircletByCastleId(int castleId)
@@ -311,6 +327,24 @@ public class CastleManager implements InstanceListManager
 		{
 			castle.activateInstance();
 		}
+	}
+	
+	public void registerSiegeDate(int castleId, long siegeDate)
+	{
+		_castleSiegeDate.put(castleId, siegeDate);
+	}
+	
+	public int getSiegeDates(long siegeDate)
+	{
+		int count = 0;
+		for (long date : _castleSiegeDate.values())
+		{
+			if (Math.abs(date - siegeDate) < 1000)
+			{
+				count++;
+			}
+		}
+		return count;
 	}
 	
 	public static final CastleManager getInstance()

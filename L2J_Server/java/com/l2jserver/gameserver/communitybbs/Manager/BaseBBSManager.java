@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -98,11 +98,11 @@ public abstract class BaseBBSManager
 		_arg.add(Integer.toString(activeChar.getObjectId()));
 		_arg.add(activeChar.getAccountName());
 		_arg.add("9");
-		_arg.add(string2);
-		_arg.add(string2);
-		_arg.add(string);
-		_arg.add(string3);
-		_arg.add(string3);
+		_arg.add(string2); // subject?
+		_arg.add(string2); // subject?
+		_arg.add(string); // text
+		_arg.add(string3); // date?
+		_arg.add(string3); // date?
 		_arg.add("0");
 		_arg.add("0");
 		activeChar.sendPacket(new ShowBoard(_arg));

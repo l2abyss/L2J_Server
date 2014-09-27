@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,8 +18,8 @@
  */
 package com.l2jserver.gameserver.model.zone.form;
 
-import com.l2jserver.gameserver.GeoEngine;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.GeoData;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.zone.L2ZoneForm;
 import com.l2jserver.util.Rnd;
 
@@ -133,7 +133,7 @@ public class ZoneCylinder extends L2ZoneForm
 		{
 			int x = (int) (Math.cos(angle * i) * _rad);
 			int y = (int) (Math.sin(angle * i) * _rad);
-			dropDebugItem(PcInventory.ADENA_ID, 1, _x + x, _y + y, z);
+			dropDebugItem(Inventory.ADENA_ID, 1, _x + x, _y + y, z);
 		}
 	}
 	
@@ -151,7 +151,7 @@ public class ZoneCylinder extends L2ZoneForm
 		{
 			(int) x,
 			(int) y,
-			GeoEngine.getInstance().getHeight((int) x, (int) y, _z1)
+			GeoData.getInstance().getHeight((int) x, (int) y, _z1)
 		};
 	}
 }

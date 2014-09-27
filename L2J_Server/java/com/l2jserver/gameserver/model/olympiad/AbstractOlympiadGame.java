@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -24,22 +24,18 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
-import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
-import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.type.L2OlympiadStadiumZone;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMode;
@@ -96,16 +92,8 @@ public abstract class AbstractOlympiadGame
 		par.updateStat(POINTS, points);
 		final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_GAINED_S2_OLYMPIAD_POINTS);
 		sm.addString(par.getName());
-		sm.addNumber(points);
+		sm.addInt(points);
 		broadcastPacket(sm);
-		
-		for (Quest quest : QuestManager.getInstance().getAllManagedScripts())
-		{
-			if ((quest != null) && quest.isOlympiadUse())
-			{
-				quest.notifyOlympiadWin(par.getPlayer(), getType());
-			}
-		}
 	}
 	
 	protected final void removePointsFromParticipant(Participant par, int points)
@@ -113,16 +101,8 @@ public abstract class AbstractOlympiadGame
 		par.updateStat(POINTS, -points);
 		final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_HAS_LOST_S2_OLYMPIAD_POINTS);
 		sm.addString(par.getName());
-		sm.addNumber(points);
+		sm.addInt(points);
 		broadcastPacket(sm);
-		
-		for (Quest quest : QuestManager.getInstance().getAllManagedScripts())
-		{
-			if ((quest != null) && quest.isOlympiadUse())
-			{
-				quest.notifyOlympiadLose(par.getPlayer(), getType());
-			}
-		}
 	}
 	
 	/**
@@ -192,7 +172,7 @@ public abstract class AbstractOlympiadGame
 		
 		try
 		{
-			player.setLastCords(player.getX(), player.getY(), player.getZ());
+			player.setLastLocation();
 			if (player.isSitting())
 			{
 				player.standUp();
@@ -203,7 +183,7 @@ public abstract class AbstractOlympiadGame
 			player.setIsInOlympiadMode(true);
 			player.setIsOlympiadStart(false);
 			player.setOlympiadSide(par.getSide());
-			player.olyBuff = 5;
+			player.setOlympiadBuffCount(Config.ALT_OLY_MAX_BUFFS);
 			loc.setInstanceId(OlympiadGameManager.getInstance().getOlympiadTask(id).getZone().getInstanceId());
 			player.teleToLocation(loc, false);
 			player.sendPacket(new ExOlympiadMode(2));
@@ -246,16 +226,7 @@ public abstract class AbstractOlympiadGame
 			player.abortCast();
 			
 			// Force the character to be visible
-			player.getAppearance().setVisible();
-			
-			// Remove Hero Skills
-			if (player.isHero())
-			{
-				for (L2Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
-				{
-					player.removeSkill(skill, false);
-				}
-			}
+			player.setInvisible(false);
 			
 			// Heal Player fully
 			player.setCurrentCp(player.getMaxCp());
@@ -270,7 +241,7 @@ public abstract class AbstractOlympiadGame
 				summon.abortAttack();
 				summon.abortCast();
 				
-				if (summon instanceof L2PetInstance)
+				if (summon.isPet())
 				{
 					summon.unSummon(player);
 				}
@@ -308,7 +279,7 @@ public abstract class AbstractOlympiadGame
 			}
 			
 			// enable skills with cool time <= 15 minutes
-			for (L2Skill skill : player.getAllSkills())
+			for (Skill skill : player.getAllSkills())
 			{
 				if (skill.getReuseDelay() <= 900000)
 				{
@@ -396,17 +367,8 @@ public abstract class AbstractOlympiadGame
 				{
 					FortManager.getInstance().getFortByOwner(player.getClan()).giveResidentialSkills(player);
 				}
+				player.sendSkillList();
 			}
-			
-			// Add Hero Skills
-			if (player.isHero())
-			{
-				for (L2Skill skill : SkillTreesData.getInstance().getHeroSkillTree().values())
-				{
-					player.addSkill(skill, false);
-				}
-			}
-			player.sendSkillList();
 			
 			// heal again after adding clan skills
 			player.setCurrentCp(player.getMaxCp());
@@ -431,15 +393,15 @@ public abstract class AbstractOlympiadGame
 		{
 			return;
 		}
-		
-		if ((player.getLastX() == 0) && (player.getLastY() == 0))
+		final Location loc = player.getLastLocation();
+		if ((loc.getX() == 0) && (loc.getY() == 0))
 		{
 			return;
 		}
 		
 		player.setInstanceId(0);
-		player.teleToLocation(player.getLastX(), player.getLastY(), player.getLastZ());
-		player.setLastCords(0, 0, 0);
+		player.teleToLocation(loc);
+		player.unsetLastLocation();
 	}
 	
 	public static final void rewardParticipant(L2PcInstance player, int[][] reward)
@@ -470,7 +432,7 @@ public abstract class AbstractOlympiadGame
 				iu.addModifiedItem(item);
 				sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
 				sm.addItemName(it[0]);
-				sm.addNumber(it[1]);
+				sm.addInt(it[1]);
 				player.sendPacket(sm);
 			}
 			player.sendPacket(iu);

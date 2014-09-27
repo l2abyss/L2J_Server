@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -27,22 +27,19 @@ import javolution.util.FastList;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
-import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.StopMove;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
-import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.Rnd;
 
 // While a tamed beast behaves a lot like a pet (ingame) and does have
@@ -65,7 +62,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	private Future<?> _buffTask = null;
 	private Future<?> _durationCheckTask = null;
 	protected boolean _isFreyaBeast;
-	private List<L2Skill> _beastSkills = null;
+	private List<Skill> _beastSkills = null;
 	
 	public L2TamedBeastInstance(int objectId, L2NpcTemplate template)
 	{
@@ -115,9 +112,9 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 		}
 	}
 	
-	public Point3D getHome()
+	public Location getHome()
 	{
-		return new Point3D(_homeX, _homeY, _homeZ);
+		return new Location(_homeX, _homeY, _homeZ);
 	}
 	
 	public void setHome(int x, int y, int z)
@@ -205,7 +202,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 		return _isFreyaBeast;
 	}
 	
-	public void addBeastSkill(L2Skill skill)
+	public void addBeastSkill(Skill skill)
 	{
 		if (_beastSkills == null)
 		{
@@ -221,7 +218,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			return;
 		}
 		int delay = 100;
-		for (L2Skill skill : _beastSkills)
+		for (Skill skill : _beastSkills)
 		{
 			ThreadPoolManager.getInstance().scheduleGeneral(new buffCast(skill), delay);
 			delay += (100 + skill.getHitTime());
@@ -231,9 +228,9 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	
 	private class buffCast implements Runnable
 	{
-		private final L2Skill _skill;
+		private final Skill _skill;
 		
-		public buffCast(L2Skill skill)
+		public buffCast(Skill skill)
 		{
 			_skill = skill;
 		}
@@ -276,10 +273,10 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			{
 				// instead of calculating this value each time, let's get this now and pass it on
 				int totalBuffsAvailable = 0;
-				for (L2Skill skill : getTemplate().getSkills().values())
+				for (Skill skill : getTemplate().getSkills().values())
 				{
 					// if the skill is a buff, check if the owner has it already [ owner.getEffect(L2Skill skill) ]
-					if (skill.getSkillType() == L2SkillType.BUFF)
+					if (skill.isContinuous() && !skill.isDebuff())
 					{
 						totalBuffsAvailable++;
 					}
@@ -301,11 +298,11 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	
 	public boolean isTooFarFromHome()
 	{
-		return !(this.isInsideRadius(_homeX, _homeY, _homeZ, MAX_DISTANCE_FROM_HOME, true, true));
+		return !isInsideRadius(_homeX, _homeY, _homeZ, MAX_DISTANCE_FROM_HOME, true, true);
 	}
 	
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
 		if (_buffTask != null)
 		{
@@ -327,7 +324,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 		_remainingTime = 0;
 		
 		// remove the spawn
-		super.deleteMe();
+		return super.deleteMe();
 	}
 	
 	// notification triggered by the owner when the owner is attacked.
@@ -364,10 +361,10 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 		// use of more than one debuff at this moment is acceptable
 		if (HPRatio >= 0.8)
 		{
-			for (L2Skill skill : getTemplate().getSkills().values())
+			for (Skill skill : getTemplate().getSkills().values())
 			{
 				// if the skill is a debuff, check if the attacker has it already [ attacker.getEffect(L2Skill skill) ]
-				if ((skill.getSkillType() == L2SkillType.DEBUFF) && (Rnd.get(3) < 1) && ((attacker != null) && (attacker.getFirstEffect(skill) != null)))
+				if (skill.isDebuff() && (Rnd.get(3) < 1) && ((attacker != null) && attacker.isAffectedBySkill(skill.getId())))
 				{
 					sitCastAndFollow(skill, attacker);
 				}
@@ -384,10 +381,10 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			}
 			
 			// if the owner has a lot of HP, then debuff the enemy with a random debuff among the available skills
-			for (L2Skill skill : getTemplate().getSkills().values())
+			for (Skill skill : getTemplate().getSkills().values())
 			{
 				// if the skill is a buff, check if the owner has it already [ owner.getEffect(L2Skill skill) ]
-				if ((Rnd.get(5) < chance) && skill.hasEffectType(L2EffectType.CPHEAL, L2EffectType.HEAL, L2EffectType.HEAL_PERCENT, L2EffectType.MANAHEAL_BY_LEVEL, L2EffectType.MANAHEAL_PERCENT))
+				if ((Rnd.get(5) < chance) && skill.hasEffectType(L2EffectType.CPHEAL, L2EffectType.HEAL, L2EffectType.MANAHEAL_BY_LEVEL, L2EffectType.MANAHEAL_PERCENT))
 				{
 					sitCastAndFollow(skill, _owner);
 				}
@@ -403,7 +400,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 	 * @param skill
 	 * @param target
 	 */
-	protected void sitCastAndFollow(L2Skill skill, L2Character target)
+	protected void sitCastAndFollow(Skill skill, L2Character target)
 	{
 		stopMove(null);
 		broadcastPacket(new StopMove(this));
@@ -470,7 +467,7 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 					
 					// emulate a call to the owner using food, but bypass all checks for range, etc
 					// this also causes a call to the AI tasks handling feeding, which may call onReceiveFood as required.
-					owner.callSkill(SkillTable.getInstance().getInfo(foodTypeSkillId, 1), targets);
+					owner.callSkill(SkillData.getInstance().getSkill(foodTypeSkillId, 1), targets);
 					owner.setTarget(oldTarget);
 				}
 				else
@@ -536,19 +533,19 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 			int totalBuffsOnOwner = 0;
 			int i = 0;
 			int rand = Rnd.get(_numBuffs);
-			L2Skill buffToGive = null;
+			Skill buffToGive = null;
 			
 			// get this npc's skills: getSkills()
-			for (L2Skill skill : _tamedBeast.getTemplate().getSkills().values())
+			for (Skill skill : _tamedBeast.getTemplate().getSkills().values())
 			{
 				// if the skill is a buff, check if the owner has it already [ owner.getEffect(L2Skill skill) ]
-				if (skill.getSkillType() == L2SkillType.BUFF)
+				if (skill.isContinuous() && !skill.isDebuff())
 				{
 					if (i++ == rand)
 					{
 						buffToGive = skill;
 					}
-					if (owner.getFirstEffect(skill) != null)
+					if (owner.isAffectedBySkill(skill.getId()))
 					{
 						totalBuffsOnOwner++;
 					}
@@ -576,19 +573,6 @@ public final class L2TamedBeastInstance extends L2FeedableBeastInstance
 		{
 			// Set the target of the L2PcInstance player
 			player.setTarget(this);
-			
-			// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
-			MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
-			player.sendPacket(my);
-			
-			// Send a Server->Client packet StatusUpdate of the L2NpcInstance to the L2PcInstance to update its HP bar
-			StatusUpdate su = new StatusUpdate(this);
-			su.addAttribute(StatusUpdate.CUR_HP, (int) getStatus().getCurrentHp());
-			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
-			player.sendPacket(su);
-			
-			// Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
-			player.sendPacket(new ValidateLocation(this));
 		}
 		else if (interact)
 		{

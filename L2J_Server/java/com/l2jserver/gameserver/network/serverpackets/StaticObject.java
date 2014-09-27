@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -40,7 +40,7 @@ public class StaticObject extends L2GameServerPacket
 	
 	public StaticObject(L2StaticObjectInstance staticObject)
 	{
-		_staticObjectId = staticObject.getStaticObjectId();
+		_staticObjectId = staticObject.getId();
 		_objectId = staticObject.getObjectId();
 		_type = 0;
 		_isTargetable = true;
@@ -55,7 +55,7 @@ public class StaticObject extends L2GameServerPacket
 	
 	public StaticObject(L2DoorInstance door, boolean targetable)
 	{
-		_staticObjectId = door.getDoorId();
+		_staticObjectId = door.getId();
 		_objectId = door.getObjectId();
 		_type = 1;
 		_isTargetable = door.isTargetable() || targetable;

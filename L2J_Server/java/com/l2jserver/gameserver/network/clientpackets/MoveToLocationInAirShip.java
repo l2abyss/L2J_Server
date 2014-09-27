@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,14 +18,13 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.TaskPriority;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2AirShipInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.model.items.type.WeaponType;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExMoveToLocationInAirShip;
 import com.l2jserver.gameserver.network.serverpackets.StopMoveInVehicle;
-import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * format: ddddddd X:%d Y:%d Z:%d OriginX:%d OriginY:%d OriginZ:%d
@@ -42,11 +41,6 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 	private int _originX;
 	private int _originY;
 	private int _originZ;
-	
-	public TaskPriority getPriority()
-	{
-		return TaskPriority.PR_HIGH;
-	}
 	
 	@Override
 	protected void readImpl()
@@ -75,7 +69,7 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.isAttackingNow() && (activeChar.getActiveWeaponItem() != null) && (activeChar.getActiveWeaponItem().getItemType() == L2WeaponType.BOW))
+		if (activeChar.isAttackingNow() && (activeChar.getActiveWeaponItem() != null) && (activeChar.getActiveWeaponItem().getItemType() == WeaponType.BOW))
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -100,7 +94,7 @@ public class MoveToLocationInAirShip extends L2GameClientPacket
 			return;
 		}
 		
-		activeChar.setInVehiclePosition(new Point3D(_targetX, _targetY, _targetZ));
+		activeChar.setInVehiclePosition(new Location(_targetX, _targetY, _targetZ));
 		activeChar.broadcastPacket(new ExMoveToLocationInAirShip(activeChar));
 	}
 	

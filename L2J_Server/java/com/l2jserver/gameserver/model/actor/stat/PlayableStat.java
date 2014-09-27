@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -27,6 +27,9 @@ import com.l2jserver.gameserver.instancemanager.ZoneManager;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.playable.OnPlayableExpChanged;
+import com.l2jserver.gameserver.model.events.returns.TerminateReturn;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.model.zone.type.L2SwampZone;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
@@ -43,6 +46,12 @@ public class PlayableStat extends CharStat
 	
 	public boolean addExp(long value)
 	{
+		final TerminateReturn term = EventDispatcher.getInstance().notifyEvent(new OnPlayableExpChanged(getActiveChar(), getExp(), getExp() + value), getActiveChar(), TerminateReturn.class);
+		if ((term != null) && term.terminate())
+		{
+			return false;
+		}
+		
 		if (((getExp() + value) < 0) || ((value > 0) && (getExp() == (getExpForLevel(getMaxLevel()) - 1))))
 		{
 			return true;
@@ -59,7 +68,7 @@ public class PlayableStat extends CharStat
 		if (getActiveChar() instanceof L2PetInstance)
 		{
 			// get minimum level from L2NpcTemplate
-			minimumLevel = (byte) PetDataTable.getInstance().getPetMinLevel(((L2PetInstance) getActiveChar()).getTemplate().getNpcId());
+			minimumLevel = (byte) PetDataTable.getInstance().getPetMinLevel(((L2PetInstance) getActiveChar()).getTemplate().getId());
 		}
 		
 		byte level = minimumLevel; // minimum level
@@ -94,7 +103,7 @@ public class PlayableStat extends CharStat
 		if (getActiveChar() instanceof L2PetInstance)
 		{
 			// get minimum level from L2NpcTemplate
-			minimumLevel = (byte) PetDataTable.getInstance().getPetMinLevel(((L2PetInstance) getActiveChar()).getTemplate().getNpcId());
+			minimumLevel = (byte) PetDataTable.getInstance().getPetMinLevel(((L2PetInstance) getActiveChar()).getTemplate().getId());
 		}
 		byte level = minimumLevel;
 		
@@ -112,22 +121,6 @@ public class PlayableStat extends CharStat
 			addLevel((byte) (level - getLevel()));
 		}
 		return true;
-	}
-	
-	public boolean addExpAndSp(long addToExp, int addToSp)
-	{
-		boolean expAdded = false;
-		boolean spAdded = false;
-		if (addToExp >= 0)
-		{
-			expAdded = addExp(addToExp);
-		}
-		if (addToSp >= 0)
-		{
-			spAdded = addSp(addToSp);
-		}
-		
-		return expAdded || spAdded;
 	}
 	
 	public boolean removeExpAndSp(long removeExp, int removeSp)
@@ -229,23 +222,31 @@ public class PlayableStat extends CharStat
 	}
 	
 	@Override
-	public int getRunSpeed()
+	public double getRunSpeed()
 	{
-		int val = super.getRunSpeed();
-		if (getActiveChar().isInsideZone(ZoneId.WATER))
-		{
-			val /= 2;
-		}
-		
 		if (getActiveChar().isInsideZone(ZoneId.SWAMP))
 		{
-			L2SwampZone zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
-			int bonus = zone == null ? 0 : zone.getMoveBonus();
-			double dbonus = bonus / 100.0; // %
-			val += val * dbonus;
+			final L2SwampZone zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
+			if (zone != null)
+			{
+				return super.getRunSpeed() * zone.getMoveBonus();
+			}
 		}
-		
-		return val;
+		return super.getRunSpeed();
+	}
+	
+	@Override
+	public double getWalkSpeed()
+	{
+		if (getActiveChar().isInsideZone(ZoneId.SWAMP))
+		{
+			final L2SwampZone zone = ZoneManager.getInstance().getZone(getActiveChar(), L2SwampZone.class);
+			if (zone != null)
+			{
+				return super.getWalkSpeed() * zone.getMoveBonus();
+			}
+		}
+		return super.getWalkSpeed();
 	}
 	
 	@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -50,7 +50,7 @@ public class MonRaceInfo extends L2GameServerPacket
 		for (int i = 0; i < 8; i++)
 		{
 			writeD(_monsters[i].getObjectId()); // npcObjectID
-			writeD(_monsters[i].getTemplate().getNpcId() + 1000000); // npcID
+			writeD(_monsters[i].getTemplate().getId() + 1000000); // npcID
 			writeD(14107); // origin X
 			writeD(181875 + (58 * (7 - i))); // origin Y
 			writeD(-3566); // origin Z

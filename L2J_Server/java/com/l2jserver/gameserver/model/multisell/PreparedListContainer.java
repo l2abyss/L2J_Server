@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -80,7 +80,7 @@ public class PreparedListContainer extends ListContainer
 						// check ingredients of this entry to see if it's an entry we'd like to include.
 						for (Ingredient ing : ent.getIngredients())
 						{
-							if (item.getItemId() == ing.getItemId())
+							if (item.getId() == ing.getItemId())
 							{
 								_entries.add(new PreparedEntry(ent, item, _applyTaxes, _maintainEnchantment, taxRate));
 								break; // next entry

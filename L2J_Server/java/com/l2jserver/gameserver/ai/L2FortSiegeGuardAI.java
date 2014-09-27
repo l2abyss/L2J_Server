@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -37,14 +37,11 @@ import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2FortBallistaInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FortCommanderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
-import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
@@ -129,7 +126,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 	private boolean autoAttackCondition(L2Character target)
 	{
 		// Check if the target isn't another guard, folk or a door
-		if ((target == null) || (target instanceof L2DefenderInstance) || (target instanceof L2NpcInstance) || (target instanceof L2DoorInstance) || target.isAlikeDead() || (target instanceof L2FortBallistaInstance) || (target instanceof L2FortCommanderInstance) || (target instanceof L2Playable))
+		if ((target == null) || (target instanceof L2DefenderInstance) || (target instanceof L2NpcInstance) || (target instanceof L2DoorInstance) || target.isAlikeDead() || (target instanceof L2FortCommanderInstance) || (target instanceof L2Playable))
 		{
 			L2PcInstance player = null;
 			if (target instanceof L2PcInstance)
@@ -140,7 +137,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 			{
 				player = ((L2Summon) target).getOwner();
 			}
-			if ((player == null) || ((player.getClan() != null) && (player.getClan().getFortId() == ((L2Npc) _actor).getFort().getFortId())))
+			if ((player == null) || ((player.getClan() != null) && (player.getClan().getFortId() == ((L2Npc) _actor).getFort().getResidenceId())))
 			{
 				return false;
 			}
@@ -174,7 +171,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 		if (target instanceof L2Playable)
 		{
 			// Check if the target isn't in silent move mode AND too far (>100)
-			if (((L2Playable) target).isSilentMoving() && !_actor.isInsideRadius(target, 250, false, false))
+			if (((L2Playable) target).isSilentMovingAffected() && !_actor.isInsideRadius(target, 250, false, false))
 			{
 				return false;
 			}
@@ -419,7 +416,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 	{
 		L2Character target = getAttackTarget();
 		// Call all L2Object of its Faction inside the Faction Range
-		if ((((L2Npc) _actor).getFactionId() == null) || (target == null))
+		if ((((L2Npc) _actor).getTemplate().getClans() == null) || (target == null))
 		{
 			return;
 		}
@@ -428,8 +425,6 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 		{
 			return; // speeding it up for siege guards
 		}
-		
-		String faction_id = ((L2Npc) _actor).getFactionId();
 		
 		// Go through all L2Character that belong to its faction
 		// for (L2Character cha : _actor.getKnownList().getKnownCharactersInRadius(((L2NpcInstance) _actor).getFactionRange()+_actor.getTemplate().collisionRadius))
@@ -447,7 +442,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 					// heal friends
 					if (!_actor.isAttackingDisabled() && (cha.getCurrentHp() < (cha.getMaxHp() * 0.6)) && (_actor.getCurrentHp() > (_actor.getMaxHp() / 2)) && (_actor.getCurrentMp() > (_actor.getMaxMp() / 2)) && cha.isInCombat())
 					{
-						for (L2Skill sk : _selfAnalysis.healSkills)
+						for (Skill sk : _selfAnalysis.healSkills)
 						{
 							if (_actor.getCurrentMp() < sk.getMpConsume())
 							{
@@ -486,7 +481,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 			
 			L2Npc npc = (L2Npc) cha;
 			
-			if (!faction_id.equals(npc.getFactionId()))
+			if (!npc.isInMyClan((L2Npc) _actor))
 			{
 				continue;
 			}
@@ -506,7 +501,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 				// heal friends
 				if (_selfAnalysis.hasHealOrResurrect && !_actor.isAttackingDisabled() && (npc.getCurrentHp() < (npc.getMaxHp() * 0.6)) && (_actor.getCurrentHp() > (_actor.getMaxHp() / 2)) && (_actor.getCurrentMp() > (_actor.getMaxMp() / 2)) && npc.isInCombat())
 				{
-					for (L2Skill sk : _selfAnalysis.healSkills)
+					for (Skill sk : _selfAnalysis.healSkills)
 					{
 						if (_actor.getCurrentMp() < sk.getMpConsume())
 						{
@@ -546,7 +541,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 	private void attackPrepare()
 	{
 		// Get all information needed to choose between physical or magical attack
-		Collection<L2Skill> skills = null;
+		Collection<Skill> skills = null;
 		double dist_2 = 0;
 		int range = 0;
 		L2DefenderInstance sGuard;
@@ -564,7 +559,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 		{
 			_actor.setTarget(attackTarget);
 			skills = _actor.getAllSkills();
-			dist_2 = _actor.getPlanDistanceSq(attackTarget.getX(), attackTarget.getY());
+			dist_2 = _actor.calculateDistance(attackTarget, false, true);
 			range = _actor.getPhysicalAttackRange() + _actor.getTemplate().getCollisionRadius() + attackTarget.getTemplate().getCollisionRadius();
 			if (attackTarget.isMoving())
 			{
@@ -603,7 +598,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 		if (!_actor.isMuted() && (dist_2 > (range * range)))
 		{
 			// check for long ranged skills and heal/buff skills
-			for (L2Skill sk : skills)
+			for (Skill sk : skills)
 			{
 				int castRange = sk.getCastRange();
 				
@@ -611,7 +606,7 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 				{
 					
 					L2Object OldTarget = _actor.getTarget();
-					if ((sk.getSkillType() == L2SkillType.BUFF) || (sk.hasEffectType(L2EffectType.HEAL)))
+					if ((sk.isContinuous() && !sk.isDebuff()) || (sk.hasEffectType(L2EffectType.HEAL)))
 					{
 						boolean useSkillSelf = true;
 						if ((sk.hasEffectType(L2EffectType.HEAL)) && (_actor.getCurrentHp() > (int) (_actor.getMaxHp() / 1.5)))
@@ -619,19 +614,12 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 							useSkillSelf = false;
 							break;
 						}
-						if (sk.getSkillType() == L2SkillType.BUFF)
+						
+						if ((sk.isContinuous() && !sk.isDebuff()) && _actor.isAffectedBySkill(sk.getId()))
 						{
-							L2Effect[] effects = _actor.getAllEffects();
-							for (int i = 0; (effects != null) && (i < effects.length); i++)
-							{
-								L2Effect effect = effects[i];
-								if (effect.getSkill() == sk)
-								{
-									useSkillSelf = false;
-									break;
-								}
-							}
+							useSkillSelf = false;
 						}
+						
 						if (useSkillSelf)
 						{
 							_actor.setTarget(_actor);
@@ -658,8 +646,8 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 				double dx = _actor.getX() - attackTarget.getX();
 				double dy = _actor.getY() - attackTarget.getY();
 				double dz = _actor.getZ() - attackTarget.getZ();
-				double homeX = attackTarget.getX() - sGuard.getSpawn().getLocx();
-				double homeY = attackTarget.getY() - sGuard.getSpawn().getLocy();
+				double homeX = attackTarget.getX() - sGuard.getSpawn().getX();
+				double homeY = attackTarget.getY() - sGuard.getSpawn().getY();
 				
 				// Check if the L2SiegeGuardInstance isn't too far from it's home location
 				if ((((dx * dx) + (dy * dy)) > 10000) && (((homeX * homeX) + (homeY * homeY)) > 3240000) // 1800 * 1800
@@ -756,14 +744,14 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 			// check for close combat skills && heal/buff skills
 			if (!_actor.isMuted() && (Rnd.nextInt(100) <= 5))
 			{
-				for (L2Skill sk : skills)
+				for (Skill sk : skills)
 				{
 					int castRange = sk.getCastRange();
 					
 					if (((castRange * castRange) >= dist_2) && !sk.isPassive() && (_actor.getCurrentMp() >= _actor.getStat().getMpConsume(sk)) && !_actor.isSkillDisabled(sk))
 					{
 						L2Object OldTarget = _actor.getTarget();
-						if ((sk.getSkillType() == L2SkillType.BUFF) || (sk.hasEffectType(L2EffectType.HEAL)))
+						if ((sk.isContinuous() && !sk.isDebuff()) || (sk.hasEffectType(L2EffectType.HEAL)))
 						{
 							boolean useSkillSelf = true;
 							if ((sk.hasEffectType(L2EffectType.HEAL)) && (_actor.getCurrentHp() > (int) (_actor.getMaxHp() / 1.5)))
@@ -771,19 +759,12 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 								useSkillSelf = false;
 								break;
 							}
-							if (sk.getSkillType() == L2SkillType.BUFF)
+							
+							if ((sk.isContinuous() && !sk.isDebuff()) && _actor.isAffectedBySkill(sk.getId()))
 							{
-								L2Effect[] effects = _actor.getAllEffects();
-								for (int i = 0; (effects != null) && (i < effects.length); i++)
-								{
-									L2Effect effect = effects[i];
-									if (effect.getSkill() == sk)
-									{
-										useSkillSelf = false;
-										break;
-									}
-								}
+								useSkillSelf = false;
 							}
+							
 							if (useSkillSelf)
 							{
 								_actor.setTarget(_actor);
@@ -934,8 +915,8 @@ public class L2FortSiegeGuardAI extends L2CharacterAI implements Runnable
 				{
 					sGuard = (L2DefenderInstance) _actor;
 				}
-				double homeX = target.getX() - sGuard.getSpawn().getLocx();
-				double homeY = target.getY() - sGuard.getSpawn().getLocy();
+				double homeX = target.getX() - sGuard.getSpawn().getX();
+				double homeY = target.getY() - sGuard.getSpawn().getY();
 				
 				// Check if the L2SiegeGuardInstance is not too far from its home location
 				if (((homeX * homeX) + (homeY * homeY)) < 3240000)

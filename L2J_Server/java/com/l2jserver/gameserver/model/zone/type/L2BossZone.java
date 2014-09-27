@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,15 +18,18 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
+import java.util.List;
 import java.util.Map;
 
+import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.GameServer;
 import com.l2jserver.gameserver.instancemanager.GrandBossManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.PcCondOverride;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -34,7 +37,6 @@ import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
-import com.l2jserver.util.L2FastList;
 
 /**
  * @author DaRkRaGe
@@ -55,32 +57,29 @@ public class L2BossZone extends L2ZoneType
 		// track the times that players got disconnected. Players are allowed
 		// to log back into the zone as long as their log-out was within _timeInvade time...
 		// <player objectId, expiration time in milliseconds>
-		private final FastMap<Integer, Long> _playerAllowedReEntryTimes;
+		private final Map<Integer, Long> _playerAllowedReEntryTimes = new FastMap<>();
 		
 		// track the players admitted to the zone who should be allowed back in
 		// after reboot/server downtime (outside of their control), within 30 of server restart
-		private final L2FastList<Integer> _playersAllowed;
+		private final List<Integer> _playersAllowed = new FastList<>();
 		
-		private final L2FastList<L2Character> _raidList;
+		private final List<L2Character> _raidList = new FastList<>();
 		
 		public Settings()
 		{
-			_playerAllowedReEntryTimes = new FastMap<>();
-			_playersAllowed = new L2FastList<>();
-			_raidList = new L2FastList<>();
 		}
 		
-		public FastMap<Integer, Long> getPlayerAllowedReEntryTimes()
+		public Map<Integer, Long> getPlayerAllowedReEntryTimes()
 		{
 			return _playerAllowedReEntryTimes;
 		}
 		
-		public L2FastList<Integer> getPlayersAllowed()
+		public List<Integer> getPlayersAllowed()
 		{
 			return _playersAllowed;
 		}
 		
-		public L2FastList<L2Character> getRaidList()
+		public List<L2Character> getRaidList()
 		{
 			return _raidList;
 		}
@@ -194,7 +193,7 @@ public class L2BossZone extends L2ZoneType
 				}
 				else
 				{
-					player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
+					player.teleToLocation(TeleportWhereType.TOWN);
 				}
 			}
 			else if (character.isSummon())
@@ -215,7 +214,7 @@ public class L2BossZone extends L2ZoneType
 					}
 					else
 					{
-						player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
+						player.teleToLocation(TeleportWhereType.TOWN);
 					}
 				}
 				((L2Summon) character).unSummon(player);
@@ -270,7 +269,7 @@ public class L2BossZone extends L2ZoneType
 						{
 							count++;
 						}
-						else if (obj.isL2Attackable() && obj.isRaid())
+						else if (obj.isAttackable() && obj.isRaid())
 						{
 							getSettings().getRaidList().add(obj);
 						}
@@ -285,7 +284,7 @@ public class L2BossZone extends L2ZoneType
 							{
 								continue;
 							}
-							if (!raid.isInsideRadius(raid.getSpawn().getLocx(), raid.getSpawn().getLocy(), 150, false))
+							if (!raid.isInsideRadius(raid.getSpawn(), 150, false, false))
 							{
 								raid.returnHome();
 							}
@@ -294,7 +293,7 @@ public class L2BossZone extends L2ZoneType
 				}
 			}
 		}
-		if (character.isL2Attackable() && character.isRaid() && !character.isDead())
+		if (character.isAttackable() && character.isRaid() && !character.isDead())
 		{
 			((L2Attackable) character).returnHome();
 		}
@@ -315,7 +314,7 @@ public class L2BossZone extends L2ZoneType
 		return _timeInvade;
 	}
 	
-	public void setAllowedPlayers(L2FastList<Integer> players)
+	public void setAllowedPlayers(List<Integer> players)
 	{
 		if (players != null)
 		{
@@ -324,7 +323,7 @@ public class L2BossZone extends L2ZoneType
 		}
 	}
 	
-	public L2FastList<Integer> getAllowedPlayers()
+	public List<Integer> getAllowedPlayers()
 	{
 		return getSettings().getPlayersAllowed();
 	}
@@ -347,7 +346,7 @@ public class L2BossZone extends L2ZoneType
 			}
 			else
 			{
-				player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
+				player.teleToLocation(TeleportWhereType.TOWN);
 			}
 			return false;
 		}
@@ -355,11 +354,9 @@ public class L2BossZone extends L2ZoneType
 	
 	/**
 	 * Some GrandBosses send all players in zone to a specific part of the zone, rather than just removing them all. If this is the case, this command should be used. If this is no the case, then use oustAllPlayers().
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param loc
 	 */
-	public void movePlayersTo(int x, int y, int z)
+	public void movePlayersTo(Location loc)
 	{
 		if (_characterList.isEmpty())
 		{
@@ -373,7 +370,7 @@ public class L2BossZone extends L2ZoneType
 				L2PcInstance player = character.getActingPlayer();
 				if (player.isOnline())
 				{
-					player.teleToLocation(x, y, z);
+					player.teleToLocation(loc);
 				}
 			}
 		}
@@ -403,7 +400,7 @@ public class L2BossZone extends L2ZoneType
 					}
 					else
 					{
-						player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
+						player.teleToLocation(TeleportWhereType.TOWN);
 					}
 				}
 			}
@@ -436,16 +433,6 @@ public class L2BossZone extends L2ZoneType
 			getSettings().getPlayersAllowed().remove(Integer.valueOf(player.getObjectId()));
 			getSettings().getPlayerAllowedReEntryTimes().remove(player.getObjectId());
 		}
-	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
 	}
 	
 	public void updateKnownList(L2Npc npc)

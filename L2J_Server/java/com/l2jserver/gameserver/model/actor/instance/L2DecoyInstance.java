@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -22,13 +22,13 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Decoy;
 import com.l2jserver.gameserver.model.actor.knownlist.DecoyKnownList;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillDecoy;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.taskmanager.DecayTaskManager;
 
 public class L2DecoyInstance extends L2Decoy
@@ -38,23 +38,15 @@ public class L2DecoyInstance extends L2Decoy
 	private Future<?> _DecoyLifeTask;
 	private Future<?> _HateSpam;
 	
-	public L2DecoyInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, L2Skill skill)
+	public L2DecoyInstance(int objectId, L2NpcTemplate template, L2PcInstance owner, int totalLifeTime)
 	{
 		super(objectId, template, owner);
 		setInstanceType(InstanceType.L2DecoyInstance);
-		if (skill != null)
-		{
-			_totalLifeTime = ((L2SkillDecoy) skill).getTotalLifeTime();
-		}
-		else
-		{
-			_totalLifeTime = 20000;
-		}
+		_totalLifeTime = totalLifeTime;
 		_timeRemaining = _totalLifeTime;
-		int delay = 1000;
-		int skilllevel = getTemplate().getIdTemplate() - 13070;
-		_DecoyLifeTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new DecoyLifetime(getOwner(), this), delay, delay);
-		_HateSpam = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new HateSpam(this, SkillTable.getInstance().getInfo(5272, skilllevel)), 2000, 5000);
+		int skilllevel = getTemplate().getDisplayId() - 13070;
+		_DecoyLifeTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new DecoyLifetime(getOwner(), this), 1000, 1000);
+		_HateSpam = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new HateSpam(this, SkillData.getInstance().getSkill(5272, skilllevel)), 2000, 5000);
 	}
 	
 	@Override
@@ -70,7 +62,7 @@ public class L2DecoyInstance extends L2Decoy
 			_HateSpam = null;
 		}
 		_totalLifeTime = 0;
-		DecayTaskManager.getInstance().addDecayTask(this);
+		DecayTaskManager.getInstance().add(this);
 		return true;
 	}
 	
@@ -103,9 +95,8 @@ public class L2DecoyInstance extends L2Decoy
 		{
 			try
 			{
-				double newTimeRemaining;
 				_Decoy.decTimeRemaining(1000);
-				newTimeRemaining = _Decoy.getTimeRemaining();
+				double newTimeRemaining = _Decoy.getTimeRemaining();
 				if (newTimeRemaining < 0)
 				{
 					_Decoy.unSummon(_activeChar);
@@ -118,13 +109,12 @@ public class L2DecoyInstance extends L2Decoy
 		}
 	}
 	
-	static class HateSpam implements Runnable
+	private static class HateSpam implements Runnable
 	{
 		private final L2DecoyInstance _activeChar;
+		private final Skill _skill;
 		
-		private final L2Skill _skill;
-		
-		HateSpam(L2DecoyInstance activeChar, L2Skill Hate)
+		HateSpam(L2DecoyInstance activeChar, Skill Hate)
 		{
 			_activeChar = activeChar;
 			_skill = Hate;

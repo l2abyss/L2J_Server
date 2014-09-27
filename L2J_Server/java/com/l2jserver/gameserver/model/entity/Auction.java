@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,8 +18,8 @@
  */
 package com.l2jserver.gameserver.model.entity;
 
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+import static com.l2jserver.gameserver.model.itemcontainer.Inventory.ADENA_ID;
+import static com.l2jserver.gameserver.model.itemcontainer.Inventory.MAX_ADENA;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,6 +34,7 @@ import javolution.util.FastMap;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.enums.AuctionItemType;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.AuctionManager;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
@@ -67,11 +68,6 @@ public class Auction
 	{
 		"ClanHall"
 	};
-	
-	public static enum ItemTypeEnum
-	{
-		ClanHall
-	}
 	
 	public static class Bidder
 	{
@@ -244,7 +240,7 @@ public class Auction
 		ThreadPoolManager.getInstance().scheduleGeneral(new AutoEndTask(), taskDelay);
 	}
 	
-	public static String getItemTypeName(ItemTypeEnum value)
+	public static String getItemTypeName(AuctionItemType value)
 	{
 		return ItemTypeName[value.ordinal()];
 	}

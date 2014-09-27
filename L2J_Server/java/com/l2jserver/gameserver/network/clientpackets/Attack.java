@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,10 +18,14 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.effects.AbstractEffect;
+import com.l2jserver.gameserver.model.skills.AbnormalType;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 
@@ -70,6 +74,20 @@ public final class Attack extends L2GameClientPacket
 			return;
 		}
 		
+		final BuffInfo info = activeChar.getEffectList().getBuffInfoByAbnormalType(AbnormalType.BOT_PENALTY);
+		if (info != null)
+		{
+			for (AbstractEffect effect : info.getEffects())
+			{
+				if (!effect.checkCondition(-1))
+				{
+					activeChar.sendPacket(SystemMessageId.YOU_HAVE_BEEN_REPORTED_SO_ACTIONS_NOT_ALLOWED);
+					activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+					return;
+				}
+			}
+		}
+		
 		// avoid using expensive operations if not needed
 		final L2Object target;
 		if (activeChar.getTargetId() == _objectId)
@@ -101,7 +119,7 @@ public final class Attack extends L2GameClientPacket
 		}
 		
 		// Only GMs can directly attack invisible characters
-		else if (target.isPlayer() && target.getActingPlayer().getAppearance().getInvisible() && !activeChar.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
+		else if (!target.isVisibleFor(activeChar))
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
@@ -113,7 +131,7 @@ public final class Attack extends L2GameClientPacket
 		}
 		else
 		{
-			if ((target.getObjectId() != activeChar.getObjectId()) && (activeChar.getPrivateStoreType() == L2PcInstance.STORE_PRIVATE_NONE) && (activeChar.getActiveRequester() == null))
+			if ((target.getObjectId() != activeChar.getObjectId()) && (activeChar.getPrivateStoreType() == PrivateStoreType.NONE) && (activeChar.getActiveRequester() == null))
 			{
 				target.onForcedAttack(activeChar);
 			}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,7 +19,6 @@
 package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.l2jserver.gameserver.network.NpcStringId;
@@ -98,7 +97,7 @@ public class ExShowScreenMessage extends L2GameServerPacket
 		_npcString = npcString.getId();
 		if (params != null)
 		{
-			_parameters = Arrays.asList(params);
+			addStringParameter(params);
 		}
 	}
 	
@@ -125,7 +124,7 @@ public class ExShowScreenMessage extends L2GameServerPacket
 		_npcString = -1;
 		if (params != null)
 		{
-			_parameters = Arrays.asList(params);
+			addStringParameter(params);
 		}
 	}
 	
@@ -163,15 +162,18 @@ public class ExShowScreenMessage extends L2GameServerPacket
 	
 	/**
 	 * String parameter for argument S1,S2,.. in npcstring-e.dat
-	 * @param text the parameter
+	 * @param params the parameter
 	 */
-	public void addStringParameter(String text)
+	public void addStringParameter(String... params)
 	{
 		if (_parameters == null)
 		{
 			_parameters = new ArrayList<>();
 		}
-		_parameters.add(text);
+		for (String param : params)
+		{
+			_parameters.add(param);
+		}
 	}
 	
 	@Override

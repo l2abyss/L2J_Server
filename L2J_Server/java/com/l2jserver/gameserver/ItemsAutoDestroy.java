@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,10 +23,10 @@ import java.util.List;
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.enums.ItemLocation;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 
 public class ItemsAutoDestroy
 {
@@ -41,7 +41,7 @@ public class ItemsAutoDestroy
 		{
 			_sleep = 3600000;
 		}
-		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new CheckItemsForDestroy(), 5000, 5000);
+		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(this::removeItems, 5000, 5000);
 	}
 	
 	public static ItemsAutoDestroy getInstance()
@@ -65,7 +65,7 @@ public class ItemsAutoDestroy
 		long curtime = System.currentTimeMillis();
 		for (L2ItemInstance item : _items)
 		{
-			if ((item == null) || (item.getDropTime() == 0) || (item.getLocation() != L2ItemInstance.ItemLocation.VOID))
+			if ((item == null) || (item.getDropTime() == 0) || (item.getItemLocation() != ItemLocation.VOID))
 			{
 				_items.remove(item);
 			}
@@ -84,7 +84,7 @@ public class ItemsAutoDestroy
 						}
 					}
 				}
-				else if (item.getItemType() == L2EtcItemType.HERB)
+				else if (item.getItem().hasExImmediateEffect())
 				{
 					if ((curtime - item.getDropTime()) > Config.HERB_AUTO_DESTROY_TIME)
 					{
@@ -108,15 +108,6 @@ public class ItemsAutoDestroy
 					}
 				}
 			}
-		}
-	}
-	
-	protected class CheckItemsForDestroy extends Thread
-	{
-		@Override
-		public void run()
-		{
-			removeItems();
 		}
 	}
 	

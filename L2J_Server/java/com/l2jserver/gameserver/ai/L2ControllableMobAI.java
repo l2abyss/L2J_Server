@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -38,7 +38,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2ControllableMobInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
 
@@ -149,7 +149,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 			int max_range = 0;
 			// check distant skills
 			
-			for (L2Skill sk : _actor.getAllSkills())
+			for (Skill sk : _actor.getAllSkills())
 			{
 				if (Util.checkIfInRange(sk.getCastRange(), _actor, getAttackTarget(), true) && !_actor.isSkillDisabled(sk) && (_actor.getCurrentMp() > _actor.getStat().getMpConsume(sk)))
 				{
@@ -190,14 +190,14 @@ public class L2ControllableMobAI extends L2AttackableAI
 		L2ControllableMobAI ctrlAi = (L2ControllableMobAI) theTarget.getAI();
 		ctrlAi.forceAttack(_actor);
 		
-		double dist2 = _actor.getPlanDistanceSq(target.getX(), target.getY());
+		double dist2 = _actor.calculateDistance(target, false, true);
 		int range = _actor.getPhysicalAttackRange() + _actor.getTemplate().getCollisionRadius() + target.getTemplate().getCollisionRadius();
 		int max_range = range;
 		
 		if (!_actor.isMuted() && (dist2 > ((range + 20) * (range + 20))))
 		{
 			// check distant skills
-			for (L2Skill sk : _actor.getAllSkills())
+			for (Skill sk : _actor.getAllSkills())
 			{
 				int castRange = sk.getCastRange();
 				
@@ -230,14 +230,14 @@ public class L2ControllableMobAI extends L2AttackableAI
 		}
 		
 		_actor.setTarget(getForcedTarget());
-		double dist2 = _actor.getPlanDistanceSq(getForcedTarget().getX(), getForcedTarget().getY());
+		double dist2 = _actor.calculateDistance(getForcedTarget(), false, true);
 		int range = _actor.getPhysicalAttackRange() + _actor.getTemplate().getCollisionRadius() + getForcedTarget().getTemplate().getCollisionRadius();
 		int max_range = range;
 		
 		if (!_actor.isMuted() && (dist2 > ((range + 20) * (range + 20))))
 		{
 			// check distant skills
-			for (L2Skill sk : _actor.getAllSkills())
+			for (Skill sk : _actor.getAllSkills())
 			{
 				int castRange = sk.getCastRange();
 				
@@ -277,12 +277,9 @@ public class L2ControllableMobAI extends L2AttackableAI
 		else
 		{
 			// notify aggression
-			if (((L2Npc) _actor).getFactionId() != null)
+			if (((L2Npc) _actor).getTemplate().getClans() != null)
 			{
-				String faction_id = ((L2Npc) _actor).getFactionId();
-				
 				Collection<L2Object> objs = _actor.getKnownList().getKnownObjects().values();
-				
 				for (L2Object obj : objs)
 				{
 					if (!(obj instanceof L2Npc))
@@ -292,12 +289,12 @@ public class L2ControllableMobAI extends L2AttackableAI
 					
 					L2Npc npc = (L2Npc) obj;
 					
-					if (!faction_id.equals(npc.getFactionId()))
+					if (!npc.isInMyClan((L2Npc) _actor))
 					{
 						continue;
 					}
 					
-					if (_actor.isInsideRadius(npc, npc.getFactionRange(), false, true) && (Math.abs(getAttackTarget().getZ() - npc.getZ()) < 200))
+					if (_actor.isInsideRadius(npc, npc.getTemplate().getClanHelpRange(), false, true) && (Math.abs(getAttackTarget().getZ() - npc.getZ()) < 200))
 					{
 						npc.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, getAttackTarget(), 1);
 					}
@@ -305,14 +302,14 @@ public class L2ControllableMobAI extends L2AttackableAI
 			}
 			
 			_actor.setTarget(getAttackTarget());
-			double dist2 = _actor.getPlanDistanceSq(getAttackTarget().getX(), getAttackTarget().getY());
+			double dist2 = _actor.calculateDistance(getAttackTarget(), false, true);
 			int range = _actor.getPhysicalAttackRange() + _actor.getTemplate().getCollisionRadius() + getAttackTarget().getTemplate().getCollisionRadius();
 			int max_range = range;
 			
 			if (!_actor.isMuted() && (dist2 > ((range + 20) * (range + 20))))
 			{
 				// check distant skills
-				for (L2Skill sk : _actor.getAllSkills())
+				for (Skill sk : _actor.getAllSkills())
 				{
 					int castRange = sk.getCastRange();
 					
@@ -354,7 +351,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 			
 			if (!_actor.isMuted() && (Rnd.nextInt(5) == 3))
 			{
-				for (L2Skill sk : _actor.getAllSkills())
+				for (Skill sk : _actor.getAllSkills())
 				{
 					int castRange = sk.getCastRange();
 					
@@ -425,7 +422,7 @@ public class L2ControllableMobAI extends L2AttackableAI
 		if (target.isPlayable())
 		{
 			// Check if the target isn't in silent move mode
-			if (((L2Playable) target).isSilentMoving())
+			if (((L2Playable) target).isSilentMovingAffected())
 			{
 				return false;
 			}

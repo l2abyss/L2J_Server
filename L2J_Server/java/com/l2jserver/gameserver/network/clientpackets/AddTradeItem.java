@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -37,10 +37,6 @@ public final class AddTradeItem extends L2GameClientPacket
 	private int _tradeId;
 	private int _objectId;
 	private long _count;
-	
-	public AddTradeItem()
-	{
-	}
 	
 	@Override
 	protected void readImpl()

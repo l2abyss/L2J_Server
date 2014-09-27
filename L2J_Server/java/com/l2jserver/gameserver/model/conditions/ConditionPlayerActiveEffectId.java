@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import com.l2jserver.gameserver.model.effects.L2Effect;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.stats.Env;
 
 /**
@@ -54,7 +54,7 @@ public class ConditionPlayerActiveEffectId extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		final L2Effect e = env.getCharacter().getFirstEffect(_effectId);
-		return ((e != null) && ((_effectLvl == -1) || (_effectLvl <= e.getSkill().getLevel())));
+		final BuffInfo info = env.getCharacter().getEffectList().getBuffInfoBySkillId(_effectId);
+		return ((info != null) && ((_effectLvl == -1) || (_effectLvl <= info.getSkill().getLevel())));
 	}
 }

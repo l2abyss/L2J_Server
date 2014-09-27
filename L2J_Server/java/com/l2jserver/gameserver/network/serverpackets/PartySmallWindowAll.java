@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -25,22 +25,19 @@ public final class PartySmallWindowAll extends L2GameServerPacket
 {
 	private final L2Party _party;
 	private final L2PcInstance _exclude;
-	private final int _dist, _LeaderOID;
 	
 	public PartySmallWindowAll(L2PcInstance exclude, L2Party party)
 	{
 		_exclude = exclude;
 		_party = party;
-		_LeaderOID = _party.getLeaderObjectId();
-		_dist = _party.getLootDistribution();
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x4e);
-		writeD(_LeaderOID);
-		writeD(_dist);
+		writeD(_party.getLeaderObjectId());
+		writeD(_party.getDistributionType().getId());
 		writeD(_party.getMemberCount() - 1);
 		
 		for (L2PcInstance member : _party.getMembers())
@@ -66,7 +63,7 @@ public final class PartySmallWindowAll extends L2GameServerPacket
 				if (member.hasSummon())
 				{
 					writeD(member.getSummon().getObjectId());
-					writeD(member.getSummon().getNpcId() + 1000000);
+					writeD(member.getSummon().getId() + 1000000);
 					writeD(member.getSummon().getSummonType());
 					writeS(member.getSummon().getName());
 					writeD((int) member.getSummon().getCurrentHp());

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -31,8 +31,6 @@ import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
-
-import gnu.trove.procedure.TObjectProcedure;
 
 public class BoatManager
 {
@@ -165,8 +163,7 @@ public class BoatManager
 	 */
 	public void broadcastPacket(VehiclePathPoint point1, VehiclePathPoint point2, L2GameServerPacket packet)
 	{
-		
-		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcastPackets(point1, point2, packet));
+		broadcastPacketsToPlayers(point1, point2, packet);
 	}
 	
 	/**
@@ -177,50 +174,34 @@ public class BoatManager
 	 */
 	public void broadcastPackets(VehiclePathPoint point1, VehiclePathPoint point2, L2GameServerPacket... packets)
 	{
-		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcastPackets(point1, point2, packets));
+		broadcastPacketsToPlayers(point1, point2, packets);
 	}
 	
-	private final class ForEachPlayerBroadcastPackets implements TObjectProcedure<L2PcInstance>
+	private void broadcastPacketsToPlayers(VehiclePathPoint point1, VehiclePathPoint point2, L2GameServerPacket... packets)
 	{
-		VehiclePathPoint _point1, _point2;
-		L2GameServerPacket[] _packets;
-		
-		protected ForEachPlayerBroadcastPackets(VehiclePathPoint point1, VehiclePathPoint point2, L2GameServerPacket... packets)
+		for (L2PcInstance player : L2World.getInstance().getPlayers())
 		{
-			_point1 = point1;
-			_point2 = point2;
-			_packets = packets;
-		}
-		
-		@Override
-		public final boolean execute(final L2PcInstance player)
-		{
-			if (player != null)
+			double dx = (double) player.getX() - point1.getX();
+			double dy = (double) player.getY() - point1.getY();
+			if (Math.sqrt((dx * dx) + (dy * dy)) < Config.BOAT_BROADCAST_RADIUS)
 			{
-				double dx = (double) player.getX() - _point1.x;
-				double dy = (double) player.getY() - _point1.y;
+				for (L2GameServerPacket p : packets)
+				{
+					player.sendPacket(p);
+				}
+			}
+			else
+			{
+				dx = (double) player.getX() - point2.getX();
+				dy = (double) player.getY() - point2.getY();
 				if (Math.sqrt((dx * dx) + (dy * dy)) < Config.BOAT_BROADCAST_RADIUS)
 				{
-					for (L2GameServerPacket p : _packets)
+					for (L2GameServerPacket p : packets)
 					{
 						player.sendPacket(p);
 					}
 				}
-				else
-				{
-					dx = (double) player.getX() - _point2.x;
-					dy = (double) player.getY() - _point2.y;
-					if (Math.sqrt((dx * dx) + (dy * dy)) < Config.BOAT_BROADCAST_RADIUS)
-					{
-						for (L2GameServerPacket p : _packets)
-						{
-							player.sendPacket(p);
-						}
-					}
-				}
 			}
-			
-			return true;
 		}
 	}
 	

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -34,6 +34,6 @@ public class RecipeShopMsg extends L2GameServerPacket
 	{
 		writeC(0xE1);
 		writeD(_activeChar.getObjectId());
-		writeS(_activeChar.getCreateList().getStoreName());
+		writeS(_activeChar.getStoreName());
 	}
 }

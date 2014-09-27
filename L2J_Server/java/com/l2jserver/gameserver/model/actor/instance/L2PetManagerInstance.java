@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.util.Evolve;
@@ -51,15 +52,15 @@ public class L2PetManagerInstance extends L2MerchantInstance
 	@Override
 	public void showChatWindow(L2PcInstance player)
 	{
-		String filename = "data/html/petmanager/" + getNpcId() + ".htm";
-		if ((getNpcId() == 36478) && player.hasSummon())
+		String filename = "data/html/petmanager/" + getId() + ".htm";
+		if ((getId() == 36478) && player.hasSummon())
 		{
 			filename = "data/html/petmanager/restore-unsummonpet.htm";
 		}
 		
-		NpcHtmlMessage html = new NpcHtmlMessage(1);
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
-		if (Config.ALLOW_RENTPET && Config.LIST_PET_RENT_NPC.contains(getNpcId()))
+		if (Config.ALLOW_RENTPET && Config.LIST_PET_RENT_NPC.contains(getId()))
 		{
 			html.replace("_Quest", "_RentPet\">Rent Pet</a><br><a action=\"bypass -h npc_%objectId%_Quest");
 		}
@@ -116,7 +117,7 @@ public class L2PetManagerInstance extends L2MerchantInstance
 			}
 			if (!ok)
 			{
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				html.setFile(player.getHtmlPrefix(), "data/html/petmanager/evolve_no.htm");
 				player.sendPacket(html);
 			}
@@ -148,7 +149,7 @@ public class L2PetManagerInstance extends L2MerchantInstance
 			}
 			if (!ok)
 			{
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				html.setFile(player.getHtmlPrefix(), "data/html/petmanager/restore_no.htm");
 				player.sendPacket(html);
 			}
@@ -162,11 +163,11 @@ public class L2PetManagerInstance extends L2MerchantInstance
 	
 	public final void exchange(L2PcInstance player, int itemIdtake, int itemIdgive)
 	{
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		if (player.destroyItemByItemId("Consume", itemIdtake, 1, this, true))
 		{
 			player.addItem("", itemIdgive, 1, this, true);
-			html.setFile(player.getHtmlPrefix(), "data/html/petmanager/" + getNpcId() + ".htm");
+			html.setFile(player.getHtmlPrefix(), "data/html/petmanager/" + getId() + ".htm");
 			player.sendPacket(html);
 		}
 		else

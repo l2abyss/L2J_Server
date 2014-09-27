@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -320,7 +320,7 @@ public final class ItemAuction
 			updatePlayerBid(bid, false);
 			
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.SUBMITTED_A_BID_OF_S1);
-			sm.addItemNumber(newBid);
+			sm.addLong(newBid);
 			player.sendPacket(sm);
 			return;
 		}
@@ -403,14 +403,7 @@ public final class ItemAuction
 	
 	public final void broadcastToAllBidders(final L2GameServerPacket packet)
 	{
-		ThreadPoolManager.getInstance().executeTask(new Runnable()
-		{
-			@Override
-			public final void run()
-			{
-				broadcastToAllBiddersInternal(packet);
-			}
-		});
+		ThreadPoolManager.getInstance().executeGeneral(() -> broadcastToAllBiddersInternal(packet));
 	}
 	
 	public final void broadcastToAllBiddersInternal(final L2GameServerPacket packet)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -63,7 +63,7 @@ public final class RequestSurrenderPledgeWar extends L2GameClientPacket
 		
 		_log.info("RequestSurrenderPledgeWar by " + getClient().getActiveChar().getClan().getName() + " with " + _pledgeName);
 		
-		if (!_clan.isAtWarWith(clan.getClanId()))
+		if (!_clan.isAtWarWith(clan.getId()))
 		{
 			_activeChar.sendMessage("You aren't at war with this clan.");
 			_activeChar.sendPacket(ActionFailed.STATIC_PACKET);
@@ -75,7 +75,7 @@ public final class RequestSurrenderPledgeWar extends L2GameClientPacket
 		_activeChar.sendPacket(msg);
 		msg = null;
 		_activeChar.deathPenalty(false, false, false);
-		ClanTable.getInstance().deleteclanswars(_clan.getClanId(), clan.getClanId());
+		ClanTable.getInstance().deleteclanswars(_clan.getId(), clan.getId());
 		// Zoey76: TODO: Implement or cleanup.
 		// L2PcInstance leader = L2World.getInstance().getPlayer(clan.getLeaderName());
 		// if ((leader != null) && (leader.isOnline() == 0))

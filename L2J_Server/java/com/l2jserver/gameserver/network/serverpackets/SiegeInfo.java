@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.Calendar;
 
+import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.model.L2Clan;
@@ -70,7 +71,7 @@ public class SiegeInfo extends L2GameServerPacket
 		writeC(0xc9);
 		if (_castle != null)
 		{
-			writeD(_castle.getCastleId());
+			writeD(_castle.getResidenceId());
 			
 			final int ownerId = _castle.getOwnerId();
 			
@@ -99,9 +100,27 @@ public class SiegeInfo extends L2GameServerPacket
 				writeS(""); // Ally Name
 			}
 			
-			writeD((int) (Calendar.getInstance().getTimeInMillis() / 1000));
-			writeD((int) (_castle.getSiege().getSiegeDate().getTimeInMillis() / 1000));
-			writeD(0x00); // number of choices?
+			writeD((int) (System.currentTimeMillis() / 1000));
+			if (!_castle.getIsTimeRegistrationOver() && activeChar.isClanLeader() && (activeChar.getClanId() == _castle.getOwnerId()))
+			{
+				Calendar cal = Calendar.getInstance();
+				cal.setTimeInMillis(_castle.getSiegeDate().getTimeInMillis());
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				
+				writeD(0x00);
+				writeD(Config.SIEGE_HOUR_LIST.size());
+				for (int hour : Config.SIEGE_HOUR_LIST)
+				{
+					cal.set(Calendar.HOUR_OF_DAY, hour);
+					writeD((int) (cal.getTimeInMillis() / 1000));
+				}
+			}
+			else
+			{
+				writeD((int) (_castle.getSiegeDate().getTimeInMillis() / 1000));
+				writeD(0x00);
+			}
 		}
 		else
 		{

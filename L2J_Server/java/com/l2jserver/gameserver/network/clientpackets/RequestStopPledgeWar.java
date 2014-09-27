@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,15 +19,13 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
-import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
-
-import gnu.trove.procedure.TObjectProcedure;
 
 public final class RequestStopPledgeWar extends L2GameClientPacket
 {
@@ -64,7 +62,7 @@ public final class RequestStopPledgeWar extends L2GameClientPacket
 			return;
 		}
 		
-		if (!playerClan.isAtWarWith(clan.getClanId()))
+		if (!playerClan.isAtWarWith(clan.getId()))
 		{
 			player.sendMessage("You aren't at war with this clan.");
 			player.sendPacket(ActionFailed.STATIC_PACKET);
@@ -72,7 +70,7 @@ public final class RequestStopPledgeWar extends L2GameClientPacket
 		}
 		
 		// Check if player who does the request has the correct rights to do it
-		if ((player.getClanPrivileges() & L2Clan.CP_CL_PLEDGE_WAR) != L2Clan.CP_CL_PLEDGE_WAR)
+		if (!player.hasClanPrivilege(ClanPrivilege.CL_PLEDGE_WAR))
 		{
 			player.sendPacket(SystemMessageId.YOU_ARE_NOT_AUTHORIZED_TO_DO_THAT);
 			return;
@@ -110,29 +108,16 @@ public final class RequestStopPledgeWar extends L2GameClientPacket
 			}
 		}
 		
-		ClanTable.getInstance().deleteclanswars(playerClan.getClanId(), clan.getClanId());
-		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcastUserInfo(clan, player));
-	}
-	
-	private final class ForEachPlayerBroadcastUserInfo implements TObjectProcedure<L2PcInstance>
-	{
-		private final L2PcInstance _player;
-		private final L2Clan _cln;
+		ClanTable.getInstance().deleteclanswars(playerClan.getId(), clan.getId());
 		
-		protected ForEachPlayerBroadcastUserInfo(L2Clan clan, L2PcInstance player)
+		for (L2PcInstance member : playerClan.getOnlineMembers(0))
 		{
-			_cln = clan;
-			_player = player;
+			member.broadcastUserInfo();
 		}
 		
-		@Override
-		public final boolean execute(final L2PcInstance cha)
+		for (L2PcInstance member : clan.getOnlineMembers(0))
 		{
-			if ((cha.getClan() == _player.getClan()) || (cha.getClan() == _cln))
-			{
-				cha.broadcastUserInfo();
-			}
-			return true;
+			member.broadcastUserInfo();
 		}
 	}
 	

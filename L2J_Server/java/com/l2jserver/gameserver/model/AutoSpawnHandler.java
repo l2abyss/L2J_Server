@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,6 +21,7 @@ package com.l2jserver.gameserver.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
@@ -34,12 +35,13 @@ import javolution.util.FastMap;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -118,12 +120,12 @@ public class AutoSpawnHandler
 	
 	private void restoreSpawnData()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("SELECT * FROM random_spawn ORDER BY groupId ASC");
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM random_spawn_loc WHERE groupId=?"))
 		{
 			// Restore spawn group data, then the location data.
-			PreparedStatement statement = con.prepareStatement("SELECT * FROM random_spawn ORDER BY groupId ASC");
-			ResultSet rs = statement.executeQuery();
-			PreparedStatement statement2 = con.prepareStatement("SELECT * FROM random_spawn_loc WHERE groupId=?");
 			while (rs.next())
 			{
 				// Register random spawn group, set various options on the
@@ -135,20 +137,18 @@ public class AutoSpawnHandler
 				spawnInst.setRandomSpawn(rs.getBoolean("randomSpawn"));
 				
 				// Restore the spawn locations for this spawn group/instance.
-				statement2.setInt(1, rs.getInt("groupId"));
-				ResultSet rs2 = statement2.executeQuery();
-				statement2.clearParameters();
-				
-				while (rs2.next())
+				ps.setInt(1, rs.getInt("groupId"));
+				try (ResultSet rs2 = ps.executeQuery())
 				{
-					// Add each location to the spawn group/instance.
-					spawnInst.addSpawnLocation(rs2.getInt("x"), rs2.getInt("y"), rs2.getInt("z"), rs2.getInt("heading"));
+					ps.clearParameters();
+					
+					while (rs2.next())
+					{
+						// Add each location to the spawn group/instance.
+						spawnInst.addSpawnLocation(rs2.getInt("x"), rs2.getInt("y"), rs2.getInt("z"), rs2.getInt("heading"));
+					}
 				}
-				rs2.close();
 			}
-			statement2.close();
-			rs.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{
@@ -231,7 +231,7 @@ public class AutoSpawnHandler
 		try
 		{
 			// Try to remove from the list of registered spawns if it exists.
-			_registeredSpawns.remove(spawnInst.getNpcId());
+			_registeredSpawns.remove(spawnInst.getId());
 			
 			// Cancel the currently associated running scheduled task.
 			ScheduledFuture<?> respawnTask = _runningSpawns.remove(spawnInst._objectId);
@@ -338,7 +338,7 @@ public class AutoSpawnHandler
 			return -1;
 		}
 		
-		return _runningSpawns.get(objectId).getDelay(TimeUnit.MILLISECONDS);
+		return (_runningSpawns.containsKey(objectId)) ? _runningSpawns.get(objectId).getDelay(TimeUnit.MILLISECONDS) : 0;
 	}
 	
 	/**
@@ -361,7 +361,7 @@ public class AutoSpawnHandler
 		{
 			for (AutoSpawnInstance spawnInst : _registeredSpawns.values())
 			{
-				if (spawnInst.getNpcId() == id)
+				if (spawnInst.getId() == id)
 				{
 					return spawnInst;
 				}
@@ -376,7 +376,7 @@ public class AutoSpawnHandler
 		
 		for (AutoSpawnInstance spawnInst : _registeredSpawns.values())
 		{
-			if (spawnInst.getNpcId() == npcId)
+			if (spawnInst.getId() == npcId)
 			{
 				spawnInstList.put(spawnInst.getObjectId(), spawnInst);
 			}
@@ -467,17 +467,17 @@ public class AutoSpawnHandler
 				final int heading = locationList[locationIndex].getHeading();
 				
 				// Fetch the template for this NPC ID and create a new spawn.
-				L2NpcTemplate npcTemp = NpcTable.getInstance().getTemplate(spawnInst.getNpcId());
+				L2NpcTemplate npcTemp = NpcData.getInstance().getTemplate(spawnInst.getId());
 				if (npcTemp == null)
 				{
-					_log.warning("Couldnt find NPC id" + spawnInst.getNpcId() + " Try to update your DP");
+					_log.warning("Couldnt find NPC id" + spawnInst.getId() + " Try to update your DP");
 					return;
 				}
-				L2Spawn newSpawn = new L2Spawn(npcTemp);
 				
-				newSpawn.setLocx(x);
-				newSpawn.setLocy(y);
-				newSpawn.setLocz(z);
+				L2Spawn newSpawn = new L2Spawn(npcTemp);
+				newSpawn.setX(x);
+				newSpawn.setY(y);
+				newSpawn.setZ(z);
 				if (heading != -1)
 				{
 					newSpawn.setHeading(heading);
@@ -512,12 +512,15 @@ public class AutoSpawnHandler
 					}
 				}
 				
-				String nearestTown = MapRegionManager.getInstance().getClosestTownName(npcInst);
-				
-				// Announce to all players that the spawn has taken place, with the nearest town location.
-				if (spawnInst.isBroadcasting() && (npcInst != null))
+				if (npcInst != null)
 				{
-					Announcements.getInstance().announceToAll("The " + npcInst.getName() + " has spawned near " + nearestTown + "!");
+					String nearestTown = MapRegionManager.getInstance().getClosestTownName(npcInst);
+					
+					// Announce to all players that the spawn has taken place, with the nearest town location.
+					if (spawnInst.isBroadcasting())
+					{
+						Announcements.getInstance().announceToAll("The " + npcInst.getName() + " has spawned near " + nearestTown + "!");
+					}
 				}
 				
 				// If there is no despawn time, do not create a despawn task.
@@ -585,7 +588,7 @@ public class AutoSpawnHandler
 	 * Stores information about a registered auto spawn.
 	 * @author Tempy
 	 */
-	public static class AutoSpawnInstance
+	public static class AutoSpawnInstance implements IIdentifiable
 	{
 		protected int _objectId;
 		
@@ -656,7 +659,12 @@ public class AutoSpawnHandler
 			return _desDelay;
 		}
 		
-		public int getNpcId()
+		/**
+		 * Gets the NPC ID.
+		 * @return the NPC ID
+		 */
+		@Override
+		public int getId()
 		{
 			return _npcId;
 		}

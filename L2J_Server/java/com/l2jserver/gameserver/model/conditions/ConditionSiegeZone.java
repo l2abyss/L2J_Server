@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -100,7 +100,7 @@ public final class ConditionSiegeZone extends Condition
 		
 		L2PcInstance player = (L2PcInstance) activeChar;
 		
-		if (((castle == null) || (castle.getCastleId() <= 0)))
+		if (((castle == null) || (castle.getResidenceId() <= 0)))
 		{
 			if ((value & COND_NOT_ZONE) != 0)
 			{
@@ -114,11 +114,11 @@ public final class ConditionSiegeZone extends Condition
 				return true;
 			}
 		}
-		else if (((value & COND_CAST_ATTACK) != 0) && player.isRegisteredOnThisSiegeField(castle.getCastleId()) && (player.getSiegeState() == 1))
+		else if (((value & COND_CAST_ATTACK) != 0) && player.isRegisteredOnThisSiegeField(castle.getResidenceId()) && (player.getSiegeState() == 1))
 		{
 			return true;
 		}
-		else if (((value & COND_CAST_DEFEND) != 0) && player.isRegisteredOnThisSiegeField(castle.getCastleId()) && (player.getSiegeState() == 2))
+		else if (((value & COND_CAST_DEFEND) != 0) && player.isRegisteredOnThisSiegeField(castle.getResidenceId()) && (player.getSiegeState() == 2))
 		{
 			return true;
 		}
@@ -146,7 +146,7 @@ public final class ConditionSiegeZone extends Condition
 		
 		L2PcInstance player = (L2PcInstance) activeChar;
 		
-		if (((fort == null) || (fort.getFortId() <= 0)))
+		if (((fort == null) || (fort.getResidenceId() <= 0)))
 		{
 			if ((value & COND_NOT_ZONE) != 0)
 			{
@@ -160,11 +160,11 @@ public final class ConditionSiegeZone extends Condition
 				return true;
 			}
 		}
-		else if (((value & COND_FORT_ATTACK) != 0) && player.isRegisteredOnThisSiegeField(fort.getFortId()) && (player.getSiegeState() == 1))
+		else if (((value & COND_FORT_ATTACK) != 0) && player.isRegisteredOnThisSiegeField(fort.getResidenceId()) && (player.getSiegeState() == 1))
 		{
 			return true;
 		}
-		else if (((value & COND_FORT_DEFEND) != 0) && player.isRegisteredOnThisSiegeField(fort.getFortId()) && (player.getSiegeState() == 2))
+		else if (((value & COND_FORT_DEFEND) != 0) && player.isRegisteredOnThisSiegeField(fort.getResidenceId()) && (player.getSiegeState() == 2))
 		{
 			return true;
 		}

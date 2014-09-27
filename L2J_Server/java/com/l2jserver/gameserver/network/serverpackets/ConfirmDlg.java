@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -25,13 +25,14 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
+ * ConfirmDlg server packet implementation.
  * @author kombat
  */
 public class ConfirmDlg extends L2GameServerPacket
@@ -71,7 +72,13 @@ public class ConfirmDlg extends L2GameServerPacket
 	
 	public ConfirmDlg(SystemMessageId messageId)
 	{
-		_messageId = messageId.getId();
+		this(messageId.getId());
+	}
+	
+	public ConfirmDlg(String text)
+	{
+		this(SystemMessageId.S1);
+		addString(text);
 	}
 	
 	public ConfirmDlg addString(String text)
@@ -88,15 +95,15 @@ public class ConfirmDlg extends L2GameServerPacket
 	
 	public ConfirmDlg addCharName(L2Character cha)
 	{
-		if (cha instanceof L2Npc)
+		if (cha.isNpc())
 		{
 			return addNpcName((L2Npc) cha);
 		}
-		if (cha instanceof L2PcInstance)
+		if (cha.isPlayer())
 		{
-			return addPcName((L2PcInstance) cha);
+			return addPcName(cha.getActingPlayer());
 		}
-		if (cha instanceof L2Summon)
+		if (cha.isSummon())
 		{
 			return addNpcName((L2Summon) cha);
 		}
@@ -115,16 +122,16 @@ public class ConfirmDlg extends L2GameServerPacket
 	
 	public ConfirmDlg addNpcName(L2Summon npc)
 	{
-		return addNpcName(npc.getNpcId());
+		return addNpcName(npc.getId());
 	}
 	
 	public ConfirmDlg addNpcName(L2NpcTemplate tpl)
 	{
-		if (tpl.isCustom())
+		if (tpl.isUsingServerSideName())
 		{
 			return addString(tpl.getName());
 		}
-		return addNpcName(tpl.getNpcId());
+		return addNpcName(tpl.getId());
 	}
 	
 	public ConfirmDlg addNpcName(int id)
@@ -135,13 +142,13 @@ public class ConfirmDlg extends L2GameServerPacket
 	
 	public ConfirmDlg addItemName(L2ItemInstance item)
 	{
-		return addItemName(item.getItem().getItemId());
+		return addItemName(item.getItem().getId());
 	}
 	
 	public ConfirmDlg addItemName(L2Item item)
 	{
 		// TODO: template id for items
-		return addItemName(item.getItemId());
+		return addItemName(item.getId());
 	}
 	
 	public ConfirmDlg addItemName(int id)
@@ -162,12 +169,12 @@ public class ConfirmDlg extends L2GameServerPacket
 		return this;
 	}
 	
-	public ConfirmDlg addSkillName(L2Effect effect)
+	public ConfirmDlg addSkillName(BuffInfo info)
 	{
-		return addSkillName(effect.getSkill());
+		return addSkillName(info.getSkill());
 	}
 	
-	public ConfirmDlg addSkillName(L2Skill skill)
+	public ConfirmDlg addSkillName(Skill skill)
 	{
 		if (skill.getId() != skill.getDisplayId())
 		{

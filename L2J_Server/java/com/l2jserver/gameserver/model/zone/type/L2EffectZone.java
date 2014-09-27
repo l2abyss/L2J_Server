@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,11 +23,11 @@ import java.util.Map.Entry;
 import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
-import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.TaskZoneSettings;
@@ -47,7 +47,7 @@ public class L2EffectZone extends L2ZoneType
 	private int _reuse;
 	protected boolean _bypassConditions;
 	private boolean _isShowDangerIcon;
-	protected FastMap<Integer, Integer> _skills;
+	protected volatile FastMap<Integer, Integer> _skills;
 	
 	public L2EffectZone(int id)
 	{
@@ -180,9 +180,9 @@ public class L2EffectZone extends L2ZoneType
 		}
 	}
 	
-	protected L2Skill getSkill(int skillId, int skillLvl)
+	protected Skill getSkill(int skillId, int skillLvl)
 	{
-		return SkillTable.getInstance().getInfo(skillId, skillLvl);
+		return SkillData.getInstance().getSkill(skillId, skillLvl);
 	}
 	
 	public int getChance()
@@ -197,6 +197,7 @@ public class L2EffectZone extends L2ZoneType
 			removeSkill(skillId);
 			return;
 		}
+		
 		if (_skills == null)
 		{
 			synchronized (this)
@@ -258,12 +259,12 @@ public class L2EffectZone extends L2ZoneType
 						{
 							for (Entry<Integer, Integer> e : _skills.entrySet())
 							{
-								L2Skill skill = getSkill(e.getKey(), e.getValue());
+								Skill skill = getSkill(e.getKey(), e.getValue());
 								if ((skill != null) && (_bypassConditions || skill.checkCondition(temp, temp, false)))
 								{
-									if (temp.getFirstEffect(e.getKey()) == null)
+									if (!temp.isAffectedBySkill(e.getKey()))
 									{
-										skill.getEffects(temp, temp);
+										skill.applyEffects(temp, temp);
 									}
 								}
 							}
@@ -272,15 +273,5 @@ public class L2EffectZone extends L2ZoneType
 				}
 			}
 		}
-	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
 	}
 }

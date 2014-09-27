@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -24,10 +24,10 @@ import javolution.util.FastList;
 
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.model.CursedWeapon;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.network.serverpackets.ExCursedWeaponLocation;
 import com.l2jserver.gameserver.network.serverpackets.ExCursedWeaponLocation.CursedWeaponInfo;
-import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * Format: (ch)
@@ -60,7 +60,7 @@ public final class RequestCursedWeaponLocation extends L2GameClientPacket
 				continue;
 			}
 			
-			Point3D pos = cw.getWorldPosition();
+			Location pos = cw.getWorldPosition();
 			if (pos != null)
 			{
 				list.add(new CursedWeaponInfo(pos, cw.getItemId(), cw.isActivated() ? 1 : 0));

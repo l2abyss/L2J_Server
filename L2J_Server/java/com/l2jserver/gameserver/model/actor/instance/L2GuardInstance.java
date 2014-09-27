@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,26 +18,23 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.ai.L2AttackableAI;
-import com.l2jserver.gameserver.model.L2CharPosition;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.knownlist.GuardKnownList;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.EventType;
+import com.l2jserver.gameserver.model.events.impl.character.npc.OnNpcFirstTalk;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -46,20 +43,6 @@ import com.l2jserver.util.Rnd;
 public class L2GuardInstance extends L2Attackable
 {
 	private static Logger _log = Logger.getLogger(L2GuardInstance.class.getName());
-	
-	private static final int RETURN_INTERVAL = 60000;
-	
-	public class ReturnTask implements Runnable
-	{
-		@Override
-		public void run()
-		{
-			if (getAI().getIntention() == CtrlIntention.AI_INTENTION_IDLE)
-			{
-				returnHome();
-			}
-		}
-	}
 	
 	/**
 	 * Constructor of L2GuardInstance (use L2Character and L2NpcInstance constructor).<br>
@@ -76,8 +59,6 @@ public class L2GuardInstance extends L2Attackable
 	{
 		super(objectId, template);
 		setInstanceType(InstanceType.L2GuardInstance);
-		
-		ThreadPoolManager.getInstance().scheduleAiAtFixedRate(new ReturnTask(), RETURN_INTERVAL, RETURN_INTERVAL + Rnd.nextInt(60000));
 	}
 	
 	@Override
@@ -99,20 +80,6 @@ public class L2GuardInstance extends L2Attackable
 	public boolean isAutoAttackable(L2Character attacker)
 	{
 		return attacker instanceof L2MonsterInstance;
-	}
-	
-	/**
-	 * Notify the L2GuardInstance to return to its home location (AI_INTENTION_MOVE_TO) and clear its _aggroList.
-	 */
-	@Override
-	public void returnHome()
-	{
-		if (!isInsideRadius(getSpawn().getLocx(), getSpawn().getLocy(), 150, false))
-		{
-			clearAggroList();
-			
-			getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(getSpawn().getLocx(), getSpawn().getLocy(), getSpawn().getLocz(), 0));
-		}
 	}
 	
 	/**
@@ -188,21 +155,8 @@ public class L2GuardInstance extends L2Attackable
 		// Check if the L2PcInstance already target the L2GuardInstance
 		if (getObjectId() != player.getTargetId())
 		{
-			if (Config.DEBUG)
-			{
-				_log.fine(player.getObjectId() + ": Targetted guard " + getObjectId());
-			}
-			
 			// Set the target of the L2PcInstance player
 			player.setTarget(this);
-			
-			// Send a Server->Client packet MyTargetSelected to the L2PcInstance player
-			// The color to display in the select window is White
-			MyTargetSelected my = new MyTargetSelected(getObjectId(), 0);
-			player.sendPacket(my);
-			
-			// Send a Server->Client packet ValidateLocation to correct the L2NpcInstance position and heading on the client
-			player.sendPacket(new ValidateLocation(this));
 		}
 		else if (interact)
 		{
@@ -229,21 +183,19 @@ public class L2GuardInstance extends L2Attackable
 				{
 					// Send a Server->Client packet SocialAction to the all L2PcInstance on the _knownPlayer of the L2NpcInstance
 					// to display a social action of the L2GuardInstance on their client
-					SocialAction sa = new SocialAction(getObjectId(), Rnd.nextInt(8));
-					broadcastPacket(sa);
+					broadcastPacket(new SocialAction(getObjectId(), Rnd.nextInt(8)));
+					
+					player.setLastFolkNPC(this);
 					
 					// Open a chat window on client with the text of the L2GuardInstance
-					List<Quest> qlsa = getTemplate().getEventQuests(QuestEventType.QUEST_START);
-					List<Quest> qlst = getTemplate().getEventQuests(QuestEventType.ON_FIRST_TALK);
-					
-					if ((qlsa != null) && !qlsa.isEmpty())
+					if (hasListener(EventType.ON_NPC_QUEST_START))
 					{
 						player.setLastQuestNpcObject(getObjectId());
 					}
 					
-					if ((qlst != null) && (qlst.size() == 1))
+					if (hasListener(EventType.ON_NPC_FIRST_TALK))
 					{
-						qlst.get(0).notifyFirstTalk(this, player);
+						EventDispatcher.getInstance().notifyEventAsync(new OnNpcFirstTalk(this, player), this);
 					}
 					else
 					{

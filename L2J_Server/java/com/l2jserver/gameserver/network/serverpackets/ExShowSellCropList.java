@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,7 +23,7 @@ import java.util.List;
 import javolution.util.FastMap;
 
 import com.l2jserver.gameserver.datatables.ManorData;
-import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
+import com.l2jserver.gameserver.model.CropProcure;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
@@ -75,15 +75,15 @@ public class ExShowSellCropList extends L2GameServerPacket
 		{
 			writeD(item.getObjectId()); // Object id
 			writeD(item.getDisplayId()); // crop id
-			writeD(ManorData.getInstance().getSeedLevelByCrop(item.getItemId())); // seed level
+			writeD(ManorData.getInstance().getSeedLevelByCrop(item.getId())); // seed level
 			writeC(0x01);
-			writeD(ManorData.getInstance().getRewardItem(item.getItemId(), 1)); // reward 1 id
+			writeD(ManorData.getInstance().getRewardItem(item.getId(), 1)); // reward 1 id
 			writeC(0x01);
-			writeD(ManorData.getInstance().getRewardItem(item.getItemId(), 2)); // reward 2 id
+			writeD(ManorData.getInstance().getRewardItem(item.getId(), 2)); // reward 2 id
 			
-			if (_castleCrops.containsKey(item.getItemId()))
+			if (_castleCrops.containsKey(item.getId()))
 			{
-				CropProcure crop = _castleCrops.get(item.getItemId());
+				CropProcure crop = _castleCrops.get(item.getId());
 				writeD(_manorId); // manor
 				writeQ(crop.getAmount()); // buy residual
 				writeQ(crop.getPrice()); // buy price

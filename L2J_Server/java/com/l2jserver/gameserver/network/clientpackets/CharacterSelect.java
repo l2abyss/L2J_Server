@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,26 +18,29 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.CharNameTable;
+import com.l2jserver.gameserver.datatables.SecondaryAuthData;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
+import com.l2jserver.gameserver.instancemanager.PunishmentManager;
 import com.l2jserver.gameserver.model.CharSelectInfoPackage;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.events.Containers;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerSelect;
+import com.l2jserver.gameserver.model.events.returns.TerminateReturn;
+import com.l2jserver.gameserver.model.punishment.PunishmentAffect;
+import com.l2jserver.gameserver.model.punishment.PunishmentType;
 import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.L2GameClient.GameClientState;
 import com.l2jserver.gameserver.network.serverpackets.CharSelected;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SSQInfo;
 import com.l2jserver.gameserver.network.serverpackets.ServerClose;
-import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerListener;
 
 /**
  * This class ...
@@ -47,7 +50,6 @@ public class CharacterSelect extends L2GameClientPacket
 {
 	private static final String _C__12_CHARACTERSELECT = "[C] 12 CharacterSelect";
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
-	private static final List<PlayerListener> _listeners = new FastList<PlayerListener>().shared();
 	
 	// cd
 	private int _charSlot;
@@ -80,7 +82,7 @@ public class CharacterSelect extends L2GameClientPacket
 			return;
 		}
 		
-		if (Config.SECOND_AUTH_ENABLED && !client.getSecondaryAuth().isAuthed())
+		if (SecondaryAuthData.getInstance().isEnabled() && !client.getSecondaryAuth().isAuthed())
 		{
 			client.getSecondaryAuth().openDialog();
 			return;
@@ -102,15 +104,23 @@ public class CharacterSelect extends L2GameClientPacket
 						return;
 					}
 					
-					// Selected character is banned.
+					// Banned?
+					if (PunishmentManager.getInstance().hasPunishment(info.getObjectId(), PunishmentAffect.CHARACTER, PunishmentType.BAN) || PunishmentManager.getInstance().hasPunishment(client.getAccountName(), PunishmentAffect.ACCOUNT, PunishmentType.BAN) || PunishmentManager.getInstance().hasPunishment(client.getConnectionAddress().getHostAddress(), PunishmentAffect.IP, PunishmentType.BAN))
+					{
+						client.close(ServerClose.STATIC_PACKET);
+						return;
+					}
+					
+					// Selected character is banned (compatibility with previous versions).
 					if (info.getAccessLevel() < 0)
 					{
 						client.close(ServerClose.STATIC_PACKET);
 						return;
 					}
+					
 					if ((Config.L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP > 0) && !AntiFeedManager.getInstance().tryAddClient(AntiFeedManager.GAME_ID, client, Config.L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP))
 					{
-						final NpcHtmlMessage msg = new NpcHtmlMessage(0);
+						final NpcHtmlMessage msg = new NpcHtmlMessage();
 						msg.setFile(info.getHtmlPrefix(), "data/html/mods/IPRestriction.htm");
 						msg.replace("%max%", String.valueOf(AntiFeedManager.getInstance().getLimit(client, Config.L2JMOD_DUALBOX_CHECK_MAX_PLAYERS_PER_IP)));
 						client.sendPacket(msg);
@@ -122,12 +132,6 @@ public class CharacterSelect extends L2GameClientPacket
 					{
 						_log.fine("selected slot:" + _charSlot);
 					}
-					
-					PlayerEvent event = new PlayerEvent();
-					event.setClient(client);
-					event.setObjectId(client.getCharSelection(_charSlot).getObjectId());
-					event.setName(client.getCharSelection(_charSlot).getName());
-					firePlayerListener(event);
 					
 					// load up character from disk
 					final L2PcInstance cha = client.loadCharFromDisk(_charSlot);
@@ -141,6 +145,13 @@ public class CharacterSelect extends L2GameClientPacket
 					cha.setClient(client);
 					client.setActiveChar(cha);
 					cha.setOnlineStatus(true, true);
+					
+					final TerminateReturn terminate = EventDispatcher.getInstance().notifyEvent(new OnPlayerSelect(cha, cha.getObjectId(), cha.getName(), getClient()), Containers.Players(), TerminateReturn.class);
+					if ((terminate != null) && terminate.terminate())
+					{
+						cha.deleteMe();
+						return;
+					}
 					
 					sendPacket(new SSQInfo());
 					
@@ -161,27 +172,6 @@ public class CharacterSelect extends L2GameClientPacket
 			});
 			_logAccounting.log(record);
 		}
-	}
-	
-	private void firePlayerListener(PlayerEvent event)
-	{
-		for (PlayerListener listener : _listeners)
-		{
-			listener.onCharSelect(event);
-		}
-	}
-	
-	public static void addPlayerListener(PlayerListener listener)
-	{
-		if (!_listeners.contains(listener))
-		{
-			_listeners.add(listener);
-		}
-	}
-	
-	public static void removePlayerListener(PlayerListener listener)
-	{
-		_listeners.remove(listener);
 	}
 	
 	@Override

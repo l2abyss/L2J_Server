@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -55,7 +55,7 @@ public class PetStatus extends SummonStatus
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PET_RECEIVED_S2_DAMAGE_BY_C1);
 				sm.addCharName(attacker);
-				sm.addNumber((int) value);
+				sm.addInt((int) value);
 				getActiveChar().sendPacket(sm);
 			}
 			getActiveChar().getAI().notifyEvent(CtrlEvent.EVT_ATTACKED, attacker);

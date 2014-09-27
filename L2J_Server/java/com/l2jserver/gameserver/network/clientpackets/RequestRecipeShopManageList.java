@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,15 +18,11 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.model.L2ManufactureList;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.RecipeShopManageList;
 
-/**
- * This class ...
- * @version $Revision: 1.1.2.1.2.2 $ $Date: 2005/03/27 15:29:30 $
- */
 public final class RequestRecipeShopManageList extends L2GameClientPacket
 {
 	private static final String _C__B9_RequestRecipeShopManageList = "[C] B9 RequestRecipeShopManageList";
@@ -52,18 +48,14 @@ public final class RequestRecipeShopManageList extends L2GameClientPacket
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
-		if (player.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
+		if (player.getPrivateStoreType() != PrivateStoreType.NONE)
 		{
-			player.setPrivateStoreType(L2PcInstance.STORE_PRIVATE_NONE);
+			player.setPrivateStoreType(PrivateStoreType.NONE);
 			player.broadcastUserInfo();
 			if (player.isSitting())
 			{
 				player.standUp();
 			}
-		}
-		if (player.getCreateList() == null)
-		{
-			player.setCreateList(new L2ManufactureList());
 		}
 		
 		player.sendPacket(new RecipeShopManageList(player, true));

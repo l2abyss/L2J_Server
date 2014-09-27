@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,26 +18,23 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.Location;
 
 public class ObservationReturn extends L2GameServerPacket
 {
-	private final L2PcInstance _activeChar;
+	private final Location _loc;
 	
-	/**
-	 * @param observer
-	 */
-	public ObservationReturn(L2PcInstance observer)
+	public ObservationReturn(Location loc)
 	{
-		_activeChar = observer;
+		_loc = loc;
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0xEC);
-		writeD(_activeChar.getLastX());
-		writeD(_activeChar.getLastY());
-		writeD(_activeChar.getLastZ());
+		writeD(_loc.getX());
+		writeD(_loc.getY());
+		writeD(_loc.getZ());
 	}
 }

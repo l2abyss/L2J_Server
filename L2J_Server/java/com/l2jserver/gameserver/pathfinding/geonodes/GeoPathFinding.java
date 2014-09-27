@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -416,7 +416,7 @@ public class GeoPathFinding extends PathFinding
 	
 	private void LoadPathNodeFile(byte rx, byte ry)
 	{
-		if ((rx < Config.WORLD_X_MIN) || (rx > Config.WORLD_X_MAX) || (ry < Config.WORLD_Y_MIN) || (ry > Config.WORLD_Y_MAX))
+		if ((rx < L2World.TILE_X_MIN) || (rx > L2World.TILE_X_MAX) || (ry < L2World.TILE_Y_MIN) || (ry > L2World.TILE_Y_MAX))
 		{
 			_log.warning("Failed to Load PathNode File: invalid region " + rx + "," + ry + Config.EOL);
 			return;

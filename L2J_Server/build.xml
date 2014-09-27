@@ -47,7 +47,7 @@
 		</mapper>
 	</pathconvert>
 
-	<target name="init" depends="checkRequirements,getChangelogDateVersion" description="Create the output directories.">
+	<target name="init" depends="checkRequirements,getDateAndVersion" description="Create the output directories.">
 		<delete dir="${build.bin}" quiet="true" />
 		<mkdir dir="${build.bin}" />
 	</target>
@@ -56,7 +56,6 @@
 		<sync todir="${build.dist}" includeemptydirs="true">
 			<fileset dir="dist" />
 		</sync>
-		<concat destfile="${build.dist.doc}/L2J_Server_CHANGELOG.txt">${l2j.changelog}</concat>
 		<concat destfile="${build.dist.game}/config/l2j-version.properties">version=${l2j.version}${line.separator}builddate=${build.tstamp}</concat>
 	</target>
 
@@ -74,7 +73,6 @@
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.version}" />
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.login}/L2J_Configurator.jar" level="9">
@@ -100,7 +98,6 @@
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.tools.configurator.ConfigUserInterface" />
 			</manifest>
 		</jar>
@@ -115,7 +112,6 @@
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.version}" />
 			</manifest>
 		</jar>
 		<jar destfile="${build.dist.game}/L2J_Configurator.jar" level="9">
@@ -141,7 +137,6 @@
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.tools.configurator.ConfigUserInterface" />
 			</manifest>
 		</jar>
@@ -159,7 +154,6 @@
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.tools.dbinstaller.LauncherCS" />
 			</manifest>
 		</jar>
@@ -177,7 +171,6 @@
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.tools.dbinstaller.LauncherGS" />
 			</manifest>
 		</jar>
@@ -195,7 +188,6 @@
 				<attribute name="Built-Date" value="${build.tstamp}" />
 				<attribute name="Class-Path" value="${manifest.libs}" />
 				<attribute name="Implementation-URL" value="http://www.l2jserver.com/" />
-				<attribute name="Implementation-Version" value="${l2j.version}" />
 				<attribute name="Main-Class" value="com.l2jserver.tools.dbinstaller.LauncherLS" />
 			</manifest>
 		</jar>
@@ -213,15 +205,11 @@
 				</not>
 			</condition>
 		</fail>
-		<available classname="java.lang.AutoCloseable" property="JDK8.present" />
+		<available classname="java.util.stream.Stream" property="JDK8.present" />
 		<fail unless="JDK8.present" message="Java 1.8 is required. But your version is Java ${ant.java.version} and probably JDK is not installed." />
 	</target>
 
-	<target name="getChangelogDateVersion" description="Get Changelog, Date, Version.">
-		<exec dir="${basedir}" executable="svn" outputproperty="l2j.changelog">
-			<arg value="log" />
-			<arg value="--stop-on-copy" />
-		</exec>
+	<target name="getDateAndVersion" description="Get Date and Version.">
 		<tstamp>
 			<format property="build.tstamp" pattern="dd/MM/yyyy HH:mm" />
 		</tstamp>

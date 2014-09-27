@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,14 +23,14 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.EnchantGroupsData;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.EnchantSkillGroupsData;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.model.L2EnchantSkillGroup.EnchantSkillHolder;
 import com.l2jserver.gameserver.model.L2EnchantSkillLearn;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExEnchantSkillInfo;
@@ -90,7 +90,7 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 			return;
 		}
 		
-		L2EnchantSkillLearn s = EnchantGroupsData.getInstance().getSkillEnchantmentBySkillId(_skillId);
+		L2EnchantSkillLearn s = EnchantSkillGroupsData.getInstance().getSkillEnchantmentBySkillId(_skillId);
 		if (s == null)
 		{
 			return;
@@ -101,13 +101,13 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 			_skillLvl = s.getBaseLevel();
 		}
 		
-		L2Skill skill = SkillTable.getInstance().getInfo(_skillId, _skillLvl);
+		Skill skill = SkillData.getInstance().getSkill(_skillId, _skillLvl);
 		if (skill == null)
 		{
 			return;
 		}
 		
-		int reqItemId = EnchantGroupsData.UNTRAIN_ENCHANT_BOOK;
+		int reqItemId = EnchantSkillGroupsData.UNTRAIN_ENCHANT_BOOK;
 		
 		final int beforeUntrainSkillLevel = player.getSkillLevel(_skillId);
 		if (((beforeUntrainSkillLevel - 1) != _skillLvl) && (((beforeUntrainSkillLevel % 100) != 1) || (_skillLvl != s.getBaseLevel())))
@@ -142,7 +142,7 @@ public final class RequestExEnchantSkillUntrain extends L2GameClientPacket
 			check &= player.destroyItem("Consume", spb.getObjectId(), 1, player, true);
 		}
 		
-		check &= player.destroyItemByItemId("Consume", PcInventory.ADENA_ID, requireditems, player, true);
+		check &= player.destroyItemByItemId("Consume", Inventory.ADENA_ID, requireditems, player, true);
 		
 		if (!check)
 		{

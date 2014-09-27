@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -64,8 +64,8 @@ public class AnswerCoupleAction extends L2GameClientPacket
 		}
 		else if (_answer == 1) // approve
 		{
-			final int distance = (int) Math.sqrt(activeChar.getPlanDistanceSq(target));
-			if ((distance > 900) || (distance < 40) || (activeChar.getObjectId() == target.getObjectId()))
+			final int distance = (int) activeChar.calculateDistance(target, false, false);
+			if ((distance > 125) || (distance < 15) || (activeChar.getObjectId() == target.getObjectId()))
 			{
 				sendPacket(SystemMessageId.TARGET_DO_NOT_MEET_LOC_REQUIREMENTS);
 				target.sendPacket(SystemMessageId.TARGET_DO_NOT_MEET_LOC_REQUIREMENTS);

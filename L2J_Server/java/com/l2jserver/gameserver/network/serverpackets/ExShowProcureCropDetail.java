@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,7 +23,7 @@ import java.util.Map;
 
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
-import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
+import com.l2jserver.gameserver.model.CropProcure;
 import com.l2jserver.gameserver.model.entity.Castle;
 
 /**
@@ -45,7 +45,7 @@ public class ExShowProcureCropDetail extends L2GameServerPacket
 			CropProcure cropItem = c.getCrop(_cropId, CastleManorManager.PERIOD_CURRENT);
 			if ((cropItem != null) && (cropItem.getAmount() > 0))
 			{
-				_castleCrops.put(c.getCastleId(), cropItem);
+				_castleCrops.put(c.getResidenceId(), cropItem);
 			}
 		}
 	}

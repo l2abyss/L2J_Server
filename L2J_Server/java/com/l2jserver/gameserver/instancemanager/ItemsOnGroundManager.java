@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -27,24 +27,24 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
+
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ItemsAutoDestroy;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
-import com.l2jserver.util.L2FastList;
 
 /**
  * This class manage all items on ground.
  * @author Enforcer
  */
-public class ItemsOnGroundManager implements Runnable
+public final class ItemsOnGroundManager implements Runnable
 {
 	private static final Logger _log = Logger.getLogger(ItemsOnGroundManager.class.getName());
 	
-	protected List<L2ItemInstance> _items = new L2FastList<>(true);
+	private final List<L2ItemInstance> _items = new FastList<L2ItemInstance>().shared();
 	
 	protected ItemsOnGroundManager()
 	{
@@ -117,22 +117,22 @@ public class ItemsOnGroundManager implements Runnable
 					{
 						item.setEnchantLevel(rs.getInt(4));
 					}
-					item.getPosition().setWorldPosition(rs.getInt(5), rs.getInt(6), rs.getInt(7));
-					item.getPosition().setWorldRegion(L2World.getInstance().getRegion(item.getPosition().getWorldPosition()));
-					item.getPosition().getWorldRegion().addVisibleObject(item);
+					item.setXYZ(rs.getInt(5), rs.getInt(6), rs.getInt(7));
+					item.setWorldRegion(L2World.getInstance().getRegion(item.getLocation()));
+					item.getWorldRegion().addVisibleObject(item);
 					final long dropTime = rs.getLong(8);
 					item.setDropTime(dropTime);
 					item.setProtected(dropTime == -1);
 					item.setIsVisible(true);
-					L2World.getInstance().addVisibleObject(item, item.getPosition().getWorldRegion());
+					L2World.getInstance().addVisibleObject(item, item.getWorldRegion());
 					_items.add(item);
 					count++;
 					// add to ItemsAutoDestroy only items not protected
-					if (!Config.LIST_PROTECTED_ITEMS.contains(item.getItemId()))
+					if (!Config.LIST_PROTECTED_ITEMS.contains(item.getId()))
 					{
 						if (dropTime > -1)
 						{
-							if (((Config.AUTODESTROY_ITEM_AFTER > 0) && (item.getItemType() != L2EtcItemType.HERB)) || ((Config.HERB_AUTO_DESTROY_TIME > 0) && (item.getItemType() == L2EtcItemType.HERB)))
+							if (((Config.AUTODESTROY_ITEM_AFTER > 0) && !item.getItem().hasExImmediateEffect()) || ((Config.HERB_AUTO_DESTROY_TIME > 0) && item.getItem().hasExImmediateEffect()))
 							{
 								ItemsAutoDestroy.getInstance().addItem(item);
 							}
@@ -218,7 +218,7 @@ public class ItemsOnGroundManager implements Runnable
 					continue;
 				}
 				
-				if (CursedWeaponsManager.getInstance().isCursed(item.getItemId()))
+				if (CursedWeaponsManager.getInstance().isCursed(item.getId()))
 				{
 					continue; // Cursed Items not saved to ground, prevent double save
 				}
@@ -226,7 +226,7 @@ public class ItemsOnGroundManager implements Runnable
 				try
 				{
 					statement.setInt(1, item.getObjectId());
-					statement.setInt(2, item.getItemId());
+					statement.setInt(2, item.getId());
 					statement.setLong(3, item.getCount());
 					statement.setInt(4, item.getEnchantLevel());
 					statement.setInt(5, item.getX());
@@ -249,6 +249,10 @@ public class ItemsOnGroundManager implements Runnable
 		}
 	}
 	
+	/**
+	 * Gets the single instance of {@code ItemsOnGroundManager}.
+	 * @return single instance of {@code ItemsOnGroundManager}
+	 */
 	public static final ItemsOnGroundManager getInstance()
 	{
 		return SingletonHolder._instance;

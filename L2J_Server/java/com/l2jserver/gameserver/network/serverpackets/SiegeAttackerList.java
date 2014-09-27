@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -70,7 +70,7 @@ public final class SiegeAttackerList extends L2GameServerPacket
 		
 		if (_castle != null)
 		{
-			writeD(_castle.getCastleId());
+			writeD(_castle.getResidenceId());
 			writeD(0x00); // 0
 			writeD(0x01); // 1
 			writeD(0x00); // 0
@@ -89,7 +89,7 @@ public final class SiegeAttackerList extends L2GameServerPacket
 						continue;
 					}
 					
-					writeD(clan.getClanId());
+					writeD(clan.getId());
 					writeS(clan.getName());
 					writeS(clan.getLeaderName());
 					writeD(clan.getCrestId());
@@ -126,7 +126,7 @@ public final class SiegeAttackerList extends L2GameServerPacket
 						continue;
 					}
 					
-					writeD(clan.getClanId());
+					writeD(clan.getId());
 					writeS(clan.getName());
 					writeS(clan.getLeaderName());
 					writeD(clan.getCrestId());

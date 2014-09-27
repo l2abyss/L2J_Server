@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,7 +20,8 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.StringTokenizer;
 
-import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.enums.InstanceType;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 
@@ -73,20 +74,20 @@ public class L2CastleDoormenInstance extends L2DoormenInstance
 	@Override
 	protected final boolean isOwnerClan(L2PcInstance player)
 	{
-		if (player.getClan() != null)
+		if ((player.getClan() != null) && player.hasClanPrivilege(ClanPrivilege.CS_OPEN_DOOR))
 		{
-			if (getConquerableHall() != null)
+			SiegableHall hall = getConquerableHall();
+			// save in variable because it's a costly call
+			if (hall != null)
 			{
-				// player should have privileges to open doors
-				if ((player.getClanId() == getConquerableHall().getOwnerId()) && ((player.getClanPrivileges() & L2Clan.CP_CS_OPEN_DOOR) == L2Clan.CP_CS_OPEN_DOOR))
+				if (player.getClanId() == hall.getOwnerId())
 				{
 					return true;
 				}
 			}
 			else if (getCastle() != null)
 			{
-				// player should have privileges to open doors
-				if ((player.getClanId() == getCastle().getOwnerId()) && ((player.getClanPrivileges() & L2Clan.CP_CS_OPEN_DOOR) == L2Clan.CP_CS_OPEN_DOOR))
+				if (player.getClanId() == getCastle().getOwnerId())
 				{
 					return true;
 				}

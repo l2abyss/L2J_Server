@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,33 +21,36 @@ package com.l2jserver.gameserver.handler;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.l2jserver.gameserver.model.L2Object.InstanceType;
+import com.l2jserver.gameserver.enums.InstanceType;
 
 /**
  * @author UnAfraid
  */
-public class ActionShiftHandler
+public class ActionShiftHandler implements IHandler<IActionShiftHandler, InstanceType>
 {
-	private final Map<InstanceType, IActionHandler> _actionsShift;
+	private final Map<InstanceType, IActionShiftHandler> _actionsShift;
 	
 	protected ActionShiftHandler()
 	{
 		_actionsShift = new HashMap<>();
 	}
 	
-	public void registerHandler(IActionHandler handler)
+	@Override
+	public void registerHandler(IActionShiftHandler handler)
 	{
 		_actionsShift.put(handler.getInstanceType(), handler);
 	}
 	
-	public synchronized void removeHandler(IActionHandler handler)
+	@Override
+	public synchronized void removeHandler(IActionShiftHandler handler)
 	{
 		_actionsShift.remove(handler.getInstanceType());
 	}
 	
-	public IActionHandler getHandler(InstanceType iType)
+	@Override
+	public IActionShiftHandler getHandler(InstanceType iType)
 	{
-		IActionHandler result = null;
+		IActionShiftHandler result = null;
 		for (InstanceType t = iType; t != null; t = t.getParent())
 		{
 			result = _actionsShift.get(t);
@@ -59,6 +62,7 @@ public class ActionShiftHandler
 		return result;
 	}
 	
+	@Override
 	public int size()
 	{
 		return _actionsShift.size();

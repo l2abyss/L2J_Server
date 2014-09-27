@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -37,7 +37,7 @@ public class FuncAtkCritical extends Func
 	
 	private FuncAtkCritical()
 	{
-		super(Stats.CRITICAL_RATE, 0x09, null);
+		super(Stats.CRITICAL_RATE, 0x09, null, null);
 	}
 	
 	@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -100,14 +100,10 @@ public class ConfigUserInterface extends JFrame implements ActionListener
 		
 		final ResourceBundle bundle = ResourceBundle.getBundle("configurator.Configurator", Locale.getDefault(), LanguageControl.INSTANCE);
 		
-		SwingUtilities.invokeLater(new Runnable()
+		SwingUtilities.invokeLater(() ->
 		{
-			@Override
-			public void run()
-			{
-				ConfigUserInterface cui = new ConfigUserInterface(bundle);
-				cui.setVisible(true);
-			}
+			ConfigUserInterface cui = new ConfigUserInterface(bundle);
+			cui.setVisible(true);
 		});
 	}
 	

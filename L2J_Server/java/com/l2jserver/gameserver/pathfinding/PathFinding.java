@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -172,12 +172,12 @@ public abstract class PathFinding
 	
 	public byte getRegionX(int node_pos)
 	{
-		return (byte) ((node_pos >> 8) + Config.WORLD_X_MIN);
+		return (byte) ((node_pos >> 8) + L2World.TILE_X_MIN);
 	}
 	
 	public byte getRegionY(int node_pos)
 	{
-		return (byte) ((node_pos >> 8) + Config.WORLD_Y_MIN);
+		return (byte) ((node_pos >> 8) + L2World.TILE_Y_MIN);
 	}
 	
 	public short getRegionOffset(byte rx, byte ry)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,17 +18,18 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
+import static com.l2jserver.gameserver.model.itemcontainer.Inventory.ADENA_ID;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.enums.ItemLocation;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.instancemanager.MailManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Message;
 import com.l2jserver.gameserver.model.itemcontainer.ItemContainer;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExChangePostState;
@@ -96,7 +97,7 @@ public final class RequestPostAttachment extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.getPrivateStoreType() > L2PcInstance.STORE_PRIVATE_NONE)
+		if (activeChar.getPrivateStoreType() != PrivateStoreType.NONE)
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_RECEIVE_PRIVATE_STORE);
 			return;
@@ -142,7 +143,7 @@ public final class RequestPostAttachment extends L2GameClientPacket
 				return;
 			}
 			
-			if (!item.getLocation().equals(ItemLocation.MAIL))
+			if (item.getItemLocation() != ItemLocation.MAIL)
 			{
 				Util.handleIllegalPlayerAction(activeChar, "Player " + activeChar.getName() + " tried to get wrong item (Location != MAIL) from attachment!", Config.DEFAULT_PUNISH);
 				return;
@@ -159,7 +160,7 @@ public final class RequestPostAttachment extends L2GameClientPacket
 			{
 				slots += item.getCount();
 			}
-			else if (activeChar.getInventory().getItemByItemId(item.getItemId()) == null)
+			else if (activeChar.getInventory().getItemByItemId(item.getId()) == null)
 			{
 				slots++;
 			}
@@ -220,8 +221,8 @@ public final class RequestPostAttachment extends L2GameClientPacket
 				}
 			}
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_ACQUIRED_S2_S1);
-			sm.addItemName(item.getItemId());
-			sm.addItemNumber(count);
+			sm.addItemName(item.getId());
+			sm.addLong(count);
 			activeChar.sendPacket(sm);
 		}
 		
@@ -250,7 +251,7 @@ public final class RequestPostAttachment extends L2GameClientPacket
 			{
 				sender.addAdena("PayMail", adena, activeChar, false);
 				sm = SystemMessage.getSystemMessage(SystemMessageId.PAYMENT_OF_S1_ADENA_COMPLETED_BY_S2);
-				sm.addItemNumber(adena);
+				sm.addLong(adena);
 				sm.addCharName(activeChar);
 				sender.sendPacket(sm);
 			}
@@ -258,7 +259,7 @@ public final class RequestPostAttachment extends L2GameClientPacket
 			{
 				L2ItemInstance paidAdena = ItemTable.getInstance().createItem("PayMail", ADENA_ID, adena, activeChar, null);
 				paidAdena.setOwnerId(msg.getSenderId());
-				paidAdena.setLocation(ItemLocation.INVENTORY);
+				paidAdena.setItemLocation(ItemLocation.INVENTORY);
 				paidAdena.updateDatabase(true);
 				L2World.getInstance().removeObject(paidAdena);
 			}

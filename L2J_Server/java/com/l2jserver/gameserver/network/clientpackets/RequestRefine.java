@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -79,7 +79,7 @@ public final class RequestRefine extends AbstractRefinePacket
 			return;
 		}
 		
-		final LifeStone ls = getLifeStone(refinerItem.getItemId());
+		final LifeStone ls = getLifeStone(refinerItem.getId());
 		if (ls == null)
 		{
 			return;
@@ -119,7 +119,7 @@ public final class RequestRefine extends AbstractRefinePacket
 			return;
 		}
 		
-		final L2Augmentation aug = AugmentationData.getInstance().generateRandomAugmentation(lifeStoneLevel, lifeStoneGrade, targetItem.getItem().getBodyPart(), refinerItem.getItemId(), targetItem);
+		final L2Augmentation aug = AugmentationData.getInstance().generateRandomAugmentation(lifeStoneLevel, lifeStoneGrade, targetItem.getItem().getBodyPart(), refinerItem.getId(), targetItem);
 		targetItem.setAugmentation(aug);
 		
 		final int stat12 = 0x0000FFFF & aug.getAugmentationId();

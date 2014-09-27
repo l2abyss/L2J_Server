@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -35,7 +35,7 @@ import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.zone.type.L2ClanHallZone;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowInfoUpdate;
 
@@ -171,7 +171,7 @@ public abstract class ClanHall
 						dbSave();
 						if (_cwh)
 						{
-							ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CH_function_fee", PcInventory.ADENA_ID, fee, null, null);
+							ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CH_function_fee", Inventory.ADENA_ID, fee, null, null);
 						}
 						ThreadPoolManager.getInstance().scheduleGeneral(new FunctionTask(true), getRate());
 					}
@@ -209,9 +209,9 @@ public abstract class ClanHall
 	
 	public ClanHall(StatsSet set)
 	{
-		_clanHallId = set.getInteger("id");
+		_clanHallId = set.getInt("id");
 		_name = set.getString("name");
-		_ownerId = set.getInteger("ownerId");
+		_ownerId = set.getInt("ownerId");
 		_desc = set.getString("desc");
 		_location = set.getString("location");
 		_functions = new FastMap<>();
@@ -294,7 +294,7 @@ public abstract class ClanHall
 		}
 		for (L2DoorInstance door : getDoors())
 		{
-			if (door.getDoorId() == doorId)
+			if (door.getId() == doorId)
 			{
 				return door;
 			}
@@ -367,7 +367,7 @@ public abstract class ClanHall
 		{
 			return;
 		}
-		_ownerId = clan.getClanId();
+		_ownerId = clan.getId();
 		_isFree = false;
 		clan.setHideoutId(getId());
 		// Announce to Online member new ClanHall
@@ -498,7 +498,7 @@ public abstract class ClanHall
 		
 		if (lease > 0)
 		{
-			if (!player.destroyItemByItemId("Consume", PcInventory.ADENA_ID, lease, null, true))
+			if (!player.destroyItemByItemId("Consume", Inventory.ADENA_ID, lease, null, true))
 			{
 				return false;
 			}

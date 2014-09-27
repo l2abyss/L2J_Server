@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,7 +21,6 @@ package com.l2jserver.gameserver.model.entity;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -37,7 +36,7 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.cache.HtmCache;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.model.L2Spawn;
@@ -45,13 +44,12 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
+import com.l2jserver.gameserver.model.holders.PlayerEventHolder;
 import com.l2jserver.gameserver.network.serverpackets.CharInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.MagicSkillUse;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
-import com.l2jserver.gameserver.util.PlayerEventStatus;
 
 /**
  * @since $Revision: 1.3.4.1 $ $Date: 2005/03/27 15:29:32 $ This ancient thingie got reworked by Nik at $Date: 2011/05/17 21:51:39 $ Yeah, for 6 years no one bothered reworking this buggy event engine.
@@ -69,7 +67,7 @@ public class L2Event
 	public static final Map<Integer, List<L2PcInstance>> _teams = new FastMap<>();
 	public static int _npcId = 0;
 	// public static final List<L2Npc> _npcs = new FastList<L2Npc>();
-	private static final Map<L2PcInstance, PlayerEventStatus> _connectionLossData = new FastMap<>();
+	private static final Map<L2PcInstance, PlayerEventHolder> _connectionLossData = new FastMap<>();
 	
 	public enum EventState
 	{
@@ -111,7 +109,7 @@ public class L2Event
 				{
 					continue;
 				}
-				tmp.put(player, player.getEventStatus().kills.size());
+				tmp.put(player, player.getEventStatus().getKills().size());
 			}
 		}
 		
@@ -135,7 +133,7 @@ public class L2Event
 			try
 			{
 				final String htmContent;
-				NpcHtmlMessage html = new NpcHtmlMessage(5);
+				final NpcHtmlMessage html = new NpcHtmlMessage(Integer.parseInt(objectid));
 				
 				if (_registeredPlayers.contains(player))
 				{
@@ -171,15 +169,15 @@ public class L2Event
 	public static void spawnEventNpc(L2PcInstance target)
 	{
 		
-		L2NpcTemplate template = NpcTable.getInstance().getTemplate(_npcId);
+		L2NpcTemplate template = NpcData.getInstance().getTemplate(_npcId);
 		
 		try
 		{
 			L2Spawn spawn = new L2Spawn(template);
 			
-			spawn.setLocx(target.getX() + 50);
-			spawn.setLocy(target.getY() + 50);
-			spawn.setLocz(target.getZ());
+			spawn.setX(target.getX() + 50);
+			spawn.setY(target.getY() + 50);
+			spawn.setZ(target.getZ());
 			spawn.setAmount(1);
 			spawn.setHeading(target.getHeading());
 			spawn.stopRespawn();
@@ -209,20 +207,16 @@ public class L2Event
 	 */
 	public static void unspawnEventNpcs()
 	{
-		SpawnTable.getInstance().forEachSpawn(new IL2Procedure<L2Spawn>()
+		SpawnTable.getInstance().forEachSpawn(spawn ->
 		{
-			@Override
-			public boolean execute(L2Spawn spawn)
+			L2Npc npc = spawn.getLastSpawn();
+			if ((npc != null) && npc.isEventMob())
 			{
-				L2Npc npc = spawn.getLastSpawn();
-				if ((npc != null) && npc.isEventMob())
-				{
-					npc.deleteMe();
-					spawn.stopRespawn();
-					SpawnTable.getInstance().deleteSpawn(spawn, false);
-				}
-				return true;
+				npc.deleteMe();
+				spawn.stopRespawn();
+				SpawnTable.getInstance().deleteSpawn(spawn, false);
 			}
+			return true;
 		});
 	}
 	
@@ -313,7 +307,7 @@ public class L2Event
 			
 			if (player.getEventStatus() != null)
 			{
-				player.getEventStatus().restoreInits();
+				player.getEventStatus().restorePlayerStats();
 			}
 			
 			player.setEventStatus(null);
@@ -381,7 +375,7 @@ public class L2Event
 			_registeredPlayers.clear();
 			// _npcs.clear();
 			
-			if (NpcTable.getInstance().getTemplate(_npcId) == null)
+			if (NpcData.getInstance().getTemplate(_npcId) == null)
 			{
 				return "Cannot start event, invalid npc id.";
 			}
@@ -394,7 +388,7 @@ public class L2Event
 			}
 			
 			List<L2PcInstance> temp = new FastList<>();
-			for (L2PcInstance player : L2World.getInstance().getAllPlayersArray())
+			for (L2PcInstance player : L2World.getInstance().getPlayers())
 			{
 				if (!player.isOnline())
 				{
@@ -550,14 +544,8 @@ public class L2Event
 	private static final Map<L2PcInstance, Integer> sortByValue(Map<L2PcInstance, Integer> unsortMap)
 	{
 		final List<Entry<L2PcInstance, Integer>> list = new LinkedList<>(unsortMap.entrySet());
-		Collections.sort(list, new Comparator<Entry<L2PcInstance, Integer>>()
-		{
-			@Override
-			public int compare(Entry<L2PcInstance, Integer> e1, Entry<L2PcInstance, Integer> e2)
-			{
-				return e1.getValue().compareTo(e2.getValue());
-			}
-		});
+		
+		list.sort(Comparator.comparing(Entry<L2PcInstance, Integer>::getValue));
 		
 		final Map<L2PcInstance, Integer> sortedMap = new LinkedHashMap<>();
 		for (Entry<L2PcInstance, Integer> entry : list)

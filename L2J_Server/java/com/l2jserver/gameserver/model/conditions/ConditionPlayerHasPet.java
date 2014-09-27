@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -61,6 +61,6 @@ public class ConditionPlayerHasPet extends Condition
 		}
 		
 		final L2ItemInstance controlItem = ((L2PetInstance) env.getPlayer().getSummon()).getControlItem();
-		return (controlItem != null) && _controlItemIds.contains(controlItem.getItemId());
+		return (controlItem != null) && _controlItemIds.contains(controlItem.getId());
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,8 +19,8 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.ai.L2AirShipAI;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.AirShipManager;
-import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Vehicle;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
@@ -29,11 +29,10 @@ import com.l2jserver.gameserver.network.serverpackets.ExGetOffAirShip;
 import com.l2jserver.gameserver.network.serverpackets.ExGetOnAirShip;
 import com.l2jserver.gameserver.network.serverpackets.ExMoveToLocationAirShip;
 import com.l2jserver.gameserver.network.serverpackets.ExStopMoveAirShip;
-import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * Flying airships. Very similar to Maktakien boats (see L2BoatInstance) but these do fly :P
- * @author DrHouse, reworked by DS
+ * @author DrHouse, DS
  */
 public class L2AirShipInstance extends L2Vehicle
 {
@@ -106,6 +105,12 @@ public class L2AirShipInstance extends L2Vehicle
 	}
 	
 	@Override
+	public int getId()
+	{
+		return 0;
+	}
+	
+	@Override
 	public boolean moveToNextRoutePoint()
 	{
 		final boolean result = super.moveToNextRoutePoint();
@@ -126,7 +131,7 @@ public class L2AirShipInstance extends L2Vehicle
 		}
 		
 		player.setVehicle(this);
-		player.setInVehiclePosition(new Point3D(0, 0, 0));
+		player.setInVehiclePosition(new Location(0, 0, 0));
 		player.broadcastPacket(new ExGetOnAirShip(player, this));
 		player.getKnownList().removeAllKnownObjects();
 		player.setXYZ(getX(), getY(), getZ());
@@ -153,16 +158,21 @@ public class L2AirShipInstance extends L2Vehicle
 	}
 	
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
-		super.deleteMe();
+		if (!super.deleteMe())
+		{
+			return false;
+		}
+		
 		AirShipManager.getInstance().removeAirShip(this);
+		return true;
 	}
 	
 	@Override
-	public void stopMove(L2CharPosition pos, boolean updateKnownObjects)
+	public void stopMove(Location loc, boolean updateKnownObjects)
 	{
-		super.stopMove(pos, updateKnownObjects);
+		super.stopMove(loc, updateKnownObjects);
 		
 		broadcastPacket(new ExStopMoveAirShip(this));
 	}
@@ -176,6 +186,9 @@ public class L2AirShipInstance extends L2Vehicle
 	@Override
 	public void sendInfo(L2PcInstance activeChar)
 	{
-		activeChar.sendPacket(new ExAirShipInfo(this));
+		if (isVisibleFor(activeChar))
+		{
+			activeChar.sendPacket(new ExAirShipInfo(this));
+		}
 	}
 }

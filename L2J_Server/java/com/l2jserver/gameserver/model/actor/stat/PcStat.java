@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,18 +18,23 @@
  */
 package com.l2jserver.gameserver.model.actor.stat;
 
-import javolution.util.FastList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.PetDataTable;
+import com.l2jserver.gameserver.model.L2PetLevelData;
 import com.l2jserver.gameserver.model.PcCondOverride;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2ClassMasterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
+import com.l2jserver.gameserver.model.actor.transform.TransformTemplate;
 import com.l2jserver.gameserver.model.entity.RecoBonus;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerLevelChanged;
 import com.l2jserver.gameserver.model.quest.QuestState;
+import com.l2jserver.gameserver.model.stats.Formulas;
+import com.l2jserver.gameserver.model.stats.MoveType;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -41,8 +46,6 @@ import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
-import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerLevelChangeEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerLevelListener;
 import com.l2jserver.gameserver.util.Util;
 
 public class PcStat extends PlayableStat
@@ -52,6 +55,12 @@ public class PcStat extends PlayableStat
 	private int _oldMaxCp; // stats watch
 	private float _vitalityPoints = 1;
 	private byte _vitalityLevel = 0;
+	private long _startingXp;
+	/** Player's maximum cubic count. */
+	private int _maxCubicCount = 1;
+	/** Player's maximum talisman count. */
+	private final AtomicInteger _talismanSlots = new AtomicInteger();
+	private boolean _cloakSlot = false;
 	
 	public static final int VITALITY_LEVELS[] =
 	{
@@ -61,11 +70,9 @@ public class PcStat extends PlayableStat
 		17000,
 		20000
 	};
+	
 	public static final int MAX_VITALITY_POINTS = VITALITY_LEVELS[4];
 	public static final int MIN_VITALITY_POINTS = 1;
-	
-	public FastList<PlayerLevelListener> levelListeners = new FastList<PlayerLevelListener>().shared();
-	public static FastList<PlayerLevelListener> globalLevelListeners = new FastList<PlayerLevelListener>().shared();
 	
 	public PcStat(L2PcInstance activeChar)
 	{
@@ -91,10 +98,13 @@ public class PcStat extends PlayableStat
 		// Set new karma
 		if (!activeChar.isCursedWeaponEquipped() && (activeChar.getKarma() > 0) && (activeChar.isGM() || !activeChar.isInsideZone(ZoneId.PVP)))
 		{
-			int karmaLost = activeChar.calculateKarmaLost(value);
+			int karmaLost = Formulas.calculateKarmaLost(activeChar, value);
 			if (karmaLost > 0)
 			{
 				activeChar.setKarma(activeChar.getKarma() - karmaLost);
+				final SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.YOUR_KARMA_HAS_BEEN_CHANGED_TO_S1);
+				msg.addInt(activeChar.getKarma());
+				activeChar.sendPacket(msg);
 			}
 		}
 		
@@ -102,26 +112,6 @@ public class PcStat extends PlayableStat
 		activeChar.sendPacket(new UserInfo(activeChar));
 		activeChar.sendPacket(new ExBrExtraUserInfo(activeChar));
 		return true;
-	}
-	
-	/**
-	 * Add Experience and SP rewards to the L2PcInstance, remove its Karma (if necessary) and Launch increase level task.<br>
-	 * <B><U>Actions </U>:</B>
-	 * <ul>
-	 * <li>Remove Karma when the player kills L2MonsterInstance</li>
-	 * <li>Send a Server->Client packet StatusUpdate to the L2PcInstance</li>
-	 * <li>Send a Server->Client System Message to the L2PcInstance</li>
-	 * <li>If the L2PcInstance increases it's level, send a Server->Client packet SocialAction (broadcast)</li>
-	 * <li>If the L2PcInstance increases it's level, manage the increase level task (Max MP, Max MP, Recommendation, Expertise and beginner skills...)</li>
-	 * <li>If the L2PcInstance increases it's level, send a Server->Client packet UserInfo to the L2PcInstance</li>
-	 * </ul>
-	 * @param addToExp The Experience value to add
-	 * @param addToSp The SP value to add
-	 */
-	@Override
-	public boolean addExpAndSp(long addToExp, int addToSp)
-	{
-		return addExpAndSp(addToExp, addToSp, false);
 	}
 	
 	public boolean addExpAndSp(long addToExp, int addToSp, boolean useBonuses)
@@ -152,7 +142,7 @@ public class PcStat extends PlayableStat
 		float ratioTakenByPlayer = 0;
 		
 		// if this player has a pet and it is in his range he takes from the owner's Exp, give the pet Exp now
-		if (activeChar.hasSummon() && activeChar.getSummon().isPet() && Util.checkIfInShortRadius(Config.ALT_PARTY_RANGE, activeChar, activeChar.getSummon(), false))
+		if (activeChar.hasPet() && Util.checkIfInShortRadius(Config.ALT_PARTY_RANGE, activeChar, activeChar.getSummon(), false))
 		{
 			L2PetInstance pet = (L2PetInstance) activeChar.getSummon();
 			ratioTakenByPlayer = pet.getPetLevelData().getOwnerExpTaken() / 100f;
@@ -174,7 +164,17 @@ public class PcStat extends PlayableStat
 			addToSp = (int) (addToSp * ratioTakenByPlayer);
 		}
 		
-		if (!super.addExpAndSp(addToExp, addToSp))
+		if (!addExp(addToExp))
+		{
+			addToExp = 0;
+		}
+		
+		if (!addSp(addToSp))
+		{
+			addToSp = 0;
+		}
+		
+		if ((addToExp == 0) && (addToSp == 0))
 		{
 			return false;
 		}
@@ -183,28 +183,28 @@ public class PcStat extends PlayableStat
 		if ((addToExp == 0) && (addToSp != 0))
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.ACQUIRED_S1_SP);
-			sm.addNumber(addToSp);
+			sm.addInt(addToSp);
 		}
 		else if ((addToSp == 0) && (addToExp != 0))
 		{
 			sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S1_EXPERIENCE);
-			sm.addNumber((int) addToExp);
+			sm.addLong(addToExp);
 		}
 		else
 		{
 			if ((addToExp - baseExp) > 0)
 			{
 				sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_EARNED_S1_EXP_BONUS_S2_AND_S3_SP_BONUS_S4);
-				sm.addNumber((int) addToExp);
-				sm.addNumber((int) (addToExp - baseExp));
-				sm.addNumber(addToSp);
-				sm.addNumber((addToSp - baseSp));
+				sm.addLong(addToExp);
+				sm.addLong(addToExp - baseExp);
+				sm.addInt(addToSp);
+				sm.addInt(addToSp - baseSp);
 			}
 			else
 			{
 				sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_EARNED_S1_EXP_AND_S2_SP);
-				sm.addNumber((int) addToExp);
-				sm.addNumber(addToSp);
+				sm.addLong(addToExp);
+				sm.addInt(addToSp);
 			}
 		}
 		activeChar.sendPacket(sm);
@@ -229,10 +229,10 @@ public class PcStat extends PlayableStat
 		{
 			// Send a Server->Client System Message to the L2PcInstance
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.EXP_DECREASED_BY_S1);
-			sm.addNumber((int) addToExp);
+			sm.addLong(addToExp);
 			getActiveChar().sendPacket(sm);
 			sm = SystemMessage.getSystemMessage(SystemMessageId.SP_DECREASED_S1);
-			sm.addNumber(addToSp);
+			sm.addInt(addToSp);
 			getActiveChar().sendPacket(sm);
 			if (getLevel() < level)
 			{
@@ -249,7 +249,9 @@ public class PcStat extends PlayableStat
 		{
 			return false;
 		}
-		fireLevelChangeListeners(value);
+		
+		// Notify to scripts
+		EventDispatcher.getInstance().notifyEventAsync(new OnPlayerLevelChanged(getActiveChar(), getLevel(), getLevel() + value), getActiveChar());
 		
 		boolean levelIncreased = super.addLevel(value);
 		if (levelIncreased)
@@ -285,16 +287,21 @@ public class PcStat extends PlayableStat
 		
 		if (getActiveChar().isTransformed() || getActiveChar().isInStance())
 		{
-			getActiveChar().getTransformation().onLevelUp();
+			getActiveChar().getTransformation().onLevelUp(getActiveChar());
 		}
 		
 		// Synchronize level with pet if possible.
-		if (getActiveChar().hasSummon() && getActiveChar().getSummon().isPet())
+		if (getActiveChar().hasPet())
 		{
 			final L2PetInstance pet = (L2PetInstance) getActiveChar().getSummon();
 			if (pet.getPetData().isSynchLevel() && (pet.getLevel() != getLevel()))
 			{
 				pet.getStat().setLevel(getLevel());
+				pet.getStat().getExpForLevel(getActiveChar().getLevel());
+				pet.setCurrentHp(pet.getMaxHp());
+				pet.setCurrentMp(pet.getMaxMp());
+				pet.broadcastPacket(new SocialAction(getActiveChar().getObjectId(), SocialAction.LEVEL_UP));
+				pet.updateAndBroadcastStatus(1);
 			}
 		}
 		
@@ -373,6 +380,61 @@ public class PcStat extends PlayableStat
 		}
 	}
 	
+	public void setStartingExp(long value)
+	{
+		if (Config.BOTREPORT_ENABLE)
+		{
+			_startingXp = value;
+		}
+	}
+	
+	public long getStartingExp()
+	{
+		return _startingXp;
+	}
+	
+	/**
+	 * Gets the maximum cubic count.
+	 * @return the maximum cubic count
+	 */
+	public int getMaxCubicCount()
+	{
+		return _maxCubicCount;
+	}
+	
+	/**
+	 * Sets the maximum cubic count.
+	 * @param cubicCount the maximum cubic count
+	 */
+	public void setMaxCubicCount(int cubicCount)
+	{
+		_maxCubicCount = cubicCount;
+	}
+	
+	/**
+	 * Gets the maximum talisman count.
+	 * @return the maximum talisman count
+	 */
+	public int getTalismanSlots()
+	{
+		return _talismanSlots.get();
+	}
+	
+	public void addTalismanSlots(int count)
+	{
+		_talismanSlots.addAndGet(count);
+	}
+	
+	public boolean canEquipCloak()
+	{
+		return _cloakSlot;
+	}
+	
+	public void setCloakSlotStatus(boolean cloakSlot)
+	{
+		_cloakSlot = cloakSlot;
+	}
+	
 	@Override
 	public final byte getLevel()
 	{
@@ -411,7 +473,7 @@ public class PcStat extends PlayableStat
 	public final int getMaxCp()
 	{
 		// Get the Max CP (base+modifier) of the L2PcInstance
-		int val = super.getMaxCp();
+		int val = (getActiveChar() == null) ? 1 : (int) calcStat(Stats.MAX_CP, getActiveChar().getTemplate().getBaseCpMax(getActiveChar().getLevel()));
 		if (val != _oldMaxCp)
 		{
 			_oldMaxCp = val;
@@ -429,7 +491,7 @@ public class PcStat extends PlayableStat
 	public final int getMaxHp()
 	{
 		// Get the Max HP (base+modifier) of the L2PcInstance
-		int val = super.getMaxHp();
+		int val = (getActiveChar() == null) ? 1 : (int) calcStat(Stats.MAX_HP, getActiveChar().getTemplate().getBaseHpMax(getActiveChar().getLevel()));
 		if (val != _oldMaxHp)
 		{
 			_oldMaxHp = val;
@@ -448,7 +510,7 @@ public class PcStat extends PlayableStat
 	public final int getMaxMp()
 	{
 		// Get the Max MP (base+modifier) of the L2PcInstance
-		int val = super.getMaxMp();
+		int val = (getActiveChar() == null) ? 1 : (int) calcStat(Stats.MAX_MP, getActiveChar().getTemplate().getBaseMpMax(getActiveChar().getLevel()));
 		
 		if (val != _oldMaxMp)
 		{
@@ -493,33 +555,85 @@ public class PcStat extends PlayableStat
 		}
 	}
 	
+	/**
+	 * @param type movement type
+	 * @return the base move speed of given movement type.
+	 */
 	@Override
-	public int getRunSpeed()
+	public double getBaseMoveSpeed(MoveType type)
 	{
-		if (getActiveChar() == null)
+		final L2PcInstance player = getActiveChar();
+		if (player.isTransformed())
 		{
-			return 1;
+			final TransformTemplate template = player.getTransformation().getTemplate(player);
+			if (template != null)
+			{
+				return template.getBaseMoveSpeed(type);
+			}
 		}
-		
-		int val;
-		
-		L2PcInstance player = getActiveChar();
-		if (player.isMounted())
+		else if (player.isMounted())
 		{
-			int baseRunSpd = NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseRunSpd();
-			val = (int) Math.round(calcStat(Stats.RUN_SPEED, baseRunSpd, null, null));
+			final L2PetLevelData data = PetDataTable.getInstance().getPetLevelData(player.getMountNpcId(), player.getMountLevel());
+			if (data != null)
+			{
+				return data.getSpeedOnRide(type);
+			}
 		}
-		else
-		{
-			val = super.getRunSpeed();
-		}
-		
-		val += Config.RUN_SPD_BOOST;
+		return super.getBaseMoveSpeed(type);
+	}
+	
+	@Override
+	public double getRunSpeed()
+	{
+		double val = super.getRunSpeed() + Config.RUN_SPD_BOOST;
 		
 		// Apply max run speed cap.
 		if ((val > Config.MAX_RUN_SPEED) && !getActiveChar().canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
 		{
 			return Config.MAX_RUN_SPEED;
+		}
+		
+		// Check for mount penalties
+		if (getActiveChar().isMounted())
+		{
+			// if level diff with mount >= 10, it decreases move speed by 50%
+			if ((getActiveChar().getMountLevel() - getActiveChar().getLevel()) >= 10)
+			{
+				val /= 2;
+			}
+			// if mount is hungry, it decreases move speed by 50%
+			if (getActiveChar().isHungry())
+			{
+				val /= 2;
+			}
+		}
+		
+		return val;
+	}
+	
+	@Override
+	public double getWalkSpeed()
+	{
+		double val = super.getWalkSpeed() + Config.RUN_SPD_BOOST;
+		
+		// Apply max run speed cap.
+		if ((val > Config.MAX_RUN_SPEED) && !getActiveChar().canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
+		{
+			return Config.MAX_RUN_SPEED;
+		}
+		
+		if (getActiveChar().isMounted())
+		{
+			// if level diff with mount >= 10, it decreases move speed by 50%
+			if ((getActiveChar().getMountLevel() - getActiveChar().getLevel()) >= 10)
+			{
+				val /= 2;
+			}
+			// if mount is hungry, it decreases move speed by 50%
+			if (getActiveChar().isHungry())
+			{
+				val /= 2;
+			}
 		}
 		
 		return val;
@@ -536,59 +650,6 @@ public class PcStat extends PlayableStat
 		}
 		
 		return val;
-	}
-	
-	@Override
-	public int getEvasionRate(L2Character target)
-	{
-		int val = super.getEvasionRate(target);
-		
-		if ((val > Config.MAX_EVASION) && !getActiveChar().canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
-		{
-			return Config.MAX_EVASION;
-		}
-		
-		return val;
-	}
-	
-	@Override
-	public int getMAtkSpd()
-	{
-		int val = super.getMAtkSpd();
-		
-		if ((val > Config.MAX_MATK_SPEED) && !getActiveChar().canOverrideCond(PcCondOverride.MAX_STATS_VALUE))
-		{
-			return Config.MAX_MATK_SPEED;
-		}
-		
-		return val;
-	}
-	
-	@Override
-	public float getMovementSpeedMultiplier()
-	{
-		if (getActiveChar() == null)
-		{
-			return 1;
-		}
-		
-		if (getActiveChar().isMounted())
-		{
-			return (getRunSpeed() * 1f) / NpcTable.getInstance().getTemplate(getActiveChar().getMountNpcId()).getBaseRunSpd();
-		}
-		
-		return super.getMovementSpeedMultiplier();
-	}
-	
-	@Override
-	public int getWalkSpeed()
-	{
-		if (getActiveChar() == null)
-		{
-			return 1;
-		}
-		
-		return (getRunSpeed() * 70) / 100;
 	}
 	
 	private void updateVitalityLevel(boolean quiet)
@@ -841,73 +902,5 @@ public class PcStat extends PlayableStat
 		bonus = Math.min(bonus, Config.MAX_BONUS_SP);
 		
 		return bonus;
-	}
-	
-	/**
-	 * Listeners
-	 */
-	/**
-	 * Fires all the level change listeners, if any.
-	 * @param value
-	 */
-	private void fireLevelChangeListeners(byte value)
-	{
-		if (!levelListeners.isEmpty() || !globalLevelListeners.isEmpty())
-		{
-			PlayerLevelChangeEvent event = new PlayerLevelChangeEvent();
-			event.setPlayer(getActiveChar());
-			event.setOldLevel(getLevel());
-			event.setNewLevel(getLevel() + value);
-			for (PlayerLevelListener listener : levelListeners)
-			{
-				listener.levelChanged(event);
-			}
-			for (PlayerLevelListener listener : globalLevelListeners)
-			{
-				listener.levelChanged(event);
-			}
-		}
-	}
-	
-	/**
-	 * Adds a global player level listener
-	 * @param listener
-	 */
-	public static void addGlobalLevelListener(PlayerLevelListener listener)
-	{
-		if (!globalLevelListeners.contains(listener))
-		{
-			globalLevelListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a global player level listener
-	 * @param listener
-	 */
-	public static void removeGlobalLevelListener(PlayerLevelListener listener)
-	{
-		globalLevelListeners.remove(listener);
-	}
-	
-	/**
-	 * Adds a player level listener
-	 * @param listener
-	 */
-	public void addLevelListener(PlayerLevelListener listener)
-	{
-		if (!levelListeners.contains(listener))
-		{
-			levelListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a player level listener
-	 * @param listener
-	 */
-	public void removeLevelListener(PlayerLevelListener listener)
-	{
-		levelListeners.remove(listener);
 	}
 }

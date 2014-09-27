@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -31,7 +31,7 @@ import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.entity.ClanHall;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 
@@ -48,9 +48,9 @@ public final class AuctionableHall extends ClanHall
 	{
 		super(set);
 		_paidUntil = set.getLong("paidUntil");
-		_grade = set.getInteger("grade");
-		_paid = set.getBool("paid");
-		_lease = set.getInteger("lease");
+		_grade = set.getInt("grade");
+		_paid = set.getBoolean("paid");
+		_lease = set.getInt("lease");
 		
 		if (getOwnerId() != 0)
 		{
@@ -170,7 +170,7 @@ public final class AuctionableHall extends ClanHall
 					{
 						_paidUntil = _time + _chRate;
 					}
-					ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CH_rental_fee", PcInventory.ADENA_ID, getLease(), null, null);
+					ClanTable.getInstance().getClan(getOwnerId()).getWarehouse().destroyItemByItemId("CH_rental_fee", Inventory.ADENA_ID, getLease(), null, null);
 					ThreadPoolManager.getInstance().scheduleGeneral(new FeeTask(), _paidUntil - _time);
 					_paid = true;
 					updateDb();
@@ -195,7 +195,7 @@ public final class AuctionableHall extends ClanHall
 					{
 						updateDb();
 						SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PAYMENT_FOR_YOUR_CLAN_HALL_HAS_NOT_BEEN_MADE_PLEASE_MAKE_PAYMENT_TO_YOUR_CLAN_WAREHOUSE_BY_S1_TOMORROW);
-						sm.addNumber(getLease());
+						sm.addInt(getLease());
 						Clan.broadcastToOnlineMembers(sm);
 						if ((_time + (3600000 * 24)) <= (_paidUntil + _chRate))
 						{

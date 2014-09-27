@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,7 +23,6 @@ import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
-import com.l2jserver.gameserver.util.Util;
 
 /**
  * This packet manages the trade response.
@@ -78,7 +77,7 @@ public final class TradeDone extends L2GameClientPacket
 				return;
 			}
 			
-			if ((trade.getOwner().getActiveEnchantItem() != null) || (trade.getPartner().getActiveEnchantItem() != null))
+			if ((trade.getOwner().getActiveEnchantItemId() != L2PcInstance.ID_NONE) || (trade.getPartner().getActiveEnchantItemId() != L2PcInstance.ID_NONE))
 			{
 				return;
 			}
@@ -96,7 +95,7 @@ public final class TradeDone extends L2GameClientPacket
 				return;
 			}
 			
-			if (Util.calculateDistance(player, trade.getPartner(), true) > 150)
+			if (player.calculateDistance(trade.getPartner(), true, false) > 150)
 			{
 				player.cancelActiveTrade();
 				return;

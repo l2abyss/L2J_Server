@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,16 +18,18 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
+import java.util.List;
+
 import javolution.util.FastList;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.entity.Duel;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
-public class DuelManager
+public final class DuelManager
 {
-	private final FastList<Duel> _duels;
+	private final List<Duel> _duels;
 	private int _currentDuelId = 0x90;
 	
 	protected DuelManager()
@@ -47,11 +49,11 @@ public class DuelManager
 	
 	public Duel getDuel(int duelId)
 	{
-		for (FastList.Node<Duel> e = _duels.head(), end = _duels.tail(); (e = e.getNext()) != end;)
+		for (Duel duel : _duels)
 		{
-			if (e.getValue().getId() == duelId)
+			if (duel.getId() == duelId)
 			{
-				return e.getValue();
+				return duel;
 			}
 		}
 		return null;
@@ -112,7 +114,7 @@ public class DuelManager
 			}
 		}
 		
-		Duel duel = new Duel(playerA, playerB, partyDuel, getNextDuelId());
+		final Duel duel = new Duel(playerA, playerB, partyDuel, getNextDuelId());
 		_duels.add(duel);
 	}
 	
@@ -127,7 +129,7 @@ public class DuelManager
 		{
 			return;
 		}
-		Duel duel = getDuel(player.getDuelId());
+		final Duel duel = getDuel(player.getDuelId());
 		duel.doSurrender(player);
 	}
 	
@@ -141,7 +143,7 @@ public class DuelManager
 		{
 			return;
 		}
-		Duel duel = getDuel(player.getDuelId());
+		final Duel duel = getDuel(player.getDuelId());
 		if (duel != null)
 		{
 			duel.onPlayerDefeat(player);
@@ -153,13 +155,13 @@ public class DuelManager
 	 * @param player
 	 * @param buff
 	 */
-	public void onBuff(L2PcInstance player, L2Effect buff)
+	public void onBuff(L2PcInstance player, Skill buff)
 	{
 		if ((player == null) || !player.isInDuel() || (buff == null))
 		{
 			return;
 		}
-		Duel duel = getDuel(player.getDuelId());
+		final Duel duel = getDuel(player.getDuelId());
 		if (duel != null)
 		{
 			duel.onBuff(player, buff);
@@ -176,7 +178,7 @@ public class DuelManager
 		{
 			return;
 		}
-		Duel duel = getDuel(player.getDuelId());
+		final Duel duel = getDuel(player.getDuelId());
 		if (duel != null)
 		{
 			duel.onRemoveFromParty(player);
@@ -194,7 +196,7 @@ public class DuelManager
 		{
 			return;
 		}
-		Duel duel = getDuel(player.getDuelId());
+		final Duel duel = getDuel(player.getDuelId());
 		if (duel == null)
 		{
 			return;

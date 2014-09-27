@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -27,14 +27,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
-import com.l2jserver.util.lib.Log;
 
 /**
  * Audits Game Master's actions.
  */
 public class GMAudit
 {
-	private static final Logger _log = Logger.getLogger(Log.class.getName());
+	private static final Logger _log = Logger.getLogger(GMAudit.class.getName());
 	
 	static
 	{

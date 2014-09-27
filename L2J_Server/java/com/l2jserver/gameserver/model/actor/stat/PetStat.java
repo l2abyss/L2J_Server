@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.datatables.ExperienceTable;
 import com.l2jserver.gameserver.datatables.PetDataTable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.stats.Stats;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
@@ -38,7 +38,7 @@ public class PetStat extends SummonStat
 	
 	public boolean addExp(int value)
 	{
-		if (!super.addExp(value))
+		if (getActiveChar().isUncontrollable() || !super.addExp(value))
 		{
 			return false;
 		}
@@ -50,19 +50,17 @@ public class PetStat extends SummonStat
 		return true;
 	}
 	
-	@Override
 	public boolean addExpAndSp(long addToExp, int addToSp)
 	{
-		if (!super.addExpAndSp(addToExp, addToSp))
+		if (getActiveChar().isUncontrollable() || !addExp(addToExp))
 		{
 			return false;
 		}
 		
 		SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.PET_EARNED_S1_EXP);
-		sm.addNumber((int) addToExp);
+		sm.addLong(addToExp);
 		getActiveChar().updateAndBroadcastStatus(1);
 		getActiveChar().sendPacket(sm);
-		
 		return true;
 	}
 	
@@ -104,13 +102,13 @@ public class PetStat extends SummonStat
 	{
 		try
 		{
-			return PetDataTable.getInstance().getPetLevelData(getActiveChar().getNpcId(), level).getPetMaxExp();
+			return PetDataTable.getInstance().getPetLevelData(getActiveChar().getId(), level).getPetMaxExp();
 		}
 		catch (NullPointerException e)
 		{
 			if (getActiveChar() != null)
 			{
-				_log.warning("Pet objectId:" + getActiveChar().getObjectId() + ", NpcId:" + getActiveChar().getNpcId() + ", level:" + level + " is missing data from pets_stats table!");
+				_log.warning("Pet objectId:" + getActiveChar().getObjectId() + ", NpcId:" + getActiveChar().getId() + ", level:" + level + " is missing data from pets_stats table!");
 			}
 			throw e;
 		}
@@ -135,10 +133,10 @@ public class PetStat extends SummonStat
 	@Override
 	public void setLevel(byte value)
 	{
-		getActiveChar().setPetData(PetDataTable.getInstance().getPetLevelData(getActiveChar().getTemplate().getNpcId(), value));
+		getActiveChar().setPetData(PetDataTable.getInstance().getPetLevelData(getActiveChar().getTemplate().getId(), value));
 		if (getActiveChar().getPetLevelData() == null)
 		{
-			throw new IllegalArgumentException("No pet data for npc: " + getActiveChar().getTemplate().getNpcId() + " level: " + value);
+			throw new IllegalArgumentException("No pet data for npc: " + getActiveChar().getTemplate().getId() + " level: " + value);
 		}
 		getActiveChar().stopFeed();
 		super.setLevel(value);
@@ -169,13 +167,13 @@ public class PetStat extends SummonStat
 	}
 	
 	@Override
-	public int getMAtk(L2Character target, L2Skill skill)
+	public int getMAtk(L2Character target, Skill skill)
 	{
 		return (int) calcStat(Stats.MAGIC_ATTACK, getActiveChar().getPetLevelData().getPetMAtk(), target, skill);
 	}
 	
 	@Override
-	public int getMDef(L2Character target, L2Skill skill)
+	public int getMDef(L2Character target, Skill skill)
 	{
 		return (int) calcStat(Stats.MAGIC_DEFENCE, getActiveChar().getPetLevelData().getPetMDef(), target, skill);
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,32 +18,29 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import java.util.List;
 import java.util.concurrent.Future;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.datatables.DoorTable;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.FourSepulchersManager;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.EventType;
+import com.l2jserver.gameserver.model.events.impl.character.npc.OnNpcFirstTalk;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
 import com.l2jserver.gameserver.network.serverpackets.SocialAction;
-import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.Rnd;
-
-import gnu.trove.procedure.TObjectProcedure;
 
 /**
  * @author sandman
@@ -88,7 +85,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 	}
 	
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
 		if (_closeTask != null)
 		{
@@ -105,7 +102,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 			_spawnMonsterTask.cancel(true);
 			_spawnMonsterTask = null;
 		}
-		super.deleteMe();
+		return super.deleteMe();
 	}
 	
 	@Override
@@ -126,35 +123,6 @@ public class L2SepulcherNpcInstance extends L2Npc
 			
 			// Set the target of the L2PcInstance player
 			player.setTarget(this);
-			
-			// Check if the player is attackable (without a forced attack)
-			if (isAutoAttackable(player))
-			{
-				// Send a Server->Client packet MyTargetSelected to the
-				// L2PcInstance player
-				// The player.getLevel() - getLevel() permit to display the
-				// correct color in the select window
-				MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
-				player.sendPacket(my);
-				
-				// Send a Server->Client packet StatusUpdate of the
-				// L2NpcInstance to the L2PcInstance to update its HP bar
-				StatusUpdate su = new StatusUpdate(this);
-				su.addAttribute(StatusUpdate.CUR_HP, (int) getStatus().getCurrentHp());
-				su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
-				player.sendPacket(su);
-			}
-			else
-			{
-				// Send a Server->Client packet MyTargetSelected to the
-				// L2PcInstance player
-				MyTargetSelected my = new MyTargetSelected(getObjectId(), 0);
-				player.sendPacket(my);
-			}
-			
-			// Send a Server->Client packet ValidateLocation to correct the
-			// L2NpcInstance position and heading on the client
-			player.sendPacket(new ValidateLocation(this));
 		}
 		else if (interact)
 		{
@@ -213,7 +181,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 			return;
 		}
 		
-		switch (getNpcId())
+		switch (getId())
 		{
 			case 31468:
 			case 31469:
@@ -241,7 +209,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 				{
 					_spawnMonsterTask.cancel(true);
 				}
-				_spawnMonsterTask = ThreadPoolManager.getInstance().scheduleEffect(new SpawnMonster(getNpcId()), 3500);
+				_spawnMonsterTask = ThreadPoolManager.getInstance().scheduleEffect(new SpawnMonster(getId()), 3500);
 				break;
 			
 			case 31455:
@@ -268,17 +236,14 @@ public class L2SepulcherNpcInstance extends L2Npc
 			
 			default:
 			{
-				List<Quest> qlsa = getTemplate().getEventQuests(Quest.QuestEventType.QUEST_START);
-				List<Quest> qlst = getTemplate().getEventQuests(Quest.QuestEventType.ON_FIRST_TALK);
-				
-				if ((qlsa != null) && !qlsa.isEmpty())
+				if (hasListener(EventType.ON_NPC_QUEST_START))
 				{
 					player.setLastQuestNpcObject(getObjectId());
 				}
 				
-				if ((qlst != null) && (qlst.size() == 1))
+				if (hasListener(EventType.ON_NPC_FIRST_TALK))
 				{
-					qlst.get(0).notifyFirstTalk(this, player);
+					EventDispatcher.getInstance().notifyEventAsync(new OnNpcFirstTalk(this, player), this);
 				}
 				else
 				{
@@ -308,8 +273,8 @@ public class L2SepulcherNpcInstance extends L2Npc
 	@Override
 	public void showChatWindow(L2PcInstance player, int val)
 	{
-		String filename = getHtmlPath(getNpcId(), val);
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		String filename = getHtmlPath(getId(), val);
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
@@ -321,7 +286,7 @@ public class L2SepulcherNpcInstance extends L2Npc
 	{
 		if (isBusy())
 		{
-			NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+			final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 			html.setFile(player.getHtmlPrefix(), "data/html/npcbusy.htm");
 			html.replace("%busymessage%", getBusyMessage());
 			html.replace("%npcname%", getName());
@@ -352,16 +317,16 @@ public class L2SepulcherNpcInstance extends L2Npc
 			}
 			else if (FourSepulchersManager.getInstance().isAttackTime())
 			{
-				switch (getNpcId())
+				switch (getId())
 				{
 					case 31929:
 					case 31934:
 					case 31939:
 					case 31944:
-						FourSepulchersManager.getInstance().spawnShadow(getNpcId());
+						FourSepulchersManager.getInstance().spawnShadow(getId());
 					default:
 					{
-						openNextDoor(getNpcId());
+						openNextDoor(getId());
 						if (player.getParty() != null)
 						{
 							for (L2PcInstance mem : player.getParty().getMembers())
@@ -468,37 +433,19 @@ public class L2SepulcherNpcInstance extends L2Npc
 			return;// wrong usage
 		}
 		
-		L2World.getInstance().forEachPlayer(new SayInShout(this, new CreatureSay(0, Say2.NPC_SHOUT, getName(), msg)));
-	}
-	
-	private final class SayInShout implements TObjectProcedure<L2PcInstance>
-	{
-		L2SepulcherNpcInstance _npc;
-		CreatureSay _sm;
-		
-		protected SayInShout(L2SepulcherNpcInstance npc, CreatureSay sm)
+		final CreatureSay creatureSay = new CreatureSay(0, Say2.NPC_SHOUT, getName(), msg);
+		for (L2PcInstance player : L2World.getInstance().getPlayers())
 		{
-			_npc = npc;
-			_sm = sm;
-		}
-		
-		@Override
-		public final boolean execute(final L2PcInstance player)
-		{
-			if (player != null)
+			if (Util.checkIfInRange(15000, player, this, true))
 			{
-				if (Util.checkIfInRange(15000, player, _npc, true))
-				{
-					player.sendPacket(_sm);
-				}
+				player.sendPacket(creatureSay);
 			}
-			return true;
 		}
 	}
 	
 	public void showHtmlFile(L2PcInstance player, String file)
 	{
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), "data/html/SepulcherNpc/" + file);
 		html.replace("%npcname%", getName());
 		player.sendPacket(html);

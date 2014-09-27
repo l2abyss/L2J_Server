@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,7 +19,6 @@
 package com.l2jserver.gameserver.datatables;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -46,39 +45,30 @@ public class SummonSkillsTable
 	public void load()
 	{
 		_skillTrees.clear();
-		int npcId = 0;
 		int count = 0;
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			Statement s = con.createStatement();
-			ResultSet rs = s.executeQuery("SELECT id FROM npc WHERE type IN ('L2Pet','L2BabyPet','L2SiegeSummon') ORDER BY id"))
+			ResultSet rs = s.executeQuery("SELECT templateId, minLvl, skillId, skillLvl FROM pets_skills"))
 		{
-			Map<Integer, L2PetSkillLearn> map;
-			try (PreparedStatement ps2 = con.prepareStatement("SELECT minLvl, skillId, skillLvl FROM pets_skills where templateId=? ORDER BY skillId, skillLvl"))
+			while (rs.next())
 			{
-				while (rs.next())
+				final int npcId = rs.getInt("templateId");
+				Map<Integer, L2PetSkillLearn> skillTree = _skillTrees.get(npcId);
+				if (skillTree == null)
 				{
-					map = new HashMap<>();
-					npcId = rs.getInt("id");
-					ps2.setInt(1, npcId);
-					try (ResultSet skilltree = ps2.executeQuery())
-					{
-						while (skilltree.next())
-						{
-							int id = skilltree.getInt("skillId");
-							int lvl = skilltree.getInt("skillLvl");
-							map.put(SkillTable.getSkillHashCode(id, lvl + 1), new L2PetSkillLearn(id, lvl, skilltree.getInt("minLvl")));
-						}
-						_skillTrees.put(npcId, map);
-					}
-					ps2.clearParameters();
-					count += map.size();
-					_log.fine(getClass().getSimpleName() + ": skill tree for pet " + npcId + " has " + map.size() + " skills");
+					skillTree = new HashMap<>();
+					_skillTrees.put(npcId, skillTree);
 				}
+				
+				int id = rs.getInt("skillId");
+				int lvl = rs.getInt("skillLvl");
+				skillTree.put(SkillData.getSkillHashCode(id, lvl + 1), new L2PetSkillLearn(id, lvl, rs.getInt("minLvl")));
+				count++;
 			}
 		}
 		catch (Exception e)
 		{
-			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while creating pet skill tree (Pet ID " + npcId + "): " + e.getMessage(), e);
+			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while loading pet skill tree:", e);
 		}
 		_log.info(getClass().getSimpleName() + ": Loaded " + count + " skills.");
 	}
@@ -86,12 +76,12 @@ public class SummonSkillsTable
 	public int getAvailableLevel(L2Summon cha, int skillId)
 	{
 		int lvl = 0;
-		if (!_skillTrees.containsKey(cha.getNpcId()))
+		if (!_skillTrees.containsKey(cha.getId()))
 		{
-			_log.warning(getClass().getSimpleName() + ": Pet id " + cha.getNpcId() + " does not have any skills assigned.");
+			_log.warning(getClass().getSimpleName() + ": Pet id " + cha.getId() + " does not have any skills assigned.");
 			return lvl;
 		}
-		Collection<L2PetSkillLearn> skills = _skillTrees.get(cha.getNpcId()).values();
+		Collection<L2PetSkillLearn> skills = _skillTrees.get(cha.getId()).values();
 		for (L2PetSkillLearn temp : skills)
 		{
 			if (temp.getId() != skillId)
@@ -114,7 +104,7 @@ public class SummonSkillsTable
 				}
 				
 				// formula usable for skill that have 10 or more skill levels
-				int maxLvl = SkillTable.getInstance().getMaxLevel(temp.getId());
+				int maxLvl = SkillData.getInstance().getMaxLevel(temp.getId());
 				if (lvl > maxLvl)
 				{
 					lvl = maxLvl;
@@ -135,12 +125,12 @@ public class SummonSkillsTable
 	public List<Integer> getAvailableSkills(L2Summon cha)
 	{
 		List<Integer> skillIds = new ArrayList<>();
-		if (!_skillTrees.containsKey(cha.getNpcId()))
+		if (!_skillTrees.containsKey(cha.getId()))
 		{
-			_log.warning(getClass().getSimpleName() + ": Pet id " + cha.getNpcId() + " does not have any skills assigned.");
+			_log.warning(getClass().getSimpleName() + ": Pet id " + cha.getId() + " does not have any skills assigned.");
 			return skillIds;
 		}
-		Collection<L2PetSkillLearn> skills = _skillTrees.get(cha.getNpcId()).values();
+		Collection<L2PetSkillLearn> skills = _skillTrees.get(cha.getId()).values();
 		for (L2PetSkillLearn temp : skills)
 		{
 			if (skillIds.contains(temp.getId()))

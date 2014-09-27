@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -40,6 +40,6 @@ public class ConditionMinDistance extends Condition
 	@Override
 	public boolean testImpl(Env env)
 	{
-		return (env.getTarget() != null) && (env.getCharacter().getDistanceSq(env.getTarget()) >= _sqDistance);
+		return (env.getTarget() != null) && (env.getCharacter().calculateDistance(env.getTarget(), true, true) >= _sqDistance);
 	}
 }

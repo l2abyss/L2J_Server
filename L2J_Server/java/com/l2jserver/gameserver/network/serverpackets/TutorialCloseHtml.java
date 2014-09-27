@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,12 +18,24 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import com.l2jserver.gameserver.enums.HtmlActionScope;
+
+/**
+ * TutorialCloseHtml server packet implementation.
+ * @author FBIagent
+ */
 public class TutorialCloseHtml extends L2GameServerPacket
 {
 	public static final TutorialCloseHtml STATIC_PACKET = new TutorialCloseHtml();
 	
 	private TutorialCloseHtml()
 	{
+	}
+	
+	@Override
+	public void runImpl()
+	{
+		getClient().getActiveChar().clearHtmlActions(HtmlActionScope.TUTORIAL_HTML);
 	}
 	
 	@Override

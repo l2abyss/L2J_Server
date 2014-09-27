@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -46,7 +46,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 	protected void runImpl()
 	{
 		final L2PcInstance activeChar = getClient().getActiveChar();
-		if ((activeChar == null) || !activeChar.hasSummon() || !activeChar.getSummon().isPet())
+		if ((activeChar == null) || !activeChar.hasPet())
 		{
 			return;
 		}
@@ -87,11 +87,6 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			{
 				return;
 			}
-		}
-		
-		if (activeChar.isDebug())
-		{
-			activeChar.sendDebugMessage("Pet tries to use item: " + item);
 		}
 		
 		if (!item.isEquipped() && !item.getItem().checkCondition(pet, pet, true))
@@ -142,7 +137,7 @@ public final class RequestPetUseItem extends L2GameClientPacket
 			else
 			{
 				activeChar.sendPacket(SystemMessageId.PET_CANNOT_USE_ITEM);
-				_log.warning("No item handler registered for itemId: " + item.getItemId());
+				_log.warning("No item handler registered for itemId: " + item.getId());
 			}
 		}
 	}

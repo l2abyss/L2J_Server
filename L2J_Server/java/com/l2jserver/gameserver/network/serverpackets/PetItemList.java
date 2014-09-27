@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,7 +20,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-public class PetItemList extends L2GameServerPacket
+public class PetItemList extends AbstractItemPacket
 {
 	private final L2ItemInstance[] _items;
 	
@@ -33,43 +33,10 @@ public class PetItemList extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0xB3);
-		
-		int count = _items.length;
-		writeH(count);
-		
-		for (L2ItemInstance temp : _items)
+		writeH(_items.length);
+		for (L2ItemInstance item : _items)
 		{
-			writeD(temp.getObjectId());
-			writeD(temp.getDisplayId());
-			writeD(temp.getLocationSlot());
-			writeQ(temp.getCount());
-			writeH(temp.getItem().getType2());
-			writeH(temp.getCustomType1());
-			writeH(temp.isEquipped() ? 0x01 : 0x00);
-			writeD(temp.getItem().getBodyPart());
-			writeH(temp.getEnchantLevel());
-			writeH(temp.getCustomType2());
-			if (temp.isAugmented())
-			{
-				writeD(temp.getAugmentation().getAugmentationId());
-			}
-			else
-			{
-				writeD(0x00);
-			}
-			writeD(temp.getMana());
-			writeD(temp.isTimeLimitedItem() ? (int) (temp.getRemainingTime() / 1000) : -9999);
-			writeH(temp.getAttackElementType());
-			writeH(temp.getAttackElementPower());
-			for (byte i = 0; i < 6; i++)
-			{
-				writeH(temp.getElementDefAttr(i));
-			}
-			// Enchant Effects
-			for (int op : temp.getEnchantOptions())
-			{
-				writeH(op);
-			}
+			writeItem(item);
 		}
 	}
 }

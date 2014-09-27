@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -53,7 +53,7 @@ public class ManorData extends DocumentParser
 	{
 		_seeds.clear();
 		parseDatapackFile("data/seeds.xml");
-		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _seeds.size() + " Seeds");
+		_log.log(Level.INFO, getClass().getSimpleName() + ": Loaded: " + _seeds.size() + " seeds.");
 	}
 	
 	@Override
@@ -71,7 +71,7 @@ public class ManorData extends DocumentParser
 				{
 					if ("castle".equalsIgnoreCase(d.getNodeName()))
 					{
-						castleId = parseInt(d.getAttributes(), "id");
+						castleId = parseInteger(d.getAttributes(), "id");
 						for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling())
 						{
 							if ("crop".equalsIgnoreCase(c.getNodeName()))

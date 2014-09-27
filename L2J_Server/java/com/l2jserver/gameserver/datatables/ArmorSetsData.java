@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -47,7 +47,7 @@ public final class ArmorSetsData extends DocumentParser
 	public void load()
 	{
 		_armorSets.clear();
-		parseDirectory("data/stats/armorsets");
+		parseDatapackDirectory("data/stats/armorsets", false);
 		_log.info(getClass().getSimpleName() + ": Loaded " + _armorSets.size() + " Armor sets.");
 	}
 	
@@ -72,83 +72,83 @@ public final class ArmorSetsData extends DocumentParser
 							{
 								case "chest":
 								{
-									set.addChest(parseInt(attrs, "id"));
+									set.addChest(parseInteger(attrs, "id"));
 									break;
 								}
 								case "feet":
 								{
-									set.addFeet(parseInt(attrs, "id"));
+									set.addFeet(parseInteger(attrs, "id"));
 									break;
 								}
 								case "gloves":
 								{
-									set.addGloves(parseInt(attrs, "id"));
+									set.addGloves(parseInteger(attrs, "id"));
 									break;
 								}
 								case "head":
 								{
-									set.addHead(parseInt(attrs, "id"));
+									set.addHead(parseInteger(attrs, "id"));
 									break;
 								}
 								case "legs":
 								{
-									set.addLegs(parseInt(attrs, "id"));
+									set.addLegs(parseInteger(attrs, "id"));
 									break;
 								}
 								case "shield":
 								{
-									set.addShield(parseInt(attrs, "id"));
+									set.addShield(parseInteger(attrs, "id"));
 									break;
 								}
 								case "skill":
 								{
-									int skillId = parseInt(attrs, "id");
-									int skillLevel = parseInt(attrs, "level");
+									int skillId = parseInteger(attrs, "id");
+									int skillLevel = parseInteger(attrs, "level");
 									set.addSkill(new SkillHolder(skillId, skillLevel));
 									break;
 								}
 								case "shield_skill":
 								{
-									int skillId = parseInt(attrs, "id");
-									int skillLevel = parseInt(attrs, "level");
+									int skillId = parseInteger(attrs, "id");
+									int skillLevel = parseInteger(attrs, "level");
 									set.addShieldSkill(new SkillHolder(skillId, skillLevel));
 									break;
 								}
 								case "enchant6skill":
 								{
-									int skillId = parseInt(attrs, "id");
-									int skillLevel = parseInt(attrs, "level");
+									int skillId = parseInteger(attrs, "id");
+									int skillLevel = parseInteger(attrs, "level");
 									set.addEnchant6Skill(new SkillHolder(skillId, skillLevel));
 									break;
 								}
 								case "con":
 								{
-									set.addCon(parseInt(attrs, "val"));
+									set.addCon(parseInteger(attrs, "val"));
 									break;
 								}
 								case "dex":
 								{
-									set.addDex(parseInt(attrs, "val"));
+									set.addDex(parseInteger(attrs, "val"));
 									break;
 								}
 								case "str":
 								{
-									set.addStr(parseInt(attrs, "val"));
+									set.addStr(parseInteger(attrs, "val"));
 									break;
 								}
 								case "men":
 								{
-									set.addMen(parseInt(attrs, "val"));
+									set.addMen(parseInteger(attrs, "val"));
 									break;
 								}
 								case "wit":
 								{
-									set.addWit(parseInt(attrs, "val"));
+									set.addWit(parseInteger(attrs, "val"));
 									break;
 								}
 								case "int":
 								{
-									set.addInt(parseInt(attrs, "val"));
+									set.addInt(parseInteger(attrs, "val"));
 									break;
 								}
 							}

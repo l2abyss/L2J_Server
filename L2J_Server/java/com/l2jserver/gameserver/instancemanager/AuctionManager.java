@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -32,7 +32,7 @@ import com.l2jserver.gameserver.model.entity.Auction;
 /**
  * Zoey76: TODO: Rewrite it and unharcode it.
  */
-public class AuctionManager
+public final class AuctionManager
 {
 	protected static final Logger _log = Logger.getLogger(AuctionManager.class.getName());
 	private final List<Auction> _auctions = new ArrayList<>();

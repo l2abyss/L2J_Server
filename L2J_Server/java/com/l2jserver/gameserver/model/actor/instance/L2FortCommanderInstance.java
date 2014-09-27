@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,14 +23,14 @@ import javolution.util.FastList;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
-import com.l2jserver.gameserver.instancemanager.FortSiegeManager.SiegeSpawn;
-import com.l2jserver.gameserver.model.L2CharPosition;
+import com.l2jserver.gameserver.model.FortSiegeSpawn;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.NpcStringId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
@@ -59,7 +59,7 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 			return false;
 		}
 		
-		boolean isFort = ((getFort() != null) && (getFort().getFortId() > 0) && getFort().getSiege().getIsInProgress() && !getFort().getSiege().checkIsDefender(((L2PcInstance) attacker).getClan()));
+		boolean isFort = ((getFort() != null) && (getFort().getResidenceId() > 0) && getFort().getSiege().isInProgress() && !getFort().getSiege().checkIsDefender(((L2PcInstance) attacker).getClan()));
 		
 		// Attackable during siege by all except defenders
 		return (isFort);
@@ -87,7 +87,7 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 			return false;
 		}
 		
-		if (getFort().getSiege().getIsInProgress())
+		if (getFort().getSiege().isInProgress())
 		{
 			getFort().getSiege().killedCommander(this);
 			
@@ -102,7 +102,7 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 	@Override
 	public void returnHome()
 	{
-		if (!isInsideRadius(getSpawn().getLocx(), getSpawn().getLocy(), 200, false))
+		if (!isInsideRadius(getSpawn(), 200, false, false))
 		{
 			if (Config.DEBUG)
 			{
@@ -113,24 +113,24 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 			
 			if (hasAI())
 			{
-				getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(getSpawn().getLocx(), getSpawn().getLocy(), getSpawn().getLocz(), 0));
+				getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, getSpawn().getLocation());
 			}
 		}
 	}
 	
 	@Override
-	public final void addDamage(L2Character attacker, int damage, L2Skill skill)
+	public final void addDamage(L2Character attacker, int damage, Skill skill)
 	{
 		L2Spawn spawn = getSpawn();
 		if ((spawn != null) && canTalk())
 		{
-			FastList<SiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getFortId());
-			for (SiegeSpawn spawn2 : commanders)
+			FastList<FortSiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(getFort().getResidenceId());
+			for (FortSiegeSpawn spawn2 : commanders)
 			{
-				if (spawn2.getNpcId() == spawn.getNpcid())
+				if (spawn2.getId() == spawn.getId())
 				{
 					NpcStringId npcString = null;
-					switch (spawn2.getId())
+					switch (spawn2.getMessageId())
 					{
 						case 1:
 							npcString = NpcStringId.ATTACKING_THE_ENEMYS_REINFORCEMENTS_IS_NECESSARY_TIME_TO_DIE;
@@ -148,7 +148,7 @@ public class L2FortCommanderInstance extends L2DefenderInstance
 					}
 					if (npcString != null)
 					{
-						NpcSay ns = new NpcSay(getObjectId(), Say2.NPC_SHOUT, getNpcId(), npcString);
+						NpcSay ns = new NpcSay(getObjectId(), Say2.NPC_SHOUT, getId(), npcString);
 						if (npcString.getParamCount() == 1)
 						{
 							ns.addStringParameter(attacker.getName());

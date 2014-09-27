@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,14 +21,14 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.Collection;
 
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 public class GMViewSkillInfo extends L2GameServerPacket
 {
 	private final L2PcInstance _activeChar;
-	private final Collection<L2Skill> _skills;
+	private final Collection<Skill> _skills;
 	
 	public GMViewSkillInfo(L2PcInstance cha)
 	{
@@ -45,13 +45,13 @@ public class GMViewSkillInfo extends L2GameServerPacket
 		
 		boolean isDisabled = (_activeChar.getClan() != null) ? (_activeChar.getClan().getReputationScore() < 0) : false;
 		
-		for (L2Skill skill : _skills)
+		for (Skill skill : _skills)
 		{
 			writeD(skill.isPassive() ? 1 : 0);
 			writeD(skill.getDisplayLevel());
 			writeD(skill.getDisplayId());
 			writeC(isDisabled && skill.isClanSkill() ? 1 : 0);
-			writeC(SkillTable.getInstance().isEnchantable(skill.getDisplayId()) ? 1 : 0);
+			writeC(SkillData.getInstance().isEnchantable(skill.getDisplayId()) ? 1 : 0);
 		}
 	}
 }

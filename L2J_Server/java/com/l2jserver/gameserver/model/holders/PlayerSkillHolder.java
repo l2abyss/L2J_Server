@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -24,18 +24,18 @@ import java.util.Map;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.interfaces.ISkillsHolder;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * @author UnAfraid
  */
 public class PlayerSkillHolder implements ISkillsHolder
 {
-	private final Map<Integer, L2Skill> _skills = new HashMap<>();
+	private final Map<Integer, Skill> _skills = new HashMap<>();
 	
 	public PlayerSkillHolder(L2PcInstance player)
 	{
-		for (L2Skill skill : player.getSkills().values())
+		for (Skill skill : player.getSkills().values())
 		{
 			// Adding only skills that can be learned by the player.
 			if (SkillTreesData.getInstance().isSkillAllowed(player, skill))
@@ -49,7 +49,7 @@ public class PlayerSkillHolder implements ISkillsHolder
 	 * @return the map containing this character skills.
 	 */
 	@Override
-	public Map<Integer, L2Skill> getSkills()
+	public Map<Integer, Skill> getSkills()
 	{
 		return _skills;
 	}
@@ -59,7 +59,7 @@ public class PlayerSkillHolder implements ISkillsHolder
 	 * @param skill
 	 */
 	@Override
-	public L2Skill addSkill(L2Skill skill)
+	public Skill addSkill(Skill skill)
 	{
 		return _skills.put(skill.getId(), skill);
 	}
@@ -72,7 +72,7 @@ public class PlayerSkillHolder implements ISkillsHolder
 	@Override
 	public int getSkillLevel(int skillId)
 	{
-		final L2Skill skill = getKnownSkill(skillId);
+		final Skill skill = getKnownSkill(skillId);
 		return (skill == null) ? -1 : skill.getLevel();
 	}
 	
@@ -81,7 +81,7 @@ public class PlayerSkillHolder implements ISkillsHolder
 	 * @return the skill from the known skill.
 	 */
 	@Override
-	public L2Skill getKnownSkill(int skillId)
+	public Skill getKnownSkill(int skillId)
 	{
 		return _skills.get(skillId);
 	}

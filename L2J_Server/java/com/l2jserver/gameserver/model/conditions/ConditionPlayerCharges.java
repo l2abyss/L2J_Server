@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -25,7 +25,6 @@ import com.l2jserver.gameserver.model.stats.Env;
  */
 public class ConditionPlayerCharges extends Condition
 {
-	
 	private final int _charges;
 	
 	/**

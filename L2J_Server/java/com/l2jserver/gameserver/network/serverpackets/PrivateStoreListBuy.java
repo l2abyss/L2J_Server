@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -25,7 +25,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  * This class ...
  * @version $Revision: 1.7.2.2.2.3 $ $Date: 2005/03/27 15:29:39 $
  */
-public class PrivateStoreListBuy extends L2GameServerPacket
+public class PrivateStoreListBuy extends AbstractItemPacket
 {
 	private final int _objId;
 	private final long _playerAdena;
@@ -50,32 +50,7 @@ public class PrivateStoreListBuy extends L2GameServerPacket
 		
 		for (TradeItem item : _items)
 		{
-			writeD(item.getObjectId());
-			writeD(item.getItem().getDisplayId());
-			writeD(item.getLocationSlot());
-			writeQ(item.getCount());
-			writeH(item.getItem().getType2());
-			writeH(item.getCustomType1());
-			writeH(0x00);
-			writeD(item.getItem().getBodyPart());
-			writeH(item.getEnchant());
-			writeH(item.getCustomType2());
-			// Player cannot sell/buy augmented, shadow or time-limited items
-			// probably so hardcode values here
-			writeD(0x00); // Augment
-			writeD(-1); // Mana
-			writeD(-9999); // Time
-			writeH(item.getAttackElementType());
-			writeH(item.getAttackElementPower());
-			for (byte i = 0; i < 6; i++)
-			{
-				writeH(item.getElementDefAttr(i));
-			}
-			// Enchant Effects
-			for (int op : item.getEnchantOptions())
-			{
-				writeH(op);
-			}
+			writeItem(item);
 			writeD(item.getObjectId());
 			writeQ(item.getPrice());
 			writeQ(item.getItem().getReferencePrice() * 2);

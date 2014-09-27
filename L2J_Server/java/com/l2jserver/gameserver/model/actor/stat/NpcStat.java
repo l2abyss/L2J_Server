@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,7 +19,6 @@
 package com.l2jserver.gameserver.model.actor.stat;
 
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.stats.Stats;
 
 public class NpcStat extends CharStat
 {
@@ -38,25 +37,5 @@ public class NpcStat extends CharStat
 	public L2Npc getActiveChar()
 	{
 		return (L2Npc) super.getActiveChar();
-	}
-	
-	@Override
-	public int getWalkSpeed()
-	{
-		return (int) calcStat(Stats.WALK_SPEED, getActiveChar().getTemplate().getBaseWalkSpd(), null, null);
-	}
-	
-	@Override
-	public float getMovementSpeedMultiplier()
-	{
-		if (getActiveChar() == null)
-		{
-			return 1;
-		}
-		if (getActiveChar().isRunning())
-		{
-			return (getRunSpeed() * 1f) / getActiveChar().getTemplate().getBaseRunSpd();
-		}
-		return (getWalkSpeed() * 1f) / getActiveChar().getTemplate().getBaseWalkSpd();
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
+import static com.l2jserver.gameserver.model.itemcontainer.Inventory.ADENA_ID;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,48 +29,37 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.engines.DocumentEngine;
-import com.l2jserver.gameserver.engines.items.Item;
+import com.l2jserver.gameserver.enums.ItemLocation;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.instance.L2EventMonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.item.OnItemCreate;
 import com.l2jserver.gameserver.model.items.L2Armor;
 import com.l2jserver.gameserver.model.items.L2EtcItem;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
-import com.l2jserver.gameserver.model.items.type.L2ArmorType;
-import com.l2jserver.gameserver.model.items.type.L2WeaponType;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ItemCreateEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.NewItemListener;
 import com.l2jserver.gameserver.util.GMAudit;
 
 /**
- * This class ...
- * @version $Revision: 1.9.2.6.2.9 $ $Date: 2005/04/02 15:57:34 $
+ * This class serves as a container for all item templates in the game.
  */
 public class ItemTable
 {
 	private static Logger _log = Logger.getLogger(ItemTable.class.getName());
 	private static Logger _logItems = Logger.getLogger("item");
 	
-	private static FastList<NewItemListener> newItemListeners = new FastList<NewItemListener>().shared();
-	
-	public static final Map<String, Integer> _materials = new FastMap<>();
-	public static final Map<String, Integer> _crystalTypes = new FastMap<>();
 	public static final Map<String, Integer> _slots = new FastMap<>();
-	public static final Map<String, L2WeaponType> _weaponTypes = new FastMap<>();
-	public static final Map<String, L2ArmorType> _armorTypes = new FastMap<>();
 	
 	private L2Item[] _allTemplates;
 	private final Map<Integer, L2EtcItem> _etcItems;
@@ -79,56 +68,6 @@ public class ItemTable
 	
 	static
 	{
-		_materials.put("adamantaite", L2Item.MATERIAL_ADAMANTAITE);
-		_materials.put("blood_steel", L2Item.MATERIAL_BLOOD_STEEL);
-		_materials.put("bone", L2Item.MATERIAL_BONE);
-		_materials.put("bronze", L2Item.MATERIAL_BRONZE);
-		_materials.put("cloth", L2Item.MATERIAL_CLOTH);
-		_materials.put("chrysolite", L2Item.MATERIAL_CHRYSOLITE);
-		_materials.put("cobweb", L2Item.MATERIAL_COBWEB);
-		_materials.put("cotton", L2Item.MATERIAL_FINE_STEEL);
-		_materials.put("crystal", L2Item.MATERIAL_CRYSTAL);
-		_materials.put("damascus", L2Item.MATERIAL_DAMASCUS);
-		_materials.put("dyestuff", L2Item.MATERIAL_DYESTUFF);
-		_materials.put("fine_steel", L2Item.MATERIAL_FINE_STEEL);
-		_materials.put("fish", L2Item.MATERIAL_FISH);
-		_materials.put("gold", L2Item.MATERIAL_GOLD);
-		_materials.put("horn", L2Item.MATERIAL_HORN);
-		_materials.put("leather", L2Item.MATERIAL_LEATHER);
-		_materials.put("liquid", L2Item.MATERIAL_LIQUID);
-		_materials.put("mithril", L2Item.MATERIAL_MITHRIL);
-		_materials.put("oriharukon", L2Item.MATERIAL_ORIHARUKON);
-		_materials.put("paper", L2Item.MATERIAL_PAPER);
-		_materials.put("rune_xp", L2Item.MATERIAL_RUNE_XP);
-		_materials.put("rune_sp", L2Item.MATERIAL_RUNE_SP);
-		_materials.put("rune_remove_penalty", L2Item.MATERIAL_RUNE_PENALTY);
-		_materials.put("scale_of_dragon", L2Item.MATERIAL_SCALE_OF_DRAGON);
-		_materials.put("seed", L2Item.MATERIAL_SEED);
-		_materials.put("silver", L2Item.MATERIAL_SILVER);
-		_materials.put("steel", L2Item.MATERIAL_STEEL);
-		_materials.put("wood", L2Item.MATERIAL_WOOD);
-		
-		_crystalTypes.put("s84", L2Item.CRYSTAL_S84);
-		_crystalTypes.put("s80", L2Item.CRYSTAL_S80);
-		_crystalTypes.put("s", L2Item.CRYSTAL_S);
-		_crystalTypes.put("a", L2Item.CRYSTAL_A);
-		_crystalTypes.put("b", L2Item.CRYSTAL_B);
-		_crystalTypes.put("c", L2Item.CRYSTAL_C);
-		_crystalTypes.put("d", L2Item.CRYSTAL_D);
-		_crystalTypes.put("none", L2Item.CRYSTAL_NONE);
-		
-		// weapon types
-		for (L2WeaponType type : L2WeaponType.values())
-		{
-			_weaponTypes.put(type.toString(), type);
-		}
-		
-		// armor types
-		for (L2ArmorType type : L2ArmorType.values())
-		{
-			_armorTypes.put(type.toString(), type);
-		}
-		
 		_slots.put("shirt", L2Item.SLOT_UNDERWEAR);
 		_slots.put("lbracelet", L2Item.SLOT_L_BRACELET);
 		_slots.put("rbracelet", L2Item.SLOT_R_BRACELET);
@@ -165,29 +104,16 @@ public class ItemTable
 		_slots.put("alldress", L2Item.SLOT_ALLDRESS);
 		_slots.put("deco1", L2Item.SLOT_DECO);
 		_slots.put("waist", L2Item.SLOT_BELT);
-		
 	}
 	
 	/**
-	 * Returns instance of ItemTable
-	 * @return ItemTable
+	 * @return a reference to this ItemTable object
 	 */
 	public static ItemTable getInstance()
 	{
 		return SingletonHolder._instance;
 	}
 	
-	/**
-	 * @return a new object Item
-	 */
-	public Item newItem()
-	{
-		return new Item();
-	}
-	
-	/**
-	 * Constructor.
-	 */
 	protected ItemTable()
 	{
 		_etcItems = new FastMap<>();
@@ -204,21 +130,21 @@ public class ItemTable
 		_weapons.clear();
 		for (L2Item item : DocumentEngine.getInstance().loadItems())
 		{
-			if (highest < item.getItemId())
+			if (highest < item.getId())
 			{
-				highest = item.getItemId();
+				highest = item.getId();
 			}
 			if (item instanceof L2EtcItem)
 			{
-				_etcItems.put(item.getItemId(), (L2EtcItem) item);
+				_etcItems.put(item.getId(), (L2EtcItem) item);
 			}
 			else if (item instanceof L2Armor)
 			{
-				_armors.put(item.getItemId(), (L2Armor) item);
+				_armors.put(item.getId(), (L2Armor) item);
 			}
 			else
 			{
-				_weapons.put(item.getItemId(), (L2Weapon) item);
+				_weapons.put(item.getId(), (L2Weapon) item);
 			}
 		}
 		buildFastLookupTable(highest);
@@ -241,19 +167,19 @@ public class ItemTable
 		// Insert armor item in Fast Look Up Table
 		for (L2Armor item : _armors.values())
 		{
-			_allTemplates[item.getItemId()] = item;
+			_allTemplates[item.getId()] = item;
 		}
 		
 		// Insert weapon item in Fast Look Up Table
 		for (L2Weapon item : _weapons.values())
 		{
-			_allTemplates[item.getItemId()] = item;
+			_allTemplates[item.getId()] = item;
 		}
 		
 		// Insert etcItem item in Fast Look Up Table
 		for (L2EtcItem item : _etcItems.values())
 		{
-			_allTemplates[item.getItemId()] = item;
+			_allTemplates[item.getId()] = item;
 		}
 	}
 	
@@ -284,11 +210,6 @@ public class ItemTable
 	 */
 	public L2ItemInstance createItem(String process, int itemId, long count, L2PcInstance actor, Object reference)
 	{
-		if (!fireNewItemListeners(process, itemId, count, actor, reference))
-		{
-			return null;
-		}
-		
 		// Create and Init the L2ItemInstance corresponding to the Item Identifier
 		L2ItemInstance item = new L2ItemInstance(IdFactory.getInstance().getNextId(), itemId);
 		
@@ -330,7 +251,7 @@ public class ItemTable
 		
 		if (Config.LOG_ITEMS && !process.equals("Reset"))
 		{
-			if (!Config.LOG_ITEMS_SMALL_LOG || (Config.LOG_ITEMS_SMALL_LOG && (item.isEquipable() || (item.getItemId() == ADENA_ID))))
+			if (!Config.LOG_ITEMS_SMALL_LOG || (Config.LOG_ITEMS_SMALL_LOG && (item.isEquipable() || (item.getId() == ADENA_ID))))
 			{
 				LogRecord record = new LogRecord(Level.INFO, "CREATE:" + process);
 				record.setLoggerName("item");
@@ -365,6 +286,8 @@ public class ItemTable
 			}
 		}
 		
+		// Notify to scripts
+		EventDispatcher.getInstance().notifyEventAsync(new OnItemCreate(process, item, actor, reference), item.getItem());
 		return item;
 	}
 	
@@ -411,7 +334,7 @@ public class ItemTable
 			long old = item.getCount();
 			item.setCount(0);
 			item.setOwnerId(0);
-			item.setLocation(ItemLocation.VOID);
+			item.setItemLocation(ItemLocation.VOID);
 			item.setLastChange(L2ItemInstance.REMOVED);
 			
 			L2World.getInstance().removeObject(item);
@@ -419,7 +342,7 @@ public class ItemTable
 			
 			if (Config.LOG_ITEMS)
 			{
-				if (!Config.LOG_ITEMS_SMALL_LOG || (Config.LOG_ITEMS_SMALL_LOG && (item.isEquipable() || (item.getItemId() == ADENA_ID))))
+				if (!Config.LOG_ITEMS_SMALL_LOG || (Config.LOG_ITEMS_SMALL_LOG && (item.isEquipable() || (item.getId() == ADENA_ID))))
 				{
 					LogRecord record = new LogRecord(Level.INFO, "DELETE:" + process);
 					record.setLoggerName("item");
@@ -450,7 +373,7 @@ public class ItemTable
 					String targetName = (actor.getTarget() != null ? actor.getTarget().getName() : "no-target");
 					if (Config.GMAUDIT)
 					{
-						GMAudit.auditGMAction(actor.getName() + " [" + actor.getObjectId() + "]", process + "(id: " + item.getItemId() + " count: " + item.getCount() + " itemObjId: " + item.getObjectId() + ")", targetName, "L2Object referencing this action is: " + referenceName);
+						GMAudit.auditGMAction(actor.getName() + " [" + actor.getObjectId() + "]", process + "(id: " + item.getId() + " count: " + item.getCount() + " itemObjId: " + item.getObjectId() + ")", targetName, "L2Object referencing this action is: " + referenceName);
 					}
 				}
 			}
@@ -476,7 +399,7 @@ public class ItemTable
 	public void reload()
 	{
 		load();
-		EnchantHPBonusData.getInstance().load();
+		EnchantItemHPBonusData.getInstance().load();
 	}
 	
 	protected static class ResetOwner implements Runnable
@@ -514,61 +437,5 @@ public class ItemTable
 	private static class SingletonHolder
 	{
 		protected static final ItemTable _instance = new ItemTable();
-	}
-	
-	// Listeners
-	
-	/**
-	 * Fires all the new item listeners, if any
-	 * @param process
-	 * @param itemId
-	 * @param count
-	 * @param actor
-	 * @param reference
-	 * @return
-	 */
-	private boolean fireNewItemListeners(String process, int itemId, long count, L2PcInstance actor, Object reference)
-	{
-		if (!newItemListeners.isEmpty() && (actor != null))
-		{
-			ItemCreateEvent event = new ItemCreateEvent();
-			event.setItemId(itemId);
-			event.setPlayer(actor);
-			event.setCount(count);
-			event.setProcess(process);
-			event.setReference(reference);
-			for (NewItemListener listener : newItemListeners)
-			{
-				if (listener.containsItemId(itemId))
-				{
-					if (!listener.onCreate(event))
-					{
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Adds a new item listener
-	 * @param listener
-	 */
-	public static void addNewItemListener(NewItemListener listener)
-	{
-		if (!newItemListeners.contains(listener))
-		{
-			newItemListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a new item listener
-	 * @param listener
-	 */
-	public static void removeNewItemListener(NewItemListener listener)
-	{
-		newItemListeners.remove(listener);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.model.actor;
 
 import com.l2jserver.gameserver.ai.CtrlEvent;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.PlayableKnownList;
@@ -26,11 +27,14 @@ import com.l2jserver.gameserver.model.actor.stat.PlayableStat;
 import com.l2jserver.gameserver.model.actor.status.PlayableStatus;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.model.effects.EffectFlag;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
 import com.l2jserver.gameserver.model.entity.Instance;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.OnCreatureKill;
+import com.l2jserver.gameserver.model.events.returns.TerminateReturn;
 import com.l2jserver.gameserver.model.quest.QuestState;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
+import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 
 /**
  * This class represents all Playable characters in the world.<br>
@@ -43,6 +47,7 @@ import com.l2jserver.gameserver.model.skills.L2Skill;
 public abstract class L2Playable extends L2Character
 {
 	private L2Character _lockedTarget = null;
+	private L2PcInstance transferDmgTo = null;
 	
 	/**
 	 * Constructor of L2Playable.<br>
@@ -99,6 +104,12 @@ public abstract class L2Playable extends L2Character
 	@Override
 	public boolean doDie(L2Character killer)
 	{
+		final TerminateReturn returnBack = EventDispatcher.getInstance().notifyEvent(new OnCreatureKill(killer, this), this, TerminateReturn.class);
+		if ((returnBack != null) && returnBack.terminate())
+		{
+			return false;
+		}
+		
 		// killing is only possible one time
 		synchronized (this)
 		{
@@ -111,14 +122,6 @@ public abstract class L2Playable extends L2Character
 			setIsDead(true);
 		}
 		
-		/**
-		 * This needs to stay here because it overrides L2Character.doDie() and does not call for super.doDie()
-		 */
-		if (!super.fireDeathListeners(killer))
-		{
-			return false;
-		}
-		
 		// Set target to null and cancel Attack or Cast
 		setTarget(null);
 		
@@ -128,30 +131,39 @@ public abstract class L2Playable extends L2Character
 		// Stop HP/MP/CP Regeneration task
 		getStatus().stopHpMpRegeneration();
 		
-		// Stop all active skills effects in progress on the L2Character,
-		// if the Character isn't affected by Soul of The Phoenix or Salvation
-		if (isPhoenixBlessed())
+		if (isCharmOfLuckAffected())
 		{
-			if (getCharmOfLuck())
-			{
-				stopCharmOfLuck(null);
-			}
-			if (isNoblesseBlessed())
-			{
-				stopNoblesseBlessing(null);
-			}
+			stopEffects(L2EffectType.CHARM_OF_LUCK);
 		}
-		// Same thing if the Character isn't a Noblesse Blessed L2Playable
-		else if (isNoblesseBlessed())
+		
+		boolean deleteBuffs = true;
+		
+		if (isNoblesseBlessedAffected())
 		{
-			stopNoblesseBlessing(null);
+			stopEffects(L2EffectType.NOBLESSE_BLESSING);
+			deleteBuffs = false;
+		}
+		if (isResurrectSpecialAffected())
+		{
+			stopEffects(L2EffectType.RESURRECTION_SPECIAL);
+			deleteBuffs = false;
+		}
+		if (isPlayer())
+		{
+			L2PcInstance activeChar = getActingPlayer();
 			
-			if (getCharmOfLuck())
+			if (activeChar.hasCharmOfCourage())
 			{
-				stopCharmOfLuck(null);
+				if (activeChar.isInSiege())
+				{
+					getActingPlayer().reviveRequest(getActingPlayer(), null, false, 0);
+				}
+				activeChar.setCharmOfCourage(false);
+				activeChar.sendPacket(new EtcStatusUpdate(activeChar));
 			}
 		}
-		else
+		
+		if (deleteBuffs)
 		{
 			stopAllEffectsExceptThoseThatLastThroughDeath();
 		}
@@ -166,6 +178,7 @@ public abstract class L2Playable extends L2Character
 		
 		// Notify Quest of L2Playable's death
 		L2PcInstance actingPlayer = getActingPlayer();
+		
 		if (!actingPlayer.isNotifyQuestOfDeathEmpty())
 		{
 			for (QuestState qs : actingPlayer.getNotifyQuestOfDeath())
@@ -195,7 +208,7 @@ public abstract class L2Playable extends L2Character
 		
 		// Notify L2Character AI
 		getAI().notifyEvent(CtrlEvent.EVT_DEAD);
-		
+		super.updateEffectIcons();
 		return true;
 	}
 	
@@ -265,106 +278,55 @@ public abstract class L2Playable extends L2Character
 	 * Return True.
 	 */
 	@Override
-	public boolean isAttackable()
+	public boolean canBeAttacked()
 	{
 		return true;
 	}
 	
-	// Support for Noblesse Blessing skill, where buffs are retained
-	// after resurrect
-	public final boolean isNoblesseBlessed()
+	// Support for Noblesse Blessing skill, where buffs are retained after resurrect
+	public final boolean isNoblesseBlessedAffected()
 	{
-		return _effects.isAffected(EffectFlag.NOBLESS_BLESSING);
-	}
-	
-	public final void stopNoblesseBlessing(L2Effect effect)
-	{
-		if (effect == null)
-		{
-			stopEffects(L2EffectType.NOBLESSE_BLESSING);
-		}
-		else
-		{
-			removeEffect(effect);
-		}
-		updateAbnormalEffect();
-	}
-	
-	// Support for Soul of the Phoenix and Salvation skills
-	public final boolean isPhoenixBlessed()
-	{
-		return _effects.isAffected(EffectFlag.PHOENIX_BLESSING);
-	}
-	
-	public final void stopPhoenixBlessing(L2Effect effect)
-	{
-		if (effect == null)
-		{
-			stopEffects(L2EffectType.PHOENIX_BLESSING);
-		}
-		else
-		{
-			removeEffect(effect);
-		}
-		
-		updateAbnormalEffect();
+		return isAffected(EffectFlag.NOBLESS_BLESSING);
 	}
 	
 	/**
-	 * @return True if the Silent Moving mode is active.
+	 * @return {@code true} if char can resurrect by himself, {@code false} otherwise
 	 */
-	public boolean isSilentMoving()
+	public final boolean isResurrectSpecialAffected()
 	{
-		return _effects.isAffected(EffectFlag.SILENT_MOVE);
-	}
-	
-	// for Newbie Protection Blessing skill, keeps you safe from an attack by a chaotic character >= 10 levels apart from you
-	public final boolean getProtectionBlessing()
-	{
-		return _effects.isAffected(EffectFlag.PROTECTION_BLESSING);
+		return isAffected(EffectFlag.RESURRECTION_SPECIAL);
 	}
 	
 	/**
-	 * @param effect
+	 * @return {@code true} if the Silent Moving mode is active, {@code false} otherwise
 	 */
-	public void stopProtectionBlessing(L2Effect effect)
+	public boolean isSilentMovingAffected()
 	{
-		if (effect == null)
-		{
-			stopEffects(L2EffectType.PROTECTION_BLESSING);
-		}
-		else
-		{
-			removeEffect(effect);
-		}
-		
-		updateAbnormalEffect();
+		return isAffected(EffectFlag.SILENT_MOVE);
 	}
 	
-	// Charm of Luck - During a Raid/Boss war, decreased chance for death penalty
-	public final boolean getCharmOfLuck()
+	/**
+	 * For Newbie Protection Blessing skill, keeps you safe from an attack by a chaotic character >= 10 levels apart from you.
+	 * @return
+	 */
+	public final boolean isProtectionBlessingAffected()
 	{
-		return _effects.isAffected(EffectFlag.CHARM_OF_LUCK);
+		return isAffected(EffectFlag.PROTECTION_BLESSING);
 	}
 	
-	public final void stopCharmOfLuck(L2Effect effect)
+	/**
+	 * Charm of Luck - During a Raid/Boss war, decreased chance for death penalty.
+	 * @return
+	 */
+	public final boolean isCharmOfLuckAffected()
 	{
-		if (effect == null)
-		{
-			stopEffects(L2EffectType.CHARM_OF_LUCK);
-		}
-		else
-		{
-			removeEffect(effect);
-		}
-		
-		updateAbnormalEffect();
+		return isAffected(EffectFlag.CHARM_OF_LUCK);
 	}
 	
 	@Override
 	public void updateEffectIcons(boolean partyOnly)
 	{
-		_effects.updateEffectIcons(partyOnly);
+		getEffectList().updateEffectIcons(partyOnly);
 	}
 	
 	public boolean isLockedTarget()
@@ -382,8 +344,6 @@ public abstract class L2Playable extends L2Character
 		_lockedTarget = cha;
 	}
 	
-	L2PcInstance transferDmgTo;
-	
 	public void setTransferDamageTo(L2PcInstance val)
 	{
 		transferDmgTo = val;
@@ -398,9 +358,9 @@ public abstract class L2Playable extends L2Character
 	
 	public abstract byte getPvpFlag();
 	
-	public abstract boolean useMagic(L2Skill skill, boolean forceUse, boolean dontMove);
+	public abstract boolean useMagic(Skill skill, boolean forceUse, boolean dontMove);
 	
-	public abstract void store();
+	public abstract void storeMe();
 	
 	public abstract void storeEffect(boolean storeEffects);
 	

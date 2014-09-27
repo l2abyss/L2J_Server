@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+import static com.l2jserver.gameserver.model.itemcontainer.Inventory.MAX_ADENA;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +27,8 @@ import java.util.List;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
-import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
-import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.ClanPrivilege;
+import com.l2jserver.gameserver.model.CropProcure;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.util.Util;
@@ -82,7 +82,7 @@ public class RequestSetCrop extends L2GameClientPacket
 		
 		L2PcInstance player = getClient().getActiveChar();
 		// check player privileges
-		if ((player == null) || (player.getClan() == null) || ((player.getClanPrivileges() & L2Clan.CP_CS_MANOR_ADMIN) == 0))
+		if ((player == null) || (player.getClan() == null) || !player.hasClanPrivilege(ClanPrivilege.CS_MANOR_ADMIN))
 		{
 			return;
 		}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.L2Clan;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
@@ -114,7 +114,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 		
 		if (Config.ALT_MEMBERS_CAN_WITHDRAW_FROM_CLANWH)
 		{
-			if ((warehouse instanceof ClanWarehouse) && ((player.getClanPrivileges() & L2Clan.CP_CL_VIEW_WAREHOUSE) != L2Clan.CP_CL_VIEW_WAREHOUSE))
+			if ((warehouse instanceof ClanWarehouse) && !player.hasClanPrivilege(ClanPrivilege.CL_VIEW_WAREHOUSE))
 			{
 				return;
 			}
@@ -146,7 +146,7 @@ public final class SendWareHouseWithDrawList extends L2GameClientPacket
 			{
 				slots += i.getCount();
 			}
-			else if (player.getInventory().getItemByItemId(item.getItemId()) == null)
+			else if (player.getInventory().getItemByItemId(item.getId()) == null)
 			{
 				slots++;
 			}

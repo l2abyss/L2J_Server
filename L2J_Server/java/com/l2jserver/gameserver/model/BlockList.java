@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,12 +21,12 @@ package com.l2jserver.gameserver.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.L2DatabaseFactory;
@@ -76,27 +76,24 @@ public class BlockList
 	
 	private static List<Integer> loadList(int ObjId)
 	{
-		List<Integer> list = new FastList<>();
-		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		List<Integer> list = new ArrayList<>();
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement statement = con.prepareStatement("SELECT friendId FROM character_friends WHERE charId=? AND relation=1"))
 		{
-			PreparedStatement statement = con.prepareStatement("SELECT friendId FROM character_friends WHERE charId=? AND relation=1");
 			statement.setInt(1, ObjId);
-			ResultSet rset = statement.executeQuery();
-			
-			int friendId;
-			while (rset.next())
+			try (ResultSet rset = statement.executeQuery())
 			{
-				friendId = rset.getInt("friendId");
-				if (friendId == ObjId)
+				int friendId;
+				while (rset.next())
 				{
-					continue;
+					friendId = rset.getInt("friendId");
+					if (friendId == ObjId)
+					{
+						continue;
+					}
+					list.add(friendId);
 				}
-				list.add(friendId);
 			}
-			
-			rset.close();
-			statement.close();
 		}
 		catch (Exception e)
 		{

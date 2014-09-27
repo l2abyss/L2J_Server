@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -34,6 +34,6 @@ public final class DoorInfo extends L2GameServerPacket
 	{
 		writeC(0x4c);
 		writeD(_door.getObjectId());
-		writeD(_door.getDoorId());
+		writeD(_door.getId());
 	}
 }

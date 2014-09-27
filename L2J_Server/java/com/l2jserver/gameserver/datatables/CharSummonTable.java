@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,45 +23,45 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.L2PetData;
-import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2ServitorInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.l2skills.L2SkillSummon;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.serverpackets.PetItemList;
-
-import gnu.trove.map.hash.TIntIntHashMap;
 
 /**
  * @author Nyaran
  */
 public class CharSummonTable
 {
-	private static Logger _log = Logger.getLogger(CharSummonTable.class.getName());
+	private static final Logger _log = Logger.getLogger(CharSummonTable.class.getName());
+	private static final Map<Integer, Integer> _pets = new ConcurrentHashMap<>();
+	private static final Map<Integer, Integer> _servitors = new ConcurrentHashMap<>();
 	
-	private static final String INIT_SUMMONS = "SELECT ownerId, summonSkillId FROM character_summons";
+	// SQL
 	private static final String INIT_PET = "SELECT ownerId, item_obj_id FROM pets WHERE restore = 'true'";
-	
-	private static final String SAVE_SUMMON = "REPLACE INTO character_summons (ownerId,summonSkillId,curHp,curMp,time) VALUES (?,?,?,?,?)";
+	private static final String INIT_SUMMONS = "SELECT ownerId, summonSkillId FROM character_summons";
 	private static final String LOAD_SUMMON = "SELECT curHp, curMp, time FROM character_summons WHERE ownerId = ? AND summonSkillId = ?";
 	private static final String REMOVE_SUMMON = "DELETE FROM character_summons WHERE ownerId = ?";
+	private static final String SAVE_SUMMON = "REPLACE INTO character_summons (ownerId,summonSkillId,curHp,curMp,time) VALUES (?,?,?,?,?)";
 	
-	private static final TIntIntHashMap _servitors = new TIntIntHashMap();
-	private static final TIntIntHashMap _pets = new TIntIntHashMap();
-	
-	public static CharSummonTable getInstance()
+	public Map<Integer, Integer> getPets()
 	{
-		return SingletonHolder._instance;
+		return _pets;
+	}
+	
+	public Map<Integer, Integer> getServitors()
+	{
+		return _servitors;
 	}
 	
 	public void init()
@@ -79,7 +79,7 @@ public class CharSummonTable
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while loading saved summons", e);
+				_log.warning(getClass().getSimpleName() + ": Error while loading saved servitor: " + e);
 			}
 		}
 		
@@ -96,130 +96,8 @@ public class CharSummonTable
 			}
 			catch (Exception e)
 			{
-				_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error while loading saved summons", e);
+				_log.warning(getClass().getSimpleName() + ": Error while loading saved pet: " + e);
 			}
-		}
-	}
-	
-	public TIntIntHashMap getServitors()
-	{
-		return _servitors;
-	}
-	
-	public TIntIntHashMap getPets()
-	{
-		return _pets;
-	}
-	
-	public void saveSummon(L2ServitorInstance summon)
-	{
-		if ((summon == null) || (summon.getTimeRemaining() <= 0))
-		{
-			return;
-		}
-		_servitors.put(summon.getOwner().getObjectId(), summon.getReferenceSkill());
-		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement ps = con.prepareStatement(SAVE_SUMMON))
-		{
-			ps.setInt(1, summon.getOwner().getObjectId());
-			ps.setInt(2, summon.getReferenceSkill());
-			ps.setInt(3, (int) Math.round(summon.getCurrentHp()));
-			ps.setInt(4, (int) Math.round(summon.getCurrentMp()));
-			ps.setInt(5, summon.getTimeRemaining());
-			ps.execute();
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Failed to store summon [SummonId: " + summon.getNpcId() + "] from Char [CharId: " + summon.getOwner().getObjectId() + "] data", e);
-		}
-		
-	}
-	
-	public void restoreServitor(L2PcInstance activeChar)
-	{
-		int skillId = _servitors.get(activeChar.getObjectId());
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement ps = con.prepareStatement(LOAD_SUMMON))
-		{
-			ps.setInt(1, activeChar.getObjectId());
-			ps.setInt(2, skillId);
-			try (ResultSet rs = ps.executeQuery())
-			{
-				
-				L2NpcTemplate summonTemplate;
-				L2ServitorInstance summon;
-				L2SkillSummon skill;
-				
-				while (rs.next())
-				{
-					int curHp = rs.getInt("curHp");
-					int curMp = rs.getInt("curMp");
-					int time = rs.getInt("time");
-					
-					skill = (L2SkillSummon) SkillTable.getInstance().getInfo(skillId, activeChar.getSkillLevel(skillId));
-					if (skill == null)
-					{
-						removeServitor(activeChar);
-						return;
-					}
-					
-					summonTemplate = NpcTable.getInstance().getTemplate(skill.getNpcId());
-					if (summonTemplate == null)
-					{
-						_log.warning(getClass().getSimpleName() + ": Summon attemp for nonexisting Skill ID:" + skillId);
-						return;
-					}
-					
-					final int id = IdFactory.getInstance().getNextId();
-					if (summonTemplate.isType("L2SiegeSummon"))
-					{
-						summon = new L2SiegeSummonInstance(id, summonTemplate, activeChar, skill);
-					}
-					else if (summonTemplate.isType("L2MerchantSummon"))
-					{
-						// TODO: Confirm L2Merchant summon = new L2MerchantSummonInstance(id, summonTemplate, activeChar, skill);
-						summon = new L2ServitorInstance(id, summonTemplate, activeChar, skill);
-					}
-					else
-					{
-						summon = new L2ServitorInstance(id, summonTemplate, activeChar, skill);
-					}
-					
-					summon.setName(summonTemplate.getName());
-					summon.setTitle(activeChar.getName());
-					summon.setExpPenalty(skill.getExpPenalty());
-					summon.setSharedElementals(skill.getInheritElementals());
-					summon.setSharedElementalsValue(skill.getElementalSharePercent());
-					
-					if (summon.getLevel() >= ExperienceTable.getInstance().getMaxPetLevel())
-					{
-						summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(ExperienceTable.getInstance().getMaxPetLevel() - 1));
-						_log.warning(getClass().getSimpleName() + ": Summon (" + summon.getName() + ") NpcID: " + summon.getNpcId() + " has a level above " + ExperienceTable.getInstance().getMaxPetLevel() + ". Please rectify.");
-					}
-					else
-					{
-						summon.getStat().setExp(ExperienceTable.getInstance().getExpForLevel(summon.getLevel() % ExperienceTable.getInstance().getMaxPetLevel()));
-					}
-					summon.setCurrentHp(curHp);
-					summon.setCurrentMp(curMp);
-					summon.setHeading(activeChar.getHeading());
-					summon.setRunning();
-					if (!(summon instanceof L2MerchantSummonInstance))
-					{
-						activeChar.setPet(summon);
-					}
-					
-					summon.setTimeRemaining(time);
-					
-					// L2World.getInstance().storeObject(summon);
-					summon.spawnMe(activeChar.getX() + 20, activeChar.getY() + 20, activeChar.getZ());
-				}
-			}
-		}
-		catch (SQLException e)
-		{
-			_log.log(Level.WARNING, getClass().getSimpleName() + ": Summon cannot be restored: ", e);
 		}
 	}
 	
@@ -234,24 +112,35 @@ public class CharSummonTable
 		}
 		catch (SQLException e)
 		{
-			_log.log(Level.WARNING, getClass().getSimpleName() + ": Summon cannot be removed: ", e);
+			_log.warning(getClass().getSimpleName() + ": Summon cannot be removed: " + e);
 		}
 	}
 	
 	public void restorePet(L2PcInstance activeChar)
 	{
-		L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_pets.get(activeChar.getObjectId()));
-		final L2PetData petData = PetDataTable.getInstance().getPetDataByItemId(item.getItemId());
-		L2NpcTemplate npcTemplate = NpcTable.getInstance().getTemplate(petData.getNpcId());
-		
+		final L2ItemInstance item = activeChar.getInventory().getItemByObjectId(_pets.get(activeChar.getObjectId()));
+		if (item == null)
+		{
+			_log.warning(getClass().getSimpleName() + ": Null pet summoning item for: " + activeChar);
+			return;
+		}
+		final L2PetData petData = PetDataTable.getInstance().getPetDataByItemId(item.getId());
+		if (petData == null)
+		{
+			_log.warning(getClass().getSimpleName() + ": Null pet data for: " + activeChar + " and summoning item: " + item);
+			return;
+		}
+		final L2NpcTemplate npcTemplate = NpcData.getInstance().getTemplate(petData.getNpcId());
 		if (npcTemplate == null)
 		{
+			_log.warning(getClass().getSimpleName() + ": Null pet NPC template for: " + activeChar + " and pet Id:" + petData.getNpcId());
 			return;
 		}
 		
 		final L2PetInstance pet = L2PetInstance.spawnPet(npcTemplate, activeChar, item);
 		if (pet == null)
 		{
+			_log.warning(getClass().getSimpleName() + ": Null pet instance for: " + activeChar + " and pet NPC template:" + npcTemplate);
 			return;
 		}
 		
@@ -270,28 +159,89 @@ public class CharSummonTable
 		
 		if (!pet.isRespawned())
 		{
-			pet.store();
+			pet.storeMe();
 		}
 		
+		item.setEnchantLevel(pet.getLevel());
 		activeChar.setPet(pet);
-		
 		pet.spawnMe(activeChar.getX() + 50, activeChar.getY() + 100, activeChar.getZ());
 		pet.startFeed();
-		item.setEnchantLevel(pet.getLevel());
-		
-		if (pet.getCurrentFed() <= 0)
-		{
-			pet.unSummon(activeChar);
-		}
-		else
-		{
-			pet.startFeed();
-		}
-		
 		pet.setFollowStatus(true);
-		
 		pet.getOwner().sendPacket(new PetItemList(pet.getInventory().getItems()));
 		pet.broadcastStatusUpdate();
+	}
+	
+	public void restoreServitor(L2PcInstance activeChar)
+	{
+		int skillId = _servitors.get(activeChar.getObjectId());
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(LOAD_SUMMON))
+		{
+			ps.setInt(1, activeChar.getObjectId());
+			ps.setInt(2, skillId);
+			try (ResultSet rs = ps.executeQuery())
+			{
+				Skill skill;
+				
+				while (rs.next())
+				{
+					int curHp = rs.getInt("curHp");
+					int curMp = rs.getInt("curMp");
+					int time = rs.getInt("time");
+					
+					skill = SkillData.getInstance().getSkill(skillId, activeChar.getSkillLevel(skillId));
+					if (skill == null)
+					{
+						removeServitor(activeChar);
+						return;
+					}
+					
+					skill.applyEffects(activeChar, activeChar);
+					if (activeChar.hasServitor())
+					{
+						final L2ServitorInstance summon = (L2ServitorInstance) activeChar.getSummon();
+						summon.setCurrentHp(curHp);
+						summon.setCurrentMp(curMp);
+						summon.setLifeTimeRemaining(time);
+					}
+				}
+			}
+		}
+		catch (SQLException e)
+		{
+			_log.warning(getClass().getSimpleName() + ": Servitor cannot be restored: " + e);
+		}
+	}
+	
+	public void saveSummon(L2ServitorInstance summon)
+	{
+		if ((summon == null) || (summon.getLifeTimeRemaining() <= 0))
+		{
+			return;
+		}
+		
+		_servitors.put(summon.getOwner().getObjectId(), summon.getReferenceSkill());
+		
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement(SAVE_SUMMON))
+		{
+			ps.setInt(1, summon.getOwner().getObjectId());
+			ps.setInt(2, summon.getReferenceSkill());
+			ps.setInt(3, (int) Math.round(summon.getCurrentHp()));
+			ps.setInt(4, (int) Math.round(summon.getCurrentMp()));
+			ps.setInt(5, summon.getLifeTimeRemaining());
+			ps.execute();
+		}
+		catch (Exception e)
+		{
+			_log.warning(getClass().getSimpleName() + ": Failed to store summon: " + summon + " from " + summon.getOwner() + ", error: " + e);
+		}
+		
+	}
+	
+	public static CharSummonTable getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

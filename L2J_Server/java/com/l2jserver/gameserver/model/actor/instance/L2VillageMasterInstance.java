@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -29,6 +29,8 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.ClassListData;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
+import com.l2jserver.gameserver.enums.InstanceType;
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
@@ -41,7 +43,6 @@ import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.AcquireSkillType;
 import com.l2jserver.gameserver.model.base.ClassId;
 import com.l2jserver.gameserver.model.base.PlayerClass;
-import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.base.SubClass;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
@@ -384,12 +385,12 @@ public class L2VillageMasterInstance extends L2NpcInstance
 					}
 					else
 					{
-						if ((player.getRace() == Race.Elf) || (player.getRace() == Race.DarkElf))
+						if ((player.getRace() == Race.ELF) || (player.getRace() == Race.DARK_ELF))
 						{
 							html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/SubClass_Fail_Elves.htm");
 							player.sendPacket(html);
 						}
-						else if (player.getRace() == Race.Kamael)
+						else if (player.getRace() == Race.KAMAEL)
 						{
 							html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/SubClass_Fail_Kamael.htm");
 							player.sendPacket(html);
@@ -683,9 +684,9 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		}
 	}
 	
-	protected String getSubClassMenu(Race pRace)
+	protected String getSubClassMenu(Race race)
 	{
-		if (Config.ALT_GAME_SUBCLASS_EVERYWHERE || (pRace != Race.Kamael))
+		if (Config.ALT_GAME_SUBCLASS_EVERYWHERE || (race != Race.KAMAEL))
 		{
 			return "data/html/villagemaster/SubClass.htm";
 		}
@@ -712,7 +713,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 			return false;
 		}
 		
-		qs = player.getQuestState("235_MimirsElixir");
+		qs = player.getQuestState("Q00235_MimirsElixir");
 		if ((qs == null) || !qs.isCompleted())
 		{
 			return false;
@@ -913,7 +914,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		
 		for (Castle castle : CastleManager.getInstance().getCastles())
 		{
-			if (SiegeManager.getInstance().checkIsRegistered(clan, castle.getCastleId()))
+			if (SiegeManager.getInstance().checkIsRegistered(clan, castle.getResidenceId()))
 			{
 				player.sendPacket(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_SIEGE);
 				return;
@@ -921,7 +922,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		}
 		for (Fort fort : FortManager.getInstance().getForts())
 		{
-			if (FortSiegeManager.getInstance().checkIsRegistered(clan, fort.getFortId()))
+			if (FortSiegeManager.getInstance().checkIsRegistered(clan, fort.getResidenceId()))
 			{
 				player.sendPacket(SystemMessageId.CANNOT_DISSOLVE_WHILE_IN_SIEGE);
 				return;
@@ -942,7 +943,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		clan.setDissolvingExpiryTime(System.currentTimeMillis() + (Config.ALT_CLAN_DISSOLVE_DAYS * 86400000L)); // 24*60*60*1000 = 86400000
 		clan.updateClanInDB();
 		
-		ClanTable.getInstance().scheduleRemoveClan(clan.getClanId());
+		ClanTable.getInstance().scheduleRemoveClan(clan.getId());
 		
 		// The clan leader should take the XP penalty of a full death.
 		player.deathPenalty(false, false, false);
@@ -1174,7 +1175,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 	{
 		if (!player.isClanLeader())
 		{
-			NpcHtmlMessage html = new NpcHtmlMessage(1);
+			final NpcHtmlMessage html = new NpcHtmlMessage();
 			html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/NotClanLeader.htm");
 			player.sendPacket(html);
 			player.sendPacket(ActionFailed.STATIC_PACKET);
@@ -1182,7 +1183,7 @@ public class L2VillageMasterInstance extends L2NpcInstance
 		}
 		
 		final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailablePledgeSkills(player.getClan());
-		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.Pledge);
+		final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.PLEDGE);
 		int counts = 0;
 		
 		for (L2SkillLearn s : skills)
@@ -1198,17 +1199,17 @@ public class L2VillageMasterInstance extends L2NpcInstance
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN_S1);
 				if (player.getClan().getLevel() < 5)
 				{
-					sm.addNumber(5);
+					sm.addInt(5);
 				}
 				else
 				{
-					sm.addNumber(player.getClan().getLevel() + 1);
+					sm.addInt(player.getClan().getLevel() + 1);
 				}
 				player.sendPacket(sm);
 			}
 			else
 			{
-				NpcHtmlMessage html = new NpcHtmlMessage(1);
+				final NpcHtmlMessage html = new NpcHtmlMessage();
 				html.setFile(player.getHtmlPrefix(), "data/html/villagemaster/NoMoreSkills.htm");
 				player.sendPacket(html);
 			}

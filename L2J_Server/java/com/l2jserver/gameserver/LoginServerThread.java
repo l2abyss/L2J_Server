@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -289,13 +289,12 @@ public class LoginServerThread extends Thread
 							sendPacket(st);
 							if (L2World.getInstance().getAllPlayersCount() > 0)
 							{
-								FastList<String> playerList = new FastList<>();
-								for (L2PcInstance player : L2World.getInstance().getAllPlayersArray())
+								final List<String> playerList = new ArrayList<>();
+								for (L2PcInstance player : L2World.getInstance().getPlayers())
 								{
 									playerList.add(player.getAccountName());
 								}
-								PlayerInGame pig = new PlayerInGame(playerList);
-								sendPacket(pig);
+								sendPacket(new PlayerInGame(playerList));
 							}
 							break;
 						case 0x03:
@@ -462,10 +461,11 @@ public class LoginServerThread extends Thread
 	 * Adds the game server login.
 	 * @param account the account
 	 * @param client the client
+	 * @return {@code true} if account was not already logged in, {@code false} otherwise
 	 */
-	public void addGameServerLogin(String account, L2GameClient client)
+	public boolean addGameServerLogin(String account, L2GameClient client)
 	{
-		_accountsInGameServer.put(account, client);
+		return _accountsInGameServer.putIfAbsent(account, client) == null;
 	}
 	
 	/**
@@ -755,6 +755,11 @@ public class LoginServerThread extends Thread
 			default:
 				throw new IllegalArgumentException("Status does not exists:" + status);
 		}
+	}
+	
+	public L2GameClient getClient(String name)
+	{
+		return name != null ? _accountsInGameServer.get(name) : null;
 	}
 	
 	public static class SessionKey

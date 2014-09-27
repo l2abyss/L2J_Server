@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,19 +18,20 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import javolution.util.FastList;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-public final class WareHouseDepositList extends L2GameServerPacket
+public final class WareHouseDepositList extends AbstractItemPacket
 {
 	public static final int PRIVATE = 1;
 	public static final int CLAN = 4;
 	public static final int CASTLE = 3; // not sure
 	public static final int FREIGHT = 1;
 	private final long _playerAdena;
-	private final FastList<L2ItemInstance> _items;
+	private final List<L2ItemInstance> _items = new ArrayList<>();
 	/**
 	 * <ul>
 	 * <li>0x01-Private Warehouse</li>
@@ -45,7 +46,6 @@ public final class WareHouseDepositList extends L2GameServerPacket
 	{
 		_whType = type;
 		_playerAdena = player.getAdena();
-		_items = new FastList<>();
 		
 		final boolean isPrivate = _whType == PRIVATE;
 		for (L2ItemInstance temp : player.getInventory().getAvailableItems(true, isPrivate, false))
@@ -63,45 +63,12 @@ public final class WareHouseDepositList extends L2GameServerPacket
 		writeC(0x41);
 		writeH(_whType);
 		writeQ(_playerAdena);
-		final int count = _items.size();
-		writeH(count);
+		writeH(_items.size());
 		
 		for (L2ItemInstance item : _items)
 		{
-			writeD(item.getObjectId());
-			writeD(item.getDisplayId());
-			writeD(item.getLocationSlot());
-			writeQ(item.getCount());
-			writeH(item.getItem().getType2());
-			writeH(item.getCustomType1());
-			writeH(item.isEquipped() ? 0x01 : 0x00);
-			writeD(item.getItem().getBodyPart());
-			writeH(item.getEnchantLevel());
-			writeH(item.getCustomType2());
-			if (item.isAugmented())
-			{
-				writeD(item.getAugmentation().getAugmentationId());
-			}
-			else
-			{
-				writeD(0x00);
-			}
-			writeD(item.getMana());
-			writeD(item.isTimeLimitedItem() ? (int) (item.getRemainingTime() / 1000) : -9999);
-			
-			writeH(item.getAttackElementType());
-			writeH(item.getAttackElementPower());
-			for (byte i = 0; i < 6; i++)
-			{
-				writeH(item.getElementDefAttr(i));
-			}
-			// Enchant Effects
-			for (int op : item.getEnchantOptions())
-			{
-				writeH(op);
-			}
+			writeItem(item);
 			writeD(item.getObjectId());
 		}
-		_items.clear();
 	}
 }

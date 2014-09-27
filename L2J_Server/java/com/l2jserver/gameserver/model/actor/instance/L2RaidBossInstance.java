@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,11 +20,11 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.RaidBossPointsManager;
 import com.l2jserver.gameserver.instancemanager.RaidBossSpawnManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.gameserver.model.actor.L2Summon;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -82,16 +82,7 @@ public class L2RaidBossInstance extends L2MonsterInstance
 			return false;
 		}
 		
-		L2PcInstance player = null;
-		if (killer instanceof L2PcInstance)
-		{
-			player = (L2PcInstance) killer;
-		}
-		else if (killer instanceof L2Summon)
-		{
-			player = ((L2Summon) killer).getOwner();
-		}
-		
+		final L2PcInstance player = killer.getActingPlayer();
 		if (player != null)
 		{
 			broadcastPacket(SystemMessage.getSystemMessage(SystemMessageId.RAID_WAS_SUCCESSFUL));
@@ -99,19 +90,19 @@ public class L2RaidBossInstance extends L2MonsterInstance
 			{
 				for (L2PcInstance member : player.getParty().getMembers())
 				{
-					RaidBossPointsManager.getInstance().addPoints(member, getNpcId(), (getLevel() / 2) + Rnd.get(-5, 5));
+					RaidBossPointsManager.getInstance().addPoints(member, getId(), (getLevel() / 2) + Rnd.get(-5, 5));
 					if (member.isNoble())
 					{
-						Hero.getInstance().setRBkilled(member.getObjectId(), getNpcId());
+						Hero.getInstance().setRBkilled(member.getObjectId(), getId());
 					}
 				}
 			}
 			else
 			{
-				RaidBossPointsManager.getInstance().addPoints(player, getNpcId(), (getLevel() / 2) + Rnd.get(-5, 5));
+				RaidBossPointsManager.getInstance().addPoints(player, getId(), (getLevel() / 2) + Rnd.get(-5, 5));
 				if (player.isNoble())
 				{
-					Hero.getInstance().setRBkilled(player.getObjectId(), getNpcId());
+					Hero.getInstance().setRBkilled(player.getObjectId(), getId());
 				}
 			}
 		}
@@ -131,14 +122,7 @@ public class L2RaidBossInstance extends L2MonsterInstance
 			getMinionList().spawnMinions();
 		}
 		
-		_maintenanceTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				checkAndReturnToSpawn();
-			}
-		}, 60000, getMaintenanceInterval() + Rnd.get(5000));
+		_maintenanceTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(() -> checkAndReturnToSpawn(), 60000, getMaintenanceInterval() + Rnd.get(5000));
 	}
 	
 	protected void checkAndReturnToSpawn()
@@ -154,9 +138,9 @@ public class L2RaidBossInstance extends L2MonsterInstance
 			return;
 		}
 		
-		final int spawnX = spawn.getLocx();
-		final int spawnY = spawn.getLocy();
-		final int spawnZ = spawn.getLocz();
+		final int spawnX = spawn.getX();
+		final int spawnY = spawn.getY();
+		final int spawnZ = spawn.getZ();
 		
 		if (!isInCombat() && !isMovementDisabled())
 		{

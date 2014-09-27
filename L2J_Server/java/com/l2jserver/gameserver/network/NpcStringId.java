@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,9 +21,10 @@ package com.l2jserver.gameserver.network;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17355,7 +17356,7 @@ public final class NpcStringId
 	 * ID: 1800701<br>
 	 * Message:
 	 */
-	public static final NpcStringId EMPTY;
+	public static final NpcStringId EMPTY_STRING;
 	
 	/**
 	 * ID: 1800702<br>
@@ -21606,10 +21607,9 @@ public final class NpcStringId
 	public static final NpcStringId IT_TELEPORTS_THE_GUARD_MEMBERS_OF_THE_ELMORE_IMPERIAL_CASTLE_TO_THE_INSIDE_OF_THE_CASTLE;
 	
 	/**
-	 * Array containing all NpcStringId<br>
-	 * Important: Always initialize with a length of the highest NpcStringId + 1!!!
+	 * Map containing all NpcStringId<br>
 	 */
-	private static NpcStringId[] VALUES;
+	private static Map<Integer, NpcStringId> VALUES = new HashMap<>();
 	
 	static
 	{
@@ -24497,7 +24497,7 @@ public final class NpcStringId
 		MESSENGER_INFORM_THE_BROTHERS_IN_KUCEREUS_CLAN_OUTPOST_BRAVE_ADVENTURERS_WHO_HAVE_CHALLENGED_THE_SEED_OF_INFINITY_ARE_CURRENTLY_INFILTRATING_THE_HALL_OF_EROSION_THROUGH_THE_DEFENSIVELY_WEAK_HALL_OF_SUFFERING = new NpcStringId(1800698);
 		MESSENGER_INFORM_THE_BROTHERS_IN_KUCEREUS_CLAN_OUTPOST_SWEEPING_THE_SEED_OF_INFINITY_IS_CURRENTLY_COMPLETE_TO_THE_HEART_OF_THE_SEED_EKIMUS_IS_BEING_DIRECTLY_ATTACKED_AND_THE_UNDEAD_REMAINING_IN_THE_HALL_OF_SUFFERING_ARE_BEING_ERADICATED = new NpcStringId(1800699);
 		MESSENGER_INFORM_THE_PATRONS_OF_THE_KEUCEREUS_ALLIANCE_BASE_THE_SEED_OF_INFINITY_IS_CURRENTLY_SECURED_UNDER_THE_FLAG_OF_THE_KEUCEREUS_ALLIANCE = new NpcStringId(1800700);
-		EMPTY = new NpcStringId(1800701);
+		EMPTY_STRING = new NpcStringId(1800701);
 		MESSENGER_INFORM_THE_PATRONS_OF_THE_KEUCEREUS_ALLIANCE_BASE_THE_RESURRECTED_UNDEAD_IN_THE_SEED_OF_INFINITY_ARE_POURING_INTO_THE_HALL_OF_SUFFERING_AND_THE_HALL_OF_EROSION = new NpcStringId(1800702);
 		MESSENGER_INFORM_THE_BROTHERS_IN_KUCEREUS_CLAN_OUTPOST_EKIMUS_IS_ABOUT_TO_BE_REVIVED_BY_THE_RESURRECTED_UNDEAD_IN_SEED_OF_INFINITY_SEND_ALL_REINFORCEMENTS_TO_THE_HEART_AND_THE_HALL_OF_SUFFERING = new NpcStringId(1800703);
 		STABBING_THREE_TIMES = new NpcStringId(1800704);
@@ -25213,9 +25213,8 @@ public final class NpcStringId
 	private static final void buildFastLookupTable()
 	{
 		final Field[] fields = NpcStringId.class.getDeclaredFields();
-		final ArrayList<NpcStringId> nsIds = new ArrayList<>(fields.length);
 		
-		int maxId = 0, mod;
+		int mod;
 		NpcStringId nsId;
 		for (final Field field : fields)
 		{
@@ -25227,21 +25226,14 @@ public final class NpcStringId
 					nsId = (NpcStringId) field.get(null);
 					nsId.setName(field.getName());
 					nsId.setParamCount(parseMessageParameters(field.getName()));
-					maxId = Math.max(maxId, nsId.getId());
-					nsIds.add(nsId);
+					
+					VALUES.put(nsId.getId(), nsId);
 				}
 				catch (final Exception e)
 				{
 					_log.log(Level.WARNING, "NpcStringId: Failed field access for '" + field.getName() + "'", e);
 				}
 			}
-		}
-		
-		VALUES = new NpcStringId[maxId + 1];
-		for (int i = nsIds.size(); i-- > 0;)
-		{
-			nsId = nsIds.get(i);
-			VALUES[nsId.getId()] = nsId;
 		}
 	}
 	
@@ -25273,12 +25265,7 @@ public final class NpcStringId
 	
 	private static final NpcStringId getNpcStringIdInternal(final int id)
 	{
-		if ((id < 0) || (id >= VALUES.length))
-		{
-			return null;
-		}
-		
-		return VALUES[id];
+		return VALUES.get(id);
 	}
 	
 	public static final NpcStringId getNpcStringId(final String name)
@@ -25295,7 +25282,7 @@ public final class NpcStringId
 	
 	public static final void reloadLocalisations()
 	{
-		for (final NpcStringId nsId : VALUES)
+		for (final NpcStringId nsId : VALUES.values())
 		{
 			if (nsId != null)
 			{

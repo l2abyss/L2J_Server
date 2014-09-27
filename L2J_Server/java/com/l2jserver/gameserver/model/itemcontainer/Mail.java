@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -24,10 +24,10 @@ import java.sql.ResultSet;
 import java.util.logging.Level;
 
 import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.gameserver.enums.ItemLocation;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 
 /**
  * @author DS
@@ -76,7 +76,7 @@ public class Mail extends ItemContainer
 				continue;
 			}
 			
-			item.setLocation(getBaseLocation(), messageId);
+			item.setItemLocation(getBaseLocation(), messageId);
 		}
 		
 		updateDatabase();
@@ -92,7 +92,7 @@ public class Mail extends ItemContainer
 			}
 			if (wh == null)
 			{
-				item.setLocation(ItemLocation.WAREHOUSE);
+				item.setItemLocation(ItemLocation.WAREHOUSE);
 			}
 			else
 			{
@@ -105,7 +105,7 @@ public class Mail extends ItemContainer
 	protected void addItem(L2ItemInstance item)
 	{
 		super.addItem(item);
-		item.setLocation(getBaseLocation(), _messageId);
+		item.setItemLocation(getBaseLocation(), _messageId);
 	}
 	
 	/*
@@ -146,7 +146,7 @@ public class Mail extends ItemContainer
 					L2World.getInstance().storeObject(item);
 					
 					// If stackable item is found just add to current quantity
-					if (item.isStackable() && (getItemByItemId(item.getItemId()) != null))
+					if (item.isStackable() && (getItemByItemId(item.getId()) != null))
 					{
 						addItem("Restore", item, null, null);
 					}

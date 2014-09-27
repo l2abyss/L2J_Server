@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -72,14 +72,14 @@ public final class InitWorldInfo extends BaseWritePacket
 					{
 						break;
 					}
-					super.writeD(c.getClanId());
+					super.writeD(c.getId());
 					super.writeS(c.getName());
 					super.writeD(c.getLevel());
 					if (c.getLeader() == null)
 					{
 						writeD(0);
 						writeS("");
-						_log.info("Clan Id: " + c.getClanId() + " has null clan leader!");
+						_log.info("Clan Id: " + c.getId() + " has null clan leader!");
 					}
 					else
 					{
@@ -94,7 +94,7 @@ public final class InitWorldInfo extends BaseWritePacket
 					super.writeD(clanAllies.size());
 					for (L2Clan allies : clanAllies)
 					{
-						super.writeD(allies.getClanId());
+						super.writeD(allies.getId());
 					}
 				}
 				break;
@@ -107,18 +107,18 @@ public final class InitWorldInfo extends BaseWritePacket
 					{
 						break;
 					}
-					super.writeD(p.getInteger("charId"));
+					super.writeD(p.getInt("charId"));
 					super.writeS(p.getString("char_name"));
 					super.writeS(p.getString("account_name"));
-					super.writeD(p.getInteger("level"));
-					super.writeD(p.getInteger("clanid"));
-					super.writeD(p.getInteger("accesslevel"));
-					super.writeC(p.getInteger("online"));
+					super.writeD(p.getInt("level"));
+					super.writeD(p.getInt("clanid"));
+					super.writeD(p.getInt("accesslevel"));
+					super.writeC(p.getInt("online"));
 					FastList<Integer> list = FastList.newInstance();
 					try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 						PreparedStatement statement = con.prepareStatement("SELECT friendId FROM character_friends WHERE charId=?"))
 					{
-						statement.setInt(1, p.getInteger("charId"));
+						statement.setInt(1, p.getInt("charId"));
 						try (ResultSet rset = statement.executeQuery())
 						{
 							while (rset.next())
@@ -145,7 +145,7 @@ public final class InitWorldInfo extends BaseWritePacket
 				_log.info("Transfering " + castles.size() + " castles data to CB server.");
 				for (Castle castle : castles)
 				{
-					writeD(castle.getCastleId());
+					writeD(castle.getResidenceId());
 					writeS(castle.getName());
 					writeD(castle.getOwnerId());
 					writeD(castle.getTaxPercent());

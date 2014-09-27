@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -66,7 +66,7 @@ public final class RequestChangePetName extends L2GameClientPacket
 			return;
 		}
 		
-		if (PetNameTable.getInstance().doesPetNameExist(_name, pet.getTemplate().getNpcId()))
+		if (PetNameTable.getInstance().doesPetNameExist(_name, pet.getTemplate().getId()))
 		{
 			activeChar.sendPacket(SystemMessageId.NAMING_ALREADY_IN_USE_BY_ANOTHER_PET);
 			return;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import com.l2jserver.gameserver.datatables.ClanTable;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.ClanHallManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -93,7 +94,7 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 						ok = Evolve.doEvolve(player, this, 10426, 10611, 70);
 						break;
 				}
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				if (ok)
 				{
 					html.setFile(player.getHtmlPrefix(), "data/html/clanHallDoormen/evolve-ok.htm");
@@ -114,7 +115,7 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 		
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		
 		if (getClanHall() != null)
 		{
@@ -160,7 +161,7 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 	protected final void openDoors(L2PcInstance player, String command)
 	{
 		getClanHall().openCloseDoors(true);
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), "data/html/clanHallDoormen/doormen-opened.htm");
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);
@@ -170,7 +171,7 @@ public class L2ClanHallDoormenInstance extends L2DoormenInstance
 	protected final void closeDoors(L2PcInstance player, String command)
 	{
 		getClanHall().openCloseDoors(false);
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), "data/html/clanHallDoormen/doormen-closed.htm");
 		html.replace("%objectId%", String.valueOf(getObjectId()));
 		player.sendPacket(html);

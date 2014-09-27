@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -34,11 +34,10 @@ public enum L2TargetType
 	BEHIND_AURA,
 	CLAN,
 	CLAN_MEMBER,
+	COMMAND_CHANNEL,
 	CORPSE,
 	CORPSE_CLAN,
 	CORPSE_MOB,
-	CORPSE_PET,
-	CORPSE_PLAYER,
 	ENEMY_SUMMON,
 	FLAGPOLE,
 	FRONT_AREA,
@@ -53,9 +52,12 @@ public enum L2TargetType
 	PARTY_MEMBER,
 	PARTY_NOTME,
 	PARTY_OTHER,
+	PC_BODY,
 	PET,
 	SELF,
+	SERVITOR,
 	SUMMON,
+	TARGET_PARTY,
 	UNDEAD,
 	UNLOCKABLE
 }

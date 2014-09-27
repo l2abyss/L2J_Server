@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.StringTokenizer;
 
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -37,19 +38,19 @@ public class L2FortDoormenInstance extends L2DoormenInstance
 	{
 		player.sendPacket(ActionFailed.STATIC_PACKET);
 		
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		
 		if (!isOwnerClan(player))
 		{
-			html.setFile(player.getHtmlPrefix(), "data/html/doormen/" + getTemplate().getNpcId() + "-no.htm");
+			html.setFile(player.getHtmlPrefix(), "data/html/doormen/" + getTemplate().getId() + "-no.htm");
 		}
 		else if (isUnderSiege())
 		{
-			html.setFile(player.getHtmlPrefix(), "data/html/doormen/" + getTemplate().getNpcId() + "-busy.htm");
+			html.setFile(player.getHtmlPrefix(), "data/html/doormen/" + getTemplate().getId() + "-busy.htm");
 		}
 		else
 		{
-			html.setFile(player.getHtmlPrefix(), "data/html/doormen/" + getTemplate().getNpcId() + ".htm");
+			html.setFile(player.getHtmlPrefix(), "data/html/doormen/" + getTemplate().getId() + ".htm");
 		}
 		
 		html.replace("%objectId%", String.valueOf(getObjectId()));
@@ -85,7 +86,7 @@ public class L2FortDoormenInstance extends L2DoormenInstance
 	{
 		if ((player.getClan() != null) && (getFort() != null) && (getFort().getOwnerClan() != null))
 		{
-			if (player.getClanId() == getFort().getOwnerClan().getClanId())
+			if (player.getClanId() == getFort().getOwnerClan().getId())
 			{
 				return true;
 			}

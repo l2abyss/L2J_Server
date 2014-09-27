@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,8 +23,8 @@ import java.util.List;
 
 import com.l2jserver.gameserver.model.L2ExtractableProduct;
 import com.l2jserver.gameserver.model.StatsSet;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
-import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
+import com.l2jserver.gameserver.model.items.type.EtcItemType;
 import com.l2jserver.util.StringUtil;
 
 /**
@@ -33,7 +33,7 @@ import com.l2jserver.util.StringUtil;
 public final class L2EtcItem extends L2Item
 {
 	private String _handler;
-	private L2EtcItemType _type;
+	private EtcItemType _type;
 	private final boolean _isBlessed;
 	private final List<L2ExtractableProduct> _extractableItems;
 	
@@ -44,24 +44,19 @@ public final class L2EtcItem extends L2Item
 	public L2EtcItem(StatsSet set)
 	{
 		super(set);
-		_type = L2EtcItemType.valueOf(set.getString("etcitem_type", "none").toUpperCase());
+		_type = set.getEnum("etcitem_type", EtcItemType.class, EtcItemType.NONE);
 		
 		// l2j custom - L2EtcItemType.SHOT
 		switch (getDefaultAction())
 		{
-			case soulshot:
-			case summon_soulshot:
-			case summon_spiritshot:
-			case spiritshot:
+			case SOULSHOT:
+			case SUMMON_SOULSHOT:
+			case SUMMON_SPIRITSHOT:
+			case SPIRITSHOT:
 			{
-				_type = L2EtcItemType.SHOT;
+				_type = EtcItemType.SHOT;
 				break;
 			}
-		}
-		
-		if (is_ex_immediate_effect())
-		{
-			_type = L2EtcItemType.HERB;
 		}
 		
 		_type1 = L2Item.TYPE1_ITEM_QUESTITEM_ADENA;
@@ -71,13 +66,13 @@ public final class L2EtcItem extends L2Item
 		{
 			_type2 = L2Item.TYPE2_QUEST;
 		}
-		else if ((getItemId() == PcInventory.ADENA_ID) || (getItemId() == PcInventory.ANCIENT_ADENA_ID))
+		else if ((getId() == Inventory.ADENA_ID) || (getId() == Inventory.ANCIENT_ADENA_ID))
 		{
 			_type2 = L2Item.TYPE2_MONEY;
 		}
 		
 		_handler = set.getString("handler", null); // ! null !
-		_isBlessed = set.getBool("blessed", false);
+		_isBlessed = set.getBoolean("blessed", false);
 		
 		// Extractable
 		String capsuled_items = set.getString("capsuled_items", null);
@@ -128,18 +123,9 @@ public final class L2EtcItem extends L2Item
 	 * @return the type of Etc Item.
 	 */
 	@Override
-	public L2EtcItemType getItemType()
+	public EtcItemType getItemType()
 	{
 		return _type;
-	}
-	
-	/**
-	 * @return {@code true} if the item is consumable, {@code false} otherwise.
-	 */
-	@Override
-	public final boolean isConsumable()
-	{
-		return ((getItemType() == L2EtcItemType.SHOT) || (getItemType() == L2EtcItemType.POTION)); // || (type == L2EtcItemType.SCROLL));
 	}
 	
 	/**

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,16 +18,17 @@
  */
 package com.l2jserver.gameserver.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.skills.funcs.FuncAdd;
 import com.l2jserver.gameserver.model.skills.funcs.LambdaConst;
 import com.l2jserver.gameserver.model.stats.Stats;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 public final class Elementals
 {
-	private static final TIntObjectHashMap<ElementalItems> TABLE = new TIntObjectHashMap<>();
+	private static final Map<Integer, ElementalItems> TABLE = new HashMap<>();
 	
 	static
 	{

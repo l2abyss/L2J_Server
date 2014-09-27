@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -22,7 +22,7 @@ import java.lang.reflect.Constructor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -62,7 +62,7 @@ public class MonsterRace
 			{
 				for (int j = i - 1; j >= 0; j--)
 				{
-					if (_monsters[j].getTemplate().getNpcId() == (id + random))
+					if (_monsters[j].getTemplate().getId() == (id + random))
 					{
 						random = Rnd.get(24);
 						continue;
@@ -72,7 +72,7 @@ public class MonsterRace
 			}
 			try
 			{
-				L2NpcTemplate template = NpcTable.getInstance().getTemplate(id + random);
+				L2NpcTemplate template = NpcData.getInstance().getTemplate(id + random);
 				_constructor = Class.forName("com.l2jserver.gameserver.model.actor.instance." + template.getType() + "Instance").getConstructors()[0];
 				int objectId = IdFactory.getInstance().getNextId();
 				_monsters[i] = (L2Npc) _constructor.newInstance(objectId, template);

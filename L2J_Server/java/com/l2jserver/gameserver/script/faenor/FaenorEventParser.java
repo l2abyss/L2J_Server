@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -58,14 +58,7 @@ public class FaenorEventParser extends FaenorParser
 		if (_eventDates.getStartDate().after(currentDate))
 		{
 			_log.info("Event ID: (" + ID + ") is not active yet... Ignored.");
-			ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					parseEventDropAndMessage(eventNode);
-				}
-			}, _eventDates.getStartDate().getTime() - currentDate.getTime());
+			ThreadPoolManager.getInstance().scheduleGeneral(() -> parseEventDropAndMessage(eventNode), _eventDates.getStartDate().getTime() - currentDate.getTime());
 			return;
 		}
 		

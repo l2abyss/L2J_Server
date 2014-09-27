@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -44,15 +44,5 @@ public class L2NoSummonFriendZone extends L2ZoneType
 	protected void onExit(L2Character character)
 	{
 		character.setInsideZone(ZoneId.NO_SUMMON_FRIEND, false);
-	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
 	}
 }

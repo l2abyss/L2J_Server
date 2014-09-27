@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.model.multisell;
 
 import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.items.L2Armor;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
@@ -35,6 +36,11 @@ public class Ingredient
 	private boolean _maintainIngredient;
 	private L2Item _template = null;
 	private ItemInfo _itemInfo = null;
+	
+	public Ingredient(StatsSet set)
+	{
+		this(set.getInt("id"), set.getLong("count"), set.getBoolean("isTaxIngredient", false), set.getBoolean("maintainIngredient", false));
+	}
 	
 	public Ingredient(int itemId, long itemCount, boolean isTaxIngredient, boolean maintainIngredient)
 	{

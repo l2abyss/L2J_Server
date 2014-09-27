@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,7 +21,7 @@ package com.l2jserver.gameserver.network.serverpackets;
 import javolution.util.FastList;
 
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
-import com.l2jserver.gameserver.instancemanager.FortSiegeManager.SiegeSpawn;
+import com.l2jserver.gameserver.model.FortSiegeSpawn;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.entity.Fort;
 
@@ -43,20 +43,20 @@ public class ExShowFortressMapInfo extends L2GameServerPacket
 		writeC(0xFE);
 		writeH(0x7D);
 		
-		writeD(_fortress.getFortId());
-		writeD(_fortress.getSiege().getIsInProgress() ? 1 : 0); // fortress siege status
+		writeD(_fortress.getResidenceId());
+		writeD(_fortress.getSiege().isInProgress() ? 1 : 0); // fortress siege status
 		writeD(_fortress.getFortSize()); // barracks count
 		
-		FastList<SiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(_fortress.getFortId());
-		if ((commanders != null) && (commanders.size() != 0) && _fortress.getSiege().getIsInProgress())
+		FastList<FortSiegeSpawn> commanders = FortSiegeManager.getInstance().getCommanderSpawnList(_fortress.getResidenceId());
+		if ((commanders != null) && (commanders.size() != 0) && _fortress.getSiege().isInProgress())
 		{
 			switch (commanders.size())
 			{
 				case 3:
 				{
-					for (SiegeSpawn spawn : commanders)
+					for (FortSiegeSpawn spawn : commanders)
 					{
-						if (isSpawned(spawn.getNpcId()))
+						if (isSpawned(spawn.getId()))
 						{
 							writeD(0);
 						}
@@ -70,14 +70,14 @@ public class ExShowFortressMapInfo extends L2GameServerPacket
 				case 4: // TODO: change 4 to 5 once control room supported
 				{
 					int count = 0;
-					for (SiegeSpawn spawn : commanders)
+					for (FortSiegeSpawn spawn : commanders)
 					{
 						count++;
 						if (count == 4)
 						{
 							writeD(1); // TODO: control room emulated
 						}
-						if (isSpawned(spawn.getNpcId()))
+						if (isSpawned(spawn.getId()))
 						{
 							writeD(0);
 						}
@@ -108,7 +108,7 @@ public class ExShowFortressMapInfo extends L2GameServerPacket
 		boolean ret = false;
 		for (L2Spawn spawn : _fortress.getSiege().getCommanders())
 		{
-			if (spawn.getNpcid() == npcId)
+			if (spawn.getId() == npcId)
 			{
 				ret = true;
 				break;

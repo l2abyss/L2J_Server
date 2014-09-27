@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,12 +21,12 @@ package com.l2jserver.gameserver.model.actor.instance;
 import java.util.concurrent.Future;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.FourSepulchersManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.quest.QuestState;
-import com.l2jserver.gameserver.model.skills.L2Skill;
 import com.l2jserver.gameserver.network.serverpackets.NpcSay;
 
 /**
@@ -34,6 +34,8 @@ import com.l2jserver.gameserver.network.serverpackets.NpcSay;
  */
 public class L2SepulcherMonsterInstance extends L2MonsterInstance
 {
+	protected static final SkillHolder FAKE_PETRIFICATION = new SkillHolder(4616, 1);
+	
 	public int mysteriousBoxId = 0;
 	
 	protected Future<?> _victimSpawnKeyBoxTask = null;
@@ -46,7 +48,7 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 		super(objectId, template);
 		setInstanceType(InstanceType.L2SepulcherMonsterInstance);
 		setShowSummonAnimation(true);
-		switch (template.getNpcId())
+		switch (template.getId())
 		{
 			case 25339:
 			case 25342:
@@ -60,7 +62,7 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 	public void onSpawn()
 	{
 		setShowSummonAnimation(false);
-		switch (getNpcId())
+		switch (getId())
 		{
 			case 18150:
 			case 18151:
@@ -139,7 +141,7 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 			return false;
 		}
 		
-		switch (getNpcId())
+		switch (getId())
 		{
 			case 18120:
 			case 18121:
@@ -269,7 +271,7 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 	}
 	
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
 		if (_victimSpawnKeyBoxTask != null)
 		{
@@ -282,7 +284,7 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 			_onDeadEventTask = null;
 		}
 		
-		super.deleteMe();
+		return super.deleteMe();
 	}
 	
 	private void giveCup(L2Character killer)
@@ -291,7 +293,7 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 		int cupId = 0;
 		int oldBrooch = 7262;
 		
-		switch (getNpcId())
+		switch (getId())
 		{
 			case 25339:
 				cupId = 7256;
@@ -357,7 +359,7 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 				return;
 			}
 			
-			broadcastPacket(new NpcSay(getObjectId(), 0, getNpcId(), "forgive me!!"));
+			broadcastPacket(new NpcSay(getObjectId(), 0, getId(), "forgive me!!"));
 		}
 	}
 	
@@ -384,7 +386,7 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 			}
 			
 			FourSepulchersManager.getInstance().spawnKeyBox(_activeChar);
-			broadcastPacket(new NpcSay(getObjectId(), 0, getNpcId(), "Many thanks for rescue me."));
+			broadcastPacket(new NpcSay(getObjectId(), 0, getId(), "Many thanks for rescue me."));
 			if (_victimShout != null)
 			{
 				_victimShout.cancel(true);
@@ -405,7 +407,7 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 		@Override
 		public void run()
 		{
-			switch (_activeChar.getNpcId())
+			switch (_activeChar.getId())
 			{
 				case 18120:
 				case 18121:
@@ -509,8 +511,8 @@ public class L2SepulcherMonsterInstance extends L2MonsterInstance
 		@Override
 		public void run()
 		{
-			L2Skill fp = SkillTable.FrequentSkill.FAKE_PETRIFICATION.getSkill(); // Invulnerable by petrification
-			fp.getEffects(activeChar, activeChar);
+			// Invulnerable by petrification
+			FAKE_PETRIFICATION.getSkill().applyEffects(activeChar, activeChar);
 		}
 	}
 	

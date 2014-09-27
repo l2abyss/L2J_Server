@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,8 +18,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.util.Point3D;
 
 /**
  * @author Maktakien
@@ -28,15 +28,15 @@ public class MoveToLocationInVehicle extends L2GameServerPacket
 {
 	private final int _charObjId;
 	private final int _boatId;
-	private final Point3D _destination;
-	private final Point3D _origin;
+	private final Location _destination;
+	private final Location _origin;
 	
 	/**
 	 * @param player
 	 * @param destination
 	 * @param origin
 	 */
-	public MoveToLocationInVehicle(L2PcInstance player, Point3D destination, Point3D origin)
+	public MoveToLocationInVehicle(L2PcInstance player, Location destination, Location origin)
 	{
 		_charObjId = player.getObjectId();
 		_boatId = player.getBoat().getObjectId();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,7 +18,6 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -26,21 +25,19 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.TradeController;
-import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.datatables.BuyListData;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2TradeList;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.instance.L2MercManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.buylist.L2BuyList;
+import com.l2jserver.gameserver.model.buylist.Product;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.L2Armor;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.L2Weapon;
-import com.l2jserver.gameserver.model.items.type.L2ArmorType;
-import com.l2jserver.gameserver.model.items.type.L2WeaponType;
+import com.l2jserver.gameserver.model.items.type.ArmorType;
+import com.l2jserver.gameserver.model.items.type.WeaponType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ShopPreviewInfo;
@@ -142,7 +139,7 @@ public final class RequestPreviewItem extends L2GameClientPacket
 		// Check current target of the player and the INTERACTION_DISTANCE
 		L2Object target = _activeChar.getTarget();
 		if (!_activeChar.isGM() && ((target == null // No target (i.e. GM Shop)
-			) || !((target instanceof L2MerchantInstance) || (target instanceof L2MercManagerInstance)) // Target not a merchant and not mercmanager
+			) || !((target instanceof L2MerchantInstance)) // Target not a merchant
 		|| !_activeChar.isInsideRadius(target, L2Npc.INTERACTION_DISTANCE, false, false) // Distance is too far
 		))
 		{
@@ -155,8 +152,6 @@ public final class RequestPreviewItem extends L2GameClientPacket
 			return;
 		}
 		
-		L2TradeList list = null;
-		
 		// Get the current merchant targeted by the player
 		final L2MerchantInstance merchant = (target instanceof L2MerchantInstance) ? (L2MerchantInstance) target : null;
 		if (merchant == null)
@@ -165,42 +160,28 @@ public final class RequestPreviewItem extends L2GameClientPacket
 			return;
 		}
 		
-		final List<L2TradeList> lists = TradeController.getInstance().getBuyListByNpcId(merchant.getNpcId());
-		if (lists == null)
-		{
-			Util.handleIllegalPlayerAction(_activeChar, "Warning!! Character " + _activeChar.getName() + " of account " + _activeChar.getAccountName() + " sent a false BuyList list_id " + _listId, Config.DEFAULT_PUNISH);
-			return;
-		}
-		
-		for (L2TradeList tradeList : lists)
-		{
-			if (tradeList.getListId() == _listId)
-			{
-				list = tradeList;
-			}
-		}
-		
-		if (list == null)
+		final L2BuyList buyList = BuyListData.getInstance().getBuyList(_listId);
+		if (buyList == null)
 		{
 			Util.handleIllegalPlayerAction(_activeChar, "Warning!! Character " + _activeChar.getName() + " of account " + _activeChar.getAccountName() + " sent a false BuyList list_id " + _listId, Config.DEFAULT_PUNISH);
 			return;
 		}
 		
 		long totalPrice = 0;
-		_listId = list.getListId();
 		_item_list = new FastMap<>();
 		
 		for (int i = 0; i < _count; i++)
 		{
 			int itemId = _items[i];
 			
-			if (!list.containsItemId(itemId))
+			final Product product = buyList.getProductByItemId(itemId);
+			if (product == null)
 			{
 				Util.handleIllegalPlayerAction(_activeChar, "Warning!! Character " + _activeChar.getName() + " of account " + _activeChar.getAccountName() + " sent a false BuyList list_id " + _listId + " and item_id " + itemId, Config.DEFAULT_PUNISH);
 				return;
 			}
 			
-			L2Item template = ItemTable.getInstance().getTemplate(itemId);
+			L2Item template = product.getItem();
 			if (template == null)
 			{
 				continue;
@@ -216,11 +197,11 @@ public final class RequestPreviewItem extends L2GameClientPacket
 			{
 				if (_activeChar.getRace().ordinal() == 5)
 				{
-					if (template.getItemType() == L2WeaponType.NONE)
+					if (template.getItemType() == WeaponType.NONE)
 					{
 						continue;
 					}
-					else if ((template.getItemType() == L2WeaponType.RAPIER) || (template.getItemType() == L2WeaponType.CROSSBOW) || (template.getItemType() == L2WeaponType.ANCIENTSWORD))
+					else if ((template.getItemType() == WeaponType.RAPIER) || (template.getItemType() == WeaponType.CROSSBOW) || (template.getItemType() == WeaponType.ANCIENTSWORD))
 					{
 						continue;
 					}
@@ -230,7 +211,7 @@ public final class RequestPreviewItem extends L2GameClientPacket
 			{
 				if (_activeChar.getRace().ordinal() == 5)
 				{
-					if ((template.getItemType() == L2ArmorType.HEAVY) || (template.getItemType() == L2ArmorType.MAGIC))
+					if ((template.getItemType() == ArmorType.HEAVY) || (template.getItemType() == ArmorType.MAGIC))
 					{
 						continue;
 					}
@@ -245,9 +226,9 @@ public final class RequestPreviewItem extends L2GameClientPacket
 			
 			_item_list.put(slot, itemId);
 			totalPrice += Config.WEAR_PRICE;
-			if (totalPrice > PcInventory.MAX_ADENA)
+			if (totalPrice > Inventory.MAX_ADENA)
 			{
-				Util.handleIllegalPlayerAction(_activeChar, "Warning!! Character " + _activeChar.getName() + " of account " + _activeChar.getAccountName() + " tried to purchase over " + PcInventory.MAX_ADENA + " adena worth of goods.", Config.DEFAULT_PUNISH);
+				Util.handleIllegalPlayerAction(_activeChar, "Warning!! Character " + _activeChar.getName() + " of account " + _activeChar.getAccountName() + " tried to purchase over " + Inventory.MAX_ADENA + " adena worth of goods.", Config.DEFAULT_PUNISH);
 				return;
 			}
 		}

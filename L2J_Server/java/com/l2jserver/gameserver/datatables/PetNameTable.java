@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -48,14 +48,12 @@ public class PetNameTable
 		{
 			ps.setString(1, name);
 			StringBuilder cond = new StringBuilder();
-			for (int it : PetDataTable.getPetItemsByNpc(petNpcId))
+			if (!cond.toString().isEmpty())
 			{
-				if (!cond.toString().isEmpty())
-				{
-					cond.append(", ");
-				}
-				cond.append(it);
+				cond.append(", ");
 			}
+			
+			cond.append(PetDataTable.getPetItemsByNpc(petNpcId));
 			ps.setString(2, cond.toString());
 			try (ResultSet rs = ps.executeQuery())
 			{

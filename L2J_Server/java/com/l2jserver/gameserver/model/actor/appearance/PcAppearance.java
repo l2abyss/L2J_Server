@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -22,6 +22,8 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public class PcAppearance
 {
+	public static final int DEFAULT_TITLE_COLOR = 0xECF9A2;
+	
 	private L2PcInstance _owner;
 	
 	private byte _face;
@@ -33,7 +35,6 @@ public class PcAppearance
 	private boolean _sex; // Female true(1)
 	
 	/** true if the player is invisible */
-	private boolean _invisible = false;
 	private boolean _ghostmode = false;
 	
 	/** The current visible name of this player, not necessarily the real one */
@@ -42,11 +43,11 @@ public class PcAppearance
 	/** The current visible title of this player, not necessarily the real one */
 	private String _visibleTitle;
 	
-	/** The hexadecimal Color of players name (white is 0xFFFFFF) */
+	/** The default name color is 0xFFFFFF. */
 	private int _nameColor = 0xFFFFFF;
 	
-	/** The hexadecimal Color of players name (white is 0xFFFFFF) */
-	private int _titleColor = 0xFFFF77;
+	/** The default title color is 0xECF9A2. */
+	private int _titleColor = DEFAULT_TITLE_COLOR;
 	
 	public PcAppearance(byte face, byte hColor, byte hStyle, boolean sex)
 	{
@@ -149,21 +150,6 @@ public class PcAppearance
 	public final void setSex(boolean isfemale)
 	{
 		_sex = isfemale;
-	}
-	
-	public void setInvisible()
-	{
-		_invisible = true;
-	}
-	
-	public void setVisible()
-	{
-		_invisible = false;
-	}
-	
-	public boolean getInvisible()
-	{
-		return _invisible;
 	}
 	
 	public void setGhostMode(boolean b)

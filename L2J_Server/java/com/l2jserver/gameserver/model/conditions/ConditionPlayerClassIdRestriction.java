@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model.conditions;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.l2jserver.gameserver.model.stats.Env;
 
@@ -27,13 +27,13 @@ import com.l2jserver.gameserver.model.stats.Env;
  */
 public class ConditionPlayerClassIdRestriction extends Condition
 {
-	private final ArrayList<Integer> _classIds;
+	private final List<Integer> _classIds;
 	
 	/**
 	 * Instantiates a new condition player class id restriction.
 	 * @param classId the class id
 	 */
-	public ConditionPlayerClassIdRestriction(ArrayList<Integer> classId)
+	public ConditionPlayerClassIdRestriction(List<Integer> classId)
 	{
 		_classIds = classId;
 	}

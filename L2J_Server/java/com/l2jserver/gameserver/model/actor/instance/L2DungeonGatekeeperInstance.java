@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -22,6 +22,7 @@ import java.util.StringTokenizer;
 
 import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.datatables.TeleportLocationTable;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.L2TeleportLocation;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -86,7 +87,7 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 			
 			if (!canPort)
 			{
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				filename += "necro_no.htm";
 				html.setFile(player.getHtmlPrefix(), filename);
 				player.sendPacket(html);
@@ -131,7 +132,7 @@ public class L2DungeonGatekeeperInstance extends L2Npc
 			
 			if (!canPort)
 			{
-				NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+				final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 				filename += "cata_no.htm";
 				html.setFile(player.getHtmlPrefix(), filename);
 				player.sendPacket(html);

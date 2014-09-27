@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,9 +21,8 @@ package com.l2jserver.gameserver.model.stats;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2CubicInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * An Env object is just a class to pass parameters to a calculator such as L2PcInstance, L2ItemInstance, Initial value.
@@ -35,10 +34,9 @@ public final class Env
 	private boolean _blessedSpiritShot = false;
 	private L2Character _character;
 	private L2CubicInstance _cubic;
-	private L2Effect _effect;
 	private L2ItemInstance _item;
 	private byte _shield = 0;
-	private L2Skill _skill;
+	private Skill _skill;
 	private boolean _skillMastery = false;
 	private boolean _soulShot = false;
 	private boolean _spiritShot = false;
@@ -82,14 +80,6 @@ public final class Env
 	}
 	
 	/**
-	 * @return the _effect
-	 */
-	public L2Effect getEffect()
-	{
-		return _effect;
-	}
-	
-	/**
 	 * @return the _item
 	 */
 	public L2ItemInstance getItem()
@@ -116,7 +106,7 @@ public final class Env
 	/**
 	 * @return the _skill
 	 */
-	public L2Skill getSkill()
+	public Skill getSkill()
 	{
 		return _skill;
 	}
@@ -202,14 +192,6 @@ public final class Env
 	}
 	
 	/**
-	 * @param effect the _effect to set
-	 */
-	public void setEffect(L2Effect effect)
-	{
-		_effect = effect;
-	}
-	
-	/**
 	 * @param item the _item to set
 	 */
 	public void setItem(L2ItemInstance item)
@@ -228,7 +210,7 @@ public final class Env
 	/**
 	 * @param skill the _skill to set
 	 */
-	public void setSkill(L2Skill skill)
+	public void setSkill(Skill skill)
 	{
 		_skill = skill;
 	}

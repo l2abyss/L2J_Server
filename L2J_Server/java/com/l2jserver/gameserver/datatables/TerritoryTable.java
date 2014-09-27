@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,12 +18,17 @@
  */
 package com.l2jserver.gameserver.datatables;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2Territory;
-import com.l2jserver.util.lib.SqlUtils;
 
 /**
  * @author Balancer, Mr
@@ -68,30 +73,26 @@ public class TerritoryTable
 	public void load()
 	{
 		_territory.clear();
-		Integer[][] point = SqlUtils.get2DIntArray(new String[]
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			Statement stmt = con.createStatement();
+			ResultSet rset = stmt.executeQuery("SELECT * FROM locations WHERE loc_id>0"))
 		{
-			"loc_id",
-			"loc_x",
-			"loc_y",
-			"loc_zmin",
-			"loc_zmax",
-			"proc"
-		}, "locations", "loc_id > 0");
-		for (Integer[] row : point)
+			while (rset.next())
+			{
+				int terrId = rset.getInt("loc_id");
+				L2Territory terr = _territory.get(terrId);
+				if (terr == null)
+				{
+					terr = new L2Territory(terrId);
+					_territory.put(terrId, terr);
+				}
+				terr.add(rset.getInt("loc_x"), rset.getInt("loc_y"), rset.getInt("loc_zmin"), rset.getInt("loc_zmax"), rset.getInt("proc"));
+			}
+			_log.info("TerritoryTable: Loaded " + _territory.size() + " territories from database.");
+		}
+		catch (SQLException e)
 		{
-			Integer terr = row[0];
-			if (terr == null)
-			{
-				_log.warning(getClass().getSimpleName() + ": Null territory!");
-				continue;
-			}
-			
-			if (_territory.get(terr) == null)
-			{
-				L2Territory t = new L2Territory(terr);
-				_territory.put(terr, t);
-			}
-			_territory.get(terr).add(row[1], row[2], row[3], row[4], row[5]);
+			_log.log(Level.SEVERE, "TerritoryTable: Failed to load territories from database!", e);
 		}
 	}
 	

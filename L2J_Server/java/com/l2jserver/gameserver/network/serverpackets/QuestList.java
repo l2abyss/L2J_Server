@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -84,7 +84,7 @@ public class QuestList extends L2GameServerPacket
 			writeH(_quests.length);
 			for (Quest q : _quests)
 			{
-				writeD(q.getQuestIntId());
+				writeD(q.getId());
 				QuestState qs = _activeChar.getQuestState(q.getName());
 				if (qs == null)
 				{

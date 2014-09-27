@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,11 +20,13 @@ package com.l2jserver.gameserver.model.actor.templates;
 
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
+import com.l2jserver.gameserver.model.interfaces.IIdentifiable;
 
 /**
+ * Doors template.
  * @author JIV
  */
-public class L2DoorTemplate extends L2CharTemplate
+public class L2DoorTemplate extends L2CharTemplate implements IIdentifiable
 {
 	private final int _doorId;
 	private final int _nodeX[];
@@ -55,11 +57,12 @@ public class L2DoorTemplate extends L2CharTemplate
 	private final boolean _checkCollision;
 	private final boolean _isAttackableDoor;
 	private final int _clanhallId;
+	private final boolean _stealth;
 	
 	public L2DoorTemplate(StatsSet set)
 	{
 		super(set);
-		_doorId = set.getInteger("id");
+		_doorId = set.getInt("id");
 		_name = set.getString("name");
 		
 		// position
@@ -67,8 +70,8 @@ public class L2DoorTemplate extends L2CharTemplate
 		_posX = Integer.parseInt(pos[0]);
 		_posY = Integer.parseInt(pos[1]);
 		_posZ = Integer.parseInt(pos[2]);
-		_height = set.getInteger("height");
-		_nodeZ = set.getInteger("nodeZ");
+		_height = set.getInt("height");
+		_nodeZ = set.getInt("nodeZ");
 		_nodeX = new int[4]; // 4 * x
 		_nodeY = new int[4]; // 4 * y
 		for (int i = 0; i < 4; i++)
@@ -79,12 +82,12 @@ public class L2DoorTemplate extends L2CharTemplate
 		}
 		
 		// optional
-		_emmiter = set.getInteger("emitter_id", 0);
-		_showHp = set.getBool("hp_showable", true);
-		_isWall = set.getBool("is_wall", false);
+		_emmiter = set.getInt("emitter_id", 0);
+		_showHp = set.getBoolean("hp_showable", true);
+		_isWall = set.getBoolean("is_wall", false);
 		_groupName = set.getString("group", null);
 		
-		_childDoorId = set.getInteger("child_id_event", -1);
+		_childDoorId = set.getInt("child_id_event", -1);
 		// true if door is opening
 		String masterevent = set.getString("master_close_event", "act_nothing");
 		_masterDoorClose = (byte) (masterevent.equals("act_open") ? 1 : masterevent.equals("act_close") ? -1 : 0);
@@ -92,22 +95,28 @@ public class L2DoorTemplate extends L2CharTemplate
 		masterevent = set.getString("master_open_event", "act_nothing");
 		_masterDoorOpen = (byte) (masterevent.equals("act_open") ? 1 : masterevent.equals("act_close") ? -1 : 0);
 		
-		_isTargetable = set.getBool("targetable", true);
+		_isTargetable = set.getBoolean("targetable", true);
 		_default_status = set.getString("default_status", "close").equals("open");
-		_closeTime = set.getInteger("close_time", -1);
-		_level = set.getInteger("level", 0);
-		_openType = set.getInteger("open_method", 0);
-		_checkCollision = set.getBool("check_collision", true);
+		_closeTime = set.getInt("close_time", -1);
+		_level = set.getInt("level", 0);
+		_openType = set.getInt("open_method", 0);
+		_checkCollision = set.getBoolean("check_collision", true);
 		if ((_openType & L2DoorInstance.OPEN_BY_TIME) == L2DoorInstance.OPEN_BY_TIME)
 		{
-			_openTime = set.getInteger("open_time");
-			_randomTime = set.getInteger("random_time", -1);
+			_openTime = set.getInt("open_time");
+			_randomTime = set.getInt("random_time", -1);
 		}
-		_isAttackableDoor = set.getBool("is_attackable", false);
-		_clanhallId = set.getInteger("clanhall_id", 0);
+		_isAttackableDoor = set.getBoolean("is_attackable", false);
+		_clanhallId = set.getInt("clanhall_id", 0);
+		_stealth = set.getBoolean("stealth", false);
 	}
 	
-	public int getDoorId()
+	/**
+	 * Gets the door ID.
+	 * @return the door ID
+	 */
+	@Override
+	public int getId()
 	{
 		return _doorId;
 	}
@@ -235,5 +244,10 @@ public class L2DoorTemplate extends L2CharTemplate
 	public int getClanHallId()
 	{
 		return _clanhallId;
+	}
+	
+	public boolean isStealth()
+	{
+		return _stealth;
 	}
 }

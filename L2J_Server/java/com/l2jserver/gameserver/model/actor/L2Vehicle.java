@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -29,17 +29,18 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.GameTimeController;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlIntention;
-import com.l2jserver.gameserver.ai.L2CharacterAI;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
-import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.VehiclePathPoint;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.knownlist.VehicleKnownList;
 import com.l2jserver.gameserver.model.actor.stat.VehicleStat;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
+import com.l2jserver.gameserver.model.interfaces.ILocational;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -103,16 +104,16 @@ public abstract class L2Vehicle extends L2Character
 		if ((_currentPath != null) && (_currentPath.length > 0))
 		{
 			final VehiclePathPoint point = _currentPath[0];
-			if (point.moveSpeed > 0)
+			if (point.getMoveSpeed() > 0)
 			{
-				getStat().setMoveSpeed(point.moveSpeed);
+				getStat().setMoveSpeed(point.getMoveSpeed());
 			}
-			if (point.rotationSpeed > 0)
+			if (point.getRotationSpeed() > 0)
 			{
-				getStat().setRotationSpeed(point.rotationSpeed);
+				getStat().setRotationSpeed(point.getRotationSpeed());
 			}
 			
-			getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new L2CharPosition(point.x, point.y, point.z, 0));
+			getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, new Location(point.getX(), point.getY(), point.getZ(), 0));
 			return;
 		}
 		getAI().setIntention(CtrlIntention.AI_INTENTION_ACTIVE);
@@ -131,36 +132,37 @@ public abstract class L2Vehicle extends L2Character
 				final VehiclePathPoint point = _currentPath[_runState];
 				if (!isMovementDisabled())
 				{
-					if (point.moveSpeed == 0)
+					if (point.getMoveSpeed() == 0)
 					{
-						teleToLocation(point.x, point.y, point.z, point.rotationSpeed, false);
+						point.setHeading(point.getRotationSpeed());
+						teleToLocation(point, false);
 						_currentPath = null;
 					}
 					else
 					{
-						if (point.moveSpeed > 0)
+						if (point.getMoveSpeed() > 0)
 						{
-							getStat().setMoveSpeed(point.moveSpeed);
+							getStat().setMoveSpeed(point.getMoveSpeed());
 						}
-						if (point.rotationSpeed > 0)
+						if (point.getRotationSpeed() > 0)
 						{
-							getStat().setRotationSpeed(point.rotationSpeed);
+							getStat().setRotationSpeed(point.getRotationSpeed());
 						}
 						
 						MoveData m = new MoveData();
 						m.disregardingGeodata = false;
 						m.onGeodataPathIndex = -1;
-						m._xDestination = point.x;
-						m._yDestination = point.y;
-						m._zDestination = point.z;
+						m._xDestination = point.getX();
+						m._yDestination = point.getY();
+						m._zDestination = point.getZ();
 						m._heading = 0;
 						
-						final double dx = point.x - getX();
-						final double dy = point.y - getY();
+						final double dx = point.getX() - getX();
+						final double dy = point.getY() - getY();
 						final double distance = Math.sqrt((dx * dx) + (dy * dy));
 						if (distance > 1)
 						{
-							setHeading(Util.calculateHeadingFrom(getX(), getY(), point.x, point.y));
+							setHeading(Util.calculateHeadingFrom(getX(), getY(), point.getX(), point.getY()));
 						}
 						
 						m._moveStartTime = GameTimeController.getInstance().getGameTicks();
@@ -221,7 +223,7 @@ public abstract class L2Vehicle extends L2Character
 	
 	public Location getOustLoc()
 	{
-		return _oustLoc != null ? _oustLoc : MapRegionManager.getInstance().getTeleToLocation(this, MapRegionManager.TeleportWhereType.Town);
+		return _oustLoc != null ? _oustLoc : MapRegionManager.getInstance().getTeleToLocation(this, TeleportWhereType.TOWN);
 	}
 	
 	public void oustPlayers()
@@ -326,7 +328,7 @@ public abstract class L2Vehicle extends L2Character
 						if ((ticket == null) || (player.getInventory().destroyItem("Boat", ticket, count, player, this) == null))
 						{
 							player.sendPacket(SystemMessageId.NOT_CORRECT_BOAT_TICKET);
-							player.teleToLocation(oustX, oustY, oustZ, true);
+							player.teleToLocation(new Location(oustX, oustY, oustZ), true);
 							continue;
 						}
 						iu = new InventoryUpdate();
@@ -348,7 +350,7 @@ public abstract class L2Vehicle extends L2Character
 		{
 			if ((player != null) && (player.getVehicle() == this))
 			{
-				player.getPosition().setXYZ(getX(), getY(), getZ());
+				player.setXYZ(getX(), getY(), getZ());
 				player.revalidateZone(false);
 			}
 		}
@@ -357,7 +359,7 @@ public abstract class L2Vehicle extends L2Character
 	}
 	
 	@Override
-	public void teleToLocation(int x, int y, int z, int heading, boolean allowRandomOffset)
+	public void teleToLocation(ILocational loc, boolean allowRandomOffset)
 	{
 		if (isMoving())
 		{
@@ -372,17 +374,17 @@ public abstract class L2Vehicle extends L2Character
 		{
 			if (player != null)
 			{
-				player.teleToLocation(x, y, z);
+				player.teleToLocation(loc, false);
 			}
 		}
 		
 		decayMe();
-		setXYZ(x, y, z);
+		setXYZ(loc.getX(), loc.getY(), loc.getZ());
 		
 		// temporary fix for heading on teleports
-		if (heading != 0)
+		if (loc.getHeading() != 0)
 		{
-			getPosition().setHeading(heading);
+			setHeading(loc.getHeading());
 		}
 		
 		onTeleported();
@@ -390,13 +392,13 @@ public abstract class L2Vehicle extends L2Character
 	}
 	
 	@Override
-	public void stopMove(L2CharPosition pos, boolean updateKnownObjects)
+	public void stopMove(Location loc, boolean updateKnownObjects)
 	{
 		_move = null;
-		if (pos != null)
+		if (loc != null)
 		{
-			setXYZ(pos.x, pos.y, pos.z);
-			setHeading(pos.heading);
+			setXYZ(loc.getX(), loc.getY(), loc.getZ());
+			setHeading(loc.getHeading());
 			revalidateZone(true);
 		}
 		
@@ -407,7 +409,7 @@ public abstract class L2Vehicle extends L2Character
 	}
 	
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
 		_engine = null;
 		
@@ -460,7 +462,7 @@ public abstract class L2Vehicle extends L2Character
 		// Remove L2Object object from _allObjects of L2World
 		L2World.getInstance().removeObject(this);
 		
-		super.deleteMe();
+		return super.deleteMe();
 	}
 	
 	@Override
@@ -504,15 +506,6 @@ public abstract class L2Vehicle extends L2Character
 		return false;
 	}
 	
-	@Override
-	public void setAI(L2CharacterAI newAI)
-	{
-		if (_ai == null)
-		{
-			_ai = newAI;
-		}
-	}
-	
 	public class AIAccessor extends L2Character.AIAccessor
 	{
 		@Override
@@ -522,7 +515,7 @@ public abstract class L2Vehicle extends L2Character
 	}
 	
 	@Override
-	public boolean isWalker()
+	public boolean isVehicle()
 	{
 		return true;
 	}

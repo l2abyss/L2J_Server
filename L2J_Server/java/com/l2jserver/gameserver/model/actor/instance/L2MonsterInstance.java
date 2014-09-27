@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,6 +21,7 @@ package com.l2jserver.gameserver.model.actor.instance;
 import java.util.concurrent.ScheduledFuture;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.knownlist.MonsterKnownList;
@@ -41,7 +42,7 @@ public class L2MonsterInstance extends L2Attackable
 	protected boolean _enableMinions = true;
 	
 	private L2MonsterInstance _master = null;
-	private MinionList _minionList = null;
+	private volatile MinionList _minionList = null;
 	
 	protected ScheduledFuture<?> _maintenanceTask = null;
 	
@@ -92,7 +93,7 @@ public class L2MonsterInstance extends L2Attackable
 	@Override
 	public boolean isAggressive()
 	{
-		return (getAggroRange() > 0) && !isEventMob();
+		return getTemplate().isAggressive() && !isEventMob();
 	}
 	
 	@Override
@@ -149,15 +150,11 @@ public class L2MonsterInstance extends L2Attackable
 		
 		if (_maintenanceTask == null)
 		{
-			_maintenanceTask = ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
+			_maintenanceTask = ThreadPoolManager.getInstance().scheduleGeneral(() ->
 			{
-				@Override
-				public void run()
+				if (_enableMinions)
 				{
-					if (_enableMinions)
-					{
-						getMinionList().spawnMinions();
-					}
+					getMinionList().spawnMinions();
 				}
 			}, getMaintenanceInterval() + Rnd.get(1000));
 		}
@@ -181,7 +178,7 @@ public class L2MonsterInstance extends L2Attackable
 	}
 	
 	@Override
-	public void deleteMe()
+	public boolean deleteMe()
 	{
 		if (_maintenanceTask != null)
 		{
@@ -199,7 +196,7 @@ public class L2MonsterInstance extends L2Attackable
 			getLeader().getMinionList().onMinionDie(this, 0);
 		}
 		
-		super.deleteMe();
+		return super.deleteMe();
 	}
 	
 	@Override
@@ -227,9 +224,14 @@ public class L2MonsterInstance extends L2Attackable
 	{
 		if (_minionList == null)
 		{
-			_minionList = new MinionList(this);
+			synchronized (this)
+			{
+				if (_minionList == null)
+				{
+					_minionList = new MinionList(this);
+				}
+			}
 		}
-		
 		return _minionList;
 	}
 	

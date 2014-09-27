@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -31,6 +31,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
+import com.l2jserver.gameserver.model.olympiad.OlympiadManager;
 
 public class Die extends L2GameServerPacket
 {
@@ -41,6 +42,7 @@ public class Die extends L2GameServerPacket
 	private L2Clan _clan;
 	private final L2Character _activeChar;
 	private boolean _isJailed;
+	private boolean _staticRes = false;
 	
 	public Die(L2Character cha)
 	{
@@ -51,11 +53,10 @@ public class Die extends L2GameServerPacket
 			final L2PcInstance player = cha.getActingPlayer();
 			_access = player.getAccessLevel();
 			_clan = player.getClan();
-			_isJailed = player.isInJail();
+			_isJailed = player.isJailed();
 		}
-		
 		_canTeleport = cha.canRevive() && !cha.isPendingRevive();
-		_sweepable = cha.isL2Attackable() && cha.isSweepActive();
+		_sweepable = cha.isAttackable() && cha.isSweepActive();
 	}
 	
 	@Override
@@ -64,6 +65,14 @@ public class Die extends L2GameServerPacket
 		writeC(0x00);
 		writeD(_charObjId);
 		writeD(_canTeleport ? 0x01 : 0);
+		
+		if (_activeChar.isPlayer() && !OlympiadManager.getInstance().isRegistered(_activeChar.getActingPlayer()) && !_activeChar.isOnEvent())
+		{
+			
+			_staticRes = _activeChar.getInventory().haveItemForSelfResurrection();
+			
+		}
+		
 		if (_canTeleport && (_clan != null) && !_isJailed)
 		{
 			boolean isInCastleDefense = false;
@@ -73,7 +82,7 @@ public class Die extends L2GameServerPacket
 			Castle castle = CastleManager.getInstance().getCastle(_activeChar);
 			Fort fort = FortManager.getInstance().getFort(_activeChar);
 			SiegableHall hall = CHSiegeManager.getInstance().getNearbyClanHall(_activeChar);
-			if ((castle != null) && castle.getSiege().getIsInProgress())
+			if ((castle != null) && castle.getSiege().isInProgress())
 			{
 				// siege in progress
 				siegeClan = castle.getSiege().getAttackerClan(_clan);
@@ -82,7 +91,7 @@ public class Die extends L2GameServerPacket
 					isInCastleDefense = true;
 				}
 			}
-			else if ((fort != null) && fort.getSiege().getIsInProgress())
+			else if ((fort != null) && fort.getSiege().isInProgress())
 			{
 				// siege in progress
 				siegeClan = fort.getSiege().getAttackerClan(_clan);
@@ -92,9 +101,14 @@ public class Die extends L2GameServerPacket
 				}
 			}
 			
+			if (_access.allowFixedRes())
+			{
+				_staticRes = true;
+			}
+			
 			writeD(_clan.getHideoutId() > 0 ? 0x01 : 0x00); // 6d 01 00 00 00 - to hide away
 			writeD((_clan.getCastleId() > 0) || isInCastleDefense ? 0x01 : 0x00); // 6d 02 00 00 00 - to castle
-			writeD((TerritoryWarManager.getInstance().getFlagForClan(_clan) != null) || ((siegeClan != null) && !isInCastleDefense && !isInFortDefense && !siegeClan.getFlag().isEmpty()) || ((hall != null) && hall.getSiege().checkIsAttacker(_clan)) ? 0x01 : 0x00); // 6d 03 00 00 00 - to siege HQ
+			writeD((TerritoryWarManager.getInstance().getHQForClan(_clan) != null) || ((siegeClan != null) && !isInCastleDefense && !isInFortDefense && !siegeClan.getFlag().isEmpty()) || ((hall != null) && hall.getSiege().checkIsAttacker(_clan)) ? 0x01 : 0x00); // 6d 03 00 00 00 - to siege HQ
 			writeD(_sweepable ? 0x01 : 0x00); // sweepable (blue glow)
 			writeD(_access.allowFixedRes() ? 0x01 : 0x00); // 6d 04 00 00 00 - to FIXED
 			writeD((_clan.getFortId() > 0) || isInFortDefense ? 0x01 : 0x00); // 6d 05 00 00 00 - to fortress
@@ -105,7 +119,7 @@ public class Die extends L2GameServerPacket
 			writeD(0x00); // 6d 02 00 00 00 - to castle
 			writeD(0x00); // 6d 03 00 00 00 - to siege HQ
 			writeD(_sweepable ? 0x01 : 0x00); // sweepable (blue glow)
-			writeD(_access.allowFixedRes() ? 0x01 : 0x00); // 6d 04 00 00 00 - to FIXED
+			writeD(_staticRes ? 0x01 : 0x00); // 6d 04 00 00 00 - to FIXED
 			writeD(0x00); // 6d 05 00 00 00 - to fortress
 		}
 		// TODO: protocol 152

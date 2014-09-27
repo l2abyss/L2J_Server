@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,7 +20,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import java.util.Collection;
 
-import com.l2jserver.gameserver.TaskPriority;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -32,15 +31,6 @@ public class RequestRecordInfo extends L2GameClientPacket
 {
 	private static final String _C__6E_REQUEST_RECORD_INFO = "[C] 6E RequestRecordInfo";
 	
-	/**
-	 * urgent messages, execute immediately
-	 * @return
-	 */
-	public TaskPriority getPriority()
-	{
-		return TaskPriority.PR_NORMAL;
-	}
-	
 	@Override
 	protected void readImpl()
 	{
@@ -50,37 +40,39 @@ public class RequestRecordInfo extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance _activeChar = getClient().getActiveChar();
-		
-		if (_activeChar == null)
+		final L2PcInstance activeChar = getClient().getActiveChar();
+		if (activeChar == null)
 		{
 			return;
 		}
 		
-		_activeChar.sendPacket(new UserInfo(_activeChar));
-		_activeChar.sendPacket(new ExBrExtraUserInfo(_activeChar));
+		activeChar.sendPacket(new UserInfo(activeChar));
+		activeChar.sendPacket(new ExBrExtraUserInfo(activeChar));
 		
-		Collection<L2Object> objs = _activeChar.getKnownList().getKnownObjects().values();
+		Collection<L2Object> objs = activeChar.getKnownList().getKnownObjects().values();
 		for (L2Object object : objs)
 		{
 			if (object.getPoly().isMorphed() && object.getPoly().getPolyType().equals("item"))
 			{
-				_activeChar.sendPacket(new SpawnItem(object));
+				activeChar.sendPacket(new SpawnItem(object));
 			}
 			else
 			{
-				object.sendInfo(_activeChar);
-				
-				if (object instanceof L2Character)
+				if (!object.isVisibleFor(activeChar))
 				{
-					// Update the state of the L2Character object client
-					// side by sending Server->Client packet
-					// MoveToPawn/CharMoveToLocation and AutoAttackStart to
-					// the L2PcInstance
-					L2Character obj = (L2Character) object;
-					if (obj.getAI() != null)
+					object.sendInfo(activeChar);
+					
+					if (object instanceof L2Character)
 					{
-						obj.getAI().describeStateToPlayer(_activeChar);
+						// Update the state of the L2Character object client
+						// side by sending Server->Client packet
+						// MoveToPawn/CharMoveToLocation and AutoAttackStart to
+						// the L2PcInstance
+						final L2Character obj = (L2Character) object;
+						if (obj.getAI() != null)
+						{
+							obj.getAI().describeStateToPlayer(activeChar);
+						}
 					}
 				}
 			}

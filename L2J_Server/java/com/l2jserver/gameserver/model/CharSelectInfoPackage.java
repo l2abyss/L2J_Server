@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -30,7 +30,6 @@ public class CharSelectInfoPackage
 {
 	private String _name;
 	private int _objectId = 0;
-	private int _charId = 0x00030b7a;
 	private long _exp = 0;
 	private int _sp = 0;
 	private int _clanId = 0;
@@ -53,7 +52,6 @@ public class CharSelectInfoPackage
 	private int _pkKills = 0;
 	private int _pvpKills = 0;
 	private int _augmentationId = 0;
-	private int _transformId = 0;
 	private int _x = 0;
 	private int _y = 0;
 	private int _z = 0;
@@ -100,16 +98,6 @@ public class CharSelectInfoPackage
 	public void setAccessLevel(int level)
 	{
 		_accessLevel = level;
-	}
-	
-	public int getCharId()
-	{
-		return _charId;
-	}
-	
-	public void setCharId(int charId)
-	{
-		_charId = charId;
 	}
 	
 	public int getClanId()
@@ -349,16 +337,6 @@ public class CharSelectInfoPackage
 	public int getPvPKills()
 	{
 		return _pvpKills;
-	}
-	
-	public int getTransformId()
-	{
-		return _transformId;
-	}
-	
-	public void setTransformId(int id)
-	{
-		_transformId = id;
 	}
 	
 	public int getX()

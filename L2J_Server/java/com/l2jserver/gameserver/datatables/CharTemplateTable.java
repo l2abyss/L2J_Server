@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,89 +18,155 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.l2jserver.L2DatabaseFactory;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+
+import com.l2jserver.gameserver.engines.DocumentParser;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.templates.L2PcTemplate;
 import com.l2jserver.gameserver.model.base.ClassId;
 
 /**
  * This will be reworked Soon(tm).
- * @author Unknown, Forsaiken, Zoey76
+ * @author Forsaiken, Zoey76, GKR
  */
-public final class CharTemplateTable
+public final class CharTemplateTable extends DocumentParser
 {
 	private static final Logger _log = Logger.getLogger(CharTemplateTable.class.getName());
 	
 	private static final Map<ClassId, L2PcTemplate> _charTemplates = new HashMap<>();
 	
+	private int _dataCount = 0;
+	
 	protected CharTemplateTable()
 	{
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			Statement s = con.createStatement();
-			ResultSet rset = s.executeQuery("SELECT * FROM char_templates, lvlupgain WHERE char_templates.classId = lvlupgain.classId ORDER BY char_templates.ClassId"))
+		load();
+	}
+	
+	@Override
+	public void load()
+	{
+		_charTemplates.clear();
+		parseDatapackDirectory("data/stats/chars/baseStats", false);
+		_log.info(getClass().getSimpleName() + ": Loaded " + _charTemplates.size() + " character templates.");
+		_log.info(getClass().getSimpleName() + ": Loaded " + _dataCount + " level up gain records.");
+	}
+	
+	@Override
+	protected void parseDocument()
+	{
+		NamedNodeMap attrs;
+		int classId = 0;
+		
+		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
-			StatsSet set;
-			int cId;
-			while (rset.next())
+			if ("list".equalsIgnoreCase(n.getNodeName()))
 			{
-				set = new StatsSet();
-				cId = rset.getInt("ClassId");
-				set.set("classId", cId);
-				set.set("raceId", rset.getInt("raceId"));
-				set.set("baseSTR", rset.getInt("STR"));
-				set.set("baseCON", rset.getInt("CON"));
-				set.set("baseDEX", rset.getInt("DEX"));
-				set.set("baseINT", rset.getInt("_INT"));
-				set.set("baseWIT", rset.getInt("WIT"));
-				set.set("baseMEN", rset.getInt("MEN"));
-				set.set("baseHpMax", rset.getFloat("defaultHpBase"));
-				set.set("lvlHpAdd", rset.getFloat("defaultHpAdd"));
-				set.set("lvlHpMod", rset.getFloat("defaultHpMod"));
-				set.set("baseMpMax", rset.getFloat("defaultMpBase"));
-				set.set("baseCpMax", rset.getFloat("defaultCpBase"));
-				set.set("lvlCpAdd", rset.getFloat("defaultCpAdd"));
-				set.set("lvlCpMod", rset.getFloat("defaultCpMod"));
-				set.set("lvlMpAdd", rset.getFloat("defaultMpAdd"));
-				set.set("lvlMpMod", rset.getFloat("defaultMpMod"));
-				set.set("baseHpReg", 2);
-				set.set("baseMpReg", 0.9);
-				set.set("basePAtk", rset.getInt("p_atk"));
-				set.set("basePDef", rset.getInt("p_def"));
-				set.set("baseMAtk", rset.getInt("m_atk"));
-				set.set("baseMDef", rset.getInt("m_def"));
-				set.set("classBaseLevel", rset.getInt("class_lvl"));
-				set.set("baseRunSpd", rset.getInt("move_spd"));
-				set.set("baseWalkSpd", 0);
-				set.set("baseShldDef", 0);
-				set.set("baseShldRate", 0);
-				set.set("baseAtkRange", 40);
-				
-				set.set("spawnX", rset.getInt("x"));
-				set.set("spawnY", rset.getInt("y"));
-				set.set("spawnZ", rset.getInt("z"));
-				
-				set.set("collision_radius", rset.getDouble("m_col_r"));
-				set.set("collision_height", rset.getDouble("m_col_h"));
-				set.set("collision_radius_female", rset.getDouble("f_col_r"));
-				set.set("collision_height_female", rset.getDouble("f_col_h"));
-				
-				final L2PcTemplate ct = new L2PcTemplate(set);
-				_charTemplates.put(ClassId.getClassId(cId), ct);
+				for (Node d = n.getFirstChild(); d != null; d = d.getNextSibling())
+				{
+					if ("classId".equalsIgnoreCase(d.getNodeName()))
+					{
+						classId = Integer.parseInt(d.getTextContent());
+					}
+					else if ("staticData".equalsIgnoreCase(d.getNodeName()))
+					{
+						StatsSet set = new StatsSet();
+						set.set("classId", classId);
+						List<Location> creationPoints = new ArrayList<>();
+						
+						for (Node nd = d.getFirstChild(); nd != null; nd = nd.getNextSibling())
+						{
+							// Skip odd nodes
+							if (nd.getNodeName().equals("#text"))
+							{
+								continue;
+							}
+							
+							if (nd.getChildNodes().getLength() > 1)
+							{
+								for (Node cnd = nd.getFirstChild(); cnd != null; cnd = cnd.getNextSibling())
+								{
+									// use L2CharTemplate(superclass) fields for male collision height and collision radius
+									if (nd.getNodeName().equalsIgnoreCase("collisionMale"))
+									{
+										if (cnd.getNodeName().equalsIgnoreCase("radius"))
+										{
+											set.set("collision_radius", cnd.getTextContent());
+										}
+										else if (cnd.getNodeName().equalsIgnoreCase("height"))
+										{
+											set.set("collision_height", cnd.getTextContent());
+										}
+									}
+									if ("node".equalsIgnoreCase(cnd.getNodeName()))
+									{
+										attrs = cnd.getAttributes();
+										creationPoints.add(new Location(parseInteger(attrs, "x"), parseInteger(attrs, "y"), parseInteger(attrs, "z")));
+									}
+									else if ("walk".equalsIgnoreCase(cnd.getNodeName()))
+									{
+										set.set("baseWalkSpd", cnd.getTextContent());
+									}
+									else if ("run".equalsIgnoreCase(cnd.getNodeName()))
+									{
+										set.set("baseRunSpd", cnd.getTextContent());
+									}
+									else if ("slowSwim".equals(cnd.getNodeName()))
+									{
+										set.set("baseSwimWalkSpd", cnd.getTextContent());
+									}
+									else if ("fastSwim".equals(cnd.getNodeName()))
+									{
+										set.set("baseSwimRunSpd", cnd.getTextContent());
+									}
+									else if (!cnd.getNodeName().equals("#text"))
+									{
+										set.set((nd.getNodeName() + cnd.getNodeName()), cnd.getTextContent());
+									}
+								}
+							}
+							else
+							{
+								set.set(nd.getNodeName(), nd.getTextContent());
+							}
+						}
+						// calculate total pdef and mdef from parts
+						set.set("basePDef", (set.getInt("basePDefchest", 0) + set.getInt("basePDeflegs", 0) + set.getInt("basePDefhead", 0) + set.getInt("basePDeffeet", 0) + set.getInt("basePDefgloves", 0) + set.getInt("basePDefunderwear", 0) + set.getInt("basePDefcloak", 0)));
+						set.set("baseMDef", (set.getInt("baseMDefrear", 0) + set.getInt("baseMDeflear", 0) + set.getInt("baseMDefrfinger", 0) + set.getInt("baseMDefrfinger", 0) + set.getInt("baseMDefneck", 0)));
+						
+						_charTemplates.put(ClassId.getClassId(classId), new L2PcTemplate(set, creationPoints));
+					}
+					else if ("lvlUpgainData".equalsIgnoreCase(d.getNodeName()))
+					{
+						for (Node lvlNode = d.getFirstChild(); lvlNode != null; lvlNode = lvlNode.getNextSibling())
+						{
+							if ("level".equalsIgnoreCase(lvlNode.getNodeName()))
+							{
+								attrs = lvlNode.getAttributes();
+								int level = parseInteger(attrs, "val");
+								
+								for (Node valNode = lvlNode.getFirstChild(); valNode != null; valNode = valNode.getNextSibling())
+								{
+									String nodeName = valNode.getNodeName();
+									
+									if ((nodeName.startsWith("hp") || nodeName.startsWith("mp") || nodeName.startsWith("cp")) && _charTemplates.containsKey(ClassId.getClassId(classId)))
+									{
+										_charTemplates.get(ClassId.getClassId(classId)).setUpgainValue(nodeName, level, Double.parseDouble(valNode.getTextContent()));
+										_dataCount++;
+									}
+								}
+							}
+						}
+					}
+				}
 			}
-			_log.info(getClass().getSimpleName() + ": Loaded " + _charTemplates.size() + " Character Templates.");
-		}
-		catch (SQLException e)
-		{
-			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Failed loading char templates", e);
 		}
 	}
 	

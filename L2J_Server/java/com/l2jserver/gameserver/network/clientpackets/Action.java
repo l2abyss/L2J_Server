@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,13 +23,12 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.effects.AbstractEffect;
+import com.l2jserver.gameserver.model.skills.AbnormalType;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 
-/**
- * This class ...
- * @version $Revision: 1.7.4.4 $ $Date: 2005/03/27 18:46:19 $
- */
 public final class Action extends L2GameClientPacket
 {
 	private static final String __C__1F_ACTION = "[C] 1F Action";
@@ -55,7 +54,7 @@ public final class Action extends L2GameClientPacket
 	{
 		if (Config.DEBUG)
 		{
-			_log.fine(getType() + ": Action: " + _actionId + " ObjId: " + _objectId + " orignX: " + _originX + " orignY: " + _originY + " orignZ: " + _originZ);
+			_log.info(getType() + ": " + (_actionId == 0 ? "Simple-click" : "Shift-click") + " Target object ID: " + _objectId + " orignX: " + _originX + " orignY: " + _originY + " orignZ: " + _originZ);
 		}
 		
 		// Get the current L2PcInstance of the player
@@ -70,6 +69,20 @@ public final class Action extends L2GameClientPacket
 			activeChar.sendPacket(SystemMessageId.OBSERVERS_CANNOT_PARTICIPATE);
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
+		}
+		
+		final BuffInfo info = activeChar.getEffectList().getBuffInfoByAbnormalType(AbnormalType.BOT_PENALTY);
+		if (info != null)
+		{
+			for (AbstractEffect effect : info.getEffects())
+			{
+				if (!effect.checkCondition(-4))
+				{
+					activeChar.sendPacket(SystemMessageId.YOU_HAVE_BEEN_REPORTED_SO_ACTIONS_NOT_ALLOWED);
+					activeChar.sendPacket(ActionFailed.STATIC_PACKET);
+					return;
+				}
+			}
 		}
 		
 		final L2Object obj;
@@ -108,7 +121,7 @@ public final class Action extends L2GameClientPacket
 		}
 		
 		// Only GMs can directly interact with invisible characters
-		if (obj.isPlayer() && obj.getActingPlayer().getAppearance().getInvisible() && !activeChar.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
+		if (!obj.isVisibleFor(activeChar))
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;

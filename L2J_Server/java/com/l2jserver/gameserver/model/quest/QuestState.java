@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -29,14 +29,15 @@ import java.util.logging.Logger;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.cache.HtmCache;
+import com.l2jserver.gameserver.enums.QuestSound;
+import com.l2jserver.gameserver.enums.QuestType;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
-import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.events.AbstractScript;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
-import com.l2jserver.gameserver.model.quest.Quest.QuestSound;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.network.serverpackets.ExShowQuestMark;
 import com.l2jserver.gameserver.network.serverpackets.PlaySound;
 import com.l2jserver.gameserver.network.serverpackets.QuestList;
@@ -70,16 +71,6 @@ public final class QuestState
 	 * boolean flag letting QuestStateManager know to exit quest when cleaning up
 	 */
 	private boolean _isExitQuestOnCleanUp = false;
-	
-	/**
-	 * This enumerate represent the different quest types.
-	 */
-	public static enum QuestType
-	{
-		REPEATABLE,
-		ONE_TIME,
-		DAILY
-	}
 	
 	/**
 	 * Constructor of the QuestState. Creates the QuestState object and sets the player's progress of the quest to this QuestState.
@@ -122,6 +113,7 @@ public final class QuestState
 	
 	/**
 	 * @return the current State of this QuestState
+	 * @see com.l2jserver.gameserver.model.quest.State
 	 */
 	public byte getState()
 	{
@@ -130,6 +122,7 @@ public final class QuestState
 	
 	/**
 	 * @return {@code true} if the State of this QuestState is CREATED, {@code false} otherwise
+	 * @see com.l2jserver.gameserver.model.quest.State
 	 */
 	public boolean isCreated()
 	{
@@ -138,6 +131,7 @@ public final class QuestState
 	
 	/**
 	 * @return {@code true} if the State of this QuestState is STARTED, {@code false} otherwise
+	 * @see com.l2jserver.gameserver.model.quest.State
 	 */
 	public boolean isStarted()
 	{
@@ -146,6 +140,7 @@ public final class QuestState
 	
 	/**
 	 * @return {@code true} if the State of this QuestState is COMPLETED, {@code false} otherwise
+	 * @see com.l2jserver.gameserver.model.quest.State
 	 */
 	public boolean isCompleted()
 	{
@@ -156,6 +151,7 @@ public final class QuestState
 	 * @param state the new state of the quest to set
 	 * @return {@code true} if state was changed, {@code false} otherwise
 	 * @see #setState(byte state, boolean saveInDb)
+	 * @see com.l2jserver.gameserver.model.quest.State
 	 */
 	public boolean setState(byte state)
 	{
@@ -167,6 +163,7 @@ public final class QuestState
 	 * @param state the new state of the quest to set
 	 * @param saveInDb if {@code true}, will save the state change in the database
 	 * @return {@code true} if state was changed, {@code false} otherwise
+	 * @see com.l2jserver.gameserver.model.quest.State
 	 */
 	public boolean setState(byte state, boolean saveInDb)
 	{
@@ -216,7 +213,7 @@ public final class QuestState
 	
 	public String set(String var, int val)
 	{
-		return set(var, String.valueOf(val));
+		return set(var, Integer.toString(val));
 	}
 	
 	/**
@@ -373,7 +370,7 @@ public final class QuestState
 		final Quest q = getQuest();
 		if (!q.isCustomQuest() && (cond > 0))
 		{
-			_player.sendPacket(new ExShowQuestMark(q.getQuestIntId()));
+			_player.sendPacket(new ExShowQuestMark(q.getId()));
 		}
 	}
 	
@@ -537,7 +534,7 @@ public final class QuestState
 	{
 		if (isStarted())
 		{
-			set("cond", String.valueOf(value));
+			set("cond", Integer.toString(value));
 		}
 		return this;
 	}
@@ -585,9 +582,68 @@ public final class QuestState
 		
 		if (playQuestMiddle)
 		{
-			playSound(QuestSound.ITEMSOUND_QUEST_MIDDLE);
+			AbstractScript.playSound(_player, QuestSound.ITEMSOUND_QUEST_MIDDLE);
 		}
 		return this;
+	}
+	
+	public QuestState setMemoState(int value)
+	{
+		set("memoState", String.valueOf(value));
+		return this;
+	}
+	
+	/**
+	 * @return the current Memo State
+	 */
+	public int getMemoState()
+	{
+		if (isStarted())
+		{
+			return getInt("memoState");
+		}
+		return 0;
+	}
+	
+	public boolean isMemoState(int memoState)
+	{
+		return (getInt("memoState") == memoState);
+	}
+	
+	/**
+	 * Gets the memo state ex.
+	 * @param slot the slot where the value was saved
+	 * @return the memo state ex
+	 */
+	public int getMemoStateEx(int slot)
+	{
+		if (isStarted())
+		{
+			return getInt("memoStateEx" + slot);
+		}
+		return 0;
+	}
+	
+	/**
+	 * Sets the memo state ex.
+	 * @param slot the slot where the value will be saved
+	 * @param value the value
+	 * @return this QuestState
+	 */
+	public QuestState setMemoStateEx(int slot, int value)
+	{
+		set("memoStateEx" + slot, String.valueOf(value));
+		return this;
+	}
+	
+	/**
+	 * Verifies if the given value is equal to the current memos state ex.
+	 * @param memoStateEx the value to verify
+	 * @return {@code true} if the values are equal, {@code false} otherwise
+	 */
+	public boolean isMemoStateEx(int memoStateEx)
+	{
+		return (getInt("memoStateEx") == memoStateEx);
 	}
 	
 	/**
@@ -613,7 +669,7 @@ public final class QuestState
 	 */
 	public long getQuestItemsCount(int itemId)
 	{
-		return getQuest().getQuestItemsCount(getPlayer(), itemId);
+		return AbstractScript.getQuestItemsCount(_player, itemId);
 	}
 	
 	/**
@@ -622,7 +678,7 @@ public final class QuestState
 	 */
 	public boolean hasQuestItems(int itemId)
 	{
-		return getQuest().hasQuestItems(getPlayer(), itemId);
+		return AbstractScript.hasQuestItems(_player, itemId);
 	}
 	
 	/**
@@ -631,7 +687,7 @@ public final class QuestState
 	 */
 	public boolean hasQuestItems(int... itemIds)
 	{
-		return getQuest().hasQuestItems(getPlayer(), itemIds);
+		return AbstractScript.hasQuestItems(_player, itemIds);
 	}
 	
 	/**
@@ -641,7 +697,7 @@ public final class QuestState
 	 */
 	public int getEnchantLevel(int itemId)
 	{
-		return getQuest().getEnchantLevel(getPlayer(), itemId);
+		return AbstractScript.getEnchantLevel(_player, itemId);
 	}
 	
 	/**
@@ -651,7 +707,16 @@ public final class QuestState
 	 */
 	public void giveAdena(long count, boolean applyRates)
 	{
-		giveItems(PcInventory.ADENA_ID, count, applyRates ? 0 : 1);
+		giveItems(Inventory.ADENA_ID, count, applyRates ? 0 : 1);
+	}
+	
+	/**
+	 * Give reward to player using multiplier's
+	 * @param item
+	 */
+	public void rewardItems(ItemHolder item)
+	{
+		AbstractScript.rewardItems(_player, item);
 	}
 	
 	/**
@@ -661,7 +726,7 @@ public final class QuestState
 	 */
 	public void rewardItems(int itemId, long count)
 	{
-		getQuest().rewardItems(getPlayer(), itemId, count);
+		AbstractScript.rewardItems(_player, itemId, count);
 	}
 	
 	/**
@@ -671,41 +736,37 @@ public final class QuestState
 	 */
 	public void giveItems(int itemId, long count)
 	{
-		giveItems(itemId, count, 0);
+		AbstractScript.giveItems(_player, itemId, count, 0);
 	}
 	
 	public void giveItems(ItemHolder holder)
 	{
-		giveItems(holder.getId(), holder.getCount(), 0);
+		AbstractScript.giveItems(_player, holder.getId(), holder.getCount(), 0);
 	}
 	
 	public void giveItems(int itemId, long count, int enchantlevel)
 	{
-		getQuest().giveItems(getPlayer(), itemId, count, enchantlevel);
+		AbstractScript.giveItems(_player, itemId, count, enchantlevel);
 	}
 	
 	public void giveItems(int itemId, long count, byte attributeId, int attributeLevel)
 	{
-		getQuest().giveItems(getPlayer(), itemId, count, attributeId, attributeLevel);
+		AbstractScript.giveItems(_player, itemId, count, attributeId, attributeLevel);
 	}
 	
-	/**
-	 * Drop Quest item using Config.RATE_QUEST_DROP
-	 * @param itemId int Item Identifier of the item to be dropped
-	 * @param count (minCount, maxCount) long Quantity of items to be dropped
-	 * @param neededCount Quantity of items needed for quest
-	 * @param dropChance int Base chance of drop, same as in droplist
-	 * @param sound boolean indicating whether to play sound
-	 * @return boolean indicating whether player has requested number of items
-	 */
-	public boolean dropQuestItems(int itemId, int count, long neededCount, int dropChance, boolean sound)
+	public boolean giveItemRandomly(int itemId, long amount, long limit, double dropChance, boolean playSound)
 	{
-		return dropQuestItems(itemId, count, count, neededCount, dropChance, sound);
+		return AbstractScript.giveItemRandomly(_player, null, itemId, amount, amount, limit, dropChance, playSound);
 	}
 	
-	public boolean dropQuestItems(int itemId, int minCount, int maxCount, long neededCount, int dropChance, boolean sound)
+	public boolean giveItemRandomly(L2Npc npc, int itemId, long amount, long limit, double dropChance, boolean playSound)
 	{
-		return getQuest().dropQuestItems(getPlayer(), itemId, minCount, maxCount, neededCount, dropChance, sound);
+		return AbstractScript.giveItemRandomly(_player, npc, itemId, amount, amount, limit, dropChance, playSound);
+	}
+	
+	public boolean giveItemRandomly(L2Npc npc, int itemId, long minAmount, long maxAmount, long limit, double dropChance, boolean playSound)
+	{
+		return AbstractScript.giveItemRandomly(_player, npc, itemId, minAmount, maxAmount, limit, dropChance, playSound);
 	}
 	
 	// TODO: More radar functions need to be added when the radar class is complete.
@@ -739,7 +800,7 @@ public final class QuestState
 	 */
 	public void takeItems(int itemId, long count)
 	{
-		getQuest().takeItems(getPlayer(), itemId, count);
+		AbstractScript.takeItems(_player, itemId, count);
 	}
 	
 	/**
@@ -748,7 +809,7 @@ public final class QuestState
 	 */
 	public void playSound(String sound)
 	{
-		getQuest().playSound(getPlayer(), sound);
+		AbstractScript.playSound(_player, sound);
 	}
 	
 	/**
@@ -757,7 +818,7 @@ public final class QuestState
 	 */
 	public void playSound(QuestSound sound)
 	{
-		getQuest().playSound(getPlayer(), sound);
+		AbstractScript.playSound(_player, sound);
 	}
 	
 	/**
@@ -767,7 +828,7 @@ public final class QuestState
 	 */
 	public void addExpAndSp(int exp, int sp)
 	{
-		getQuest().addExpAndSp(getPlayer(), exp, sp);
+		AbstractScript.addExpAndSp(_player, exp, sp);
 	}
 	
 	/**
@@ -776,16 +837,7 @@ public final class QuestState
 	 */
 	public int getItemEquipped(int loc)
 	{
-		return getQuest().getItemEquipped(getPlayer(), loc);
-	}
-	
-	/**
-	 * Return the number of ticks from the GameTimeController
-	 * @return int
-	 */
-	public int getGameTicks()
-	{
-		return getQuest().getGameTicks();
+		return AbstractScript.getItemEquipped(_player, loc);
 	}
 	
 	/**
@@ -812,7 +864,7 @@ public final class QuestState
 	 */
 	public void startQuestTimer(String name, long time)
 	{
-		getQuest().startQuestTimer(name, time, null, getPlayer(), false);
+		getQuest().startQuestTimer(name, time, null, _player, false);
 	}
 	
 	/**
@@ -824,7 +876,7 @@ public final class QuestState
 	 */
 	public void startQuestTimer(String name, long time, L2Npc npc)
 	{
-		getQuest().startQuestTimer(name, time, npc, getPlayer(), false);
+		getQuest().startQuestTimer(name, time, npc, _player, false);
 	}
 	
 	/**
@@ -835,7 +887,7 @@ public final class QuestState
 	 */
 	public void startRepeatingQuestTimer(String name, long time)
 	{
-		getQuest().startQuestTimer(name, time, null, getPlayer(), true);
+		getQuest().startQuestTimer(name, time, null, _player, true);
 	}
 	
 	/**
@@ -847,7 +899,7 @@ public final class QuestState
 	 */
 	public void startRepeatingQuestTimer(String name, long time, L2Npc npc)
 	{
-		getQuest().startQuestTimer(name, time, npc, getPlayer(), true);
+		getQuest().startQuestTimer(name, time, npc, _player, true);
 	}
 	
 	/**
@@ -856,7 +908,7 @@ public final class QuestState
 	 */
 	public final QuestTimer getQuestTimer(String name)
 	{
-		return getQuest().getQuestTimer(name, null, getPlayer());
+		return getQuest().getQuestTimer(name, null, _player);
 	}
 	
 	// --- Spawn methods ---
@@ -993,16 +1045,33 @@ public final class QuestState
 	 */
 	public L2Npc addSpawn(int npcId, int x, int y, int z, int heading, boolean randomOffset, int despawnDelay, boolean isSummonSpawn)
 	{
-		return getQuest().addSpawn(npcId, x, y, z, heading, randomOffset, despawnDelay, isSummonSpawn);
+		return AbstractScript.addSpawn(npcId, x, y, z, heading, randomOffset, despawnDelay, isSummonSpawn);
 	}
 	
 	/**
-	 * @param fileName the name of the file you want to show. Must be in the same folder (or subfolder) as script
-	 * @return a String containing the contents of the specified HTML file
+	 * Send an HTML file to the specified player.
+	 * @param filename the name of the HTML file to show
+	 * @return the contents of the HTML file that was sent to the player
+	 * @see #showHtmlFile(String, L2Npc)
+	 * @see Quest#showHtmlFile(L2PcInstance, String)
+	 * @see Quest#showHtmlFile(L2PcInstance, String, L2Npc)
 	 */
-	public String showHtmlFile(String fileName)
+	public String showHtmlFile(String filename)
 	{
-		return getQuest().showHtmlFile(getPlayer(), fileName);
+		return showHtmlFile(filename, null);
+	}
+	
+	/**
+	 * Send an HTML file to the specified player.
+	 * @param filename the name of the HTML file to show
+	 * @param npc the NPC that is showing the HTML file
+	 * @return the contents of the HTML file that was sent to the player
+	 * @see Quest#showHtmlFile(L2PcInstance, String)
+	 * @see Quest#showHtmlFile(L2PcInstance, String, L2Npc)
+	 */
+	public String showHtmlFile(String filename, L2Npc npc)
+	{
+		return getQuest().showHtmlFile(_player, filename, npc);
 	}
 	
 	/**
@@ -1137,6 +1206,10 @@ public final class QuestState
 		_player.sendPacket(new PlaySound(2, voice, 0, 0, _player.getX(), _player.getY(), _player.getZ()));
 	}
 	
+	/**
+	 * Used only in 255_Tutorial
+	 * @param html
+	 */
 	public void showTutorialHTML(String html)
 	{
 		String text = HtmCache.getInstance().getHtm(_player.getHtmlPrefix(), "data/scripts/quests/255_Tutorial/" + html);
@@ -1148,19 +1221,21 @@ public final class QuestState
 		_player.sendPacket(new TutorialShowHtml(text));
 	}
 	
+	/**
+	 * Used only in 255_Tutorial
+	 */
 	public void closeTutorialHtml()
 	{
 		_player.sendPacket(TutorialCloseHtml.STATIC_PACKET);
 	}
 	
+	/**
+	 * Used only in 255_Tutorial
+	 * @param number
+	 */
 	public void onTutorialClientEvent(int number)
 	{
 		_player.sendPacket(new TutorialEnableClientEvent(number));
-	}
-	
-	public void dropItem(L2MonsterInstance npc, L2PcInstance player, int itemId, int count)
-	{
-		npc.dropItem(player, itemId, count);
 	}
 	
 	/**

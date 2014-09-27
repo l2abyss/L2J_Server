@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -47,7 +47,7 @@ public final class FloodProtectorConfig
 	/**
 	 * For how long should the char/account be punished.
 	 */
-	public int PUNISHMENT_TIME;
+	public long PUNISHMENT_TIME;
 	
 	/**
 	 * Creates new instance of FloodProtectorConfig.

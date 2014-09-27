@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.ai;
 
-import com.l2jserver.gameserver.model.L2CharPosition;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2BoatInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.VehicleDeparture;
@@ -52,14 +52,14 @@ public class L2BoatAI extends L2VehicleAI
 	}
 	
 	@Override
-	protected void clientStopMoving(L2CharPosition pos)
+	protected void clientStopMoving(Location loc)
 	{
 		if (_actor.isMoving())
 		{
-			_accessor.stopMove(pos);
+			_accessor.stopMove(loc);
 		}
 		
-		if (_clientMoving || (pos != null))
+		if (_clientMoving || (loc != null))
 		{
 			_clientMoving = false;
 			_actor.broadcastPacket(new VehicleStarted(getActor(), 0));

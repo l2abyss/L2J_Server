@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -28,11 +28,12 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.NpcTable;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.NpcData;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.datatables.SpawnTable;
+import com.l2jserver.gameserver.enums.Team;
 import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager;
-import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager.ArenaParticipantsHolder;
+import com.l2jserver.gameserver.model.ArenaParticipantsHolder;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2BlockInstance;
@@ -40,7 +41,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -60,7 +61,7 @@ public final class BlockCheckerEngine
 {
 	protected static final Logger _log = Logger.getLogger(BlockCheckerEngine.class.getName());
 	// The object which holds all basic members info
-	protected HandysBlockCheckerManager.ArenaParticipantsHolder _holder;
+	protected ArenaParticipantsHolder _holder;
 	// Maps to hold player of each team and his points
 	protected FastMap<L2PcInstance, Integer> _redTeamPoints = new FastMap<>();
 	protected FastMap<L2PcInstance, Integer> _blueTeamPoints = new FastMap<>();
@@ -129,7 +130,7 @@ public final class BlockCheckerEngine
 	// Preserve from exploit reward by logging out
 	protected boolean _abnormalEnd = false;
 	
-	public BlockCheckerEngine(HandysBlockCheckerManager.ArenaParticipantsHolder holder, int arena)
+	public BlockCheckerEngine(ArenaParticipantsHolder holder, int arena)
 	{
 		_holder = holder;
 		if ((arena > -1) && (arena < 4))
@@ -306,7 +307,7 @@ public final class BlockCheckerEngine
 				
 				_abnormalEnd = true;
 				
-				ThreadPoolManager.getInstance().executeTask(new EndEvent());
+				ThreadPoolManager.getInstance().executeGeneral(new EndEvent());
 				
 				if (Config.DEBUG)
 				{
@@ -326,16 +327,16 @@ public final class BlockCheckerEngine
 	public class StartEvent implements Runnable
 	{
 		// In event used skills
-		private final L2Skill _freeze, _transformationRed, _transformationBlue;
+		private final Skill _freeze, _transformationRed, _transformationBlue;
 		// Common and unparametizer packet
 		private final ExCubeGameCloseUI _closeUserInterface = new ExCubeGameCloseUI();
 		
 		public StartEvent()
 		{
 			// Initialize all used skills
-			_freeze = SkillTable.getInstance().getInfo(6034, 1);
-			_transformationRed = SkillTable.getInstance().getInfo(6035, 1);
-			_transformationBlue = SkillTable.getInstance().getInfo(6036, 1);
+			_freeze = SkillData.getInstance().getSkill(6034, 1);
+			_transformationRed = SkillData.getInstance().getSkill(6035, 1);
+			_transformationBlue = SkillData.getInstance().getSkill(6036, 1);
 		}
 		
 		/**
@@ -379,12 +380,12 @@ public final class BlockCheckerEngine
 				if (isRed)
 				{
 					_redTeamPoints.put(player, 0);
-					player.setTeam(2);
+					player.setTeam(Team.RED);
 				}
 				else
 				{
 					_blueTeamPoints.put(player, 0);
-					player.setTeam(1);
+					player.setTeam(Team.BLUE);
 				}
 				player.stopAllEffects();
 				
@@ -395,15 +396,15 @@ public final class BlockCheckerEngine
 				
 				// Give the player start up effects
 				// Freeze
-				_freeze.getEffects(player, player);
+				_freeze.applyEffects(player, player);
 				// Transformation
 				if (_holder.getPlayerTeam(player) == 0)
 				{
-					_transformationRed.getEffects(player, player);
+					_transformationRed.applyEffects(player, player);
 				}
 				else
 				{
-					_transformationBlue.getEffects(player, player);
+					_transformationBlue.applyEffects(player, player);
 				}
 				// Set the current player arena
 				player.setBlockCheckerArena((byte) _arena);
@@ -412,8 +413,7 @@ public final class BlockCheckerEngine
 				player.sendPacket(initialPoints);
 				player.sendPacket(_closeUserInterface);
 				// ExBasicActionList
-				final ExBasicActionList actionList = ExBasicActionList.getStaticPacket(player);
-				player.sendPacket(actionList);
+				player.sendPacket(ExBasicActionList.STATIC_PACKET);
 				broadcastRelationChanged(player);
 			}
 		}
@@ -429,7 +429,7 @@ public final class BlockCheckerEngine
 			}
 			_isStarted = true;
 			// Spawn the blocks
-			ThreadPoolManager.getInstance().executeTask(new SpawnRound(16, 1));
+			ThreadPoolManager.getInstance().executeGeneral(new SpawnRound(16, 1));
 			// Start up player parameters
 			setUpPlayers();
 			// Set the started time
@@ -478,7 +478,7 @@ public final class BlockCheckerEngine
 			// if != 0, will spawn a blue block
 			byte random = 2;
 			// common template
-			final L2NpcTemplate template = NpcTable.getInstance().getTemplate(18672);
+			final L2NpcTemplate template = NpcData.getInstance().getTemplate(18672);
 			// Spawn blocks
 			try
 			{
@@ -486,9 +486,9 @@ public final class BlockCheckerEngine
 				for (int i = 0; i < _numOfBoxes; i++)
 				{
 					L2Spawn spawn = new L2Spawn(template);
-					spawn.setLocx(_arenaCoordinates[_arena][4] + Rnd.get(-400, 400));
-					spawn.setLocy(_arenaCoordinates[_arena][5] + Rnd.get(-400, 400));
-					spawn.setLocz(_zCoord);
+					spawn.setX(_arenaCoordinates[_arena][4] + Rnd.get(-400, 400));
+					spawn.setY(_arenaCoordinates[_arena][5] + Rnd.get(-400, 400));
+					spawn.setZ(_zCoord);
 					spawn.setAmount(1);
 					spawn.setHeading(1);
 					spawn.setRespawnDelay(1);
@@ -518,13 +518,13 @@ public final class BlockCheckerEngine
 			// Spawn the block carrying girl
 			if ((_round == 1) || (_round == 2))
 			{
-				L2NpcTemplate girl = NpcTable.getInstance().getTemplate(18676);
+				L2NpcTemplate girl = NpcData.getInstance().getTemplate(18676);
 				try
 				{
 					final L2Spawn girlSpawn = new L2Spawn(girl);
-					girlSpawn.setLocx(_arenaCoordinates[_arena][4] + Rnd.get(-400, 400));
-					girlSpawn.setLocy(_arenaCoordinates[_arena][5] + Rnd.get(-400, 400));
-					girlSpawn.setLocz(_zCoord);
+					girlSpawn.setX(_arenaCoordinates[_arena][4] + Rnd.get(-400, 400));
+					girlSpawn.setY(_arenaCoordinates[_arena][5] + Rnd.get(-400, 400));
+					girlSpawn.setZ(_zCoord);
 					girlSpawn.setAmount(1);
 					girlSpawn.setHeading(1);
 					girlSpawn.setRespawnDelay(1);
@@ -746,7 +746,7 @@ public final class BlockCheckerEngine
 				
 				player.stopAllEffects();
 				// Remove team aura
-				player.setTeam(0);
+				player.setTeam(Team.NONE);
 				// Set default arena
 				player.setBlockCheckerArena(DEFAULT_ARENA);
 				// Remove the event items

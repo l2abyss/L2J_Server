@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,8 +18,8 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import com.l2jserver.gameserver.model.TeleportBookmark;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance.TeleportBookmark;
 
 /**
  * @author ShanSoft
@@ -40,17 +40,17 @@ public class ExGetBookMarkInfoPacket extends L2GameServerPacket
 		writeH(0x84);
 		writeD(0x00); // Dummy
 		writeD(player.getBookmarkslot());
-		writeD(player.getTpbookmark().size());
+		writeD(player.getTeleportBookmarks().size());
 		
-		for (TeleportBookmark tpbm : player.getTpbookmark())
+		for (TeleportBookmark tpbm : player.getTeleportBookmarks())
 		{
-			writeD(tpbm._id);
-			writeD(tpbm._x);
-			writeD(tpbm._y);
-			writeD(tpbm._z);
-			writeS(tpbm._name);
-			writeD(tpbm._icon);
-			writeS(tpbm._tag);
+			writeD(tpbm.getId());
+			writeD(tpbm.getX());
+			writeD(tpbm.getY());
+			writeD(tpbm.getZ());
+			writeS(tpbm.getName());
+			writeD(tpbm.getIcon());
+			writeS(tpbm.getTag());
 		}
 	}
 }

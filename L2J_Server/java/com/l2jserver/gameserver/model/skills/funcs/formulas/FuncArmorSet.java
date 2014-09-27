@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -47,7 +47,7 @@ public class FuncArmorSet extends Func
 	
 	private FuncArmorSet(Stats stat)
 	{
-		super(stat, 0x10, null);
+		super(stat, 0x10, null, null);
 	}
 	
 	@Override
@@ -59,7 +59,7 @@ public class FuncArmorSet extends Func
 			L2ItemInstance chest = player.getChestArmorInstance();
 			if (chest != null)
 			{
-				L2ArmorSet set = ArmorSetsData.getInstance().getSet(chest.getItemId());
+				L2ArmorSet set = ArmorSetsData.getInstance().getSet(chest.getId());
 				if ((set != null) && set.containAll(player))
 				{
 					switch (stat)

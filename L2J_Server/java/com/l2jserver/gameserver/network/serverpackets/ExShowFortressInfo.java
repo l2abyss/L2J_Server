@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -46,9 +46,9 @@ public class ExShowFortressInfo extends L2GameServerPacket
 		for (Fort fort : forts)
 		{
 			L2Clan clan = fort.getOwnerClan();
-			writeD(fort.getFortId());
+			writeD(fort.getResidenceId());
 			writeS(clan != null ? clan.getName() : "");
-			writeD(fort.getSiege().getIsInProgress() ? 0x01 : 0x00);
+			writeD(fort.getSiege().isInProgress() ? 0x01 : 0x00);
 			// Time of possession
 			writeD(fort.getOwnedTime());
 		}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,8 +23,6 @@ package com.l2jserver.gameserver.script;
  */
 public interface EngineInterface
 {
-	public void addQuestDrop(int npcID, int itemID, int min, int max, int chance, String questID, String[] states);
-	
 	public void addEventDrop(int[] items, int[] count, double chance, DateRange range);
 	
 	public void onPlayerLogin(String[] message, DateRange range);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -34,24 +34,19 @@ import javolution.util.FastMap;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
-import com.l2jserver.gameserver.instancemanager.QuestManager;
-import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.AutoSpawnHandler;
 import com.l2jserver.gameserver.model.AutoSpawnHandler.AutoSpawnInstance;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.StatsSet;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
-import com.l2jserver.gameserver.model.quest.Quest;
+import com.l2jserver.gameserver.model.skills.CommonSkill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.SSQInfo;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Broadcast;
-
-import gnu.trove.procedure.TObjectProcedure;
 
 /**
  * Seven Signs engine.
@@ -755,9 +750,9 @@ public class SevenSigns
 		}
 		
 		int stoneCount = 0;
-		stoneCount += currPlayer.getInteger("red_stones");
-		stoneCount += currPlayer.getInteger("green_stones");
-		stoneCount += currPlayer.getInteger("blue_stones");
+		stoneCount += currPlayer.getInt("red_stones");
+		stoneCount += currPlayer.getInt("green_stones");
+		stoneCount += currPlayer.getInt("blue_stones");
 		
 		return stoneCount;
 	}
@@ -770,7 +765,7 @@ public class SevenSigns
 			return 0;
 		}
 		
-		return currPlayer.getInteger("contribution_score");
+		return currPlayer.getInt("contribution_score");
 	}
 	
 	public int getPlayerAdenaCollect(int objectId)
@@ -781,7 +776,7 @@ public class SevenSigns
 			return 0;
 		}
 		
-		return currPlayer.getInteger("ancient_adena_amount");
+		return currPlayer.getInt("ancient_adena_amount");
 	}
 	
 	public int getPlayerSeal(int objectId)
@@ -792,7 +787,7 @@ public class SevenSigns
 			return SEAL_NULL;
 		}
 		
-		return currPlayer.getInteger("seal");
+		return currPlayer.getInt("seal");
 	}
 	
 	public int getPlayerCabal(int objectId)
@@ -896,13 +891,13 @@ public class SevenSigns
 			for (StatsSet sevenDat : _signsPlayerData.values())
 			{
 				ps.setString(1, sevenDat.getString("cabal"));
-				ps.setInt(2, sevenDat.getInteger("seal"));
-				ps.setInt(3, sevenDat.getInteger("red_stones"));
-				ps.setInt(4, sevenDat.getInteger("green_stones"));
-				ps.setInt(5, sevenDat.getInteger("blue_stones"));
+				ps.setInt(2, sevenDat.getInt("seal"));
+				ps.setInt(3, sevenDat.getInt("red_stones"));
+				ps.setInt(4, sevenDat.getInt("green_stones"));
+				ps.setInt(5, sevenDat.getInt("blue_stones"));
 				ps.setDouble(6, sevenDat.getDouble("ancient_adena_amount"));
 				ps.setDouble(7, sevenDat.getDouble("contribution_score"));
-				ps.setInt(8, sevenDat.getInteger("charId"));
+				ps.setInt(8, sevenDat.getInt("charId"));
 				ps.execute();
 				ps.clearParameters();
 			}
@@ -925,13 +920,13 @@ public class SevenSigns
 			PreparedStatement ps = con.prepareStatement(UPDATE_PLAYER))
 		{
 			ps.setString(1, sevenDat.getString("cabal"));
-			ps.setInt(2, sevenDat.getInteger("seal"));
-			ps.setInt(3, sevenDat.getInteger("red_stones"));
-			ps.setInt(4, sevenDat.getInteger("green_stones"));
-			ps.setInt(5, sevenDat.getInteger("blue_stones"));
+			ps.setInt(2, sevenDat.getInt("seal"));
+			ps.setInt(3, sevenDat.getInt("red_stones"));
+			ps.setInt(4, sevenDat.getInt("green_stones"));
+			ps.setInt(5, sevenDat.getInt("blue_stones"));
 			ps.setDouble(6, sevenDat.getDouble("ancient_adena_amount"));
 			ps.setDouble(7, sevenDat.getDouble("contribution_score"));
-			ps.setInt(8, sevenDat.getInteger("charId"));
+			ps.setInt(8, sevenDat.getInt("charId"));
 			ps.execute();
 		}
 		catch (SQLException e)
@@ -988,7 +983,7 @@ public class SevenSigns
 		// Reset each player's contribution data as well as seal and cabal.
 		for (StatsSet sevenDat : _signsPlayerData.values())
 		{
-			charObjId = sevenDat.getInteger("charId");
+			charObjId = sevenDat.getInt("charId");
 			
 			// Reset the player's cabal and seal information
 			sevenDat.set("cabal", "");
@@ -1077,7 +1072,7 @@ public class SevenSigns
 	public int getAncientAdenaReward(int objectId, boolean removeReward)
 	{
 		StatsSet currPlayer = _signsPlayerData.get(objectId);
-		int rewardAmount = currPlayer.getInteger("ancient_adena_amount");
+		int rewardAmount = currPlayer.getInt("ancient_adena_amount");
 		
 		currPlayer.set("red_stones", 0);
 		currPlayer.set("green_stones", 0);
@@ -1120,9 +1115,9 @@ public class SevenSigns
 			return -1;
 		}
 		
-		currPlayer.set("red_stones", currPlayer.getInteger("red_stones") + redCount);
-		currPlayer.set("green_stones", currPlayer.getInteger("green_stones") + greenCount);
-		currPlayer.set("blue_stones", currPlayer.getInteger("blue_stones") + blueCount);
+		currPlayer.set("red_stones", currPlayer.getInt("red_stones") + redCount);
+		currPlayer.set("green_stones", currPlayer.getInt("green_stones") + greenCount);
+		currPlayer.set("blue_stones", currPlayer.getInt("blue_stones") + blueCount);
 		currPlayer.set("ancient_adena_amount", totalAncientAdena);
 		currPlayer.set("contribution_score", totalContribScore);
 		_signsPlayerData.put(objectId, currPlayer);
@@ -1433,46 +1428,28 @@ public class SevenSigns
 	 */
 	protected void teleLosingCabalFromDungeons(String compWinner)
 	{
-		L2World.getInstance().forEachPlayer(new TeleLosingCabalFromDungeons(compWinner));
-	}
-	
-	private final class TeleLosingCabalFromDungeons implements TObjectProcedure<L2PcInstance>
-	{
-		private final String _cmpWinner;
-		
-		protected TeleLosingCabalFromDungeons(final String compWinner)
+		for (L2PcInstance player : L2World.getInstance().getPlayers())
 		{
-			_cmpWinner = compWinner;
-		}
-		
-		@Override
-		public final boolean execute(final L2PcInstance onlinePlayer)
-		{
-			if (onlinePlayer != null)
+			StatsSet currPlayer = _signsPlayerData.get(player.getObjectId());
+			
+			if (isSealValidationPeriod() || isCompResultsPeriod())
 			{
-				StatsSet currPlayer = _signsPlayerData.get(onlinePlayer.getObjectId());
-				
-				if (isSealValidationPeriod() || isCompResultsPeriod())
+				if (!player.isGM() && player.isIn7sDungeon() && ((currPlayer == null) || !currPlayer.getString("cabal").equals(compWinner)))
 				{
-					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && ((currPlayer == null) || !currPlayer.getString("cabal").equals(_cmpWinner)))
-					{
-						onlinePlayer.teleToLocation(MapRegionManager.TeleportWhereType.Town);
-						onlinePlayer.setIsIn7sDungeon(false);
-						onlinePlayer.sendMessage("You have been teleported to the nearest town due to the beginning of the Seal Validation period.");
-					}
-				}
-				else
-				{
-					if (!onlinePlayer.isGM() && onlinePlayer.isIn7sDungeon() && ((currPlayer == null) || !currPlayer.getString("cabal").isEmpty()))
-					{
-						onlinePlayer.teleToLocation(MapRegionManager.TeleportWhereType.Town);
-						onlinePlayer.setIsIn7sDungeon(false);
-						onlinePlayer.sendMessage("You have been teleported to the nearest town because you have not signed for any cabal.");
-					}
+					player.teleToLocation(TeleportWhereType.TOWN);
+					player.setIsIn7sDungeon(false);
+					player.sendMessage("You have been teleported to the nearest town due to the beginning of the Seal Validation period.");
 				}
 			}
-			
-			return true;
+			else
+			{
+				if (!player.isGM() && player.isIn7sDungeon() && ((currPlayer == null) || !currPlayer.getString("cabal").isEmpty()))
+				{
+					player.teleToLocation(TeleportWhereType.TOWN);
+					player.setIsIn7sDungeon(false);
+					player.sendMessage("You have been teleported to the nearest town because you have not signed for any cabal.");
+				}
+			}
 		}
 	}
 	
@@ -1535,17 +1512,12 @@ public class SevenSigns
 					
 					// Perform initial Seal Validation set up.
 					initializeSeals();
+					
 					// Buff/Debuff members of the event when Seal of Strife captured.
 					giveCPMult(getSealOwner(SEAL_STRIFE));
+					
 					// Send message that Seal Validation has begun.
 					sendMessageToAll(SystemMessageId.SEAL_VALIDATION_PERIOD_BEGUN);
-					
-					// Change next Territory War date
-					Quest twQuest = QuestManager.getInstance().getQuest(TerritoryWarManager.qn);
-					if (twQuest != null)
-					{
-						twQuest.startQuestTimer("setNextTWDate", 30000, null, null);
-					}
 					
 					_log.info("SevenSigns: The " + getCabalName(_previousWinner) + " have won the competition with " + getCurrentScore(_previousWinner) + " points!");
 					break;
@@ -1589,13 +1561,6 @@ public class SevenSigns
 			_log.info("SevenSigns: The " + getCurrentPeriodName() + " period has begun!");
 			
 			setCalendarForNextPeriodChange();
-			
-			// make sure that all the scheduled siege dates are in the Seal Validation period
-			List<Castle> castles = CastleManager.getInstance().getCastles();
-			for (Castle castle : castles)
-			{
-				castle.getSiege().correctSiegeDateTime();
-			}
 			
 			SevenSignsPeriodChange sspc = new SevenSignsPeriodChange();
 			ThreadPoolManager.getInstance().scheduleGeneral(sspc, getMilliToPeriodChange());
@@ -1662,61 +1627,34 @@ public class SevenSigns
 		return false;
 	}
 	
-	public void giveCPMult(int StrifeOwner)
+	public void giveCPMult(int strifeOwner)
 	{
-		L2World.getInstance().forEachPlayer(new GiveCPMult(StrifeOwner));
-	}
-	
-	private final class GiveCPMult implements TObjectProcedure<L2PcInstance>
-	{
-		private final int _strifeOwner;
-		
-		protected GiveCPMult(int strifeOwner)
+		for (L2PcInstance player : L2World.getInstance().getPlayers())
 		{
-			_strifeOwner = strifeOwner;
-		}
-		
-		@Override
-		public final boolean execute(final L2PcInstance character)
-		{
-			if (character != null)
+			// Gives "Victor of War" passive skill to all online characters with Cabal, which controls Seal of Strife
+			int cabal = getPlayerCabal(player.getObjectId());
+			if (cabal != SevenSigns.CABAL_NULL)
 			{
-				// Gives "Victor of War" passive skill to all online characters with Cabal, which controls Seal of Strife
-				int cabal = getPlayerCabal(character.getObjectId());
-				if (cabal != SevenSigns.CABAL_NULL)
+				if (cabal == strifeOwner)
 				{
-					if (cabal == _strifeOwner)
-					{
-						character.addSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
-					}
-					else
-					{
-						// Gives "The Vanquished of War" passive skill to all online characters with Cabal, which does not control Seal of Strife
-						character.addSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
-					}
+					player.addSkill(CommonSkill.THE_VICTOR_OF_WAR.getSkill());
+				}
+				else
+				{
+					// Gives "The Vanquished of War" passive skill to all online characters with Cabal, which does not control Seal of Strife
+					player.addSkill(CommonSkill.THE_VANQUISHED_OF_WAR.getSkill());
 				}
 			}
-			return true;
 		}
 	}
 	
 	public void removeCPMult()
 	{
-		L2World.getInstance().forEachPlayer(new RemoveCPMult());
-	}
-	
-	protected final class RemoveCPMult implements TObjectProcedure<L2PcInstance>
-	{
-		@Override
-		public final boolean execute(final L2PcInstance character)
+		// Remove SevenSigns' buffs/debuffs.
+		for (L2PcInstance player : L2World.getInstance().getPlayers())
 		{
-			if (character != null)
-			{
-				// Remove SevenSigns' buffs/debuffs.
-				character.removeSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
-				character.removeSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
-			}
-			return true;
+			player.removeSkill(CommonSkill.THE_VICTOR_OF_WAR.getSkill());
+			player.removeSkill(CommonSkill.THE_VANQUISHED_OF_WAR.getSkill());
 		}
 	}
 	
@@ -1733,7 +1671,7 @@ public class SevenSigns
 			{
 				if (getPlayerCabal(activeChar.getObjectId()) == CABAL_DUSK)
 				{
-					activeChar.sendMessage("You cannot summon Siege Golem or Cannon while Seal of Strife posessed by Lords of Dawn.");
+					activeChar.sendPacket(SystemMessageId.SEAL_OF_STRIFE_FORBIDS_SUMMONING);
 					return true;
 				}
 			}

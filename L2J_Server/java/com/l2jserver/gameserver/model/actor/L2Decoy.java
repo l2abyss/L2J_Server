@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.model.actor;
 
 import java.util.Collection;
 
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
@@ -66,7 +67,7 @@ public abstract class L2Decoy extends L2Character
 	
 	public void stopDecay()
 	{
-		DecayTaskManager.getInstance().cancelDecayTask(this);
+		DecayTaskManager.getInstance().cancel(this);
 	}
 	
 	@Override
@@ -105,9 +106,10 @@ public abstract class L2Decoy extends L2Character
 		return null;
 	}
 	
-	public final int getNpcId()
+	@Override
+	public final int getId()
 	{
-		return getTemplate().getNpcId();
+		return getTemplate().getId();
 	}
 	
 	@Override

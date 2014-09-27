@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,36 +18,28 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import javolution.util.FastList;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-public final class ItemList extends L2GameServerPacket
+public final class ItemList extends AbstractItemPacket
 {
-	private final PcInventory _inventory;
-	private final L2ItemInstance[] _items;
+	private final L2PcInstance _activeChar;
+	private final List<L2ItemInstance> _items = new ArrayList<>();
 	private final boolean _showWindow;
-	private int length;
-	private final FastList<L2ItemInstance> questItems;
 	
-	public ItemList(L2PcInstance cha, boolean showWindow)
+	public ItemList(L2PcInstance activeChar, boolean showWindow)
 	{
-		_inventory = cha.getInventory();
-		_items = cha.getInventory().getItems();
+		_activeChar = activeChar;
 		_showWindow = showWindow;
-		questItems = FastList.newInstance();
-		for (int i = 0; i < _items.length; i++)
+		
+		for (L2ItemInstance item : activeChar.getInventory().getItems())
 		{
-			if ((_items[i] != null) && _items[i].isQuestItem())
+			if (!item.isQuestItem())
 			{
-				questItems.add(_items[i]); // add to questinv
-				_items[i] = null; // remove from list
-			}
-			else
-			{
-				length++; // increase size
+				_items.add(item);
 			}
 		}
 	}
@@ -57,67 +49,17 @@ public final class ItemList extends L2GameServerPacket
 	{
 		writeC(0x11);
 		writeH(_showWindow ? 0x01 : 0x00);
-		
-		writeH(length);
-		
-		for (L2ItemInstance temp : _items)
+		writeH(_items.size());
+		for (L2ItemInstance item : _items)
 		{
-			if ((temp == null) || (temp.getItem() == null))
-			{
-				continue;
-			}
-			
-			writeD(temp.getObjectId());
-			writeD(temp.getDisplayId());
-			writeD(temp.getLocationSlot());
-			writeQ(temp.getCount());
-			writeH(temp.getItem().getType2()); // item type2
-			writeH(temp.getCustomType1()); // item type3
-			writeH(temp.isEquipped() ? 0x01 : 0x00);
-			writeD(temp.getItem().getBodyPart());
-			writeH(temp.getEnchantLevel()); // enchant level
-			// race tickets
-			writeH(temp.getCustomType2()); // item type3
-			if (temp.isAugmented())
-			{
-				writeD(temp.getAugmentation().getAugmentationId());
-			}
-			else
-			{
-				writeD(0x00);
-			}
-			writeD(temp.getMana());
-			writeD(temp.isTimeLimitedItem() ? (int) (temp.getRemainingTime() / 1000) : -9999);
-			writeH(temp.getAttackElementType());
-			writeH(temp.getAttackElementPower());
-			for (byte i = 0; i < 6; i++)
-			{
-				writeH(temp.getElementDefAttr(i));
-			}
-			// Enchant Effects
-			for (int op : temp.getEnchantOptions())
-			{
-				writeH(op);
-			}
+			writeItem(item);
 		}
-		if (_inventory.hasInventoryBlock())
-		{
-			writeH(_inventory.getBlockItems().length);
-			writeC(_inventory.getBlockMode());
-			for (int i : _inventory.getBlockItems())
-			{
-				writeD(i);
-			}
-		}
-		else
-		{
-			writeH(0x00);
-		}
+		writeInventoryBlock(_activeChar.getInventory());
 	}
 	
 	@Override
 	public void runImpl()
 	{
-		getClient().sendPacket(new ExQuestItemList(questItems, getClient().getActiveChar().getInventory()));
+		getClient().sendPacket(new ExQuestItemList(_activeChar));
 	}
 }

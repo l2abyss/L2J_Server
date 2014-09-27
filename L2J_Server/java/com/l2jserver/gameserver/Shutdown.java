@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,6 +23,8 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
+import com.l2jserver.UPnPService;
+import com.l2jserver.gameserver.datatables.BotReportTable;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.OfflineTradersTable;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
@@ -30,7 +32,6 @@ import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.instancemanager.GlobalVariablesManager;
 import com.l2jserver.gameserver.instancemanager.GrandBossManager;
-import com.l2jserver.gameserver.instancemanager.HellboundManager;
 import com.l2jserver.gameserver.instancemanager.ItemAuctionManager;
 import com.l2jserver.gameserver.instancemanager.ItemsOnGroundManager;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
@@ -46,8 +47,6 @@ import com.l2jserver.gameserver.network.gameserverpackets.ServerStatus;
 import com.l2jserver.gameserver.network.serverpackets.ServerClose;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Broadcast;
-
-import gnu.trove.procedure.TObjectProcedure;
 
 /**
  * This class provides the functions for shutting down and restarting the server.<br>
@@ -80,7 +79,7 @@ public class Shutdown extends Thread
 	private void SendServerQuit(int seconds)
 	{
 		SystemMessage sysm = SystemMessage.getSystemMessage(SystemMessageId.THE_SERVER_WILL_BE_COMING_DOWN_IN_S1_SECONDS);
-		sysm.addNumber(seconds);
+		sysm.addInt(seconds);
 		Broadcast.toAllOnlinePlayers(sysm);
 	}
 	
@@ -190,6 +189,17 @@ public class Shutdown extends Thread
 		{
 			TimeCounter tc = new TimeCounter();
 			TimeCounter tc1 = new TimeCounter();
+			
+			try
+			{
+				UPnPService.getInstance().removeAllPorts();
+				_log.info("UPnP Service: All ports mappings deleted (" + tc.getEstimatedTimeAndRestartCounter() + "ms).");
+			}
+			catch (Throwable t)
+			{
+				_log.log(Level.WARNING, "Error while removing UPnP port mappings: ", t);
+			}
+			
 			try
 			{
 				if ((Config.OFFLINE_TRADE_ENABLE || Config.OFFLINE_CRAFT_ENABLE) && Config.RESTORE_OFFLINERS)
@@ -308,6 +318,9 @@ public class Shutdown extends Thread
 				case GM_RESTART:
 					getInstance().setMode(GM_RESTART);
 					System.exit(2);
+					break;
+				case ABORT:
+					LoginServerThread.getInstance().setServerStatus(ServerStatus.STATUS_AUTO);
 					break;
 			}
 		}
@@ -522,11 +535,6 @@ public class Shutdown extends Thread
 		_log.info("RaidBossSpawnManager: All raidboss info saved(" + tc.getEstimatedTimeAndRestartCounter() + "ms).");
 		GrandBossManager.getInstance().cleanUp();
 		_log.info("GrandBossManager: All Grand Boss info saved(" + tc.getEstimatedTimeAndRestartCounter() + "ms).");
-		HellboundManager.getInstance().cleanUp();
-		_log.info("Hellbound Manager: Data saved(" + tc.getEstimatedTimeAndRestartCounter() + "ms).");
-		_log.info("TradeController saving data.. This action may take some minutes! Please wait until completed!");
-		TradeController.getInstance().dataCountStore();
-		_log.info("TradeController: All count Item saved(" + tc.getEstimatedTimeAndRestartCounter() + "ms).");
 		ItemAuctionManager.getInstance().shutdown();
 		_log.info("Item Auction Manager: All tasks stopped(" + tc.getEstimatedTimeAndRestartCounter() + "ms).");
 		Olympiad.getInstance().saveOlympiadStatus();
@@ -552,7 +560,7 @@ public class Shutdown extends Thread
 		_log.info("Quest Manager: Data saved(" + tc.getEstimatedTimeAndRestartCounter() + "ms).");
 		
 		// Save all global variables data
-		GlobalVariablesManager.getInstance().saveVars();
+		GlobalVariablesManager.getInstance().storeMe();
 		_log.info("Global Variables Manager: Variables saved(" + tc.getEstimatedTimeAndRestartCounter() + "ms).");
 		
 		// Save items on ground before closing
@@ -562,6 +570,13 @@ public class Shutdown extends Thread
 			_log.info("Items On Ground Manager: Data saved(" + tc.getEstimatedTimeAndRestartCounter() + "ms).");
 			ItemsOnGroundManager.getInstance().cleanUp();
 			_log.info("Items On Ground Manager: Cleaned up(" + tc.getEstimatedTimeAndRestartCounter() + "ms).");
+		}
+		
+		// Save bot reports to database
+		if (Config.BOTREPORT_ENABLE)
+		{
+			BotReportTable.getInstance().saveReportedCharData();
+			_log.info("Bot Report Table: Sucessfully saved reports to database!");
 		}
 		
 		try
@@ -580,36 +595,24 @@ public class Shutdown extends Thread
 	 */
 	private void disconnectAllCharacters()
 	{
-		L2World.getInstance().getAllPlayers().safeForEachValue(new DisconnectAllCharacters());
-	}
-	
-	protected final class DisconnectAllCharacters implements TObjectProcedure<L2PcInstance>
-	{
-		private final Logger _log = Logger.getLogger(DisconnectAllCharacters.class.getName());
-		
-		@Override
-		public final boolean execute(final L2PcInstance player)
+		for (L2PcInstance player : L2World.getInstance().getPlayers())
 		{
-			if (player != null)
+			// Logout Character
+			try
 			{
-				// Logout Character
-				try
+				L2GameClient client = player.getClient();
+				if ((client != null) && !client.isDetached())
 				{
-					L2GameClient client = player.getClient();
-					if ((client != null) && !client.isDetached())
-					{
-						client.close(ServerClose.STATIC_PACKET);
-						client.setActiveChar(null);
-						player.setClient(null);
-					}
-					player.deleteMe();
+					client.close(ServerClose.STATIC_PACKET);
+					client.setActiveChar(null);
+					player.setClient(null);
 				}
-				catch (Throwable t)
-				{
-					_log.log(Level.WARNING, "Failed logour char " + player, t);
-				}
+				player.deleteMe();
 			}
-			return true;
+			catch (Throwable t)
+			{
+				_log.log(Level.WARNING, "Failed logour char " + player, t);
+			}
 		}
 	}
 	

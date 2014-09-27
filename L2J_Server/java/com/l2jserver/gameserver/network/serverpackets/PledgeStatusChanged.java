@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -34,7 +34,7 @@ public final class PledgeStatusChanged extends L2GameServerPacket
 	{
 		writeC(0xCD);
 		writeD(_clan.getLeaderId());
-		writeD(_clan.getClanId());
+		writeD(_clan.getId());
 		writeD(_clan.getCrestId());
 		writeD(_clan.getAllyId());
 		writeD(_clan.getAllyCrestId());

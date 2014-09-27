@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -68,12 +68,12 @@ public final class RequestAllyInfo extends L2GameClientPacket
 			activeChar.sendPacket(sm);
 			
 			sm = SystemMessage.getSystemMessage(SystemMessageId.CONNECTION_S1_TOTAL_S2);
-			sm.addNumber(ai.getOnline());
-			sm.addNumber(ai.getTotal());
+			sm.addInt(ai.getOnline());
+			sm.addInt(ai.getTotal());
 			activeChar.sendPacket(sm);
 			
 			sm = SystemMessage.getSystemMessage(SystemMessageId.ALLIANCE_CLAN_TOTAL_S1);
-			sm.addNumber(ai.getAllies().length);
+			sm.addInt(ai.getAllies().length);
 			activeChar.sendPacket(sm);
 			
 			sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_INFO_HEAD);
@@ -90,12 +90,12 @@ public final class RequestAllyInfo extends L2GameClientPacket
 				activeChar.sendPacket(sm);
 				
 				sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_INFO_LEVEL_S1);
-				sm.addNumber(aci.getClan().getLevel());
+				sm.addInt(aci.getClan().getLevel());
 				activeChar.sendPacket(sm);
 				
 				sm = SystemMessage.getSystemMessage(SystemMessageId.CONNECTION_S1_TOTAL_S2);
-				sm.addNumber(aci.getOnline());
-				sm.addNumber(aci.getTotal());
+				sm.addInt(aci.getOnline());
+				sm.addInt(aci.getTotal());
 				activeChar.sendPacket(sm);
 				
 				sm = SystemMessage.getSystemMessage(SystemMessageId.CLAN_INFO_SEPARATOR);

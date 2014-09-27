@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -31,7 +31,7 @@ public class VehicleStat extends CharStat
 	}
 	
 	@Override
-	public float getMoveSpeed()
+	public double getMoveSpeed()
 	{
 		return _moveSpeed;
 	}
@@ -41,7 +41,7 @@ public class VehicleStat extends CharStat
 		_moveSpeed = speed;
 	}
 	
-	public final int getRotationSpeed()
+	public final double getRotationSpeed()
 	{
 		return _rotationSpeed;
 	}

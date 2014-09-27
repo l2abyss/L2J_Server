@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -50,7 +50,7 @@ public class GeoNodeLoc extends AbstractNodeLoc
 	}
 	
 	@Override
-	public short getZ()
+	public int getZ()
 	{
 		return _z;
 	}

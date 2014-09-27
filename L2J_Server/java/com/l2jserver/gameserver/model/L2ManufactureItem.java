@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,10 +20,6 @@ package com.l2jserver.gameserver.model;
 
 import com.l2jserver.gameserver.datatables.RecipeData;
 
-/**
- * This class ...
- * @version $Revision: 1.1.2.2.2.1 $ $Date: 2005/03/27 15:29:32 $
- */
 public class L2ManufactureItem
 {
 	private final int _recipeId;

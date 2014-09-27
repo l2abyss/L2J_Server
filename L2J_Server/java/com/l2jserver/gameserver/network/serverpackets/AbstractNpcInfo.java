@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -26,11 +26,11 @@ import com.l2jserver.gameserver.model.PcCondOverride;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Summon;
-import com.l2jserver.gameserver.model.actor.L2Trap;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.effects.AbnormalEffect;
+import com.l2jserver.gameserver.model.actor.instance.L2TrapInstance;
+import com.l2jserver.gameserver.model.skills.AbnormalVisualEffect;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 
 public abstract class AbstractNpcInfo extends L2GameServerPacket
@@ -39,16 +39,10 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 	protected int _idTemplate;
 	protected boolean _isAttackable, _isSummoned;
 	protected int _mAtkSpd, _pAtkSpd;
-	
-	/**
-	 * Run speed, swimming run speed and flying run speed
-	 */
-	protected int _runSpd;
-	
-	/**
-	 * Walking speed, swimming walking speed and flying walking speed
-	 */
-	protected int _walkSpd;
+	protected final int _runSpd, _walkSpd;
+	protected final int _swimRunSpd, _swimWalkSpd;
+	protected final int _flyRunSpd, _flyWalkSpd;
+	protected double _moveMultiplier;
 	
 	protected int _rhand, _lhand, _chest, _enchantEffect;
 	protected double _collisionHeight, _collisionRadius;
@@ -64,8 +58,13 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 		_heading = cha.getHeading();
 		_mAtkSpd = cha.getMAtkSpd();
 		_pAtkSpd = cha.getPAtkSpd();
-		_runSpd = cha.getTemplate().getBaseRunSpd();
-		_walkSpd = cha.getTemplate().getBaseWalkSpd();
+		_moveMultiplier = cha.getMovementSpeedMultiplier();
+		_runSpd = (int) Math.round(cha.getRunSpeed() / _moveMultiplier);
+		_walkSpd = (int) Math.round(cha.getWalkSpeed() / _moveMultiplier);
+		_swimRunSpd = (int) Math.round(cha.getSwimRunSpeed() / _moveMultiplier);
+		_swimWalkSpd = (int) Math.round(cha.getSwimWalkSpeed() / _moveMultiplier);
+		_flyRunSpd = cha.isFlying() ? _runSpd : 0;
+		_flyWalkSpd = cha.isFlying() ? _walkSpd : 0;
 	}
 	
 	/**
@@ -84,23 +83,27 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 		{
 			super(cha);
 			_npc = cha;
-			_idTemplate = cha.getTemplate().getIdTemplate(); // On every subclass
+			_idTemplate = cha.getTemplate().getDisplayId(); // On every subclass
 			_rhand = cha.getRightHandItem(); // On every subclass
 			_lhand = cha.getLeftHandItem(); // On every subclass
 			_enchantEffect = cha.getEnchantEffect();
 			_collisionHeight = cha.getCollisionHeight();// On every subclass
 			_collisionRadius = cha.getCollisionRadius();// On every subclass
 			_isAttackable = cha.isAutoAttackable(attacker);
-			if (cha.getTemplate().isServerSideName())
+			if (cha.getTemplate().isUsingServerSideName())
 			{
 				_name = cha.getName();// On every subclass
 			}
 			
-			if (Config.L2JMOD_CHAMPION_ENABLE && cha.isChampion())
+			if (_npc.isInvisible())
+			{
+				_title = "Invisible";
+			}
+			else if (Config.L2JMOD_CHAMPION_ENABLE && cha.isChampion())
 			{
 				_title = (Config.L2JMOD_CHAMP_TITLE); // On every subclass
 			}
-			else if (cha.getTemplate().isServerSideTitle())
+			else if (cha.getTemplate().isUsingServerSideTitle())
 			{
 				_title = cha.getTemplate().getTitle(); // On every subclass
 			}
@@ -111,7 +114,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			
 			if (Config.SHOW_NPC_LVL && (_npc instanceof L2MonsterInstance))
 			{
-				String t = "Lv " + cha.getLevel() + (cha.getAggroRange() > 0 ? "*" : "");
+				String t = "Lv " + cha.getLevel() + (cha.isAggressive() ? "*" : "");
 				if (_title != null)
 				{
 					t += " " + _title;
@@ -128,7 +131,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 				{
 					L2Clan clan = ClanTable.getInstance().getClan(cha.getCastle().getOwnerId());
 					_clanCrest = clan.getCrestId();
-					_clanId = clan.getClanId();
+					_clanId = clan.getId();
 					_allyCrest = clan.getAllyCrestId();
 					_allyId = clan.getAllyId();
 				}
@@ -153,13 +156,13 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_pAtkSpd);
 			writeD(_runSpd);
 			writeD(_walkSpd);
-			writeD(_runSpd); // swim run speed
-			writeD(_walkSpd); // swim walk speed
-			writeD(_runSpd); // swim run speed
-			writeD(_walkSpd); // swim walk speed
-			writeD(_runSpd); // fly run speed
-			writeD(_walkSpd); // fly run speed
-			writeF(_npc.getMovementSpeedMultiplier());
+			writeD(_swimRunSpd);
+			writeD(_swimWalkSpd);
+			writeD(_flyRunSpd);
+			writeD(_flyWalkSpd);
+			writeD(_flyRunSpd);
+			writeD(_flyWalkSpd);
+			writeF(_moveMultiplier);
 			writeF(_npc.getAttackSpeedMultiplier());
 			writeF(_collisionRadius);
 			writeF(_collisionHeight);
@@ -179,14 +182,14 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(0x00); // pvp flag
 			writeD(0x00); // karma
 			
-			writeD(_npc.getAbnormalEffect()); // C2
+			writeD(_npc.isInvisible() ? _npc.getAbnormalVisualEffects() | AbnormalVisualEffect.STEALTH.getMask() : _npc.getAbnormalVisualEffects());
 			writeD(_clanId); // clan id
 			writeD(_clanCrest); // crest id
 			writeD(_allyId); // ally id
 			writeD(_allyCrest); // all crest
 			
-			writeC(_npc.isFlying() ? 2 : 0); // C2
-			writeC(_npc.getTeam()); // team color 0=none, 1 = blue, 2 = red
+			writeC(_npc.isInsideZone(ZoneId.WATER) ? 1 : _npc.isFlying() ? 2 : 0); // C2
+			writeC(_npc.getTeam().getId());
 			
 			writeF(_collisionRadius);
 			writeF(_collisionHeight);
@@ -196,33 +199,31 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_npc.getColorEffect()); // CT1.5 Pet form and skills, Color effect
 			writeC(_npc.isTargetable() ? 0x01 : 0x00);
 			writeC(_npc.isShowName() ? 0x01 : 0x00);
-			writeD(_npc.getSpecialEffect());
+			writeD(_npc.getAbnormalVisualEffectSpecial());
 			writeD(_displayEffect);
 		}
 	}
 	
 	public static class TrapInfo extends AbstractNpcInfo
 	{
-		private final L2Trap _trap;
+		private final L2TrapInstance _trap;
 		
-		public TrapInfo(L2Trap cha, L2Character attacker)
+		public TrapInfo(L2TrapInstance cha, L2Character attacker)
 		{
 			super(cha);
 			
 			_trap = cha;
-			_idTemplate = cha.getTemplate().getIdTemplate();
+			_idTemplate = cha.getTemplate().getDisplayId();
 			_isAttackable = cha.isAutoAttackable(attacker);
 			_rhand = 0;
 			_lhand = 0;
 			_collisionHeight = _trap.getTemplate().getfCollisionHeight();
 			_collisionRadius = _trap.getTemplate().getfCollisionRadius();
-			if (cha.getTemplate().isServerSideName())
+			if (cha.getTemplate().isUsingServerSideName())
 			{
 				_name = cha.getName();
 			}
 			_title = cha.getOwner() != null ? cha.getOwner().getName() : "";
-			_runSpd = _trap.getRunSpeed();
-			_walkSpd = _trap.getWalkSpeed();
 		}
 		
 		@Override
@@ -241,13 +242,13 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_pAtkSpd);
 			writeD(_runSpd);
 			writeD(_walkSpd);
-			writeD(_runSpd); // swim run speed
-			writeD(_walkSpd); // swim walk speed
-			writeD(_runSpd); // fly run speed
-			writeD(_walkSpd); // fly walk speed
-			writeD(_runSpd); // fly run speed
-			writeD(_walkSpd); // fly walk speed
-			writeF(_trap.getMovementSpeedMultiplier());
+			writeD(_swimRunSpd);
+			writeD(_swimWalkSpd);
+			writeD(_flyRunSpd);
+			writeD(_flyWalkSpd);
+			writeD(_flyRunSpd);
+			writeD(_flyWalkSpd);
+			writeF(_moveMultiplier);
 			writeF(_trap.getAttackSpeedMultiplier());
 			writeF(_collisionRadius);
 			writeF(_collisionHeight);
@@ -268,14 +269,14 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_trap.getPvpFlag());
 			writeD(_trap.getKarma());
 			
-			writeD(_trap.getAbnormalEffect()); // C2
+			writeD(_trap.isInvisible() ? _trap.getAbnormalVisualEffects() | AbnormalVisualEffect.STEALTH.getMask() : _trap.getAbnormalVisualEffects());
 			writeD(0x00); // clan id
 			writeD(0x00); // crest id
 			writeD(0000); // C2
 			writeD(0000); // C2
 			writeC(0000); // C2
 			
-			writeC(_trap.getTeam()); // team color 0=none, 1 = blue, 2 = red
+			writeC(_trap.getTeam().getId());
 			
 			writeF(_collisionRadius);
 			writeF(_collisionHeight);
@@ -290,69 +291,32 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 	}
 	
 	/**
-	 * Packet for summons
+	 * Packet for summons.
 	 */
 	public static class SummonInfo extends AbstractNpcInfo
 	{
 		private final L2Summon _summon;
-		private int _form = 0;
-		private int _val = 0;
+		private final int _form;
+		private final int _val;
 		
 		public SummonInfo(L2Summon cha, L2Character attacker, int val)
 		{
 			super(cha);
 			_summon = cha;
 			_val = val;
-			if (_summon.isShowSummonAnimation())
-			{
-				_val = 2; // override for spawn
-			}
+			_form = cha.getFormId();
 			
-			int npcId = cha.getTemplate().getNpcId();
-			
-			if ((npcId == 16041) || (npcId == 16042))
-			{
-				if (cha.getLevel() > 84)
-				{
-					_form = 3;
-				}
-				else if (cha.getLevel() > 79)
-				{
-					_form = 2;
-				}
-				else if (cha.getLevel() > 74)
-				{
-					_form = 1;
-				}
-			}
-			else if ((npcId == 16025) || (npcId == 16037))
-			{
-				if (cha.getLevel() > 69)
-				{
-					_form = 3;
-				}
-				else if (cha.getLevel() > 64)
-				{
-					_form = 2;
-				}
-				else if (cha.getLevel() > 59)
-				{
-					_form = 1;
-				}
-			}
-			
-			// fields not set on AbstractNpcInfo
 			_isAttackable = cha.isAutoAttackable(attacker);
 			_rhand = cha.getWeapon();
 			_lhand = 0;
 			_chest = cha.getArmor();
-			_enchantEffect = cha.getTemplate().getEnchantEffect();
+			_enchantEffect = cha.getTemplate().getWeaponEnchant();
 			_name = cha.getName();
-			_title = cha.getOwner() != null ? ((!cha.getOwner().isOnline()) ? "" : cha.getOwner().getName()) : ""; // when owner online, summon will show in title owner name
-			_idTemplate = cha.getTemplate().getIdTemplate();
+			_title = (cha.getOwner() != null) && cha.getOwner().isOnline() ? cha.getOwner().getName() : "";
+			_idTemplate = cha.getTemplate().getDisplayId();
 			_collisionHeight = cha.getTemplate().getfCollisionHeight();
 			_collisionRadius = cha.getTemplate().getfCollisionRadius();
-			_invisible = cha.getOwner() != null ? cha.getOwner().getAppearance().getInvisible() : false;
+			_invisible = cha.isInvisible();
 		}
 		
 		@Override
@@ -361,8 +325,8 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			boolean gmSeeInvis = false;
 			if (_invisible)
 			{
-				L2PcInstance tmp = getClient().getActiveChar();
-				if ((tmp != null) && tmp.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
+				final L2PcInstance activeChar = getClient().getActiveChar();
+				if ((activeChar != null) && activeChar.canOverrideCond(PcCondOverride.SEE_ALL_PLAYERS))
 				{
 					gmSeeInvis = true;
 				}
@@ -381,13 +345,13 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_pAtkSpd);
 			writeD(_runSpd);
 			writeD(_walkSpd);
-			writeD(_runSpd); // swim run speed
-			writeD(_walkSpd); // swim walk speed
-			writeD(_runSpd); // fly run speed
-			writeD(_walkSpd); // fly walk speed
-			writeD(_runSpd); // fly run speed
-			writeD(_walkSpd); // fly walk speed
-			writeF(_summon.getMovementSpeedMultiplier());
+			writeD(_swimRunSpd);
+			writeD(_swimWalkSpd);
+			writeD(_flyRunSpd);
+			writeD(_flyWalkSpd);
+			writeD(_flyRunSpd);
+			writeD(_flyWalkSpd);
+			writeF(_moveMultiplier);
 			writeF(_summon.getAttackSpeedMultiplier());
 			writeF(_collisionRadius);
 			writeF(_collisionHeight);
@@ -408,15 +372,15 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_summon.getPvpFlag());
 			writeD(_summon.getKarma());
 			
-			writeD(gmSeeInvis ? _summon.getAbnormalEffect() | AbnormalEffect.STEALTH.getMask() : _summon.getAbnormalEffect());
+			writeD(gmSeeInvis ? _summon.getAbnormalVisualEffects() | AbnormalVisualEffect.STEALTH.getMask() : _summon.getAbnormalVisualEffects());
 			
 			writeD(0x00); // clan id
 			writeD(0x00); // crest id
-			writeD(0000); // C2
-			writeD(0000); // C2
-			writeC(0000); // C2
+			writeD(0x00); // C2
+			writeD(0x00); // C2
+			writeC(_summon.isInsideZone(ZoneId.WATER) ? 1 : _summon.isFlying() ? 2 : 0); // C2
 			
-			writeC(_summon.getTeam()); // team color 0=none, 1 = blue, 2 = red
+			writeC(_summon.getTeam().getId());
 			
 			writeF(_collisionRadius);
 			writeF(_collisionHeight);
@@ -426,7 +390,7 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_form); // CT1.5 Pet form and skills
 			writeC(0x01);
 			writeC(0x01);
-			writeD(_summon.getSpecialEffect());
+			writeD(_summon.getAbnormalVisualEffectSpecial());
 		}
 	}
 }

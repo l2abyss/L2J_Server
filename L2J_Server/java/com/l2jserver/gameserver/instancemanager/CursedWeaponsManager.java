@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -59,7 +59,7 @@ import com.l2jserver.gameserver.util.Broadcast;
  * UnAfraid: TODO: Rewrite with DocumentParser
  * @author Micht
  */
-public class CursedWeaponsManager
+public final class CursedWeaponsManager
 {
 	private static final Logger _log = Logger.getLogger(CursedWeaponsManager.class.getName());
 	
@@ -288,7 +288,7 @@ public class CursedWeaponsManager
 	
 	public void activate(L2PcInstance player, L2ItemInstance item)
 	{
-		CursedWeapon cw = _cursedWeapons.get(item.getItemId());
+		CursedWeapon cw = _cursedWeapons.get(item.getId());
 		if (player.isCursedWeaponEquipped()) // cannot own 2 cursed swords
 		{
 			CursedWeapon cw2 = _cursedWeapons.get(player.getCursedWeaponEquippedId());
@@ -355,7 +355,7 @@ public class CursedWeaponsManager
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S2_MINUTE_OF_USAGE_TIME_ARE_LEFT_FOR_S1);
 				sm.addString(cw.getName());
 				// sm.addItemName(cw.getItemId());
-				sm.addNumber((int) ((cw.getEndTime() - System.currentTimeMillis()) / 60000));
+				sm.addInt((int) ((cw.getEndTime() - System.currentTimeMillis()) / 60000));
 				player.sendPacket(sm);
 			}
 		}

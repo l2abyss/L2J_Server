@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -30,10 +30,6 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.model.L2TeleportLocation;
 
-/**
- * This class ...
- * @version $Revision: 1.3.2.2.2.3 $ $Date: 2005/03/27 15:29:18 $
- */
 public class TeleportLocationTable
 {
 	private static Logger _log = Logger.getLogger(TeleportLocationTable.class.getName());

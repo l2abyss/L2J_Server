@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -60,7 +60,7 @@ public class PledgeReceiveSubPledgeCreated extends L2GameServerPacket
 		}
 		else if (_clan.getClanMember(LeaderId) == null)
 		{
-			_log.warning("SubPledgeLeader: " + LeaderId + " is missing from clan: " + _clan.getName() + "[" + _clan.getClanId() + "]");
+			_log.warning("SubPledgeLeader: " + LeaderId + " is missing from clan: " + _clan.getName() + "[" + _clan.getId() + "]");
 			return "";
 		}
 		else

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -83,7 +83,7 @@ public final class RequestPlayerShowMessage extends BaseReadPacket
 				{
 					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_UNREAD_MESSAGES);
 					final int number = super.readD();
-					sm.addNumber(number);
+					sm.addInt(number);
 					player.sendPacket(sm);
 				}
 				catch (Exception e)

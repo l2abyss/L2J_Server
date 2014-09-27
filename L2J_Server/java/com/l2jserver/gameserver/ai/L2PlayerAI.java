@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -26,13 +26,13 @@ import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_MOVE_TO;
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_PICK_UP;
 import static com.l2jserver.gameserver.ai.CtrlIntention.AI_INTENTION_REST;
 
-import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Character.AIAccessor;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2StaticObjectInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 
 public class L2PlayerAI extends L2PlayableAI
@@ -68,7 +68,7 @@ public class L2PlayerAI extends L2PlayableAI
 	{
 		// do nothing unless CAST intention
 		// however, forget interrupted actions when starting to use an offensive skill
-		if ((intention != AI_INTENTION_CAST) || ((arg0 != null) && ((L2Skill) arg0).isOffensive()))
+		if ((intention != AI_INTENTION_CAST) || ((arg0 != null) && ((Skill) arg0).isBad()))
 		{
 			_nextIntention = null;
 			super.changeIntention(intention, arg0, arg1);
@@ -184,7 +184,7 @@ public class L2PlayerAI extends L2PlayableAI
 	 * </ul>
 	 */
 	@Override
-	protected void onIntentionMoveTo(L2CharPosition pos)
+	protected void onIntentionMoveTo(Location loc)
 	{
 		if (getIntention() == AI_INTENTION_REST)
 		{
@@ -196,12 +196,12 @@ public class L2PlayerAI extends L2PlayableAI
 		if (_actor.isAllSkillsDisabled() || _actor.isCastingNow() || _actor.isAttackingNow())
 		{
 			clientActionFailed();
-			saveNextIntention(AI_INTENTION_MOVE_TO, pos, null);
+			saveNextIntention(AI_INTENTION_MOVE_TO, loc, null);
 			return;
 		}
 		
 		// Set the Intention of this AbstractAI to AI_INTENTION_MOVE_TO
-		changeIntention(AI_INTENTION_MOVE_TO, pos, null);
+		changeIntention(AI_INTENTION_MOVE_TO, loc, null);
 		
 		// Stop the actor auto-attack client side by sending Server->Client packet AutoAttackStop (broadcast)
 		clientStopAutoAttack();
@@ -210,7 +210,7 @@ public class L2PlayerAI extends L2PlayableAI
 		_actor.abortAttack();
 		
 		// Move the actor to Location (x,y,z) server side AND client side by sending Server->Client packet CharMoveToLocation (broadcast)
-		moveTo(pos.x, pos.y, pos.z);
+		moveTo(loc.getX(), loc.getY(), loc.getZ());
 	}
 	
 	@Override
@@ -258,7 +258,7 @@ public class L2PlayerAI extends L2PlayableAI
 		{
 			if (checkTargetLost(target))
 			{
-				if (_skill.isOffensive() && (getAttackTarget() != null))
+				if (_skill.isBad() && (getAttackTarget() != null))
 				{
 					// Notify the target
 					setCastTarget(null);
@@ -278,20 +278,7 @@ public class L2PlayerAI extends L2PlayableAI
 			clientStopMoving(null);
 		}
 		
-		L2Object oldTarget = _actor.getTarget();
-		if ((oldTarget != null) && (target != null) && (oldTarget != target))
-		{
-			// Replace the current target by the cast target
-			_actor.setTarget(getCastTarget());
-			// Launch the Cast of the skill
-			_accessor.doCast(_skill);
-			// Restore the initial target
-			_actor.setTarget(oldTarget);
-		}
-		else
-		{
-			_accessor.doCast(_skill);
-		}
+		_accessor.doCast(_skill);
 	}
 	
 	private void thinkPickUp()

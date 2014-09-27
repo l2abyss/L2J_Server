@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -17,6 +17,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.l2jserver.gameserver.model;
+
+import com.l2jserver.gameserver.model.stats.MoveType;
 
 /**
  * Stats definition for each pet level.
@@ -39,10 +41,16 @@ public class L2PetLevelData
 	private final float _petRegenMP;
 	private final short _petSoulShot;
 	private final short _petSpiritShot;
+	private final double _walkSpeedOnRide;
+	private final double _runSpeedOnRide;
+	private final double _slowSwimSpeedOnRide;
+	private final double _fastSwimSpeedOnRide;
+	private final double _slowFlySpeedOnRide;
+	private final double _fastFlySpeedOnRide;
 	
 	public L2PetLevelData(StatsSet set)
 	{
-		_ownerExpTaken = set.getInteger("get_exp_type");
+		_ownerExpTaken = set.getInt("get_exp_type");
 		_petMaxExp = set.getLong("exp");
 		_petMaxHP = set.getFloat("org_hp");
 		_petMaxMP = set.getFloat("org_mp");
@@ -50,13 +58,19 @@ public class L2PetLevelData
 		_petPDef = set.getFloat("org_pdefend");
 		_petMAtk = set.getFloat("org_mattack");
 		_petMDef = set.getFloat("org_mdefend");
-		_petMaxFeed = set.getInteger("max_meal");
-		_petFeedBattle = set.getInteger("consume_meal_in_battle");
-		_petFeedNormal = set.getInteger("consume_meal_in_normal");
+		_petMaxFeed = set.getInt("max_meal");
+		_petFeedBattle = set.getInt("consume_meal_in_battle");
+		_petFeedNormal = set.getInt("consume_meal_in_normal");
 		_petRegenHP = set.getFloat("org_hp_regen");
 		_petRegenMP = set.getFloat("org_mp_regen");
 		_petSoulShot = set.getShort("soulshot_count");
 		_petSpiritShot = set.getShort("spiritshot_count");
+		_walkSpeedOnRide = set.getDouble("walkSpeedOnRide", 0);
+		_runSpeedOnRide = set.getDouble("runSpeedOnRide", 0);
+		_slowSwimSpeedOnRide = set.getDouble("slowSwimSpeedOnRide", 0);
+		_fastSwimSpeedOnRide = set.getDouble("fastSwimSpeedOnRide", 0);
+		_slowFlySpeedOnRide = set.getDouble("slowFlySpeedOnRide", 0);
+		_fastFlySpeedOnRide = set.getDouble("fastFlySpeedOnRide", 0);
 	}
 	
 	/**
@@ -177,5 +191,30 @@ public class L2PetLevelData
 	public short getPetSpiritShot()
 	{
 		return _petSpiritShot;
+	}
+	
+	/**
+	 * @param mt movement type
+	 * @return the base riding speed of given movement type.
+	 */
+	public double getSpeedOnRide(MoveType mt)
+	{
+		switch (mt)
+		{
+			case WALK:
+				return _walkSpeedOnRide;
+			case RUN:
+				return _runSpeedOnRide;
+			case SLOW_SWIM:
+				return _slowSwimSpeedOnRide;
+			case FAST_SWIM:
+				return _fastSwimSpeedOnRide;
+			case SLOW_FLY:
+				return _slowFlySpeedOnRide;
+			case FAST_FLY:
+				return _fastFlySpeedOnRide;
+		}
+		
+		return 0;
 	}
 }

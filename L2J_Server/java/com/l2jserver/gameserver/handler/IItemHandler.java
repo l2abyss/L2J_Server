@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -28,7 +28,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
  */
 public interface IItemHandler
 {
-	public static Logger _log = Logger.getLogger(IItemHandler.class.getName());
+	public static final Logger _log = Logger.getLogger(IItemHandler.class.getName());
 	
 	/**
 	 * Launch task associated to the item.

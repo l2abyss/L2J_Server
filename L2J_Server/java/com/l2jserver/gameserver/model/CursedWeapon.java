@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -28,16 +28,18 @@ import java.util.logging.Logger;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
+import com.l2jserver.gameserver.datatables.TransformData;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
-import com.l2jserver.gameserver.instancemanager.TransformationManager;
 import com.l2jserver.gameserver.model.L2Party.messageType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.interfaces.INamable;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.CommonSkill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.Earthquake;
 import com.l2jserver.gameserver.network.serverpackets.ExRedSky;
@@ -47,10 +49,9 @@ import com.l2jserver.gameserver.network.serverpackets.SocialAction;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
 import com.l2jserver.gameserver.util.Broadcast;
-import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.Rnd;
 
-public class CursedWeapon
+public class CursedWeapon implements INamable
 {
 	private static final Logger _log = Logger.getLogger(CursedWeapon.class.getName());
 	
@@ -83,18 +84,12 @@ public class CursedWeapon
 	private int _playerPkKills = 0;
 	protected int transformationId = 0;
 	
-	private static final int[] TRANSFORM_IDS = new int[]
-	{
-		3630,
-		3631
-	};
-	
 	public CursedWeapon(int itemId, int skillId, String name)
 	{
 		_name = name;
 		_itemId = itemId;
 		_skillId = skillId;
-		_skillMaxLevel = SkillTable.getInstance().getMaxLevel(_skillId);
+		_skillMaxLevel = SkillData.getInstance().getMaxLevel(_skillId);
 	}
 	
 	public void endOfLife()
@@ -115,7 +110,7 @@ public class CursedWeapon
 				
 				// Remove
 				_player.getInventory().unEquipItemInBodySlot(L2Item.SLOT_LR_HAND);
-				_player.store();
+				_player.storeMe();
 				
 				// Destroy
 				L2ItemInstance removedItem = _player.getInventory().destroyItemByItemId("", _itemId, 1, _player, null);
@@ -145,29 +140,26 @@ public class CursedWeapon
 				// Remove from Db
 				_log.info(_name + " being removed offline.");
 				
-				try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+				try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+					PreparedStatement del = con.prepareStatement("DELETE FROM items WHERE owner_id=? AND item_id=?");
+					PreparedStatement ps = con.prepareStatement("UPDATE characters SET karma=?, pkkills=? WHERE charId=?"))
 				{
 					// Delete the item
-					PreparedStatement statement = con.prepareStatement("DELETE FROM items WHERE owner_id=? AND item_id=?");
-					statement.setInt(1, _playerId);
-					statement.setInt(2, _itemId);
-					if (statement.executeUpdate() != 1)
+					del.setInt(1, _playerId);
+					del.setInt(2, _itemId);
+					if (del.executeUpdate() != 1)
 					{
 						_log.warning("Error while deleting itemId " + _itemId + " from userId " + _playerId);
 					}
-					statement.close();
 					
 					// Restore the karma
-					statement = con.prepareStatement("UPDATE characters SET karma=?, pkkills=? WHERE charId=?");
-					statement.setInt(1, _playerKarma);
-					statement.setInt(2, _playerPkKills);
-					statement.setInt(3, _playerId);
-					if (statement.executeUpdate() != 1)
+					ps.setInt(1, _playerKarma);
+					ps.setInt(2, _playerPkKills);
+					ps.setInt(3, _playerId);
+					if (ps.executeUpdate() != 1)
 					{
 						_log.warning("Error while updating karma & pkkills for userId " + _playerId);
 					}
-					
-					statement.close();
 				}
 				catch (Exception e)
 				{
@@ -323,7 +315,7 @@ public class CursedWeapon
 		SystemMessage msg2 = SystemMessage.getSystemMessage(SystemMessageId.S2_MINUTE_OF_USAGE_TIME_ARE_LEFT_FOR_S1);
 		int timeLeft = (int) (cw.getTimeLeft() / 60000);
 		msg2.addItemName(_player.getCursedWeaponEquippedId());
-		msg2.addNumber(timeLeft);
+		msg2.addInt(timeLeft);
 		_player.sendPacket(msg2);
 	}
 	
@@ -339,21 +331,14 @@ public class CursedWeapon
 			level = _skillMaxLevel;
 		}
 		
-		L2Skill skill = SkillTable.getInstance().getInfo(_skillId, level);
-		// Yesod:
-		// To properly support subclasses this skill can not be stored.
+		final Skill skill = SkillData.getInstance().getSkill(_skillId, level);
 		_player.addSkill(skill, false);
 		
 		// Void Burst, Void Flow
-		skill = SkillTable.FrequentSkill.VOID_BURST.getSkill();
-		_player.addSkill(skill, false);
-		skill = SkillTable.FrequentSkill.VOID_FLOW.getSkill();
-		_player.addSkill(skill, false);
-		_player.setTransformAllowedSkills(TRANSFORM_IDS);
-		if (Config.DEBUG)
-		{
-			_log.info("Player " + _player.getName() + " has been awarded with skill " + skill);
-		}
+		_player.addSkill(CommonSkill.VOID_BURST.getSkill(), false);
+		_player.addTransformSkill(CommonSkill.VOID_BURST.getId());
+		_player.addSkill(CommonSkill.VOID_FLOW.getSkill(), false);
+		_player.addTransformSkill(CommonSkill.VOID_FLOW.getId());
 		_player.sendSkillList();
 	}
 	
@@ -372,26 +357,19 @@ public class CursedWeapon
 		{
 			_player.stopTransformation(true);
 			
-			ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					TransformationManager.getInstance().transformPlayer(transformationId, _player);
-				}
-			}, 500);
+			ThreadPoolManager.getInstance().scheduleGeneral(() -> TransformData.getInstance().transformPlayer(transformationId, _player), 500);
 		}
 		else
 		{
-			TransformationManager.getInstance().transformPlayer(transformationId, _player);
+			TransformData.getInstance().transformPlayer(transformationId, _player);
 		}
 	}
 	
 	public void removeSkill()
 	{
 		_player.removeSkill(_skillId);
-		_player.removeSkill(SkillTable.FrequentSkill.VOID_BURST.getSkill().getId());
-		_player.removeSkill(SkillTable.FrequentSkill.VOID_FLOW.getSkill().getId());
+		_player.removeSkill(CommonSkill.VOID_BURST.getSkill().getId());
+		_player.removeSkill(CommonSkill.VOID_FLOW.getSkill().getId());
 		_player.untransform();
 		_player.sendSkillList();
 	}
@@ -508,25 +486,23 @@ public class CursedWeapon
 			_log.info("CursedWeapon: Saving data to disk.");
 		}
 		
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection())
+		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
+			PreparedStatement del = con.prepareStatement("DELETE FROM cursed_weapons WHERE itemId = ?");
+			PreparedStatement ps = con.prepareStatement("INSERT INTO cursed_weapons (itemId, charId, playerKarma, playerPkKills, nbKills, endTime) VALUES (?, ?, ?, ?, ?, ?)"))
 		{
 			// Delete previous datas
-			PreparedStatement statement = con.prepareStatement("DELETE FROM cursed_weapons WHERE itemId = ?");
-			statement.setInt(1, _itemId);
-			statement.executeUpdate();
-			statement.close();
+			del.setInt(1, _itemId);
+			del.executeUpdate();
 			
 			if (_isActivated)
 			{
-				statement = con.prepareStatement("INSERT INTO cursed_weapons (itemId, charId, playerKarma, playerPkKills, nbKills, endTime) VALUES (?, ?, ?, ?, ?, ?)");
-				statement.setInt(1, _itemId);
-				statement.setInt(2, _playerId);
-				statement.setInt(3, _playerKarma);
-				statement.setInt(4, _playerPkKills);
-				statement.setInt(5, _nbKills);
-				statement.setLong(6, _endTime);
-				statement.executeUpdate();
-				statement.close();
+				ps.setInt(1, _itemId);
+				ps.setInt(2, _playerId);
+				ps.setInt(3, _playerKarma);
+				ps.setInt(4, _playerPkKills);
+				ps.setInt(5, _nbKills);
+				ps.setLong(6, _endTime);
+				ps.executeUpdate();
 			}
 		}
 		catch (SQLException e)
@@ -662,6 +638,7 @@ public class CursedWeapon
 		return _endTime;
 	}
 	
+	@Override
 	public String getName()
 	{
 		return _name;
@@ -736,12 +713,12 @@ public class CursedWeapon
 		if (_isActivated && (_player != null))
 		{
 			// Go to player holding the weapon
-			player.teleToLocation(_player.getX(), _player.getY(), _player.getZ() + 20, true);
+			player.teleToLocation(_player.getLocation(), true);
 		}
 		else if (_isDropped && (_item != null))
 		{
 			// Go to item on the ground
-			player.teleToLocation(_item.getX(), _item.getY(), _item.getZ() + 20, true);
+			player.teleToLocation(_item.getLocation(), true);
 		}
 		else
 		{
@@ -749,16 +726,16 @@ public class CursedWeapon
 		}
 	}
 	
-	public Point3D getWorldPosition()
+	public Location getWorldPosition()
 	{
 		if (_isActivated && (_player != null))
 		{
-			return _player.getPosition().getWorldPosition();
+			return _player.getLocation();
 		}
 		
 		if (_isDropped && (_item != null))
 		{
-			return _item.getPosition().getWorldPosition();
+			return _item.getLocation();
 		}
 		
 		return null;

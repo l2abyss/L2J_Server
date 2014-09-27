@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -596,8 +596,8 @@ public final class L2GamePacketHandler implements IPacketHandler<L2GameClient>, 
 					case 0xae: // RequestConfirmCastleSiegeWaitingList
 						msg = new RequestConfirmSiegeWaitingList();
 						break;
-					case 0xaf:
-						// RequestSetCastleSiegeTime
+					case 0xAF:
+						msg = new RequestSetCastleSiegeTime();
 						break;
 					case 0xb0:
 						msg = new MultiSellChoose();

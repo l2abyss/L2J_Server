@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.RecoBonus;
 
 /**
- * ExVoteSystemInfo packet implemetation.
+ * ExVoteSystemInfo packet implementation.
  * @author Gnacik
  */
 public class ExVoteSystemInfo extends L2GameServerPacket

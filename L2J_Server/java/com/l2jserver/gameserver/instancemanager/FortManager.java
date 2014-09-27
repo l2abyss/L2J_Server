@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -33,7 +33,7 @@ import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.entity.Fort;
 
-public class FortManager implements InstanceListManager
+public final class FortManager implements InstanceListManager
 {
 	protected static final Logger _log = Logger.getLogger(FortManager.class.getName());
 	
@@ -73,7 +73,7 @@ public class FortManager implements InstanceListManager
 	{
 		for (Fort f : getForts())
 		{
-			if (f.getFortId() == fortId)
+			if (f.getResidenceId() == fortId)
 			{
 				return f;
 			}
@@ -128,7 +128,7 @@ public class FortManager implements InstanceListManager
 		for (int i = 0; i < getForts().size(); i++)
 		{
 			fort = getForts().get(i);
-			if ((fort != null) && (fort.getFortId() == fortId))
+			if ((fort != null) && (fort.getResidenceId() == fortId))
 			{
 				return i;
 			}

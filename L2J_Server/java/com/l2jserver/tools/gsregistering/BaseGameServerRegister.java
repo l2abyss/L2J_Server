@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -259,14 +259,10 @@ public abstract class BaseGameServerRegister
 			// couldn't care less
 		}
 		
-		SwingUtilities.invokeLater(new Runnable()
+		SwingUtilities.invokeLater(() ->
 		{
-			@Override
-			public void run()
-			{
-				GUserInterface gui = new GUserInterface(bundle);
-				gui.getFrame().setVisible(true);
-			}
+			GUserInterface gui = new GUserInterface(bundle);
+			gui.getFrame().setVisible(true);
 		});
 	}
 	

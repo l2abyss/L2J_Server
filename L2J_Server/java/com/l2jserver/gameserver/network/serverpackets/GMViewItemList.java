@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,28 +18,37 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
-public class GMViewItemList extends L2GameServerPacket
+public class GMViewItemList extends AbstractItemPacket
 {
-	private final L2ItemInstance[] _items;
+	private final List<L2ItemInstance> _items = new ArrayList<>();
 	private final int _limit;
 	private final String _playerName;
 	
 	public GMViewItemList(L2PcInstance cha)
 	{
-		_items = cha.getInventory().getItems();
 		_playerName = cha.getName();
 		_limit = cha.getInventoryLimit();
+		for (L2ItemInstance item : cha.getInventory().getItems())
+		{
+			_items.add(item);
+		}
 	}
 	
 	public GMViewItemList(L2PetInstance cha)
 	{
-		_items = cha.getInventory().getItems();
 		_playerName = cha.getName();
 		_limit = cha.getInventoryLimit();
+		for (L2ItemInstance item : cha.getInventory().getItems())
+		{
+			_items.add(item);
+		}
 	}
 	
 	@Override
@@ -49,34 +58,10 @@ public class GMViewItemList extends L2GameServerPacket
 		writeS(_playerName);
 		writeD(_limit); // inventory limit
 		writeH(0x01); // show window ??
-		writeH(_items.length);
-		
-		for (L2ItemInstance temp : _items)
+		writeH(_items.size());
+		for (L2ItemInstance item : _items)
 		{
-			writeD(temp.getObjectId());
-			writeD(temp.getDisplayId());
-			writeD(temp.getLocationSlot());
-			writeQ(temp.getCount());
-			writeH(temp.getItem().getType2());
-			writeH(temp.getCustomType1());
-			writeH(temp.isEquipped() ? 0x01 : 0x00);
-			writeD(temp.getItem().getBodyPart());
-			writeH(temp.getEnchantLevel());
-			writeH(temp.getCustomType2());
-			writeD(temp.isAugmented() ? temp.getAugmentation().getAugmentationId() : 0x00);
-			writeD(temp.getMana());
-			writeD(temp.isTimeLimitedItem() ? (int) (temp.getRemainingTime() / 1000) : -9999);
-			writeH(temp.getAttackElementType());
-			writeH(temp.getAttackElementPower());
-			for (byte i = 0; i < 6; i++)
-			{
-				writeH(temp.getElementDefAttr(i));
-			}
-			// Enchant Effects
-			for (int op : temp.getEnchantOptions())
-			{
-				writeH(op);
-			}
+			writeItem(item);
 		}
 	}
 }

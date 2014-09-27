@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -26,6 +26,7 @@ import javolution.text.TextBuilder;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.cache.HtmCache;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -98,7 +99,7 @@ public class L2SignsPriestInstance extends L2Npc
 						}
 						catch (Exception e3)
 						{
-							_log.warning("Failed to retrieve cabal from bypass command. NpcId: " + getNpcId() + "; Command: " + command);
+							_log.warning("Failed to retrieve cabal from bypass command. NpcId: " + getId() + "; Command: " + command);
 						}
 					}
 				}
@@ -189,7 +190,7 @@ public class L2SignsPriestInstance extends L2Npc
 					}
 					break;
 				case 34: // Pay the participation fee request
-					if ((player.getClassId().level() > 1) && ((player.getAdena() >= Config.SSQ_JOIN_DAWN_ADENA_FEE) || (player.getInventory().getInventoryItemCount(Config.SSQ_MANORS_AGREEMENT_ID, -1) > 0)))
+					if ((player.getClassId().level() > 0) && ((player.getAdena() >= Config.SSQ_JOIN_DAWN_ADENA_FEE) || (player.getInventory().getInventoryItemCount(Config.SSQ_MANORS_AGREEMENT_ID, -1) > 0)))
 					{
 						showChatWindow(player, SevenSigns.SEVEN_SIGNS_HTML_PATH + "signs_33_dawn.htm");
 					}
@@ -205,7 +206,7 @@ public class L2SignsPriestInstance extends L2Npc
 				case 4: // Join a Cabal - SevenSigns 4 [0]1 x
 					int newSeal = Integer.parseInt(command.substring(15));
 					
-					if (player.getClassId().level() >= 2)
+					if (player.getClassId().level() >= 1)
 					{
 						if ((cabal == SevenSigns.CABAL_DUSK) && Config.ALT_GAME_CASTLE_DUSK)
 						{
@@ -360,7 +361,7 @@ public class L2SignsPriestInstance extends L2Npc
 							contribStonesFound = true;
 							SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 							msg.addItemName(SevenSigns.SEAL_STONE_RED_ID);
-							msg.addItemNumber(redContrib);
+							msg.addLong(redContrib);
 							player.sendPacket(msg);
 						}
 					}
@@ -371,7 +372,7 @@ public class L2SignsPriestInstance extends L2Npc
 							contribStonesFound = true;
 							SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 							msg.addItemName(SevenSigns.SEAL_STONE_GREEN_ID);
-							msg.addItemNumber(greenContrib);
+							msg.addLong(greenContrib);
 							player.sendPacket(msg);
 						}
 					}
@@ -382,7 +383,7 @@ public class L2SignsPriestInstance extends L2Npc
 							contribStonesFound = true;
 							SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 							msg.addItemName(SevenSigns.SEAL_STONE_BLUE_ID);
-							msg.addItemNumber(blueContrib);
+							msg.addLong(blueContrib);
 							player.sendPacket(msg);
 						}
 					}
@@ -402,7 +403,7 @@ public class L2SignsPriestInstance extends L2Npc
 					{
 						score = SevenSigns.getInstance().addPlayerStoneContrib(player.getObjectId(), blueContrib, greenContrib, redContrib);
 						sm = SystemMessage.getSystemMessage(SystemMessageId.CONTRIB_SCORE_INCREASED_S1);
-						sm.addItemNumber(score);
+						sm.addLong(score);
 						player.sendPacket(sm);
 						
 						if (this instanceof L2DawnPriestInstance)
@@ -494,7 +495,7 @@ public class L2SignsPriestInstance extends L2Npc
 										stonesFound = true;
 										SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 										msg.addItemName(SevenSigns.SEAL_STONE_RED_ID);
-										msg.addItemNumber(redContribCount);
+										msg.addLong(redContribCount);
 										player.sendPacket(msg);
 									}
 								}
@@ -505,7 +506,7 @@ public class L2SignsPriestInstance extends L2Npc
 										stonesFound = true;
 										SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 										msg.addItemName(SevenSigns.SEAL_STONE_GREEN_ID);
-										msg.addItemNumber(greenContribCount);
+										msg.addLong(greenContribCount);
 										player.sendPacket(msg);
 									}
 								}
@@ -516,7 +517,7 @@ public class L2SignsPriestInstance extends L2Npc
 										stonesFound = true;
 										SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.S2_S1_DISAPPEARED);
 										msg.addItemName(SevenSigns.SEAL_STONE_BLUE_ID);
-										msg.addItemNumber(blueContribCount);
+										msg.addLong(blueContribCount);
 										player.sendPacket(msg);
 									}
 								}
@@ -536,7 +537,7 @@ public class L2SignsPriestInstance extends L2Npc
 								{
 									contribScore = SevenSigns.getInstance().addPlayerStoneContrib(player.getObjectId(), blueContribCount, greenContribCount, redContribCount);
 									sm = SystemMessage.getSystemMessage(SystemMessageId.CONTRIB_SCORE_INCREASED_S1);
-									sm.addItemNumber(contribScore);
+									sm.addLong(contribScore);
 									player.sendPacket(sm);
 									
 									if (this instanceof L2DawnPriestInstance)
@@ -570,7 +571,7 @@ public class L2SignsPriestInstance extends L2Npc
 							contentContr = contentContr.replaceAll("%stoneItemId%", String.valueOf(stoneIdContr));
 							contentContr = contentContr.replaceAll("%objectId%", String.valueOf(getObjectId()));
 							
-							NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+							final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 							html.setHtml(contentContr);
 							player.sendPacket(html);
 						}
@@ -787,7 +788,7 @@ public class L2SignsPriestInstance extends L2Npc
 						content = content.replaceAll("%stoneItemId%", String.valueOf(stoneId));
 						content = content.replaceAll("%objectId%", String.valueOf(getObjectId()));
 						
-						NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+						final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 						html.setHtml(content);
 						player.sendPacket(html);
 					}
@@ -914,7 +915,7 @@ public class L2SignsPriestInstance extends L2Npc
 					
 					contentBuffer.append("<a action=\"bypass -h npc_" + getObjectId() + "_Chat 0\">Go back.</a></body></html>");
 					
-					NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+					final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 					html.setHtml(contentBuffer.toString());
 					player.sendPacket(html);
 					break;

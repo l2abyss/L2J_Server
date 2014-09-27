@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,27 +20,29 @@ package com.l2jserver.gameserver.model.zone;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.quest.Quest.QuestEventType;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.ListenersContainer;
+import com.l2jserver.gameserver.model.events.impl.character.OnCreatureZoneEnter;
+import com.l2jserver.gameserver.model.events.impl.character.OnCreatureZoneExit;
+import com.l2jserver.gameserver.model.interfaces.ILocational;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 
 /**
  * Abstract base class for any zone type handles basic operations.
  * @author durgus
  */
-public abstract class L2ZoneType
+public abstract class L2ZoneType extends ListenersContainer
 {
 	protected static final Logger _log = Logger.getLogger(L2ZoneType.class.getName());
 	
@@ -58,7 +60,6 @@ public abstract class L2ZoneType
 	private int[] _race;
 	private int[] _class;
 	private char _classType;
-	private Map<QuestEventType, List<Quest>> _questEvents;
 	private InstanceType _target = InstanceType.L2Character; // default all chars
 	private boolean _allowStore;
 	private boolean _enabled;
@@ -213,7 +214,7 @@ public abstract class L2ZoneType
 		}
 		
 		// check obj class
-		if (!character.isInstanceType(_target))
+		if (!character.isInstanceTypes(_target))
 		{
 			return false;
 		}
@@ -359,6 +360,16 @@ public abstract class L2ZoneType
 	
 	/**
 	 * Checks if the given coordinates are within the zone, ignores instanceId check
+	 * @param loc
+	 * @return
+	 */
+	public boolean isInsideZone(ILocational loc)
+	{
+		return _zone.isInsideZone(loc.getX(), loc.getY(), loc.getZ());
+	}
+	
+	/**
+	 * Checks if the given coordinates are within the zone, ignores instanceId check
 	 * @param x
 	 * @param y
 	 * @param z
@@ -426,34 +437,19 @@ public abstract class L2ZoneType
 			// Was the character not yet inside this zone?
 			if (!_characterList.containsKey(character.getObjectId()))
 			{
-				List<Quest> quests = getQuestByEvent(Quest.QuestEventType.ON_ENTER_ZONE);
-				if (quests != null)
-				{
-					for (Quest quest : quests)
-					{
-						quest.notifyEnterZone(character, this);
-					}
-				}
+				// Notify to scripts.
+				EventDispatcher.getInstance().notifyEventAsync(new OnCreatureZoneEnter(character, this), this);
+				
+				// Register player.
 				_characterList.put(character.getObjectId(), character);
+				
+				// Notify Zone implementation.
 				onEnter(character);
 			}
 		}
 		else
 		{
-			// Was the character inside this zone?
-			if (_characterList.containsKey(character.getObjectId()))
-			{
-				List<Quest> quests = getQuestByEvent(Quest.QuestEventType.ON_EXIT_ZONE);
-				if (quests != null)
-				{
-					for (Quest quest : quests)
-					{
-						quest.notifyExitZone(character, this);
-					}
-				}
-				_characterList.remove(character.getObjectId());
-				onExit(character);
-			}
+			removeCharacter(character);
 		}
 	}
 	
@@ -463,17 +459,16 @@ public abstract class L2ZoneType
 	 */
 	public void removeCharacter(L2Character character)
 	{
+		// Was the character inside this zone?
 		if (_characterList.containsKey(character.getObjectId()))
 		{
-			List<Quest> quests = getQuestByEvent(Quest.QuestEventType.ON_EXIT_ZONE);
-			if (quests != null)
-			{
-				for (Quest quest : quests)
-				{
-					quest.notifyExitZone(character, this);
-				}
-			}
+			// Notify to scripts.
+			EventDispatcher.getInstance().notifyEventAsync(new OnCreatureZoneExit(character, this), this);
+			
+			// Unregister player.
 			_characterList.remove(character.getObjectId());
+			
+			// Notify Zone implementation.
 			onExit(character);
 		}
 	}
@@ -506,9 +501,21 @@ public abstract class L2ZoneType
 	
 	protected abstract void onExit(L2Character character);
 	
-	public abstract void onDieInside(L2Character character);
+	public void onDieInside(L2Character character)
+	{
+	}
 	
-	public abstract void onReviveInside(L2Character character);
+	public void onReviveInside(L2Character character)
+	{
+	}
+	
+	public void onPlayerLoginInside(L2PcInstance player)
+	{
+	}
+	
+	public void onPlayerLogoutInside(L2PcInstance player)
+	{
+	}
 	
 	public Map<Integer, L2Character> getCharacters()
 	{
@@ -532,33 +539,6 @@ public abstract class L2ZoneType
 		}
 		
 		return players;
-	}
-	
-	public void addQuestEvent(Quest.QuestEventType EventType, Quest q)
-	{
-		if (_questEvents == null)
-		{
-			_questEvents = new HashMap<>();
-		}
-		List<Quest> questByEvents = _questEvents.get(EventType);
-		if (questByEvents == null)
-		{
-			questByEvents = new ArrayList<>();
-		}
-		if (!questByEvents.contains(q))
-		{
-			questByEvents.add(q);
-		}
-		_questEvents.put(EventType, questByEvents);
-	}
-	
-	public List<Quest> getQuestByEvent(Quest.QuestEventType EventType)
-	{
-		if (_questEvents == null)
-		{
-			return null;
-		}
-		return _questEvents.get(EventType);
 	}
 	
 	/**

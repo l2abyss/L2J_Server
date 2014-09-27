@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -22,15 +22,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.l2jserver.gameserver.model.L2Party;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.position.PcPosition;
 
 /**
  * @author zabbix
  */
 public class PartyMemberPosition extends L2GameServerPacket
 {
-	private final Map<Integer, PcPosition> locations = new HashMap<>();
+	private final Map<Integer, Location> locations = new HashMap<>();
 	
 	public PartyMemberPosition(L2Party party)
 	{
@@ -46,7 +46,7 @@ public class PartyMemberPosition extends L2GameServerPacket
 			{
 				continue;
 			}
-			locations.put(member.getObjectId(), member.getPosition());
+			locations.put(member.getObjectId(), member.getLocation());
 		}
 	}
 	
@@ -55,9 +55,9 @@ public class PartyMemberPosition extends L2GameServerPacket
 	{
 		writeC(0xba);
 		writeD(locations.size());
-		for (Map.Entry<Integer, PcPosition> entry : locations.entrySet())
+		for (Map.Entry<Integer, Location> entry : locations.entrySet())
 		{
-			PcPosition loc = entry.getValue();
+			Location loc = entry.getValue();
 			writeD(entry.getKey());
 			writeD(loc.getX());
 			writeD(loc.getY());

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -75,20 +75,20 @@ public class L2RecipeList
 		_recipes = new L2RecipeInstance[0];
 		_statUse = new L2RecipeStatInstance[0];
 		_altStatChange = new L2RecipeStatInstance[0];
-		_id = set.getInteger("id");
-		_level = set.getInteger("craftLevel");
-		_recipeId = set.getInteger("recipeId");
+		_id = set.getInt("id");
+		_level = set.getInt("craftLevel");
+		_recipeId = set.getInt("recipeId");
 		_recipeName = set.getString("recipeName");
-		_successRate = set.getInteger("successRate");
-		_itemId = set.getInteger("itemId");
-		_count = set.getInteger("count");
+		_successRate = set.getInt("successRate");
+		_itemId = set.getInt("itemId");
+		_count = set.getInt("count");
 		if (haveRare)
 		{
-			_rareItemId = set.getInteger("rareItemId");
-			_rareCount = set.getInteger("rareCount");
-			_rarity = set.getInteger("rarity");
+			_rareItemId = set.getInt("rareItemId");
+			_rareCount = set.getInt("rareCount");
+			_rarity = set.getInt("rarity");
 		}
-		_isDwarvenRecipe = set.getBool("isDwarvenRecipe");
+		_isDwarvenRecipe = set.getBoolean("isDwarvenRecipe");
 	}
 	
 	/**
@@ -168,18 +168,6 @@ public class L2RecipeList
 	public int getSuccessRate()
 	{
 		return _successRate;
-	}
-	
-	/**
-	 * @return true if the Item crafted with this L2RecipeList is consumable (shot, arrow,...).
-	 */
-	public boolean isConsumable()
-	{
-		return (((_itemId >= 1463) && (_itemId <= 1467)) // Soulshots
-			|| ((_itemId >= 2509) && (_itemId <= 2514)) // Spiritshots
-			|| ((_itemId >= 3947) && (_itemId <= 3952)) // Blessed Spiritshots
-		|| ((_itemId >= 1341) && (_itemId <= 1345)) // Arrows
-		);
 	}
 	
 	/**

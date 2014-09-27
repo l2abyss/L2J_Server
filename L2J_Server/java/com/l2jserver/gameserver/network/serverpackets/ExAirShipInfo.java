@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -34,7 +34,7 @@ public class ExAirShipInfo extends L2GameServerPacket
 		_z = ship.getZ();
 		_heading = ship.getHeading();
 		_moveSpeed = (int) ship.getStat().getMoveSpeed();
-		_rotationSpeed = ship.getStat().getRotationSpeed();
+		_rotationSpeed = (int) ship.getStat().getRotationSpeed();
 		_captain = ship.getCaptainId();
 		_helm = ship.getHelmObjectId();
 	}

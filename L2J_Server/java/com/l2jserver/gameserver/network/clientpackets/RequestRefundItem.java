@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,16 +20,13 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
 
-import java.util.List;
-
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.TradeController;
+import com.l2jserver.gameserver.datatables.BuyListData;
 import com.l2jserver.gameserver.model.L2Object;
-import com.l2jserver.gameserver.model.L2TradeList;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2MerchantSummonInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.buylist.L2BuyList;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -95,15 +92,14 @@ public final class RequestRefundItem extends L2GameClientPacket
 		}
 		
 		L2Object target = player.getTarget();
-		if (!player.isGM() && ((target == null // No target (i.e. GM Shop)
-			) || !((target instanceof L2MerchantInstance) || (target instanceof L2MerchantSummonInstance)) || (player.getInstanceId() != target.getInstanceId()) || !player.isInsideRadius(target, INTERACTION_DISTANCE, true, false))) // Distance is too far
+		if (!player.isGM() && ((target == null) || !(target instanceof L2MerchantInstance) || (player.getInstanceId() != target.getInstanceId()) || !player.isInsideRadius(target, INTERACTION_DISTANCE, true, false)))
 		{
 			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
 		L2Character merchant = null;
-		if ((target instanceof L2MerchantInstance) || (target instanceof L2MerchantSummonInstance))
+		if (target instanceof L2MerchantInstance)
 		{
 			merchant = (L2Character) target;
 		}
@@ -113,51 +109,22 @@ public final class RequestRefundItem extends L2GameClientPacket
 			return;
 		}
 		
-		L2TradeList list = null;
-		double taxRate = 0;
-		
-		if (merchant != null)
+		if (merchant == null)
 		{
-			List<L2TradeList> lists;
-			if (merchant instanceof L2MerchantInstance)
-			{
-				lists = TradeController.getInstance().getBuyListByNpcId(((L2MerchantInstance) merchant).getNpcId());
-				taxRate = ((L2MerchantInstance) merchant).getMpc().getTotalTaxRate();
-			}
-			else
-			{
-				lists = TradeController.getInstance().getBuyListByNpcId(((L2MerchantSummonInstance) merchant).getNpcId());
-				taxRate = 50;
-			}
-			
-			if (!player.isGM())
-			{
-				if (lists == null)
-				{
-					Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " sent a false BuyList list_id " + _listId, Config.DEFAULT_PUNISH);
-					return;
-				}
-				for (L2TradeList tradeList : lists)
-				{
-					if (tradeList.getListId() == _listId)
-					{
-						list = tradeList;
-					}
-				}
-			}
-			else
-			{
-				list = TradeController.getInstance().getBuyList(_listId);
-			}
-		}
-		else
-		{
-			list = TradeController.getInstance().getBuyList(_listId);
+			sendPacket(ActionFailed.STATIC_PACKET);
+			return;
 		}
 		
-		if (list == null)
+		final L2BuyList buyList = BuyListData.getInstance().getBuyList(_listId);
+		if (buyList == null)
 		{
 			Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " sent a false BuyList list_id " + _listId, Config.DEFAULT_PUNISH);
+			return;
+		}
+		
+		if (!buyList.isNpcAllowed(merchant.getId()))
+		{
+			sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
@@ -208,7 +175,7 @@ public final class RequestRefundItem extends L2GameClientPacket
 			{
 				slots += count;
 			}
-			else if (player.getInventory().getItemByItemId(template.getItemId()) == null)
+			else if (player.getInventory().getItemByItemId(template.getId()) == null)
 			{
 				slots++;
 			}
@@ -249,7 +216,7 @@ public final class RequestRefundItem extends L2GameClientPacket
 		StatusUpdate su = new StatusUpdate(player);
 		su.addAttribute(StatusUpdate.CUR_LOAD, player.getCurrentLoad());
 		player.sendPacket(su);
-		player.sendPacket(new ExBuySellList(player, taxRate, true));
+		player.sendPacket(new ExBuySellList(player, true));
 	}
 	
 	@Override

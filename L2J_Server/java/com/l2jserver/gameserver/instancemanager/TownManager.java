@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -22,7 +22,7 @@ import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.type.L2TownZone;
 
-public class TownManager
+public final class TownManager
 {
 	public static final int getTownCastle(int townId)
 	{
@@ -60,7 +60,7 @@ public class TownManager
 			Castle castle = CastleManager.getInstance().getCastles().get(CastleManager.getInstance().getCastleIndex(castleIndex));
 			if (castle != null)
 			{
-				return castle.getSiege().getIsInProgress();
+				return castle.getSiege().isInProgress();
 			}
 		}
 		return false;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -36,8 +36,8 @@ public class VehicleDeparture extends L2GameServerPacket
 		_x = boat.getXdestination();
 		_y = boat.getYdestination();
 		_z = boat.getZdestination();
-		_moveSpeed = (int) boat.getStat().getMoveSpeed();
-		_rotationSpeed = boat.getStat().getRotationSpeed();
+		_moveSpeed = (int) boat.getMoveSpeed();
+		_rotationSpeed = (int) boat.getStat().getRotationSpeed();
 	}
 	
 	@Override

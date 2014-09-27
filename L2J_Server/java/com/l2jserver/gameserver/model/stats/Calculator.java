@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -35,7 +35,7 @@ import com.l2jserver.gameserver.model.skills.funcs.Func;
 public final class Calculator
 {
 	/** Empty Func table definition */
-	private static final Func[] _emptyFuncs = new Func[0];
+	private static final Func[] EMPTY_FUNCS = new Func[0];
 	
 	/** Table of Func object */
 	private Func[] _functions;
@@ -45,7 +45,7 @@ public final class Calculator
 	 */
 	public Calculator()
 	{
-		_functions = _emptyFuncs;
+		_functions = EMPTY_FUNCS;
 	}
 	
 	/**
@@ -168,7 +168,7 @@ public final class Calculator
 		
 		if (tmp.length == 0)
 		{
-			_functions = _emptyFuncs;
+			_functions = EMPTY_FUNCS;
 		}
 		else
 		{
@@ -185,7 +185,6 @@ public final class Calculator
 	public synchronized List<Stats> removeOwner(Object owner)
 	{
 		List<Stats> modifiedStats = new ArrayList<>();
-		
 		for (Func func : _functions)
 		{
 			if (func.funcOwner == owner)
@@ -207,5 +206,14 @@ public final class Calculator
 		{
 			func.calc(env);
 		}
+	}
+	
+	/**
+	 * Get array of all function, dont use for add/remove
+	 * @return
+	 */
+	public Func[] getFunctions()
+	{
+		return _functions;
 	}
 }

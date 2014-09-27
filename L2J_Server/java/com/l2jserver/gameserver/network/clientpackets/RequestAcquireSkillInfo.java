@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,18 +18,19 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2SkillLearn;
-import com.l2jserver.gameserver.model.L2SquadTrainer;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.base.AcquireSkillType;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.serverpackets.AcquireSkillInfo;
 
 /**
+ * Request Acquire Skill Info client packet implementation.
  * @author Zoey76
  */
 public final class RequestAcquireSkillInfo extends L2GameClientPacket
@@ -38,14 +39,14 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 	
 	private int _id;
 	private int _level;
-	private int _skillType;
+	private AcquireSkillType _skillType;
 	
 	@Override
 	protected void readImpl()
 	{
 		_id = readD();
 		_level = readD();
-		_skillType = readD();
+		_skillType = AcquireSkillType.getAcquireSkillType(readD());
 	}
 	
 	@Override
@@ -74,7 +75,7 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 			return;
 		}
 		
-		final L2Skill skill = SkillTable.getInstance().getInfo(_id, _level);
+		final Skill skill = SkillData.getInstance().getSkill(_id, _level);
 		if (skill == null)
 		{
 			_log.warning(RequestAcquireSkillInfo.class.getSimpleName() + ": Skill Id: " + _id + " level: " + _level + " is undefined. " + RequestAcquireSkillInfo.class.getName() + " failed.");
@@ -83,8 +84,7 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 		
 		// Hack check. Doesn't apply to all Skill Types
 		final int prevSkillLevel = activeChar.getSkillLevel(_id);
-		final AcquireSkillType skillType = AcquireSkillType.values()[_skillType];
-		if ((prevSkillLevel > 0) && !((skillType == AcquireSkillType.Transfer) || (skillType == AcquireSkillType.SubPledge)))
+		if ((prevSkillLevel > 0) && !((_skillType == AcquireSkillType.TRANSFER) || (_skillType == AcquireSkillType.SUBPLEDGE)))
 		{
 			if (prevSkillLevel == _level)
 			{
@@ -96,69 +96,48 @@ public final class RequestAcquireSkillInfo extends L2GameClientPacket
 			}
 		}
 		
-		final L2SkillLearn s = SkillTreesData.getInstance().getSkillLearn(skillType, _id, _level, activeChar);
+		final L2SkillLearn s = SkillTreesData.getInstance().getSkillLearn(_skillType, _id, _level, activeChar);
 		if (s == null)
 		{
 			return;
 		}
 		
-		switch (skillType)
+		switch (_skillType)
 		{
-			case Class:
+			case TRANSFORM:
+			case FISHING:
+			case SUBCLASS:
+			case COLLECT:
+			case TRANSFER:
+			{
+				sendPacket(new AcquireSkillInfo(_skillType, s));
+				break;
+			}
+			case CLASS:
 			{
 				if (trainer.getTemplate().canTeach(activeChar.getLearningClass()))
 				{
 					final int customSp = s.getCalculatedLevelUpSp(activeChar.getClassId(), activeChar.getLearningClass());
-					sendPacket(new AcquireSkillInfo(skillType, s, customSp));
+					sendPacket(new AcquireSkillInfo(_skillType, s, customSp));
 				}
 				break;
 			}
-			case Transform:
-			{
-				sendPacket(new AcquireSkillInfo(skillType, s));
-				break;
-			}
-			case Fishing:
-			{
-				sendPacket(new AcquireSkillInfo(skillType, s));
-				break;
-			}
-			case Pledge:
+			case PLEDGE:
 			{
 				if (!activeChar.isClanLeader())
 				{
 					return;
 				}
-				sendPacket(new AcquireSkillInfo(skillType, s));
+				sendPacket(new AcquireSkillInfo(_skillType, s));
 				break;
 			}
-			case SubPledge:
+			case SUBPLEDGE:
 			{
-				if (!activeChar.isClanLeader())
+				if (!activeChar.isClanLeader() || !activeChar.hasClanPrivilege(ClanPrivilege.CL_TROOPS_FAME))
 				{
 					return;
 				}
-				
-				if (!(trainer instanceof L2SquadTrainer))
-				{
-					return;
-				}
-				sendPacket(new AcquireSkillInfo(skillType, s));
-				break;
-			}
-			case SubClass:
-			{
-				sendPacket(new AcquireSkillInfo(skillType, s));
-				break;
-			}
-			case Collect:
-			{
-				sendPacket(new AcquireSkillInfo(skillType, s));
-				break;
-			}
-			case Transfer:
-			{
-				sendPacket(new AcquireSkillInfo(skillType, s));
+				sendPacket(new AcquireSkillInfo(_skillType, s));
 				break;
 			}
 		}

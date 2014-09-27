@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,10 +18,10 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.ClassType;
 import com.l2jserver.gameserver.model.base.PlayerClass;
-import com.l2jserver.gameserver.model.base.Race;
 
 public final class L2VillageMasterFighterInstance extends L2VillageMasterInstance
 {
@@ -38,7 +38,7 @@ public final class L2VillageMasterFighterInstance extends L2VillageMasterInstanc
 			return false;
 		}
 		
-		return pclass.isOfRace(Race.Human) || pclass.isOfRace(Race.Elf);
+		return pclass.isOfRace(Race.HUMAN) || pclass.isOfRace(Race.ELF);
 	}
 	
 	@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -39,16 +39,6 @@ public class L2FishingZone extends L2ZoneType
 	
 	@Override
 	protected void onExit(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
 	{
 	}
 	

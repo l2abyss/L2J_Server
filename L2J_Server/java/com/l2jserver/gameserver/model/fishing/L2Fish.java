@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -46,20 +46,20 @@ public class L2Fish implements Cloneable
 	
 	public L2Fish(StatsSet set)
 	{
-		_fishId = set.getInteger("fishId");
-		_itemId = set.getInteger("itemId");
+		_fishId = set.getInt("fishId");
+		_itemId = set.getInt("itemId");
 		_itemName = set.getString("itemName");
 		_fishGroup = getGroupId(set.getString("fishGroup"));
-		_fishLevel = set.getInteger("fishLevel");
+		_fishLevel = set.getInt("fishLevel");
 		_fishBiteRate = set.getDouble("fishBiteRate"); // TODO: Support needed.
 		_fishGuts = set.getDouble("fishGuts");
-		_fishHp = set.getInteger("fishHp");
-		_fishMaxLength = set.getInteger("fishMaxLength"); // TODO: Support needed.
+		_fishHp = set.getInt("fishHp");
+		_fishMaxLength = set.getInt("fishMaxLength"); // TODO: Support needed.
 		_fishLengthRate = set.getDouble("fishLengthRate"); // TODO: Support needed.
 		_hpRegen = set.getDouble("hpRegen");
-		_startCombatTime = set.getInteger("startCombatTime");
-		_combatDuration = set.getInteger("combatDuration");
-		_gutsCheckTime = set.getInteger("gutsCheckTime");
+		_startCombatTime = set.getInt("startCombatTime");
+		_combatDuration = set.getInt("combatDuration");
+		_gutsCheckTime = set.getInt("gutsCheckTime");
 		_gutsCheckProbability = set.getDouble("gutsCheckProbability"); // TODO: Support needed.
 		_cheatingProb = set.getDouble("cheatingProb"); // TODO: Support needed.
 		_fishGrade = getGradeId(set.getString("fishGrade"));

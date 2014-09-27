@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.gameserver.util.Point3D;
+import com.l2jserver.gameserver.model.Location;
 
 /**
  * @author Maktakien
@@ -27,14 +27,14 @@ public class GetOnVehicle extends L2GameServerPacket
 {
 	private final int _charObjId;
 	private final int _boatObjId;
-	private final Point3D _pos;
+	private final Location _pos;
 	
 	/**
 	 * @param charObjId
 	 * @param boatObjId
 	 * @param pos
 	 */
-	public GetOnVehicle(int charObjId, int boatObjId, Point3D pos)
+	public GetOnVehicle(int charObjId, int boatObjId, Location pos)
 	{
 		_charObjId = charObjId;
 		_boatObjId = boatObjId;

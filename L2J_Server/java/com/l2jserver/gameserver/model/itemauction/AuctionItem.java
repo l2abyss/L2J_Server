@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -89,7 +89,7 @@ public final class AuctionItem
 		
 		item.setEnchantLevel(item.getDefaultEnchantLevel());
 		
-		final int augmentationId = _itemExtra.getInteger("augmentation_id", 0);
+		final int augmentationId = _itemExtra.getInt("augmentation_id", 0);
 		if (augmentationId > 0)
 		{
 			item.setAugmentation(new L2Augmentation(augmentationId));

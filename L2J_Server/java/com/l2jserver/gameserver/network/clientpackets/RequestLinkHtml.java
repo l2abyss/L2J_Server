@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,14 +19,15 @@
 
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.logging.Level;
-
+import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
+import com.l2jserver.gameserver.util.Util;
 
 /**
  * Lets drink to code!
  * @author zabbix
+ * @author FBIagent
  */
 public final class RequestLinkHtml extends L2GameClientPacket
 {
@@ -48,23 +49,35 @@ public final class RequestLinkHtml extends L2GameClientPacket
 			return;
 		}
 		
-		if (_link.contains("..") || !_link.contains(".htm"))
+		if (_link.isEmpty())
 		{
-			_log.warning("[RequestLinkHtml] hack? link contains prohibited characters: '" + _link + "', skipped");
+			_log.warning("Player " + actor.getName() + " sent empty html link!");
 			return;
 		}
-		try
+		
+		if (_link.contains(".."))
 		{
-			String filename = "data/html/" + _link;
-			NpcHtmlMessage msg = new NpcHtmlMessage(0);
-			msg.disableValidation();
-			msg.setFile(actor.getHtmlPrefix(), filename);
-			sendPacket(msg);
+			_log.warning("Player " + actor.getName() + " sent invalid html link: link " + _link);
+			return;
 		}
-		catch (Exception e)
+		
+		int htmlObjectId = actor.validateHtmlAction("link " + _link);
+		if (htmlObjectId == -1)
 		{
-			_log.log(Level.WARNING, "Bad RequestLinkHtml: ", e);
+			_log.warning("Player " + actor.getName() + " sent non cached  html link: link " + _link);
+			return;
 		}
+		
+		if ((htmlObjectId > 0) && !Util.isInsideRangeOfObjectId(actor, htmlObjectId, L2Npc.INTERACTION_DISTANCE))
+		{
+			// No logging here, this could be a common case
+			return;
+		}
+		
+		String filename = "data/html/" + _link;
+		final NpcHtmlMessage msg = new NpcHtmlMessage(htmlObjectId);
+		msg.setFile(actor.getHtmlPrefix(), filename);
+		sendPacket(msg);
 	}
 	
 	@Override

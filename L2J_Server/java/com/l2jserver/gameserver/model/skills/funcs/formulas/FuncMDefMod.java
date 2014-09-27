@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -39,7 +39,7 @@ public class FuncMDefMod extends Func
 	
 	private FuncMDefMod()
 	{
-		super(Stats.MAGIC_DEFENCE, 0x20, null);
+		super(Stats.MAGIC_DEFENCE, 0x20, null, null);
 	}
 	
 	@Override
@@ -48,25 +48,25 @@ public class FuncMDefMod extends Func
 		if (env.getCharacter().isPlayer())
 		{
 			L2PcInstance p = env.getPlayer();
-			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_LFINGER) != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_LFINGER))
 			{
-				env.subValue(5);
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_LFINGER) : Inventory.PAPERDOLL_LFINGER));
 			}
-			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_RFINGER) != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_RFINGER))
 			{
-				env.subValue(5);
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_RFINGER) : Inventory.PAPERDOLL_RFINGER));
 			}
-			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_LEAR) != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_LEAR))
 			{
-				env.subValue(9);
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_LEAR) : Inventory.PAPERDOLL_LEAR));
 			}
-			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_REAR) != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_REAR))
 			{
-				env.subValue(9);
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_REAR) : Inventory.PAPERDOLL_REAR));
 			}
-			if (p.getInventory().getPaperdollItem(Inventory.PAPERDOLL_NECK) != null)
+			if (!p.getInventory().isPaperdollSlotEmpty(Inventory.PAPERDOLL_NECK))
 			{
-				env.subValue(13);
+				env.subValue(p.getTemplate().getBaseDefBySlot(p.isTransformed() ? p.getTransformation().getBaseDefBySlot(p, Inventory.PAPERDOLL_NECK) : Inventory.PAPERDOLL_NECK));
 			}
 			env.mulValue(BaseStats.MEN.calcBonus(env.getPlayer()) * env.getPlayer().getLevelMod());
 		}

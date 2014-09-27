@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,21 +19,21 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
+import com.l2jserver.gameserver.enums.MountType;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager.TeleportWhereType;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2SiegeSummonInstance;
-import com.l2jserver.gameserver.model.effects.L2Effect;
 import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.FortSiege;
 import com.l2jserver.gameserver.model.entity.Siegable;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.BuffInfo;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.AbstractZoneSettings;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.ZoneId;
@@ -177,7 +177,7 @@ public class L2SiegeZone extends L2ZoneType
 				}
 				
 				character.sendPacket(SystemMessageId.ENTERED_COMBAT_ZONE);
-				if (!Config.ALLOW_WYVERN_DURING_SIEGE && (plyer.getMountType() == 2))
+				if (!Config.ALLOW_WYVERN_DURING_SIEGE && (plyer.getMountType() == MountType.WYVERN))
 				{
 					plyer.sendPacket(SystemMessageId.AREA_CANNOT_BE_ENTERED_WHILE_MOUNTED_WYVERN);
 					plyer.enteredNoLanding(DISMOUNT_DELAY);
@@ -198,7 +198,7 @@ public class L2SiegeZone extends L2ZoneType
 			{
 				L2PcInstance player = character.getActingPlayer();
 				character.sendPacket(SystemMessageId.LEFT_COMBAT_ZONE);
-				if (player.getMountType() == 2)
+				if (player.getMountType() == MountType.WYVERN)
 				{
 					player.exitedNoLanding();
 				}
@@ -221,7 +221,7 @@ public class L2SiegeZone extends L2ZoneType
 				Fort fort = FortManager.getInstance().getFortById(getSettings().getSiegeableId());
 				if (fort != null)
 				{
-					FortSiegeManager.getInstance().dropCombatFlag(activeChar, fort.getFortId());
+					FortSiegeManager.getInstance().dropCombatFlag(activeChar, fort.getResidenceId());
 				}
 				else
 				{
@@ -230,11 +230,6 @@ public class L2SiegeZone extends L2ZoneType
 					activeChar.destroyItem("CombatFlag", activeChar.getInventory().getItemByItemId(9819), null, true);
 				}
 			}
-		}
-		
-		if (character instanceof L2SiegeSummonInstance)
-		{
-			((L2SiegeSummonInstance) character).unSummon(((L2SiegeSummonInstance) character).getOwner());
 		}
 	}
 	
@@ -247,24 +242,19 @@ public class L2SiegeZone extends L2ZoneType
 			if (character.isPlayer() && character.getActingPlayer().isRegisteredOnThisSiegeField(getSettings().getSiegeableId()))
 			{
 				int lvl = 1;
-				final L2Effect e = character.getFirstEffect(5660);
-				if (e != null)
+				final BuffInfo info = character.getEffectList().getBuffInfoBySkillId(5660);
+				if (info != null)
 				{
-					lvl = Math.min(lvl + e.getLevel(), 5);
+					lvl = Math.min(lvl + info.getSkill().getLevel(), 5);
 				}
 				
-				final L2Skill skill = SkillTable.getInstance().getInfo(5660, lvl);
+				final Skill skill = SkillData.getInstance().getSkill(5660, lvl);
 				if (skill != null)
 				{
-					skill.getEffects(character, character);
+					skill.applyEffects(character, character);
 				}
 			}
 		}
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
 	}
 	
 	public void updateZoneStatusForCharactersInside()
@@ -298,16 +288,11 @@ public class L2SiegeZone extends L2ZoneType
 					player = character.getActingPlayer();
 					character.sendPacket(SystemMessageId.LEFT_COMBAT_ZONE);
 					player.stopFameTask();
-					if (player.getMountType() == 2)
+					if (player.getMountType() == MountType.WYVERN)
 					{
 						player.exitedNoLanding();
 					}
 				}
-				if (character instanceof L2SiegeSummonInstance)
-				{
-					((L2SiegeSummonInstance) character).unSummon(((L2SiegeSummonInstance) character).getOwner());
-				}
-				
 			}
 		}
 	}
@@ -353,7 +338,7 @@ public class L2SiegeZone extends L2ZoneType
 	 */
 	public void banishForeigners(int owningClanId)
 	{
-		TeleportWhereType type = TeleportWhereType.Town;
+		TeleportWhereType type = TeleportWhereType.TOWN;
 		for (L2PcInstance temp : getPlayersInside())
 		{
 			if (temp.getClanId() == owningClanId)

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -245,12 +245,29 @@ public final class StringUtil
 		}
 	}
 	
+	public static int getLength(final Iterable<String> strings)
+	{
+		int length = 0;
+		for (final String string : strings)
+		{
+			if (string == null)
+			{
+				length += 4;
+			}
+			else
+			{
+				length += string.length();
+			}
+		}
+		return length;
+	}
+	
 	/**
 	 * Counts total length of all the strings.
 	 * @param strings array of strings
 	 * @return total length of all the strings
 	 */
-	private static int getLength(final String[] strings)
+	public static int getLength(final String[] strings)
 	{
 		int length = 0;
 		

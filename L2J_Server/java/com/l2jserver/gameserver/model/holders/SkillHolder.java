@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,8 +18,8 @@
  */
 package com.l2jserver.gameserver.model.holders;
 
-import com.l2jserver.gameserver.datatables.SkillTable;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.datatables.SkillData;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * Simple class for storing skill id/level.
@@ -36,7 +36,7 @@ public class SkillHolder
 		_skillLvl = skillLvl;
 	}
 	
-	public SkillHolder(L2Skill skill)
+	public SkillHolder(Skill skill)
 	{
 		_skillId = skill.getId();
 		_skillLvl = skill.getLevel();
@@ -52,9 +52,9 @@ public class SkillHolder
 		return _skillLvl;
 	}
 	
-	public final L2Skill getSkill()
+	public final Skill getSkill()
 	{
-		return SkillTable.getInstance().getInfo(_skillId, _skillLvl);
+		return SkillData.getInstance().getSkill(_skillId, Math.max(_skillLvl, 1));
 	}
 	
 	@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,21 +18,21 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import javolution.util.FastMap;
-
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 
 /**
+ * Respawn zone implementation.
  * @author Nyaran
  */
 public class L2RespawnZone extends L2ZoneType
 {
-	private final Map<Race, String> _raceRespawnPoint = new FastMap<>();
+	private final Map<Race, String> _raceRespawnPoint = new HashMap<>();
 	
 	public L2RespawnZone(int id)
 	{
@@ -46,16 +46,6 @@ public class L2RespawnZone extends L2ZoneType
 	
 	@Override
 	protected void onExit(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
 	{
 	}
 	

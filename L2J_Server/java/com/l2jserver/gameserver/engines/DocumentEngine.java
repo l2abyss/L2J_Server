@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -26,11 +26,11 @@ import java.util.logging.Logger;
 import javolution.util.FastList;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.engines.items.DocumentItem;
 import com.l2jserver.gameserver.engines.skills.DocumentSkill;
 import com.l2jserver.gameserver.model.items.L2Item;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.util.file.filter.XMLFilter;
 
 /**
@@ -77,7 +77,7 @@ public class DocumentEngine
 		}
 	}
 	
-	public List<L2Skill> loadSkills(File file)
+	public List<Skill> loadSkills(File file)
 	{
 		if (file == null)
 		{
@@ -89,19 +89,19 @@ public class DocumentEngine
 		return doc.getSkills();
 	}
 	
-	public void loadAllSkills(final Map<Integer, L2Skill> allSkills)
+	public void loadAllSkills(final Map<Integer, Skill> allSkills)
 	{
 		int count = 0;
 		for (File file : _skillFiles)
 		{
-			List<L2Skill> s = loadSkills(file);
+			List<Skill> s = loadSkills(file);
 			if (s == null)
 			{
 				continue;
 			}
-			for (L2Skill skill : s)
+			for (Skill skill : s)
 			{
-				allSkills.put(SkillTable.getSkillHashCode(skill), skill);
+				allSkills.put(SkillData.getSkillHashCode(skill), skill);
 				count++;
 			}
 		}

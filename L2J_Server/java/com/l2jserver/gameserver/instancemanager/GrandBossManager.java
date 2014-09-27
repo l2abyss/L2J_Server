@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,31 +23,36 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import com.l2jserver.L2DatabaseFactory;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.datatables.NpcData;
+import com.l2jserver.gameserver.instancemanager.tasks.GrandBossManagerStoreTask;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2GrandBossInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.interfaces.IStorable;
 import com.l2jserver.gameserver.model.zone.type.L2BossZone;
-import com.l2jserver.util.L2FastList;
-
-import gnu.trove.map.hash.TIntIntHashMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
+ * Grand Boss manager.
  * @author DaRkRaGe Revised by Emperorc
  */
-public class GrandBossManager
+public final class GrandBossManager implements IStorable
 {
 	// SQL queries
 	private static final String DELETE_GRAND_BOSS_LIST = "DELETE FROM grandboss_list";
@@ -57,13 +62,13 @@ public class GrandBossManager
 	
 	protected static Logger _log = Logger.getLogger(GrandBossManager.class.getName());
 	
-	protected static Map<Integer, L2GrandBossInstance> _bosses;
+	protected static Map<Integer, L2GrandBossInstance> _bosses = new FastMap<>();
 	
-	protected static TIntObjectHashMap<StatsSet> _storedInfo;
+	protected static Map<Integer, StatsSet> _storedInfo = new HashMap<>();
 	
-	private TIntIntHashMap _bossStatus;
+	private final Map<Integer, Integer> _bossStatus = new HashMap<>();
 	
-	private L2FastList<L2BossZone> _zones;
+	private final List<L2BossZone> _zones = new FastList<>();
 	
 	protected GrandBossManager()
 	{
@@ -72,11 +77,6 @@ public class GrandBossManager
 	
 	private void init()
 	{
-		_zones = new L2FastList<>();
-		
-		_bosses = new FastMap<>();
-		_storedInfo = new TIntObjectHashMap<>();
-		_bossStatus = new TIntIntHashMap();
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			Statement s = con.createStatement();
 			ResultSet rs = s.executeQuery("SELECT * from grandboss_data ORDER BY boss_id"))
@@ -101,10 +101,10 @@ public class GrandBossManager
 				int status = rs.getInt("status");
 				_bossStatus.put(bossId, status);
 				_storedInfo.put(bossId, info);
-				_log.info(getClass().getSimpleName() + ": " + NpcTable.getInstance().getTemplate(bossId).getName() + "(" + bossId + ") status is " + status + ".");
+				_log.info(getClass().getSimpleName() + ": " + NpcData.getInstance().getTemplate(bossId).getName() + "(" + bossId + ") status is " + status + ".");
 				if (status > 0)
 				{
-					_log.info(getClass().getSimpleName() + ": Next spawn date of " + NpcTable.getInstance().getTemplate(bossId).getName() + " is " + new Date(info.getLong("respawn_time")) + ".");
+					_log.info(getClass().getSimpleName() + ": Next spawn date of " + NpcData.getInstance().getTemplate(bossId).getName() + " is " + new Date(info.getLong("respawn_time")) + ".");
 				}
 			}
 			_log.info(getClass().getSimpleName() + ": Loaded " + _storedInfo.size() + " Instances");
@@ -117,6 +117,7 @@ public class GrandBossManager
 		{
 			_log.log(Level.WARNING, "Error while initializing GrandBossManager: " + e.getMessage(), e);
 		}
+		ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(new GrandBossManagerStoreTask(), 5 * 60 * 1000, 5 * 60 * 1000);
 	}
 	
 	/**
@@ -124,7 +125,7 @@ public class GrandBossManager
 	 */
 	public void initZones()
 	{
-		FastMap<Integer, L2FastList<Integer>> zones = new FastMap<>();
+		Map<Integer, List<Integer>> zones = new HashMap<>();
 		
 		if (_zones == null)
 		{
@@ -138,7 +139,7 @@ public class GrandBossManager
 			{
 				continue;
 			}
-			zones.put(zone.getId(), new L2FastList<Integer>());
+			zones.put(zone.getId(), new ArrayList<>());
 		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
@@ -266,7 +267,7 @@ public class GrandBossManager
 	public void setBossStatus(int bossId, int status)
 	{
 		_bossStatus.put(bossId, status);
-		_log.info(getClass().getSimpleName() + ": Updated " + NpcTable.getInstance().getTemplate(bossId).getName() + "(" + bossId + ") status to " + status);
+		_log.info(getClass().getSimpleName() + ": Updated " + NpcData.getInstance().getTemplate(bossId).getName() + "(" + bossId + ") status to " + status);
 		updateDb(bossId, true);
 	}
 	
@@ -278,7 +279,7 @@ public class GrandBossManager
 	{
 		if (boss != null)
 		{
-			_bosses.put(boss.getNpcId(), boss);
+			_bosses.put(boss.getId(), boss);
 		}
 	}
 	
@@ -298,7 +299,8 @@ public class GrandBossManager
 		updateDb(bossId, false);
 	}
 	
-	private void storeToDb()
+	@Override
+	public boolean storeMe()
 	{
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
 			PreparedStatement delete = con.prepareStatement(DELETE_GRAND_BOSS_LIST))
@@ -314,7 +316,7 @@ public class GrandBossManager
 						continue;
 					}
 					Integer id = zone.getId();
-					L2FastList<Integer> list = zone.getAllowedPlayers();
+					List<Integer> list = zone.getAllowedPlayers();
 					if ((list == null) || list.isEmpty())
 					{
 						continue;
@@ -328,16 +330,16 @@ public class GrandBossManager
 					}
 				}
 			}
-			for (Integer bossId : _storedInfo.keys())
+			for (Entry<Integer, StatsSet> e : _storedInfo.entrySet())
 			{
-				final L2GrandBossInstance boss = _bosses.get(bossId);
-				StatsSet info = _storedInfo.get(bossId);
+				final L2GrandBossInstance boss = _bosses.get(e.getKey());
+				StatsSet info = e.getValue();
 				if ((boss == null) || (info == null))
 				{
 					try (PreparedStatement update = con.prepareStatement(UPDATE_GRAND_BOSS_DATA2))
 					{
-						update.setInt(1, _bossStatus.get(bossId));
-						update.setInt(2, bossId);
+						update.setInt(1, _bossStatus.get(e.getKey()));
+						update.setInt(2, e.getKey());
 						update.executeUpdate();
 						update.clearParameters();
 					}
@@ -360,8 +362,8 @@ public class GrandBossManager
 						}
 						update.setDouble(6, hp);
 						update.setDouble(7, mp);
-						update.setInt(8, _bossStatus.get(bossId));
-						update.setInt(9, bossId);
+						update.setInt(8, _bossStatus.get(e.getKey()));
+						update.setInt(9, e.getKey());
 						update.executeUpdate();
 						update.clearParameters();
 					}
@@ -371,7 +373,9 @@ public class GrandBossManager
 		catch (SQLException e)
 		{
 			_log.log(Level.WARNING, getClass().getSimpleName() + ": Couldn't store grandbosses to database:" + e.getMessage(), e);
+			return false;
 		}
+		return true;
 	}
 	
 	private void updateDb(int bossId, boolean statusOnly)
@@ -425,7 +429,7 @@ public class GrandBossManager
 	 */
 	public void cleanUp()
 	{
-		storeToDb();
+		storeMe();
 		
 		_bosses.clear();
 		_storedInfo.clear();
@@ -433,11 +437,15 @@ public class GrandBossManager
 		_zones.clear();
 	}
 	
-	public L2FastList<L2BossZone> getZones()
+	public List<L2BossZone> getZones()
 	{
 		return _zones;
 	}
 	
+	/**
+	 * Gets the single instance of {@code GrandBossManager}.
+	 * @return single instance of {@code GrandBossManager}
+	 */
 	public static GrandBossManager getInstance()
 	{
 		return SingletonHolder._instance;

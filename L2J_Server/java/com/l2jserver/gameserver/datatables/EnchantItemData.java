@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,18 +18,17 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.gameserver.engines.DocumentParser;
-import com.l2jserver.gameserver.model.EnchantItem;
-import com.l2jserver.gameserver.model.EnchantScroll;
 import com.l2jserver.gameserver.model.StatsSet;
+import com.l2jserver.gameserver.model.items.enchant.EnchantScroll;
+import com.l2jserver.gameserver.model.items.enchant.EnchantSupportItem;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
@@ -39,7 +38,7 @@ import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 public class EnchantItemData extends DocumentParser
 {
 	public static final Map<Integer, EnchantScroll> _scrolls = new HashMap<>();
-	public static final Map<Integer, EnchantItem> _supports = new HashMap<>();
+	public static final Map<Integer, EnchantSupportItem> _supports = new HashMap<>();
 	
 	/**
 	 * Instantiates a new enchant item data.
@@ -50,11 +49,11 @@ public class EnchantItemData extends DocumentParser
 	}
 	
 	@Override
-	public void load()
+	public synchronized void load()
 	{
 		_scrolls.clear();
 		_supports.clear();
-		parseDatapackFile("data/enchantData.xml");
+		parseDatapackFile("data/enchantItemData.xml");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _scrolls.size() + " Enchant Scrolls.");
 		_log.info(getClass().getSimpleName() + ": Loaded " + _supports.size() + " Support Items.");
 	}
@@ -64,7 +63,7 @@ public class EnchantItemData extends DocumentParser
 	{
 		StatsSet set;
 		Node att;
-		Map<Integer, Double> enchantSteps;
+		NamedNodeMap attrs;
 		for (Node n = getCurrentDocument().getFirstChild(); n != null; n = n.getNextSibling())
 		{
 			if ("list".equalsIgnoreCase(n.getNodeName()))
@@ -73,34 +72,38 @@ public class EnchantItemData extends DocumentParser
 				{
 					if ("enchant".equalsIgnoreCase(d.getNodeName()))
 					{
-						NamedNodeMap attrs = d.getAttributes();
+						attrs = d.getAttributes();
 						set = new StatsSet();
-						enchantSteps = new HashMap<>();
 						for (int i = 0; i < attrs.getLength(); i++)
 						{
 							att = attrs.item(i);
 							set.set(att.getNodeName(), att.getNodeValue());
 						}
 						
-						List<Integer> items = new ArrayList<>();
-						for (Node cd = d.getFirstChild(); cd != null; cd = cd.getNextSibling())
+						try
 						{
-							if ("item".equalsIgnoreCase(cd.getNodeName()))
+							final EnchantScroll item = new EnchantScroll(set);
+							for (Node cd = d.getFirstChild(); cd != null; cd = cd.getNextSibling())
 							{
-								items.add(parseInteger(cd.getAttributes(), "id"));
+								if ("item".equalsIgnoreCase(cd.getNodeName()))
+								{
+									item.addItem(parseInteger(cd.getAttributes(), "id"));
+								}
 							}
-							else if ("step".equalsIgnoreCase(cd.getNodeName()))
-							{
-								enchantSteps.put(parseInt(cd.getAttributes(), "level"), parseDouble(cd.getAttributes(), "successRate"));
-							}
+							_scrolls.put(item.getId(), item);
 						}
-						EnchantScroll item = new EnchantScroll(set, items, enchantSteps);
-						_scrolls.put(item.getScrollId(), item);
+						catch (NullPointerException e)
+						{
+							_log.log(Level.WARNING, getClass().getSimpleName() + ": Unexistent enchant scroll: " + set.getString("id") + " defined in enchant data!");
+						}
+						catch (IllegalAccessError e)
+						{
+							_log.log(Level.WARNING, getClass().getSimpleName() + ": Wrong enchant scroll item type: " + set.getString("id") + " defined in enchant data!");
+						}
 					}
 					else if ("support".equalsIgnoreCase(d.getNodeName()))
 					{
-						NamedNodeMap attrs = d.getAttributes();
-						
+						attrs = d.getAttributes();
 						set = new StatsSet();
 						for (int i = 0; i < attrs.getLength(); i++)
 						{
@@ -108,16 +111,19 @@ public class EnchantItemData extends DocumentParser
 							set.set(att.getNodeName(), att.getNodeValue());
 						}
 						
-						List<Integer> items = new ArrayList<>();
-						for (Node cd = d.getFirstChild(); cd != null; cd = cd.getNextSibling())
+						try
 						{
-							if ("item".equalsIgnoreCase(cd.getNodeName()))
-							{
-								items.add(parseInteger(cd.getAttributes(), "id"));
-							}
+							final EnchantSupportItem item = new EnchantSupportItem(set);
+							_supports.put(item.getId(), item);
 						}
-						EnchantItem item = new EnchantItem(set, items);
-						_supports.put(item.getScrollId(), item);
+						catch (NullPointerException e)
+						{
+							_log.log(Level.WARNING, getClass().getSimpleName() + ": Unexistent enchant support item: " + set.getString("id") + " defined in enchant data!");
+						}
+						catch (IllegalAccessError e)
+						{
+							_log.log(Level.WARNING, getClass().getSimpleName() + ": Wrong enchant support item type: " + set.getString("id") + " defined in enchant data!");
+						}
 					}
 				}
 			}
@@ -131,7 +137,7 @@ public class EnchantItemData extends DocumentParser
 	 */
 	public final EnchantScroll getEnchantScroll(L2ItemInstance scroll)
 	{
-		return _scrolls.get(scroll.getItemId());
+		return _scrolls.get(scroll.getId());
 	}
 	
 	/**
@@ -139,9 +145,9 @@ public class EnchantItemData extends DocumentParser
 	 * @param item the item
 	 * @return enchant template for support item
 	 */
-	public final EnchantItem getSupportItem(L2ItemInstance item)
+	public final EnchantSupportItem getSupportItem(L2ItemInstance item)
 	{
-		return _supports.get(item.getItemId());
+		return _supports.get(item.getId());
 	}
 	
 	/**

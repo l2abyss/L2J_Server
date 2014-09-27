@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,6 +21,7 @@ package com.l2jserver.gameserver.model.itemcontainer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,31 +30,26 @@ import javolution.util.FastList;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.enums.ItemLocation;
 import com.l2jserver.gameserver.model.TradeItem;
 import com.l2jserver.gameserver.model.TradeList;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.player.inventory.OnPlayerItemAdd;
+import com.l2jserver.gameserver.model.events.impl.character.player.inventory.OnPlayerItemDestroy;
+import com.l2jserver.gameserver.model.events.impl.character.player.inventory.OnPlayerItemDrop;
+import com.l2jserver.gameserver.model.events.impl.character.player.inventory.OnPlayerItemTransfer;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
-import com.l2jserver.gameserver.model.items.type.L2EtcItemType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ItemList;
 import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
-import com.l2jserver.gameserver.scripting.scriptengine.events.AddToInventoryEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ItemDestroyEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ItemDropEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ItemTransferEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.ItemTracker;
 import com.l2jserver.gameserver.util.Util;
 
 public class PcInventory extends Inventory
 {
 	private static final Logger _log = Logger.getLogger(PcInventory.class.getName());
-	
-	public static final int ADENA_ID = 57;
-	public static final int ANCIENT_ADENA_ID = 5575;
-	public static final long MAX_ADENA = Config.MAX_ADENA;
 	
 	private final L2PcInstance _owner;
 	private L2ItemInstance _adena;
@@ -73,8 +69,6 @@ public class PcInventory extends Inventory
 	 * </UL>
 	 */
 	private int _blockMode = -1;
-	
-	private static FastList<ItemTracker> itemTrackers = new FastList<ItemTracker>().shared();
 	
 	public PcInventory(L2PcInstance owner)
 	{
@@ -141,18 +135,18 @@ public class PcInventory extends Inventory
 			{
 				continue;
 			}
-			if ((!allowAdena && (item.getItemId() == ADENA_ID)))
+			if ((!allowAdena && (item.getId() == ADENA_ID)))
 			{
 				continue;
 			}
-			if ((!allowAncientAdena && (item.getItemId() == ANCIENT_ADENA_ID)))
+			if ((!allowAncientAdena && (item.getId() == ANCIENT_ADENA_ID)))
 			{
 				continue;
 			}
 			boolean isDuplicate = false;
 			for (L2ItemInstance litem : list)
 			{
-				if (litem.getItemId() == item.getItemId())
+				if (litem.getId() == item.getId())
 				{
 					isDuplicate = true;
 					break;
@@ -190,11 +184,11 @@ public class PcInventory extends Inventory
 			{
 				continue;
 			}
-			if ((!allowAdena && (item.getItemId() == ADENA_ID)))
+			if ((!allowAdena && (item.getId() == ADENA_ID)))
 			{
 				continue;
 			}
-			if ((!allowAncientAdena && (item.getItemId() == ANCIENT_ADENA_ID)))
+			if ((!allowAncientAdena && (item.getId() == ANCIENT_ADENA_ID)))
 			{
 				continue;
 			}
@@ -202,7 +196,7 @@ public class PcInventory extends Inventory
 			boolean isDuplicate = false;
 			for (L2ItemInstance litem : list)
 			{
-				if ((litem.getItemId() == item.getItemId()) && (litem.getEnchantLevel() == item.getEnchantLevel()))
+				if ((litem.getId() == item.getId()) && (litem.getEnchantLevel() == item.getEnchantLevel()))
 				{
 					isDuplicate = true;
 					break;
@@ -246,7 +240,7 @@ public class PcInventory extends Inventory
 				continue;
 			}
 			
-			if ((item.getItemId() == itemId) && (includeEquipped || !item.isEquipped()))
+			if ((item.getId() == itemId) && (includeEquipped || !item.isEquipped()))
 			{
 				list.add(item);
 			}
@@ -285,7 +279,7 @@ public class PcInventory extends Inventory
 				continue;
 			}
 			
-			if ((item.getItemId() == itemId) && (item.getEnchantLevel() == enchantment) && (includeEquipped || !item.isEquipped()))
+			if ((item.getId() == itemId) && (item.getEnchantLevel() == enchantment) && (includeEquipped || !item.isEquipped()))
 			{
 				list.add(item);
 			}
@@ -308,13 +302,13 @@ public class PcInventory extends Inventory
 		FastList<L2ItemInstance> list = FastList.newInstance();
 		for (L2ItemInstance item : _items)
 		{
-			if ((item == null) || !item.isAvailable(getOwner(), allowAdena, allowNonTradeable) || !canManipulateWithItemId(item.getItemId()))
+			if ((item == null) || !item.isAvailable(getOwner(), allowAdena, allowNonTradeable) || !canManipulateWithItemId(item.getId()))
 			{
 				continue;
 			}
 			else if (feightable)
 			{
-				if ((item.getLocation() == ItemLocation.INVENTORY) && item.isFreightable())
+				if ((item.getItemLocation() == ItemLocation.INVENTORY) && item.isFreightable())
 				{
 					list.add(item);
 				}
@@ -406,7 +400,7 @@ public class PcInventory extends Inventory
 	public void adjustAvailableItem(TradeItem item)
 	{
 		boolean notAllEquipped = false;
-		for (L2ItemInstance adjItem : getItemsByItemId(item.getItem().getItemId()))
+		for (L2ItemInstance adjItem : getItemsByItemId(item.getItem().getId()))
 		{
 			if (adjItem.isEquipable())
 			{
@@ -423,7 +417,7 @@ public class PcInventory extends Inventory
 		}
 		if (notAllEquipped)
 		{
-			L2ItemInstance adjItem = getItemByItemId(item.getItem().getItemId());
+			L2ItemInstance adjItem = getItemByItemId(item.getItem().getId());
 			item.setObjectId(adjItem.getObjectId());
 			item.setEnchant(adjItem.getEnchantLevel());
 			
@@ -515,17 +509,21 @@ public class PcInventory extends Inventory
 	{
 		item = super.addItem(process, item, actor, reference);
 		
-		if ((item != null) && (item.getItemId() == ADENA_ID) && !item.equals(_adena))
+		if ((item != null) && (item.getId() == ADENA_ID) && !item.equals(_adena))
 		{
 			_adena = item;
 		}
 		
-		if ((item != null) && (item.getItemId() == ANCIENT_ADENA_ID) && !item.equals(_ancientAdena))
+		if ((item != null) && (item.getId() == ANCIENT_ADENA_ID) && !item.equals(_ancientAdena))
 		{
 			_ancientAdena = item;
 		}
 		
-		fireTrackerEvents(TrackerEvent.ADD_TO_INVENTORY, actor, item, null);
+		if (item != null)
+		{
+			// Notify to scripts
+			EventDispatcher.getInstance().notifyEventAsync(new OnPlayerItemAdd(actor, item), item.getItem());
+		}
 		return item;
 	}
 	
@@ -543,12 +541,12 @@ public class PcInventory extends Inventory
 	{
 		L2ItemInstance item = super.addItem(process, itemId, count, actor, reference);
 		
-		if ((item != null) && (item.getItemId() == ADENA_ID) && !item.equals(_adena))
+		if ((item != null) && (item.getId() == ADENA_ID) && !item.equals(_adena))
 		{
 			_adena = item;
 		}
 		
-		if ((item != null) && (item.getItemId() == ANCIENT_ADENA_ID) && !item.equals(_ancientAdena))
+		if ((item != null) && (item.getId() == ANCIENT_ADENA_ID) && !item.equals(_ancientAdena))
 		{
 			_ancientAdena = item;
 		}
@@ -571,7 +569,8 @@ public class PcInventory extends Inventory
 			su.addAttribute(StatusUpdate.CUR_LOAD, actor.getCurrentLoad());
 			actor.sendPacket(su);
 			
-			fireTrackerEvents(TrackerEvent.ADD_TO_INVENTORY, actor, item, null);
+			// Notify to scripts
+			EventDispatcher.getInstance().notifyEventAsync(new OnPlayerItemAdd(actor, item), item.getItem());
 		}
 		
 		return item;
@@ -602,7 +601,8 @@ public class PcInventory extends Inventory
 			_ancientAdena = null;
 		}
 		
-		fireTrackerEvents(TrackerEvent.TRANSFER, actor, item, target);
+		// Notify to scripts
+		EventDispatcher.getInstance().notifyEventAsync(new OnPlayerItemTransfer(actor, item, target), item.getItem());
 		return item;
 	}
 	
@@ -643,8 +643,11 @@ public class PcInventory extends Inventory
 			_ancientAdena = null;
 		}
 		
-		fireTrackerEvents(TrackerEvent.DESTROY, actor, item, null);
-		
+		// Notify to scripts
+		if (item != null)
+		{
+			EventDispatcher.getInstance().notifyEventAsync(new OnPlayerItemDestroy(actor, item), item.getItem());
+		}
 		return item;
 	}
 	
@@ -711,7 +714,11 @@ public class PcInventory extends Inventory
 			_ancientAdena = null;
 		}
 		
-		fireTrackerEvents(TrackerEvent.DROP, actor, item, null);
+		// Notify to scripts
+		if (item != null)
+		{
+			EventDispatcher.getInstance().notifyEventAsync(new OnPlayerItemDrop(actor, item, item.getLocation()), item.getItem());
+		}
 		return item;
 	}
 	
@@ -739,7 +746,11 @@ public class PcInventory extends Inventory
 			_ancientAdena = null;
 		}
 		
-		fireTrackerEvents(TrackerEvent.DROP, actor, item, null);
+		// Notify to scripts
+		if (item != null)
+		{
+			EventDispatcher.getInstance().notifyEventAsync(new OnPlayerItemDrop(actor, item, item.getLocation()), item.getItem());
+		}
 		return item;
 	}
 	
@@ -754,16 +765,16 @@ public class PcInventory extends Inventory
 		getOwner().removeItemFromShortCut(item.getObjectId());
 		
 		// Removes active Enchant Scroll
-		if (item.equals(getOwner().getActiveEnchantItem()))
+		if (item.getObjectId() == getOwner().getActiveEnchantItemId())
 		{
-			getOwner().setActiveEnchantItem(null);
+			getOwner().setActiveEnchantItemId(L2PcInstance.ID_NONE);
 		}
 		
-		if (item.getItemId() == ADENA_ID)
+		if (item.getId() == ADENA_ID)
 		{
 			_adena = null;
 		}
-		else if (item.getItemId() == ANCIENT_ADENA_ID)
+		else if (item.getId() == ANCIENT_ADENA_ID)
 		{
 			_ancientAdena = null;
 		}
@@ -838,7 +849,7 @@ public class PcInventory extends Inventory
 	 * @param sendSkillMessage if {@code true} will send a message of skill not available.
 	 * @return {@code true} if the inventory isn't full after taking new items and items weight add to current load doesn't exceed max weight load.
 	 */
-	public boolean checkInventorySlotsAndWeight(FastList<L2Item> itemList, boolean sendMessage, boolean sendSkillMessage)
+	public boolean checkInventorySlotsAndWeight(List<L2Item> itemList, boolean sendMessage, boolean sendSkillMessage)
 	{
 		int lootWeight = 0;
 		int requiredSlots = 0;
@@ -847,7 +858,7 @@ public class PcInventory extends Inventory
 			for (L2Item item : itemList)
 			{
 				// If the item is not stackable or is stackable and not present in inventory, will need a slot.
-				if (!item.isStackable() || (getInventoryItemCount(item.getItemId(), -1) <= 0))
+				if (!item.isStackable() || (getInventoryItemCount(item.getId(), -1) <= 0))
 				{
 					requiredSlots++;
 				}
@@ -875,7 +886,7 @@ public class PcInventory extends Inventory
 	public boolean validateCapacity(L2ItemInstance item)
 	{
 		int slots = 0;
-		if (!item.isStackable() || (getInventoryItemCount(item.getItemId(), -1) <= 0) || (item.getItemType() != L2EtcItemType.HERB))
+		if (!item.isStackable() || (getInventoryItemCount(item.getId(), -1) <= 0) || !item.getItem().hasExImmediateEffect())
 		{
 			slots++;
 		}
@@ -1040,113 +1051,5 @@ public class PcInventory extends Inventory
 			item.giveSkillsToOwner();
 			item.applyEnchantStats();
 		}
-	}
-	
-	// LISTENERS
-	private static enum TrackerEvent
-	{
-		DROP,
-		ADD_TO_INVENTORY,
-		DESTROY,
-		TRANSFER
-	}
-	
-	/**
-	 * Fires the appropriate item tracker events, if any
-	 * @param tEvent
-	 * @param actor
-	 * @param item
-	 * @param target
-	 */
-	private void fireTrackerEvents(TrackerEvent tEvent, L2PcInstance actor, L2ItemInstance item, ItemContainer target)
-	{
-		if ((item != null) && (actor != null) && !itemTrackers.isEmpty())
-		{
-			switch (tEvent)
-			{
-				case ADD_TO_INVENTORY:
-				{
-					AddToInventoryEvent event = new AddToInventoryEvent();
-					event.setItem(item);
-					event.setPlayer(actor);
-					for (ItemTracker tracker : itemTrackers)
-					{
-						if (tracker.containsItemId(item.getItemId()))
-						{
-							tracker.onAddToInventory(event);
-						}
-					}
-					return;
-				}
-				case DROP:
-				{
-					ItemDropEvent event = new ItemDropEvent();
-					event.setItem(item);
-					event.setDropper(actor);
-					event.setLocation(actor.getLocation());
-					for (ItemTracker tracker : itemTrackers)
-					{
-						if (tracker.containsItemId(item.getItemId()))
-						{
-							tracker.onDrop(event);
-						}
-					}
-					return;
-				}
-				case DESTROY:
-				{
-					ItemDestroyEvent event = new ItemDestroyEvent();
-					event.setItem(item);
-					event.setPlayer(actor);
-					for (ItemTracker tracker : itemTrackers)
-					{
-						if (tracker.containsItemId(item.getItemId()))
-						{
-							tracker.onDestroy(event);
-						}
-					}
-					return;
-				}
-				case TRANSFER:
-				{
-					if (target != null)
-					{
-						ItemTransferEvent event = new ItemTransferEvent();
-						event.setItem(item);
-						event.setPlayer(actor);
-						event.setTarget(target);
-						for (ItemTracker tracker : itemTrackers)
-						{
-							if (tracker.containsItemId(item.getItemId()))
-							{
-								tracker.onTransfer(event);
-							}
-						}
-					}
-					return;
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Adds an item tracker
-	 * @param tracker
-	 */
-	public static void addItemTracker(ItemTracker tracker)
-	{
-		if (!itemTrackers.contains(tracker))
-		{
-			itemTrackers.add(tracker);
-		}
-	}
-	
-	/**
-	 * Removes an item tracker
-	 * @param tracker
-	 */
-	public static void removeItemTracker(ItemTracker tracker)
-	{
-		itemTrackers.remove(tracker);
 	}
 }

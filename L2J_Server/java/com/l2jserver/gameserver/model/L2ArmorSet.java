@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -158,19 +158,19 @@ public final class L2ArmorSet
 		
 		if (legsItem != null)
 		{
-			legs = legsItem.getItemId();
+			legs = legsItem.getId();
 		}
 		if (headItem != null)
 		{
-			head = headItem.getItemId();
+			head = headItem.getId();
 		}
 		if (glovesItem != null)
 		{
-			gloves = glovesItem.getItemId();
+			gloves = glovesItem.getId();
 		}
 		if (feetItem != null)
 		{
-			feet = feetItem.getItemId();
+			feet = feetItem.getId();
 		}
 		
 		return containAll(_chestId, legs, head, gloves, feet);
@@ -236,7 +236,7 @@ public final class L2ArmorSet
 		Inventory inv = player.getInventory();
 		
 		L2ItemInstance shieldItem = inv.getPaperdollItem(Inventory.PAPERDOLL_LHAND);
-		return ((shieldItem != null) && _shield.contains(Integer.valueOf(shieldItem.getItemId())));
+		return ((shieldItem != null) && _shield.contains(Integer.valueOf(shieldItem.getId())));
 	}
 	
 	public boolean containShield(int shield_id)

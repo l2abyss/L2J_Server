@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,12 +18,13 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
-import com.l2jserver.gameserver.util.Point3D;
+import com.l2jserver.gameserver.util.Broadcast;
 import com.l2jserver.gameserver.util.Util;
 
 /**
@@ -56,8 +57,7 @@ public final class RequestExMagicSkillUseGround extends L2GameClientPacket
 	protected void runImpl()
 	{
 		// Get the current L2PcInstance of the player
-		L2PcInstance activeChar = getClient().getActiveChar();
-		
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 		{
 			return;
@@ -72,16 +72,16 @@ public final class RequestExMagicSkillUseGround extends L2GameClientPacket
 		}
 		
 		// Get the L2Skill template corresponding to the skillID received from the client
-		L2Skill skill = SkillTable.getInstance().getInfo(_skillId, level);
+		Skill skill = SkillData.getInstance().getSkill(_skillId, level);
 		
 		// Check the validity of the skill
 		if (skill != null)
 		{
-			activeChar.setCurrentSkillWorldPosition(new Point3D(_x, _y, _z));
+			activeChar.setCurrentSkillWorldPosition(new Location(_x, _y, _z));
 			
 			// normally magicskilluse packet turns char client side but for these skills, it doesn't (even with correct target)
 			activeChar.setHeading(Util.calculateHeadingFrom(activeChar.getX(), activeChar.getY(), _x, _y));
-			activeChar.broadcastPacket(new ValidateLocation(activeChar));
+			Broadcast.toKnownPlayers(activeChar, new ValidateLocation(activeChar));
 			
 			activeChar.useMagic(skill, _ctrlPressed, _shiftPressed);
 		}

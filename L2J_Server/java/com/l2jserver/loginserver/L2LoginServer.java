@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -38,6 +38,7 @@ import org.mmocore.network.SelectorThread;
 import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.Server;
+import com.l2jserver.UPnPService;
 import com.l2jserver.loginserver.mail.MailSystem;
 import com.l2jserver.loginserver.network.L2LoginClient;
 import com.l2jserver.loginserver.network.L2LoginPacketHandler;
@@ -59,7 +60,7 @@ public final class L2LoginServer
 	
 	public static void main(String[] args)
 	{
-		_instance = new L2LoginServer();
+		new L2LoginServer();
 	}
 	
 	public static L2LoginServer getInstance()
@@ -69,6 +70,7 @@ public final class L2LoginServer
 	
 	public L2LoginServer()
 	{
+		_instance = this;
 		Server.serverMode = Server.MODE_LOGINSERVER;
 		// Local Constants
 		final String LOG_FOLDER = "log"; // Name of folder for log file
@@ -186,15 +188,16 @@ public final class L2LoginServer
 		try
 		{
 			_selectorThread.openServerSocket(bindAddress, Config.PORT_LOGIN);
+			_selectorThread.start();
+			_log.log(Level.INFO, getClass().getSimpleName() + ": is now listening on: " + Config.LOGIN_BIND_ADDRESS + ":" + Config.PORT_LOGIN);
 		}
 		catch (IOException e)
 		{
 			_log.log(Level.SEVERE, "FATAL: Failed to open server socket. Reason: " + e.getMessage(), e);
 			System.exit(1);
 		}
-		_selectorThread.start();
 		
-		_log.info("Login Server ready on " + (bindAddress == null ? "*" : bindAddress.getHostAddress()) + ":" + Config.PORT_LOGIN);
+		UPnPService.getInstance();
 	}
 	
 	public Status getStatusServer()

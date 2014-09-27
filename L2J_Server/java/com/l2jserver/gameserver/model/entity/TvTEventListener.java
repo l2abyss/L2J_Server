@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,36 +19,24 @@
 package com.l2jserver.gameserver.model.entity;
 
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.EventListener;
+import com.l2jserver.gameserver.model.interfaces.IEventListener;
 
 /**
  * @author UnAfraid
  */
-public final class TvTEventListener extends EventListener
+public final class TvTEventListener implements IEventListener
 {
+	private final L2PcInstance _player;
+	
 	protected TvTEventListener(L2PcInstance player)
 	{
-		super(player);
-	}
-	
-	@Override
-	public void register()
-	{
-		super.register();
-		player.setCanRevive(false);
-	}
-	
-	@Override
-	public void unregister()
-	{
-		super.unregister();
-		player.setCanRevive(true);
+		_player = player;
 	}
 	
 	@Override
 	public boolean isOnEvent()
 	{
-		return TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(player.getObjectId());
+		return TvTEvent.isStarted() && TvTEvent.isPlayerParticipant(getPlayer().getObjectId());
 	}
 	
 	@Override
@@ -61,5 +49,17 @@ public final class TvTEventListener extends EventListener
 	public boolean isBlockingDeathPenalty()
 	{
 		return true;
+	}
+	
+	@Override
+	public boolean canRevive()
+	{
+		return false;
+	}
+	
+	@Override
+	public L2PcInstance getPlayer()
+	{
+		return _player;
 	}
 }

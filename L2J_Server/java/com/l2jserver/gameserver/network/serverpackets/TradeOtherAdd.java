@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,12 +18,13 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import com.l2jserver.gameserver.model.ItemInfo;
 import com.l2jserver.gameserver.model.TradeItem;
 
 /**
  * @author Yme
  */
-public final class TradeOtherAdd extends L2GameServerPacket
+public final class TradeOtherAdd extends AbstractItemPacket
 {
 	private final TradeItem _item;
 	
@@ -35,7 +36,7 @@ public final class TradeOtherAdd extends L2GameServerPacket
 	@Override
 	protected final void writeImpl()
 	{
-		writeC(0x1b);
+		writeC(0x1B);
 		
 		writeH(1); // item count
 		writeH(0);
@@ -51,15 +52,6 @@ public final class TradeOtherAdd extends L2GameServerPacket
 		writeH(_item.getCustomType2());
 		
 		// T1
-		writeH(_item.getAttackElementType());
-		writeH(_item.getAttackElementPower());
-		for (byte i = 0; i < 6; i++)
-		{
-			writeH(_item.getElementDefAttr(i));
-		}
-		
-		writeH(0x00); // Enchant effect 1
-		writeH(0x00); // Enchant effect 2
-		writeH(0x00); // Enchant effect 3
+		writeItemElementalAndEnchant(new ItemInfo(_item));
 	}
 }

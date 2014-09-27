@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,15 +21,8 @@ package com.l2jserver.gameserver.script.faenor;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
-
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.datatables.EventDroplist;
-import com.l2jserver.gameserver.datatables.NpcTable;
-import com.l2jserver.gameserver.model.L2DropCategory;
-import com.l2jserver.gameserver.model.L2DropData;
-import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.script.DateRange;
 import com.l2jserver.gameserver.script.EngineInterface;
 
@@ -50,121 +43,10 @@ public class FaenorInterface implements EngineInterface
 		return null;
 	}
 	
-	/**
-	 * Adds a new Quest Drop to an NPC
-	 */
-	@Override
-	public void addQuestDrop(int npcID, int itemID, int min, int max, int chance, String questID, String[] states)
-	{
-		L2NpcTemplate npc = NpcTable.getInstance().getTemplate(npcID);
-		if (npc == null)
-		{
-			throw new NullPointerException();
-		}
-		L2DropData drop = new L2DropData();
-		drop.setItemId(itemID);
-		drop.setMinDrop(min);
-		drop.setMaxDrop(max);
-		drop.setChance(chance);
-		drop.setQuestID(questID);
-		drop.addStates(states);
-		addDrop(npc, drop, false);
-	}
-	
-	/**
-	 * Adds a new Drop to an NPC
-	 * @param npcID
-	 * @param itemID
-	 * @param min
-	 * @param max
-	 * @param sweep
-	 * @param chance
-	 * @throws NullPointerException
-	 */
-	public void addDrop(int npcID, int itemID, int min, int max, boolean sweep, int chance) throws NullPointerException
-	{
-		L2NpcTemplate npc = NpcTable.getInstance().getTemplate(npcID);
-		if (npc == null)
-		{
-			if (Config.DEBUG)
-			{
-				_log.warning("Npc doesnt Exist");
-			}
-			throw new NullPointerException();
-		}
-		L2DropData drop = new L2DropData();
-		drop.setItemId(itemID);
-		drop.setMinDrop(min);
-		drop.setMaxDrop(max);
-		drop.setChance(chance);
-		
-		addDrop(npc, drop, sweep);
-	}
-	
-	/**
-	 * Adds a new drop to an NPC. If the drop is sweep, it adds it to the NPC's Sweep category If the drop is non-sweep, it creates a new category for this drop.
-	 * @param npc
-	 * @param drop
-	 * @param sweep
-	 */
-	public void addDrop(L2NpcTemplate npc, L2DropData drop, boolean sweep)
-	{
-		if (sweep)
-		{
-			addDrop(npc, drop, -1);
-		}
-		else
-		{
-			int maxCategory = -1;
-			
-			for (L2DropCategory cat : npc.getDropData())
-			{
-				if (maxCategory < cat.getCategoryType())
-				{
-					maxCategory = cat.getCategoryType();
-				}
-			}
-			maxCategory++;
-			npc.addDropData(drop, maxCategory);
-		}
-	}
-	
-	/**
-	 * Adds a new drop to an NPC, in the specified category. If the category does not exist, it is created.
-	 * @param npc
-	 * @param drop
-	 * @param category
-	 */
-	public void addDrop(L2NpcTemplate npc, L2DropData drop, int category)
-	{
-		npc.addDropData(drop, category);
-	}
-	
-	public List<L2DropData> getQuestDrops(int npcID)
-	{
-		L2NpcTemplate npc = NpcTable.getInstance().getTemplate(npcID);
-		if (npc == null)
-		{
-			return null;
-		}
-		List<L2DropData> questDrops = new FastList<>();
-		for (L2DropCategory cat : npc.getDropData())
-		{
-			for (L2DropData drop : cat.getAllDrops())
-			{
-				if (drop.getQuestID() != null)
-				{
-					questDrops.add(drop);
-				}
-			}
-		}
-		return questDrops;
-	}
-	
 	@Override
 	public void addEventDrop(int[] items, int[] count, double chance, DateRange range)
 	{
-		EventDroplist.getInstance().addGlobalDrop(items, count, (int) (chance * L2DropData.MAX_CHANCE), range);
+		EventDroplist.getInstance().addGlobalDrop(items, count, (int) (chance * 1000000), range);
 	}
 	
 	@Override

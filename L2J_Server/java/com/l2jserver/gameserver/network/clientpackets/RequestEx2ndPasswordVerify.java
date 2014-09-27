@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.SecondaryAuthData;
 
 /**
  * Format: (ch)S S: numerical password
@@ -39,7 +39,7 @@ public class RequestEx2ndPasswordVerify extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		if (!Config.SECOND_AUTH_ENABLED)
+		if (!SecondaryAuthData.getInstance().isEnabled())
 		{
 			return;
 		}

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,8 +18,8 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
-import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
+import com.l2jserver.gameserver.GameServer;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
@@ -32,6 +32,7 @@ import com.l2jserver.gameserver.model.zone.ZoneId;
 public class L2NoRestartZone extends L2ZoneType
 {
 	private int _restartAllowedTime = 0;
+	private int _restartTime = 0;
 	private boolean _enabled = true;
 	
 	public L2NoRestartZone(int id)
@@ -48,11 +49,11 @@ public class L2NoRestartZone extends L2ZoneType
 		}
 		else if (name.equalsIgnoreCase("restartAllowedTime"))
 		{
-			_restartAllowedTime = Integer.parseInt(value);
+			_restartAllowedTime = Integer.parseInt(value) * 1000;
 		}
 		else if (name.equalsIgnoreCase("restartTime"))
 		{
-			// Do nothing.
+			_restartTime = Integer.parseInt(value) * 1000;
 		}
 		else if (name.equalsIgnoreCase("instanceId"))
 		{
@@ -75,13 +76,6 @@ public class L2NoRestartZone extends L2ZoneType
 		if (character.isPlayer())
 		{
 			character.setInsideZone(ZoneId.NO_RESTART, true);
-			L2PcInstance player = (L2PcInstance) character;
-			
-			if ((player.getZoneRestartLimitTime() > 0) && (player.getZoneRestartLimitTime() < System.currentTimeMillis()))
-			{
-				ThreadPoolManager.getInstance().scheduleGeneral(new TeleportTask(player), 2000);
-			}
-			player.setZoneRestartLimitTime(0);
 		}
 	}
 	
@@ -100,13 +94,17 @@ public class L2NoRestartZone extends L2ZoneType
 	}
 	
 	@Override
-	public void onDieInside(L2Character character)
+	public void onPlayerLoginInside(L2PcInstance player)
 	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
+		if (!_enabled)
+		{
+			return;
+		}
+		
+		if (((System.currentTimeMillis() - player.getLastAccess()) > getRestartTime()) && ((System.currentTimeMillis() - GameServer.dateTimeServerStarted.getTimeInMillis()) > getRestartAllowedTime()))
+		{
+			player.teleToLocation(TeleportWhereType.TOWN);
+		}
 	}
 	
 	public int getRestartAllowedTime()
@@ -119,19 +117,13 @@ public class L2NoRestartZone extends L2ZoneType
 		_restartAllowedTime = time;
 	}
 	
-	private static class TeleportTask implements Runnable
+	public int getRestartTime()
 	{
-		private final L2PcInstance _player;
-		
-		public TeleportTask(L2PcInstance player)
-		{
-			_player = player;
-		}
-		
-		@Override
-		public void run()
-		{
-			_player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
-		}
+		return _restartTime;
+	}
+	
+	public void setRestartTime(int time)
+	{
+		_restartTime = time;
 	}
 }

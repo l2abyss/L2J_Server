@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,10 +18,9 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import java.util.logging.Logger;
-
 import com.l2jserver.gameserver.ai.L2CharacterAI;
-import com.l2jserver.gameserver.model.L2CharPosition;
+import com.l2jserver.gameserver.enums.InstanceType;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.knownlist.StaticObjectKnownList;
 import com.l2jserver.gameserver.model.actor.stat.StaticObjStat;
@@ -29,17 +28,16 @@ import com.l2jserver.gameserver.model.actor.status.StaticObjStatus;
 import com.l2jserver.gameserver.model.actor.templates.L2CharTemplate;
 import com.l2jserver.gameserver.model.items.L2Weapon;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.serverpackets.ShowTownMap;
 import com.l2jserver.gameserver.network.serverpackets.StaticObject;
 
 /**
+ * Static Object instance.
  * @author godson
  */
-public class L2StaticObjectInstance extends L2Character
+public final class L2StaticObjectInstance extends L2Character
 {
-	protected static final Logger log = Logger.getLogger(L2StaticObjectInstance.class.getName());
-	
 	/** The interaction distance of the L2StaticObjectInstance */
 	public static final int INTERACTION_DISTANCE = 150;
 	
@@ -51,10 +49,6 @@ public class L2StaticObjectInstance extends L2Character
 	/** This class may be created only by L2Character and only for AI */
 	public class AIAccessor extends L2Character.AIAccessor
 	{
-		protected AIAccessor()
-		{
-		}
-		
 		@Override
 		public L2StaticObjectInstance getActor()
 		{
@@ -72,7 +66,7 @@ public class L2StaticObjectInstance extends L2Character
 		}
 		
 		@Override
-		public void stopMove(L2CharPosition pos)
+		public void stopMove(Location loc)
 		{
 		}
 		
@@ -82,21 +76,23 @@ public class L2StaticObjectInstance extends L2Character
 		}
 		
 		@Override
-		public void doCast(L2Skill skill)
+		public void doCast(Skill skill)
 		{
 		}
 	}
 	
 	@Override
-	public L2CharacterAI getAI()
+	protected L2CharacterAI initAI()
 	{
 		return null;
 	}
 	
 	/**
-	 * @return Returns the StaticObjectId.
+	 * Gets the static object ID.
+	 * @return the static object ID
 	 */
-	public int getStaticObjectId()
+	@Override
+	public int getId()
 	{
 		return _staticObjectId;
 	}
@@ -175,9 +171,6 @@ public class L2StaticObjectInstance extends L2Character
 		return 1;
 	}
 	
-	/**
-	 * Return null.
-	 */
 	@Override
 	public L2ItemInstance getActiveWeaponInstance()
 	{

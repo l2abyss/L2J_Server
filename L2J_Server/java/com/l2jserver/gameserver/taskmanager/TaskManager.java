@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -31,9 +31,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javolution.util.FastList;
 
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.ThreadPoolManager;
@@ -50,8 +53,6 @@ import com.l2jserver.gameserver.taskmanager.tasks.TaskRestart;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskScript;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskSevenSignsUpdate;
 import com.l2jserver.gameserver.taskmanager.tasks.TaskShutdown;
-import com.l2jserver.util.L2FastList;
-import com.l2jserver.util.L2FastMap;
 
 /**
  * @author Layane
@@ -60,8 +61,8 @@ public final class TaskManager
 {
 	protected static final Logger _log = Logger.getLogger(TaskManager.class.getName());
 	
-	private final Map<Integer, Task> _tasks = new L2FastMap<>(true);
-	protected final List<ExecutedTask> _currentTasks = new L2FastList<>(true);
+	private final Map<Integer, Task> _tasks = new ConcurrentHashMap<>();
+	protected final List<ExecutedTask> _currentTasks = new FastList<ExecutedTask>().shared();
 	
 	protected static final String[] SQL_STATEMENTS =
 	{
@@ -203,11 +204,11 @@ public final class TaskManager
 	public void registerTask(Task task)
 	{
 		int key = task.getName().hashCode();
-		if (!_tasks.containsKey(key))
+		_tasks.computeIfAbsent(key, k ->
 		{
-			_tasks.put(key, task);
 			task.initializate();
-		}
+			return task;
+		});
 	}
 	
 	private void startAllTasks()

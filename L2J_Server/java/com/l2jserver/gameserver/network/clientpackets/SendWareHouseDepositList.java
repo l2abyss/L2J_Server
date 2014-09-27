@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
+import static com.l2jserver.gameserver.model.itemcontainer.Inventory.ADENA_ID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +109,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 			return;
 		}
 		
-		if (player.getActiveEnchantItem() != null)
+		if (player.getActiveEnchantItemId() != L2PcInstance.ID_NONE)
 		{
 			Util.handleIllegalPlayerAction(player, "Player " + player.getName() + " tried to use enchant Exploit!", Config.DEFAULT_PUNISH);
 			return;
@@ -136,7 +136,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 			}
 			
 			// Calculate needed adena and slots
-			if (item.getItemId() == ADENA_ID)
+			if (item.getId() == ADENA_ID)
 			{
 				currentAdena -= i.getCount();
 			}
@@ -144,7 +144,7 @@ public final class SendWareHouseDepositList extends L2GameClientPacket
 			{
 				slots += i.getCount();
 			}
-			else if (warehouse.getItemByItemId(item.getItemId()) == null)
+			else if (warehouse.getItemByItemId(item.getId()) == null)
 			{
 				slots++;
 			}

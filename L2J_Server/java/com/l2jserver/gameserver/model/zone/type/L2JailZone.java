@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,7 +20,10 @@ package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.actor.tasks.player.TeleportTask;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -31,6 +34,9 @@ import com.l2jserver.gameserver.network.SystemMessageId;
  */
 public class L2JailZone extends L2ZoneType
 {
+	private static final Location JAIL_IN_LOC = new Location(-114356, -249645, -2984);
+	private static final Location JAIL_OUT_LOC = new Location(17836, 170178, -3507);
+	
 	public L2JailZone(int id)
 	{
 		super(id);
@@ -42,6 +48,7 @@ public class L2JailZone extends L2ZoneType
 		if (character.isPlayer())
 		{
 			character.setInsideZone(ZoneId.JAIL, true);
+			character.setInsideZone(ZoneId.NO_SUMMON_FRIEND, true);
 			if (Config.JAIL_IS_PVP)
 			{
 				character.setInsideZone(ZoneId.PVP, true);
@@ -59,16 +66,20 @@ public class L2JailZone extends L2ZoneType
 	{
 		if (character.isPlayer())
 		{
-			character.setInsideZone(ZoneId.JAIL, false);
+			final L2PcInstance player = character.getActingPlayer();
+			player.setInsideZone(ZoneId.JAIL, false);
+			player.setInsideZone(ZoneId.NO_SUMMON_FRIEND, false);
+			
 			if (Config.JAIL_IS_PVP)
 			{
 				character.setInsideZone(ZoneId.PVP, false);
 				character.sendPacket(SystemMessageId.LEFT_COMBAT_ZONE);
 			}
-			if (character.getActingPlayer().isInJail())
+			
+			if (player.isJailed())
 			{
 				// when a player wants to exit jail even if he is still jailed, teleport him back to jail
-				ThreadPoolManager.getInstance().scheduleGeneral(new BackToJail(character), 2000);
+				ThreadPoolManager.getInstance().scheduleGeneral(new TeleportTask(player, JAIL_IN_LOC), 2000);
 				character.sendMessage("You cannot cheat your way out of here. You must wait until your jail time is over.");
 			}
 			if (Config.JAIL_DISABLE_TRANSACTION)
@@ -78,29 +89,13 @@ public class L2JailZone extends L2ZoneType
 		}
 	}
 	
-	@Override
-	public void onDieInside(L2Character character)
+	public static Location getLocationIn()
 	{
+		return JAIL_IN_LOC;
 	}
 	
-	@Override
-	public void onReviveInside(L2Character character)
+	public static Location getLocationOut()
 	{
-	}
-	
-	private static class BackToJail implements Runnable
-	{
-		private final L2Character _activeChar;
-		
-		protected BackToJail(L2Character character)
-		{
-			_activeChar = character;
-		}
-		
-		@Override
-		public void run()
-		{
-			_activeChar.teleToLocation(-114356, -249645, -2984); // Jail
-		}
+		return JAIL_OUT_LOC;
 	}
 }

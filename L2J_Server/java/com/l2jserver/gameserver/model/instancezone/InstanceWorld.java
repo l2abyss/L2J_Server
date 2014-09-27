@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,6 +19,7 @@
 package com.l2jserver.gameserver.model.instancezone;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javolution.util.FastList;
 
@@ -37,7 +38,7 @@ public class InstanceWorld
 	private int _instanceId;
 	private int _templateId = -1;
 	private final List<Integer> _allowed = new FastList<>();
-	private volatile int _status;
+	private final AtomicInteger _status = new AtomicInteger();
 	
 	public List<Integer> getAllowed()
 	{
@@ -59,21 +60,37 @@ public class InstanceWorld
 		return _allowed.contains(id);
 	}
 	
+	/**
+	 * Gets the dynamically generated instance ID.
+	 * @return the instance ID
+	 */
 	public int getInstanceId()
 	{
 		return _instanceId;
 	}
 	
+	/**
+	 * Sets the instance ID.
+	 * @param instanceId the instance ID
+	 */
 	public void setInstanceId(int instanceId)
 	{
 		_instanceId = instanceId;
 	}
 	
+	/**
+	 * Gets the client's template instance ID.
+	 * @return the template ID
+	 */
 	public int getTemplateId()
 	{
 		return _templateId;
 	}
 	
+	/**
+	 * Sets the template ID.
+	 * @param templateId the template ID
+	 */
 	public void setTemplateId(int templateId)
 	{
 		_templateId = templateId;
@@ -81,17 +98,22 @@ public class InstanceWorld
 	
 	public int getStatus()
 	{
-		return _status;
+		return _status.get();
+	}
+	
+	public boolean isStatus(int status)
+	{
+		return _status.get() == status;
 	}
 	
 	public void setStatus(int status)
 	{
-		_status = status;
+		_status.set(status);
 	}
 	
 	public void incStatus()
 	{
-		_status++;
+		_status.incrementAndGet();
 	}
 	
 	/**
@@ -106,7 +128,7 @@ public class InstanceWorld
 			if (instance != null)
 			{
 				final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_WILL_BE_EXPELLED_IN_S1);
-				sm.addNumber(instance.getEjectTime());
+				sm.addInt(instance.getEjectTime() / 60 / 1000);
 				victim.getActingPlayer().sendPacket(sm);
 				instance.addEjectDeadTask(victim.getActingPlayer());
 			}

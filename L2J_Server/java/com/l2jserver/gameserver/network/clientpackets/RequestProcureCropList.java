@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,14 +19,14 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+import static com.l2jserver.gameserver.model.itemcontainer.Inventory.MAX_ADENA;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
-import com.l2jserver.gameserver.instancemanager.CastleManorManager.CropProcure;
+import com.l2jserver.gameserver.model.CropProcure;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.instance.L2ManorManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -103,7 +103,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 			return;
 		}
 		
-		int castleId = ((L2ManorManagerInstance) manager).getCastle().getCastleId();
+		int castleId = ((L2ManorManagerInstance) manager).getCastle().getResidenceId();
 		
 		// Calculate summary values
 		int slots = 0;
@@ -162,7 +162,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.FAILED_IN_TRADING_S2_OF_CROP_S1);
 				sm.addItemName(i.getItemId());
-				sm.addItemNumber(i.getCount());
+				sm.addLong(i.getCount());
 				player.sendPacket(sm);
 				continue;
 			}
@@ -171,7 +171,7 @@ public class RequestProcureCropList extends L2GameClientPacket
 			{
 				SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.FAILED_IN_TRADING_S2_OF_CROP_S1);
 				sm.addItemName(i.getItemId());
-				sm.addItemNumber(i.getCount());
+				sm.addLong(i.getCount());
 				player.sendPacket(sm);
 				sm = SystemMessage.getSystemMessage(SystemMessageId.YOU_NOT_ENOUGH_ADENA);
 				player.sendPacket(sm);

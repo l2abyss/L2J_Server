@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -29,15 +29,14 @@ import com.l2jserver.gameserver.ai.CtrlEvent;
 import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.instancemanager.DayNightSpawnManager;
 import com.l2jserver.gameserver.model.actor.L2Character;
-import com.l2jserver.util.StackTrace;
 
 /**
  * Game Time controller class.
- * @author Unknown, Forsaiken
+ * @author Forsaiken
  */
 public final class GameTimeController extends Thread
 {
-	private static final Logger _log = Logger.getLogger(GameTimeController.class.getName());
+	protected static final Logger _log = Logger.getLogger(GameTimeController.class.getName());
 	
 	public static final int TICKS_PER_SECOND = 10; // not able to change this without checking through code
 	public static final int MILLIS_IN_TICK = 1000 / TICKS_PER_SECOND;
@@ -152,24 +151,20 @@ public final class GameTimeController extends Thread
 			return;
 		}
 		
-		ThreadPoolManager.getInstance().executeAi(new Runnable()
+		ThreadPoolManager.getInstance().executeAi(() ->
 		{
-			@Override
-			public final void run()
+			try
 			{
-				try
+				if (Config.MOVE_BASED_KNOWNLIST)
 				{
-					if (Config.MOVE_BASED_KNOWNLIST)
-					{
-						character.getKnownList().findObjects();
-					}
-					
-					ai.notifyEvent(CtrlEvent.EVT_ARRIVED);
+					character.getKnownList().findObjects();
 				}
-				catch (final Throwable e)
-				{
-					StackTrace.displayStackTraceInformation(e);
-				}
+				
+				ai.notifyEvent(CtrlEvent.EVT_ARRIVED);
+			}
+			catch (final Throwable e)
+			{
+				_log.log(Level.WARNING, "", e);
 			}
 		});
 	}
@@ -190,14 +185,7 @@ public final class GameTimeController extends Thread
 		
 		if (isNight)
 		{
-			ThreadPoolManager.getInstance().executeAi(new Runnable()
-			{
-				@Override
-				public final void run()
-				{
-					DayNightSpawnManager.getInstance().notifyChangeMode();
-				}
-			});
+			ThreadPoolManager.getInstance().executeAi(() -> DayNightSpawnManager.getInstance().notifyChangeMode());
 		}
 		
 		while (true)
@@ -210,7 +198,7 @@ public final class GameTimeController extends Thread
 			}
 			catch (final Throwable e)
 			{
-				StackTrace.displayStackTraceInformation(e);
+				_log.log(Level.WARNING, "", e);
 			}
 			
 			sleepTime = nextTickTime - System.currentTimeMillis();
@@ -230,14 +218,7 @@ public final class GameTimeController extends Thread
 			{
 				isNight = !isNight;
 				
-				ThreadPoolManager.getInstance().executeAi(new Runnable()
-				{
-					@Override
-					public final void run()
-					{
-						DayNightSpawnManager.getInstance().notifyChangeMode();
-					}
-				});
+				ThreadPoolManager.getInstance().executeAi(() -> DayNightSpawnManager.getInstance().notifyChangeMode());
 			}
 		}
 	}

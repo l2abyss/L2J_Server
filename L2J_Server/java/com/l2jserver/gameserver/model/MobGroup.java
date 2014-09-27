@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -143,9 +143,9 @@ public final class MobGroup
 				int randX = Rnd.nextInt(MobGroupTable.RANDOM_RANGE);
 				int randY = Rnd.nextInt(MobGroupTable.RANDOM_RANGE);
 				
-				spawn.setLocx(x + (signX * randX));
-				spawn.setLocy(y + (signY * randY));
-				spawn.setLocz(z);
+				spawn.setX(x + (signX * randX));
+				spawn.setY(y + (signY * randY));
+				spawn.setZ(z);
 				spawn.stopRespawn();
 				
 				SpawnTable.getInstance().addNewSpawn(spawn, false);
@@ -181,7 +181,7 @@ public final class MobGroup
 				int x = player.getX() + Rnd.nextInt(50);
 				int y = player.getY() + Rnd.nextInt(50);
 				
-				mobInst.teleToLocation(x, y, player.getZ(), true);
+				mobInst.teleToLocation(new Location(x, y, player.getZ()), true);
 				L2ControllableMobAI ai = (L2ControllableMobAI) mobInst.getAI();
 				ai.follow(player);
 			}

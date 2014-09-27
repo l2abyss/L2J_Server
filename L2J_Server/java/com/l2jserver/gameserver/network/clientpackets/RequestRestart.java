@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,15 +18,13 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import javolution.util.FastList;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSignsFestival;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
 import com.l2jserver.gameserver.model.L2Party;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -35,7 +33,6 @@ import com.l2jserver.gameserver.network.L2GameClient.GameClientState;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
 import com.l2jserver.gameserver.network.serverpackets.RestartResponse;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerDespawnListener;
 import com.l2jserver.gameserver.taskmanager.AttackStanceTaskManager;
 
 /**
@@ -46,7 +43,6 @@ public final class RequestRestart extends L2GameClientPacket
 {
 	private static final String _C__57_REQUESTRESTART = "[C] 57 RequestRestart";
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
-	private static List<PlayerDespawnListener> despawnListeners = new FastList<>();
 	
 	@Override
 	protected void readImpl()
@@ -64,7 +60,7 @@ public final class RequestRestart extends L2GameClientPacket
 			return;
 		}
 		
-		if ((player.getActiveEnchantItem() != null) || (player.getActiveEnchantAttrItem() != null))
+		if ((player.getActiveEnchantItemId() != L2PcInstance.ID_NONE) || (player.getActiveEnchantAttrItemId() != L2PcInstance.ID_NONE))
 		{
 			sendPacket(RestartResponse.valueOf(false));
 			return;
@@ -77,7 +73,7 @@ public final class RequestRestart extends L2GameClientPacket
 			return;
 		}
 		
-		if (player.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE)
+		if (player.getPrivateStoreType() != PrivateStoreType.NONE)
 		{
 			player.sendMessage("Cannot restart while trading");
 			sendPacket(RestartResponse.valueOf(false));
@@ -122,11 +118,6 @@ public final class RequestRestart extends L2GameClientPacket
 			return;
 		}
 		
-		for (PlayerDespawnListener listener : despawnListeners)
-		{
-			listener.onDespawn(player);
-		}
-		
 		// Remove player from Boss Zone
 		player.removeFromBossZone();
 		
@@ -162,27 +153,5 @@ public final class RequestRestart extends L2GameClientPacket
 	public String getType()
 	{
 		return _C__57_REQUESTRESTART;
-	}
-	
-	// Listeners
-	/**
-	 * Adds a despawn listener which will get triggered when a player despawns
-	 * @param listener
-	 */
-	public static void addDespawnListener(PlayerDespawnListener listener)
-	{
-		if (!despawnListeners.contains(listener))
-		{
-			despawnListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a despawn listener
-	 * @param listener
-	 */
-	public static void removeDespawnListener(PlayerDespawnListener listener)
-	{
-		despawnListeners.remove(listener);
 	}
 }

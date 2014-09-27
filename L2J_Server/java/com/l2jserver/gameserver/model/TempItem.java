@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -40,7 +40,7 @@ public final class TempItem
 	public TempItem(L2ItemInstance item, int quantity)
 	{
 		super();
-		_itemId = item.getItemId();
+		_itemId = item.getId();
 		_quantity = quantity;
 		_itemName = item.getItem().getName();
 		_referencePrice = item.getReferencePrice();

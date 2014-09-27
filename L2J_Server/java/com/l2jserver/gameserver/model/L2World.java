@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,9 +19,12 @@
 package com.l2jserver.gameserver.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,39 +34,33 @@ import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PetInstance;
-import com.l2jserver.gameserver.util.L2TIntObjectHashMap;
-import com.l2jserver.gameserver.util.Point3D;
 import com.l2jserver.util.StringUtil;
 
-import gnu.trove.procedure.TObjectProcedure;
-
-/**
- * This class ...
- * @version $Revision: 1.21.2.5.2.7 $ $Date: 2005/03/27 15:29:32 $
- */
 public final class L2World
 {
-	private static Logger _log = Logger.getLogger(L2World.class.getName());
-	
-	/**
-	 * Gracia border Flying objects not allowed to the east of it.
-	 */
+	private static final Logger _log = Logger.getLogger(L2World.class.getName());
+	/** Gracia border Flying objects not allowed to the east of it. */
 	public static final int GRACIA_MAX_X = -166168;
 	public static final int GRACIA_MAX_Z = 6105;
 	public static final int GRACIA_MIN_Z = -895;
 	
-	/*
-	 * biteshift, defines number of regions note, shifting by 15 will result in regions corresponding to map tiles shifting by 12 divides one tile to 8x8 regions
-	 */
+	/** Biteshift, defines number of regions note, shifting by 15 will result in regions corresponding to map tiles shifting by 12 divides one tile to 8x8 regions. */
 	public static final int SHIFT_BY = 12;
 	
 	private static final int TILE_SIZE = 32768;
 	
 	/** Map dimensions */
-	public static final int MAP_MIN_X = (Config.WORLD_X_MIN - 20) * TILE_SIZE;
-	public static final int MAP_MAX_X = (Config.WORLD_X_MAX - 19) * TILE_SIZE;
-	public static final int MAP_MIN_Y = (Config.WORLD_Y_MIN - 18) * TILE_SIZE;
-	public static final int MAP_MAX_Y = (Config.WORLD_Y_MAX - 17) * TILE_SIZE;
+	public static final int TILE_X_MIN = 11;
+	public static final int TILE_Y_MIN = 10;
+	public static final int TILE_X_MAX = 26;
+	public static final int TILE_Y_MAX = 26;
+	public static final int TILE_ZERO_COORD_X = 20;
+	public static final int TILE_ZERO_COORD_Y = 18;
+	public static final int MAP_MIN_X = (TILE_X_MIN - TILE_ZERO_COORD_X) * TILE_SIZE;
+	public static final int MAP_MIN_Y = (TILE_Y_MIN - TILE_ZERO_COORD_Y) * TILE_SIZE;
+	
+	public static final int MAP_MAX_X = ((TILE_X_MAX - TILE_ZERO_COORD_X) + 1) * TILE_SIZE;
+	public static final int MAP_MAX_Y = ((TILE_Y_MAX - TILE_ZERO_COORD_Y) + 1) * TILE_SIZE;
 	
 	/** calculated offset used so top left region is 0,0 */
 	public static final int OFFSET_X = Math.abs(MAP_MIN_X >> SHIFT_BY);
@@ -73,43 +70,30 @@ public final class L2World
 	private static final int REGIONS_X = (MAP_MAX_X >> SHIFT_BY) + OFFSET_X;
 	private static final int REGIONS_Y = (MAP_MAX_Y >> SHIFT_BY) + OFFSET_Y;
 	
-	// private FastMap<String, L2PcInstance> _allGms;
-	
-	/** HashMap(Integer Player id, L2PcInstance) containing all the players in game */
-	private final L2TIntObjectHashMap<L2PcInstance> _allPlayers;
-	
-	/** L2ObjectHashMap(L2Object) containing all visible objects */
-	private final L2TIntObjectHashMap<L2Object> _allObjects;
-	private final L2TIntObjectHashMap<String> _allObjectsDebug;
-	
-	/** List with the pets instances and their owner id */
-	private final L2TIntObjectHashMap<L2PetInstance> _petsInstance;
+	/** Map containing all the players in game. */
+	private final Map<Integer, L2PcInstance> _allPlayers = new ConcurrentHashMap<>();
+	/** Map containing all visible objects. */
+	private final Map<Integer, L2Object> _allObjects = new ConcurrentHashMap<>();
+	/** Map used for debug. */
+	private final Map<Integer, String> _allObjectsDebug = new ConcurrentHashMap<>();
+	/** Map with the pets instances and their owner ID. */
+	private final Map<Integer, L2PetInstance> _petsInstance = new ConcurrentHashMap<>();
 	
 	private L2WorldRegion[][] _worldRegions;
 	
-	/**
-	 * Constructor of L2World.
-	 */
+	/** Constructor of L2World. */
 	protected L2World()
 	{
-		_allPlayers = new L2TIntObjectHashMap<>();
-		_allObjects = new L2TIntObjectHashMap<>();
-		_allObjectsDebug = new L2TIntObjectHashMap<>();
-		_petsInstance = new L2TIntObjectHashMap<>();
-		
 		initRegions();
 	}
 	
 	/**
-	 * @return the current instance of L2World.
-	 */
-	public static L2World getInstance()
-	{
-		return SingletonHolder._instance;
-	}
-	
-	/**
-	 * Add L2Object object in _allObjects. <B><U> Example of use </U> :</B> <li>Withdraw an item from the warehouse, create an item</li> <li>Spawn a L2Character (PC, NPC, Pet)</li><BR>
+	 * Adds an object to the world.<br>
+	 * <B><U>Example of use</U>:</B>
+	 * <ul>
+	 * <li>Withdraw an item from the warehouse, create an item</li>
+	 * <li>Spawn a L2Character (PC, NPC, Pet)</li>
+	 * </ul>
 	 * @param object
 	 */
 	public void storeObject(L2Object object)
@@ -129,8 +113,14 @@ public final class L2World
 	}
 	
 	/**
-	 * Remove L2Object object from _allObjects of L2World. <B><U> Example of use </U> :</B> <li>Delete item from inventory, tranfer Item from inventory to warehouse</li> <li>Crystallize item</li> <li>Remove NPC/PC/Pet from the world</li><BR>
-	 * @param object L2Object to remove from _allObjects of L2World
+	 * Removes an object from the world.<br>
+	 * <B><U>Example of use</U>:</B>
+	 * <ul>
+	 * <li>Delete item from inventory, transfer Item from inventory to warehouse</li>
+	 * <li>Crystallize item</li>
+	 * <li>Remove NPC/PC/Pet from the world</li>
+	 * </ul>
+	 * @param object the object to remove
 	 */
 	public void removeObject(L2Object object)
 	{
@@ -138,77 +128,53 @@ public final class L2World
 		_allObjectsDebug.remove(object.getObjectId());
 	}
 	
-	public void removeObjects(List<L2Object> list)
-	{
-		for (L2Object o : list)
-		{
-			if (o != null)
-			{
-				_allObjects.remove(o.getObjectId());
-				_allObjectsDebug.remove(o.getObjectId());
-			}
-		}
-	}
-	
-	public void removeObjects(L2Object[] objects)
-	{
-		for (L2Object o : objects)
-		{
-			_allObjects.remove(o.getObjectId());
-			_allObjectsDebug.remove(o.getObjectId());
-		}
-	}
-	
 	/**
-	 * <B><U> Example of use </U> :</B> <li>Client packets : Action, AttackRequest, RequestJoinParty, RequestJoinPledge...</li>
-	 * @param oID Identifier of the L2Object
+	 * <B><U> Example of use</U>:</B>
+	 * <ul>
+	 * <li>Client packets : Action, AttackRequest, RequestJoinParty, RequestJoinPledge...</li>
+	 * </ul>
+	 * @param objectId Identifier of the L2Object
 	 * @return the L2Object object that belongs to an ID or null if no object found.
 	 */
-	public L2Object findObject(int oID)
+	public L2Object findObject(int objectId)
 	{
-		return _allObjects.get(oID);
+		return _allObjects.get(objectId);
 	}
 	
-	public final L2Object[] getAllVisibleObjectsArray()
+	public Collection<L2Object> getVisibleObjects()
 	{
-		return _allObjects.values(new L2Object[0]);
-	}
-	
-	public final boolean forEachObject(final TObjectProcedure<L2Object> proc)
-	{
-		return _allObjects.forEachValue(proc);
+		return _allObjects.values();
 	}
 	
 	/**
 	 * Get the count of all visible objects in world.
 	 * @return count off all L2World objects
 	 */
-	public final int getAllVisibleObjectsCount()
+	public int getVisibleObjectsCount()
 	{
 		return _allObjects.size();
 	}
 	
-	/**
-	 * @return a table containing all GMs.
-	 */
 	public List<L2PcInstance> getAllGMs()
 	{
 		return AdminTable.getInstance().getAllGms(true);
 	}
 	
-	public L2TIntObjectHashMap<L2PcInstance> getAllPlayers()
+	public Collection<L2PcInstance> getPlayers()
 	{
-		return _allPlayers;
+		return _allPlayers.values();
 	}
 	
-	public final L2PcInstance[] getAllPlayersArray()
+	/**
+	 * Gets all players sorted by the given comparator.
+	 * @param comparator the comparator
+	 * @return the players sorted by the comparator
+	 */
+	public L2PcInstance[] getPlayersSortedBy(Comparator<L2PcInstance> comparator)
 	{
-		return _allPlayers.values(new L2PcInstance[0]);
-	}
-	
-	public final boolean forEachPlayer(final TObjectProcedure<L2PcInstance> proc)
-	{
-		return _allPlayers.forEachValue(proc);
+		final L2PcInstance[] players = _allPlayers.values().toArray(new L2PcInstance[_allPlayers.values().size()]);
+		Arrays.sort(players, comparator);
+		return players;
 	}
 	
 	/**
@@ -231,12 +197,12 @@ public final class L2World
 	}
 	
 	/**
-	 * @param playerObjId Object ID of the player to get Instance
+	 * @param objectId of the player to get Instance
 	 * @return the player instance corresponding to the given object ID.
 	 */
-	public L2PcInstance getPlayer(int playerObjId)
+	public L2PcInstance getPlayer(int objectId)
 	{
-		return _allPlayers.get(playerObjId);
+		return _allPlayers.get(objectId);
 	}
 	
 	/**
@@ -290,23 +256,21 @@ public final class L2World
 	 */
 	public void addVisibleObject(L2Object object, L2WorldRegion newRegion)
 	{
-		// If selected L2Object is a L2PcIntance, add it in L2ObjectHashSet(L2PcInstance) _allPlayers of L2World
-		// XXX TODO: this code should be obsoleted by protection in putObject func...
+		// TODO: this code should be obsoleted by protection in putObject func...
 		if (object.isPlayer())
 		{
 			L2PcInstance player = object.getActingPlayer();
-			
 			if (!player.isTeleporting())
 			{
-				L2PcInstance tmp = getPlayer(player.getObjectId());
-				if (tmp != null)
+				final L2PcInstance old = getPlayer(player.getObjectId());
+				if (old != null)
 				{
 					_log.warning("Duplicate character!? Closing both characters (" + player.getName() + ")");
 					player.logout();
-					tmp.logout();
+					old.logout();
 					return;
 				}
-				addToAllPlayers(player);
+				addPlayerToWorld(player);
 			}
 		}
 		
@@ -345,21 +309,21 @@ public final class L2World
 	}
 	
 	/**
-	 * Add the L2PcInstance to _allPlayers of L2World.
-	 * @param cha
+	 * Adds the player to the world.
+	 * @param player the player to add
 	 */
-	public void addToAllPlayers(L2PcInstance cha)
+	public void addPlayerToWorld(L2PcInstance player)
 	{
-		_allPlayers.put(cha.getObjectId(), cha);
+		_allPlayers.put(player.getObjectId(), player);
 	}
 	
 	/**
-	 * Remove the L2PcInstance from _allPlayers of L2World. <B><U> Example of use </U> :</B> <li>Remove a player from the visible objects</li><BR>
-	 * @param cha
+	 * Remove the player from the world.
+	 * @param player the player to remove
 	 */
-	public void removeFromAllPlayers(L2PcInstance cha)
+	public void removeFromAllPlayers(L2PcInstance player)
 	{
-		_allPlayers.remove(cha.getObjectId());
+		_allPlayers.remove(player.getObjectId());
 	}
 	
 	/**
@@ -469,9 +433,7 @@ public final class L2World
 			return new ArrayList<>();
 		}
 		
-		int x = object.getX();
-		int y = object.getY();
-		int sqRadius = radius * radius;
+		final int sqRadius = radius * radius;
 		
 		// Create an FastList in order to contain all visible L2Object
 		List<L2Object> result = new ArrayList<>();
@@ -488,13 +450,7 @@ public final class L2World
 					continue; // skip our own character
 				}
 				
-				int x1 = _object.getX();
-				int y1 = _object.getY();
-				
-				double dx = x1 - x;
-				double dy = y1 - y;
-				
-				if (((dx * dx) + (dy * dy)) < sqRadius)
+				if (sqRadius > object.calculateDistance(_object, false, true))
 				{
 					result.add(_object);
 				}
@@ -518,10 +474,7 @@ public final class L2World
 			return new ArrayList<>();
 		}
 		
-		int x = object.getX();
-		int y = object.getY();
-		int z = object.getZ();
-		int sqRadius = radius * radius;
+		final int sqRadius = radius * radius;
 		
 		// Create an FastList in order to contain all visible L2Object
 		List<L2Object> result = new ArrayList<>();
@@ -537,15 +490,7 @@ public final class L2World
 					continue; // skip our own character
 				}
 				
-				int x1 = _object.getX();
-				int y1 = _object.getY();
-				int z1 = _object.getZ();
-				
-				long dx = x1 - x;
-				long dy = y1 - y;
-				long dz = z1 - z;
-				
-				if (((dx * dx) + (dy * dy) + (dz * dz)) < sqRadius)
+				if (sqRadius > object.calculateDistance(_object, true, true))
 				{
 					result.add(_object);
 				}
@@ -564,7 +509,6 @@ public final class L2World
 	public List<L2Playable> getVisiblePlayable(L2Object object)
 	{
 		L2WorldRegion reg = object.getWorldRegion();
-		
 		if (reg == null)
 		{
 			return null;
@@ -604,7 +548,7 @@ public final class L2World
 	 * @param point position of the object
 	 * @return
 	 */
-	public L2WorldRegion getRegion(Point3D point)
+	public L2WorldRegion getRegion(Location point)
 	{
 		return _worldRegions[(point.getX() >> SHIFT_BY) + OFFSET_X][(point.getY() >> SHIFT_BY) + OFFSET_Y];
 	}
@@ -618,7 +562,7 @@ public final class L2World
 	 * Returns the whole 2d array containing the world regions used by ZoneData.java to setup zones inside the world regions
 	 * @return
 	 */
-	public L2WorldRegion[][] getAllWorldRegions()
+	public L2WorldRegion[][] getWorldRegions()
 	{
 		return _worldRegions;
 	}
@@ -635,8 +579,7 @@ public final class L2World
 	}
 	
 	/**
-	 * Init each L2WorldRegion and their surrounding table. <B><U> Concept</U> :</B> All surrounding L2WorldRegion are identified in <B>_surroundingRegions</B> of the selected L2WorldRegion in order to scan a large area around a L2Object <B><U> Example of use </U> :</B> <li>Constructor of L2World</li>
-	 * <BR>
+	 * Initialize the world regions.
 	 */
 	private void initRegions()
 	{
@@ -685,6 +628,14 @@ public final class L2World
 			}
 		}
 		_log.info("All visible NPC's deleted.");
+	}
+	
+	/**
+	 * @return the current instance of L2World
+	 */
+	public static L2World getInstance()
+	{
+		return SingletonHolder._instance;
 	}
 	
 	private static class SingletonHolder

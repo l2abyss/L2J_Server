@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,48 +18,41 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 
+/**
+ * MagicSkillLaunched server packet implementation.
+ * @author UnAfraid
+ */
 public class MagicSkillLaunched extends L2GameServerPacket
 {
 	private final int _charObjId;
 	private final int _skillId;
 	private final int _skillLevel;
-	private int _numberOfTargets;
-	private L2Object[] _targets;
-	private final int _singleTargetId;
+	private final List<L2Object> _targets;
 	
-	public MagicSkillLaunched(L2Character cha, int skillId, int skillLevel, L2Object[] targets)
+	public MagicSkillLaunched(L2Character cha, int skillId, int skillLevel, L2Object... targets)
 	{
 		_charObjId = cha.getObjectId();
 		_skillId = skillId;
 		_skillLevel = skillLevel;
 		
-		if (targets != null)
+		//@formatter:off
+		if (targets == null)
 		{
-			_numberOfTargets = targets.length;
-			_targets = targets;
+			targets = new L2Object[] { cha };
 		}
-		else
-		{
-			_numberOfTargets = 1;
-			L2Object[] objs =
-			{
-				cha
-			};
-			_targets = objs;
-		}
-		_singleTargetId = 0;
+		//@formatter:on
+		_targets = Arrays.asList(targets);
 	}
 	
 	public MagicSkillLaunched(L2Character cha, int skillId, int skillLevel)
 	{
-		_charObjId = cha.getObjectId();
-		_skillId = skillId;
-		_skillLevel = skillLevel;
-		_numberOfTargets = 1;
-		_singleTargetId = cha.getTargetId();
+		this(cha, skillId, skillId, cha);
 	}
 	
 	@Override
@@ -69,17 +62,10 @@ public class MagicSkillLaunched extends L2GameServerPacket
 		writeD(_charObjId);
 		writeD(_skillId);
 		writeD(_skillLevel);
-		writeD(_numberOfTargets); // also failed or not?
-		if ((_singleTargetId != 0) || (_numberOfTargets == 0))
+		writeD(_targets.size());
+		for (L2Object target : _targets)
 		{
-			writeD(_singleTargetId);
-		}
-		else
-		{
-			for (L2Object target : _targets)
-			{
-				writeD(target.getObjectId());
-			}
+			writeD(target.getObjectId());
 		}
 	}
 }

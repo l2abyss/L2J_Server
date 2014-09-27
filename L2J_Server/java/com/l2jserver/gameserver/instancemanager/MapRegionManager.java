@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,7 +18,6 @@
  */
 package com.l2jserver.gameserver.instancemanager;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,12 +25,12 @@ import java.util.Map;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import com.l2jserver.Config;
 import com.l2jserver.gameserver.SevenSigns;
 import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.model.L2MapRegion;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.Location;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -47,24 +46,10 @@ import com.l2jserver.gameserver.model.zone.type.L2RespawnZone;
 /**
  * @author Nyaran
  */
-public class MapRegionManager extends DocumentParser
+public final class MapRegionManager extends DocumentParser
 {
 	private static final Map<String, L2MapRegion> _regions = new HashMap<>();
 	private static final String defaultRespawn = "talking_island_town";
-	
-	public static enum TeleportWhereType
-	{
-		Castle,
-		Castle_banish,
-		ClanHall,
-		ClanHall_banish,
-		SiegeFlag,
-		Town,
-		Fortress,
-		Fortress_banish,
-		Territory,
-		Territory_banish
-	}
 	
 	protected MapRegionManager()
 	{
@@ -75,7 +60,7 @@ public class MapRegionManager extends DocumentParser
 	public void load()
 	{
 		_regions.clear();
-		parseDirectory(new File(Config.DATAPACK_ROOT, "data/mapregion/"));
+		parseDatapackDirectory("data/mapregion", false);
 		_log.info(getClass().getSimpleName() + ": Loaded " + _regions.size() + " map regions.");
 	}
 	
@@ -100,9 +85,9 @@ public class MapRegionManager extends DocumentParser
 						attrs = d.getAttributes();
 						name = attrs.getNamedItem("name").getNodeValue();
 						town = attrs.getNamedItem("town").getNodeValue();
-						locId = parseInt(attrs, "locId");
-						castle = parseInt(attrs, "castle");
-						bbs = parseInt(attrs, "bbs");
+						locId = parseInteger(attrs, "locId");
+						castle = parseInteger(attrs, "castle");
+						bbs = parseInteger(attrs, "bbs");
 						
 						L2MapRegion region = new L2MapRegion(name, town, locId, castle, bbs);
 						for (Node c = d.getFirstChild(); c != null; c = c.getNextSibling())
@@ -110,13 +95,13 @@ public class MapRegionManager extends DocumentParser
 							attrs = c.getAttributes();
 							if ("respawnPoint".equalsIgnoreCase(c.getNodeName()))
 							{
-								int spawnX = parseInt(attrs, "X");
-								int spawnY = parseInt(attrs, "Y");
-								int spawnZ = parseInt(attrs, "Z");
+								int spawnX = parseInteger(attrs, "X");
+								int spawnY = parseInteger(attrs, "Y");
+								int spawnZ = parseInteger(attrs, "Z");
 								
-								boolean other = parseBoolean(attrs, "isOther");
-								boolean chaotic = parseBoolean(attrs, "isChaotic");
-								boolean banish = parseBoolean(attrs, "isBanish");
+								boolean other = parseBoolean(attrs, "isOther", false);
+								boolean chaotic = parseBoolean(attrs, "isChaotic", false);
+								boolean banish = parseBoolean(attrs, "isBanish", false);
 								
 								if (other)
 								{
@@ -137,7 +122,7 @@ public class MapRegionManager extends DocumentParser
 							}
 							else if ("map".equalsIgnoreCase(c.getNodeName()))
 							{
-								region.addMap(parseInt(attrs, "X"), parseInt(attrs, "Y"));
+								region.addMap(parseInteger(attrs, "X"), parseInteger(attrs, "Y"));
 							}
 							else if ("banned".equalsIgnoreCase(c.getNodeName()))
 							{
@@ -261,9 +246,9 @@ public class MapRegionManager extends DocumentParser
 	{
 		Location loc;
 		
-		if (activeChar instanceof L2PcInstance)
+		if (activeChar.isPlayer())
 		{
-			L2PcInstance player = ((L2PcInstance) activeChar);
+			final L2PcInstance player = activeChar.getActingPlayer();
 			
 			Castle castle = null;
 			Fort fort = null;
@@ -272,7 +257,7 @@ public class MapRegionManager extends DocumentParser
 			if ((player.getClan() != null) && !player.isFlyingMounted() && !player.isFlying()) // flying players in gracia cant use teleports to aden continent
 			{
 				// If teleport to clan hall
-				if (teleportWhere == TeleportWhereType.ClanHall)
+				if (teleportWhere == TeleportWhereType.CLANHALL)
 				{
 					clanhall = ClanHallManager.getInstance().getAbstractHallByOwner(player.getClan());
 					if (clanhall != null)
@@ -290,7 +275,7 @@ public class MapRegionManager extends DocumentParser
 				}
 				
 				// If teleport to castle
-				if (teleportWhere == TeleportWhereType.Castle)
+				if (teleportWhere == TeleportWhereType.CASTLE)
 				{
 					castle = CastleManager.getInstance().getCastleByOwner(player.getClan());
 					// Otherwise check if player is on castle or fortress ground
@@ -298,24 +283,24 @@ public class MapRegionManager extends DocumentParser
 					if (castle == null)
 					{
 						castle = CastleManager.getInstance().getCastle(player);
-						if (!((castle != null) && castle.getSiege().getIsInProgress() && (castle.getSiege().getDefenderClan(player.getClan()) != null)))
+						if (!((castle != null) && castle.getSiege().isInProgress() && (castle.getSiege().getDefenderClan(player.getClan()) != null)))
 						{
 							castle = null;
 						}
 					}
 					
-					if ((castle != null) && (castle.getCastleId() > 0))
+					if ((castle != null) && (castle.getResidenceId() > 0))
 					{
 						if (player.getKarma() > 0)
 						{
-							return castle.getCastleZone().getChaoticSpawnLoc();
+							return castle.getResidenceZone().getChaoticSpawnLoc();
 						}
-						return castle.getCastleZone().getSpawnLoc();
+						return castle.getResidenceZone().getSpawnLoc();
 					}
 				}
 				
 				// If teleport to fortress
-				if (teleportWhere == TeleportWhereType.Fortress)
+				if (teleportWhere == TeleportWhereType.FORTRESS)
 				{
 					fort = FortManager.getInstance().getFortByOwner(player.getClan());
 					// Otherwise check if player is on castle or fortress ground
@@ -323,59 +308,57 @@ public class MapRegionManager extends DocumentParser
 					if (fort == null)
 					{
 						fort = FortManager.getInstance().getFort(player);
-						if (!((fort != null) && fort.getSiege().getIsInProgress() && (fort.getOwnerClan() == player.getClan())))
+						if (!((fort != null) && fort.getSiege().isInProgress() && (fort.getOwnerClan() == player.getClan())))
 						{
 							fort = null;
 						}
 					}
 					
-					if ((fort != null) && (fort.getFortId() > 0))
+					if ((fort != null) && (fort.getResidenceId() > 0))
 					{
 						if (player.getKarma() > 0)
 						{
-							return fort.getFortZone().getChaoticSpawnLoc();
+							return fort.getResidenceZone().getChaoticSpawnLoc();
 						}
-						return fort.getFortZone().getSpawnLoc();
+						return fort.getResidenceZone().getSpawnLoc();
 					}
 				}
 				
 				// If teleport to SiegeHQ
-				if (teleportWhere == TeleportWhereType.SiegeFlag)
+				if (teleportWhere == TeleportWhereType.SIEGEFLAG)
 				{
 					castle = CastleManager.getInstance().getCastle(player);
 					fort = FortManager.getInstance().getFort(player);
 					clanhall = ClanHallManager.getInstance().getNearbyAbstractHall(activeChar.getX(), activeChar.getY(), 10000);
-					L2SiegeFlagInstance tw_flag = TerritoryWarManager.getInstance().getFlagForClan(player.getClan());
+					L2SiegeFlagInstance tw_flag = TerritoryWarManager.getInstance().getHQForClan(player.getClan());
 					if (tw_flag != null)
 					{
-						return new Location(tw_flag.getX(), tw_flag.getY(), tw_flag.getZ());
+						return tw_flag.getLocation();
 					}
 					else if (castle != null)
 					{
-						if (castle.getSiege().getIsInProgress())
+						if (castle.getSiege().isInProgress())
 						{
 							// Check if player's clan is attacker
 							List<L2Npc> flags = castle.getSiege().getFlag(player.getClan());
 							if ((flags != null) && !flags.isEmpty())
 							{
 								// Spawn to flag - Need more work to get player to the nearest flag
-								L2Npc flag = flags.get(0);
-								return new Location(flag.getX(), flag.getY(), flag.getZ());
+								return flags.get(0).getLocation();
 							}
 						}
 						
 					}
 					else if (fort != null)
 					{
-						if (fort.getSiege().getIsInProgress())
+						if (fort.getSiege().isInProgress())
 						{
 							// Check if player's clan is attacker
 							List<L2Npc> flags = fort.getSiege().getFlag(player.getClan());
 							if ((flags != null) && !flags.isEmpty())
 							{
 								// Spawn to flag - Need more work to get player to the nearest flag
-								L2Npc flag = flags.get(0);
-								return new Location(flag.getX(), flag.getY(), flag.getZ());
+								return flags.get(0).getLocation();
 							}
 						}
 					}
@@ -385,35 +368,9 @@ public class MapRegionManager extends DocumentParser
 						List<L2Npc> flags = sHall.getSiege().getFlag(player.getClan());
 						if ((flags != null) && !flags.isEmpty())
 						{
-							L2Npc flag = flags.get(0);
-							return new Location(flag.getX(), flag.getY(), flag.getZ());
+							return flags.get(0).getLocation();
 						}
 					}
-				}
-			}
-			
-			if (teleportWhere == TeleportWhereType.Castle_banish)
-			{
-				castle = CastleManager.getInstance().getCastle(player);
-				if (castle != null)
-				{
-					return castle.getCastleZone().getBanishSpawnLoc();
-				}
-			}
-			else if (teleportWhere == TeleportWhereType.Fortress_banish)
-			{
-				fort = FortManager.getInstance().getFort(activeChar);
-				if (fort != null)
-				{
-					return fort.getFortZone().getBanishSpawnLoc();
-				}
-			}
-			else if (teleportWhere == TeleportWhereType.ClanHall_banish)
-			{
-				clanhall = ClanHallManager.getInstance().getClanHall(activeChar);
-				if (clanhall != null)
-				{
-					return clanhall.getZone().getBanishSpawnLoc();
 				}
 			}
 			
@@ -443,12 +400,12 @@ public class MapRegionManager extends DocumentParser
 			castle = CastleManager.getInstance().getCastle(player);
 			if (castle != null)
 			{
-				if (castle.getSiege().getIsInProgress())
+				if (castle.getSiege().isInProgress())
 				{
 					// Check if player's clan is participating
 					if ((castle.getSiege().checkIsDefender(player.getClan()) || castle.getSiege().checkIsAttacker(player.getClan())) && (SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE) == SevenSigns.CABAL_DAWN))
 					{
-						return castle.getCastleZone().getOtherSpawnLoc();
+						return castle.getResidenceZone().getOtherSpawnLoc();
 					}
 				}
 			}
@@ -518,6 +475,10 @@ public class MapRegionManager extends DocumentParser
 		return _regions.get(regionName);
 	}
 	
+	/**
+	 * Gets the single instance of {@code MapRegionManager}.
+	 * @return single instance of {@code MapRegionManager}
+	 */
 	public static MapRegionManager getInstance()
 	{
 		return SingletonHolder._instance;

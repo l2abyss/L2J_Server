@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,11 +20,9 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
-import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.actor.position.PcPosition;
-import com.l2jserver.gameserver.model.skills.L2Skill;
-import com.l2jserver.gameserver.model.skills.L2SkillType;
+import com.l2jserver.gameserver.model.effects.L2EffectType;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.targets.L2TargetType;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -56,7 +54,7 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 		}
 		
 		// Get the level of the used skill
-		L2Skill skill = activeChar.getKnownSkill(_magicId);
+		Skill skill = activeChar.getKnownSkill(_magicId);
 		if (skill == null)
 		{
 			// Player doesn't know this skill, maybe it's the display Id.
@@ -77,21 +75,14 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 			return;
 		}
 		
-		if ((activeChar.isTransformed() || activeChar.isInStance()) && !activeChar.containsAllowedTransformSkill(skill.getId()))
+		if ((activeChar.isTransformed() || activeChar.isInStance()) && !activeChar.hasTransformSkill(skill.getId()))
 		{
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
 			return;
 		}
 		
-		if (activeChar.isDebug())
-		{
-			_log.fine("Skill:" + skill.getName() + " level:" + skill.getLevel() + " passive:" + skill.isPassive());
-			_log.fine("Range:" + skill.getCastRange() + " targettype:" + skill.getTargetType() + " power:" + skill.getPower());
-			_log.fine("Reusedelay:" + skill.getReuseDelay() + " hittime:" + skill.getHitTime());
-		}
-		
 		// If Alternate rule Karma punishment is set to true, forbid skill Return to player with Karma
-		if ((skill.getSkillType() == L2SkillType.RECALL) && !Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && (activeChar.getKarma() > 0))
+		if (!Config.ALT_GAME_KARMA_PLAYER_CAN_TELEPORT && (activeChar.getKarma() > 0) && skill.hasEffectType(L2EffectType.TELEPORT))
 		{
 			return;
 		}
@@ -102,15 +93,13 @@ public final class RequestMagicSkillUse extends L2GameClientPacket
 			return;
 		}
 		
-		activeChar.useMagic(skill, _ctrlPressed, _shiftPressed);
-		
 		// Stop if use self-buff (except if on AirShip or Boat).
-		if (((skill.getSkillType() == L2SkillType.BUFF) && (skill.getTargetType() == L2TargetType.SELF)) && (!activeChar.isInAirShip() || !activeChar.isInBoat()))
+		if ((skill.isContinuous() && !skill.isDebuff() && (skill.getTargetType() == L2TargetType.SELF)) && (!activeChar.isInAirShip() || !activeChar.isInBoat()))
 		{
-			final PcPosition charPos = activeChar.getPosition();
-			final L2CharPosition stopPos = new L2CharPosition(charPos.getX(), charPos.getY(), charPos.getZ(), charPos.getHeading());
-			activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, stopPos);
+			activeChar.getAI().setIntention(CtrlIntention.AI_INTENTION_MOVE_TO, activeChar.getLocation());
 		}
+		
+		activeChar.useMagic(skill, _ctrlPressed, _shiftPressed);
 	}
 	
 	@Override

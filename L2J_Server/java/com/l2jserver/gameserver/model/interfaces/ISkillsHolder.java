@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,18 +20,18 @@ package com.l2jserver.gameserver.model.interfaces;
 
 import java.util.Map;
 
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * @author UnAfraid
  */
 public interface ISkillsHolder
 {
-	public Map<Integer, L2Skill> getSkills();
+	public Map<Integer, Skill> getSkills();
 	
-	public L2Skill addSkill(L2Skill skill);
+	public Skill addSkill(Skill skill);
 	
-	public L2Skill getKnownSkill(int skillId);
+	public Skill getKnownSkill(int skillId);
 	
 	public int getSkillLevel(int skillId);
 }

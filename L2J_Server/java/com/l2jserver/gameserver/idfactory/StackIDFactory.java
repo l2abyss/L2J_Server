@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -48,7 +48,7 @@ public class StackIDFactory extends IdFactory
 		{
 			// con.createStatement().execute("drop table if exists tmp_obj_id");
 			
-			int[] tmp_obj_ids = extractUsedObjectIDTable();
+			Integer[] tmp_obj_ids = extractUsedObjectIDTable();
 			if (tmp_obj_ids.length > 0)
 			{
 				_curOID = tmp_obj_ids[tmp_obj_ids.length - 1];
@@ -71,7 +71,7 @@ public class StackIDFactory extends IdFactory
 		}
 	}
 	
-	private int insertUntil(int[] tmp_obj_ids, int idx, int N, Connection con) throws SQLException
+	private int insertUntil(Integer[] tmp_obj_ids, int idx, int N, Connection con) throws SQLException
 	{
 		int id = tmp_obj_ids[idx];
 		if (id == _tempOID)

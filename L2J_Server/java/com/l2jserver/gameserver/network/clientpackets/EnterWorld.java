@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,19 +18,15 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import java.io.UnsupportedEncodingException;
-
-import javolution.util.FastList;
+import java.util.Base64;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.LoginServerThread;
 import com.l2jserver.gameserver.SevenSigns;
-import com.l2jserver.gameserver.TaskPriority;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.communitybbs.Manager.RegionBBSManager;
 import com.l2jserver.gameserver.datatables.AdminTable;
-import com.l2jserver.gameserver.datatables.SkillTable;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
@@ -42,15 +38,14 @@ import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.MailManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.instancemanager.PetitionManager;
-import com.l2jserver.gameserver.instancemanager.QuestManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.PcCondOverride;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.instance.L2ClassMasterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Couple;
@@ -64,6 +59,7 @@ import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
+import com.l2jserver.gameserver.model.skills.CommonSkill;
 import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
@@ -92,8 +88,6 @@ import com.l2jserver.gameserver.network.serverpackets.QuestList;
 import com.l2jserver.gameserver.network.serverpackets.ShortCutInit;
 import com.l2jserver.gameserver.network.serverpackets.SkillCoolTime;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerSpawnListener;
-import com.l2jserver.util.Base64;
 
 /**
  * Enter World Packet Handler
@@ -108,14 +102,7 @@ public class EnterWorld extends L2GameClientPacket
 {
 	private static final String _C__11_ENTERWORLD = "[C] 11 EnterWorld";
 	
-	private static FastList<PlayerSpawnListener> listeners = new FastList<PlayerSpawnListener>().shared();
-	
 	private final int[][] tracert = new int[5][4];
-	
-	public TaskPriority getPriority()
-	{
-		return TaskPriority.PR_URGENT;
-	}
 	
 	@Override
 	protected void readImpl()
@@ -139,8 +126,7 @@ public class EnterWorld extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		L2PcInstance activeChar = getClient().getActiveChar();
-		
+		final L2PcInstance activeChar = getClient().getActiveChar();
 		if (activeChar == null)
 		{
 			_log.warning("EnterWorld failed! activeChar returned 'null'.");
@@ -190,7 +176,7 @@ public class EnterWorld extends L2GameClientPacket
 			
 			if (Config.GM_STARTUP_INVISIBLE && AdminTable.getInstance().hasAccess("admin_invisible", activeChar.getAccessLevel()))
 			{
-				activeChar.getAppearance().setInvisible();
+				activeChar.setInvisible(true);
 			}
 			
 			if (Config.GM_STARTUP_SILENCE && AdminTable.getInstance().hasAccess("admin_silence", activeChar.getAccessLevel()))
@@ -253,7 +239,7 @@ public class EnterWorld extends L2GameClientPacket
 			
 			for (Siege siege : SiegeManager.getInstance().getSieges())
 			{
-				if (!siege.getIsInProgress())
+				if (!siege.isInProgress())
 				{
 					continue;
 				}
@@ -261,19 +247,19 @@ public class EnterWorld extends L2GameClientPacket
 				if (siege.checkIsAttacker(activeChar.getClan()))
 				{
 					activeChar.setSiegeState((byte) 1);
-					activeChar.setSiegeSide(siege.getCastle().getCastleId());
+					activeChar.setSiegeSide(siege.getCastle().getResidenceId());
 				}
 				
 				else if (siege.checkIsDefender(activeChar.getClan()))
 				{
 					activeChar.setSiegeState((byte) 2);
-					activeChar.setSiegeSide(siege.getCastle().getCastleId());
+					activeChar.setSiegeSide(siege.getCastle().getResidenceId());
 				}
 			}
 			
 			for (FortSiege siege : FortSiegeManager.getInstance().getSieges())
 			{
-				if (!siege.getIsInProgress())
+				if (!siege.isInProgress())
 				{
 					continue;
 				}
@@ -281,13 +267,13 @@ public class EnterWorld extends L2GameClientPacket
 				if (siege.checkIsAttacker(activeChar.getClan()))
 				{
 					activeChar.setSiegeState((byte) 1);
-					activeChar.setSiegeSide(siege.getFort().getFortId());
+					activeChar.setSiegeSide(siege.getFort().getResidenceId());
 				}
 				
 				else if (siege.checkIsDefender(activeChar.getClan()))
 				{
 					activeChar.setSiegeState((byte) 2);
-					activeChar.setSiegeSide(siege.getFort().getFortId());
+					activeChar.setSiegeSide(siege.getFort().getResidenceId());
 				}
 			}
 			
@@ -340,18 +326,18 @@ public class EnterWorld extends L2GameClientPacket
 			{
 				if (cabal == SevenSigns.getInstance().getSealOwner(SevenSigns.SEAL_STRIFE))
 				{
-					activeChar.addSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
+					activeChar.addSkill(CommonSkill.THE_VICTOR_OF_WAR.getSkill());
 				}
 				else
 				{
-					activeChar.addSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
+					activeChar.addSkill(CommonSkill.THE_VANQUISHED_OF_WAR.getSkill());
 				}
 			}
 		}
 		else
 		{
-			activeChar.removeSkill(SkillTable.FrequentSkill.THE_VICTOR_OF_WAR.getSkill());
-			activeChar.removeSkill(SkillTable.FrequentSkill.THE_VANQUISHED_OF_WAR.getSkill());
+			activeChar.removeSkill(CommonSkill.THE_VICTOR_OF_WAR.getSkill());
+			activeChar.removeSkill(CommonSkill.THE_VANQUISHED_OF_WAR.getSkill());
 		}
 		
 		if (Config.ENABLE_VITALITY && Config.RECOVER_VITALITY_ON_RECONNECT)
@@ -383,7 +369,7 @@ public class EnterWorld extends L2GameClientPacket
 		sendPacket(new ShortCutInit(activeChar));
 		
 		// Send Action list
-		activeChar.sendPacket(ExBasicActionList.getStaticPacket(activeChar));
+		activeChar.sendPacket(ExBasicActionList.STATIC_PACKET);
 		
 		// Send Skill list
 		activeChar.sendSkillList();
@@ -398,13 +384,6 @@ public class EnterWorld extends L2GameClientPacket
 			loadTutorial(activeChar);
 		}
 		
-		for (Quest quest : QuestManager.getInstance().getAllManagedScripts())
-		{
-			if ((quest != null) && quest.getOnEnterWorld())
-			{
-				quest.notifyEnterWorld(activeChar);
-			}
-		}
 		activeChar.sendPacket(new QuestList());
 		
 		if (Config.PLAYER_SPAWN_PROTECTION > 0)
@@ -455,8 +434,8 @@ public class EnterWorld extends L2GameClientPacket
 		
 		activeChar.sendPacket(SystemMessageId.WELCOME_TO_LINEAGE);
 		
-		activeChar.sendMessage(getText("VGhpcyBTZXJ2ZXIgdXNlcyBMMkosIGEgUHJvamVjdCBmb3VuZGVkIGJ5IEwyQ2hlZg==" + Config.EOL));
-		activeChar.sendMessage(getText("YW5kIGRldmVsb3BlZCBieSB0aGUgTDJKIERldiBUZWFtIGF0IHd3dy5sMmpzZXJ2ZXIuY29t" + Config.EOL));
+		activeChar.sendMessage(getText("VGhpcyBTZXJ2ZXIgdXNlcyBMMkosIGEgUHJvamVjdCBmb3VuZGVkIGJ5IEwyQ2hlZg=="));
+		activeChar.sendMessage(getText("YW5kIGRldmVsb3BlZCBieSBMMkogVGVhbSBhdCB3d3cubDJqc2VydmVyLmNvbQ=="));
 		
 		if (Config.DISPLAY_SERVER_VERSION)
 		{
@@ -470,14 +449,15 @@ public class EnterWorld extends L2GameClientPacket
 				activeChar.sendMessage(getText("TDJKIERhdGFQYWNrIFZlcnNpb246") + " " + Config.DATAPACK_VERSION);
 			}
 		}
-		activeChar.sendMessage(getText("Q29weXJpZ2h0IDIwMDQtMjAxMg==" + Config.EOL));
+		activeChar.sendMessage(getText("Q29weXJpZ2h0IDIwMDQtMjAxNA=="));
+		activeChar.sendMessage(getText("VGhhbmsgeW91IGZvciAxMCB5ZWFycyE="));
 		
 		SevenSigns.getInstance().sendCurrentPeriodMsg(activeChar);
 		Announcements.getInstance().showAnnouncements(activeChar);
 		
 		if (showClanNotice)
 		{
-			NpcHtmlMessage notice = new NpcHtmlMessage(1);
+			final NpcHtmlMessage notice = new NpcHtmlMessage();
 			notice.setFile(activeChar.getHtmlPrefix(), "data/html/clanNotice.htm");
 			notice.replace("%clan_name%", activeChar.getClan().getName());
 			notice.replace("%notice_text%", activeChar.getClan().getNotice());
@@ -489,7 +469,7 @@ public class EnterWorld extends L2GameClientPacket
 			String serverNews = HtmCache.getInstance().getHtm(activeChar.getHtmlPrefix(), "data/html/servnews.htm");
 			if (serverNews != null)
 			{
-				sendPacket(new NpcHtmlMessage(1, serverNews));
+				sendPacket(new NpcHtmlMessage(serverNews));
 			}
 		}
 		
@@ -549,7 +529,7 @@ public class EnterWorld extends L2GameClientPacket
 			
 			if (fort != null)
 			{
-				FortSiegeManager.getInstance().dropCombatFlag(activeChar, fort.getFortId());
+				FortSiegeManager.getInstance().dropCombatFlag(activeChar, fort.getResidenceId());
 			}
 			else
 			{
@@ -563,7 +543,7 @@ public class EnterWorld extends L2GameClientPacket
 		// Actually should be checked for inside castle only?
 		if (!activeChar.canOverrideCond(PcCondOverride.ZONE_CONDITIONS) && activeChar.isInsideZone(ZoneId.SIEGE) && (!activeChar.isInSiege() || (activeChar.getSiegeState() < 2)))
 		{
-			activeChar.teleToLocation(MapRegionManager.TeleportWhereType.Town);
+			activeChar.teleToLocation(TeleportWhereType.TOWN);
 		}
 		
 		if (Config.ALLOW_MAIL)
@@ -603,11 +583,6 @@ public class EnterWorld extends L2GameClientPacket
 		{
 			activeChar.sendPacket(ExNotifyPremiumItem.STATIC_PACKET);
 		}
-		
-		for (PlayerSpawnListener listener : listeners)
-		{
-			listener.onSpawn(activeChar);
-		}
 	}
 	
 	/**
@@ -615,11 +590,11 @@ public class EnterWorld extends L2GameClientPacket
 	 */
 	private void engage(L2PcInstance cha)
 	{
-		int _chaid = cha.getObjectId();
+		int chaId = cha.getObjectId();
 		
 		for (Couple cl : CoupleManager.getInstance().getCouples())
 		{
-			if ((cl.getPlayer1Id() == _chaid) || (cl.getPlayer2Id() == _chaid))
+			if ((cl.getPlayer1Id() == chaId) || (cl.getPlayer2Id() == chaId))
 			{
 				if (cl.getMaried())
 				{
@@ -628,7 +603,7 @@ public class EnterWorld extends L2GameClientPacket
 				
 				cha.setCoupleId(cl.getId());
 				
-				if (cl.getPlayer1Id() == _chaid)
+				if (cl.getPlayer1Id() == chaId)
 				{
 					cha.setPartnerId(cl.getPlayer2Id());
 				}
@@ -646,24 +621,13 @@ public class EnterWorld extends L2GameClientPacket
 	 */
 	private void notifyPartner(L2PcInstance cha, int partnerId)
 	{
-		if (cha.getPartnerId() != 0)
+		int objId = cha.getPartnerId();
+		if (objId != 0)
 		{
-			int objId = cha.getPartnerId();
-			
-			try
+			final L2PcInstance partner = L2World.getInstance().getPlayer(objId);
+			if (partner != null)
 			{
-				L2PcInstance partner = L2World.getInstance().getPlayer(objId);
-				
-				if (partner != null)
-				{
-					partner.sendMessage("Your Partner has logged in.");
-				}
-				
-				partner = null;
-			}
-			catch (ClassCastException cce)
-			{
-				_log.warning("Wedding Error: ID " + objId + " is now owned by a(n) " + L2World.getInstance().findObject(objId).getClass().getSimpleName());
+				partner.sendMessage("Your Partner has logged in.");
 			}
 		}
 	}
@@ -673,16 +637,14 @@ public class EnterWorld extends L2GameClientPacket
 	 */
 	private void notifyClanMembers(L2PcInstance activeChar)
 	{
-		L2Clan clan = activeChar.getClan();
-		
-		// This null check may not be needed anymore since notifyClanMembers is called from within a null check already. Please remove if we're certain it's ok to do so.
+		final L2Clan clan = activeChar.getClan();
 		if (clan != null)
 		{
 			clan.getClanMember(activeChar.getObjectId()).setPlayerInstance(activeChar);
-			SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.CLAN_MEMBER_S1_LOGGED_IN);
+			
+			final SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.CLAN_MEMBER_S1_LOGGED_IN);
 			msg.addString(activeChar.getName());
 			clan.broadcastToOtherOnlineMembers(msg, activeChar);
-			msg = null;
 			clan.broadcastToOtherOnlineMembers(new PledgeShowMemberListUpdate(activeChar), activeChar);
 		}
 	}
@@ -694,22 +656,20 @@ public class EnterWorld extends L2GameClientPacket
 	{
 		if (activeChar.getSponsor() != 0)
 		{
-			L2PcInstance sponsor = L2World.getInstance().getPlayer(activeChar.getSponsor());
-			
+			final L2PcInstance sponsor = L2World.getInstance().getPlayer(activeChar.getSponsor());
 			if (sponsor != null)
 			{
-				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.YOUR_APPRENTICE_S1_HAS_LOGGED_IN);
+				final SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.YOUR_APPRENTICE_S1_HAS_LOGGED_IN);
 				msg.addString(activeChar.getName());
 				sponsor.sendPacket(msg);
 			}
 		}
 		else if (activeChar.getApprentice() != 0)
 		{
-			L2PcInstance apprentice = L2World.getInstance().getPlayer(activeChar.getApprentice());
-			
+			final L2PcInstance apprentice = L2World.getInstance().getPlayer(activeChar.getApprentice());
 			if (apprentice != null)
 			{
-				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.YOUR_SPONSOR_C1_HAS_LOGGED_IN);
+				final SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.YOUR_SPONSOR_C1_HAS_LOGGED_IN);
 				msg.addString(activeChar.getName());
 				apprentice.sendPacket(msg);
 			}
@@ -722,21 +682,12 @@ public class EnterWorld extends L2GameClientPacket
 	 */
 	private String getText(String string)
 	{
-		try
-		{
-			String result = new String(Base64.decode(string), "UTF-8");
-			return result;
-		}
-		catch (UnsupportedEncodingException e)
-		{
-			return null;
-		}
+		return new String(Base64.getDecoder().decode(string));
 	}
 	
 	private void loadTutorial(L2PcInstance player)
 	{
-		QuestState qs = player.getQuestState("255_Tutorial");
-		
+		final QuestState qs = player.getQuestState("255_Tutorial");
 		if (qs != null)
 		{
 			qs.getQuest().notifyEvent("UC", null, player);
@@ -753,27 +704,5 @@ public class EnterWorld extends L2GameClientPacket
 	protected boolean triggersOnActionRequest()
 	{
 		return false;
-	}
-	
-	// Player spawn listeners
-	/**
-	 * Adds a spawn listener
-	 * @param listener
-	 */
-	public static void addSpawnListener(PlayerSpawnListener listener)
-	{
-		if (!listeners.contains(listener))
-		{
-			listeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a spawn listener
-	 * @param listener
-	 */
-	public static void removeSpawnListener(PlayerSpawnListener listener)
-	{
-		listeners.remove(listener);
 	}
 }

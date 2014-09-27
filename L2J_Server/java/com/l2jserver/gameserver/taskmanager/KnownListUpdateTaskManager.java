@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -29,7 +29,6 @@ import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
-import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.instance.L2GuardInstance;
@@ -63,7 +62,7 @@ public class KnownListUpdateTaskManager
 			try
 			{
 				boolean failed;
-				for (L2WorldRegion regions[] : L2World.getInstance().getAllWorldRegions())
+				for (L2WorldRegion regions[] : L2World.getInstance().getWorldRegions())
 				{
 					for (L2WorldRegion r : regions) // go through all world regions
 					{
@@ -107,57 +106,46 @@ public class KnownListUpdateTaskManager
 	
 	public void updateRegion(L2WorldRegion region, boolean fullUpdate, boolean forgetObjects)
 	{
-		// synchronized (syncObject)
+		Collection<L2Object> vObj = region.getVisibleObjects().values();
+		for (L2Object object : vObj) // and for all members in region
 		{
-			Collection<L2Object> vObj = region.getVisibleObjects().values();
-			// synchronized (region.getVisibleObjects())
+			if ((object == null) || !object.isVisible())
 			{
-				for (L2Object object : vObj) // and for all members in region
+				continue; // skip dying objects
+			}
+			
+			// Some mobs need faster knownlist update
+			final boolean aggro = (Config.GUARD_ATTACK_AGGRO_MOB && (object instanceof L2GuardInstance));
+			
+			if (forgetObjects)
+			{
+				object.getKnownList().forgetObjects(aggro || fullUpdate);
+				continue;
+			}
+			for (L2WorldRegion regi : region.getSurroundingRegions())
+			{
+				if ((object instanceof L2Playable) || (aggro && regi.isActive()) || fullUpdate)
 				{
-					if ((object == null) || !object.isVisible())
+					Collection<L2Object> inrObj = regi.getVisibleObjects().values();
+					for (L2Object obj : inrObj)
 					{
-						continue; // skip dying objects
-					}
-					
-					// Some mobs need faster knownlist update
-					final boolean aggro = (Config.GUARD_ATTACK_AGGRO_MOB && (object instanceof L2GuardInstance)) || ((object instanceof L2Attackable) && (((L2Attackable) object).getEnemyClan() != null));
-					
-					if (forgetObjects)
-					{
-						object.getKnownList().forgetObjects(aggro || fullUpdate);
-						continue;
-					}
-					for (L2WorldRegion regi : region.getSurroundingRegions())
-					{
-						if ((object instanceof L2Playable) || (aggro && regi.isActive()) || fullUpdate)
+						if (obj != object)
 						{
-							Collection<L2Object> inrObj = regi.getVisibleObjects().values();
-							// synchronized (regi.getVisibleObjects())
-							{
-								for (L2Object _object : inrObj)
-								{
-									if (_object != object)
-									{
-										object.getKnownList().addKnownObject(_object);
-									}
-								}
-							}
+							object.getKnownList().addKnownObject(obj);
 						}
-						else if (object instanceof L2Character)
+					}
+				}
+				else if (object instanceof L2Character)
+				{
+					if (regi.isActive())
+					{
+						Collection<L2Playable> inrPls = regi.getVisiblePlayable().values();
+						
+						for (L2Object obj : inrPls)
 						{
-							if (regi.isActive())
+							if (obj != object)
 							{
-								Collection<L2Playable> inrPls = regi.getVisiblePlayable().values();
-								// synchronized (regi.getVisiblePlayable())
-								{
-									for (L2Object _object : inrPls)
-									{
-										if (_object != object)
-										{
-											object.getKnownList().addKnownObject(_object);
-										}
-									}
-								}
+								object.getKnownList().addKnownObject(obj);
 							}
 						}
 					}

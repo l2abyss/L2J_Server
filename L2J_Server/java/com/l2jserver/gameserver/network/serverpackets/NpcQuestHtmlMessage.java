@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,198 +18,20 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import com.l2jserver.Config;
-import com.l2jserver.gameserver.cache.HtmCache;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.enums.HtmlActionScope;
 
 /**
- * <pre>
- * the HTML parser in the client knowns these standard and non-standard tags and attributes
- * VOLUMN
- * UNKNOWN
- * UL
- * U
- * TT
- * TR
- * TITLE
- * TEXTCODE
- * TEXTAREA
- * TD
- * TABLE
- * SUP
- * SUB
- * STRIKE
- * SPIN
- * SELECT
- * RIGHT
- * PRE
- * P
- * OPTION
- * OL
- * MULTIEDIT
- * LI
- * LEFT
- * INPUT
- * IMG
- * I
- * HTML
- * H7
- * H6
- * H5
- * H4
- * H3
- * H2
- * H1
- * FONT
- * EXTEND
- * EDIT
- * COMMENT
- * COMBOBOX
- * CENTER
- * BUTTON
- * BR
- * BR1
- * BODY
- * BAR
- * ADDRESS
- * A
- * SEL
- * LIST
- * VAR
- * FORE
- * READONL
- * ROWS
- * VALIGN
- * FIXWIDTH
- * BORDERCOLORLI
- * BORDERCOLORDA
- * BORDERCOLOR
- * BORDER
- * BGCOLOR
- * BACKGROUND
- * ALIGN
- * VALU
- * READONLY
- * MULTIPLE
- * SELECTED
- * TYP
- * TYPE
- * MAXLENGTH
- * CHECKED
- * SRC
- * Y
- * X
- * QUERYDELAY
- * NOSCROLLBAR
- * IMGSRC
- * B
- * FG
- * SIZE
- * FACE
- * COLOR
- * DEFFON
- * DEFFIXEDFONT
- * WIDTH
- * VALUE
- * TOOLTIP
- * NAME
- * MIN
- * MAX
- * HEIGHT
- * DISABLED
- * ALIGN
- * MSG
- * LINK
- * HREF
- * ACTION
- * </pre>
+ * NpcQuestHtmlMessage server packet implementation.
+ * @author FBIagent
  */
-public final class NpcQuestHtmlMessage extends L2GameServerPacket
+public final class NpcQuestHtmlMessage extends AbstractHtmlPacket
 {
-	private final int _npcObjId;
-	private String _html;
-	private int _questId = 0;
+	private final int _questId;
 	
-	/**
-	 * @param npcObjId
-	 * @param questId
-	 */
 	public NpcQuestHtmlMessage(int npcObjId, int questId)
 	{
-		_npcObjId = npcObjId;
+		super(npcObjId);
 		_questId = questId;
-	}
-	
-	@Override
-	public void runImpl()
-	{
-		if (Config.BYPASS_VALIDATION)
-		{
-			buildBypassCache(getClient().getActiveChar());
-		}
-	}
-	
-	public void setHtml(String text)
-	{
-		if (!text.contains("<html>"))
-		{
-			text = "<html><body>" + text + "</body></html>";
-		}
-		
-		_html = text;
-	}
-	
-	public boolean setFile(String path)
-	{
-		String content = HtmCache.getInstance().getHtm(getClient().getActiveChar().getHtmlPrefix(), path);
-		
-		if (content == null)
-		{
-			setHtml("<html><body>My Text is missing:<br>" + path + "</body></html>");
-			_log.warning("missing html page " + path);
-			return false;
-		}
-		
-		setHtml(content);
-		return true;
-	}
-	
-	public void replace(String pattern, String value)
-	{
-		_html = _html.replaceAll(pattern, value);
-	}
-	
-	private final void buildBypassCache(L2PcInstance activeChar)
-	{
-		if (activeChar == null)
-		{
-			return;
-		}
-		
-		activeChar.clearBypass();
-		int len = _html.length();
-		for (int i = 0; i < len; i++)
-		{
-			int start = _html.indexOf("bypass -h", i);
-			int finish = _html.indexOf("\"", start);
-			
-			if ((start < 0) || (finish < 0))
-			{
-				break;
-			}
-			
-			start += 10;
-			i = finish;
-			int finish2 = _html.indexOf("$", start);
-			if ((finish2 < finish) && (finish2 > 0))
-			{
-				activeChar.addBypass2(_html.substring(start, finish2).trim());
-			}
-			else
-			{
-				activeChar.addBypass(_html.substring(start, finish).trim());
-			}
-		}
 	}
 	
 	@Override
@@ -217,8 +39,14 @@ public final class NpcQuestHtmlMessage extends L2GameServerPacket
 	{
 		writeC(0xFE);
 		writeH(0x8D);
-		writeD(_npcObjId);
-		writeS(_html);
+		writeD(getNpcObjId());
+		writeS(getHtml());
 		writeD(_questId);
+	}
+	
+	@Override
+	public HtmlActionScope getScope()
+	{
+		return HtmlActionScope.NPC_QUEST_HTML;
 	}
 }

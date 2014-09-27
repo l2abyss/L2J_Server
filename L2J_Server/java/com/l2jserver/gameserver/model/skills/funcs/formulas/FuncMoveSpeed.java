@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -37,7 +37,7 @@ public class FuncMoveSpeed extends Func
 	
 	private FuncMoveSpeed()
 	{
-		super(Stats.RUN_SPEED, 0x30, null);
+		super(Stats.MOVE_SPEED, 0x30, null, null);
 	}
 	
 	@Override

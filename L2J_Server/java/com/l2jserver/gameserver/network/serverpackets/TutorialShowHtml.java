@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,19 +18,40 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-public final class TutorialShowHtml extends L2GameServerPacket
+import com.l2jserver.gameserver.enums.HtmlActionScope;
+
+/**
+ * TutorialShowHtml server packet implementation.
+ * @author FBIagent
+ */
+public final class TutorialShowHtml extends AbstractHtmlPacket
 {
-	private final String _html;
-	
 	public TutorialShowHtml(String html)
 	{
-		_html = html;
+		super(html);
+	}
+	
+	/**
+	 * This constructor is just here to be able to show a tutorial html<br>
+	 * window bound to an npc.
+	 * @param npcObjId
+	 * @param html
+	 */
+	public TutorialShowHtml(int npcObjId, String html)
+	{
+		super(npcObjId, html);
 	}
 	
 	@Override
 	protected void writeImpl()
 	{
 		writeC(0xA6);
-		writeS(_html);
+		writeS(getHtml());
+	}
+	
+	@Override
+	public HtmlActionScope getScope()
+	{
+		return HtmlActionScope.TUTORIAL_HTML;
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,7 +21,6 @@ package com.l2jserver.gameserver.model.zone.type;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.l2jserver.gameserver.instancemanager.MapRegionManager.TeleportWhereType;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
@@ -61,12 +60,11 @@ public final class L2SiegableHallZone extends L2ClanHallZone
 	
 	public void banishNonSiegeParticipants()
 	{
-		final TeleportWhereType type = TeleportWhereType.ClanHall_banish;
 		for (L2PcInstance player : getPlayersInside())
 		{
 			if ((player != null) && player.isInHideoutSiege())
 			{
-				player.teleToLocation(type);
+				player.teleToLocation(getBanishSpawnLoc(), true);
 			}
 		}
 	}

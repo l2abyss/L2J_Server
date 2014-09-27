@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -52,9 +52,9 @@ public class ExAirShipTeleportList extends L2GameServerPacket
 				writeD(_fuelConsumption[i]);
 				path = _teleports[i];
 				dst = path[path.length - 1];
-				writeD(dst.x);
-				writeD(dst.y);
-				writeD(dst.z);
+				writeD(dst.getX());
+				writeD(dst.getY());
+				writeD(dst.getZ());
 			}
 		}
 		else

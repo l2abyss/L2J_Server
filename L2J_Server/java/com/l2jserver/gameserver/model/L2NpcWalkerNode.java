@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -24,33 +24,35 @@ import com.l2jserver.gameserver.network.NpcStringId;
  * @author Rayan RPG, JIV
  * @since 927
  */
-public class L2NpcWalkerNode
+public class L2NpcWalkerNode extends Location
 {
-	private final int _routeId;
 	private final String _chatString;
 	private final NpcStringId _npcString;
-	private final int _moveX;
-	private final int _moveY;
-	private final int _moveZ;
 	private final int _delay;
-	private final boolean _running;
+	private final boolean _runToLocation;
 	
-	public L2NpcWalkerNode(int routeId, NpcStringId npcString, String chatText, int moveX, int moveY, int moveZ, int delay, boolean running)
+	public L2NpcWalkerNode(int moveX, int moveY, int moveZ, int delay, boolean runToLocation, NpcStringId npcString, String chatText)
 	{
-		super();
-		_routeId = routeId;
-		_chatString = chatText;
-		_npcString = npcString;
-		_moveX = moveX;
-		_moveY = moveY;
-		_moveZ = moveZ;
+		super(moveX, moveY, moveZ);
 		_delay = delay;
-		_running = running;
+		_runToLocation = runToLocation;
+		_npcString = npcString;
+		_chatString = ((chatText == null) ? "" : chatText);
 	}
 	
-	public int getRouteId()
+	public int getDelay()
 	{
-		return _routeId;
+		return _delay;
+	}
+	
+	public boolean runToLocation()
+	{
+		return _runToLocation;
+	}
+	
+	public NpcStringId getNpcString()
+	{
+		return _npcString;
 	}
 	
 	public String getChatText()
@@ -60,35 +62,5 @@ public class L2NpcWalkerNode
 			throw new IllegalStateException("npcString is defined for walker route!");
 		}
 		return _chatString;
-	}
-	
-	public int getMoveX()
-	{
-		return _moveX;
-	}
-	
-	public int getMoveY()
-	{
-		return _moveY;
-	}
-	
-	public int getMoveZ()
-	{
-		return _moveZ;
-	}
-	
-	public int getDelay()
-	{
-		return _delay;
-	}
-	
-	public boolean getRunning()
-	{
-		return _running;
-	}
-	
-	public NpcStringId getNpcString()
-	{
-		return _npcString;
 	}
 }

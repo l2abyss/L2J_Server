@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -31,7 +31,6 @@ import com.l2jserver.Config;
 import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.datatables.ClanTable;
 import com.l2jserver.gameserver.datatables.ExperienceTable;
-import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.model.CharSelectInfoPackage;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
@@ -101,7 +100,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 			CharSelectInfoPackage charInfoPackage = _characterPackages[i];
 			
 			writeS(charInfoPackage.getName());
-			writeD(charInfoPackage.getCharId());
+			writeD(charInfoPackage.getObjectId());
 			writeS(_loginName);
 			writeD(_sessionId);
 			writeD(charInfoPackage.getClanId());
@@ -146,32 +145,10 @@ public class CharSelectionInfo extends L2GameServerPacket
 			writeD(0x00);
 			writeD(0x00);
 			
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_HAIR));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_REAR));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_LEAR));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_NECK));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_RFINGER));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_LFINGER));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_HEAD));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_RHAND));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_LHAND));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_GLOVES));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_CHEST));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_LEGS));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_FEET));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_CLOAK));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_RHAND));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_HAIR));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_HAIR2));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_RBRACELET));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_LBRACELET));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_DECO1));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_DECO2));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_DECO3));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_DECO4));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_DECO5));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_DECO6));
-			writeD(charInfoPackage.getPaperdollItemId(Inventory.PAPERDOLL_BELT));
+			for (int slot : getPaperdollOrder())
+			{
+				writeD(charInfoPackage.getPaperdollItemId(slot));
+			}
 			
 			writeD(charInfoPackage.getHairStyle());
 			writeD(charInfoPackage.getHairColor());
@@ -219,7 +196,7 @@ public class CharSelectionInfo extends L2GameServerPacket
 		List<CharSelectInfoPackage> characterList = new FastList<>();
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement statement = con.prepareStatement("SELECT account_name, charId, char_name, level, maxHp, curHp, maxMp, curMp, face, hairStyle, hairColor, sex, heading, x, y, z, exp, sp, karma, pvpkills, pkkills, clanid, race, classid, deletetime, cancraft, title, accesslevel, online, char_slot, lastAccess, base_class, transform_id, language, vitality_points FROM characters WHERE account_name=?"))
+			PreparedStatement statement = con.prepareStatement("SELECT * FROM characters WHERE account_name=? ORDER BY createDate"))
 		{
 			statement.setString(1, loginName);
 			try (ResultSet charList = statement.executeQuery())
@@ -339,33 +316,6 @@ public class CharSelectionInfo extends L2GameServerPacket
 		if (weaponObjId < 1)
 		{
 			weaponObjId = charInfopackage.getPaperdollObjectId(Inventory.PAPERDOLL_RHAND);
-		}
-		
-		// Check Transformation
-		int cursedWeaponId = CursedWeaponsManager.getInstance().checkOwnsWeaponId(objectId);
-		if (cursedWeaponId > 0)
-		{
-			// cursed weapon transformations
-			if (cursedWeaponId == 8190)
-			{
-				charInfopackage.setTransformId(301);
-			}
-			else if (cursedWeaponId == 8689)
-			{
-				charInfopackage.setTransformId(302);
-			}
-			else
-			{
-				charInfopackage.setTransformId(0);
-			}
-		}
-		else if (chardata.getInt("transform_id") > 0)
-		{
-			charInfopackage.setTransformId(chardata.getInt("transform_id"));
-		}
-		else
-		{
-			charInfopackage.setTransformId(0);
 		}
 		
 		if (weaponObjId > 0)

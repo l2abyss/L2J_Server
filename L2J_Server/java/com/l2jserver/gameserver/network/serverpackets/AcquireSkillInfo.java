@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -25,9 +25,10 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.base.AcquireSkillType;
 import com.l2jserver.gameserver.model.holders.ItemHolder;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.CommonSkill;
 
 /**
+ * Acquire Skill Info server packet implementation.
  * @author Zoey76
  */
 public class AcquireSkillInfo extends L2GameServerPacket
@@ -75,11 +76,11 @@ public class AcquireSkillInfo extends L2GameServerPacket
 		_spCost = skillLearn.getLevelUpSp();
 		_type = skillType;
 		_reqs = new ArrayList<>();
-		if ((skillType != AcquireSkillType.Pledge) || Config.LIFE_CRYSTAL_NEEDED)
+		if ((skillType != AcquireSkillType.PLEDGE) || Config.LIFE_CRYSTAL_NEEDED)
 		{
 			for (ItemHolder item : skillLearn.getRequiredItems())
 			{
-				if (!Config.DIVINE_SP_BOOK_NEEDED && (_id == L2Skill.SKILL_DIVINE_INSPIRATION))
+				if (!Config.DIVINE_SP_BOOK_NEEDED && (_id == CommonSkill.DIVINE_INSPIRATION.getId()))
 				{
 					continue;
 				}

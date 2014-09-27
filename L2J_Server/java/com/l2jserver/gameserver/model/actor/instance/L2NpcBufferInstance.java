@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -25,12 +25,13 @@ import java.util.logging.Logger;
 import com.l2jserver.gameserver.cache.HtmCache;
 import com.l2jserver.gameserver.datatables.NpcBufferTable;
 import com.l2jserver.gameserver.datatables.NpcBufferTable.NpcBufferData;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.SkillData;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.NpcHtmlMessage;
@@ -74,7 +75,7 @@ public class L2NpcBufferInstance extends L2Npc
 		
 		if (htmContent != null)
 		{
-			NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
+			final NpcHtmlMessage npcHtmlMessage = new NpcHtmlMessage(getObjectId());
 			npcHtmlMessage.setHtml(htmContent);
 			npcHtmlMessage.replace("%objectId%", String.valueOf(getObjectId()));
 			player.sendPacket(npcHtmlMessage);
@@ -94,7 +95,7 @@ public class L2NpcBufferInstance extends L2Npc
 		L2Character target = player;
 		if (command.startsWith("Pet"))
 		{
-			if (!player.hasSummon())
+			if (!player.hasSummon()) // TODO: Should be hasPet() ?
 			{
 				player.sendPacket(SystemMessageId.DONT_HAVE_PET);
 				showChatWindow(player, 0); // 0 = main window
@@ -103,7 +104,7 @@ public class L2NpcBufferInstance extends L2Npc
 			target = player.getSummon();
 		}
 		
-		int npcId = getNpcId();
+		int npcId = getId();
 		if (command.startsWith("Chat"))
 		{
 			int val = Integer.parseInt(command.substring(5));
@@ -161,10 +162,10 @@ public class L2NpcBufferInstance extends L2Npc
 					}
 				}
 				
-				final L2Skill skill = SkillTable.getInstance().getInfo(npcBuffGroupInfo.getSkill().getSkillId(), npcBuffGroupInfo.getSkill().getSkillLvl());
+				final Skill skill = SkillData.getInstance().getSkill(npcBuffGroupInfo.getSkill().getSkillId(), npcBuffGroupInfo.getSkill().getSkillLvl());
 				if (skill != null)
 				{
-					skill.getEffects(player, target);
+					skill.applyEffects(player, target);
 				}
 			}
 			

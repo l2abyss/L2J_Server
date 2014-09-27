@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,7 +19,7 @@
 package com.l2jserver.gameserver.model.actor.instance;
 
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.instancemanager.HandysBlockCheckerManager.ArenaParticipantsHolder;
+import com.l2jserver.gameserver.model.ArenaParticipantsHolder;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.entity.BlockCheckerEngine;
@@ -28,9 +28,6 @@ import com.l2jserver.gameserver.network.serverpackets.AbstractNpcInfo;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.ExCubeGameChangePoints;
 import com.l2jserver.gameserver.network.serverpackets.ExCubeGameExtendedChangePoints;
-import com.l2jserver.gameserver.network.serverpackets.MyTargetSelected;
-import com.l2jserver.gameserver.network.serverpackets.StatusUpdate;
-import com.l2jserver.gameserver.network.serverpackets.ValidateLocation;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -120,12 +117,6 @@ public class L2BlockInstance extends L2MonsterInstance
 	}
 	
 	@Override
-	public boolean isAttackable()
-	{
-		return true;
-	}
-	
-	@Override
 	public boolean doDie(L2Character killer)
 	{
 		return false;
@@ -145,21 +136,9 @@ public class L2BlockInstance extends L2MonsterInstance
 		{
 			player.setTarget(this);
 			getAI(); // wake up ai
-			// Send a Server->Client packet MyTargetSelected to the L2PcInstance activeChar
-			// The activeChar.getLevel() - getLevel() permit to display the correct color in the select window
-			MyTargetSelected my = new MyTargetSelected(getObjectId(), player.getLevel() - getLevel());
-			player.sendPacket(my);
-			
-			// Send a Server->Client packet StatusUpdate of the L2Npc to the L2PcInstance to update its HP bar
-			StatusUpdate su = new StatusUpdate(this);
-			su.addAttribute(StatusUpdate.CUR_HP, (int) getCurrentHp());
-			su.addAttribute(StatusUpdate.MAX_HP, getMaxHp());
-			player.sendPacket(su);
-			player.sendPacket(new ValidateLocation(this));
 		}
 		else if (interact)
 		{
-			player.sendPacket(new ValidateLocation(this));
 			player.sendPacket(ActionFailed.STATIC_PACKET);
 		}
 	}

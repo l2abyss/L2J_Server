@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -150,6 +150,12 @@ public class ItemInfo
 	
 	public ItemInfo(L2ItemInstance item, int change)
 	{
+		this(item);
+		_change = change;
+	}
+	
+	public ItemInfo(TradeItem item)
+	{
 		if (item == null)
 		{
 			return;
@@ -162,17 +168,10 @@ public class ItemInfo
 		_item = item.getItem();
 		
 		// Get the enchant level of the L2ItemInstance
-		_enchant = item.getEnchantLevel();
+		_enchant = item.getEnchant();
 		
 		// Get the augmentation boni
-		if (item.isAugmented())
-		{
-			_augmentation = item.getAugmentation().getAugmentationId();
-		}
-		else
-		{
-			_augmentation = 0;
-		}
+		_augmentation = 0;
 		
 		// Get the quantity of the L2ItemInstance
 		_count = item.getCount();
@@ -182,14 +181,14 @@ public class ItemInfo
 		_type2 = item.getCustomType2();
 		
 		// Verify if the L2ItemInstance is equipped
-		_equipped = item.isEquipped() ? 1 : 0;
+		_equipped = 0;
 		
 		// Get the action to do clientside
-		_change = change;
+		_change = 0;
 		
 		// Get shadow item mana
-		_mana = item.getMana();
-		_time = item.isTimeLimitedItem() ? (int) (item.getRemainingTime() / 1000) : -9999;
+		_mana = -1;
+		_time = -9999;
 		
 		_location = item.getLocationSlot();
 		

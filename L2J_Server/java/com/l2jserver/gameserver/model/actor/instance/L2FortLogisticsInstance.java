@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -20,7 +20,8 @@ package com.l2jserver.gameserver.model.actor.instance;
 
 import java.util.StringTokenizer;
 
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -136,7 +137,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 		{
 			if (isMyLord(player))
 			{
-				if (getFort().getSiege().getIsInProgress())
+				if (getFort().getSiege().isInProgress())
 				{
 					html.setFile(player.getHtmlPrefix(), "data/html/fortress/logistics-siege.htm");
 				}
@@ -146,7 +147,7 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 					if (level > 0)
 					{
 						// spawn box
-						L2NpcTemplate BoxTemplate = NpcTable.getInstance().getTemplate(SUPPLY_BOX_IDS[level - 1]);
+						L2NpcTemplate BoxTemplate = NpcData.getInstance().getTemplate(SUPPLY_BOX_IDS[level - 1]);
 						L2MonsterInstance box = new L2MonsterInstance(IdFactory.getInstance().getNextId(), BoxTemplate);
 						box.setCurrentHp(box.getMaxHp());
 						box.setCurrentMp(box.getMaxMp());
@@ -198,10 +199,10 @@ public class L2FortLogisticsInstance extends L2MerchantInstance
 			filename = "data/html/fortress/logistics-" + val + ".htm";
 		}
 		
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		html.setFile(player.getHtmlPrefix(), filename);
 		html.replace("%objectId%", String.valueOf(getObjectId()));
-		html.replace("%npcId%", String.valueOf(getNpcId()));
+		html.replace("%npcId%", String.valueOf(getId()));
 		if (getFort().getOwnerClan() != null)
 		{
 			html.replace("%clanname%", getFort().getOwnerClan().getName());

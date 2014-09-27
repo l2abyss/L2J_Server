@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -55,7 +55,7 @@ public final class EndScenePlayer extends L2GameClientPacket
 		activeChar.setMovieId(0);
 		activeChar.setIsTeleporting(true, false); // avoid to get player removed from L2World
 		activeChar.decayMe();
-		activeChar.spawnMe(activeChar.getPosition().getX(), activeChar.getPosition().getY(), activeChar.getPosition().getZ());
+		activeChar.spawnMe(activeChar.getX(), activeChar.getY(), activeChar.getZ());
 		activeChar.setIsTeleporting(false, false);
 	}
 	

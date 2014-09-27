@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -47,19 +47,19 @@ public class L2Henna
 	
 	public L2Henna(StatsSet set)
 	{
-		_dyeId = set.getInteger("dyeId");
+		_dyeId = set.getInt("dyeId");
 		_dyeName = set.getString("dyeName");
-		_dyeItemId = set.getInteger("dyeItemId");
-		_str = set.getInteger("str");
-		_con = set.getInteger("con");
-		_dex = set.getInteger("dex");
-		_int = set.getInteger("int");
-		_men = set.getInteger("men");
-		_wit = set.getInteger("wit");
-		_wear_fee = set.getInteger("wear_fee");
-		_wear_count = set.getInteger("wear_count");
-		_cancel_fee = set.getInteger("cancel_fee");
-		_cancel_count = set.getInteger("cancel_count");
+		_dyeItemId = set.getInt("dyeItemId");
+		_str = set.getInt("str");
+		_con = set.getInt("con");
+		_dex = set.getInt("dex");
+		_int = set.getInt("int");
+		_men = set.getInt("men");
+		_wit = set.getInt("wit");
+		_wear_fee = set.getInt("wear_fee");
+		_wear_count = set.getInt("wear_count");
+		_cancel_fee = set.getInt("cancel_fee");
+		_cancel_count = set.getInt("cancel_count");
 		_wear_class = new ArrayList<>();
 	}
 	

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,7 +18,7 @@
  */
 package com.l2jserver.gameserver.model;
 
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+import static com.l2jserver.gameserver.model.itemcontainer.Inventory.MAX_ADENA;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -29,6 +29,7 @@ import javolution.util.FastSet;
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
@@ -152,7 +153,7 @@ public class TradeList
 		{
 			for (TradeItem exclItem : _items)
 			{
-				if (exclItem.getItem().getItemId() == item.getItemId())
+				if (exclItem.getItem().getId() == item.getId())
 				{
 					if (item.getCount() <= exclItem.getCount())
 					{
@@ -191,7 +192,7 @@ public class TradeList
 	 * @param count : int
 	 * @return
 	 */
-	public synchronized TradeItem addItem(int objectId, long count)
+	public TradeItem addItem(int objectId, long count)
 	{
 		return addItem(objectId, count, 0);
 	}
@@ -214,24 +215,26 @@ public class TradeList
 		L2Object o = L2World.getInstance().findObject(objectId);
 		if (!(o instanceof L2ItemInstance))
 		{
-			_log.warning(_owner.getName() + ": Attempt to add invalid item to TradeList!");
+			_log.warning(_owner.getName() + ": Trying to add something other than an item!");
 			return null;
 		}
 		
 		L2ItemInstance item = (L2ItemInstance) o;
-		
 		if (!(item.isTradeable() || (getOwner().isGM() && Config.GM_TRADE_RESTRICTED_ITEMS)) || item.isQuestItem())
 		{
+			_log.warning(_owner.getName() + ": Attempt to add a restricted item!");
 			return null;
 		}
 		
-		if (!getOwner().getInventory().canManipulateWithItemId(item.getItemId()))
+		if (!getOwner().getInventory().canManipulateWithItemId(item.getId()))
 		{
+			_log.warning(_owner.getName() + ": Attempt to add an item that can't manipualte!");
 			return null;
 		}
 		
 		if ((count <= 0) || (count > item.getCount()))
 		{
+			_log.warning(_owner.getName() + ": Attempt to add an item with invalid item count!");
 			return null;
 		}
 		
@@ -241,7 +244,7 @@ public class TradeList
 			return null;
 		}
 		
-		if ((PcInventory.MAX_ADENA / count) < price)
+		if ((Inventory.MAX_ADENA / count) < price)
 		{
 			_log.warning(_owner.getName() + ": Attempt to overflow adena !");
 			return null;
@@ -251,6 +254,7 @@ public class TradeList
 		{
 			if (checkitem.getObjectId() == objectId)
 			{
+				_log.warning(_owner.getName() + ": Attempt to add an item that is already present!");
 				return null;
 			}
 		}
@@ -296,7 +300,7 @@ public class TradeList
 			return null;
 		}
 		
-		if ((PcInventory.MAX_ADENA / count) < price)
+		if ((Inventory.MAX_ADENA / count) < price)
 		{
 			_log.warning(_owner.getName() + ": Attempt to overflow adena !");
 			return null;
@@ -327,7 +331,7 @@ public class TradeList
 		
 		for (TradeItem titem : _items)
 		{
-			if ((titem.getObjectId() == objectId) || (titem.getItem().getItemId() == itemId))
+			if ((titem.getObjectId() == objectId) || (titem.getItem().getId() == itemId))
 			{
 				// If Partner has already confirmed this trade, invalidate the confirmation
 				if (_partner != null)
@@ -561,7 +565,7 @@ public class TradeList
 			{
 				continue;
 			}
-			L2Item template = ItemTable.getInstance().getTemplate(item.getItem().getItemId());
+			L2Item template = ItemTable.getInstance().getTemplate(item.getItem().getId());
 			if (template == null)
 			{
 				continue;
@@ -570,7 +574,7 @@ public class TradeList
 			{
 				slots += item.getCount();
 			}
-			else if (partner.getInventory().getItemByItemId(item.getItem().getItemId()) == null)
+			else if (partner.getInventory().getItemByItemId(item.getItem().getId()) == null)
 			{
 				slots++;
 			}
@@ -592,7 +596,7 @@ public class TradeList
 			{
 				continue;
 			}
-			L2Item template = ItemTable.getInstance().getTemplate(item.getItem().getItemId());
+			L2Item template = ItemTable.getInstance().getTemplate(item.getItem().getId());
 			if (template == null)
 			{
 				continue;
@@ -856,13 +860,13 @@ public class TradeList
 				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.C1_PURCHASED_S3_S2_S);
 				msg.addString(player.getName());
 				msg.addItemName(newItem);
-				msg.addItemNumber(item.getCount());
+				msg.addLong(item.getCount());
 				_owner.sendPacket(msg);
 				
 				msg = SystemMessage.getSystemMessage(SystemMessageId.PURCHASED_S3_S2_S_FROM_C1);
 				msg.addString(_owner.getName());
 				msg.addItemName(newItem);
-				msg.addItemNumber(item.getCount());
+				msg.addLong(item.getCount());
 				player.sendPacket(msg);
 			}
 			else
@@ -925,7 +929,7 @@ public class TradeList
 			
 			for (TradeItem ti : _items)
 			{
-				if (ti.getItem().getItemId() == item.getItemId())
+				if (ti.getItem().getId() == item.getItemId())
 				{
 					// price should be the same
 					if (ti.getPrice() == item.getPrice())
@@ -986,7 +990,7 @@ public class TradeList
 					continue;
 				}
 			}
-			if (oldItem.getItemId() != item.getItemId())
+			if (oldItem.getId() != item.getItemId())
 			{
 				Util.handleIllegalPlayerAction(player, player + " is cheating with sell items", Config.DEFAULT_PUNISH);
 				return false;
@@ -1034,13 +1038,13 @@ public class TradeList
 				SystemMessage msg = SystemMessage.getSystemMessage(SystemMessageId.PURCHASED_S3_S2_S_FROM_C1);
 				msg.addString(player.getName());
 				msg.addItemName(newItem);
-				msg.addItemNumber(item.getCount());
+				msg.addLong(item.getCount());
 				_owner.sendPacket(msg);
 				
 				msg = SystemMessage.getSystemMessage(SystemMessageId.C1_PURCHASED_S3_S2_S);
 				msg.addString(_owner.getName());
 				msg.addItemName(newItem);
-				msg.addItemNumber(item.getCount());
+				msg.addLong(item.getCount());
 				player.sendPacket(msg);
 			}
 			else

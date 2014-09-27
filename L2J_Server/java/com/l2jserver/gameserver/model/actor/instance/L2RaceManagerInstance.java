@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -24,11 +24,12 @@ import javolution.util.FastList;
 
 import com.l2jserver.gameserver.MonsterRace;
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.knownlist.RaceManagerKnownList;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
@@ -169,35 +170,35 @@ public class L2RaceManagerInstance extends L2Npc
 					_state = ACCEPTING_BETS;
 					startRace();
 				}// else{_log.info("Race open");}
-				sm.addNumber(_raceNumber);
+				sm.addInt(_raceNumber);
 				break;
 			case 818: // SystemMessageId.MONSRACE_TICKETS_STOP_IN_S1_MINUTES
 			case 820: // SystemMessageId.MONSRACE_S2_BEGINS_IN_S1_MINUTES
 			case 823: // SystemMessageId.MONSRACE_BEGINS_IN_S1_SECONDS
-				sm.addNumber(_minutes);
+				sm.addInt(_minutes);
 				if (type.getId() == 820)
 				{
-					sm.addNumber(_raceNumber);
+					sm.addInt(_raceNumber);
 				}
 				_minutes--;
 				break;
 			case 819: // SystemMessageId.MONSRACE_S1_TICKET_SALES_CLOSED
 				// _log.info("Sales closed");
-				sm.addNumber(_raceNumber);
+				sm.addInt(_raceNumber);
 				_state = WAITING;
 				_minutes = 2;
 				break;
 			case 821: // SystemMessageId.MONSRACE_S1_BEGINS_IN_30_SECONDS
 			case 822: // SystemMessageId.MONSRACE_S1_COUNTDOWN_IN_FIVE_SECONDS
 			case 825: // SystemMessageId.MONSRACE_S1_RACE_END
-				sm.addNumber(_raceNumber);
+				sm.addInt(_raceNumber);
 				_minutes = 5;
 				break;
 			case 826: // SystemMessageId.MONSRACE_FIRST_PLACE_S1_SECOND_S2
 				// _log.info("Placing");
 				_state = RACE_END;
-				sm.addNumber(MonsterRace.getInstance().getFirstPlace());
-				sm.addNumber(MonsterRace.getInstance().getSecondPlace());
+				sm.addInt(MonsterRace.getInstance().getFirstPlace());
+				sm.addInt(MonsterRace.getInstance().getSecondPlace());
 				break;
 		}
 		// _logn.info("Counter: "+minutes);
@@ -313,9 +314,9 @@ public class L2RaceManagerInstance extends L2Npc
 		{
 			return;
 		}
-		int npcId = getTemplate().getNpcId();
+		int npcId = getTemplate().getId();
 		String filename, search;
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		filename = getHtmlPath(npcId, 5);
 		html.setFile(player.getHtmlPrefix(), filename);
 		for (int i = 0; i < 8; i++)
@@ -332,9 +333,9 @@ public class L2RaceManagerInstance extends L2Npc
 	
 	public void showMonsterInfo(L2PcInstance player)
 	{
-		int npcId = getTemplate().getNpcId();
+		int npcId = getTemplate().getId();
 		String filename, search;
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		filename = getHtmlPath(npcId, 6);
 		html.setFile(player.getHtmlPrefix(), filename);
 		for (int i = 0; i < 8; i++)
@@ -354,10 +355,10 @@ public class L2RaceManagerInstance extends L2Npc
 		{
 			return;
 		}
-		int npcId = getTemplate().getNpcId();
+		int npcId = getTemplate().getId();
 		SystemMessage sm;
 		String filename, search, replace;
-		NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
+		final NpcHtmlMessage html = new NpcHtmlMessage(getObjectId());
 		if (val < 10)
 		{
 			filename = getHtmlPath(npcId, 2);
@@ -439,7 +440,7 @@ public class L2RaceManagerInstance extends L2Npc
 			player.setRace(0, 0);
 			player.setRace(1, 0);
 			sm = SystemMessage.getSystemMessage(SystemMessageId.ACQUIRED_S1_S2);
-			sm.addNumber(_raceNumber);
+			sm.addInt(_raceNumber);
 			sm.addItemName(4443);
 			player.sendPacket(sm);
 			L2ItemInstance item = new L2ItemInstance(IdFactory.getInstance().getNextId(), 4443);
@@ -450,7 +451,7 @@ public class L2RaceManagerInstance extends L2Npc
 			player.getInventory().addItem("Race", item, player, this);
 			InventoryUpdate iu = new InventoryUpdate();
 			iu.addItem(item);
-			L2ItemInstance adenaupdate = player.getInventory().getItemByItemId(PcInventory.ADENA_ID);
+			L2ItemInstance adenaupdate = player.getInventory().getItemByItemId(Inventory.ADENA_ID);
 			iu.addModifiedItem(adenaupdate);
 			player.sendPacket(iu);
 			return;

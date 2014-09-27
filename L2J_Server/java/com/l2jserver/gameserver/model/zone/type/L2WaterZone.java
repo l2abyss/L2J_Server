@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -44,7 +44,7 @@ public class L2WaterZone extends L2ZoneType
 		if (character.isPlayer())
 		{
 			L2PcInstance player = character.getActingPlayer();
-			if (player.isTransformed() && !player.isCursedWeaponEquipped())
+			if (player.isTransformed() && !player.getTransformation().canSwim())
 			{
 				character.stopTransformation(true);
 			}
@@ -96,16 +96,6 @@ public class L2WaterZone extends L2ZoneType
 				}
 			}
 		}
-	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
 	}
 	
 	public int getWaterZ()

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -89,11 +89,11 @@ public class GuardKnownList extends AttackableKnownList
 			return false;
 		}
 		
-		// Check if the _aggroList of the L2GuardInstance is Empty
-		if (getActiveChar().noTarget())
+		// Check if the aggression list of this guard is empty.
+		if (getActiveChar().getAggroList().isEmpty())
 		{
 			// Set the L2GuardInstance to AI_INTENTION_IDLE
-			if (getActiveChar().hasAI())
+			if (getActiveChar().hasAI() && !getActiveChar().isWalker())
 			{
 				getActiveChar().getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE, null);
 			}

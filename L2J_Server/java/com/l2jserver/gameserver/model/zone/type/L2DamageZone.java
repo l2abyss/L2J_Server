@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,9 +19,9 @@
 package com.l2jserver.gameserver.model.zone.type;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
-import com.l2jserver.gameserver.model.L2Object.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
@@ -113,7 +113,7 @@ public class L2DamageZone extends L2ZoneType
 			L2PcInstance player = character.getActingPlayer();
 			if (getCastle() != null) // Castle zone
 			{
-				if (!(getCastle().getSiege().getIsInProgress() && (player != null) && (player.getSiegeState() != 2))) // Siege and no defender
+				if (!(getCastle().getSiege().isInProgress() && (player != null) && (player.getSiegeState() != 2))) // Siege and no defender
 				{
 					return;
 				}
@@ -181,7 +181,7 @@ public class L2DamageZone extends L2ZoneType
 			
 			if (_castle != null)
 			{
-				siege = _castle.getSiege().getIsInProgress();
+				siege = _castle.getSiege().isInProgress();
 				// castle zones active only during siege
 				if (!siege)
 				{
@@ -217,15 +217,5 @@ public class L2DamageZone extends L2ZoneType
 				}
 			}
 		}
-	}
-	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
 	}
 }

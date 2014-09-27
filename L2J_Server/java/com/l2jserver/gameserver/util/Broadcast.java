@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -30,8 +30,6 @@ import com.l2jserver.gameserver.network.serverpackets.CharInfo;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
 import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.RelationChanged;
-
-import gnu.trove.procedure.TObjectProcedure;
 
 /**
  * This class ...
@@ -93,7 +91,7 @@ public final class Broadcast
 					if ((oldrelation != null) && (oldrelation != relation))
 					{
 						player.sendPacket(new RelationChanged((L2PcInstance) character, relation, character.isAutoAttackable(player)));
-						if (((L2PcInstance) character).hasSummon())
+						if (character.hasSummon())
 						{
 							player.sendPacket(new RelationChanged(character.getSummon(), relation, character.isAutoAttackable(player)));
 						}
@@ -181,11 +179,17 @@ public final class Broadcast
 	 * <B><U> Concept</U> :</B><BR>
 	 * In order to inform other players of state modification on the L2Character, server just need to go through _allPlayers to send Server->Client Packet<BR>
 	 * <FONT COLOR=#FF0000><B> <U>Caution</U> : This method DOESN'T SEND Server->Client packet to this L2Character (to do this use method toSelfAndKnownPlayers)</B></FONT><BR>
-	 * @param mov
+	 * @param packet
 	 */
-	public static void toAllOnlinePlayers(L2GameServerPacket mov)
+	public static void toAllOnlinePlayers(L2GameServerPacket packet)
 	{
-		L2World.getInstance().forEachPlayer(new ForEachPlayerBroadcast(mov));
+		for (L2PcInstance player : L2World.getInstance().getPlayers())
+		{
+			if (player.isOnline())
+			{
+				player.sendPacket(packet);
+			}
+		}
 	}
 	
 	public static void announceToOnlinePlayers(String text, boolean isCritical)
@@ -204,50 +208,14 @@ public final class Broadcast
 		toAllOnlinePlayers(cs);
 	}
 	
-	public static void toPlayersInInstance(L2GameServerPacket mov, int instanceId)
+	public static void toPlayersInInstance(L2GameServerPacket packet, int instanceId)
 	{
-		L2World.getInstance().forEachPlayer(new ForEachPlayerInInstanceBroadcast(mov, instanceId));
-	}
-	
-	private static final class ForEachPlayerBroadcast implements TObjectProcedure<L2PcInstance>
-	{
-		L2GameServerPacket _packet;
-		
-		protected ForEachPlayerBroadcast(L2GameServerPacket packet)
+		for (L2PcInstance player : L2World.getInstance().getPlayers())
 		{
-			_packet = packet;
-		}
-		
-		@Override
-		public final boolean execute(final L2PcInstance onlinePlayer)
-		{
-			if ((onlinePlayer != null) && onlinePlayer.isOnline())
+			if (player.isOnline() && (player.getInstanceId() == instanceId))
 			{
-				onlinePlayer.sendPacket(_packet);
+				player.sendPacket(packet);
 			}
-			return true;
-		}
-	}
-	
-	private static final class ForEachPlayerInInstanceBroadcast implements TObjectProcedure<L2PcInstance>
-	{
-		L2GameServerPacket _packet;
-		int _instanceId;
-		
-		protected ForEachPlayerInInstanceBroadcast(L2GameServerPacket packet, int instanceId)
-		{
-			_packet = packet;
-			_instanceId = instanceId;
-		}
-		
-		@Override
-		public final boolean execute(final L2PcInstance onlinePlayer)
-		{
-			if ((onlinePlayer != null) && onlinePlayer.isOnline() && (onlinePlayer.getInstanceId() == _instanceId))
-			{
-				onlinePlayer.sendPacket(_packet);
-			}
-			return true;
 		}
 	}
 }

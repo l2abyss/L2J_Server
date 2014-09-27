@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,11 +18,15 @@
  */
 package com.l2jserver.gameserver.model.zone.type;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.instancemanager.ZoneManager;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.PcCondOverride;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
@@ -44,6 +48,7 @@ import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
  */
 public class L2OlympiadStadiumZone extends L2ZoneRespawn
 {
+	private List<Location> _spectatorLocations;
 	
 	public L2OlympiadStadiumZone(int id)
 	{
@@ -183,12 +188,12 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 				// only participants, observers and GMs allowed
 				if (!player.canOverrideCond(PcCondOverride.ZONE_CONDITIONS) && !player.isInOlympiadMode() && !player.inObserverMode())
 				{
-					ThreadPoolManager.getInstance().executeTask(new KickPlayer(player));
+					ThreadPoolManager.getInstance().executeGeneral(new KickPlayer(player));
 				}
 				else
 				{
 					// check for pet
-					if (player.hasSummon() && player.getSummon().isPet())
+					if (player.hasPet())
 					{
 						player.getSummon().unSummon(player);
 					}
@@ -259,16 +264,6 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 		}
 	}
 	
-	@Override
-	public void onDieInside(L2Character character)
-	{
-	}
-	
-	@Override
-	public void onReviveInside(L2Character character)
-	{
-	}
-	
 	private static final class KickPlayer implements Runnable
 	{
 		private L2PcInstance _player;
@@ -288,10 +283,32 @@ public class L2OlympiadStadiumZone extends L2ZoneRespawn
 					_player.getSummon().unSummon(_player);
 				}
 				
-				_player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
+				_player.teleToLocation(TeleportWhereType.TOWN);
 				_player.setInstanceId(0);
 				_player = null;
 			}
 		}
+	}
+	
+	@Override
+	public void parseLoc(int x, int y, int z, String type)
+	{
+		if ((type != null) && type.equals("spectatorSpawn"))
+		{
+			if (_spectatorLocations == null)
+			{
+				_spectatorLocations = new ArrayList<>();
+			}
+			_spectatorLocations.add(new Location(x, y, z));
+		}
+		else
+		{
+			super.parseLoc(x, y, z, type);
+		}
+	}
+	
+	public List<Location> getSpectatorSpawns()
+	{
+		return _spectatorLocations;
 	}
 }

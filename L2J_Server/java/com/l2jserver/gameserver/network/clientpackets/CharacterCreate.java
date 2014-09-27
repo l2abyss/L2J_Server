@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -26,21 +26,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import javolution.util.FastList;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.CharNameTable;
 import com.l2jserver.gameserver.datatables.CharTemplateTable;
-import com.l2jserver.gameserver.datatables.SkillTable;
+import com.l2jserver.gameserver.datatables.InitialEquipmentData;
+import com.l2jserver.gameserver.datatables.InitialShortcutData;
+import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.datatables.SkillTreesData;
 import com.l2jserver.gameserver.instancemanager.QuestManager;
-import com.l2jserver.gameserver.model.L2ShortCut;
 import com.l2jserver.gameserver.model.L2SkillLearn;
 import com.l2jserver.gameserver.model.L2World;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.appearance.PcAppearance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.stat.PcStat;
 import com.l2jserver.gameserver.model.actor.templates.L2PcTemplate;
+import com.l2jserver.gameserver.model.base.ClassId;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerCreate;
 import com.l2jserver.gameserver.model.items.PcItemTemplate;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.quest.Quest;
@@ -50,8 +53,6 @@ import com.l2jserver.gameserver.network.L2GameClient;
 import com.l2jserver.gameserver.network.serverpackets.CharCreateFail;
 import com.l2jserver.gameserver.network.serverpackets.CharCreateOk;
 import com.l2jserver.gameserver.network.serverpackets.CharSelectionInfo;
-import com.l2jserver.gameserver.scripting.scriptengine.events.PlayerEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.player.PlayerListener;
 import com.l2jserver.gameserver.util.Util;
 
 @SuppressWarnings("unused")
@@ -59,7 +60,6 @@ public final class CharacterCreate extends L2GameClientPacket
 {
 	private static final String _C__0C_CHARACTERCREATE = "[C] 0C CharacterCreate";
 	protected static final Logger _logAccounting = Logger.getLogger("accounting");
-	private static final List<PlayerListener> _listeners = new FastList<PlayerListener>().shared();
 	
 	// cSdddddddddddd
 	private String _name;
@@ -165,7 +165,7 @@ public final class CharacterCreate extends L2GameClientPacket
 		 */
 		synchronized (CharNameTable.getInstance())
 		{
-			if ((CharNameTable.getInstance().accountCharNumber(getClient().getAccountName()) >= Config.MAX_CHARACTERS_NUMBER_PER_ACCOUNT) && (Config.MAX_CHARACTERS_NUMBER_PER_ACCOUNT != 0))
+			if ((CharNameTable.getInstance().getAccountCharacterCount(getClient().getAccountName()) >= Config.MAX_CHARACTERS_NUMBER_PER_ACCOUNT) && (Config.MAX_CHARACTERS_NUMBER_PER_ACCOUNT != 0))
 			{
 				if (Config.DEBUG)
 				{
@@ -187,7 +187,7 @@ public final class CharacterCreate extends L2GameClientPacket
 			}
 			
 			template = CharTemplateTable.getInstance().getTemplate(_classId);
-			if ((template == null) || (template.getClassBaseLevel() > 1))
+			if ((template == null) || (ClassId.getClassId(_classId).level() > 0))
 			{
 				if (Config.DEBUG)
 				{
@@ -201,13 +201,12 @@ public final class CharacterCreate extends L2GameClientPacket
 			newChar = L2PcInstance.create(template, getClient().getAccountName(), _name, app);
 		}
 		
-		newChar.setCurrentHp(template.getBaseHpMax());
-		newChar.setCurrentCp(template.getBaseCpMax());
-		newChar.setCurrentMp(template.getBaseMpMax());
+		// HP and MP are at maximum and CP is zero by default.
+		newChar.setCurrentHp(newChar.getMaxHp());
+		newChar.setCurrentMp(newChar.getMaxMp());
 		// newChar.setMaxLoad(template.getBaseLoad());
 		
-		CharCreateOk cco = new CharCreateOk();
-		sendPacket(cco);
+		sendPacket(new CharCreateOk());
 		
 		initNewChar(getClient(), newChar);
 		
@@ -257,9 +256,9 @@ public final class CharacterCreate extends L2GameClientPacket
 			newChar.addAdena("Init", Config.STARTING_ADENA, null, false);
 		}
 		
-		// TODO: Make it random.
 		final L2PcTemplate template = newChar.getTemplate();
-		newChar.setXYZInvisible(template.getSpawnX(), template.getSpawnY(), template.getSpawnZ());
+		Location createLoc = template.getCreationPoint();
+		newChar.setXYZInvisible(createLoc.getX(), createLoc.getY(), createLoc.getZ());
 		newChar.setTitle("");
 		
 		if (Config.ENABLE_VITALITY)
@@ -275,34 +274,16 @@ public final class CharacterCreate extends L2GameClientPacket
 			newChar.getStat().addSp(Config.STARTING_SP);
 		}
 		
-		L2ShortCut shortcut;
-		// add attack shortcut
-		shortcut = new L2ShortCut(0, 0, 3, 2, 0, 1);
-		newChar.registerShortCut(shortcut);
-		// add take shortcut
-		shortcut = new L2ShortCut(3, 0, 3, 5, 0, 1);
-		newChar.registerShortCut(shortcut);
-		// add sit shortcut
-		shortcut = new L2ShortCut(10, 0, 3, 0, 0, 1);
-		newChar.registerShortCut(shortcut);
-		
-		if (template.hasInitialEquipment())
+		final List<PcItemTemplate> initialItems = InitialEquipmentData.getInstance().getEquipmentList(newChar.getClassId());
+		if (initialItems != null)
 		{
-			L2ItemInstance item;
-			for (PcItemTemplate ie : template.getInitialEquipment())
+			for (PcItemTemplate ie : initialItems)
 			{
-				item = newChar.getInventory().addItem("Init", ie.getId(), ie.getCount(), newChar, null);
+				final L2ItemInstance item = newChar.getInventory().addItem("Init", ie.getId(), ie.getCount(), newChar, null);
 				if (item == null)
 				{
 					_log.warning("Could not create item during char creation: itemId " + ie.getId() + ", amount " + ie.getCount() + ".");
 					continue;
-				}
-				
-				// Place Tutorial Guide shortcut.
-				if (item.getItemId() == 5588)
-				{
-					shortcut = new L2ShortCut(11, 0, 1, item.getObjectId(), 0, 1);
-					newChar.registerShortCut(shortcut);
 				}
 				
 				if (item.isEquipable() && ie.isEquipped())
@@ -314,33 +295,23 @@ public final class CharacterCreate extends L2GameClientPacket
 		
 		for (L2SkillLearn skill : SkillTreesData.getInstance().getAvailableSkills(newChar, newChar.getClassId(), false, true))
 		{
-			newChar.addSkill(SkillTable.getInstance().getInfo(skill.getSkillId(), skill.getSkillLevel()), true);
-			if ((skill.getSkillId() == 1001) || (skill.getSkillId() == 1177))
-			{
-				shortcut = new L2ShortCut(1, 0, 2, skill.getSkillId(), skill.getSkillLevel(), 1);
-				newChar.registerShortCut(shortcut);
-			}
-			if (skill.getSkillId() == 1216)
-			{
-				shortcut = new L2ShortCut(10, 0, 2, skill.getSkillId(), skill.getSkillLevel(), 1);
-				newChar.registerShortCut(shortcut);
-			}
 			if (Config.DEBUG)
 			{
 				_log.fine("Adding starter skill:" + skill.getSkillId() + " / " + skill.getSkillLevel());
 			}
+			
+			newChar.addSkill(SkillData.getInstance().getSkill(skill.getSkillId(), skill.getSkillLevel()), true);
 		}
+		
+		// Register all shortcuts for actions, skills and items for this new character.
+		InitialShortcutData.getInstance().registerAllShortcuts(newChar);
 		
 		if (!Config.DISABLE_TUTORIAL)
 		{
 			startTutorialQuest(newChar);
 		}
 		
-		PlayerEvent event = new PlayerEvent();
-		event.setObjectId(newChar.getObjectId());
-		event.setName(newChar.getName());
-		event.setClient(client);
-		firePlayerListener(event);
+		EventDispatcher.getInstance().notifyEvent(new OnPlayerCreate(newChar, newChar.getObjectId(), newChar.getName(), client));
 		
 		newChar.setOnlineStatus(true, false);
 		newChar.deleteMe();
@@ -370,27 +341,6 @@ public final class CharacterCreate extends L2GameClientPacket
 		{
 			q.newQuestState(player).setState(State.STARTED);
 		}
-	}
-	
-	private void firePlayerListener(PlayerEvent event)
-	{
-		for (PlayerListener listener : _listeners)
-		{
-			listener.onCharCreate(event);
-		}
-	}
-	
-	public static void addPlayerListener(PlayerListener listener)
-	{
-		if (!_listeners.contains(listener))
-		{
-			_listeners.add(listener);
-		}
-	}
-	
-	public static void removePlayerListener(PlayerListener listener)
-	{
-		_listeners.remove(listener);
 	}
 	
 	@Override

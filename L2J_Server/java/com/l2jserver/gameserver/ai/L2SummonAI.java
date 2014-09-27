@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -31,7 +31,7 @@ import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Character.AIAccessor;
 import com.l2jserver.gameserver.model.actor.L2Summon;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.util.Rnd;
 
 public class L2SummonAI extends L2PlayableAI implements Runnable
@@ -236,7 +236,7 @@ public class L2SummonAI extends L2PlayableAI implements Runnable
 				
 				final int targetX = ownerX + (int) (AVOID_RADIUS * Math.cos(angle));
 				final int targetY = ownerY + (int) (AVOID_RADIUS * Math.sin(angle));
-				if ((Config.GEODATA == 0) || GeoData.getInstance().canMoveFromToTarget(_actor.getX(), _actor.getY(), _actor.getZ(), targetX, targetY, _actor.getZ(), _actor.getInstanceId()))
+				if ((Config.GEODATA == 0) || GeoData.getInstance().canMove(_actor.getX(), _actor.getY(), _actor.getZ(), targetX, targetY, _actor.getZ(), _actor.getInstanceId()))
 				{
 					moveTo(targetX, targetY, _actor.getZ());
 				}
@@ -264,7 +264,7 @@ public class L2SummonAI extends L2PlayableAI implements Runnable
 	}
 	
 	@Override
-	protected void onIntentionCast(L2Skill skill, L2Object target)
+	protected void onIntentionCast(Skill skill, L2Object target)
 	{
 		if (getIntention() == AI_INTENTION_ATTACK)
 		{

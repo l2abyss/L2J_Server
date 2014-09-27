@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -35,7 +35,7 @@ import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.ClanTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Clan;
@@ -80,9 +80,9 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	public ScheduledFuture<?> _siegeTask;
 	public boolean _missionAccomplished = false;
 	
-	public ClanHallSiegeEngine(int questId, String name, String descr, final int hallId)
+	public ClanHallSiegeEngine(String name, String descr, final int hallId)
 	{
-		super(questId, name, descr);
+		super(-1, name, descr);
 		_log = Logger.getLogger(getClass().getName());
 		
 		_hall = CHSiegeManager.getInstance().getSiegableHall(hallId);
@@ -160,11 +160,11 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 					while (rset.next())
 					{
 						final int npcId = rset.getInt("npcId");
-						final L2NpcTemplate template = NpcTable.getInstance().getTemplate(npcId);
+						final L2NpcTemplate template = NpcData.getInstance().getTemplate(npcId);
 						L2Spawn spawn = new L2Spawn(template);
-						spawn.setLocx(rset.getInt("x"));
-						spawn.setLocy(rset.getInt("y"));
-						spawn.setLocz(rset.getInt("z"));
+						spawn.setX(rset.getInt("x"));
+						spawn.setY(rset.getInt("y"));
+						spawn.setZ(rset.getInt("z"));
 						spawn.setHeading(rset.getInt("heading"));
 						spawn.setRespawnDelay(rset.getInt("respawnDelay"));
 						spawn.setAmount(1);
@@ -234,7 +234,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 			return false;
 		}
 		
-		return _attackers.containsKey(clan.getClanId());
+		return _attackers.containsKey(clan.getId());
 	}
 	
 	@Override
@@ -252,7 +252,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	@Override
 	public L2SiegeClan getAttackerClan(L2Clan clan)
 	{
-		return getAttackerClan(clan.getClanId());
+		return getAttackerClan(clan.getId());
 	}
 	
 	@Override
@@ -272,7 +272,7 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 		for (L2PcInstance pc : list)
 		{
 			final L2Clan clan = pc.getClan();
-			if ((clan != null) && getAttackers().containsKey(clan.getClanId()))
+			if ((clan != null) && getAttackers().containsKey(clan.getId()))
 			{
 				attackers.add(pc);
 			}
@@ -479,11 +479,9 @@ public abstract class ClanHallSiegeEngine extends Quest implements Siegable
 	
 	public final void broadcastNpcSay(final L2Npc npc, final int type, final NpcStringId messageId)
 	{
-		final NpcSay npcSay = new NpcSay(npc.getObjectId(), type, npc.getNpcId(), messageId);
-		int sourceRegion = MapRegionManager.getInstance().getMapRegionLocId(npc);
-		final L2PcInstance[] charsInside = L2World.getInstance().getAllPlayersArray();
-		
-		for (L2PcInstance pc : charsInside)
+		final NpcSay npcSay = new NpcSay(npc.getObjectId(), type, npc.getId(), messageId);
+		final int sourceRegion = MapRegionManager.getInstance().getMapRegionLocId(npc);
+		for (L2PcInstance pc : L2World.getInstance().getPlayers())
 		{
 			if ((pc != null) && (MapRegionManager.getInstance().getMapRegionLocId(pc) == sourceRegion))
 			{

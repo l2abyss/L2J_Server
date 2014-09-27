@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,13 +18,16 @@
  */
 package com.l2jserver.gameserver.model.actor.templates;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.l2jserver.gameserver.datatables.InitialEquipmentData;
+import com.l2jserver.gameserver.datatables.ExperienceTable;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.base.ClassId;
-import com.l2jserver.gameserver.model.base.Race;
-import com.l2jserver.gameserver.model.items.PcItemTemplate;
+import com.l2jserver.gameserver.model.itemcontainer.Inventory;
+import com.l2jserver.util.Rnd;
 
 /**
  * @author mkizub, Zoey76
@@ -32,57 +35,54 @@ import com.l2jserver.gameserver.model.items.PcItemTemplate;
 public class L2PcTemplate extends L2CharTemplate
 {
 	private final ClassId _classId;
-	private final Race _race;
 	
-	private final int _spawnX;
-	private final int _spawnY;
-	private final int _spawnZ;
+	private final float[] _baseHp;
+	private final float[] _baseMp;
+	private final float[] _baseCp;
 	
-	private final int _classBaseLevel;
-	private final float _lvlHpAdd;
-	private final float _lvlHpMod;
-	private final float _lvlCpAdd;
-	private final float _lvlCpMod;
-	private final float _lvlMpAdd;
-	private final float _lvlMpMod;
-	
-	private final double _fCollisionHeightMale;
-	private final double _fCollisionRadiusMale;
+	private final double[] _baseHpReg;
+	private final double[] _baseMpReg;
+	private final double[] _baseCpReg;
 	
 	private final double _fCollisionHeightFemale;
 	private final double _fCollisionRadiusFemale;
 	
-	private final int _fallHeight;
+	private final int _baseSafeFallHeight;
 	
-	private final List<PcItemTemplate> _initialEquipment;
+	private final List<Location> _creationPoints;
+	private final Map<Integer, Integer> _baseSlotDef;
 	
-	public L2PcTemplate(StatsSet set)
+	public L2PcTemplate(StatsSet set, List<Location> creationPoints)
 	{
 		super(set);
-		_classId = ClassId.getClassId(set.getInteger("classId"));
-		_race = Race.values()[set.getInteger("raceId")];
+		_classId = ClassId.getClassId(set.getInt("classId"));
+		setRace(_classId.getRace());
+		_baseHp = new float[ExperienceTable.getInstance().getMaxLevel()];
+		_baseMp = new float[ExperienceTable.getInstance().getMaxLevel()];
+		_baseCp = new float[ExperienceTable.getInstance().getMaxLevel()];
+		_baseHpReg = new double[ExperienceTable.getInstance().getMaxLevel()];
+		_baseMpReg = new double[ExperienceTable.getInstance().getMaxLevel()];
+		_baseCpReg = new double[ExperienceTable.getInstance().getMaxLevel()];
 		
-		_spawnX = set.getInteger("spawnX");
-		_spawnY = set.getInteger("spawnY");
-		_spawnZ = set.getInteger("spawnZ");
+		_baseSlotDef = new HashMap<>(12);
+		_baseSlotDef.put(Inventory.PAPERDOLL_CHEST, set.getInt("basePDefchest", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_LEGS, set.getInt("basePDeflegs", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_HEAD, set.getInt("basePDefhead", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_FEET, set.getInt("basePDeffeet", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_GLOVES, set.getInt("basePDefgloves", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_UNDER, set.getInt("basePDefunderwear", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_CLOAK, set.getInt("basePDefcloak", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_REAR, set.getInt("baseMDefrear", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_LEAR, set.getInt("baseMDeflear", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_RFINGER, set.getInt("baseMDefrfinger", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_LFINGER, set.getInt("baseMDefrfinger", 0));
+		_baseSlotDef.put(Inventory.PAPERDOLL_NECK, set.getInt("baseMDefneck", 0));
 		
-		_classBaseLevel = set.getInteger("classBaseLevel");
-		_lvlHpAdd = set.getFloat("lvlHpAdd");
-		_lvlHpMod = set.getFloat("lvlHpMod");
-		_lvlCpAdd = set.getFloat("lvlCpAdd");
-		_lvlCpMod = set.getFloat("lvlCpMod");
-		_lvlMpAdd = set.getFloat("lvlMpAdd");
-		_lvlMpMod = set.getFloat("lvlMpMod");
+		_fCollisionRadiusFemale = set.getDouble("collisionFemaleradius");
+		_fCollisionHeightFemale = set.getDouble("collisionFemaleheight");
 		
-		_fCollisionRadiusMale = set.getDouble("collision_radius");
-		_fCollisionHeightMale = set.getDouble("collision_height");
-		
-		_fCollisionRadiusFemale = set.getDouble("collision_radius_female");
-		_fCollisionHeightFemale = set.getDouble("collision_height_female");
-		
-		_fallHeight = 333; // TODO: Unhardcode it.
-		
-		_initialEquipment = InitialEquipmentData.getInstance().getEquipmentList(_classId);
+		_baseSafeFallHeight = set.getInt("baseSafeFall", 333);
+		_creationPoints = creationPoints;
 	}
 	
 	/**
@@ -94,107 +94,117 @@ public class L2PcTemplate extends L2CharTemplate
 	}
 	
 	/**
-	 * @return the template race.
+	 * @return random Location of created character spawn.
 	 */
-	public Race getRace()
+	public Location getCreationPoint()
 	{
-		return _race;
+		return _creationPoints.get(Rnd.get(_creationPoints.size()));
 	}
 	
 	/**
-	 * @return the template X spawn coordinate.
+	 * Sets the value of level upgain parameter.
+	 * @param paramName name of parameter
+	 * @param level corresponding character level
+	 * @param val value of parameter
 	 */
-	public int getSpawnX()
+	public void setUpgainValue(String paramName, int level, double val)
 	{
-		return _spawnX;
+		switch (paramName)
+		{
+			case "hp":
+			{
+				_baseHp[level] = (float) val;
+				break;
+			}
+			case "mp":
+			{
+				_baseMp[level] = (float) val;
+				break;
+			}
+			case "cp":
+			{
+				_baseCp[level] = (float) val;
+				break;
+			}
+			case "hpRegen":
+			{
+				_baseHpReg[level] = val;
+				break;
+			}
+			case "mpRegen":
+			{
+				_baseMpReg[level] = val;
+				break;
+			}
+			case "cpRegen":
+			{
+				_baseCpReg[level] = val;
+				break;
+			}
+		}
 	}
 	
 	/**
-	 * @return the template Y spawn coordinate.
+	 * @param level character level to return value
+	 * @return the baseHpMax for given character level
 	 */
-	public int getSpawnY()
+	public float getBaseHpMax(int level)
 	{
-		return _spawnY;
+		return _baseHp[level];
 	}
 	
 	/**
-	 * @return the template Z spawn coordinate.
+	 * @param level character level to return value
+	 * @return the baseMpMax for given character level
 	 */
-	public int getSpawnZ()
+	public float getBaseMpMax(int level)
 	{
-		return _spawnZ;
+		return _baseMp[level];
 	}
 	
 	/**
-	 * @return the template class base level.
+	 * @param level character level to return value
+	 * @return the baseCpMax for given character level
 	 */
-	public int getClassBaseLevel()
+	public float getBaseCpMax(int level)
 	{
-		return _classBaseLevel;
+		return _baseCp[level];
 	}
 	
 	/**
-	 * @return the template level Hp add.
+	 * @param level character level to return value
+	 * @return the base HP Regeneration for given character level
 	 */
-	public float getLvlHpAdd()
+	public double getBaseHpRegen(int level)
 	{
-		return _lvlHpAdd;
+		return _baseHpReg[level];
 	}
 	
 	/**
-	 * @return the template level Hp mod.
+	 * @param level character level to return value
+	 * @return the base MP Regeneration for given character level
 	 */
-	public float getLvlHpMod()
+	public double getBaseMpRegen(int level)
 	{
-		return _lvlHpMod;
+		return _baseMpReg[level];
 	}
 	
 	/**
-	 * @return the template level Cp add.
+	 * @param level character level to return value
+	 * @return the base HP Regeneration for given character level
 	 */
-	public float getLvlCpAdd()
+	public double getBaseCpRegen(int level)
 	{
-		return _lvlCpAdd;
+		return _baseCpReg[level];
 	}
 	
 	/**
-	 * @return the template level Cp mod.
+	 * @param slotId id of inventory slot to return value
+	 * @return defence value of charactert for EMPTY given slot
 	 */
-	public float getLvlCpMod()
+	public int getBaseDefBySlot(int slotId)
 	{
-		return _lvlCpMod;
-	}
-	
-	/**
-	 * @return the template level Mp add.
-	 */
-	public float getLvlMpAdd()
-	{
-		return _lvlMpAdd;
-	}
-	
-	/**
-	 * @return the template level Mp mod.
-	 */
-	public float getLvlMpMod()
-	{
-		return _lvlMpMod;
-	}
-	
-	/**
-	 * @return the template collision height for male characters.
-	 */
-	public double getFCollisionHeightMale()
-	{
-		return _fCollisionHeightMale;
-	}
-	
-	/**
-	 * @return the template collision radius for male characters.
-	 */
-	public double getFCollisionRadiusMale()
-	{
-		return _fCollisionRadiusMale;
+		return _baseSlotDef.containsKey(slotId) ? _baseSlotDef.get(slotId) : 0;
 	}
 	
 	/**
@@ -214,26 +224,10 @@ public class L2PcTemplate extends L2CharTemplate
 	}
 	
 	/**
-	 * @return the fall height.
+	 * @return the safe fall height.
 	 */
-	public int getFallHeight()
+	public int getSafeFallHeight()
 	{
-		return _fallHeight;
-	}
-	
-	/**
-	 * @return the initial equipment for this Pc template.
-	 */
-	public List<PcItemTemplate> getInitialEquipment()
-	{
-		return _initialEquipment;
-	}
-	
-	/**
-	 * @return {@code true} if this Pc template has an initial equipment associated, {@code false} otherwise.
-	 */
-	public boolean hasInitialEquipment()
-	{
-		return _initialEquipment != null;
+		return _baseSafeFallHeight;
 	}
 }

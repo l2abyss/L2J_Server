@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -21,10 +21,10 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.l2jserver.gameserver.enums.ItemLocation;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.items.instance.L2ItemInstance.ItemLocation;
 
 /**
  * Format:(ch) d[dd]
@@ -63,9 +63,9 @@ public final class RequestSaveInventoryOrder extends L2GameClientPacket
 			for (InventoryOrder order : _order)
 			{
 				L2ItemInstance item = inventory.getItemByObjectId(order.objectID);
-				if ((item != null) && (item.getLocation() == ItemLocation.INVENTORY))
+				if ((item != null) && (item.getItemLocation() == ItemLocation.INVENTORY))
 				{
-					item.setLocation(ItemLocation.INVENTORY, order.order);
+					item.setItemLocation(ItemLocation.INVENTORY, order.order);
 				}
 			}
 		}

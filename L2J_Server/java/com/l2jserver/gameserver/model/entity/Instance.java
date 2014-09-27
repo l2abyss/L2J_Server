@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -25,12 +25,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import javolution.util.FastList;
 import javolution.util.FastMap;
 
 import org.w3c.dom.Document;
@@ -41,15 +43,15 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.Announcements;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.DoorTable;
-import com.l2jserver.gameserver.datatables.NpcTable;
+import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.idfactory.IdFactory;
 import com.l2jserver.gameserver.instancemanager.InstanceManager;
-import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.model.L2Spawn;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.StatsSet;
+import com.l2jserver.gameserver.model.TeleportWhereType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
@@ -58,14 +60,10 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2DoorTemplate;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.instancezone.InstanceWorld;
-import com.l2jserver.gameserver.model.interfaces.IL2Procedure;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
-import com.l2jserver.gameserver.network.serverpackets.L2GameServerPacket;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
-import com.l2jserver.util.L2FastList;
-import com.l2jserver.util.L2FastMap;
 
 /**
  * Main class for game instances.
@@ -80,9 +78,9 @@ public final class Instance
 	private int _ejectTime = Config.EJECT_DEAD_PLAYER_TIME;
 	/** Allow random walk for NPCs, global parameter. */
 	private boolean _allowRandomWalk = true;
-	private final L2FastList<Integer> _players = new L2FastList<>(true);
-	private final List<L2Npc> _npcs = new L2FastList<>(true);
-	private final Map<Integer, L2DoorInstance> _doors = new L2FastMap<>(true);
+	private final List<Integer> _players = new FastList<Integer>().shared();
+	private final List<L2Npc> _npcs = new FastList<L2Npc>().shared();
+	private final Map<Integer, L2DoorInstance> _doors = new ConcurrentHashMap<>();
 	private final Map<String, List<L2Spawn>> _manualSpawn = new HashMap<>();
 	private Location _spawnLoc = null;
 	private boolean _allowSummon = true;
@@ -338,7 +336,22 @@ public final class Instance
 	
 	public void removePlayers()
 	{
-		_players.executeForEach(new EjectProcedure());
+		for (Integer objectId : _players)
+		{
+			final L2PcInstance player = L2World.getInstance().getPlayer(objectId);
+			if ((player != null) && (player.getInstanceId() == getId()))
+			{
+				player.setInstanceId(0);
+				if (getSpawnLoc() != null)
+				{
+					player.teleToLocation(getSpawnLoc(), true);
+				}
+				else
+				{
+					player.teleToLocation(TeleportWhereType.TOWN);
+				}
+			}
+		}
 		_players.clear();
 	}
 	
@@ -574,13 +587,13 @@ public final class Instance
 								{
 									allowRandomWalk = Boolean.valueOf(d.getAttributes().getNamedItem("allowRandomWalk").getNodeValue());
 								}
-								npcTemplate = NpcTable.getInstance().getTemplate(npcId);
+								npcTemplate = NpcData.getInstance().getTemplate(npcId);
 								if (npcTemplate != null)
 								{
 									spawnDat = new L2Spawn(npcTemplate);
-									spawnDat.setLocx(x);
-									spawnDat.setLocy(y);
-									spawnDat.setLocz(z);
+									spawnDat.setX(x);
+									spawnDat.setY(y);
+									spawnDat.setZ(z);
 									spawnDat.setAmount(1);
 									spawnDat.setHeading(heading);
 									spawnDat.setRespawnDelay(respawn, respawnRandom);
@@ -720,7 +733,14 @@ public final class Instance
 		}
 		if (cs != null)
 		{
-			_players.executeForEach(new BroadcastPacket(cs));
+			for (Integer objectId : _players)
+			{
+				final L2PcInstance player = L2World.getInstance().getPlayer(objectId);
+				if ((player != null) && (player.getInstanceId() == getId()))
+				{
+					player.sendPacket(cs);
+				}
+			}
 		}
 		cancelTimer();
 		if (remaining >= 10000)
@@ -757,7 +777,21 @@ public final class Instance
 	{
 		if ((player != null))
 		{
-			_ejectDeadTasks.put(player.getObjectId(), ThreadPoolManager.getInstance().scheduleGeneral(new EjectPlayer(player), _ejectTime));
+			_ejectDeadTasks.put(player.getObjectId(), ThreadPoolManager.getInstance().scheduleGeneral(() ->
+			{
+				if (player.isDead() && (player.getInstanceId() == getId()))
+				{
+					player.setInstanceId(0);
+					if (getSpawnLoc() != null)
+					{
+						player.teleToLocation(getSpawnLoc(), true);
+					}
+					else
+					{
+						player.teleToLocation(TeleportWhereType.TOWN);
+					}
+				}
+			}, _ejectTime));
 		}
 	}
 	
@@ -796,76 +830,6 @@ public final class Instance
 		public void run()
 		{
 			InstanceManager.getInstance().destroyInstance(getId());
-		}
-	}
-	
-	protected class EjectPlayer implements Runnable
-	{
-		private final L2PcInstance _player;
-		
-		public EjectPlayer(L2PcInstance player)
-		{
-			_player = player;
-		}
-		
-		@Override
-		public void run()
-		{
-			if ((_player != null) && _player.isDead() && (_player.getInstanceId() == getId()))
-			{
-				_player.setInstanceId(0);
-				if (getSpawnLoc() != null)
-				{
-					_player.teleToLocation(getSpawnLoc(), true);
-				}
-				else
-				{
-					_player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
-				}
-			}
-		}
-	}
-	
-	public final class EjectProcedure implements IL2Procedure<Integer>
-	{
-		@Override
-		public boolean execute(Integer objectId)
-		{
-			final L2PcInstance player = L2World.getInstance().getPlayer(objectId);
-			if ((player != null) && (player.getInstanceId() == getId()))
-			{
-				player.setInstanceId(0);
-				if (getSpawnLoc() != null)
-				{
-					player.teleToLocation(getSpawnLoc(), true);
-				}
-				else
-				{
-					player.teleToLocation(MapRegionManager.TeleportWhereType.Town);
-				}
-			}
-			return true;
-		}
-	}
-	
-	public final class BroadcastPacket implements IL2Procedure<Integer>
-	{
-		private final L2GameServerPacket _packet;
-		
-		public BroadcastPacket(L2GameServerPacket packet)
-		{
-			_packet = packet;
-		}
-		
-		@Override
-		public boolean execute(Integer objectId)
-		{
-			final L2PcInstance player = L2World.getInstance().getPlayer(objectId);
-			if ((player != null) && (player.getInstanceId() == getId()))
-			{
-				player.sendPacket(_packet);
-			}
-			return true;
 		}
 	}
 }

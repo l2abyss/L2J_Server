@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -39,6 +39,7 @@ import com.l2jserver.gameserver.instancemanager.CHSiegeManager;
 import com.l2jserver.gameserver.instancemanager.FortManager;
 import com.l2jserver.gameserver.instancemanager.FortSiegeManager;
 import com.l2jserver.gameserver.instancemanager.SiegeManager;
+import com.l2jserver.gameserver.model.ClanPrivilege;
 import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2ClanMember;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -47,6 +48,11 @@ import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.FortSiege;
 import com.l2jserver.gameserver.model.entity.Siege;
 import com.l2jserver.gameserver.model.entity.clanhall.SiegableHall;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.player.clan.OnPlayerClanCreate;
+import com.l2jserver.gameserver.model.events.impl.character.player.clan.OnPlayerClanDestroy;
+import com.l2jserver.gameserver.model.events.impl.clan.OnClanWarFinish;
+import com.l2jserver.gameserver.model.events.impl.clan.OnClanWarStart;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.communityserver.CommunityServerThread;
 import com.l2jserver.gameserver.network.communityserver.writepackets.WorldInfo;
@@ -56,11 +62,8 @@ import com.l2jserver.gameserver.network.serverpackets.PledgeShowMemberListAll;
 import com.l2jserver.gameserver.network.serverpackets.PledgeShowMemberListUpdate;
 import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.network.serverpackets.UserInfo;
-import com.l2jserver.gameserver.scripting.scriptengine.events.ClanWarEvent;
-import com.l2jserver.gameserver.scripting.scriptengine.impl.L2Script.EventStage;
-import com.l2jserver.gameserver.scripting.scriptengine.listeners.clan.ClanWarListener;
 import com.l2jserver.gameserver.util.Util;
-import com.l2jserver.util.L2FastList;
+import com.l2jserver.util.EnumIntBitmask;
 
 /**
  * This class loads the clan related data.
@@ -68,8 +71,6 @@ import com.l2jserver.util.L2FastList;
 public class ClanTable
 {
 	private static final Logger _log = Logger.getLogger(ClanTable.class.getName());
-	
-	private static List<ClanWarListener> clanWarListeners = new L2FastList<>(true);
 	
 	private final Map<Integer, L2Clan> _clans = new HashMap<>();
 	
@@ -100,7 +101,7 @@ public class ClanTable
 				clan = getClan(clanId);
 				if (clan.getDissolvingExpiryTime() != 0)
 				{
-					scheduleRemoveClan(clan.getClanId());
+					scheduleRemoveClan(clan.getId());
 				}
 				clanCount++;
 			}
@@ -120,9 +121,7 @@ public class ClanTable
 	 */
 	public L2Clan getClan(int clanId)
 	{
-		L2Clan clan = _clans.get(Integer.valueOf(clanId));
-		
-		return clan;
+		return _clans.get(clanId);
 	}
 	
 	public L2Clan getClanByName(String clanName)
@@ -153,7 +152,7 @@ public class ClanTable
 		
 		if (Config.DEBUG)
 		{
-			_log.fine(getClass().getSimpleName() + ": " + player.getObjectId() + "(" + player.getName() + ") requested a clan creation.");
+			_log.info(getClass().getSimpleName() + ": " + player.getObjectId() + "(" + player.getName() + ") requested a clan creation.");
 		}
 		
 		if (10 > player.getLevel())
@@ -199,9 +198,9 @@ public class ClanTable
 		clan.store();
 		player.setClan(clan);
 		player.setPledgeClass(L2ClanMember.calculatePledgeClass(player));
-		player.setClanPrivileges(L2Clan.CP_ALL);
+		player.setClanPrivileges(new EnumIntBitmask<>(ClanPrivilege.class, true));
 		
-		_clans.put(Integer.valueOf(clan.getClanId()), clan);
+		_clans.put(Integer.valueOf(clan.getId()), clan);
 		
 		// should be update packet only
 		player.sendPacket(new PledgeShowInfoUpdate(clan));
@@ -212,6 +211,9 @@ public class ClanTable
 		player.sendPacket(SystemMessageId.CLAN_CREATED);
 		// notify CB server that a new Clan is created
 		CommunityServerThread.getInstance().sendPacket(new WorldInfo(null, clan, WorldInfo.TYPE_UPDATE_CLAN_DATA));
+		
+		// Notify to scripts
+		EventDispatcher.getInstance().notifyEventAsync(new OnPlayerClanCreate(player, clan));
 		return clan;
 	}
 	
@@ -238,7 +240,7 @@ public class ClanTable
 		{
 			for (FortSiege siege : FortSiegeManager.getInstance().getSieges())
 			{
-				siege.removeSiegeClan(clan);
+				siege.removeAttacker(clan);
 			}
 		}
 		
@@ -254,7 +256,7 @@ public class ClanTable
 		Auction auction = AuctionManager.getInstance().getAuction(clan.getAuctionBiddedAt());
 		if (auction != null)
 		{
-			auction.cancelBid(clan.getClanId());
+			auction.cancelBid(clan.getId());
 		}
 		
 		L2ClanMember leaderMember = clan.getLeader();
@@ -349,23 +351,22 @@ public class ClanTable
 		{
 			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error removing clan from DB.", e);
 		}
+		
+		// Notify to scripts
+		EventDispatcher.getInstance().notifyEventAsync(new OnPlayerClanDestroy(leaderMember, clan));
 	}
 	
 	public void scheduleRemoveClan(final int clanId)
 	{
-		ThreadPoolManager.getInstance().scheduleGeneral(new Runnable()
+		ThreadPoolManager.getInstance().scheduleGeneral(() ->
 		{
-			@Override
-			public void run()
+			if (getClan(clanId) == null)
 			{
-				if (getClan(clanId) == null)
-				{
-					return;
-				}
-				if (getClan(clanId).getDissolvingExpiryTime() != 0)
-				{
-					destroyClan(clanId);
-				}
+				return;
+			}
+			if (getClan(clanId).getDissolvingExpiryTime() != 0)
+			{
+				destroyClan(clanId);
 			}
 		}, Math.max(getClan(clanId).getDissolvingExpiryTime() - System.currentTimeMillis(), 300000));
 	}
@@ -384,13 +385,10 @@ public class ClanTable
 	
 	public void storeclanswars(int clanId1, int clanId2)
 	{
-		L2Clan clan1 = ClanTable.getInstance().getClan(clanId1);
-		L2Clan clan2 = ClanTable.getInstance().getClan(clanId2);
+		final L2Clan clan1 = ClanTable.getInstance().getClan(clanId1);
+		final L2Clan clan2 = ClanTable.getInstance().getClan(clanId2);
 		
-		if (!fireClanWarStartListeners(clan1, clan2))
-		{
-			return;
-		}
+		EventDispatcher.getInstance().notifyEventAsync(new OnClanWarStart(clan1, clan2));
 		
 		clan1.setEnemyClan(clan2);
 		clan2.setAttackerClan(clan1);
@@ -429,10 +427,7 @@ public class ClanTable
 		L2Clan clan1 = ClanTable.getInstance().getClan(clanId1);
 		L2Clan clan2 = ClanTable.getInstance().getClan(clanId2);
 		
-		if (!fireClanWarEndListeners(clan1, clan2))
-		{
-			return;
-		}
+		EventDispatcher.getInstance().notifyEventAsync(new OnClanWarFinish(clan1, clan2));
 		
 		clan1.deleteEnemyClan(clan2);
 		clan2.deleteAttackerClan(clan1);
@@ -472,13 +467,9 @@ public class ClanTable
 		}
 		if (count == (clan1.getMembers().length - 1))
 		{
-			if (!fireClanWarEndListeners(clan1, clan2))
-			{
-				return;
-			}
 			clan1.deleteEnemyClan(clan2);
 			clan2.deleteEnemyClan(clan1);
-			deleteclanswars(clan1.getClanId(), clan2.getClanId());
+			deleteclanswars(clan1.getId(), clan2.getId());
 		}
 	}
 	
@@ -518,7 +509,7 @@ public class ClanTable
 		for (L2Clan clan : _clans.values())
 		{
 			int allyId = clan.getAllyId();
-			if ((allyId != 0) && (clan.getClanId() != allyId))
+			if ((allyId != 0) && (clan.getId() != allyId))
 			{
 				if (!_clans.containsKey(allyId))
 				{
@@ -554,79 +545,6 @@ public class ClanTable
 		{
 			clan.updateClanScoreInDB();
 		}
-	}
-	
-	/**
-	 * Fires all the ClanWarListener.onWarStart() methods<br>
-	 * Returns true if the clan war is allowed
-	 * @param clan1
-	 * @param clan2
-	 * @return
-	 */
-	private boolean fireClanWarStartListeners(L2Clan clan1, L2Clan clan2)
-	{
-		if (!clanWarListeners.isEmpty() && (clan1 != null) && (clan2 != null))
-		{
-			ClanWarEvent event = new ClanWarEvent();
-			event.setClan1(clan1);
-			event.setClan2(clan2);
-			event.setStage(EventStage.START);
-			for (ClanWarListener listener : clanWarListeners)
-			{
-				if (!listener.onWarStart(event))
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Fires all the ClanWarListener.onWarEnd() methods<br>
-	 * Returns true if the clan war end is allowed
-	 * @param clan1
-	 * @param clan2
-	 * @return
-	 */
-	private boolean fireClanWarEndListeners(L2Clan clan1, L2Clan clan2)
-	{
-		if (!clanWarListeners.isEmpty() && (clan1 != null) && (clan2 != null))
-		{
-			ClanWarEvent event = new ClanWarEvent();
-			event.setClan1(clan1);
-			event.setClan2(clan2);
-			event.setStage(EventStage.END);
-			for (ClanWarListener listener : clanWarListeners)
-			{
-				if (!listener.onWarEnd(event))
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * Adds a clan war listener
-	 * @param listener
-	 */
-	public static void addClanWarListener(ClanWarListener listener)
-	{
-		if (!clanWarListeners.contains(listener))
-		{
-			clanWarListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * Removes a clan war listener
-	 * @param listener
-	 */
-	public static void removeClanWarListener(ClanWarListener listener)
-	{
-		clanWarListeners.remove(listener);
 	}
 	
 	public static ClanTable getInstance()

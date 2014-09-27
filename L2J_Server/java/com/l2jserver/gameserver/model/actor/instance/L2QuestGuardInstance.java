@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,12 +18,14 @@
  */
 package com.l2jserver.gameserver.model.actor.instance;
 
-import com.l2jserver.gameserver.ThreadPoolManager;
+import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.model.actor.L2Attackable;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
-import com.l2jserver.gameserver.model.quest.Quest;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.npc.attackable.OnAttackableAttack;
+import com.l2jserver.gameserver.model.events.impl.character.npc.attackable.OnAttackableKill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * This class extends Guard class for quests, that require tracking of onAttack and onKill events from monsters' attacks.
@@ -41,19 +43,13 @@ public final class L2QuestGuardInstance extends L2GuardInstance
 	}
 	
 	@Override
-	public void addDamage(L2Character attacker, int damage, L2Skill skill)
+	public void addDamage(L2Character attacker, int damage, Skill skill)
 	{
 		super.addDamage(attacker, damage, skill);
 		
 		if (attacker instanceof L2Attackable)
 		{
-			if (getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK) != null)
-			{
-				for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_ATTACK))
-				{
-					quest.notifyAttack(this, null, damage, false, skill);
-				}
-			}
+			EventDispatcher.getInstance().notifyEventAsync(new OnAttackableAttack(null, this, damage, skill, false), this);
 		}
 	}
 	
@@ -68,15 +64,9 @@ public final class L2QuestGuardInstance extends L2GuardInstance
 		
 		if (killer instanceof L2Attackable)
 		{
-			if (getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL) != null)
-			{
-				for (Quest quest : getTemplate().getEventQuests(Quest.QuestEventType.ON_KILL))
-				{
-					ThreadPoolManager.getInstance().scheduleEffect(new OnKillNotifyTask(this, quest, null, false), _onKillDelay);
-				}
-			}
+			// Delayed notification
+			EventDispatcher.getInstance().notifyEventAsyncDelayed(new OnAttackableKill(null, this, false), this, _onKillDelay);
 		}
-		
 		return true;
 	}
 	

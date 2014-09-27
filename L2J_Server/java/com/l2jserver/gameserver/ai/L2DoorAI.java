@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,12 +19,12 @@
 package com.l2jserver.gameserver.ai;
 
 import com.l2jserver.gameserver.ThreadPoolManager;
-import com.l2jserver.gameserver.model.L2CharPosition;
 import com.l2jserver.gameserver.model.L2Object;
+import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2DefenderInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoorInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 
 /**
  * @author mkizub
@@ -58,12 +58,12 @@ public class L2DoorAI extends L2CharacterAI
 	}
 	
 	@Override
-	protected void onIntentionCast(L2Skill skill, L2Object target)
+	protected void onIntentionCast(Skill skill, L2Object target)
 	{
 	}
 	
 	@Override
-	protected void onIntentionMoveTo(L2CharPosition destination)
+	protected void onIntentionMoveTo(Location destination)
 	{
 	}
 	
@@ -91,7 +91,7 @@ public class L2DoorAI extends L2CharacterAI
 	protected void onEvtAttacked(L2Character attacker)
 	{
 		L2DoorInstance me = (L2DoorInstance) _actor;
-		ThreadPoolManager.getInstance().executeTask(new onEventAttackedDoorTask(me, attacker));
+		ThreadPoolManager.getInstance().executeGeneral(new onEventAttackedDoorTask(me, attacker));
 	}
 	
 	@Override
@@ -135,7 +135,7 @@ public class L2DoorAI extends L2CharacterAI
 	}
 	
 	@Override
-	protected void onEvtArrivedBlocked(L2CharPosition blocked_at_pos)
+	protected void onEvtArrivedBlocked(Location blocked_at_loc)
 	{
 	}
 	
@@ -170,7 +170,7 @@ public class L2DoorAI extends L2CharacterAI
 		{
 			for (L2DefenderInstance guard : _door.getKnownDefenders())
 			{
-				if (_actor.isInsideRadius(guard, guard.getFactionRange(), false, true) && (Math.abs(_attacker.getZ() - guard.getZ()) < 200))
+				if (_actor.isInsideRadius(guard, guard.getTemplate().getClanHelpRange(), false, true) && (Math.abs(_attacker.getZ() - guard.getZ()) < 200))
 				{
 					guard.getAI().notifyEvent(CtrlEvent.EVT_AGGRESSION, _attacker, 15);
 				}

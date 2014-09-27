@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -112,11 +112,11 @@ public class QuestTimer
 	}
 	
 	/**
-	 * public method to compare if this timer matches with the key attributes passed.
-	 * @param quest : Quest instance to which the timer is attached
-	 * @param name : Name of the timer
-	 * @param npc : Npc instance attached to the desired timer (null if no npc attached)
-	 * @param player : Player instance attached to the desired timer (null if no player attached)
+	 * Compares if this timer matches with the key attributes passed.
+	 * @param quest the quest to which the timer is attached
+	 * @param name the name of the timer
+	 * @param npc the NPC attached to the desired timer (null if no NPC attached)
+	 * @param player the player attached to the desired timer (null if no player attached)
 	 * @return
 	 */
 	public boolean isMatch(Quest quest, String name, L2Npc npc, L2PcInstance player)

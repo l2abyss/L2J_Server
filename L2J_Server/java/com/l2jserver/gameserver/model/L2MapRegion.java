@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.model.base.Race;
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.util.Rnd;
 
 /**

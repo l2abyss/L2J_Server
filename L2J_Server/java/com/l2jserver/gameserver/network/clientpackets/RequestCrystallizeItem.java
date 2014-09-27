@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -19,13 +19,14 @@
 package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
+import com.l2jserver.gameserver.enums.Race;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.base.Race;
 import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
-import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.items.type.CrystalType;
+import com.l2jserver.gameserver.model.skills.CommonSkill;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.InventoryUpdate;
@@ -73,18 +74,18 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 			return;
 		}
 		
-		if ((activeChar.getPrivateStoreType() != L2PcInstance.STORE_PRIVATE_NONE) || activeChar.isInCrystallize())
+		if ((activeChar.getPrivateStoreType() != PrivateStoreType.NONE) || activeChar.isInCrystallize())
 		{
 			activeChar.sendPacket(SystemMessageId.CANNOT_TRADE_DISCARD_DROP_ITEM_WHILE_IN_SHOPMODE);
 			return;
 		}
 		
-		int skillLevel = activeChar.getSkillLevel(L2Skill.SKILL_CRYSTALLIZE);
+		int skillLevel = activeChar.getSkillLevel(CommonSkill.CRYSTALLIZE.getId());
 		if (skillLevel <= 0)
 		{
 			activeChar.sendPacket(SystemMessageId.CRYSTALLIZE_LEVEL_TOO_LOW);
 			activeChar.sendPacket(ActionFailed.STATIC_PACKET);
-			if ((activeChar.getRace() != Race.Dwarf) && (activeChar.getClassId().ordinal() != 117) && (activeChar.getClassId().ordinal() != 55))
+			if ((activeChar.getRace() != Race.DWARF) && (activeChar.getClassId().ordinal() != 117) && (activeChar.getClassId().ordinal() != 55))
 			{
 				_log.info("Player " + activeChar.getClient() + " used crystalize with classid: " + activeChar.getClassId().ordinal());
 			}
@@ -118,13 +119,13 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 			return;
 		}
 		
-		if (!itemToRemove.getItem().isCrystallizable() || (itemToRemove.getItem().getCrystalCount() <= 0) || (itemToRemove.getItem().getCrystalType() == L2Item.CRYSTAL_NONE))
+		if (!itemToRemove.getItem().isCrystallizable() || (itemToRemove.getItem().getCrystalCount() <= 0) || (itemToRemove.getItem().getCrystalType() == CrystalType.NONE))
 		{
-			_log.warning(activeChar.getName() + " (" + activeChar.getObjectId() + ") tried to crystallize " + itemToRemove.getItem().getItemId());
+			_log.warning(activeChar.getName() + " (" + activeChar.getObjectId() + ") tried to crystallize " + itemToRemove.getItem().getId());
 			return;
 		}
 		
-		if (!activeChar.getInventory().canManipulateWithItemId(itemToRemove.getItemId()))
+		if (!activeChar.getInventory().canManipulateWithItemId(itemToRemove.getId()))
 		{
 			activeChar.sendMessage("You cannot use this item.");
 			return;
@@ -135,7 +136,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 		
 		switch (itemToRemove.getItem().getItemGradeSPlus())
 		{
-			case L2Item.CRYSTAL_C:
+			case C:
 			{
 				if (skillLevel <= 1)
 				{
@@ -143,7 +144,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 				}
 				break;
 			}
-			case L2Item.CRYSTAL_B:
+			case B:
 			{
 				if (skillLevel <= 2)
 				{
@@ -151,7 +152,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 				}
 				break;
 			}
-			case L2Item.CRYSTAL_A:
+			case A:
 			{
 				if (skillLevel <= 3)
 				{
@@ -159,7 +160,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 				}
 				break;
 			}
-			case L2Item.CRYSTAL_S:
+			case S:
 			{
 				if (skillLevel <= 4)
 				{
@@ -193,7 +194,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 			if (itemToRemove.getEnchantLevel() > 0)
 			{
 				sm = SystemMessage.getSystemMessage(SystemMessageId.EQUIPMENT_S1_S2_REMOVED);
-				sm.addNumber(itemToRemove.getEnchantLevel());
+				sm.addInt(itemToRemove.getEnchantLevel());
 				sm.addItemName(itemToRemove);
 			}
 			else
@@ -222,7 +223,7 @@ public final class RequestCrystallizeItem extends L2GameClientPacket
 		
 		sm = SystemMessage.getSystemMessage(SystemMessageId.EARNED_S2_S1_S);
 		sm.addItemName(createditem);
-		sm.addItemNumber(crystalAmount);
+		sm.addLong(crystalAmount);
 		activeChar.sendPacket(sm);
 		
 		activeChar.broadcastUserInfo();

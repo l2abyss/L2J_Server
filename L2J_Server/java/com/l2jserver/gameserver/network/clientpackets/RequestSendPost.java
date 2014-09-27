@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -18,12 +18,13 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.ADENA_ID;
-import static com.l2jserver.gameserver.model.itemcontainer.PcInventory.MAX_ADENA;
+import static com.l2jserver.gameserver.model.itemcontainer.Inventory.ADENA_ID;
+import static com.l2jserver.gameserver.model.itemcontainer.Inventory.MAX_ADENA;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.datatables.AdminTable;
 import com.l2jserver.gameserver.datatables.CharNameTable;
+import com.l2jserver.gameserver.enums.PrivateStoreType;
 import com.l2jserver.gameserver.instancemanager.MailManager;
 import com.l2jserver.gameserver.model.BlockList;
 import com.l2jserver.gameserver.model.L2AccessLevel;
@@ -148,7 +149,7 @@ public final class RequestSendPost extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.getPrivateStoreType() > L2PcInstance.STORE_PRIVATE_NONE)
+		if (activeChar.getPrivateStoreType() != PrivateStoreType.NONE)
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_FORWARD_PRIVATE_STORE);
 			return;
@@ -222,7 +223,7 @@ public final class RequestSendPost extends L2GameClientPacket
 			return;
 		}
 		
-		if (activeChar.isInJail() && ((Config.JAIL_DISABLE_TRANSACTION && (_items != null)) || Config.JAIL_DISABLE_CHAT))
+		if (activeChar.isJailed() && ((Config.JAIL_DISABLE_TRANSACTION && (_items != null)) || Config.JAIL_DISABLE_CHAT))
 		{
 			activeChar.sendPacket(SystemMessageId.CANT_FORWARD_NOT_IN_PEACE_ZONE);
 			return;
@@ -282,7 +283,7 @@ public final class RequestSendPost extends L2GameClientPacket
 				
 				fee += MESSAGE_FEE_PER_SLOT;
 				
-				if (item.getItemId() == ADENA_ID)
+				if (item.getId() == ADENA_ID)
 				{
 					currentAdena -= i.getCount();
 				}
@@ -331,7 +332,7 @@ public final class RequestSendPost extends L2GameClientPacket
 				_log.warning("Error adding attachment for char " + player.getName() + " (newitem == null)");
 				continue;
 			}
-			newItem.setLocation(newItem.getLocation(), msg.getId());
+			newItem.setItemLocation(newItem.getItemLocation(), msg.getId());
 			
 			if (playerIU != null)
 			{

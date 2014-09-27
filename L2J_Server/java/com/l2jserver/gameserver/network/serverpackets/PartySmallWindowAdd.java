@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -23,24 +23,21 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 
 public final class PartySmallWindowAdd extends L2GameServerPacket
 {
-	
 	private final L2PcInstance _member;
-	private final int _leaderId;
-	private final int _distribution;
+	private final L2Party _party;
 	
 	public PartySmallWindowAdd(L2PcInstance member, L2Party party)
 	{
 		_member = member;
-		_leaderId = party.getLeaderObjectId();
-		_distribution = party.getLootDistribution();
+		_party = party;
 	}
 	
 	@Override
 	protected final void writeImpl()
 	{
 		writeC(0x4F);
-		writeD(_leaderId); // c3
-		writeD(_distribution);// writeD(0x04); ?? //c3
+		writeD(_party.getLeaderObjectId()); // c3
+		writeD(_party.getDistributionType().getId());// writeD(0x04); ?? //c3
 		writeD(_member.getObjectId());
 		writeS(_member.getName());
 		writeD((int) _member.getCurrentCp()); // c4

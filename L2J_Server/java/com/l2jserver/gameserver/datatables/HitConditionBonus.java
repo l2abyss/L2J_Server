@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -76,25 +76,25 @@ public final class HitConditionBonus extends DocumentParser
 			switch (d.getNodeName())
 			{
 				case "front":
-					frontBonus = parseInt(attrs, "val");
+					frontBonus = parseInteger(attrs, "val");
 					break;
 				case "side":
-					sideBonus = parseInt(attrs, "val");
+					sideBonus = parseInteger(attrs, "val");
 					break;
 				case "back":
-					backBonus = parseInt(attrs, "val");
+					backBonus = parseInteger(attrs, "val");
 					break;
 				case "high":
-					highBonus = parseInt(attrs, "val");
+					highBonus = parseInteger(attrs, "val");
 					break;
 				case "low":
-					lowBonus = parseInt(attrs, "val");
+					lowBonus = parseInteger(attrs, "val");
 					break;
 				case "dark":
-					darkBonus = parseInt(attrs, "val");
+					darkBonus = parseInteger(attrs, "val");
 					break;
 				case "rain":
-					rainBonus = parseInt(attrs, "val");
+					rainBonus = parseInteger(attrs, "val");
 					break;
 			}
 		}

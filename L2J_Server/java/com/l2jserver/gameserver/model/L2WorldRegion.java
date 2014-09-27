@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -36,7 +36,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.L2Playable;
 import com.l2jserver.gameserver.model.actor.L2Vehicle;
-import com.l2jserver.gameserver.model.skills.L2Skill;
+import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.type.L2PeaceZone;
 
@@ -66,14 +66,7 @@ public final class L2WorldRegion
 		_tileY = pTileY;
 		
 		// default a newly initialized region to inactive, unless always on is specified
-		if (Config.GRIDS_ALWAYS_ON)
-		{
-			_active = true;
-		}
-		else
-		{
-			_active = false;
-		}
+		_active = Config.GRIDS_ALWAYS_ON;
 		_zones = new FastList<>();
 	}
 	
@@ -134,7 +127,7 @@ public final class L2WorldRegion
 		return false;
 	}
 	
-	public boolean checkEffectRangeInsidePeaceZone(L2Skill skill, final int x, final int y, final int z)
+	public boolean checkEffectRangeInsidePeaceZone(Skill skill, final int x, final int y, final int z)
 	{
 		final int range = skill.getEffectRange();
 		final int up = y + range;

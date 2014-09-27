@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -33,7 +33,7 @@ public class PledgeInfo extends L2GameServerPacket
 	protected final void writeImpl()
 	{
 		writeC(0x89);
-		writeD(_clan.getClanId());
+		writeD(_clan.getId());
 		writeS(_clan.getName());
 		writeS(_clan.getAllyName());
 	}

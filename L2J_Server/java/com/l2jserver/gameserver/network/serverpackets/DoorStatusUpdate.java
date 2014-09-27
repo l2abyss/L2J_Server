@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -37,7 +37,7 @@ public final class DoorStatusUpdate extends L2GameServerPacket
 		writeD(_door.getOpen() ? 0 : 1);
 		writeD(_door.getDamage());
 		writeD(_door.isEnemy() ? 1 : 0);
-		writeD(_door.getDoorId());
+		writeD(_door.getId());
 		writeD((int) _door.getCurrentHp());
 		writeD(_door.getMaxHp());
 	}

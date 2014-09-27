@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -44,23 +44,16 @@ public class ExGetPremiumItemList extends L2GameServerPacket
 	{
 		writeC(0xFE);
 		writeH(0x86);
-		if (!_map.isEmpty())
+		writeD(_map.size());
+		for (Entry<Integer, L2PremiumItem> entry : _map.entrySet())
 		{
-			writeD(_map.size());
-			for (Entry<Integer, L2PremiumItem> entry : _map.entrySet())
-			{
-				L2PremiumItem item = entry.getValue();
-				writeD(entry.getKey());
-				writeD(_activeChar.getObjectId());
-				writeD(item.getItemId());
-				writeQ(item.getCount());
-				writeD(0x00); // ?
-				writeS(item.getSender());
-			}
-		}
-		else
-		{
-			writeD(0x00);
+			L2PremiumItem item = entry.getValue();
+			writeD(entry.getKey());
+			writeD(_activeChar.getObjectId());
+			writeD(item.getItemId());
+			writeQ(item.getCount());
+			writeD(0x00); // ?
+			writeS(item.getSender());
 		}
 	}
 }

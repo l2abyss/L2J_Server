@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -76,15 +76,18 @@ public class PcKnownList extends PlayableKnownList
 		}
 		else
 		{
-			object.sendInfo(getActiveChar());
-			
-			if (object instanceof L2Character)
+			if (object.isVisibleFor(getActiveChar()))
 			{
-				// Update the state of the L2Character object client side by sending Server->Client packet MoveToPawn/CharMoveToLocation and AutoAttackStart to the L2PcInstance
-				L2Character obj = (L2Character) object;
-				if (obj.hasAI())
+				object.sendInfo(getActiveChar());
+				
+				if (object instanceof L2Character)
 				{
-					obj.getAI().describeStateToPlayer(getActiveChar());
+					// Update the state of the L2Character object client side by sending Server->Client packet MoveToPawn/CharMoveToLocation and AutoAttackStart to the L2PcInstance
+					final L2Character obj = (L2Character) object;
+					if (obj.hasAI())
+					{
+						obj.getAI().describeStateToPlayer(getActiveChar());
+					}
 				}
 			}
 		}
@@ -137,7 +140,7 @@ public class PcKnownList extends PlayableKnownList
 	@Override
 	public int getDistanceToForgetObject(L2Object object)
 	{
-		if (object.isWalker())
+		if (object.isVehicle())
 		{
 			return 10000;
 		}
@@ -164,7 +167,7 @@ public class PcKnownList extends PlayableKnownList
 	@Override
 	public int getDistanceToWatchObject(L2Object object)
 	{
-		if (object.isWalker())
+		if (object.isVehicle())
 		{
 			return 9000;
 		}

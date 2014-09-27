@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2013 L2J Server
+ * Copyright (C) 2004-2014 L2J Server
  * 
  * This file is part of L2J Server.
  * 
@@ -25,12 +25,18 @@ import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
  * Useful utilities common to L2J Server.
  */
-public class Util
+public final class Util
 {
 	private static final Logger _log = Logger.getLogger(Util.class.getName());
 	
@@ -166,5 +172,55 @@ public class Util
 		{
 			return false;
 		}
+	}
+	
+	/**
+	 * Split words with a space.
+	 * @param input the string to split
+	 * @return the split string
+	 */
+	public static String splitWords(String input)
+	{
+		return input.replaceAll("(\\p{Ll})(\\p{Lu})", "$1 $2");
+	}
+	
+	/**
+	 * Gets the next or same closest date from the specified days in {@code daysOfWeek Array} at specified {@code hour} and {@code min}.
+	 * @param daysOfWeek the days of week
+	 * @param hour the hour
+	 * @param min the min
+	 * @return the next or same date from the days of week at specified time
+	 * @throws IllegalArgumentException if the {@code daysOfWeek Array} is empty.
+	 */
+	public static LocalDateTime getNextClosestDateTime(DayOfWeek[] daysOfWeek, int hour, int min) throws IllegalArgumentException
+	{
+		return getNextClosestDateTime(Arrays.asList(daysOfWeek), hour, min);
+	}
+	
+	/**
+	 * Gets the next or same closest date from the specified days in {@code daysOfWeek List} at specified {@code hour} and {@code min}.
+	 * @param daysOfWeek the days of week
+	 * @param hour the hour
+	 * @param min the min
+	 * @return the next or same date from the days of week at specified time
+	 * @throws IllegalArgumentException if the {@code daysOfWeek List} is empty.
+	 */
+	public static LocalDateTime getNextClosestDateTime(List<DayOfWeek> daysOfWeek, int hour, int min) throws IllegalArgumentException
+	{
+		if (daysOfWeek.isEmpty())
+		{
+			throw new IllegalArgumentException("daysOfWeek should not be empty.");
+		}
+		
+		final LocalDateTime dateNow = LocalDateTime.now();
+		final LocalDateTime dateNowWithDifferentTime = dateNow.withHour(hour).withMinute(min).withSecond(0);
+		
+		// @formatter:off
+		return daysOfWeek.stream()
+			.map(d -> dateNowWithDifferentTime.with(TemporalAdjusters.nextOrSame(d)))
+			.filter(d -> d.isAfter(dateNow))
+			.min(Comparator.naturalOrder())
+			.orElse(dateNowWithDifferentTime.with(TemporalAdjusters.next(daysOfWeek.get(0))));
+		// @formatter:on
 	}
 }
