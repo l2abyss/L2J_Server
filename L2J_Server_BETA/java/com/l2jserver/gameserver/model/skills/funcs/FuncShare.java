@@ -46,9 +46,55 @@ public class FuncShare extends Func
 				final L2PcInstance player = summon.getOwner();
 				if (player != null)
 				{
-					final double value = player.calcStat(stat, 0, null, null) * _lambda.calc(env);
-					env.addValue(value);
+					env.addValue(getBaseValue(stat, player) * _lambda.calc(env));
 				}
+			}
+		}
+	}
+	
+	public static double getBaseValue(Stats stat, L2PcInstance player)
+	{
+		switch (stat)
+		{
+			case MAX_HP:
+			{
+				return player.getMaxHp();
+			}
+			case MAX_MP:
+			{
+				return player.getMaxMp();
+			}
+			case POWER_ATTACK:
+			{
+				return player.getPAtk(null);
+			}
+			case MAGIC_ATTACK:
+			{
+				return player.getMAtk(null, null);
+			}
+			case POWER_DEFENCE:
+			{
+				return player.getPDef(null);
+			}
+			case MAGIC_DEFENCE:
+			{
+				return player.getMDef(null, null);
+			}
+			case CRITICAL_RATE:
+			{
+				return player.getCriticalHit(null, null);
+			}
+			case POWER_ATTACK_SPEED:
+			{
+				return player.getPAtkSpd();
+			}
+			case MAGIC_ATTACK_SPEED:
+			{
+				return player.getMAtkSpd();
+			}
+			default:
+			{
+				return player.calcStat(stat, 0, null, null);
 			}
 		}
 	}
