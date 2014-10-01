@@ -38,7 +38,6 @@ import com.l2jserver.gameserver.model.L2Clan;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.TowerSpawn;
-import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Castle;
 import com.l2jserver.gameserver.model.entity.Siege;
@@ -72,46 +71,6 @@ public final class SiegeManager
 		{
 			character.addSkill(sk, false);
 		}
-	}
-	
-	/**
-	 * @param activeChar The L2Character of the character can summon
-	 * @param isCheckOnly
-	 * @return true if character summon
-	 */
-	public final boolean checkIfOkToSummon(L2Character activeChar, boolean isCheckOnly)
-	{
-		if (!(activeChar instanceof L2PcInstance))
-		{
-			return false;
-		}
-		
-		String text = "";
-		L2PcInstance player = (L2PcInstance) activeChar;
-		Castle castle = CastleManager.getInstance().getCastle(player);
-		
-		if ((castle == null) || (castle.getResidenceId() <= 0))
-		{
-			text = "You must be on castle ground to summon this";
-		}
-		else if (!castle.getSiege().isInProgress())
-		{
-			text = "You can only summon this during a siege.";
-		}
-		else if ((player.getClanId() != 0) && (castle.getSiege().getAttackerClan(player.getClanId()) == null))
-		{
-			text = "You can only summon this as a registered attacker.";
-		}
-		else
-		{
-			return true;
-		}
-		
-		if (!isCheckOnly)
-		{
-			player.sendMessage(text);
-		}
-		return false;
 	}
 	
 	/**
@@ -172,7 +131,7 @@ public final class SiegeManager
 		_flagMaxCount = siegeSettings.getInt("MaxFlags", 1);
 		_siegeClanMinLevel = siegeSettings.getInt("SiegeClanMinLevel", 5);
 		_siegeLength = siegeSettings.getInt("SiegeLength", 120);
-		_bloodAllianceReward = siegeSettings.getInt("BloodAllianceReward", 0);
+		_bloodAllianceReward = siegeSettings.getInt("BloodAllianceReward", 1);
 		
 		for (Castle castle : CastleManager.getInstance().getCastles())
 		{
