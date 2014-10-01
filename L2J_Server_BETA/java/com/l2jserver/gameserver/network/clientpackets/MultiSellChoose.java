@@ -118,8 +118,8 @@ public class MultiSellChoose extends L2GameClientPacket
 			return;
 		}
 		
-		L2Npc target = player.getLastFolkNPC();
-		if (!player.isGM() && ((target == null) || !list.checkNpcObjectId(target.getObjectId()) || !target.canInteract(player)))
+		final L2Npc npc = player.getLastFolkNPC();
+		if (((npc != null) && !list.isNpcAllowed(npc.getId())) || ((npc == null) && list.isNpcOnly()))
 		{
 			player.setMultiSell(null);
 			return;
@@ -461,11 +461,10 @@ public class MultiSellChoose extends L2GameClientPacket
 				}
 				
 				// finally, give the tax to the castle...
-				if (entry.getTaxAmount() > 0)
+				if ((npc != null) && (entry.getTaxAmount() > 0))
 				{
-					target.getCastle().addToTreasury(entry.getTaxAmount() * _amount);
+					npc.getCastle().addToTreasury(entry.getTaxAmount() * _amount);
 				}
-				
 				break;
 			}
 		}
