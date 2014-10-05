@@ -9057,6 +9057,11 @@ public final class L2PcInstance extends L2Playable
 			return false;
 		}
 		
+		if (!(target instanceof L2Playable))
+		{
+			return true;
+		}
+		
 		if (skill.isDebuff() || skill.hasEffectType(L2EffectType.STEAL_ABNORMAL) || skill.isBad())
 		{
 			
