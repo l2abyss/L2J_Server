@@ -9160,6 +9160,7 @@ public final class L2PcInstance extends L2Playable
 					{
 						return true;
 					}
+					return isCtrlPressed;
 				}
 				else if ((getClanId() == targetPlayer.getClanId()) || ((getAllyId() > 0) && (getAllyId() == targetPlayer.getAllyId())))
 				{
