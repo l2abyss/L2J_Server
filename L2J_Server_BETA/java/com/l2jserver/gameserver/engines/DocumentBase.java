@@ -60,6 +60,7 @@ import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanCreateBase;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanCreateOutpost;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanEscape;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanRefuelAirship;
+import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanResurrect;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanSummon;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanSummonSiegeGolem;
 import com.l2jserver.gameserver.model.conditions.ConditionPlayerCanSweep;
@@ -868,6 +869,11 @@ public abstract class DocumentBase
 				case "canrefuelairship":
 				{
 					cond = joinAnd(cond, new ConditionPlayerCanRefuelAirship(Integer.parseInt(a.getNodeValue())));
+					break;
+				}
+				case "canresurrect":
+				{
+					cond = joinAnd(cond, new ConditionPlayerCanResurrect(Boolean.parseBoolean(a.getNodeValue())));
 					break;
 				}
 				case "cansummon":
