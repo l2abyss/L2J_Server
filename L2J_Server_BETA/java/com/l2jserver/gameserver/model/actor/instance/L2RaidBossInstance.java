@@ -117,9 +117,9 @@ public class L2RaidBossInstance extends L2MonsterInstance
 	@Override
 	protected void startMaintenanceTask()
 	{
-		if (getTemplate().getMinionData() != null)
+		if (getTemplate().getParameters().getMinionList("Privates") != null)
 		{
-			getMinionList().spawnMinions();
+			// getMinionList().spawnMinions();
 		}
 		
 		_maintenanceTask = ThreadPoolManager.getInstance().scheduleGeneralAtFixedRate(() -> checkAndReturnToSpawn(), 60000, getMaintenanceInterval() + Rnd.get(5000));

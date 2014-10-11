@@ -30,11 +30,11 @@ import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.datatables.NpcData;
 import com.l2jserver.gameserver.idfactory.IdFactory;
-import com.l2jserver.gameserver.model.L2MinionData;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
+import com.l2jserver.gameserver.model.holders.MinionHolder;
 import com.l2jserver.util.Rnd;
 
 /**
@@ -76,24 +76,26 @@ public class MinionList
 	 * <BR>
 	 * <li>Get the Minion data of all Minions that must be spawn</li> <li>For each Minion type, spawn the amount of Minion needed</li><BR>
 	 * <BR>
+	 * @param minions
 	 */
-	public final void spawnMinions()
+	public final void spawnMinions(final List<MinionHolder> minions)
 	{
 		if (_master.isAlikeDead())
 		{
 			return;
 		}
-		List<L2MinionData> minions = _master.getTemplate().getMinionData();
+		
+		// List<MinionHolder> minions = _master.getTemplate().getParameters().getMinionList("Privates");
 		if (minions == null)
 		{
 			return;
 		}
 		
 		int minionCount, minionId, minionsToSpawn;
-		for (L2MinionData minion : minions)
+		for (MinionHolder minion : minions)
 		{
-			minionCount = minion.getAmount();
-			minionId = minion.getMinionId();
+			minionCount = minion.getCount();
+			minionId = minion.getId();
 			
 			minionsToSpawn = minionCount - countSpawnedMinionsById(minionId);
 			if (minionsToSpawn > 0)
@@ -152,7 +154,7 @@ public class MinionList
 		deleteSpawnedMinions();
 		
 		// if master has spawn and can respawn - try to reuse minions
-		if ((_reusedMinionReferences == null) && (_master.getTemplate().getMinionData() != null) && (_master.getSpawn() != null) && _master.getSpawn().isRespawnEnabled())
+		if ((_reusedMinionReferences == null) && (_master.getTemplate().getParameters().getMinionList("SummonPrivateRate") == null) && (_master.getTemplate().getParameters().getMinionList("Privates") != null) && (_master.getSpawn() != null) && _master.getSpawn().isRespawnEnabled())
 		{
 			_reusedMinionReferences = new FastList<L2MonsterInstance>().shared();
 		}

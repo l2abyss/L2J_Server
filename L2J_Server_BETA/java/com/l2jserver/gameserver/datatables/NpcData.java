@@ -18,9 +18,6 @@
  */
 package com.l2jserver.gameserver.datatables;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -31,17 +28,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import com.l2jserver.Config;
-import com.l2jserver.L2DatabaseFactory;
 import com.l2jserver.gameserver.engines.DocumentParser;
 import com.l2jserver.gameserver.enums.AISkillScope;
-import com.l2jserver.gameserver.model.L2MinionData;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.actor.templates.L2NpcTemplate;
 import com.l2jserver.gameserver.model.base.ClassId;
@@ -50,6 +44,7 @@ import com.l2jserver.gameserver.model.drops.GeneralDropItem;
 import com.l2jserver.gameserver.model.drops.GroupedGeneralDropItem;
 import com.l2jserver.gameserver.model.drops.IDropItem;
 import com.l2jserver.gameserver.model.effects.L2EffectType;
+import com.l2jserver.gameserver.model.holders.MinionHolder;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.util.Util;
@@ -62,8 +57,7 @@ public class NpcData extends DocumentParser
 {
 	private final Map<Integer, L2NpcTemplate> _npcs = new ConcurrentHashMap<>();
 	private final Map<String, Integer> _clans = new ConcurrentHashMap<>();
-	// SQL Queries
-	private static final String SELECT_MINION_ALL = "SELECT * FROM minions ORDER BY boss_id";
+	private MinionData _minionData;
 	
 	protected NpcData()
 	{
@@ -73,6 +67,8 @@ public class NpcData extends DocumentParser
 	@Override
 	public synchronized void load()
 	{
+		_minionData = new MinionData();
+		
 		parseDatapackDirectory("data/stats/npcs", false);
 		_log.info(getClass().getSimpleName() + ": Loaded " + _npcs.size() + " NPCs.");
 		
@@ -83,7 +79,7 @@ public class NpcData extends DocumentParser
 			_log.info(getClass().getSimpleName() + ": Loaded " + (_npcs.size() - npcCount) + " Custom NPCs.");
 		}
 		
-		loadMinions();
+		_minionData = null;
 		loadNpcsSkillLearn();
 	}
 	
@@ -143,7 +139,21 @@ public class NpcData extends DocumentParser
 											}
 											case "minions":
 											{
-												// TODO: Implement me
+												final List<MinionHolder> minions = new ArrayList<>(1);
+												for (Node minions_node = parameters_node.getFirstChild(); minions_node != null; minions_node = minions_node.getNextSibling())
+												{
+													if (minions_node.getNodeName().equalsIgnoreCase("npc"))
+													{
+														attrs = minions_node.getAttributes();
+														minions.add(new MinionHolder(parseInteger(attrs, "id"), parseInteger(attrs, "count"), parseInteger(attrs, "respawnTime"), parseInteger(attrs, "weightPoint")));
+													}
+												}
+												
+												if (!minions.isEmpty())
+												{
+													parameters.put(parseString(parameters_node.getAttributes(), "name"), minions);
+												}
+												
 												break;
 											}
 										}
@@ -471,6 +481,15 @@ public class NpcData extends DocumentParser
 							template.set(set);
 						}
 						
+						if (_minionData._tempMinions.containsKey(npcId))
+						{
+							if (parameters == null)
+							{
+								parameters = new HashMap<>();
+							}
+							parameters.putIfAbsent("Privates", _minionData._tempMinions.get(npcId));
+						}
+						
 						if (parameters != null)
 						{
 							// Using unmodifiable map parameters of template are not meant to be changed at runtime.
@@ -478,7 +497,7 @@ public class NpcData extends DocumentParser
 						}
 						else
 						{
-							template.setParameters(null);
+							template.setParameters(StatsSet.EMPTY_STATSET);
 						}
 						
 						if (skills != null)
@@ -779,42 +798,55 @@ public class NpcData extends DocumentParser
 		});
 	}
 	
-	public void loadMinions()
+	/**
+	 * This class handles minions from Spawn System<br>
+	 * Once Spawn System gets reworked delete this class<br>
+	 * @author Zealar
+	 */
+	private final class MinionData extends DocumentParser
 	{
-		final String query = SELECT_MINION_ALL;
-		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			Statement statement = con.createStatement())
+		public final Map<Integer, List<MinionHolder>> _tempMinions = new HashMap<>();
+		
+		protected MinionData()
 		{
-			int count = 0;
-			try (ResultSet rset = statement.executeQuery(query))
+			load();
+		}
+		
+		@Override
+		public void load()
+		{
+			_tempMinions.clear();
+			parseDatapackFile("data/minionData.xml");
+			_log.info(getClass().getSimpleName() + ": Loaded " + _tempMinions.size() + " minions data.");
+		}
+		
+		@Override
+		protected void parseDocument()
+		{
+			for (Node node = getCurrentDocument().getFirstChild(); node != null; node = node.getNextSibling())
 			{
-				L2MinionData minionDat = null;
-				L2NpcTemplate npcDat = null;
-				
-				int raidId;
-				while (rset.next())
+				if ("list".equals(node.getNodeName()))
 				{
-					raidId = rset.getInt("boss_id");
-					npcDat = _npcs.get(raidId);
-					if (npcDat == null)
+					for (Node list_node = node.getFirstChild(); list_node != null; list_node = list_node.getNextSibling())
 					{
-						_log.warning(getClass().getSimpleName() + ": Minion references undefined boss NPC. Boss NpcId: " + raidId);
-						continue;
+						if ("npc".equals(list_node.getNodeName()))
+						{
+							final List<MinionHolder> minions = new ArrayList<>(1);
+							NamedNodeMap attrs = list_node.getAttributes();
+							int id = parseInteger(attrs, "id");
+							for (Node npc_node = list_node.getFirstChild(); npc_node != null; npc_node = npc_node.getNextSibling())
+							{
+								if ("minion".equals(npc_node.getNodeName()))
+								{
+									attrs = npc_node.getAttributes();
+									minions.add(new MinionHolder(parseInteger(attrs, "id"), parseInteger(attrs, "count"), parseInteger(attrs, "respawnTime"), 0));
+								}
+							}
+							_tempMinions.put(id, minions);
+						}
 					}
-					
-					minionDat = new L2MinionData();
-					minionDat.setMinionId(rset.getInt("minion_id"));
-					minionDat.setAmountMin(rset.getInt("amount_min"));
-					minionDat.setAmountMax(rset.getInt("amount_max"));
-					npcDat.addMinionData(minionDat);
-					count++;
 				}
 			}
-			_log.info(getClass().getSimpleName() + ": Loaded " + count + " Minions.");
-		}
-		catch (Exception e)
-		{
-			_log.log(Level.SEVERE, getClass().getSimpleName() + ": Error loading minion data.", e);
 		}
 	}
 	

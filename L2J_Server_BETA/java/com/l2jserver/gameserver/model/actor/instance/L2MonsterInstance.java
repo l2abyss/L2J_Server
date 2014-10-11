@@ -143,7 +143,7 @@ public class L2MonsterInstance extends L2Attackable
 	protected void startMaintenanceTask()
 	{
 		// maintenance task now used only for minions spawn
-		if (getTemplate().getMinionData() == null)
+		if (getTemplate().getParameters().getMinionList("Privates") == null)
 		{
 			return;
 		}
@@ -154,7 +154,7 @@ public class L2MonsterInstance extends L2Attackable
 			{
 				if (_enableMinions)
 				{
-					getMinionList().spawnMinions();
+					// getMinionList().spawnMinions();
 				}
 			}, getMaintenanceInterval() + Rnd.get(1000));
 		}

@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 
 import javolution.util.FastMap;
 
+import com.l2jserver.gameserver.model.holders.MinionHolder;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.interfaces.IParserAdvUtils;
 
@@ -575,6 +576,18 @@ public class StatsSet implements IParserAdvUtils
 		}
 		
 		return (SkillHolder) obj;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<MinionHolder> getMinionList(String key)
+	{
+		Object obj = _set.get(key);
+		if ((obj == null) || !(obj instanceof List<?>))
+		{
+			return null;
+		}
+		
+		return (List<MinionHolder>) obj;
 	}
 	
 	public void set(String name, Object value)

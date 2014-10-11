@@ -285,8 +285,6 @@ public class GameServer
 		CastleManager.getInstance().loadInstances();
 		FortManager.getInstance().loadInstances();
 		NpcBufferTable.getInstance();
-		SpawnTable.getInstance();
-		RaidBossSpawnManager.getInstance();
 		DayNightSpawnManager.getInstance().trim().notifyChangeMode();
 		GrandBossManager.getInstance().initZones();
 		FourSepulchersManager.getInstance().init();
@@ -346,6 +344,9 @@ public class GameServer
 		{
 			_log.severe(getClass().getSimpleName() + ": Failed loading scripts.cfg, scripts are not going to be loaded!");
 		}
+		
+		SpawnTable.getInstance();
+		RaidBossSpawnManager.getInstance();
 		
 		QuestManager.getInstance().report();
 		
