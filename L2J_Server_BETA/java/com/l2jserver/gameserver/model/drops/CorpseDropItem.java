@@ -44,7 +44,12 @@ public class CorpseDropItem extends GeneralDropItem
 	@Override
 	public long getMin(L2Character victim, L2Character killer)
 	{
-		return (long) (super.getMin(victim, killer) * Config.RATE_CORPSE_DROP_AMOUNT_MULTIPLIER);
+		final long min = super.getMin(victim, killer);
+		if (Config.RATE_DROP_AMOUNT_MULTIPLIER.containsKey(getItemId()))
+		{
+			return min;
+		}
+		return (long) (min * Config.RATE_CORPSE_DROP_AMOUNT_MULTIPLIER);
 	}
 	
 	/*
@@ -54,7 +59,12 @@ public class CorpseDropItem extends GeneralDropItem
 	@Override
 	public long getMax(L2Character victim, L2Character killer)
 	{
-		return (long) (super.getMax(victim, killer) * Config.RATE_CORPSE_DROP_AMOUNT_MULTIPLIER);
+		final long max = super.getMax(victim, killer);
+		if (Config.RATE_DROP_AMOUNT_MULTIPLIER.containsKey(getItemId()))
+		{
+			return max;
+		}
+		return (long) (max * Config.RATE_CORPSE_DROP_AMOUNT_MULTIPLIER);
 	}
 	
 	/*
@@ -64,6 +74,11 @@ public class CorpseDropItem extends GeneralDropItem
 	@Override
 	public double getChance(L2Character victim, L2Character killer)
 	{
-		return super.getChance(victim, killer) * Config.RATE_CORPSE_DROP_CHANCE_MULTIPLIER;
+		final double chance = super.getChance(victim, killer);
+		if (Config.RATE_DROP_CHANCE_MULTIPLIER.containsKey(getItemId()))
+		{
+			return chance;
+		}
+		return chance * Config.RATE_CORPSE_DROP_CHANCE_MULTIPLIER;
 	}
 }

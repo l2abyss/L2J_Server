@@ -19,7 +19,9 @@
 package com.l2jserver.gameserver.model.drops;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.model.actor.L2Character;
+import com.l2jserver.gameserver.model.items.L2Item;
 
 /**
  * @author Nos
@@ -44,7 +46,18 @@ public class DeathDropItem extends GeneralDropItem
 	@Override
 	public long getMin(L2Character victim, L2Character killer)
 	{
-		return (long) (super.getMin(victim, killer) * Config.RATE_DEATH_DROP_AMOUNT_MULTIPLIER);
+		final long min = super.getMin(victim, killer);
+		if (Config.RATE_DROP_AMOUNT_MULTIPLIER.containsKey(getItemId()))
+		{
+			return min;
+		}
+		
+		L2Item item = ItemTable.getInstance().getTemplate(getItemId());
+		if ((item != null) && item.hasExImmediateEffect())
+		{
+			return (long) (min * Config.RATE_HERB_DROP_AMOUNT_MULTIPLIER);
+		}
+		return (long) (min * Config.RATE_DEATH_DROP_AMOUNT_MULTIPLIER);
 	}
 	
 	/*
@@ -54,7 +67,18 @@ public class DeathDropItem extends GeneralDropItem
 	@Override
 	public long getMax(L2Character victim, L2Character killer)
 	{
-		return (long) (super.getMax(victim, killer) * Config.RATE_DEATH_DROP_AMOUNT_MULTIPLIER);
+		final long max = super.getMax(victim, killer);
+		if (Config.RATE_DROP_AMOUNT_MULTIPLIER.containsKey(getItemId()))
+		{
+			return max;
+		}
+		
+		final L2Item item = ItemTable.getInstance().getTemplate(getItemId());
+		if ((item != null) && item.hasExImmediateEffect())
+		{
+			return (long) (max * Config.RATE_HERB_DROP_AMOUNT_MULTIPLIER);
+		}
+		return (long) (max * Config.RATE_DEATH_DROP_AMOUNT_MULTIPLIER);
 	}
 	
 	/*
@@ -64,6 +88,17 @@ public class DeathDropItem extends GeneralDropItem
 	@Override
 	public double getChance(L2Character victim, L2Character killer)
 	{
-		return super.getChance(victim, killer) * Config.RATE_DEATH_DROP_CHANCE_MULTIPLIER;
+		final double chance = super.getChance(victim, killer);
+		if (Config.RATE_DROP_CHANCE_MULTIPLIER.containsKey(getItemId()))
+		{
+			return chance;
+		}
+		
+		final L2Item item = ItemTable.getInstance().getTemplate(getItemId());
+		if ((item != null) && item.hasExImmediateEffect())
+		{
+			return chance * Config.RATE_HERB_DROP_CHANCE_MULTIPLIER;
+		}
+		return chance * Config.RATE_DEATH_DROP_CHANCE_MULTIPLIER;
 	}
 }
