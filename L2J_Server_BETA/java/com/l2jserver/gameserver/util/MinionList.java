@@ -154,7 +154,7 @@ public class MinionList
 		deleteSpawnedMinions();
 		
 		// if master has spawn and can respawn - try to reuse minions
-		if ((_reusedMinionReferences == null) && (_master.getTemplate().getParameters().getMinionList("SummonPrivateRate") == null) && (_master.getTemplate().getParameters().getMinionList("Privates") != null) && (_master.getSpawn() != null) && _master.getSpawn().isRespawnEnabled())
+		if ((_reusedMinionReferences == null) && (_master.getTemplate().getParameters().getSet().get("SummonPrivateRate") == null) && !_master.getTemplate().getParameters().getMinionList("Privates").isEmpty() && (_master.getSpawn() != null) && _master.getSpawn().isRespawnEnabled())
 		{
 			_reusedMinionReferences = new FastList<L2MonsterInstance>().shared();
 		}

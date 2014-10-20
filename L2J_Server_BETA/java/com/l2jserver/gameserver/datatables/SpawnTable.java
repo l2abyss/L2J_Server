@@ -60,11 +60,6 @@ public final class SpawnTable extends DocumentParser
 	
 	private int _xmlSpawnCount = 0;
 	
-	protected SpawnTable()
-	{
-		load();
-	}
-	
 	/**
 	 * Wrapper to load all spawns.
 	 */

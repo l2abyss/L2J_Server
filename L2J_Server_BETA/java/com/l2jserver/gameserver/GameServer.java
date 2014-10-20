@@ -283,12 +283,9 @@ public class GameServer
 		DoorTable.getInstance();
 		ItemAuctionManager.getInstance();
 		CastleManager.getInstance().loadInstances();
-		FortManager.getInstance().loadInstances();
 		NpcBufferTable.getInstance();
 		DayNightSpawnManager.getInstance().trim().notifyChangeMode();
 		GrandBossManager.getInstance().initZones();
-		FourSepulchersManager.getInstance().init();
-		DimensionalRiftManager.getInstance();
 		EventDroplist.getInstance();
 		
 		printSection("Siege");
@@ -345,8 +342,11 @@ public class GameServer
 			_log.severe(getClass().getSimpleName() + ": Failed loading scripts.cfg, scripts are not going to be loaded!");
 		}
 		
-		SpawnTable.getInstance();
+		SpawnTable.getInstance().load();
+		FourSepulchersManager.getInstance().init();
+		DimensionalRiftManager.getInstance();
 		RaidBossSpawnManager.getInstance();
+		FortManager.getInstance().loadInstances();
 		
 		QuestManager.getInstance().report();
 		

@@ -492,6 +492,21 @@ public class Quest extends AbstractScript implements IIdentifiable
 	}
 	
 	/**
+	 * @param npc the teleport NPC
+	 */
+	public final void notifyTeleport(L2Npc npc)
+	{
+		try
+		{
+			onTeleport(npc);
+		}
+		catch (Exception e)
+		{
+			_log.log(Level.WARNING, "Exception on onTeleport() in notifyTeleport(): " + e.getMessage(), e);
+		}
+	}
+	
+	/**
 	 * @param event
 	 * @param npc
 	 * @param player
@@ -1175,6 +1190,14 @@ public class Quest extends AbstractScript implements IIdentifiable
 	public String onSpawn(L2Npc npc)
 	{
 		return null;
+	}
+	
+	/**
+	 * This function is called whenever an NPC is teleport.<br>
+	 * @param npc this parameter contains a reference to the exact instance of the NPC who just teleport.
+	 */
+	protected void onTeleport(L2Npc npc)
+	{
 	}
 	
 	/**
@@ -1893,6 +1916,24 @@ public class Quest extends AbstractScript implements IIdentifiable
 	public void addTalkId(Collection<Integer> npcIds)
 	{
 		setNpcTalkId(npcIds);
+	}
+	
+	/**
+	 * Add this quest to the list of quests that the passed npc will respond to for Teleport Events.
+	 * @param npcIds the IDs of the NPCs to register
+	 */
+	public void addTeleportId(int... npcIds)
+	{
+		setNpcTeleportId(event -> notifyTeleport(event.getNpc()), npcIds);
+	}
+	
+	/**
+	 * Add this quest to the list of quests that the passed npc will respond to for Teleport Events.
+	 * @param npcIds the IDs of the NPCs to register
+	 */
+	public void addTeleportId(Collection<Integer> npcIds)
+	{
+		setNpcTeleportId(event -> notifyTeleport(event.getNpc()), npcIds);
 	}
 	
 	/**
