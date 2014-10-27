@@ -27,10 +27,8 @@ import java.util.logging.Logger;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.handler.EffectHandler;
-import com.l2jserver.gameserver.model.ChanceCondition;
 import com.l2jserver.gameserver.model.StatsSet;
 import com.l2jserver.gameserver.model.conditions.Condition;
-import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
@@ -44,7 +42,7 @@ import com.l2jserver.gameserver.model.stats.Env;
  * @since <a href="http://trac.l2jserver.com/changeset/6249">Changeset 6249</a> the "effect steal constructor" is deprecated.
  * @author Zoey76
  */
-public abstract class AbstractEffect implements IChanceSkillTrigger
+public abstract class AbstractEffect
 {
 	protected static final Logger _log = Logger.getLogger(AbstractEffect.class.getName());
 	
@@ -58,9 +56,6 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 	private final String _name;
 	/** Ticks. */
 	private final int _ticks;
-	private final int _triggeredId;
-	private final int _triggeredLevel;
-	private final ChanceCondition _chanceCondition;
 	
 	/**
 	 * Abstract effect constructor.
@@ -75,9 +70,6 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 		// _applyCond = applyCond;
 		_name = set.getString("name");
 		_ticks = set.getInt("ticks", 0);
-		_triggeredId = set.getInt("triggeredId", 0);
-		_triggeredLevel = set.getInt("triggeredLevel", 1);
-		_chanceCondition = ChanceCondition.parse(set.getString("chanceType", null), set.getInt("activationChance", -1), set.getInt("activationMinDamage", -1), set.getString("activationElements", null), set.getString("activationSkills", null), set.getBoolean("pvpChanceOnly", false));
 	}
 	
 	/**
@@ -169,24 +161,6 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 	public List<FuncTemplate> getFuncTemplates()
 	{
 		return _funcTemplates;
-	}
-	
-	@Override
-	public int getTriggeredChanceId()
-	{
-		return _triggeredId;
-	}
-	
-	@Override
-	public int getTriggeredChanceLevel()
-	{
-		return _triggeredLevel;
-	}
-	
-	@Override
-	public ChanceCondition getTriggeredChanceCondition()
-	{
-		return _chanceCondition;
 	}
 	
 	/**
@@ -304,12 +278,6 @@ public abstract class AbstractEffect implements IChanceSkillTrigger
 	public boolean checkCondition(Object obj)
 	{
 		return true;
-	}
-	
-	@Override
-	public boolean triggersChanceSkill()
-	{
-		return _triggeredId > 0;
 	}
 	
 	/**

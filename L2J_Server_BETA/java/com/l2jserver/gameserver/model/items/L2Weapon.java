@@ -33,6 +33,8 @@ import com.l2jserver.gameserver.model.items.type.WeaponType;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Formulas;
+import com.l2jserver.gameserver.network.SystemMessageId;
+import com.l2jserver.gameserver.network.serverpackets.SystemMessage;
 import com.l2jserver.gameserver.util.Util;
 import com.l2jserver.util.StringUtil;
 
@@ -340,11 +342,10 @@ public final class L2Weapon extends L2Item
 	/**
 	 * @param caster the L2Character pointing out the caster
 	 * @param target the L2Character pointing out the target
-	 * @param crit the boolean tells whether the hit was critical
 	 */
-	public void getSkillEffects(L2Character caster, L2Character target, boolean crit)
+	public void castOnCriticalSkill(L2Character caster, L2Character target)
 	{
-		if ((_skillsOnCrit == null) || !crit)
+		if ((_skillsOnCrit == null))
 		{
 			return;
 		}
@@ -381,13 +382,12 @@ public final class L2Weapon extends L2Item
 	 * @param caster the L2Character pointing out the caster
 	 * @param target the L2Character pointing out the target
 	 * @param trigger the L2Skill pointing out the skill triggering this action
-	 * @return the effects of skills associated with the item to be triggered onMagic.
 	 */
-	public boolean getSkillEffects(L2Character caster, L2Character target, Skill trigger)
+	public void castOnMagicSkill(L2Character caster, L2Character target, Skill trigger)
 	{
 		if (_skillsOnMagic == null)
 		{
-			return false;
+			return;
 		}
 		
 		final Skill onMagicSkill = _skillsOnMagic.getSkill();
@@ -395,13 +395,13 @@ public final class L2Weapon extends L2Item
 		// Trigger only if both are good or bad magic.
 		if (trigger.isBad() != onMagicSkill.isBad())
 		{
-			return false;
+			return;
 		}
 		
 		// No Trigger if not Magic Skill
 		if (!trigger.isMagic() && !onMagicSkill.isMagic())
 		{
-			return false;
+			return;
 		}
 		
 		if (_skillsOnMagicCondition != null)
@@ -413,19 +413,19 @@ public final class L2Weapon extends L2Item
 			if (!_skillsOnMagicCondition.test(env))
 			{
 				// Chance not met
-				return false;
+				return;
 			}
 		}
 		
 		if (!onMagicSkill.checkCondition(caster, target, false))
 		{
 			// Skill condition not met
-			return false;
+			return;
 		}
 		
 		if (onMagicSkill.isBad() && (Formulas.calcShldUse(caster, target, onMagicSkill) == Formulas.SHIELD_DEFENSE_PERFECT_BLOCK))
 		{
-			return false;
+			return;
 		}
 		
 		L2Character[] targets =
@@ -451,6 +451,11 @@ public final class L2Weapon extends L2Item
 				});
 			//@formatter:on
 		}
-		return true;
+		if (caster.isPlayer())
+		{
+			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_BEEN_ACTIVATED);
+			sm.addSkillName(onMagicSkill);
+			caster.sendPacket(sm);
+		}
 	}
 }

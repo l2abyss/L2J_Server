@@ -50,7 +50,6 @@ import com.l2jserver.gameserver.ai.L2CharacterAI;
 import com.l2jserver.gameserver.datatables.CategoryData;
 import com.l2jserver.gameserver.datatables.DoorTable;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.datatables.SkillData;
 import com.l2jserver.gameserver.enums.CategoryType;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.enums.Race;
@@ -61,7 +60,6 @@ import com.l2jserver.gameserver.instancemanager.InstanceManager;
 import com.l2jserver.gameserver.instancemanager.MapRegionManager;
 import com.l2jserver.gameserver.instancemanager.TerritoryWarManager;
 import com.l2jserver.gameserver.instancemanager.TownManager;
-import com.l2jserver.gameserver.model.ChanceSkillList;
 import com.l2jserver.gameserver.model.CharEffectList;
 import com.l2jserver.gameserver.model.L2AccessLevel;
 import com.l2jserver.gameserver.model.L2Object;
@@ -94,6 +92,7 @@ import com.l2jserver.gameserver.model.events.Containers;
 import com.l2jserver.gameserver.model.events.EventDispatcher;
 import com.l2jserver.gameserver.model.events.EventType;
 import com.l2jserver.gameserver.model.events.impl.character.OnCreatureAttack;
+import com.l2jserver.gameserver.model.events.impl.character.OnCreatureAttackAvoid;
 import com.l2jserver.gameserver.model.events.impl.character.OnCreatureAttacked;
 import com.l2jserver.gameserver.model.events.impl.character.OnCreatureDamageDealt;
 import com.l2jserver.gameserver.model.events.impl.character.OnCreatureDamageReceived;
@@ -106,7 +105,6 @@ import com.l2jserver.gameserver.model.events.returns.TerminateReturn;
 import com.l2jserver.gameserver.model.holders.InvulSkillHolder;
 import com.l2jserver.gameserver.model.holders.SkillHolder;
 import com.l2jserver.gameserver.model.holders.SkillUseHolder;
-import com.l2jserver.gameserver.model.interfaces.IChanceSkillTrigger;
 import com.l2jserver.gameserver.model.interfaces.IDeletable;
 import com.l2jserver.gameserver.model.interfaces.ILocational;
 import com.l2jserver.gameserver.model.interfaces.ISkillsHolder;
@@ -225,8 +223,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	/** Map containing all the disabled skills. */
 	private volatile Map<Integer, Long> _disabledSkills = null;
 	private boolean _allSkillsDisabled;
-	/** Map containing the active chance skills on this character */
-	private volatile ChanceSkillList _chanceSkills;
 	
 	private final byte[] _zones = new byte[ZoneId.getZoneCount()];
 	protected byte _zoneValidateCounter = 4;
@@ -4922,12 +4918,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			{
 				target.getAI().notifyEvent(CtrlEvent.EVT_EVADED, this);
 			}
-			
-			// ON_EVADED_HIT
-			if (target.getChanceSkills() != null)
-			{
-				target.getChanceSkills().onEvadedHit(this);
-			}
+			notifyAttackAvoid(target, false);
 		}
 		
 		// Send message about damage/crit or miss
@@ -5065,17 +5056,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				target.breakCast();
 			}
 			
-			// Maybe launch chance skills on us
-			if (_chanceSkills != null)
-			{
-				_chanceSkills.onHit(target, damage, false, crit);
-				// Reflect triggers onHit
-				if (reflectedDamage > 0)
-				{
-					_chanceSkills.onHit(target, reflectedDamage, true, false);
-				}
-			}
-			
 			if (_triggerSkills != null)
 			{
 				for (OptionsSkillHolder holder : _triggerSkills.values())
@@ -5089,19 +5069,13 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 					}
 				}
 			}
-			
-			// Maybe launch chance skills on target
-			if (target.getChanceSkills() != null)
-			{
-				target.getChanceSkills().onHit(this, damage, true, crit);
-			}
 		}
 		
 		// Launch weapon Special ability effect if available
 		L2Weapon activeWeapon = getActiveWeaponItem();
 		if (activeWeapon != null)
 		{
-			activeWeapon.getSkillEffects(this, target, crit);
+			activeWeapon.castOnCriticalSkill(this, target);
 		}
 		
 		// Recharge any active auto-soulshot tasks for current creature.
@@ -5391,24 +5365,10 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			// If an old skill has been replaced, remove all its Func objects
 			if (oldSkill != null)
 			{
-				// if skill came with another one, we should delete the other one too.
-				if ((oldSkill.triggerAnotherSkill()))
-				{
-					removeSkill(oldSkill.getTriggeredId(), true);
-				}
 				removeStatsOwner(oldSkill);
 			}
 			// Add Func objects of newSkill to the calculator set of the L2Character
 			addStatFuncs(newSkill.getStatFuncs(null, this));
-			
-			if ((oldSkill != null) && (_chanceSkills != null))
-			{
-				removeChanceSkill(oldSkill.getId());
-			}
-			if (newSkill.isChance())
-			{
-				addChanceTrigger(newSkill);
-			}
 			
 			if (newSkill.isPassive())
 			{
@@ -5435,11 +5395,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 		// Remove all its Func objects from the L2Character calculator set
 		if (oldSkill != null)
 		{
-			// this is just a fail-safe againts buggers and gm dummies...
-			if ((oldSkill.triggerAnotherSkill()) && (oldSkill.getTriggeredId() > 0))
-			{
-				removeSkill(oldSkill.getTriggeredId(), true);
-			}
 			
 			// Stop casting if this skill is used right now
 			if ((getLastSkillCast() != null) && isCastingNow())
@@ -5463,90 +5418,9 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 				removeStatsOwner(oldSkill);
 				stopSkillEffects(true, oldSkill.getId());
 			}
-			
-			if (oldSkill.isChance() && (_chanceSkills != null))
-			{
-				removeChanceSkill(oldSkill.getId());
-			}
 		}
 		
 		return oldSkill;
-	}
-	
-	public void removeChanceSkill(int id)
-	{
-		if (_chanceSkills == null)
-		{
-			return;
-		}
-		synchronized (_chanceSkills)
-		{
-			for (IChanceSkillTrigger trigger : _chanceSkills.keySet())
-			{
-				if (!(trigger instanceof Skill))
-				{
-					continue;
-				}
-				if (((Skill) trigger).getId() == id)
-				{
-					_chanceSkills.remove(trigger);
-				}
-			}
-		}
-	}
-	
-	public void addChanceTrigger(IChanceSkillTrigger trigger)
-	{
-		if (_chanceSkills == null)
-		{
-			synchronized (this)
-			{
-				if (_chanceSkills == null)
-				{
-					_chanceSkills = new ChanceSkillList(this);
-				}
-			}
-		}
-		_chanceSkills.put(trigger, trigger.getTriggeredChanceCondition());
-	}
-	
-	public void removeChanceEffect(IChanceSkillTrigger effect)
-	{
-		if (_chanceSkills == null)
-		{
-			return;
-		}
-		_chanceSkills.remove(effect);
-	}
-	
-	public void onStartChanceEffect(byte element)
-	{
-		if (_chanceSkills == null)
-		{
-			return;
-		}
-		
-		_chanceSkills.onStart(element);
-	}
-	
-	public void onActionTimeChanceEffect(byte element)
-	{
-		if (_chanceSkills == null)
-		{
-			return;
-		}
-		
-		_chanceSkills.onActionTime(element);
-	}
-	
-	public void onExitChanceEffect(byte element)
-	{
-		if (_chanceSkills == null)
-		{
-			return;
-		}
-		
-		_chanceSkills.onExit(element);
 	}
 	
 	/**
@@ -5566,11 +5440,6 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	public Map<Integer, Skill> getSkills()
 	{
 		return _skills;
-	}
-	
-	public ChanceSkillList getChanceSkills()
-	{
-		return _chanceSkills;
 	}
 	
 	/**
@@ -6031,23 +5900,7 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 					// Launch weapon Special ability skill effect if available
 					if ((activeWeapon != null) && !target.isDead())
 					{
-						if (activeWeapon.getSkillEffects(this, target, skill) && isPlayer())
-						{
-							SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.S1_HAS_BEEN_ACTIVATED);
-							sm.addSkillName(skill);
-							sendPacket(sm);
-						}
-					}
-					
-					// Maybe launch chance skills on us
-					if (_chanceSkills != null)
-					{
-						_chanceSkills.onSkillHit(target, skill, false);
-					}
-					// Maybe launch chance skills on target
-					if (target.getChanceSkills() != null)
-					{
-						target.getChanceSkills().onSkillHit(this, skill, true);
+						activeWeapon.castOnMagicSkill(this, target, skill);
 					}
 					
 					if (_triggerSkills != null)
@@ -6815,22 +6668,12 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	{
 		try
 		{
+			if ((skill == null))
+			{
+				return;
+			}
 			if (skill.checkCondition(this, target, false))
 			{
-				if (skill.triggersChanceSkill()) // skill will trigger another skill, but only if its not chance skill
-				{
-					skill = SkillData.getInstance().getSkill(skill.getTriggeredChanceId(), skill.getTriggeredChanceLevel());
-					if ((skill == null))
-					{
-						return;
-					}
-					// We change skill to new one, we should verify conditions for new one
-					if (!skill.checkCondition(this, target, false))
-					{
-						return;
-					}
-				}
-				
 				if (isSkillDisabled(skill))
 				{
 					return;
@@ -6950,6 +6793,16 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 	{
 		EventDispatcher.getInstance().notifyEventAsync(new OnCreatureDamageReceived(attacker, this, damage, skill, critical, damageOverTime), this);
 		EventDispatcher.getInstance().notifyEventAsync(new OnCreatureDamageDealt(attacker, this, damage, skill, critical, damageOverTime), attacker);
+	}
+	
+	/**
+	 * Notifies to listeners that current character avoid attack.
+	 * @param target
+	 * @param isDot
+	 */
+	public void notifyAttackAvoid(final L2Character target, final boolean isDot)
+	{
+		EventDispatcher.getInstance().notifyEventAsync(new OnCreatureAttackAvoid(this, target, isDot), target);
 	}
 	
 	/**
