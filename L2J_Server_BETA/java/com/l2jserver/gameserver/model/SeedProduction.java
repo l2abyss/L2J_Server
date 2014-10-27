@@ -18,54 +18,64 @@
  */
 package com.l2jserver.gameserver.model;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * @author xban1x
  */
-public final class SeedProduction
+public class SeedProduction
 {
-	final int _seedId;
-	long _residual;
-	final long _price;
-	final long _sales;
+	private final int _seedId;
+	private final long _price;
+	private final long _startAmount;
+	private final AtomicLong _amount;
 	
-	public SeedProduction(int id)
+	public SeedProduction(int id, long amount, long price, long startAmount)
 	{
 		_seedId = id;
-		_residual = 0;
-		_price = 0;
-		_sales = 0;
-	}
-	
-	public SeedProduction(int id, long amount, long price, long sales)
-	{
-		_seedId = id;
-		_residual = amount;
+		_amount = new AtomicLong(amount);
 		_price = price;
-		_sales = sales;
+		_startAmount = startAmount;
 	}
 	
-	public int getId()
+	public final int getId()
 	{
 		return _seedId;
 	}
 	
-	public long getCanProduce()
+	public final long getAmount()
 	{
-		return _residual;
+		return _amount.get();
 	}
 	
-	public long getPrice()
+	public final long getPrice()
 	{
 		return _price;
 	}
 	
-	public long getStartProduce()
+	public final long getStartAmount()
 	{
-		return _sales;
+		return _startAmount;
 	}
 	
-	public void setCanProduce(long amount)
+	public final void setAmount(long amount)
 	{
-		_residual = amount;
+		_amount.set(amount);
+	}
+	
+	public final boolean decreaseAmount(long val)
+	{
+		long current, next;
+		do
+		{
+			current = _amount.get();
+			next = current - val;
+			if (next < 0)
+			{
+				return false;
+			}
+		}
+		while (!_amount.compareAndSet(current, next));
+		return true;
 	}
 }

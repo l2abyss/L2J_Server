@@ -9802,9 +9802,9 @@ public final class SystemMessageId
 	
 	/**
 	 * ID: 1675<br>
-	 * Message: A manor cannot be set up between 6 a.m. and 8 p.m.
+	 * Message: A manor cannot be set up between 4:30 am and 8 pm.
 	 */
-	public static final SystemMessageId A_MANOR_CANNOT_BE_SET_UP_BETWEEN_6_AM_AND_8_PM;
+	public static final SystemMessageId A_MANOR_CANNOT_BE_SET_UP_BETWEEN_4_30_AM_AND_8_PM;
 	
 	/**
 	 * ID: 1676<br>
@@ -16845,7 +16845,7 @@ public final class SystemMessageId
 		PUMPING_SUCCESSFUL_PENALTY_S1 = new SystemMessageId(1672);
 		THE_CURRENT_RECORD_FOR_THIS_OLYMPIAD_SESSION_IS_S1_MATCHES_S2_WINS_S3_DEFEATS_YOU_HAVE_EARNED_S4_OLYMPIAD_POINTS = new SystemMessageId(1673);
 		NOBLESSE_ONLY = new SystemMessageId(1674);
-		A_MANOR_CANNOT_BE_SET_UP_BETWEEN_6_AM_AND_8_PM = new SystemMessageId(1675);
+		A_MANOR_CANNOT_BE_SET_UP_BETWEEN_4_30_AM_AND_8_PM = new SystemMessageId(1675);
 		NO_SERVITOR_CANNOT_AUTOMATE_USE = new SystemMessageId(1676);
 		CANT_STOP_CLAN_WAR_WHILE_IN_COMBAT = new SystemMessageId(1677);
 		NO_CLAN_WAR_AGAINST_CLAN_S1 = new SystemMessageId(1678);

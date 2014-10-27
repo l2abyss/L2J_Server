@@ -20,8 +20,9 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
 
-import com.l2jserver.gameserver.datatables.ManorData;
+import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.model.CropProcure;
+import com.l2jserver.gameserver.model.L2Seed;
 
 /**
  * @author l3x
@@ -30,11 +31,15 @@ public class ExShowCropInfo extends L2GameServerPacket
 {
 	private final List<CropProcure> _crops;
 	private final int _manorId;
+	private final boolean _hideButtons;
 	
-	public ExShowCropInfo(int manorId, List<CropProcure> crops)
+	public ExShowCropInfo(int manorId, boolean nextPeriod, boolean hideButtons)
 	{
 		_manorId = manorId;
-		_crops = crops;
+		_hideButtons = hideButtons;
+		
+		final CastleManorManager manor = CastleManorManager.getInstance();
+		_crops = (nextPeriod && !manor.isManorApproved()) ? null : manor.getCropProcure(manorId, nextPeriod);
 	}
 	
 	@Override
@@ -42,7 +47,7 @@ public class ExShowCropInfo extends L2GameServerPacket
 	{
 		writeC(0xFE); // Id
 		writeH(0x24); // SubId
-		writeC(0x00);
+		writeC(_hideButtons ? 0x01 : 0x00); // Hide "Crop Sales" button
 		writeD(_manorId); // Manor ID
 		writeD(0x00);
 		if (_crops == null)
@@ -58,11 +63,23 @@ public class ExShowCropInfo extends L2GameServerPacket
 			writeQ(crop.getStartAmount()); // Buy
 			writeQ(crop.getPrice()); // Buy price
 			writeC(crop.getReward()); // Reward
-			writeD(ManorData.getInstance().getSeedLevelByCrop(crop.getId())); // Seed Level
-			writeC(0x01); // rewrad 1 Type
-			writeD(ManorData.getInstance().getRewardItem(crop.getId(), 1)); // Rewrad 1 Type Item Id
-			writeC(0x01); // rewrad 2 Type
-			writeD(ManorData.getInstance().getRewardItem(crop.getId(), 2)); // Rewrad 2 Type Item Id
+			final L2Seed seed = CastleManorManager.getInstance().getSeedByCrop(crop.getId());
+			if (seed == null)
+			{
+				writeD(0); // Seed level
+				writeC(0x01); // Reward 1
+				writeD(0); // Reward 1 - item id
+				writeC(0x01); // Reward 2
+				writeD(0); // Reward 2 - item id
+			}
+			else
+			{
+				writeD(seed.getLevel()); // Seed level
+				writeC(0x01); // Reward 1
+				writeD(seed.getReward(1)); // Reward 1 - item id
+				writeC(0x01); // Reward 2
+				writeD(seed.getReward(2)); // Reward 2 - item id
+			}
 		}
 	}
 }

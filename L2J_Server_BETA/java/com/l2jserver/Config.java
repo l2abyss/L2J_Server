@@ -603,7 +603,7 @@ public final class Config
 	public static int ALT_MANOR_REFRESH_MIN;
 	public static int ALT_MANOR_APPROVE_TIME;
 	public static int ALT_MANOR_APPROVE_MIN;
-	public static int ALT_MANOR_MAINTENANCE_PERIOD;
+	public static int ALT_MANOR_MAINTENANCE_MIN;
 	public static boolean ALT_MANOR_SAVE_ALL_ACTIONS;
 	public static int ALT_MANOR_SAVE_PERIOD_RATE;
 	public static long ALT_LOTTERY_PRIZE;
@@ -1923,9 +1923,9 @@ public final class Config
 			}
 			ALT_MANOR_REFRESH_TIME = General.getInt("AltManorRefreshTime", 20);
 			ALT_MANOR_REFRESH_MIN = General.getInt("AltManorRefreshMin", 0);
-			ALT_MANOR_APPROVE_TIME = General.getInt("AltManorApproveTime", 6);
-			ALT_MANOR_APPROVE_MIN = General.getInt("AltManorApproveMin", 0);
-			ALT_MANOR_MAINTENANCE_PERIOD = General.getInt("AltManorMaintenancePeriod", 360000);
+			ALT_MANOR_APPROVE_TIME = General.getInt("AltManorApproveTime", 4);
+			ALT_MANOR_APPROVE_MIN = General.getInt("AltManorApproveMin", 30);
+			ALT_MANOR_MAINTENANCE_MIN = General.getInt("AltManorMaintenanceMin", 6);
 			ALT_MANOR_SAVE_ALL_ACTIONS = General.getBoolean("AltManorSaveAllActions", false);
 			ALT_MANOR_SAVE_PERIOD_RATE = General.getInt("AltManorSavePeriodRate", 2);
 			ALT_LOTTERY_PRIZE = General.getLong("AltLotteryPrize", 50000);

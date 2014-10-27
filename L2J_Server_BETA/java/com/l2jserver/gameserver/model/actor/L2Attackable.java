@@ -21,7 +21,6 @@ package com.l2jserver.gameserver.model.actor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
@@ -36,7 +35,6 @@ import com.l2jserver.gameserver.ai.L2SiegeGuardAI;
 import com.l2jserver.gameserver.datatables.EventDroplist;
 import com.l2jserver.gameserver.datatables.EventDroplist.DateDrop;
 import com.l2jserver.gameserver.datatables.ItemTable;
-import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.enums.InstanceType;
 import com.l2jserver.gameserver.instancemanager.CursedWeaponsManager;
 import com.l2jserver.gameserver.instancemanager.WalkingManager;
@@ -46,6 +44,7 @@ import com.l2jserver.gameserver.model.DamageDoneInfo;
 import com.l2jserver.gameserver.model.L2CommandChannel;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2Party;
+import com.l2jserver.gameserver.model.L2Seed;
 import com.l2jserver.gameserver.model.actor.instance.L2GrandBossInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MonsterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
@@ -74,40 +73,37 @@ import com.l2jserver.util.Rnd;
 
 public class L2Attackable extends L2Npc
 {
+	// Raid
 	private boolean _isRaid = false;
 	private boolean _isRaidMinion = false;
+	//
 	private boolean _champion = false;
 	private final Map<L2Character, AggroInfo> _aggroList = new ConcurrentHashMap<>();
 	private boolean _isReturningToSpawnPoint = false;
 	private boolean _canReturnToSpawnPoint = true;
 	private boolean _seeThroughSilentMove = false;
-	private ItemHolder[] _sweepItems;
-	private ItemHolder[] _harvestItems;
-	private boolean _seeded;
-	private int _seedType = 0;
+	// Manor
+	private boolean _seeded = false;
+	private L2Seed _seed = null;
 	private int _seederObjId = 0;
-	
+	private ItemHolder _harvestItem;
+	// Spoil
+	private boolean _isSpoil = false;
+	private int _isSpoiledBy = 0;
+	private ItemHolder[] _sweepItems;
+	// Over-hit
 	private boolean _overhit;
-	
 	private double _overhitDamage;
-	
 	private L2Character _overhitAttacker;
-	
+	// Command channel
 	private volatile L2CommandChannel _firstCommandChannelAttacked = null;
 	private CommandChannelTimer _commandChannelTimer = null;
 	private long _commandChannelLastAttack = 0;
-	
+	// Soul crystal
 	private boolean _absorbed;
-	
 	private final Map<Integer, AbsorberInfo> _absorbersList = new ConcurrentHashMap<>();
-	
+	// Misc
 	private boolean _mustGiveExpSp;
-	
-	/** True if a Dwarf has used Spoil on this L2NpcInstance */
-	private boolean _isSpoil = false;
-	
-	private int _isSpoiledBy = 0;
-	
 	protected int _onKillDelay = 5000;
 	
 	/**
@@ -1175,10 +1171,10 @@ public class L2Attackable extends L2Npc
 	/**
 	 * @return table containing all L2ItemInstance that can be harvested.
 	 */
-	public synchronized ItemHolder[] takeHarvest()
+	public synchronized ItemHolder takeHarvest()
 	{
-		ItemHolder[] harvest = _harvestItems;
-		_harvestItems = null;
+		ItemHolder harvest = _harvestItem;
+		_harvestItem = null;
 		return harvest;
 	}
 	
@@ -1422,11 +1418,11 @@ public class L2Attackable extends L2Npc
 		setSpoil(false);
 		// Clear all aggro char from list
 		clearAggroList();
-		// Clear Harvester Rewrard List
-		_harvestItems = null;
+		// Clear Harvester reward
+		_harvestItem = null;
 		// Clear mod Seeded stat
 		_seeded = false;
-		_seedType = 0;
+		_seed = null;
 		_seederObjId = 0;
 		// Clear overhit value
 		overhitEnabled(false);
@@ -1474,42 +1470,17 @@ public class L2Attackable extends L2Npc
 	}
 	
 	/**
-	 * Sets state of the mob to seeded. Paramets needed to be set before.
+	 * Sets state of the mob to seeded. Parameters needed to be set before.
 	 * @param seeder
 	 */
-	public void setSeeded(L2PcInstance seeder)
+	public final void setSeeded(L2PcInstance seeder)
 	{
-		if ((_seedType != 0) && (_seederObjId == seeder.getObjectId()))
+		if ((_seed != null) && (_seederObjId == seeder.getObjectId()))
 		{
-			setSeeded(_seedType, seeder.getLevel());
-		}
-	}
-	
-	/**
-	 * Sets the seed parameters, but not the seed state
-	 * @param id - id of the seed
-	 * @param seeder - player who is sowind the seed
-	 */
-	public void setSeeded(int id, L2PcInstance seeder)
-	{
-		if (!_seeded)
-		{
-			_seedType = id;
-			_seederObjId = seeder.getObjectId();
-		}
-	}
-	
-	private void setSeeded(int id, int seederLvl)
-	{
-		_seeded = true;
-		_seedType = id;
-		int count = 1;
-		
-		Set<Integer> skillIds = getTemplate().getSkills().keySet();
-		
-		if (skillIds != null)
-		{
-			for (int skillId : skillIds)
+			_seeded = true;
+			
+			int count = 1;
+			for (int skillId : getTemplate().getSkills().keySet())
 			{
 				switch (skillId)
 				{
@@ -1539,33 +1510,42 @@ public class L2Attackable extends L2Npc
 						break;
 				}
 			}
+			
+			// hi-lvl mobs bonus
+			final int diff = getLevel() - _seed.getLevel() - 5;
+			if (diff > 0)
+			{
+				count += diff;
+			}
+			_harvestItem = new ItemHolder(_seed.getCropId(), count * Config.RATE_DROP_MANOR);
 		}
-		
-		int diff = (getLevel() - (ManorData.getInstance().getSeedLevel(_seedType) - 5));
-		
-		// hi-lvl mobs bonus
-		if (diff > 0)
-		{
-			count += diff;
-		}
-		
-		_harvestItems = new ItemHolder[]
-		{
-			new ItemHolder(ManorData.getInstance().getCropType(_seedType), count * Config.RATE_DROP_MANOR)
-		};
 	}
 	
-	public int getSeederId()
+	/**
+	 * Sets the seed parameters, but not the seed state
+	 * @param seed - instance {@link L2Seed} of used seed
+	 * @param seeder - player who sows the seed
+	 */
+	public final void setSeeded(L2Seed seed, L2PcInstance seeder)
+	{
+		if (!_seeded)
+		{
+			_seed = seed;
+			_seederObjId = seeder.getObjectId();
+		}
+	}
+	
+	public final int getSeederId()
 	{
 		return _seederObjId;
 	}
 	
-	public int getSeedType()
+	public final L2Seed getSeed()
 	{
-		return _seedType;
+		return _seed;
 	}
 	
-	public boolean isSeeded()
+	public final boolean isSeeded()
 	{
 		return _seeded;
 	}

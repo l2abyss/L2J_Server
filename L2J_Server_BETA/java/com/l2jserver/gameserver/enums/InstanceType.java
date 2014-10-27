@@ -91,7 +91,6 @@ public enum InstanceType
 	L2AuctioneerInstance(L2Npc),
 	L2ClanHallManagerInstance(L2MerchantInstance),
 	L2FishermanInstance(L2MerchantInstance),
-	L2ManorManagerInstance(L2MerchantInstance),
 	L2ObservationInstance(L2Npc),
 	L2OlympiadManagerInstance(L2Npc),
 	L2PetManagerInstance(L2MerchantInstance),

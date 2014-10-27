@@ -20,18 +20,21 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
 
-import com.l2jserver.gameserver.datatables.ManorData;
+import com.l2jserver.gameserver.instancemanager.CastleManorManager;
+import com.l2jserver.gameserver.model.L2Seed;
 
 /**
  * @author l3x
  */
-public class ExShowManorDefaultInfo extends L2GameServerPacket
+public final class ExShowManorDefaultInfo extends L2GameServerPacket
 {
-	private List<Integer> _crops = null;
+	private final List<L2Seed> _crops;
+	private final boolean _hideButtons;
 	
-	public ExShowManorDefaultInfo()
+	public ExShowManorDefaultInfo(boolean hideButtons)
 	{
-		_crops = ManorData.getInstance().getAllCrops();
+		_crops = CastleManorManager.getInstance().getCrops();
+		_hideButtons = hideButtons;
 	}
 	
 	@Override
@@ -39,24 +42,18 @@ public class ExShowManorDefaultInfo extends L2GameServerPacket
 	{
 		writeC(0xFE);
 		writeH(0x25);
-		writeC(0);
+		writeC(_hideButtons ? 0x01 : 0x00); // Hide "Seed Purchase" and "Crop Sales" buttons
 		writeD(_crops.size());
-		for (int cropId : _crops)
+		for (L2Seed crop : _crops)
 		{
-			writeD(cropId); // crop Id
-			writeD(ManorData.getInstance().getSeedLevelByCrop(cropId)); // level
-			writeD(ManorData.getInstance().getSeedBasicPriceByCrop(cropId)); // seed
-			// price
-			writeD(ManorData.getInstance().getCropBasicPrice(cropId)); // crop
-			// price
-			writeC(1); // rewrad 1 Type
-			writeD(ManorData.getInstance().getRewardItem(cropId, 1)); // Rewrad 1
-			// Type Item
-			// Id
-			writeC(1); // rewrad 2 Type
-			writeD(ManorData.getInstance().getRewardItem(cropId, 2)); // Rewrad 2
-			// Type Item
-			// Id
+			writeD(crop.getCropId()); // crop Id
+			writeD(crop.getLevel()); // level
+			writeD(crop.getSeedReferencePrice()); // seed price
+			writeD(crop.getCropReferencePrice()); // crop price
+			writeC(1); // Reward 1 type
+			writeD(crop.getReward(1)); // Reward 1 itemId
+			writeC(1); // Reward 2 type
+			writeD(crop.getReward(2)); // Reward 2 itemId
 		}
 	}
 }

@@ -18,42 +18,37 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import javolution.util.FastMap;
-
-import com.l2jserver.gameserver.datatables.ManorData;
+import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.model.CropProcure;
-import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
+import com.l2jserver.gameserver.model.L2Seed;
+import com.l2jserver.gameserver.model.itemcontainer.PcInventory;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 /**
  * @author l3x
  */
-
-public class ExShowSellCropList extends L2GameServerPacket
+public final class ExShowSellCropList extends L2GameServerPacket
 {
-	private int _manorId = 1;
-	private final FastMap<Integer, L2ItemInstance> _cropsItems;
-	private final FastMap<Integer, CropProcure> _castleCrops;
+	private final int _manorId;
+	private final Map<Integer, L2ItemInstance> _cropsItems = new HashMap<>();
+	private final Map<Integer, CropProcure> _castleCrops = new HashMap<>();
 	
-	public ExShowSellCropList(L2PcInstance player, int manorId, List<CropProcure> crops)
+	public ExShowSellCropList(PcInventory inventory, int manorId)
 	{
 		_manorId = manorId;
-		_castleCrops = new FastMap<>();
-		_cropsItems = new FastMap<>();
-		
-		List<Integer> allCrops = ManorData.getInstance().getAllCrops();
-		for (int cropId : allCrops)
+		for (int cropId : CastleManorManager.getInstance().getCropIds())
 		{
-			L2ItemInstance item = player.getInventory().getItemByItemId(cropId);
+			final L2ItemInstance item = inventory.getItemByItemId(cropId);
 			if (item != null)
 			{
 				_cropsItems.put(cropId, item);
 			}
 		}
 		
-		for (CropProcure crop : crops)
+		for (CropProcure crop : CastleManorManager.getInstance().getCropProcure(_manorId, false))
 		{
 			if (_cropsItems.containsKey(crop.getId()) && (crop.getAmount() > 0))
 			{
@@ -66,24 +61,23 @@ public class ExShowSellCropList extends L2GameServerPacket
 	public void writeImpl()
 	{
 		writeC(0xFE);
-		writeH(0x2c);
+		writeH(0x2C);
 		
 		writeD(_manorId); // manor id
 		writeD(_cropsItems.size()); // size
-		
 		for (L2ItemInstance item : _cropsItems.values())
 		{
+			final L2Seed seed = CastleManorManager.getInstance().getSeedByCrop(item.getId());
 			writeD(item.getObjectId()); // Object id
-			writeD(item.getDisplayId()); // crop id
-			writeD(ManorData.getInstance().getSeedLevelByCrop(item.getId())); // seed level
+			writeD(item.getId()); // crop id
+			writeD(seed.getLevel()); // seed level
 			writeC(0x01);
-			writeD(ManorData.getInstance().getRewardItem(item.getId(), 1)); // reward 1 id
+			writeD(seed.getReward(1)); // reward 1 id
 			writeC(0x01);
-			writeD(ManorData.getInstance().getRewardItem(item.getId(), 2)); // reward 2 id
-			
+			writeD(seed.getReward(2)); // reward 2 id
 			if (_castleCrops.containsKey(item.getId()))
 			{
-				CropProcure crop = _castleCrops.get(item.getId());
+				final CropProcure crop = _castleCrops.get(item.getId());
 				writeD(_manorId); // manor
 				writeQ(crop.getAmount()); // buy residual
 				writeQ(crop.getPrice()); // buy price

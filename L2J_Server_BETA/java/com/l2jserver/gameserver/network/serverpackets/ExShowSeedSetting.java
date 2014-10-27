@@ -18,13 +18,13 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-import com.l2jserver.gameserver.datatables.ManorData;
-import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
+import com.l2jserver.gameserver.model.L2Seed;
 import com.l2jserver.gameserver.model.SeedProduction;
-import com.l2jserver.gameserver.model.entity.Castle;
 
 /**
  * @author l3x
@@ -32,50 +32,29 @@ import com.l2jserver.gameserver.model.entity.Castle;
 public class ExShowSeedSetting extends L2GameServerPacket
 {
 	private final int _manorId;
-	private final int _count;
-	private final long[] _seedData; // data to send, size:_count*12
+	private final Set<L2Seed> _seeds;
+	private final Map<Integer, SeedProduction> _current = new HashMap<>();
+	private final Map<Integer, SeedProduction> _next = new HashMap<>();
 	
 	public ExShowSeedSetting(int manorId)
 	{
+		final CastleManorManager manor = CastleManorManager.getInstance();
 		_manorId = manorId;
-		Castle c = CastleManager.getInstance().getCastleById(_manorId);
-		List<Integer> seeds = ManorData.getInstance().getSeedsForCastle(_manorId);
-		_count = seeds.size();
-		_seedData = new long[_count * 12];
-		int i = 0;
-		for (int s : seeds)
+		_seeds = manor.getSeedsForCastle(_manorId);
+		for (L2Seed s : _seeds)
 		{
-			_seedData[(i * 12) + 0] = s;
-			_seedData[(i * 12) + 1] = ManorData.getInstance().getSeedLevel(s);
-			_seedData[(i * 12) + 2] = ManorData.getInstance().getRewardItemBySeed(s, 1);
-			_seedData[(i * 12) + 3] = ManorData.getInstance().getRewardItemBySeed(s, 2);
-			_seedData[(i * 12) + 4] = ManorData.getInstance().getSeedSaleLimit(s);
-			_seedData[(i * 12) + 5] = ManorData.getInstance().getSeedBuyPrice(s);
-			_seedData[(i * 12) + 6] = (ManorData.getInstance().getSeedBasicPrice(s) * 60) / 100;
-			_seedData[(i * 12) + 7] = ManorData.getInstance().getSeedBasicPrice(s) * 10;
-			SeedProduction seedPr = c.getSeed(s, CastleManorManager.PERIOD_CURRENT);
-			if (seedPr != null)
+			// Current period
+			SeedProduction sp = manor.getSeedProduct(manorId, s.getSeedId(), false);
+			if (sp != null)
 			{
-				_seedData[(i * 12) + 8] = seedPr.getStartProduce();
-				_seedData[(i * 12) + 9] = seedPr.getPrice();
+				_current.put(s.getSeedId(), sp);
 			}
-			else
+			// Next period
+			sp = manor.getSeedProduct(manorId, s.getSeedId(), true);
+			if (sp != null)
 			{
-				_seedData[(i * 12) + 8] = 0;
-				_seedData[(i * 12) + 9] = 0;
+				_next.put(s.getSeedId(), sp);
 			}
-			seedPr = c.getSeed(s, CastleManorManager.PERIOD_NEXT);
-			if (seedPr != null)
-			{
-				_seedData[(i * 12) + 10] = seedPr.getStartProduce();
-				_seedData[(i * 12) + 11] = seedPr.getPrice();
-			}
-			else
-			{
-				_seedData[(i * 12) + 10] = 0;
-				_seedData[(i * 12) + 11] = 0;
-			}
-			i++;
 		}
 	}
 	
@@ -86,26 +65,47 @@ public class ExShowSeedSetting extends L2GameServerPacket
 		writeH(0x26); // SubId
 		
 		writeD(_manorId); // manor id
-		writeD(_count); // size
+		writeD(_seeds.size()); // size
 		
-		for (int i = 0; i < _count; i++)
+		SeedProduction sp;
+		for (L2Seed s : _seeds)
 		{
-			writeD((int) _seedData[(i * 12) + 0]); // seed id
-			writeD((int) _seedData[(i * 12) + 1]); // level
+			writeD(s.getSeedId()); // seed id
+			writeD(s.getLevel()); // level
 			writeC(1);
-			writeD((int) _seedData[(i * 12) + 2]); // reward 1 id
+			writeD(s.getReward(1)); // reward 1 id
 			writeC(1);
-			writeD((int) _seedData[(i * 12) + 3]); // reward 2 id
-			
-			writeD((int) _seedData[(i * 12) + 4]); // next sale limit
-			writeD((int) _seedData[(i * 12) + 5]); // price for castle to produce 1
-			writeD((int) _seedData[(i * 12) + 6]); // min seed price
-			writeD((int) _seedData[(i * 12) + 7]); // max seed price
-			
-			writeQ(_seedData[(i * 12) + 8]); // today sales
-			writeQ(_seedData[(i * 12) + 9]); // today price
-			writeQ(_seedData[(i * 12) + 10]); // next sales
-			writeQ(_seedData[(i * 12) + 11]); // next price
+			writeD(s.getReward(2)); // reward 2 id
+			writeD(s.getSeedLimit()); // next sale limit
+			writeD(s.getSeedReferencePrice()); // price for castle to produce 1
+			writeD(s.getSeedMinPrice()); // min seed price
+			writeD(s.getSeedMaxPrice()); // max seed price
+			// Current period
+			if (_current.containsKey(s.getSeedId()))
+			{
+				sp = _current.get(s.getSeedId());
+				writeQ(sp.getStartAmount()); // sales
+				writeQ(sp.getPrice()); // price
+			}
+			else
+			{
+				writeQ(0);
+				writeQ(0);
+			}
+			// Next period
+			if (_next.containsKey(s.getSeedId()))
+			{
+				sp = _next.get(s.getSeedId());
+				writeQ(sp.getStartAmount()); // sales
+				writeQ(sp.getPrice()); // price
+			}
+			else
+			{
+				writeQ(0);
+				writeQ(0);
+			}
 		}
+		_current.clear();
+		_next.clear();
 	}
 }

@@ -67,7 +67,6 @@ import com.l2jserver.gameserver.datatables.InitialEquipmentData;
 import com.l2jserver.gameserver.datatables.InitialShortcutData;
 import com.l2jserver.gameserver.datatables.ItemTable;
 import com.l2jserver.gameserver.datatables.KarmaData;
-import com.l2jserver.gameserver.datatables.ManorData;
 import com.l2jserver.gameserver.datatables.MerchantPriceConfigTable;
 import com.l2jserver.gameserver.datatables.MultisellData;
 import com.l2jserver.gameserver.datatables.NpcBufferTable;
@@ -295,7 +294,6 @@ public class GameServer
 		TerritoryWarManager.getInstance();
 		CastleManorManager.getInstance();
 		MercTicketManager.getInstance();
-		ManorData.getInstance();
 		
 		printSection("Olympiad");
 		Olympiad.getInstance();

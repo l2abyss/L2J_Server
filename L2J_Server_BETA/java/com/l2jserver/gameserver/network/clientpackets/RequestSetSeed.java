@@ -18,132 +18,96 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
-import static com.l2jserver.gameserver.model.actor.L2Npc.INTERACTION_DISTANCE;
-import static com.l2jserver.gameserver.model.itemcontainer.Inventory.MAX_ADENA;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import com.l2jserver.Config;
-import com.l2jserver.gameserver.instancemanager.CastleManager;
 import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.model.ClanPrivilege;
+import com.l2jserver.gameserver.model.L2Seed;
 import com.l2jserver.gameserver.model.SeedProduction;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
-import com.l2jserver.gameserver.model.entity.Castle;
-import com.l2jserver.gameserver.util.Util;
 
 /**
- * Format: (ch) dd [ddd] d - manor id d - size [ d - seed id d - sales d - price ]
  * @author l3x
  */
 public class RequestSetSeed extends L2GameClientPacket
 {
-	private static final String _C__D0_03_REQUESTSETSEED = "[C] D0:03 RequestSetSeed";
-	
 	private static final int BATCH_LENGTH = 20; // length of the one item
 	
 	private int _manorId;
-	private Seed _items[] = null;
+	private List<SeedProduction> _items;
 	
 	@Override
 	protected void readImpl()
 	{
 		_manorId = readD();
-		int count = readD();
+		final int count = readD();
 		if ((count <= 0) || (count > Config.MAX_ITEM_IN_PACKET) || ((count * BATCH_LENGTH) != _buf.remaining()))
 		{
 			return;
 		}
 		
-		_items = new Seed[count];
+		_items = new ArrayList<>(count);
 		for (int i = 0; i < count; i++)
 		{
-			int itemId = readD();
-			long sales = readQ();
-			long price = readQ();
+			final int itemId = readD();
+			final long sales = readQ();
+			final long price = readQ();
 			if ((itemId < 1) || (sales < 0) || (price < 0))
 			{
-				_items = null;
+				_items.clear();
 				return;
 			}
-			_items[i] = new Seed(itemId, sales, price);
+			
+			if (sales > 0)
+			{
+				_items.add(new SeedProduction(itemId, sales, price, sales));
+			}
 		}
 	}
 	
 	@Override
 	protected void runImpl()
 	{
-		if (_items == null)
+		if (_items.isEmpty())
 		{
 			return;
 		}
 		
-		L2PcInstance player = getClient().getActiveChar();
-		// check player privileges
-		if ((player == null) || (player.getClan() == null) || !player.hasClanPrivilege(ClanPrivilege.CS_MANOR_ADMIN))
+		final CastleManorManager manor = CastleManorManager.getInstance();
+		if (!manor.isModifiablePeriod())
 		{
+			sendActionFailed();
 			return;
 		}
 		
-		// check castle owner
-		Castle currentCastle = CastleManager.getInstance().getCastleById(_manorId);
-		if (currentCastle.getOwnerId() != player.getClanId())
+		// Check player privileges
+		final L2PcInstance player = getActiveChar();
+		if ((player == null) || (player.getClan() == null) || (player.getClan().getCastleId() != _manorId) || !player.hasClanPrivilege(ClanPrivilege.CS_MANOR_ADMIN) || !player.getLastFolkNPC().canInteract(player))
 		{
+			sendActionFailed();
 			return;
 		}
 		
-		if (!player.isInsideRadius(player.getLastFolkNPC(), INTERACTION_DISTANCE, true, false))
+		// Filter seeds with start amount lower than 0 and incorrect price
+		final List<SeedProduction> list = new ArrayList<>(_items.size());
+		for (SeedProduction sp : _items)
 		{
-			return;
-		}
-		
-		List<SeedProduction> seeds = new ArrayList<>(_items.length);
-		for (Seed i : _items)
-		{
-			SeedProduction s = i.getSeed();
-			if (s == null)
+			final L2Seed s = manor.getSeed(sp.getId());
+			if ((s != null) && (sp.getStartAmount() <= s.getSeedLimit()) && (sp.getPrice() >= s.getSeedMinPrice()) && (sp.getPrice() <= s.getSeedMaxPrice()))
 			{
-				Util.handleIllegalPlayerAction(player, "Warning!! Character " + player.getName() + " of account " + player.getAccountName() + " tried to overflow while setting manor.", Config.DEFAULT_PUNISH);
-				return;
+				list.add(sp);
 			}
-			seeds.add(s);
 		}
 		
-		currentCastle.setSeedProduction(seeds, CastleManorManager.PERIOD_NEXT);
-		if (Config.ALT_MANOR_SAVE_ALL_ACTIONS)
-		{
-			currentCastle.saveSeedData(CastleManorManager.PERIOD_NEXT);
-		}
-	}
-	
-	private static class Seed
-	{
-		private final int _itemId;
-		private final long _sales;
-		private final long _price;
-		
-		public Seed(int id, long s, long p)
-		{
-			_itemId = id;
-			_sales = s;
-			_price = p;
-		}
-		
-		public SeedProduction getSeed()
-		{
-			if ((_sales != 0) && ((MAX_ADENA / _sales) < _price))
-			{
-				return null;
-			}
-			
-			return CastleManorManager.getInstance().getNewSeedProduction(_itemId, _sales, _price, _sales);
-		}
+		// Save new list
+		manor.setNextSeedProduction(list, _manorId);
 	}
 	
 	@Override
 	public String getType()
 	{
-		return _C__D0_03_REQUESTSETSEED;
+		return "[C] D0:03 RequestSetSeed";
 	}
 }

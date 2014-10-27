@@ -44,7 +44,6 @@ import com.l2jserver.gameserver.model.items.type.CrystalType;
 import com.l2jserver.gameserver.model.items.type.EtcItemType;
 import com.l2jserver.gameserver.model.items.type.ItemType;
 import com.l2jserver.gameserver.model.items.type.MaterialType;
-import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.funcs.Func;
@@ -157,7 +156,6 @@ public abstract class L2Item extends ListenersContainer implements IIdentifiable
 	private SkillHolder[] _skillHolder;
 	private SkillHolder _unequipSkill = null;
 	
-	private List<Quest> _questEvents;
 	private final int _useSkillDisTime;
 	private final int _reuseDelay;
 	private final int _sharedReuseGroup;
@@ -997,20 +995,6 @@ public abstract class L2Item extends ListenersContainer implements IIdentifiable
 	public String getIcon()
 	{
 		return _icon;
-	}
-	
-	public void addQuestEvent(Quest q)
-	{
-		if (_questEvents == null)
-		{
-			_questEvents = new ArrayList<>();
-		}
-		_questEvents.add(q);
-	}
-	
-	public List<Quest> getQuestEvents()
-	{
-		return _questEvents;
 	}
 	
 	public int getDefaultEnchantLevel()

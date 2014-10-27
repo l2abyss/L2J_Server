@@ -20,7 +20,8 @@ package com.l2jserver.gameserver.network.serverpackets;
 
 import java.util.List;
 
-import com.l2jserver.gameserver.datatables.ManorData;
+import com.l2jserver.gameserver.instancemanager.CastleManorManager;
+import com.l2jserver.gameserver.model.L2Seed;
 import com.l2jserver.gameserver.model.SeedProduction;
 
 /**
@@ -30,11 +31,15 @@ public class ExShowSeedInfo extends L2GameServerPacket
 {
 	private final List<SeedProduction> _seeds;
 	private final int _manorId;
+	private final boolean _hideButtons;
 	
-	public ExShowSeedInfo(int manorId, List<SeedProduction> seeds)
+	public ExShowSeedInfo(int manorId, boolean nextPeriod, boolean hideButtons)
 	{
 		_manorId = manorId;
-		_seeds = seeds;
+		_hideButtons = hideButtons;
+		
+		final CastleManorManager manor = CastleManorManager.getInstance();
+		_seeds = (nextPeriod && !manor.isManorApproved()) ? null : manor.getSeedProduction(manorId, nextPeriod);
 	}
 	
 	@Override
@@ -42,9 +47,9 @@ public class ExShowSeedInfo extends L2GameServerPacket
 	{
 		writeC(0xFE); // Id
 		writeH(0x23); // SubId
-		writeC(0x00);
+		writeC(_hideButtons ? 0x01 : 0x00); // Hide "Seed Purchase" button
 		writeD(_manorId); // Manor ID
-		writeD(0x00);
+		writeD(0x00); // Unknown
 		if (_seeds == null)
 		{
 			writeD(0);
@@ -54,14 +59,26 @@ public class ExShowSeedInfo extends L2GameServerPacket
 		for (SeedProduction seed : _seeds)
 		{
 			writeD(seed.getId()); // Seed id
-			writeQ(seed.getCanProduce()); // Left to buy
-			writeQ(seed.getStartProduce()); // Started amount
+			writeQ(seed.getAmount()); // Left to buy
+			writeQ(seed.getStartAmount()); // Started amount
 			writeQ(seed.getPrice()); // Sell Price
-			writeD(ManorData.getInstance().getSeedLevel(seed.getId())); // Seed Level
-			writeC(0x01); // reward 1 Type
-			writeD(ManorData.getInstance().getRewardItemBySeed(seed.getId(), 1)); // Reward 1 Type Item Id
-			writeC(0x01); // reward 2 Type
-			writeD(ManorData.getInstance().getRewardItemBySeed(seed.getId(), 2)); // Reward 2 Type Item Id
+			final L2Seed s = CastleManorManager.getInstance().getSeed(seed.getId());
+			if (s == null)
+			{
+				writeD(0); // Seed level
+				writeC(0x01); // Reward 1
+				writeD(0); // Reward 1 - item id
+				writeC(0x01); // Reward 2
+				writeD(0); // Reward 2 - item id
+			}
+			else
+			{
+				writeD(s.getLevel()); // Seed level
+				writeC(0x01); // Reward 1
+				writeD(s.getReward(1)); // Reward 1 - item id
+				writeC(0x01); // Reward 2
+				writeD(s.getReward(2)); // Reward 2 - item id
+			}
 		}
 	}
 }

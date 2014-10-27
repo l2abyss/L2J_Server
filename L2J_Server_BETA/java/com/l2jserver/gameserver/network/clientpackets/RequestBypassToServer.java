@@ -38,6 +38,7 @@ import com.l2jserver.gameserver.model.actor.L2Npc;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.model.events.EventDispatcher;
+import com.l2jserver.gameserver.model.events.impl.character.npc.OnNpcManorBypass;
 import com.l2jserver.gameserver.model.events.impl.character.player.OnPlayerBypass;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.network.SystemMessageId;
@@ -301,28 +302,14 @@ public final class RequestBypassToServer extends L2GameClientPacket
 			}
 			else if (_command.startsWith("manor_menu_select"))
 			{
-				final IBypassHandler handler = BypassHandler.getInstance().getHandler("manor_menu_select");
-				if (handler == null)
+				final L2Npc lastNpc = activeChar.getLastFolkNPC();
+				if (Config.ALLOW_MANOR && (lastNpc != null) && lastNpc.canInteract(activeChar))
 				{
-					_log.warning("Manor menu select handler is not registered!");
-					return;
-				}
-				
-				if (bypassOriginId > 0)
-				{
-					L2Object bypassOrigin = activeChar.getKnownList().getKnownObjects().get(bypassOriginId);
-					if ((bypassOrigin != null) && bypassOrigin.isInstanceTypes(InstanceType.L2Character))
-					{
-						handler.useBypass(_command, activeChar, (L2Character) bypassOrigin);
-					}
-					else
-					{
-						handler.useBypass(_command, activeChar, null);
-					}
-				}
-				else
-				{
-					handler.useBypass(_command, activeChar, null);
+					final String[] split = _command.substring(_command.indexOf("?") + 1).split("&");
+					final int ask = Integer.parseInt(split[0].split("=")[1]);
+					final int state = Integer.parseInt(split[1].split("=")[1]);
+					final boolean time = split[2].split("=")[1].equals("1");
+					EventDispatcher.getInstance().notifyEventAsync(new OnNpcManorBypass(activeChar, lastNpc, ask, state, time), lastNpc);
 				}
 			}
 			else

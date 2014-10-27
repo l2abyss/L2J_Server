@@ -19,8 +19,10 @@
 package com.l2jserver.gameserver.model;
 
 import com.l2jserver.Config;
+import com.l2jserver.gameserver.datatables.ItemTable;
+import com.l2jserver.gameserver.model.items.L2Item;
 
-public class L2Seed
+public final class L2Seed
 {
 	private final int _seedId;
 	private final int _cropId; // crop type
@@ -32,6 +34,8 @@ public class L2Seed
 	private final boolean _isAlternative;
 	private final int _limitSeeds;
 	private final int _limitCrops;
+	private final int _seedReferencePrice;
+	private final int _cropReferencePrice;
 	
 	public L2Seed(StatsSet set)
 	{
@@ -45,55 +49,90 @@ public class L2Seed
 		_isAlternative = set.getBoolean("alternative");
 		_limitCrops = set.getInt("limit_crops");
 		_limitSeeds = set.getInt("limit_seed");
+		// Set prices
+		L2Item item = ItemTable.getInstance().getTemplate(_cropId);
+		_cropReferencePrice = (item != null) ? item.getReferencePrice() : 1;
+		item = ItemTable.getInstance().getTemplate(_seedId);
+		_seedReferencePrice = (item != null) ? item.getReferencePrice() : 1;
 	}
 	
-	public int getCastleId()
+	public final int getCastleId()
 	{
 		return _castleId;
 	}
 	
-	public int getSeedId()
+	public final int getSeedId()
 	{
 		return _seedId;
 	}
 	
-	public int getCropId()
+	public final int getCropId()
 	{
 		return _cropId;
 	}
 	
-	public int getMatureId()
+	public final int getMatureId()
 	{
 		return _matureId;
 	}
 	
-	public int getReward(int type)
+	public final int getReward(int type)
 	{
-		return (type == 1 ? _reward1 : _reward2);
+		return (type == 1) ? _reward1 : _reward2;
 	}
 	
-	public int getLevel()
+	public final int getLevel()
 	{
 		return _level;
 	}
 	
-	public boolean isAlternative()
+	public final boolean isAlternative()
 	{
 		return _isAlternative;
 	}
 	
-	public int getSeedLimit()
+	public final int getSeedLimit()
 	{
 		return _limitSeeds * Config.RATE_DROP_MANOR;
 	}
 	
-	public int getCropLimit()
+	public final int getCropLimit()
 	{
 		return _limitCrops * Config.RATE_DROP_MANOR;
 	}
 	
+	public final int getSeedReferencePrice()
+	{
+		return _seedReferencePrice;
+	}
+	
+	public final int getSeedMaxPrice()
+	{
+		return _seedReferencePrice * 10;
+	}
+	
+	public final int getSeedMinPrice()
+	{
+		return (int) (_seedReferencePrice * 0.6);
+	}
+	
+	public final int getCropReferencePrice()
+	{
+		return _cropReferencePrice;
+	}
+	
+	public final int getCropMaxPrice()
+	{
+		return _cropReferencePrice * 10;
+	}
+	
+	public final int getCropMinPrice()
+	{
+		return (int) (_cropReferencePrice * 0.6);
+	}
+	
 	@Override
-	public String toString()
+	public final String toString()
 	{
 		return "SeedData [_id=" + _seedId + ", _level=" + _level + ", _crop=" + _cropId + ", _mature=" + _matureId + ", _type1=" + _reward1 + ", _type2=" + _reward2 + ", _manorId=" + _castleId + ", _isAlternative=" + _isAlternative + ", _limitSeeds=" + _limitSeeds + ", _limitCrops=" + _limitCrops + "]";
 	}

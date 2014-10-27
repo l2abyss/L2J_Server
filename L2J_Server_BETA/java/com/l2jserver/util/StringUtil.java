@@ -250,14 +250,7 @@ public final class StringUtil
 		int length = 0;
 		for (final String string : strings)
 		{
-			if (string == null)
-			{
-				length += 4;
-			}
-			else
-			{
-				length += string.length();
-			}
+			length += (string == null) ? 4 : string.length();
 		}
 		return length;
 	}
@@ -270,19 +263,10 @@ public final class StringUtil
 	public static int getLength(final String[] strings)
 	{
 		int length = 0;
-		
 		for (final String string : strings)
 		{
-			if (string == null)
-			{
-				length += 4;
-			}
-			else
-			{
-				length += string.length();
-			}
+			length += (string == null) ? 4 : string.length();
 		}
-		
 		return length;
 	}
 	

@@ -54,10 +54,8 @@ import com.l2jserver.gameserver.model.L2WorldRegion;
 import com.l2jserver.gameserver.model.Location;
 import com.l2jserver.gameserver.model.actor.instance.L2ClanHallManagerInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2DoormenInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2FestivalGuideInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2FishermanInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2MerchantInstance;
-import com.l2jserver.gameserver.model.actor.instance.L2NpcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TeleporterInstance;
 import com.l2jserver.gameserver.model.actor.instance.L2TrainerInstance;
@@ -570,53 +568,6 @@ public class L2Npc extends L2Character
 		}
 	}
 	
-	/**
-	 * <B><U>Values </U>:</B>
-	 * <ul>
-	 * <li>object is a L2FolkInstance : 0 (don't remember it)</li>
-	 * <li>object is a L2Character : 0 (don't remember it)</li>
-	 * <li>object is a L2Playable : 1500</li>
-	 * <li>others : 500</li>
-	 * <ul>
-	 * @param object The Object to add to _knownObject
-	 * @return the distance under which the object must be add to _knownObject in function of the object type.
-	 */
-	public int getDistanceToWatchObject(L2Object object)
-	{
-		if (object instanceof L2FestivalGuideInstance)
-		{
-			return 10000;
-		}
-		
-		if ((object instanceof L2NpcInstance) || !(object instanceof L2Character))
-		{
-			return 0;
-		}
-		
-		if (object instanceof L2Playable)
-		{
-			return 1500;
-		}
-		
-		return 500;
-	}
-	
-	/**
-	 * <B><U>Values</U>:</B>
-	 * <ul>
-	 * <li>object is not a L2Character : 0 (don't remember it)</li>
-	 * <li>object is a L2FolkInstance : 0 (don't remember it)</li>
-	 * <li>object is a L2Playable : 3000</li>
-	 * <li>others : 1000</li>
-	 * </ul>
-	 * @param object The Object to remove from _knownObject
-	 * @return the distance after which the object must be remove from _knownObject in function of the object type.
-	 */
-	public int getDistanceToForgetObject(L2Object object)
-	{
-		return 2 * getDistanceToWatchObject(object);
-	}
-	
 	public boolean isEventMob()
 	{
 		return _eventMob;
@@ -723,27 +674,27 @@ public class L2Npc extends L2Character
 		{
 			return false;
 		}
-		if (player.isDead() || player.isFakeDeath())
+		else if (player.isDead() || player.isFakeDeath())
 		{
 			return false;
 		}
-		if (player.isSitting())
+		else if (player.isSitting())
 		{
 			return false;
 		}
-		if (player.getPrivateStoreType() != PrivateStoreType.NONE)
+		else if (player.getPrivateStoreType() != PrivateStoreType.NONE)
 		{
 			return false;
 		}
-		if (!isInsideRadius(player, INTERACTION_DISTANCE, true, false))
+		else if (!isInsideRadius(player, INTERACTION_DISTANCE, true, false))
 		{
 			return false;
 		}
-		if ((player.getInstanceId() != getInstanceId()) && (player.getInstanceId() != -1))
+		else if ((player.getInstanceId() != getInstanceId()) && (player.getInstanceId() != -1))
 		{
 			return false;
 		}
-		if (isBusy())
+		else if (isBusy())
 		{
 			return false;
 		}
@@ -1644,20 +1595,14 @@ public class L2Npc extends L2Character
 	
 	public L2Npc scheduleDespawn(long delay)
 	{
-		ThreadPoolManager.getInstance().scheduleGeneral(new DespawnTask(), delay);
-		return this;
-	}
-	
-	protected class DespawnTask implements Runnable
-	{
-		@Override
-		public void run()
+		ThreadPoolManager.getInstance().scheduleGeneral(() ->
 		{
 			if (!isDecayed())
 			{
 				deleteMe();
 			}
-		}
+		}, delay);
+		return this;
 	}
 	
 	@Override

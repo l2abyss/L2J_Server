@@ -18,34 +18,25 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
-import javolution.util.FastList;
-import javolution.util.FastMap;
-
-import com.l2jserver.gameserver.instancemanager.CastleManager;
+import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.model.CropProcure;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 
 public class SellListProcure extends L2GameServerPacket
 {
-	private final L2PcInstance _activeChar;
 	private final long _money;
-	private final Map<L2ItemInstance, Long> _sellList = new FastMap<>();
-	private List<CropProcure> _procureList = new FastList<>();
-	private final int _castle;
+	private final Map<L2ItemInstance, Long> _sellList = new HashMap<>();
 	
 	public SellListProcure(L2PcInstance player, int castleId)
 	{
 		_money = player.getAdena();
-		_activeChar = player;
-		_castle = castleId;
-		_procureList = CastleManager.getInstance().getCastleById(_castle).getCropProcure(0);
-		for (CropProcure c : _procureList)
+		for (CropProcure c : CastleManorManager.getInstance().getCropProcure(castleId, false))
 		{
-			L2ItemInstance item = _activeChar.getInventory().getItemByItemId(c.getId());
+			final L2ItemInstance item = player.getInventory().getItemByItemId(c.getId());
 			if ((item != null) && (c.getAmount() > 0))
 			{
 				_sellList.put(item, c.getAmount());

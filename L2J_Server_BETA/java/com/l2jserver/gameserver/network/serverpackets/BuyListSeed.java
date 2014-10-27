@@ -18,36 +18,31 @@
  */
 package com.l2jserver.gameserver.network.serverpackets;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javolution.util.FastList;
-
+import com.l2jserver.gameserver.instancemanager.CastleManorManager;
 import com.l2jserver.gameserver.model.SeedProduction;
 
 /**
  * @author l3x
  */
-
 public final class BuyListSeed extends L2GameServerPacket
 {
 	private final int _manorId;
-	private List<Seed> _list = null;
 	private final long _money;
+	private final List<SeedProduction> _list = new ArrayList<>();
 	
-	public BuyListSeed(long currentMoney, int castleId, List<SeedProduction> seeds)
+	public BuyListSeed(long currentMoney, int castleId)
 	{
 		_money = currentMoney;
 		_manorId = castleId;
 		
-		if ((seeds != null) && (seeds.size() > 0))
+		for (SeedProduction s : CastleManorManager.getInstance().getSeedProduction(castleId, false))
 		{
-			_list = new FastList<>();
-			for (SeedProduction s : seeds)
+			if ((s.getAmount() > 0) && (s.getPrice() > 0))
 			{
-				if ((s.getCanProduce() > 0) && (s.getPrice() > 0))
-				{
-					_list.add(new Seed(s.getId(), s.getCanProduce(), s.getPrice()));
-				}
+				_list.add(s);
 			}
 		}
 	}
@@ -60,15 +55,15 @@ public final class BuyListSeed extends L2GameServerPacket
 		writeQ(_money); // current money
 		writeD(_manorId); // manor id
 		
-		if ((_list != null) && (_list.size() > 0))
+		if (!_list.isEmpty())
 		{
 			writeH(_list.size()); // list length
-			for (Seed s : _list)
+			for (SeedProduction s : _list)
 			{
-				writeD(s._itemId);
-				writeD(s._itemId);
+				writeD(s.getId());
+				writeD(s.getId());
 				writeD(0x00);
-				writeQ(s._count); // item count
+				writeQ(s.getAmount()); // item count
 				writeH(0x05); // Custom Type 2
 				writeH(0x00); // Custom Type 1
 				writeH(0x00); // Equipped
@@ -88,28 +83,13 @@ public final class BuyListSeed extends L2GameServerPacket
 				writeH(0x00);
 				writeH(0x00);
 				writeH(0x00);
-				writeQ(s._price); // price
+				writeQ(s.getPrice()); // price
 			}
 			_list.clear();
 		}
 		else
 		{
 			writeH(0x00);
-		}
-		
-	}
-	
-	private static class Seed
-	{
-		public final int _itemId;
-		public final long _count;
-		public final long _price;
-		
-		public Seed(int itemId, long count, long price)
-		{
-			_itemId = itemId;
-			_count = count;
-			_price = price;
 		}
 	}
 }

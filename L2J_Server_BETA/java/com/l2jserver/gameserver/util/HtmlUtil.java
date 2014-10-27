@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.function.Function;
 
 import com.l2jserver.gameserver.model.PageResult;
+import com.l2jserver.util.StringUtil;
 
 /**
  * A class containing useful methods for constructing HTML
@@ -164,62 +165,20 @@ public class HtmlUtil
 	{
 		current = Math.min(current, max);
 		final StringBuilder sb = new StringBuilder();
-		sb.append("<table width=");
-		sb.append(width);
-		sb.append(" cellpadding=0 cellspacing=0>");
-		sb.append("<tr>");
-		sb.append("<td background=\"");
-		sb.append(backgroundImage);
-		sb.append("\">");
-		sb.append("<img src=\"");
-		sb.append(image);
-		sb.append("\" width=");
-		sb.append((long) (((double) current / max) * width));
-		sb.append(" height=");
-		sb.append(imageHeight);
-		sb.append(">");
-		sb.append("</td>");
-		sb.append("</tr>");
-		sb.append("<tr>");
-		sb.append("<td align=center>");
-		sb.append("<table cellpadding=0 cellspacing=");
-		sb.append(top);
-		sb.append(">");
-		sb.append("<tr>");
-		sb.append("<td>");
+		StringUtil.append(sb, "<table width=", String.valueOf(width), " cellpadding=0 cellspacing=0><tr><td background=\"" + backgroundImage + "\">");
+		StringUtil.append(sb, "<img src=\"" + image + "\" width=", String.valueOf((long) (((double) current / max) * width)), " height=", String.valueOf(imageHeight), ">");
+		StringUtil.append(sb, "</td></tr><tr><td align=center><table cellpadding=0 cellspacing=", String.valueOf(top), "><tr><td>");
 		if (displayAsPercentage)
 		{
-			sb.append("<table cellpadding=0 cellspacing=2>");
-			sb.append("<tr><td>");
-			sb.append(String.format("%.2f%%", ((double) current / max) * 100));
-			sb.append("</td></tr>");
-			sb.append("</table>");
+			StringUtil.append(sb, "<table cellpadding=0 cellspacing=2><tr><td>", String.format("%.2f%%", ((double) current / max) * 100), "</td></tr></table>");
 		}
 		else
 		{
-			int tdWidth = (width - 10) / 2;
-			sb.append("<table cellpadding=0 cellspacing=0>");
-			sb.append("<tr>");
-			sb.append("<td width=");
-			sb.append(tdWidth);
-			sb.append(" align=right>");
-			sb.append(current);
-			sb.append("</td>");
-			sb.append("<td width=10 align=center>/</td>");
-			sb.append("<td width=");
-			sb.append(tdWidth);
-			sb.append(">");
-			sb.append(max);
-			sb.append("</td>");
-			sb.append("</tr>");
-			sb.append("</table>");
+			final String tdWidth = String.valueOf((width - 10) / 2);
+			StringUtil.append(sb, "<table cellpadding=0 cellspacing=0><tr><td width=" + tdWidth + " align=right>", String.valueOf(current), "</td>");
+			StringUtil.append(sb, "<td width=10 align=center>/</td><td width=" + tdWidth + ">", String.valueOf(max), "</td></tr></table>");
 		}
-		sb.append("</td>");
-		sb.append("</tr>");
-		sb.append("</table>");
-		sb.append("</td>");
-		sb.append("</tr>");
-		sb.append("</table>");
+		StringUtil.append(sb, "</td></tr></table></td></tr></table>");
 		return sb.toString();
 	}
 	

@@ -19,62 +19,20 @@
 package com.l2jserver.gameserver.model;
 
 /**
- * @author xban1x
+ * @author malyelfik
  */
-public final class CropProcure
+public final class CropProcure extends SeedProduction
 {
-	final int _cropId;
-	long _buyResidual;
-	final int _rewardType;
-	final long _buy;
-	final long _price;
+	private final int _rewardType;
 	
-	public CropProcure(int id)
+	public CropProcure(int id, long amount, int type, long startAmount, long price)
 	{
-		_cropId = id;
-		_buyResidual = 0;
-		_rewardType = 0;
-		_buy = 0;
-		_price = 0;
-	}
-	
-	public CropProcure(int id, long amount, int type, long buy, long price)
-	{
-		_cropId = id;
-		_buyResidual = amount;
+		super(id, amount, price, startAmount);
 		_rewardType = type;
-		_buy = buy;
-		_price = price;
 	}
 	
-	public int getReward()
+	public final int getReward()
 	{
 		return _rewardType;
 	}
-	
-	public int getId()
-	{
-		return _cropId;
-	}
-	
-	public long getAmount()
-	{
-		return _buyResidual;
-	}
-	
-	public long getStartAmount()
-	{
-		return _buy;
-	}
-	
-	public long getPrice()
-	{
-		return _price;
-	}
-	
-	public void setAmount(long amount)
-	{
-		_buyResidual = amount;
-	}
-	
 }
