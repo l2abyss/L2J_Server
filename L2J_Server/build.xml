@@ -47,7 +47,7 @@
 		</mapper>
 	</pathconvert>
 
-	<target name="init" depends="checkRequirements,getDateAndVersion" description="Create the output directories.">
+	<target name="init" depends="checkRequirements" description="Create the output directories.">
 		<delete dir="${build.bin}" quiet="true" />
 		<mkdir dir="${build.bin}" />
 	</target>
@@ -56,7 +56,6 @@
 		<sync todir="${build.dist}" includeemptydirs="true">
 			<fileset dir="dist" />
 		</sync>
-		<concat destfile="${build.dist.game}/config/l2j-version.properties">version=${l2j.version}${line.separator}builddate=${build.tstamp}</concat>
 	</target>
 
 	<target name="compile" depends="dist" description="Compile the source.">
@@ -207,21 +206,5 @@
 		</fail>
 		<available classname="java.util.stream.Stream" property="JDK8.present" />
 		<fail unless="JDK8.present" message="Java 1.8 is required. But your version is Java ${ant.java.version} and probably JDK is not installed." />
-	</target>
-
-	<target name="getDateAndVersion" description="Get Date and Version.">
-		<tstamp>
-			<format property="build.tstamp" pattern="dd/MM/yyyy HH:mm" />
-		</tstamp>
-		<exec dir="${basedir}" executable="svnversion" outputproperty="l2j.version">
-			<arg value="-c" />
-			<redirector>
-				<outputfilterchain>
-					<tokenfilter>
-						<replaceregex pattern="[0-9]+\:" replace="" />
-					</tokenfilter>
-				</outputfilterchain>
-			</redirector>
-		</exec>
 	</target>
 </project>

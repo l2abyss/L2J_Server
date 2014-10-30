@@ -179,19 +179,10 @@ public class GameServer
 	
 	public GameServer() throws Exception
 	{
+		gameServer = this;
 		long serverLoadStart = System.currentTimeMillis();
 		
-		gameServer = this;
-		_log.finest(getClass().getSimpleName() + ": used mem:" + getUsedMemoryMB() + "MB");
-		
-		if (Config.SERVER_VERSION != null)
-		{
-			_log.info(getClass().getSimpleName() + ": L2J Server Version:    " + Config.SERVER_VERSION);
-		}
-		if (Config.DATAPACK_VERSION != null)
-		{
-			_log.info(getClass().getSimpleName() + ": L2J Datapack Version:  " + Config.DATAPACK_VERSION);
-		}
+		_log.info(getClass().getSimpleName() + ": Used memory: " + getUsedMemoryMB() + "MB");
 		
 		_idFactory = IdFactory.getInstance();
 		
