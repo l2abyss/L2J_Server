@@ -37,7 +37,7 @@ public class FuncPAtkMod extends Func
 	
 	private FuncPAtkMod()
 	{
-		super(Stats.POWER_ATTACK, 0x30, null, null);
+		super(Stats.POWER_ATTACK, 0x30, null, 0);
 	}
 	
 	@Override

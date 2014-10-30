@@ -37,7 +37,7 @@ public class FuncMaxHpMul extends Func
 	
 	private FuncMaxHpMul()
 	{
-		super(Stats.MAX_HP, 0x20, null, null);
+		super(Stats.MAX_HP, 0x20, null, 0);
 	}
 	
 	@Override

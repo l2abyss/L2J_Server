@@ -133,11 +133,6 @@ import com.l2jserver.gameserver.model.skills.AbnormalType;
 import com.l2jserver.gameserver.model.skills.EffectScope;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
-import com.l2jserver.gameserver.model.skills.funcs.Lambda;
-import com.l2jserver.gameserver.model.skills.funcs.LambdaCalc;
-import com.l2jserver.gameserver.model.skills.funcs.LambdaConst;
-import com.l2jserver.gameserver.model.skills.funcs.LambdaStats;
-import com.l2jserver.gameserver.model.stats.Env;
 import com.l2jserver.gameserver.model.stats.Stats;
 
 /**
@@ -291,10 +286,20 @@ public abstract class DocumentBase
 	{
 		Stats stat = Stats.valueOfXml(n.getAttributes().getNamedItem("stat").getNodeValue());
 		String order = n.getAttributes().getNamedItem("order").getNodeValue();
-		Lambda lambda = getLambda(n, template);
+		String valueString = n.getAttributes().getNamedItem("val").getNodeValue();
+		double value;
+		if (valueString.charAt(0) == '#')
+		{
+			value = Double.parseDouble(getTableValue(valueString));
+		}
+		else
+		{
+			value = Double.parseDouble(valueString);
+		}
+		
 		int ord = Integer.decode(getValue(order, template));
 		Condition applayCond = parseCondition(n.getFirstChild(), template);
-		FuncTemplate ft = new FuncTemplate(attachCond, applayCond, name, stat, ord, lambda);
+		FuncTemplate ft = new FuncTemplate(attachCond, applayCond, name, stat, ord, value);
 		if (template instanceof L2Item)
 		{
 			((L2Item) template).attach(ft);
@@ -307,17 +312,6 @@ public abstract class DocumentBase
 		{
 			((AbstractEffect) template).attach(ft);
 		}
-	}
-	
-	protected void attachLambdaFunc(Node n, Object template, LambdaCalc calc)
-	{
-		String name = n.getNodeName();
-		final StringBuilder sb = new StringBuilder(name);
-		sb.setCharAt(0, Character.toUpperCase(name.charAt(0)));
-		name = sb.toString();
-		Lambda lambda = getLambda(n, template);
-		FuncTemplate ft = new FuncTemplate(null, null, name, null, calc.funcs.length, lambda);
-		calc.addFunc(ft.getFunc(new Env(), calc));
 	}
 	
 	protected void attachEffect(Node n, Object template, Condition attachCond)
@@ -1305,71 +1299,6 @@ public abstract class DocumentBase
 	protected void setExtractableSkillData(StatsSet set, String value)
 	{
 		set.set("capsuled_items_skill", value);
-	}
-	
-	protected Lambda getLambda(Node n, Object template)
-	{
-		Node nval = n.getAttributes().getNamedItem("val");
-		if (nval != null)
-		{
-			String val = nval.getNodeValue();
-			if (val.charAt(0) == '#')
-			{ // table by level
-				return new LambdaConst(Double.parseDouble(getTableValue(val)));
-			}
-			else if (val.charAt(0) == '$')
-			{
-				if (val.equalsIgnoreCase("$player_level"))
-				{
-					return new LambdaStats(LambdaStats.StatsType.PLAYER_LEVEL);
-				}
-				if (val.equalsIgnoreCase("$target_level"))
-				{
-					return new LambdaStats(LambdaStats.StatsType.TARGET_LEVEL);
-				}
-				if (val.equalsIgnoreCase("$player_max_hp"))
-				{
-					return new LambdaStats(LambdaStats.StatsType.PLAYER_MAX_HP);
-				}
-				if (val.equalsIgnoreCase("$player_max_mp"))
-				{
-					return new LambdaStats(LambdaStats.StatsType.PLAYER_MAX_MP);
-				}
-				// try to find value out of item fields
-				StatsSet set = getStatsSet();
-				String field = set.getString(val.substring(1));
-				if (field != null)
-				{
-					return new LambdaConst(Double.parseDouble(getValue(field, template)));
-				}
-				// failed
-				throw new IllegalArgumentException("Unknown value " + val);
-			}
-			else
-			{
-				return new LambdaConst(Double.parseDouble(val));
-			}
-		}
-		LambdaCalc calc = new LambdaCalc();
-		n = n.getFirstChild();
-		while ((n != null) && (n.getNodeType() != Node.ELEMENT_NODE))
-		{
-			n = n.getNextSibling();
-		}
-		if ((n == null) || !"val".equals(n.getNodeName()))
-		{
-			throw new IllegalArgumentException("Value not specified");
-		}
-		
-		for (n = n.getFirstChild(); n != null; n = n.getNextSibling())
-		{
-			if (n.getNodeType() != Node.ELEMENT_NODE)
-			{
-				continue;
-			}
-			attachLambdaFunc(n, template, calc);
-		}
-		return calc;
 	}
 	
 	protected String getValue(String value, Object template)

@@ -38,7 +38,7 @@ public class FuncGatesMDefMod extends Func
 	
 	private FuncGatesMDefMod()
 	{
-		super(Stats.MAGIC_DEFENCE, 0x20, null, null);
+		super(Stats.MAGIC_DEFENCE, 0x20, null, 0);
 	}
 	
 	@Override

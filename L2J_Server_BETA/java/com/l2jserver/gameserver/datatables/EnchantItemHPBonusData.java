@@ -31,7 +31,6 @@ import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.items.type.CrystalType;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
-import com.l2jserver.gameserver.model.skills.funcs.LambdaConst;
 import com.l2jserver.gameserver.model.stats.Stats;
 
 /**
@@ -100,7 +99,7 @@ public class EnchantItemHPBonusData extends DocumentParser
 						case L2Item.SLOT_UNDERWEAR:
 						case L2Item.SLOT_L_HAND:
 						case L2Item.SLOT_BELT:
-							item.attach(new FuncTemplate(null, null, "EnchantHp", Stats.MAX_HP, 0x60, new LambdaConst(0)));
+							item.attach(new FuncTemplate(null, null, "EnchantHp", Stats.MAX_HP, 0x60, 0));
 							break;
 						default:
 							break;
@@ -118,7 +117,7 @@ public class EnchantItemHPBonusData extends DocumentParser
 					switch (item.getBodyPart())
 					{
 						case L2Item.SLOT_L_HAND:
-							item.attach(new FuncTemplate(null, null, "EnchantHp", Stats.MAX_HP, 0x60, new LambdaConst(0)));
+							item.attach(new FuncTemplate(null, null, "EnchantHp", Stats.MAX_HP, 0x60, 0));
 							break;
 						default:
 							break;

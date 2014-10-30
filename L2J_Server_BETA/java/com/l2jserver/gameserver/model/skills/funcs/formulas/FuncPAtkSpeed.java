@@ -37,7 +37,7 @@ public class FuncPAtkSpeed extends Func
 	
 	private FuncPAtkSpeed()
 	{
-		super(Stats.POWER_ATTACK_SPEED, 0x20, null, null);
+		super(Stats.POWER_ATTACK_SPEED, 0x20, null, 0);
 	}
 	
 	@Override

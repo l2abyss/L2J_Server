@@ -37,7 +37,7 @@ public class FuncMAtkMod extends Func
 	
 	private FuncMAtkMod()
 	{
-		super(Stats.MAGIC_ATTACK, 0x20, null, null);
+		super(Stats.MAGIC_ATTACK, 0x20, null, 0);
 	}
 	
 	@Override

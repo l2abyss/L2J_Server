@@ -23,9 +23,9 @@ import com.l2jserver.gameserver.model.stats.Stats;
 
 public class FuncMul extends Func
 {
-	public FuncMul(Stats pStat, int pOrder, Object owner, Lambda lambda)
+	public FuncMul(Stats pStat, int pOrder, Object owner, double value)
 	{
-		super(pStat, pOrder, owner, lambda);
+		super(pStat, pOrder, owner, value);
 	}
 	
 	@Override
@@ -33,7 +33,7 @@ public class FuncMul extends Func
 	{
 		if ((cond == null) || cond.test(env))
 		{
-			env.mulValue(_lambda.calc(env));
+			env.mulValue(_value);
 		}
 	}
 }

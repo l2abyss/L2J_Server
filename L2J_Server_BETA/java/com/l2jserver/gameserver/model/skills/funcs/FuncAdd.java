@@ -23,9 +23,9 @@ import com.l2jserver.gameserver.model.stats.Stats;
 
 public class FuncAdd extends Func
 {
-	public FuncAdd(Stats pStat, int pOrder, Object owner, Lambda lambda)
+	public FuncAdd(Stats pStat, int pOrder, Object owner, double value)
 	{
-		super(pStat, pOrder, owner, lambda);
+		super(pStat, pOrder, owner, value);
 	}
 	
 	@Override
@@ -33,7 +33,7 @@ public class FuncAdd extends Func
 	{
 		if ((cond == null) || cond.test(env))
 		{
-			env.addValue(_lambda.calc(env));
+			env.addValue(_value);
 		}
 	}
 }

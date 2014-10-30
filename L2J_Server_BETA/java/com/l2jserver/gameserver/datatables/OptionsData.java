@@ -31,7 +31,6 @@ import com.l2jserver.gameserver.model.options.Options;
 import com.l2jserver.gameserver.model.options.OptionsSkillHolder;
 import com.l2jserver.gameserver.model.options.OptionsSkillType;
 import com.l2jserver.gameserver.model.skills.funcs.FuncTemplate;
-import com.l2jserver.gameserver.model.skills.funcs.LambdaConst;
 import com.l2jserver.gameserver.model.stats.Stats;
 
 /**
@@ -153,7 +152,7 @@ public class OptionsData extends DocumentParser
 		Stats stat = Stats.valueOfXml(parseString(attrs, "stat"));
 		int ord = Integer.decode(parseString(attrs, "order"));
 		double val = parseDouble(attrs, "val");
-		op.addFunc(new FuncTemplate(null, null, func, stat, ord, new LambdaConst(val)));
+		op.addFunc(new FuncTemplate(null, null, func, stat, ord, val));
 	}
 	
 	public Options getOptions(int id)

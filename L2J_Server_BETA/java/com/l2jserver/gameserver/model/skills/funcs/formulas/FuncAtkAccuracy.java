@@ -36,7 +36,7 @@ public class FuncAtkAccuracy extends Func
 	
 	private FuncAtkAccuracy()
 	{
-		super(Stats.ACCURACY_COMBAT, 0x10, null, null);
+		super(Stats.ACCURACY_COMBAT, 0x10, null, 0);
 	}
 	
 	@Override

@@ -28,9 +28,9 @@ import com.l2jserver.gameserver.model.stats.Stats;
 
 public class FuncEnchant extends Func
 {
-	public FuncEnchant(Stats pStat, int pOrder, Object owner, Lambda lambda)
+	public FuncEnchant(Stats pStat, int pOrder, Object owner, double value)
 	{
-		super(pStat, pOrder, owner, lambda);
+		super(pStat, pOrder, owner, value);
 	}
 	
 	@Override

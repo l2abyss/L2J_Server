@@ -747,27 +747,27 @@ public abstract class L2Item extends ListenersContainer implements IIdentifiable
 		{
 			case FIRE_RES:
 			case FIRE_POWER:
-				setElementals(new Elementals(Elementals.FIRE, (int) f.lambda.calc(null)));
+				setElementals(new Elementals(Elementals.FIRE, (int) f.value));
 				break;
 			case WATER_RES:
 			case WATER_POWER:
-				setElementals(new Elementals(Elementals.WATER, (int) f.lambda.calc(null)));
+				setElementals(new Elementals(Elementals.WATER, (int) f.value));
 				break;
 			case WIND_RES:
 			case WIND_POWER:
-				setElementals(new Elementals(Elementals.WIND, (int) f.lambda.calc(null)));
+				setElementals(new Elementals(Elementals.WIND, (int) f.value));
 				break;
 			case EARTH_RES:
 			case EARTH_POWER:
-				setElementals(new Elementals(Elementals.EARTH, (int) f.lambda.calc(null)));
+				setElementals(new Elementals(Elementals.EARTH, (int) f.value));
 				break;
 			case HOLY_RES:
 			case HOLY_POWER:
-				setElementals(new Elementals(Elementals.HOLY, (int) f.lambda.calc(null)));
+				setElementals(new Elementals(Elementals.HOLY, (int) f.value));
 				break;
 			case DARK_RES:
 			case DARK_POWER:
-				setElementals(new Elementals(Elementals.DARK, (int) f.lambda.calc(null)));
+				setElementals(new Elementals(Elementals.DARK, (int) f.value));
 				break;
 		}
 		

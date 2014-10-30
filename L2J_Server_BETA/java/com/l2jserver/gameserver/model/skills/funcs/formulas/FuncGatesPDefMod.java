@@ -38,7 +38,7 @@ public class FuncGatesPDefMod extends Func
 	
 	private FuncGatesPDefMod()
 	{
-		super(Stats.POWER_DEFENCE, 0x20, null, null);
+		super(Stats.POWER_DEFENCE, 0x20, null, 0);
 	}
 	
 	@Override

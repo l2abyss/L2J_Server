@@ -39,7 +39,7 @@ public class FuncMDefMod extends Func
 	
 	private FuncMDefMod()
 	{
-		super(Stats.MAGIC_DEFENCE, 0x20, null, null);
+		super(Stats.MAGIC_DEFENCE, 0x20, null, 0);
 	}
 	
 	@Override

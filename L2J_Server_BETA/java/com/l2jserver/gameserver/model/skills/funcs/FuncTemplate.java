@@ -39,15 +39,15 @@ public final class FuncTemplate
 	public final Constructor<?> constructor;
 	public final Stats stat;
 	public final int order;
-	public final Lambda lambda;
+	public final double value;
 	
-	public FuncTemplate(Condition pAttachCond, Condition pApplayCond, String pFunc, Stats pStat, int pOrder, Lambda pLambda)
+	public FuncTemplate(Condition pAttachCond, Condition pApplayCond, String pFunc, Stats pStat, int pOrder, double pValue)
 	{
 		attachCond = pAttachCond;
 		applayCond = pApplayCond;
 		stat = pStat;
 		order = pOrder;
-		lambda = pLambda;
+		value = pValue;
 		try
 		{
 			func = Class.forName("com.l2jserver.gameserver.model.skills.funcs.Func" + pFunc);
@@ -67,7 +67,7 @@ public final class FuncTemplate
 				// Owner
 				Object.class,
 				// Value for function
-				Lambda.class
+				Double.TYPE
 			});
 		}
 		catch (NoSuchMethodException e)
@@ -84,7 +84,7 @@ public final class FuncTemplate
 		}
 		try
 		{
-			Func f = (Func) constructor.newInstance(stat, order, owner, lambda);
+			Func f = (Func) constructor.newInstance(stat, order, owner, value);
 			if (applayCond != null)
 			{
 				f.setCondition(applayCond);

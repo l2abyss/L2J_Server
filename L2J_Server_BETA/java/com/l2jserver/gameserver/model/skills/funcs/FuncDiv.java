@@ -23,9 +23,9 @@ import com.l2jserver.gameserver.model.stats.Stats;
 
 public class FuncDiv extends Func
 {
-	public FuncDiv(Stats pStat, int pOrder, Object owner, Lambda lambda)
+	public FuncDiv(Stats pStat, int pOrder, Object owner, double value)
 	{
-		super(pStat, pOrder, owner, lambda);
+		super(pStat, pOrder, owner, value);
 	}
 	
 	@Override
@@ -33,7 +33,7 @@ public class FuncDiv extends Func
 	{
 		if ((cond == null) || cond.test(env))
 		{
-			env.divValue(_lambda.calc(env));
+			env.divValue(_value);
 		}
 	}
 }

@@ -37,7 +37,7 @@ public class FuncAtkCritical extends Func
 	
 	private FuncAtkCritical()
 	{
-		super(Stats.CRITICAL_RATE, 0x09, null, null);
+		super(Stats.CRITICAL_RATE, 0x09, null, 0);
 	}
 	
 	@Override

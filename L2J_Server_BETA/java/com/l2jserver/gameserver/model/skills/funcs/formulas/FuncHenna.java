@@ -44,7 +44,7 @@ public class FuncHenna extends Func
 	
 	private FuncHenna(Stats stat)
 	{
-		super(stat, 0x10, null, null);
+		super(stat, 0x10, null, 0);
 	}
 	
 	@Override
