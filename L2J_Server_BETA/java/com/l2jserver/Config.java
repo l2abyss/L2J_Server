@@ -84,8 +84,6 @@ public final class Config
 	public static final String GENERAL_CONFIG_FILE = "./config/General.properties";
 	public static final String HEXID_FILE = "./config/hexid.txt";
 	public static final String ID_CONFIG_FILE = "./config/IdFactory.properties";
-	public static final String SERVER_VERSION_FILE = "./config/l2j-version.properties";
-	public static final String DATAPACK_VERSION_FILE = "./config/l2jdp-version.properties";
 	public static final String L2JMOD_CONFIG_FILE = "./config/L2JMods.properties";
 	public static final String LOGIN_CONFIGURATION_FILE = "./config/LoginServer.properties";
 	public static final String NPC_CONFIG_FILE = "./config/NPC.properties";
@@ -422,7 +420,6 @@ public final class Config
 	// General Settings
 	// --------------------------------------------------
 	public static boolean EVERYBODY_HAS_ADMIN_RIGHTS;
-	public static boolean DISPLAY_SERVER_VERSION;
 	public static boolean SERVER_LIST_BRACKET;
 	public static int SERVER_LIST_TYPE;
 	public static int SERVER_LIST_AGE;
@@ -999,9 +996,6 @@ public final class Config
 	public static String GAME_SERVER_LOGIN_HOST;
 	public static List<String> GAME_SERVER_SUBNETS;
 	public static List<String> GAME_SERVER_HOSTS;
-	public static String SERVER_VERSION;
-	public static String SERVER_BUILD_DATE;
-	public static String DATAPACK_VERSION;
 	public static int PVP_NORMAL_TIME;
 	public static int PVP_PVP_TIME;
 	
@@ -1712,17 +1706,6 @@ public final class Config
 			ALT_VALIDATE_TRIGGER_SKILLS = Character.getBoolean("AltValidateTriggerSkills", false);
 			PLAYER_MOVEMENT_BLOCK_TIME = Character.getInt("NpcTalkBlockingTime", 0) * 1000;
 			
-			// Load L2J Server Version L2Properties file (if exists)
-			final PropertiesParser serverVersion = new PropertiesParser(SERVER_VERSION_FILE);
-			
-			SERVER_VERSION = serverVersion.getString("version", "Unsupported Custom Version.");
-			SERVER_BUILD_DATE = serverVersion.getString("builddate", "Undefined Date.");
-			
-			// Load L2J Datapack Version L2Properties file (if exists)
-			final PropertiesParser dpVersion = new PropertiesParser(new File(DATAPACK_VERSION_FILE));
-			
-			DATAPACK_VERSION = dpVersion.getString("version", "Unsupported Custom Version.");
-			
 			// Load Telnet L2Properties file (if exists)
 			final PropertiesParser telnetSettings = new PropertiesParser(TELNET_FILE);
 			
@@ -1746,7 +1729,6 @@ public final class Config
 			// Load General L2Properties file (if exists)
 			final PropertiesParser General = new PropertiesParser(GENERAL_CONFIG_FILE);
 			EVERYBODY_HAS_ADMIN_RIGHTS = General.getBoolean("EverybodyHasAdminRights", false);
-			DISPLAY_SERVER_VERSION = General.getBoolean("DisplayServerRevision", true);
 			SERVER_LIST_BRACKET = General.getBoolean("ServerListBrackets", false);
 			SERVER_LIST_TYPE = getServerTypeId(General.getString("ServerListType", "Normal").split(","));
 			SERVER_LIST_AGE = General.getInt("ServerListAge", 0);

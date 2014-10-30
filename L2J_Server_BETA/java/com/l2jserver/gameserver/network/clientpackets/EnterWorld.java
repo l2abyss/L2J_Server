@@ -436,19 +436,6 @@ public class EnterWorld extends L2GameClientPacket
 		
 		activeChar.sendMessage(getText("VGhpcyBTZXJ2ZXIgdXNlcyBMMkosIGEgUHJvamVjdCBmb3VuZGVkIGJ5IEwyQ2hlZg=="));
 		activeChar.sendMessage(getText("YW5kIGRldmVsb3BlZCBieSBMMkogVGVhbSBhdCB3d3cubDJqc2VydmVyLmNvbQ=="));
-		
-		if (Config.DISPLAY_SERVER_VERSION)
-		{
-			if (Config.SERVER_VERSION != null)
-			{
-				activeChar.sendMessage(getText("TDJKIFNlcnZlciBWZXJzaW9uOg==") + " " + Config.SERVER_VERSION);
-			}
-			
-			if (Config.DATAPACK_VERSION != null)
-			{
-				activeChar.sendMessage(getText("TDJKIERhdGFQYWNrIFZlcnNpb246") + " " + Config.DATAPACK_VERSION);
-			}
-		}
 		activeChar.sendMessage(getText("Q29weXJpZ2h0IDIwMDQtMjAxNA=="));
 		activeChar.sendMessage(getText("VGhhbmsgeW91IGZvciAxMCB5ZWFycyE="));
 		
