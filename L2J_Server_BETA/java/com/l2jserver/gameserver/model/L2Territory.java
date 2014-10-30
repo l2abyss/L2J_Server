@@ -153,9 +153,8 @@ public class L2Territory
 		return (intersect_count % 2) == 1;
 	}
 	
-	public int[] getRandomPoint()
+	public Location getRandomPoint()
 	{
-		int[] p = new int[4];
 		if (_procMax > 0)
 		{
 			int pos = 0;
@@ -165,40 +164,35 @@ public class L2Territory
 				pos += p1._proc;
 				if (rnd <= pos)
 				{
-					p[0] = p1._x;
-					p[1] = p1._y;
-					p[2] = p1._zmin;
-					p[3] = p1._zmax;
-					return p;
+					return new Location(p1._x, p1._y, Rnd.get(p1._zmin, p1._zmax));
 				}
 			}
 			
 		}
 		for (int i = 0; i < 100; i++)
 		{
-			p[0] = Rnd.get(_xMin, _xMax);
-			p[1] = Rnd.get(_yMin, _yMax);
-			if (isInside(p[0], p[1]))
+			int x = Rnd.get(_xMin, _xMax);
+			int y = Rnd.get(_yMin, _yMax);
+			if (isInside(x, y))
 			{
 				double curdistance = 0;
-				p[2] = _zMin + 100;
-				p[3] = _zMax;
+				int zmin = _zMin;
 				for (Point p1 : _points)
 				{
-					double dx = p1._x - p[0];
-					double dy = p1._y - p[1];
+					double dx = p1._x - x;
+					double dy = p1._y - y;
 					double distance = Math.sqrt((dx * dx) + (dy * dy));
 					if ((curdistance == 0) || (distance < curdistance))
 					{
 						curdistance = distance;
-						p[2] = p1._zmin + 100;
+						zmin = p1._zmin;
 					}
 				}
-				return p;
+				return new Location(x, y, Rnd.get(zmin, _zMax));
 			}
 		}
 		_log.warning("Can't make point for territory " + _terr);
-		return p;
+		return null;
 	}
 	
 	public int getProcMax()

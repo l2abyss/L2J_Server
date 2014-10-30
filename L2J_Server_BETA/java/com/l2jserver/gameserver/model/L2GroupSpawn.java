@@ -52,7 +52,9 @@ public class L2GroupSpawn extends L2Spawn
 				return null;
 			}
 			
-			int newlocx, newlocy, newlocz;
+			int newlocx = 0;
+			int newlocy = 0;
+			int newlocz = 0;
 			
 			if ((getX() == 0) && (getY() == 0))
 			{
@@ -61,10 +63,13 @@ public class L2GroupSpawn extends L2Spawn
 					return null;
 				}
 				
-				int p[] = TerritoryTable.getInstance().getRandomPoint(getLocationId());
-				newlocx = p[0];
-				newlocy = p[1];
-				newlocz = p[2];
+				final Location location = TerritoryTable.getInstance().getRandomPoint(getLocationId());
+				if (location != null)
+				{
+					newlocx = location.getX();
+					newlocy = location.getY();
+					newlocz = location.getZ();
+				}
 			}
 			else
 			{

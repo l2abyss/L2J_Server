@@ -180,14 +180,23 @@ public class GeoData implements IGeoDriver
 	 * Gets the spawn height.
 	 * @param x the x coordinate
 	 * @param y the y coordinate
-	 * @param zmin the minimum z coordinate
-	 * @param zmax the the maximum z coordinate
+	 * @param z the the z coordinate
 	 * @return the spawn height
 	 */
-	public int getSpawnHeight(int x, int y, int zmin, int zmax)
+	public int getSpawnHeight(int x, int y, int z)
 	{
 		// + 30, defend against defective geodata and invalid spawn z :(
-		return getNextLowerZ(getGeoX(x), getGeoY(y), zmax + 30);
+		return getNextLowerZ(getGeoX(x), getGeoY(y), z + 30);
+	}
+	
+	/**
+	 * Gets the spawn height.
+	 * @param location the location
+	 * @return the spawn height
+	 */
+	public int getSpawnHeight(Location location)
+	{
+		return getSpawnHeight(location.getX(), location.getY(), location.getZ());
 	}
 	
 	/**
