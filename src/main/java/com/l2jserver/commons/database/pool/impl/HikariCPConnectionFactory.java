@@ -32,16 +32,16 @@ import com.zaxxer.hikari.HikariDataSource;
  * HikariCP Connection Factory implementation.<br>
  * <b>Note that this class is not public to prevent external initialization.</b><br>
  * <b>Access it through {@link ConnectionFactory} and proper configuration.</b>
+ * 
  * @author Zoey76
  */
-final class HikariCPConnectionFactory extends AbstractConnectionFactory
-{
-	private static final Logger LOG = LoggerFactory.getLogger(HikariCPConnectionFactory.class);
-	
+final class HikariCPConnectionFactory extends AbstractConnectionFactory {
+	private static final Logger LOG = LoggerFactory
+			.getLogger(HikariCPConnectionFactory.class);
+
 	private final HikariDataSource _dataSource;
-	
-	public HikariCPConnectionFactory()
-	{
+
+	public HikariCPConnectionFactory() {
 		_dataSource = new HikariDataSource();
 		_dataSource.setJdbcUrl(Config.DATABASE_URL);
 		_dataSource.setUsername(Config.DATABASE_LOGIN);
@@ -49,33 +49,26 @@ final class HikariCPConnectionFactory extends AbstractConnectionFactory
 		_dataSource.setMaximumPoolSize(Config.DATABASE_MAX_CONNECTIONS);
 		_dataSource.setIdleTimeout(Config.DATABASE_MAX_IDLE_TIME);
 	}
-	
+
 	@Override
-	public void close()
-	{
-		try
-		{
+	public void close() {
+		try {
 			_dataSource.close();
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			LOG.warn("There has been a problem closing the data source!", e);
 		}
 	}
-	
+
 	@Override
-	public DataSource getDataSource()
-	{
+	public DataSource getDataSource() {
 		return _dataSource;
 	}
-	
-	public static IConnectionFactory getInstance()
-	{
+
+	public static IConnectionFactory getInstance() {
 		return SingletonHolder.INSTANCE;
 	}
-	
-	private static class SingletonHolder
-	{
+
+	private static class SingletonHolder {
 		protected static final IConnectionFactory INSTANCE = new HikariCPConnectionFactory();
 	}
 }

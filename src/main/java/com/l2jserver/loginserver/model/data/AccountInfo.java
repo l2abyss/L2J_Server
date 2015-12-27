@@ -23,50 +23,43 @@ import java.util.Objects;
 /**
  * @author HorridoJoho
  */
-public final class AccountInfo
-{
+public final class AccountInfo {
 	private final String _login;
 	private final String _passHash;
 	private final int _accessLevel;
 	private final int _lastServer;
-	
-	public AccountInfo(final String login, final String passHash, final int accessLevel, final int lastServer)
-	{
+
+	public AccountInfo(final String login, final String passHash,
+			final int accessLevel, final int lastServer) {
 		Objects.requireNonNull(login, "login");
 		Objects.requireNonNull(passHash, "passHash");
-		
-		if (login.isEmpty())
-		{
+
+		if (login.isEmpty()) {
 			throw new IllegalArgumentException("login");
 		}
-		if (passHash.isEmpty())
-		{
+		if (passHash.isEmpty()) {
 			throw new IllegalArgumentException("passHash");
 		}
-		
+
 		_login = login.toLowerCase();
 		_passHash = passHash;
 		_accessLevel = accessLevel;
 		_lastServer = lastServer;
 	}
-	
-	public boolean checkPassHash(final String passHash)
-	{
+
+	public boolean checkPassHash(final String passHash) {
 		return _passHash.equals(passHash);
 	}
-	
-	public String getLogin()
-	{
+
+	public String getLogin() {
 		return _login;
 	}
-	
-	public int getAccessLevel()
-	{
+
+	public int getAccessLevel() {
 		return _accessLevel;
 	}
-	
-	public int getLastServer()
-	{
+
+	public int getLastServer() {
 		return _lastServer;
 	}
 }
