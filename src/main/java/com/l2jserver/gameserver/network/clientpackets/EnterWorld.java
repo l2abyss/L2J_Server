@@ -411,9 +411,9 @@ public class EnterWorld extends L2GameClientPacket {
 
 		activeChar.sendPacket(SystemMessageId.WELCOME_TO_LINEAGE);
 
-		/*
-		 * This is the system message (L2J credits) sent to the player that has
-		 * just logged in
+		/**
+		 * L2Abyss hide l2j sys msg This is the system message (L2J credits)
+		 * sent to the player that has just logged in
 		 */
 
 		// activeChar.sendMessage(getText("VGhpcyBTZXJ2ZXIgdXNlcyBMMkosIGEgUHJvamVjdCBmb3VuZGVkIGJ5IEwyQ2hlZg=="));

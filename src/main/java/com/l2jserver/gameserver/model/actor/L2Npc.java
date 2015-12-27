@@ -410,6 +410,9 @@ public class L2Npc extends L2Character {
 	 *         L2NpcTemplate, or overridden by spawnlist AI value.
 	 */
 	public int getAggroRange() {
+		/**
+		 * L2Abyss wide aggro range fix
+		 */
 		int aggroRange = hasAIValue("aggroRange") ? getAIValue("aggroRange")
 				: getTemplate().getAggroRange();
 		int fixedAggroRange = aggroRange >= 1000 ? (aggroRange / 2)
