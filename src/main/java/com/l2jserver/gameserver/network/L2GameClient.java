@@ -90,11 +90,6 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	// Info
 	private final InetAddress _addr;
 	private String _accountName;
-	/**
-	 * L2Abyss Feature
-	 */
-	private int _isFounder;
-	/*********/
 	private SessionKey _sessionId;
 	private L2PcInstance _activeChar;
 	private final ReentrantLock _activeCharLock = new ReentrantLock();
@@ -239,19 +234,6 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 	public String getAccountName() {
 		return _accountName;
 	}
-
-	/**
-	 * L2Abyss feature
-	 */
-	public void setIsFounder(int isFounder) {
-		_isFounder = isFounder;
-	}
-
-	public boolean isFounder() {
-		return _isFounder == 1 ? true : false;
-	}
-
-	/*********/
 
 	public void setSessionId(SessionKey sk) {
 		_sessionId = sk;
