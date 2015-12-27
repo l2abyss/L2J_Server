@@ -285,60 +285,77 @@ public final class CharacterCreate extends L2GameClientPacket {
 		 * and it receives an initial pack
 		 */
 
-		boolean isFounder = false;
+		if (Config.INITIAL_PACK_ENABLE) {
+			boolean isFounder = false;
 
-		try (Connection con = ConnectionFactory.getInstance().getConnection()) {
-			PreparedStatement statement = con
-					.prepareStatement("SELECT is_founder FROM l2jls.accounts WHERE login = ?");
-			statement.setString(1, client.getAccountName());
-			try (ResultSet rs = statement.executeQuery()) {
-				while (rs.next()) {
-					isFounder = rs.getInt("is_founder") == 1 ? true : false;
-				}
-			}
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		int numChars = 0;
-		if (isFounder) {
 			try (Connection con = ConnectionFactory.getInstance()
 					.getConnection()) {
 				PreparedStatement statement = con
-						.prepareStatement("SELECT * FROM characters WHERE account_name = ?");
+						.prepareStatement("SELECT is_founder FROM l2jls.accounts WHERE login = ?");
 				statement.setString(1, client.getAccountName());
 				try (ResultSet rs = statement.executeQuery()) {
 					while (rs.next()) {
-						numChars++;
+						isFounder = rs.getInt("is_founder") == 1 ? true : false;
 					}
 				}
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-		}
+			int numChars = 0;
+			if (isFounder) {
+				try (Connection con = ConnectionFactory.getInstance()
+						.getConnection()) {
+					PreparedStatement statement = con
+							.prepareStatement("SELECT * FROM characters WHERE account_name = ?");
+					statement.setString(1, client.getAccountName());
+					try (ResultSet rs = statement.executeQuery()) {
+						while (rs.next()) {
+							numChars++;
+						}
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
-		// If the client's account is founder and it has only 1 chars, he
-		// receives
-		// an initial pack
-		if (isFounder && (numChars == 1)) {
-			/*
-			 * Item name and ID:
-			 * 
-			 * - Mana Potion - CP Potion - Quick Healing Potion - Adena 57 -
-			 * Motorbike Mount Bracelet - Agathion Baby Panda - Pirate's Eye
-			 * Patch
-			 */
-			newChar.getInventory().addItem("Init", 57, 1000000, newChar, null);
-			newChar.getInventory().addItem("Init", 1000001, 500, newChar, null);
-			newChar.getInventory().addItem("Init", 1000001, 500, newChar, null);
-			newChar.getInventory().addItem("Init", 1000001, 500, newChar, null);
-			newChar.getInventory().addItem("Init", 1000001, 500, newChar, null);
-			newChar.getInventory().addItem("Init", 1000001, 500, newChar, null);
-			newChar.getInventory().addItem("Init", 1000001, 500, newChar, null);
+			}
+
+			// If the client's account is founder and it has only 1 chars, he
+			// receives
+			// an initial pack
+			if (isFounder && (numChars == 1)) {
+				/*
+				 * Item name and ID:
+				 * 
+				 * - Mana Potion 728 - CP Potion 5591 - Quick Healing Potion
+				 * 22024 - Adena 57 - Motorbike Mount Bracelet 20939 - Agathion
+				 * Baby Panda 20063 - Pirate's Eye Patch 22159
+				 */
+				newChar.getInventory().addItem("Init", 57, 1000000, newChar,
+						null); // adena
+				newChar.getInventory().addItem("Init", 728, 50, newChar, null); // mana
+																				// potion
+				newChar.getInventory().addItem("Init", 5591, 50, newChar, null); // cp
+																					// potion
+				newChar.getInventory()
+						.addItem("Init", 22024, 20, newChar, null); // quick
+																	// healing
+																	// potion
+				newChar.getInventory().addItem("Init", 22159, 1, newChar, null); // pirate's
+																					// eye
+																					// patch
+				newChar.getInventory().addItem("Init", 20063, 1, newChar, null); // agathion
+																					// baby
+																					// panda
+				newChar.getInventory().addItem("Init", 20939, 1, newChar, null); // jet
+																					// bike
+																					// 30
+																					// days
+			}
+
 		}
 
 		/*
