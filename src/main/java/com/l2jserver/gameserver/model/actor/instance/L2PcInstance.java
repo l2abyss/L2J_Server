@@ -13487,6 +13487,11 @@ public final class L2PcInstance extends L2Playable {
 		return _servitorShare.get(stat);
 	}
 
+	/**
+	 * L2Abyss feature
+	 * 
+	 * @return is vip
+	 */
 	public boolean isVip() {
 		return _isVip;
 	}
