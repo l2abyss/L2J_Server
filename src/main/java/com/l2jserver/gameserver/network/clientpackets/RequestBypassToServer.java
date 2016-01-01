@@ -31,6 +31,8 @@ import com.l2jserver.gameserver.handler.BypassHandler;
 import com.l2jserver.gameserver.handler.CommunityBoardHandler;
 import com.l2jserver.gameserver.handler.IAdminCommandHandler;
 import com.l2jserver.gameserver.handler.IBypassHandler;
+import com.l2jserver.gameserver.handler.IVoicedCommandHandler;
+import com.l2jserver.gameserver.handler.VoicedCommandHandler;
 import com.l2jserver.gameserver.model.L2Object;
 import com.l2jserver.gameserver.model.L2World;
 import com.l2jserver.gameserver.model.actor.L2Character;
@@ -272,6 +274,25 @@ public final class RequestBypassToServer extends L2GameClientPacket
 					EventDispatcher.getInstance().notifyEventAsync(new OnNpcManorBypass(activeChar, lastNpc, ask, state, time), lastNpc);
 				}
 			}
+			/** L2Abyss feature */
+			//Voiced Bypass - Start
+			else if (_command.startsWith("voiced_"))
+			{
+				String command = _command.split(" ")[0];
+	
+				IVoicedCommandHandler handler = VoicedCommandHandler.getInstance().getHandler(_command.substring(7));
+	
+				if (handler == null)
+				{
+					activeChar.sendMessage("The command " + command.substring(7) + " does not exist!");
+		
+					_log.warning("No handler registered for command '" + _command + "'");
+					return;
+				}
+	
+				handler.useVoicedCommand(_command.substring(7), activeChar, null);
+			}
+			//Voiced Bypass - End
 			else
 			{
 				final IBypassHandler handler = BypassHandler.getInstance().getHandler(_command);
