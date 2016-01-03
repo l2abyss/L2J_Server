@@ -180,14 +180,13 @@ public class OfflineTradersTable
 				
 				try
 				{
-					//L2GameClient client = new L2GameClient(null);
-					L2GameClient client = null;
-					//client.setDetached(true);
+					L2GameClient client = new L2GameClient(null);
+					client.setDetached(true);
 					player = L2PcInstance.load(rs.getInt("charId"));
-					//client.setActiveChar(player);
+					client.setActiveChar(player);
 					player.setOnlineStatus(true, false);
-					//client.setAccountName(player.getAccountNamePlayer());
-					//client.setState(GameClientState.IN_GAME);
+					client.setAccountName(player.getAccountNamePlayer());
+					client.setState(GameClientState.IN_GAME);
 					player.setClient(client);
 					player.setOfflineStartTime(time);
 					player.spawnMe(player.getX(), player.getY(), player.getZ());
@@ -237,8 +236,9 @@ public class OfflineTradersTable
 						player.getAppearance().setNameColor(Config.OFFLINE_NAME_COLOR);
 					}
 					player.setPrivateStoreType(type);
-					player.setOnlineStatus(true, true);
+					player.setOnlineStatus(false, true);
 					player.restoreEffects();
+					L2World.getInstance().addPlayerToWorld(player);
 					player.broadcastUserInfo();
 					nTraders++;
 				}
