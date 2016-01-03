@@ -199,7 +199,12 @@ public abstract class AbstractNpcInfo extends L2GameServerPacket
 			writeD(_npc.getColorEffect()); // CT1.5 Pet form and skills, Color effect
 			writeC(_npc.isTargetable() ? 0x01 : 0x00);
 			writeC(_npc.isShowName() ? 0x01 : 0x00);
-			writeD(_npc.getAbnormalVisualEffectSpecial());
+			if(!_npc.isChampion()) {
+				writeD(_npc.getAbnormalVisualEffectSpecial());
+			} else {
+				writeD(AbnormalVisualEffect.NAVIT_ADVENT.getMask());
+			}
+				
 			writeD(_displayEffect);
 		}
 	}
