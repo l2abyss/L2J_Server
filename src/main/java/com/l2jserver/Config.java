@@ -1116,6 +1116,7 @@ public final class Config {
 	public static boolean INITIAL_PACK_ENABLE;
 	public static boolean ONLINE_COMMAND_ENABLE;
 	public static int ONLINE_COMMAND_MULTIPLIER;
+	public static boolean ELITE_VISIBLE_AURA;
 
 	/**
 	 * This class initializes all global variables for configuration.<br>
@@ -3280,6 +3281,8 @@ public final class Config {
 					"OnlineCommandEnable", false);
 			ONLINE_COMMAND_MULTIPLIER = L2AbyssModsSettings.getInt(
 					"OnlineCommandMultiplier", 1);
+			ELITE_VISIBLE_AURA = L2AbyssModsSettings.getBoolean(
+					"EliteVisibleAura", false);
 
 		} else if (Server.serverMode == Server.MODE_LOGINSERVER) {
 			final PropertiesParser ServerSettings = new PropertiesParser(
