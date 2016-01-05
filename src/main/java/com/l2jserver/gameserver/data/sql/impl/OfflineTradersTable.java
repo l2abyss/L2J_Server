@@ -236,7 +236,7 @@ public class OfflineTradersTable
 						player.getAppearance().setNameColor(Config.OFFLINE_NAME_COLOR);
 					}
 					player.setPrivateStoreType(type);
-					player.setOnlineStatus(false, true);
+					player.setOnlineStatus(true, true);
 					player.restoreEffects();
 					L2World.getInstance().addPlayerToWorld(player);
 					player.broadcastUserInfo();
