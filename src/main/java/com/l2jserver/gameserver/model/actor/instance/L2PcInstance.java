@@ -8597,8 +8597,8 @@ public final class L2PcInstance extends L2Playable {
 				if (aClan.isAtWarWith(tClan.getId())
 						&& tClan.isAtWarWith(aClan.getId())) {
 					// Check if skill can do damage
-					if ((skill.isAOE() && (skill.getEffectRange() > 0))
-							&& isCtrlPressed && (getTarget() == target)) {
+					if ((skill.isBad() && (skill.getEffectRange() > 0))
+							&& (getTarget() == target)) {
 						return true;
 					}
 					return isCtrlPressed;
