@@ -35,6 +35,7 @@ public class ExNevitAdventPointInfoPacket extends L2GameServerPacket
 	{
 		writeC(0xFE);
 		writeH(0xDF);
-		writeD(_points); // 72 = 1%, max 7200 = 100%
+		//writeD(_points); // 72 = 1%, max 7200 = 100%
+		writeD(7200);
 	}
 }

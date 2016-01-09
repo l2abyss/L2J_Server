@@ -542,6 +542,10 @@ public final class L2PcInstance extends L2Playable {
 	private int _recomHave; // how much I was recommended by others
 	/** The number of recommendation that the L2PcInstance can give */
 	private int _recomLeft; // how many recommendations I can give to others
+	/** Bonus time state : 0 running or 1 paused */
+	private int _recomBonusType;
+	/** Bonus time saved at pause */
+	private long _recomBonusTimeLeftAtPause;
 	/** Recommendation Bonus task **/
 	private ScheduledFuture<?> _recoBonusTask;
 	/** Recommendation task **/
@@ -13032,7 +13036,7 @@ public final class L2PcInstance extends L2Playable {
 	public void checkRecoBonusTask() {
 		// Load data
 		long taskTime = loadRecommendations();
-
+		_recomBonusType = 0;
 		if (taskTime > 0) {
 			// Add 20 recos on first login
 			if (taskTime == 3600000) {
@@ -13042,6 +13046,8 @@ public final class L2PcInstance extends L2Playable {
 			// If player have some timeleft, start bonus task
 			_recoBonusTask = ThreadPoolManager.getInstance().scheduleGeneral(
 					new RecoBonusTaskEnd(this), taskTime);
+
+			pauseRecomBonusTime();
 		}
 
 		// Create task to give new recommendations
@@ -13083,9 +13089,44 @@ public final class L2PcInstance extends L2Playable {
 		return 0;
 	}
 
+	public void pauseRecomBonusTime() {
+		if (_recoBonusTask != null) {
+			_recomBonusTimeLeftAtPause = _recoBonusTask
+					.getDelay(TimeUnit.MILLISECONDS);
+			if (_recoBonusTask.cancel(false)) {
+				_recoBonusTask = null;
+				_recomBonusType = 1;
+			}
+		}
+	}
+
+	public void resumeRecomBonusTime() {
+		if (_recoBonusTask == null) {
+			_recoBonusTask = ThreadPoolManager.getInstance().scheduleGeneral(
+					new RecoBonusTaskEnd(this), _recomBonusTimeLeftAtPause);
+			_recomBonusType = 0;
+		}
+	}
+
+	/*
+	 * public void addRecomBonusTime(long addTime) { if (_recoBonusTask != null)
+	 * { long timeLeft = _recoBonusTask.getDelay(TimeUnit.MILLISECONDS);
+	 * _recoBonusTask.cancel(false); _recoBonusTask =
+	 * ThreadPoolManager.getInstance().scheduleGeneral( new
+	 * RecoBonusTaskEnd(this), timeLeft + addTime); } }
+	 */
+
+	public boolean isRecomBonusTimePaused() {
+		if (_recomBonusType == 1) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public int getRecomBonusType() {
 		// Maintain = 1
-		return 0;
+		return _recomBonusType;
 	}
 
 	public void setLastPetitionGmName(String gmName) {

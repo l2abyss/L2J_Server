@@ -24,6 +24,7 @@ import com.l2jserver.gameserver.model.actor.L2Character;
 import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
 import com.l2jserver.gameserver.model.zone.L2ZoneType;
 import com.l2jserver.gameserver.model.zone.ZoneId;
+import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
  * A Peace Zone
@@ -57,6 +58,10 @@ public class L2PeaceZone extends L2ZoneType
 		
 		if (Config.PEACE_ZONE_MODE != 2)
 		{
+			if (!character.isInsideZone(ZoneId.PEACE) && character instanceof L2PcInstance) {
+				character.sendPacket(SystemMessageId.ENTER_PEACEFUL_ZONE);
+				character.getActingPlayer().pauseRecomBonusTime();
+			}
 			character.setInsideZone(ZoneId.PEACE, true);
 		}
 		
@@ -71,6 +76,9 @@ public class L2PeaceZone extends L2ZoneType
 	{
 		if (Config.PEACE_ZONE_MODE != 2)
 		{
+			if (!character.isInsideZone(ZoneId.PEACE) && character instanceof L2PcInstance) {
+				character.sendPacket(SystemMessageId.EXIT_PEACEFUL_ZONE);
+			}
 			character.setInsideZone(ZoneId.PEACE, false);
 		}
 		
