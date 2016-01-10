@@ -68,6 +68,7 @@ import com.l2jserver.gameserver.model.items.L2Item;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.skills.Skill;
 import com.l2jserver.gameserver.model.stats.Stats;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.clientpackets.Say2;
 import com.l2jserver.gameserver.network.serverpackets.CreatureSay;
@@ -496,9 +497,40 @@ public class L2Attackable extends L2Npc
 								final int addsp = (int) attacker.calcStat(Stats.EXPSP_RATE, sp, null, null);
 								
 								attacker.addExpAndSp(addexp, addsp, useVitalityRate());
+								
+								// nevit's blessing
 								if (addexp > 0)
 								{
-									attacker.updateVitalityPoints(getVitalityPoints(damage), true, false);
+									// is paused?
+									if (attacker.isRecomBonusTimePaused()) {
+										attacker.resumeRecomBonusTime();
+									}
+
+									if(!attacker.isInsideZone(ZoneId.PEACE)) {			
+										if(levelDiff < 9 && levelDiff > 5) {
+											attacker.addHuntingBonusPoints(36);
+										} else if (levelDiff < 5 && levelDiff > 0) {
+											attacker.addHuntingBonusPoints(72);
+										} else if (levelDiff == 0) {
+											attacker.addHuntingBonusPoints(100);
+										} else if (levelDiff < 0 && levelDiff > -5) {
+											attacker.addHuntingBonusPoints(120);
+										} else if (levelDiff < -5) {
+											attacker.addHuntingBonusPoints(144);
+										}
+										
+										if (attacker.getHuntingBonusPoints() == 7200) {
+											attacker.startHuntingBonusTask();
+										}
+									}
+									
+									float vitPoints = getVitalityPoints(damage);
+									
+									// if nevit's advent is active gain vit points
+									if (attacker.isNevitAdventActive()) {
+										vitPoints = Math.abs(vitPoints);
+									}
+									attacker.updateVitalityPoints(vitPoints, true, false);
 								}
 							}
 						}

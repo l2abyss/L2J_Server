@@ -28,62 +28,57 @@ import com.l2jserver.gameserver.network.SystemMessageId;
 
 /**
  * A Peace Zone
+ * 
  * @author durgus
  */
-public class L2PeaceZone extends L2ZoneType
-{
-	public L2PeaceZone(int id)
-	{
+public class L2PeaceZone extends L2ZoneType {
+	public L2PeaceZone(int id) {
 		super(id);
 	}
-	
+
 	@Override
-	protected void onEnter(L2Character character)
-	{
-		if (character.isPlayer())
-		{
+	protected void onEnter(L2Character character) {
+		if (character.isPlayer()) {
 			L2PcInstance player = character.getActingPlayer();
-			if (player.isCombatFlagEquipped() && TerritoryWarManager.getInstance().isTWInProgress())
-			{
-				TerritoryWarManager.getInstance().dropCombatFlag(player, false, true);
+			if (player.isCombatFlagEquipped()
+					&& TerritoryWarManager.getInstance().isTWInProgress()) {
+				TerritoryWarManager.getInstance().dropCombatFlag(player, false,
+						true);
 			}
-			
+
 			// PVP possible during siege, now for siege participants only
-			// Could also check if this town is in siege, or if any siege is going on
-			if ((player.getSiegeState() != 0) && (Config.PEACE_ZONE_MODE == 1))
-			{
+			// Could also check if this town is in siege, or if any siege is
+			// going on
+			if ((player.getSiegeState() != 0) && (Config.PEACE_ZONE_MODE == 1)) {
 				return;
 			}
 		}
-		
-		if (Config.PEACE_ZONE_MODE != 2)
-		{
-			if (!character.isInsideZone(ZoneId.PEACE) && character instanceof L2PcInstance) {
+
+		if (Config.PEACE_ZONE_MODE != 2) {
+			if (!character.isInsideZone(ZoneId.PEACE)
+					&& (character instanceof L2PcInstance)) {
 				character.sendPacket(SystemMessageId.ENTER_PEACEFUL_ZONE);
 				character.getActingPlayer().pauseRecomBonusTime();
 			}
 			character.setInsideZone(ZoneId.PEACE, true);
 		}
-		
-		if (!getAllowStore())
-		{
+
+		if (!getAllowStore()) {
 			character.setInsideZone(ZoneId.NO_STORE, true);
 		}
 	}
-	
+
 	@Override
-	protected void onExit(L2Character character)
-	{
-		if (Config.PEACE_ZONE_MODE != 2)
-		{
-			if (!character.isInsideZone(ZoneId.PEACE) && character instanceof L2PcInstance) {
-				character.sendPacket(SystemMessageId.EXIT_PEACEFUL_ZONE);
+	protected void onExit(L2Character character) {
+		if (Config.PEACE_ZONE_MODE != 2) {
+			if (character instanceof L2PcInstance) {
+				// bug?
+				// character.sendPacket(SystemMessageId.EXIT_PEACEFUL_ZONE);
 			}
 			character.setInsideZone(ZoneId.PEACE, false);
 		}
-		
-		if (!getAllowStore())
-		{
+
+		if (!getAllowStore()) {
 			character.setInsideZone(ZoneId.NO_STORE, false);
 		}
 	}

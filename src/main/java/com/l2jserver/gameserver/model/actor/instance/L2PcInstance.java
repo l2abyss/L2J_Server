@@ -165,6 +165,7 @@ import com.l2jserver.gameserver.model.actor.status.PcStatus;
 import com.l2jserver.gameserver.model.actor.tasks.player.DismountTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.FameTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.GameGuardCheckTask;
+import com.l2jserver.gameserver.model.actor.tasks.player.HuntingBonusTaskEnd;
 import com.l2jserver.gameserver.model.actor.tasks.player.InventoryEnableTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.LookingForFishTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.PetFeedTask;
@@ -243,6 +244,7 @@ import com.l2jserver.gameserver.model.punishment.PunishmentType;
 import com.l2jserver.gameserver.model.quest.Quest;
 import com.l2jserver.gameserver.model.quest.QuestState;
 import com.l2jserver.gameserver.model.skills.AbnormalType;
+import com.l2jserver.gameserver.model.skills.AbnormalVisualEffect;
 import com.l2jserver.gameserver.model.skills.BuffInfo;
 import com.l2jserver.gameserver.model.skills.CommonSkill;
 import com.l2jserver.gameserver.model.skills.Skill;
@@ -270,12 +272,16 @@ import com.l2jserver.gameserver.network.serverpackets.ExFishingEnd;
 import com.l2jserver.gameserver.network.serverpackets.ExFishingStart;
 import com.l2jserver.gameserver.network.serverpackets.ExGetBookMarkInfoPacket;
 import com.l2jserver.gameserver.network.serverpackets.ExGetOnAirShip;
+import com.l2jserver.gameserver.network.serverpackets.ExNevitAdventEffect;
+import com.l2jserver.gameserver.network.serverpackets.ExNevitAdventPointInfoPacket;
 import com.l2jserver.gameserver.network.serverpackets.ExOlympiadMode;
 import com.l2jserver.gameserver.network.serverpackets.ExPrivateStoreSetWholeMsg;
 import com.l2jserver.gameserver.network.serverpackets.ExSetCompassZoneCode;
+import com.l2jserver.gameserver.network.serverpackets.ExShowScreenMessage;
 import com.l2jserver.gameserver.network.serverpackets.ExStartScenePlayer;
 import com.l2jserver.gameserver.network.serverpackets.ExStorageMaxCount;
 import com.l2jserver.gameserver.network.serverpackets.ExUseSharedGroupItem;
+import com.l2jserver.gameserver.network.serverpackets.ExVoteSystemInfo;
 import com.l2jserver.gameserver.network.serverpackets.FlyToLocation.FlyType;
 import com.l2jserver.gameserver.network.serverpackets.FriendStatusPacket;
 import com.l2jserver.gameserver.network.serverpackets.GameGuardQuery;
@@ -552,6 +558,11 @@ public final class L2PcInstance extends L2Playable {
 	private ScheduledFuture<?> _recoGiveTask;
 	/** Recommendation Two Hours bonus **/
 	protected boolean _recoTwoHoursGiven = false;
+
+	/** Hunting bonus points */
+	private int _huntingBonusPoints;
+	/** Hunting bonus task */
+	private ScheduledFuture<?> _huntingBonusTask;
 
 	private final PcInventory _inventory = new PcInventory(this);
 	private final PcFreight _freight = new PcFreight(this);
@@ -1889,6 +1900,23 @@ public final class L2PcInstance extends L2Playable {
 	public void giveRecom(L2PcInstance target) {
 		target.incRecomHave();
 		decRecomLeft();
+	}
+
+	/*
+	 * Hunting Bonus System
+	 */
+	public void setHuntingBonusPoints(int points) {
+		_huntingBonusPoints = Math.min(Math.max(points, 0), 7200);
+	}
+
+	public void addHuntingBonusPoints(int addPoints) {
+		_huntingBonusPoints = Math.min(
+				Math.max(_huntingBonusPoints + addPoints, 0), 7200);
+		sendPacket(new ExNevitAdventPointInfoPacket(_huntingBonusPoints));
+	}
+
+	public int getHuntingBonusPoints() {
+		return _huntingBonusPoints;
 	}
 
 	/**
@@ -5050,7 +5078,8 @@ public final class L2PcInstance extends L2Playable {
 						}
 					}
 					// If player is Lucky shouldn't get penalized.
-					if (!isLucky() && (insideSiegeZone || !insidePvpZone)) {
+					if (!isNevitAdventActive() && !isLucky()
+							&& (insideSiegeZone || !insidePvpZone)) {
 						calculateDeathExpPenalty(killer, isAtWarWith(pk));
 					}
 				}
@@ -5467,6 +5496,7 @@ public final class L2PcInstance extends L2Playable {
 		stopVitalityTask();
 		stopRecoBonusTask();
 		stopRecoGiveTask();
+		stopHuntingBonusTask();
 	}
 
 	@Override
@@ -10698,6 +10728,12 @@ public final class L2PcInstance extends L2Playable {
 		} catch (Exception e) {
 			LOG.error("deleteMe() {}", e);
 		}
+		// Hunting Bonus must be saved before task (timer) is canceled
+		try {
+			storeHuntingBonus();
+		} catch (Exception e) {
+			LOG.error("deleteMe() {}", e);
+		}
 		// Stop the HP/MP/CP Regeneration task (scheduled tasks)
 		try {
 			stopAllTimers();
@@ -13010,6 +13046,11 @@ public final class L2PcInstance extends L2Playable {
 	 */
 	public void storeRecommendations() {
 		long recoTaskEnd = 0;
+
+		if (isRecomBonusTimePaused()) {
+			recoTaskEnd = _recomBonusTimeLeftAtPause;
+		}
+
 		if (_recoBonusTask != null) {
 			recoTaskEnd = Math.max(0,
 					_recoBonusTask.getDelay(TimeUnit.MILLISECONDS));
@@ -13082,6 +13123,10 @@ public final class L2PcInstance extends L2Playable {
 	}
 
 	public int getRecomBonusTime() {
+		if (isRecomBonusTimePaused()) {
+			return (int) (_recomBonusTimeLeftAtPause / 1000);
+		}
+
 		if (_recoBonusTask != null) {
 			return (int) Math.max(0, _recoBonusTask.getDelay(TimeUnit.SECONDS));
 		}
@@ -13093,18 +13138,19 @@ public final class L2PcInstance extends L2Playable {
 		if (_recoBonusTask != null) {
 			_recomBonusTimeLeftAtPause = _recoBonusTask
 					.getDelay(TimeUnit.MILLISECONDS);
-			if (_recoBonusTask.cancel(false)) {
-				_recoBonusTask = null;
-				_recomBonusType = 1;
-			}
+			_recoBonusTask.cancel(true);
+			_recoBonusTask = null;
+			_recomBonusType = 1;
+			sendPacket(new ExVoteSystemInfo(this));
 		}
 	}
 
 	public void resumeRecomBonusTime() {
-		if (_recoBonusTask == null) {
+		if (isRecomBonusTimePaused()) {
 			_recoBonusTask = ThreadPoolManager.getInstance().scheduleGeneral(
 					new RecoBonusTaskEnd(this), _recomBonusTimeLeftAtPause);
 			_recomBonusType = 0;
+			sendPacket(new ExVoteSystemInfo(this));
 		}
 	}
 
@@ -13127,6 +13173,109 @@ public final class L2PcInstance extends L2Playable {
 	public int getRecomBonusType() {
 		// Maintain = 1
 		return _recomBonusType;
+	}
+
+	/**
+	 * Load L2PcInstance Hunting Bonus data.
+	 * 
+	 * @return
+	 */
+	private long loadHuntingBonus() {
+		long timeLeft = 0;
+
+		try (Connection con = ConnectionFactory.getInstance().getConnection();
+				PreparedStatement ps = con
+						.prepareStatement("SELECT points,time_left FROM character_hunting_bonus WHERE charId=? LIMIT 1")) {
+			ps.setInt(1, getObjectId());
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					setHuntingBonusPoints(rs.getInt("points"));
+					timeLeft = rs.getLong("time_left");
+				} else {
+					timeLeft = 0;
+				}
+			}
+		} catch (Exception e) {
+			LOG.error("Could not restore Hunting Bonus info for {}, {}", this,
+					e);
+		}
+		return timeLeft;
+	}
+
+	/**
+	 * Update L2PcInstance Hunting Bonus data.
+	 */
+	public void storeHuntingBonus() {
+		long huntingTaskEnd = 0;
+
+		if (_huntingBonusTask != null) {
+			huntingTaskEnd = Math.max(0,
+					_huntingBonusTask.getDelay(TimeUnit.MILLISECONDS));
+		}
+
+		try (Connection con = ConnectionFactory.getInstance().getConnection();
+				PreparedStatement ps = con
+						.prepareStatement("INSERT INTO character_hunting_bonus (charId,points,time_left) VALUES (?,?,?) ON DUPLICATE KEY UPDATE points=?, time_left=?")) {
+			ps.setInt(1, getObjectId());
+			ps.setInt(2, getHuntingBonusPoints());
+			ps.setLong(3, huntingTaskEnd);
+			// Update part
+			ps.setInt(4, getHuntingBonusPoints());
+			ps.setLong(5, huntingTaskEnd);
+			ps.execute();
+		} catch (Exception e) {
+			LOG.error("Could not update Hunting Bonus for player: {}", this, e);
+		}
+	}
+
+	public void checkHuntingBonusTask() {
+		// Load data
+		long taskTime = loadHuntingBonus();
+
+		if (taskTime > 0) {
+
+			_huntingBonusTask = ThreadPoolManager.getInstance()
+					.scheduleGeneral(new HuntingBonusTaskEnd(this), taskTime);
+
+			startAbnormalVisualEffect(true, AbnormalVisualEffect.NAVIT_ADVENT);
+		}
+
+		// Store new data
+		storeHuntingBonus();
+	}
+
+	public void stopHuntingBonusTask() {
+		if (_huntingBonusTask != null) {
+			_huntingBonusTask.cancel(false);
+			_huntingBonusTask = null;
+		}
+	}
+
+	public int getHuntingBonusTime() {
+		if (_huntingBonusTask != null) {
+			return (int) _huntingBonusTask.getDelay(TimeUnit.SECONDS);
+		}
+		return 0;
+	}
+
+	public void startHuntingBonusTask() {
+		if (_huntingBonusTask != null) {
+			_huntingBonusTask.cancel(true);
+		}
+
+		long taskTime = 180000;
+		_huntingBonusTask = ThreadPoolManager.getInstance().scheduleGeneral(
+				new HuntingBonusTaskEnd(this), taskTime);
+
+		setHuntingBonusPoints(0);
+		sendPacket(new ExNevitAdventEffect(getHuntingBonusTime()));
+		sendPacket(new ExShowScreenMessage(
+				"Nevit's Advent Blessing is Upon You", 3000));
+		startAbnormalVisualEffect(true, AbnormalVisualEffect.NAVIT_ADVENT);
+	}
+
+	public boolean isNevitAdventActive() {
+		return getHuntingBonusTime() > 0;
 	}
 
 	public void setLastPetitionGmName(String gmName) {

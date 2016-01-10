@@ -166,11 +166,6 @@ public class PcStat extends PlayableStat {
 			return false;
 		}
 
-		// is paused?
-		if (activeChar.isRecomBonusTimePaused()) {
-			activeChar.resumeRecomBonusTime();
-		}
-
 		SystemMessage sm = null;
 		if ((addToExp == 0) && (addToSp != 0)) {
 			sm = SystemMessage.getSystemMessage(SystemMessageId.ACQUIRED_S1_SP);
@@ -253,6 +248,8 @@ public class PcStat extends PlayableStat {
 							SocialAction.LEVEL_UP));
 			getActiveChar()
 					.sendPacket(SystemMessageId.YOU_INCREASED_YOUR_LEVEL);
+
+			getActiveChar().addHuntingBonusPoints(2000);
 
 			L2ClassMasterInstance.showQuestionMark(getActiveChar());
 		}
@@ -761,13 +758,15 @@ public class PcStat extends PlayableStat {
 		double bonusExp = 1.0;
 
 		// Bonus from Vitality System
-		vitality = getVitalityMultiplier();
+		vitality = !getActiveChar().isNevitAdventActive() ? getVitalityMultiplier()
+				: 1;
 
 		// Bonus from Nevit's Blessing
 		nevits = RecoBonus.getRecoMultiplier(getActiveChar());
 
 		// Bonus from Nevit's Hunting
-		// TODO: Nevit's hunting bonus
+		hunting = getActiveChar().isNevitAdventActive() ? Config.RATE_VITALITY_LEVEL_4
+				: 1;
 
 		// Bonus exp from skills
 		bonusExp = 1 + (calcStat(Stats.BONUS_EXP, 0, null, null) / 100);
@@ -800,13 +799,15 @@ public class PcStat extends PlayableStat {
 		double bonusSp = 1.0;
 
 		// Bonus from Vitality System
-		vitality = getVitalityMultiplier();
+		vitality = !getActiveChar().isNevitAdventActive() ? getVitalityMultiplier()
+				: 1;
 
 		// Bonus from Nevit's Blessing
 		nevits = RecoBonus.getRecoMultiplier(getActiveChar());
 
 		// Bonus from Nevit's Hunting
-		// TODO: Nevit's hunting bonus
+		hunting = getActiveChar().isNevitAdventActive() ? Config.RATE_VITALITY_LEVEL_4
+				: 1;
 
 		// Bonus sp from skills
 		bonusSp = 1 + (calcStat(Stats.BONUS_SP, 0, null, null) / 100);

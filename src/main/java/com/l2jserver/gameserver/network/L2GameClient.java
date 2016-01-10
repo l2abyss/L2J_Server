@@ -340,6 +340,7 @@ public final class L2GameClient extends MMOClient<MMOConnection<L2GameClient>>
 			if (getActiveChar() != null) {
 				getActiveChar().storeMe();
 				getActiveChar().storeRecommendations();
+				getActiveChar().storeHuntingBonus();
 				if (Config.UPDATE_ITEMS_ON_CHAR_STORE) {
 					getActiveChar().getInventory().updateDatabase();
 					getActiveChar().getWarehouse().updateDatabase();
