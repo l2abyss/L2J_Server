@@ -1912,6 +1912,11 @@ public final class L2PcInstance extends L2Playable {
 	public void addHuntingBonusPoints(int addPoints) {
 		_huntingBonusPoints = Math.min(
 				Math.max(_huntingBonusPoints + addPoints, 0), 7200);
+
+		if (_huntingBonusPoints >= 7200) {
+			startHuntingBonusTask();
+		}
+		// update progress bar
 		sendPacket(new ExNevitAdventPointInfoPacket(_huntingBonusPoints));
 	}
 
@@ -13236,7 +13241,9 @@ public final class L2PcInstance extends L2Playable {
 
 			_huntingBonusTask = ThreadPoolManager.getInstance()
 					.scheduleGeneral(new HuntingBonusTaskEnd(this), taskTime);
-
+			// packets updated on EnterWorld packet
+			sendPacket(new ExShowScreenMessage(
+					"Nevit's Advent Blessing is Upon You", 3000));
 			startAbnormalVisualEffect(true, AbnormalVisualEffect.NAVIT_ADVENT);
 		}
 
@@ -13263,11 +13270,12 @@ public final class L2PcInstance extends L2Playable {
 			_huntingBonusTask.cancel(true);
 		}
 
-		long taskTime = 180000;
+		long taskTime = 180000; // 3 min
 		_huntingBonusTask = ThreadPoolManager.getInstance().scheduleGeneral(
 				new HuntingBonusTaskEnd(this), taskTime);
 
 		setHuntingBonusPoints(0);
+		// update hunting bonus timer
 		sendPacket(new ExNevitAdventEffect(getHuntingBonusTime()));
 		sendPacket(new ExShowScreenMessage(
 				"Nevit's Advent Blessing is Upon You", 3000));
