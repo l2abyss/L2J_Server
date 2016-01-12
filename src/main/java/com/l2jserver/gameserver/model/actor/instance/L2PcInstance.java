@@ -5087,6 +5087,18 @@ public final class L2PcInstance extends L2Playable {
 							&& (insideSiegeZone || !insidePvpZone)) {
 						calculateDeathExpPenalty(killer, isAtWarWith(pk));
 					}
+
+					// if upon death, nevit's effect is active stop it
+					if (isNevitAdventActive()) {
+						stopHuntingBonusTask();
+						// update packets
+						stopAbnormalVisualEffect(true,
+								AbnormalVisualEffect.NAVIT_ADVENT);
+						sendPacket(new ExNevitAdventEffect(
+								getHuntingBonusTime()));
+						sendPacket(new ExNevitAdventPointInfoPacket(
+								getHuntingBonusPoints()));
+					}
 				}
 			}
 		}
@@ -13160,14 +13172,6 @@ public final class L2PcInstance extends L2Playable {
 		}
 	}
 
-	/*
-	 * public void addRecomBonusTime(long addTime) { if (_recoBonusTask != null)
-	 * { long timeLeft = _recoBonusTask.getDelay(TimeUnit.MILLISECONDS);
-	 * _recoBonusTask.cancel(false); _recoBonusTask =
-	 * ThreadPoolManager.getInstance().scheduleGeneral( new
-	 * RecoBonusTaskEnd(this), timeLeft + addTime); } }
-	 */
-
 	public boolean isRecomBonusTimePaused() {
 		if (_recomBonusType == 1) {
 			return true;
@@ -13276,11 +13280,12 @@ public final class L2PcInstance extends L2Playable {
 				new HuntingBonusTaskEnd(this), taskTime);
 
 		setHuntingBonusPoints(0);
+
+		startAbnormalVisualEffect(true, AbnormalVisualEffect.NAVIT_ADVENT);
 		// update hunting bonus timer
 		sendPacket(new ExNevitAdventEffect(getHuntingBonusTime()));
 		sendPacket(new ExShowScreenMessage(
 				"Nevit's Advent Blessing is Upon You", 3000));
-		startAbnormalVisualEffect(true, AbnormalVisualEffect.NAVIT_ADVENT);
 	}
 
 	public boolean isNevitAdventActive() {

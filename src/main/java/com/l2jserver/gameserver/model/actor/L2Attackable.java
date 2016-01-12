@@ -519,7 +519,8 @@ public class L2Attackable extends L2Npc {
 										attacker.resumeRecomBonusTime();
 									}
 
-									if (!attacker.isInsideZone(ZoneId.PEACE)) {
+									if (!attacker.isInsideZone(ZoneId.PEACE)
+											&& !attacker.isNevitAdventActive()) {
 										if ((levelDiff < 9) && (levelDiff > 5)) {
 											attacker.addHuntingBonusPoints(36);
 										} else if ((levelDiff < 5)
