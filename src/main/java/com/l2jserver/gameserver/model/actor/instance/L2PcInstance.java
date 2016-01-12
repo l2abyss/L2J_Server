@@ -13074,8 +13074,9 @@ public final class L2PcInstance extends L2Playable {
 			ps.setLong(7, recoTaskEnd);
 			ps.execute();
 		} catch (Exception e) {
-			LOG.error("Could not update Recommendations for player: {}", this,
-					e);
+			LOG.error(
+					"Could not update Recommendations for player: {} time_left:"
+							+ recoTaskEnd, this, e);
 		}
 	}
 
