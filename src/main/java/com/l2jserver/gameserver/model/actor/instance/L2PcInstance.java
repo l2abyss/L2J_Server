@@ -13065,7 +13065,7 @@ public final class L2PcInstance extends L2Playable {
 		long recoTaskEnd = 0;
 
 		if (isRecomBonusTimePaused()) {
-			recoTaskEnd = _recomBonusTimeLeftAtPause;
+			recoTaskEnd = Math.max(0, _recomBonusTimeLeftAtPause);
 		}
 
 		if (_recoBonusTask != null) {
@@ -13142,7 +13142,7 @@ public final class L2PcInstance extends L2Playable {
 
 	public int getRecomBonusTime() {
 		if (isRecomBonusTimePaused()) {
-			return (int) (_recomBonusTimeLeftAtPause / 1000);
+			return (int) Math.max(0, (_recomBonusTimeLeftAtPause / 1000));
 		}
 
 		if (_recoBonusTask != null) {
@@ -13154,8 +13154,8 @@ public final class L2PcInstance extends L2Playable {
 
 	public void pauseRecomBonusTime() {
 		if (_recoBonusTask != null) {
-			_recomBonusTimeLeftAtPause = _recoBonusTask
-					.getDelay(TimeUnit.MILLISECONDS);
+			_recomBonusTimeLeftAtPause = Math.max(0,
+					_recoBonusTask.getDelay(TimeUnit.MILLISECONDS));
 			_recoBonusTask.cancel(true);
 			_recoBonusTask = null;
 			_recomBonusType = 1;
