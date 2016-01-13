@@ -13265,7 +13265,8 @@ public final class L2PcInstance extends L2Playable {
 
 	public int getHuntingBonusTime() {
 		if (_huntingBonusTask != null) {
-			return (int) _huntingBonusTask.getDelay(TimeUnit.SECONDS);
+			return (int) Math.max(0,
+					_huntingBonusTask.getDelay(TimeUnit.SECONDS));
 		}
 		return 0;
 	}
