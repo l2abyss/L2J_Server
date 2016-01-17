@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sf.eventengine.EventEngineManager;
+
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ai.CtrlIntention;
 import com.l2jserver.gameserver.instancemanager.AntiFeedManager;
@@ -120,6 +122,12 @@ public abstract class AbstractOlympiadGame
 		if ((player.getClient() == null) || player.getClient().isDetached())
 		{
 			return SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_ENDS_THE_GAME);
+		}
+		
+		// L2J EventEngine
+		if (EventEngineManager.getInstance().isPlayableInEvent(player))
+		{
+			return SystemMessage.getSystemMessage(SystemMessageId.THE_GAME_HAS_BEEN_CANCELLED_BECAUSE_THE_OTHER_PARTY_DOES_NOT_MEET_THE_REQUIREMENTS_FOR_JOINING_THE_GAME);
 		}
 		
 		// safety precautions
