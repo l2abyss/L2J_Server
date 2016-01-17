@@ -58,7 +58,11 @@ public class L2PeaceZone extends L2ZoneType {
 			if (!character.isInsideZone(ZoneId.PEACE)
 					&& (character instanceof L2PcInstance)) {
 				character.sendPacket(SystemMessageId.ENTER_PEACEFUL_ZONE);
-				character.getActingPlayer().pauseRecomBonusTime();
+
+				// pause bonus rec timer only if player still has rec bonus time
+				if (character.getActingPlayer().getRecomBonusTime() > 0) {
+					character.getActingPlayer().pauseRecomBonusTime();
+				}
 			}
 			character.setInsideZone(ZoneId.PEACE, true);
 		}

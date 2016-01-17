@@ -13062,7 +13062,9 @@ public final class L2PcInstance extends L2Playable {
 	 * Update L2PcInstance Recommendations data.
 	 */
 	public void storeRecommendations() {
-		long recoTaskEnd = 0;
+		// if this value is not modified, it means
+		// the character has just been created
+		long recoTaskEnd = 3600000;
 
 		if (isRecomBonusTimePaused()) {
 			recoTaskEnd = Math.max(0, _recomBonusTimeLeftAtPause);
@@ -13086,9 +13088,8 @@ public final class L2PcInstance extends L2Playable {
 			ps.setLong(7, recoTaskEnd);
 			ps.execute();
 		} catch (Exception e) {
-			LOG.error(
-					"Could not update Recommendations for player: {} time_left:"
-							+ recoTaskEnd, this, e);
+			LOG.error("Could not update Recommendations for player: {}", this,
+					e);
 		}
 	}
 
@@ -13102,7 +13103,7 @@ public final class L2PcInstance extends L2Playable {
 				setRecomLeft(getRecomLeft() + 20);
 			}
 
-			// If player have some timeleft, start bonus task
+			// If player has some timeleft, start bonus task
 			_recoBonusTask = ThreadPoolManager.getInstance().scheduleGeneral(
 					new RecoBonusTaskEnd(this), taskTime);
 

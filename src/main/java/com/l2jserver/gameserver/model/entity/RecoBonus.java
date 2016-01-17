@@ -139,7 +139,7 @@ public final class RecoBonus
 	
 	public static int getRecoBonus(L2PcInstance activeChar)
 	{
-		if ((activeChar != null) && activeChar.isOnline() && (activeChar.getRecomHave() != 0) && (activeChar.getRecomBonusTime() > 0))
+		if ((activeChar != null) && activeChar.isOnline() && (activeChar.getRecomHave() != 0))
 		{
 			final int lvl = activeChar.getLevel() / 10;
 			final int exp = (Math.min(100, activeChar.getRecomHave()) - 1) / 10;
@@ -152,7 +152,7 @@ public final class RecoBonus
 	public static double getRecoMultiplier(L2PcInstance activeChar)
 	{
 		double multiplier = 1.0;
-		final double bonus = getRecoBonus(activeChar);
+		final double bonus = activeChar.getRecomBonusTime() > 0 ? getRecoBonus(activeChar) : 0;
 		if (bonus > 0)
 		{
 			multiplier += (bonus / 100);
