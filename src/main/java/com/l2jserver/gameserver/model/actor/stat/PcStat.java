@@ -249,7 +249,11 @@ public class PcStat extends PlayableStat {
 			getActiveChar()
 					.sendPacket(SystemMessageId.YOU_INCREASED_YOUR_LEVEL);
 
-			getActiveChar().addHuntingBonusPoints(2000);
+			// prevent gaining hunting bonus points by leveling up if
+			// nevit's blessing effect is active
+			if (!getActiveChar().isNevitAdventActive()) {
+				getActiveChar().addHuntingBonusPoints(2000);
+			}
 
 			L2ClassMasterInstance.showQuestionMark(getActiveChar());
 		}
