@@ -435,10 +435,13 @@ public class EnterWorld extends L2GameClientPacket {
 			notice.disableValidation();
 			sendPacket(notice);
 		} else if (Config.SERVER_NEWS) {
-			String serverNews = HtmCache.getInstance().getHtm(
-					activeChar.getHtmlPrefix(), "data/html/servnews.htm");
-			if (serverNews != null) {
-				sendPacket(new NpcHtmlMessage(serverNews));
+			// only for new characters
+			if (activeChar.getLevel() == 1) {
+				String serverNews = HtmCache.getInstance().getHtm(
+						activeChar.getHtmlPrefix(), "data/html/servnews.htm");
+				if (serverNews != null) {
+					sendPacket(new NpcHtmlMessage(serverNews));
+				}
 			}
 		}
 
