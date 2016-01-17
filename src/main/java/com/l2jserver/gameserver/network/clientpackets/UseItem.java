@@ -21,8 +21,6 @@ package com.l2jserver.gameserver.network.clientpackets;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-import net.sf.eventengine.EventEngineManager;
-
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.ThreadPoolManager;
 import com.l2jserver.gameserver.ai.CtrlEvent;
@@ -173,12 +171,6 @@ public final class UseItem extends L2GameClientPacket
 					}
 				}
 			}
-		}
-		
-		// L2J EventEngine
-		if (EventEngineManager.getInstance().listenerOnUseItem(activeChar, item.getItem()))
-		{
-			return;
 		}
 		
 		// If the item has reuse time and it has not passed.
