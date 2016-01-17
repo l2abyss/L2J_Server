@@ -13066,10 +13066,6 @@ public final class L2PcInstance extends L2Playable {
 		// the character has just been created
 		long recoTaskEnd = 3600000;
 
-		if (getRecomBonusTime() > 0) {
-
-		}
-
 		if (isRecomBonusTimePaused()) {
 			recoTaskEnd = Math.max(0, _recomBonusTimeLeftAtPause);
 		}
