@@ -5263,6 +5263,10 @@ public final class L2PcInstance extends L2Playable {
 			return;
 		}
 
+		if (isOnEvent() && target.isOnEvent()) {
+			return;
+		}
+
 		if (isCursedWeaponEquipped() && target.isPlayer()) {
 			CursedWeaponsManager.getInstance().increaseKills(
 					_cursedWeaponEquippedId);
@@ -5381,7 +5385,8 @@ public final class L2PcInstance extends L2Playable {
 			return;
 		}
 
-		if ((isInDuel() && (player_target.getDuelId() == getDuelId()))) {
+		if ((isInDuel() && (player_target.getDuelId() == getDuelId()))
+				|| (isOnEvent() && player_target.isOnEvent())) {
 			return;
 		}
 		if ((!isInsideZone(ZoneId.PVP) || !player_target

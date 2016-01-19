@@ -153,4 +153,8 @@ public class TvTEventTeam
 	{
 		return _participatedPlayers.size();
 	}
+	
+	public void setCoordinates(int[] coordinates) {
+		_coordinates = coordinates;
+	}
 }

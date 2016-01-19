@@ -1171,4 +1171,12 @@ public class TvTEvent
 	{
 		return _TvTEventInstance;
 	}
+	
+	public static void setTeam1Coordinates(int[] coordinates) {
+		_teams[0].setCoordinates(coordinates);
+	}
+	
+	public static void setTeam2Coordinates(int[] coordinates) {
+		_teams[1].setCoordinates(coordinates);
+	}
 }
