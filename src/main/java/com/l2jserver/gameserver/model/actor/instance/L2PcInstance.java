@@ -13067,9 +13067,7 @@ public final class L2PcInstance extends L2Playable {
 	 * Update L2PcInstance Recommendations data.
 	 */
 	public void storeRecommendations() {
-		// if this value is not modified, it means
-		// the character has just been created
-		long recoTaskEnd = 3600000;
+		long recoTaskEnd = 0;
 
 		if (isRecomBonusTimePaused()) {
 			recoTaskEnd = Math.max(0, _recomBonusTimeLeftAtPause);
@@ -13086,7 +13084,7 @@ public final class L2PcInstance extends L2Playable {
 			ps.setInt(1, getObjectId());
 			ps.setInt(2, getRecomHave());
 			ps.setInt(3, getRecomLeft());
-			ps.setLong(4, recoTaskEnd);
+			ps.setLong(4, 3600000);
 			// Update part
 			ps.setInt(5, getRecomHave());
 			ps.setInt(6, getRecomLeft());
