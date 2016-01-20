@@ -69,6 +69,9 @@ public class TvTManager
 	 */
 	public void scheduleEventStart()
 	{
+		if (Config.TVT_EVENT_INTERVAL[0].equals("0")) {
+			return;
+		}
 		try
 		{
 			Calendar currentTime = Calendar.getInstance();
@@ -161,7 +164,11 @@ public class TvTManager
 	
 	public void skipDelay()
 	{
-		if (_task.nextRun.cancel(false))
+		if (Config.TVT_EVENT_INTERVAL[0].equals("0")) {
+			_task = new TvTStartTask(System.currentTimeMillis());
+			ThreadPoolManager.getInstance().executeGeneral(_task);
+		}
+		else if (_task.nextRun.cancel(false))
 		{
 			_task.setStartTime(System.currentTimeMillis());
 			ThreadPoolManager.getInstance().executeGeneral(_task);
