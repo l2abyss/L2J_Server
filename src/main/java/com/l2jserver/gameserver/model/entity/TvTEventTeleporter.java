@@ -72,6 +72,8 @@ public class TvTEventTeleporter implements Runnable
 		
 		if (summon != null)
 		{
+			summon.setIsInvul(false);
+			summon.setIsParalyzed(false);
 			summon.unSummon(_playerInstance);
 		}
 		
@@ -126,6 +128,9 @@ public class TvTEventTeleporter implements Runnable
 		{
 			_playerInstance.setTeam(Team.NONE);
 		}
+		
+		_playerInstance.setIsInvul(false);
+		_playerInstance.setIsParalyzed(false);
 		
 		_playerInstance.setCurrentCp(_playerInstance.getMaxCp());
 		_playerInstance.setCurrentHp(_playerInstance.getMaxHp());

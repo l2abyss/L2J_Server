@@ -443,6 +443,21 @@ public class TvTEvent
 				{
 					// Enable player revival.
 					playerInstance.setCanRevive(true);
+					
+					// prevent player keeps attacking
+					playerInstance.setIsInvul(true);
+					playerInstance.setIsParalyzed(true);
+					playerInstance.setTarget(null);
+					playerInstance.abortAttack();
+					playerInstance.abortCast();
+					
+					if(playerInstance.getSummon() != null) {
+						playerInstance.getSummon().setIsInvul(true);
+						playerInstance.getSummon().setIsParalyzed(true);
+						playerInstance.getSummon().setTarget(null);
+						playerInstance.getSummon().abortAttack();
+						playerInstance.getSummon().abortCast();
+					}
 					// Teleport back.
 					new TvTEventTeleporter(playerInstance, Config.TVT_EVENT_PARTICIPATION_NPC_COORDINATES, false, false);
 				}
@@ -683,8 +698,8 @@ public class TvTEvent
 	 * @return boolean: true if player is allowed to target, otherwise false
 	 */
 	public static boolean onAction(L2PcInstance playerInstance, int targetedPlayerObjectId)
-	{
-		if ((playerInstance == null) || !isStarted())
+	{	
+		if ((!isInactivating() && !isStarted()) || playerInstance == null)
 		{
 			return true;
 		}

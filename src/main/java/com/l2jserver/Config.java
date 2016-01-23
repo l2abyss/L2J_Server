@@ -1117,6 +1117,7 @@ public final class Config {
 	public static boolean ONLINE_COMMAND_ENABLE;
 	public static int ONLINE_COMMAND_MULTIPLIER;
 	public static boolean ELITE_VISIBLE_AURA;
+	public static boolean PLAYER_CAN_SEE_DROPLIST;
 
 	/**
 	 * This class initializes all global variables for configuration.<br>
@@ -3283,6 +3284,8 @@ public final class Config {
 					"OnlineCommandMultiplier", 1);
 			ELITE_VISIBLE_AURA = L2AbyssModsSettings.getBoolean(
 					"EliteVisibleAura", false);
+			PLAYER_CAN_SEE_DROPLIST = L2AbyssModsSettings.getBoolean(
+					"PlayerCanSeeDroplist", false);
 
 		} else if (Server.serverMode == Server.MODE_LOGINSERVER) {
 			final PropertiesParser ServerSettings = new PropertiesParser(

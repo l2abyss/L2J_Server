@@ -5083,7 +5083,7 @@ public final class L2PcInstance extends L2Playable {
 						}
 					}
 					// If player is Lucky shouldn't get penalized.
-					if (!isNevitAdventActive() && !isLucky()
+					if (!isNevitAdventActive() && !isLucky() && !isOnEvent()
 							&& (insideSiegeZone || !insidePvpZone)) {
 						calculateDeathExpPenalty(killer, isAtWarWith(pk));
 					}
