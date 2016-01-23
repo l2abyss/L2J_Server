@@ -144,7 +144,7 @@ public final class Action extends L2GameClientPacket
 			}
 			case 1:
 			{
-				if (!activeChar.isGM() && !(obj.isNpc() && Config.ALT_GAME_VIEWNPC))
+				if (!activeChar.isGM() && !(obj.isNpc() && (Config.ALT_GAME_VIEWNPC || Config.PLAYER_CAN_SEE_DROPLIST)))
 				{
 					obj.onAction(activeChar, false);
 				}
