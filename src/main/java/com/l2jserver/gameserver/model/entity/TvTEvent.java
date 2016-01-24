@@ -297,6 +297,22 @@ public class TvTEvent
 				{
 					// Disable player revival.
 					playerInstance.setCanRevive(false);
+					
+					// prevent player keeps attacking
+					playerInstance.setIsInvul(true);
+					playerInstance.setIsParalyzed(true);
+					playerInstance.setTarget(null);
+					playerInstance.abortAttack();
+					playerInstance.abortCast();
+					
+					if(playerInstance.getSummon() != null) {
+						playerInstance.getSummon().setIsInvul(true);
+						playerInstance.getSummon().setIsParalyzed(true);
+						playerInstance.getSummon().setTarget(null);
+						playerInstance.getSummon().abortAttack();
+						playerInstance.getSummon().abortCast();
+					}
+					
 					// Teleporter implements Runnable and starts itself
 					new TvTEventTeleporter(playerInstance, team.getCoordinates(), false, false);
 				}
