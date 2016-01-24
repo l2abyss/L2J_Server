@@ -1115,7 +1115,7 @@ public final class Config {
 	// L2Abyss mods
 	public static boolean INITIAL_PACK_ENABLE;
 	public static boolean ONLINE_COMMAND_ENABLE;
-	public static int ONLINE_COMMAND_MULTIPLIER;
+	public static float ONLINE_COMMAND_MULTIPLIER;
 	public static boolean ELITE_VISIBLE_AURA;
 	public static boolean PLAYER_CAN_SEE_DROPLIST;
 
@@ -3280,7 +3280,7 @@ public final class Config {
 					"InitialPackEnable", false);
 			ONLINE_COMMAND_ENABLE = L2AbyssModsSettings.getBoolean(
 					"OnlineCommandEnable", false);
-			ONLINE_COMMAND_MULTIPLIER = L2AbyssModsSettings.getInt(
+			ONLINE_COMMAND_MULTIPLIER = L2AbyssModsSettings.getFloat(
 					"OnlineCommandMultiplier", 1);
 			ELITE_VISIBLE_AURA = L2AbyssModsSettings.getBoolean(
 					"EliteVisibleAura", false);
