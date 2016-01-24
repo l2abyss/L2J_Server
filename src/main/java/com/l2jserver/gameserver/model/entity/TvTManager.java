@@ -70,6 +70,9 @@ public class TvTManager
 	public void scheduleEventStart()
 	{
 		if (Config.TVT_EVENT_INTERVAL[0].equals("0")) {
+			if(_task != null) {
+				_task.nextRun.cancel(true);
+			}
 			return;
 		}
 		try
@@ -158,10 +161,6 @@ public class TvTManager
 		Broadcast.toAllOnlinePlayers(TvTEvent.calculateRewards());
 		TvTEvent.sysMsgToAllParticipants("TvT Event: Teleporting back to the registration npc in " + Config.TVT_EVENT_START_LEAVE_TELEPORT_DELAY + " second(s).");
 		TvTEvent.stopFight();
-		
-		if (Config.TVT_EVENT_INTERVAL[0].equals("0")) {
-			_task.nextRun.cancel(true);
-		}
 		
 		scheduleEventStart();
 	}
