@@ -168,8 +168,14 @@ public class TvTManager
 	public void skipDelay()
 	{
 		if (Config.TVT_EVENT_INTERVAL[0].equals("0")) {
-			_task = new TvTStartTask(System.currentTimeMillis());
-			ThreadPoolManager.getInstance().executeGeneral(_task);
+			if(_task == null) {
+				_task = new TvTStartTask(System.currentTimeMillis());
+				ThreadPoolManager.getInstance().executeGeneral(_task);
+			} else if (_task.nextRun.cancel(false)){
+				_task.setStartTime(System.currentTimeMillis());
+				ThreadPoolManager.getInstance().executeGeneral(_task);
+			}
+			
 		}
 		else if (_task.nextRun.cancel(false))
 		{

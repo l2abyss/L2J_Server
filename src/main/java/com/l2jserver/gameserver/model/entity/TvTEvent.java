@@ -715,7 +715,7 @@ public class TvTEvent
 	 */
 	public static boolean onAction(L2PcInstance playerInstance, int targetedPlayerObjectId)
 	{	
-		if ((!isInactivating() && !isStarted()) || playerInstance == null)
+		if (!isStarted() || playerInstance == null)
 		{
 			return true;
 		}
