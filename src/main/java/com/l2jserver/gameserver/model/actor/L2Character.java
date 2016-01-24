@@ -5182,6 +5182,10 @@ public abstract class L2Character extends L2Object implements ISkillsHolder, IDe
 			}
 		}
 		
+		if (attacker.getActingPlayer().isOnEvent() && target.getActingPlayer().isOnEvent()) {
+			return false;
+		}
+		
 		return (target.isInsideZone(ZoneId.PEACE) || attacker.isInsideZone(ZoneId.PEACE));
 	}
 	

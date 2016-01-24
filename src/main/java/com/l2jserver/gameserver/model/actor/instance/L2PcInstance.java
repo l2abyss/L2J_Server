@@ -8584,6 +8584,11 @@ public final class L2PcInstance extends L2Playable {
 			final boolean isCtrlPressed = (getCurrentSkill() != null)
 					&& getCurrentSkill().isCtrlPressed();
 
+			// tvt event
+			if (isOnEvent() && targetPlayer.isOnEvent()) {
+				return true;
+			}
+
 			// Pece Zone
 			if (target.isInsideZone(ZoneId.PEACE)) {
 				return false;
