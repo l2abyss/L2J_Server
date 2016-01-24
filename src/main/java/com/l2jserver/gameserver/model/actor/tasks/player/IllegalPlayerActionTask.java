@@ -95,12 +95,15 @@ public final class IllegalPlayerActionTask implements Runnable
 				}
 				case KICK:
 				{
-					_actor.logout(false);
+					_actor.logout(true);
 					break;
 				}
 				case KICKBAN:
 				{
 					PunishmentManager.getInstance().startPunishment(new PunishmentTask(_actor.getObjectId(), PunishmentAffect.CHARACTER, PunishmentType.BAN, System.currentTimeMillis() + (Config.DEFAULT_PUNISH_PARAM * 1000), _message, getClass().getSimpleName()));
+					if (_actor != null) {
+						_actor.logout(true);
+					}
 					break;
 				}
 				case JAIL:
