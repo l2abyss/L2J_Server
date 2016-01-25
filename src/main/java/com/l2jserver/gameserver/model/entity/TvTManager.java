@@ -71,7 +71,9 @@ public class TvTManager
 	{
 		if (Config.TVT_EVENT_INTERVAL[0].equals("0")) {
 			if(_task != null) {
-				_task.nextRun.cancel(true);
+				if(_task.nextRun != null) {
+					_task.nextRun.cancel(true);
+				}
 			}
 			return;
 		}
@@ -171,7 +173,10 @@ public class TvTManager
 			if(_task == null) {
 				_task = new TvTStartTask(System.currentTimeMillis());
 				ThreadPoolManager.getInstance().executeGeneral(_task);
-			} else if (_task.nextRun.cancel(false)){
+			} else {
+				if (_task.nextRun != null) {
+					_task.nextRun.cancel(false);
+				}
 				_task.setStartTime(System.currentTimeMillis());
 				ThreadPoolManager.getInstance().executeGeneral(_task);
 			}
