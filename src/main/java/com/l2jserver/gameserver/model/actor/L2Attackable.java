@@ -515,7 +515,7 @@ public class L2Attackable extends L2Npc {
 								// nevit's blessing
 								if (addexp > 0) {
 									// is paused?
-									if (attacker.isRecomBonusTimePaused()) {
+									if (attacker.isRecomBonusTimePaused() && !attacker.isRecomBonusTimeMaintained()) {
 										attacker.resumeRecomBonusTime();
 									}
 

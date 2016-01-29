@@ -25,6 +25,9 @@ import com.l2jserver.gameserver.model.actor.instance.L2PcInstance;
  */
 public final class RecoBonus
 {
+	public static final int TIMER_ACTIVE = 0;
+	public static final int TIMER_PAUSED = 1;
+	
 	private static final int[][] _recoBonus =
 	{
 		{
@@ -139,7 +142,7 @@ public final class RecoBonus
 	
 	public static int getRecoBonus(L2PcInstance activeChar)
 	{
-		if ((activeChar != null) && activeChar.isOnline() && (activeChar.getRecomHave() != 0) && ((activeChar.getRecomBonusTime() > 0) || activeChar.isRecomBonusTimePaused()))
+		if ((activeChar != null) && activeChar.isOnline() && (activeChar.getRecomHave() != 0) && (activeChar.getRecomBonusTime() > 0))
 		{
 			final int lvl = activeChar.getLevel() / 10;
 			final int exp = (Math.min(100, activeChar.getRecomHave()) - 1) / 10;

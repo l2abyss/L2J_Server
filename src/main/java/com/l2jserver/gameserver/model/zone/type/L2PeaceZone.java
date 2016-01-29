@@ -60,7 +60,9 @@ public class L2PeaceZone extends L2ZoneType {
 				character.sendPacket(SystemMessageId.ENTER_PEACEFUL_ZONE);
 
 				// pause bonus rec timer only if player still has rec bonus time
-				if (character.getActingPlayer().getRecomBonusTime() > 0) {
+				if ((character.getActingPlayer().getRecomBonusTime() > 0)
+						&& !character.getActingPlayer()
+								.isRecomBonusTimeMaintained()) {
 					character.getActingPlayer().pauseRecomBonusTime();
 				}
 			}

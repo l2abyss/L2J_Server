@@ -195,6 +195,7 @@ import com.l2jserver.gameserver.model.entity.Fort;
 import com.l2jserver.gameserver.model.entity.Hero;
 import com.l2jserver.gameserver.model.entity.Instance;
 import com.l2jserver.gameserver.model.entity.L2Event;
+import com.l2jserver.gameserver.model.entity.RecoBonus;
 import com.l2jserver.gameserver.model.entity.Siege;
 import com.l2jserver.gameserver.model.entity.TvTEvent;
 import com.l2jserver.gameserver.model.events.EventDispatcher;
@@ -550,6 +551,8 @@ public final class L2PcInstance extends L2Playable {
 	private int _recomLeft; // how many recommendations I can give to others
 	/** Bonus time state : 0 running or 1 paused */
 	private int _recomBonusType;
+	/** Maintain bonus time state paused even if player gain exp */
+	private boolean _recomBonusTimeMaintain;
 	/** Bonus time saved at pause */
 	private long _recomBonusTimeLeftAtPause;
 	/** Recommendation Bonus task **/
@@ -13076,9 +13079,7 @@ public final class L2PcInstance extends L2Playable {
 
 		if (isRecomBonusTimePaused()) {
 			recoTaskEnd = Math.max(0, _recomBonusTimeLeftAtPause);
-		}
-
-		if (_recoBonusTask != null) {
+		} else if (_recoBonusTask != null) {
 			recoTaskEnd = Math.max(0,
 					_recoBonusTask.getDelay(TimeUnit.MILLISECONDS));
 		}
@@ -13104,7 +13105,7 @@ public final class L2PcInstance extends L2Playable {
 	public void checkRecoBonusTask() {
 		// Load data
 		long taskTime = loadRecommendations();
-		_recomBonusType = 0;
+		_recomBonusType = RecoBonus.TIMER_ACTIVE;
 		if (taskTime > 0) {
 			// Add 20 recos on first login
 			if (taskTime == 3600000) {
@@ -13154,11 +13155,11 @@ public final class L2PcInstance extends L2Playable {
 	 * @return reco bonus time left in seconds
 	 */
 	public int getRecomBonusTime() {
-		if (isRecomBonusTimePaused()) {
+		if (isRecomBonusTimeMaintained()) {
+			return 1;
+		} else if (isRecomBonusTimePaused()) {
 			return (int) Math.max(0, (_recomBonusTimeLeftAtPause / 1000));
-		}
-
-		if (_recoBonusTask != null) {
+		} else if (_recoBonusTask != null) {
 			return (int) Math.max(0, _recoBonusTask.getDelay(TimeUnit.SECONDS));
 		}
 
@@ -13171,31 +13172,39 @@ public final class L2PcInstance extends L2Playable {
 					_recoBonusTask.getDelay(TimeUnit.MILLISECONDS));
 			_recoBonusTask.cancel(true);
 			_recoBonusTask = null;
-			_recomBonusType = 1;
-			sendPacket(new ExVoteSystemInfo(this));
 		}
+		_recomBonusType = RecoBonus.TIMER_PAUSED;
+		sendPacket(new ExVoteSystemInfo(this));
 	}
 
 	public void resumeRecomBonusTime() {
 		if (isRecomBonusTimePaused()) {
 			_recoBonusTask = ThreadPoolManager.getInstance().scheduleGeneral(
 					new RecoBonusTaskEnd(this), _recomBonusTimeLeftAtPause);
-			_recomBonusType = 0;
+			_recomBonusType = RecoBonus.TIMER_ACTIVE;
 			sendPacket(new ExVoteSystemInfo(this));
 		}
 	}
 
 	public boolean isRecomBonusTimePaused() {
-		if (_recomBonusType == 1) {
-			return true;
-		}
-
-		return false;
+		return (_recomBonusType == RecoBonus.TIMER_PAUSED);
 	}
 
 	public int getRecomBonusType() {
 		// Maintain = 1
 		return _recomBonusType;
+	}
+
+	public void setRecomBonusTimeMaintain(boolean maintain) {
+		_recomBonusTimeMaintain = maintain;
+	}
+
+	/**
+	 * 
+	 * @return if true recom bonus timer shouldn't resume upon gaining exp
+	 */
+	public boolean isRecomBonusTimeMaintained() {
+		return _recomBonusTimeMaintain;
 	}
 
 	/**
