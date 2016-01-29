@@ -46,6 +46,7 @@ import com.l2jserver.gameserver.model.holders.ItemHolder;
 import com.l2jserver.gameserver.model.itemcontainer.Inventory;
 import com.l2jserver.gameserver.model.items.instance.L2ItemInstance;
 import com.l2jserver.gameserver.model.stats.Stats;
+import com.l2jserver.gameserver.model.zone.ZoneId;
 import com.l2jserver.gameserver.network.SystemMessageId;
 import com.l2jserver.gameserver.network.serverpackets.ExAskModifyPartyLooting;
 import com.l2jserver.gameserver.network.serverpackets.ExCloseMPCC;
@@ -772,7 +773,21 @@ public class L2Party extends AbstractPlayerGroup
 				addexp = calculateExpSpPartyCutoff(member.getActingPlayer(), topLvl, addexp, addsp, useVitalityRate);
 				if (addexp > 0)
 				{
-					member.updateVitalityPoints(vitalityPoints, true, false);
+					// recom bonus time sould start when player gain exp
+					// from party too
+					if (member.isRecomBonusTimePaused() && !member.isRecomBonusTimeMaintained()) {
+						member.resumeRecomBonusTime();
+					}
+					
+					// TODO: increase hunting bonus points by killing in party
+					
+					// if nevit's advent blessing is active
+					// increase vitality points
+					float vitaPoints = vitalityPoints;
+					if (member.isNevitAdventActive()) {
+						vitaPoints = Math.abs(vitaPoints);
+					}
+					member.updateVitalityPoints(vitaPoints, true, false);
 				}
 			}
 			else
