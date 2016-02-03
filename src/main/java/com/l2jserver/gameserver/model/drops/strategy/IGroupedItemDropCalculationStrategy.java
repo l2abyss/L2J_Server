@@ -70,14 +70,14 @@ public interface IGroupedItemDropCalculationStrategy
 					if (totalChance > random)
 					{
 						int amountMultiply = 1;
-						if (dropItem.isPreciseCalculated() && (normalized.getChance() >= 100))
-						{
-							amountMultiply = (int) (normalized.getChance()) / 100;
-							if ((normalized.getChance() % 100) > (Rnd.nextDouble() * 100))
-							{
-								amountMultiply++;
-							}
-						}
+//						if (dropItem.isPreciseCalculated() && (normalized.getChance() >= 100))
+//						{
+//							amountMultiply = (int) (normalized.getChance()) / 100;
+//							if ((normalized.getChance() % 100) > (Rnd.nextDouble() * 100))
+//							{
+//								amountMultiply++;
+//							}
+//						}
 						
 						return Collections.singletonList(new ItemHolder(item2.getItemId(), Rnd.get(item2.getMin(victim), item2.getMax(victim)) * amountMultiply));
 					}
