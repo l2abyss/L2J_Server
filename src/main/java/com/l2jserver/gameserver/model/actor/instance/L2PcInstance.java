@@ -5860,7 +5860,6 @@ public final class L2PcInstance extends L2Playable {
 	 */
 	public void setClan(L2Clan clan) {
 		_clan = clan;
-		setTitle("");
 
 		if (clan == null) {
 			_clanId = 0;
@@ -5871,6 +5870,7 @@ public final class L2PcInstance extends L2Playable {
 			_apprentice = 0;
 			_sponsor = 0;
 			_activeWarehouse = null;
+			setTitle("");
 			return;
 		}
 
