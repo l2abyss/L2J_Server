@@ -1118,6 +1118,9 @@ public final class Config {
 	public static float ONLINE_COMMAND_MULTIPLIER;
 	public static boolean ELITE_VISIBLE_AURA;
 	public static boolean PLAYER_CAN_SEE_DROPLIST;
+	public static boolean VOTE_REWARD_SYSTEM_ACTIVE;
+	public static int VOTE_REWARD_ITEM_ID;
+	public static int VOTE_REWARD_ITEM_QTY;
 
 	/**
 	 * This class initializes all global variables for configuration.<br>
@@ -3286,6 +3289,9 @@ public final class Config {
 					"EliteVisibleAura", false);
 			PLAYER_CAN_SEE_DROPLIST = L2AbyssModsSettings.getBoolean(
 					"PlayerCanSeeDroplist", false);
+			VOTE_REWARD_SYSTEM_ACTIVE = L2AbyssModsSettings.getBoolean("VoteRewardSystemActive", false);
+			VOTE_REWARD_ITEM_ID = L2AbyssModsSettings.getInt("VoteRewardItemId", 1000002);
+			VOTE_REWARD_ITEM_QTY = L2AbyssModsSettings.getInt("VoteRewardItemQuantity", 50);
 
 		} else if (Server.serverMode == Server.MODE_LOGINSERVER) {
 			final PropertiesParser ServerSettings = new PropertiesParser(

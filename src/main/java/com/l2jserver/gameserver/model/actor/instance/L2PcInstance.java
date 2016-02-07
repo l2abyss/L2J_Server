@@ -866,6 +866,12 @@ public final class L2PcInstance extends L2Playable {
 	private boolean _isVip;
 
 	/**
+	 * L2Abyss vote reward system if true player should be rewarded false
+	 * otherwise
+	 */
+	private boolean _voteReward;
+
+	/**
 	 * Creates a player.
 	 * 
 	 * @param objectId
@@ -6567,6 +6573,11 @@ public final class L2PcInstance extends L2Playable {
 					 * L2Abyss feature is vip
 					 */
 					player._isVip = (rset.getInt("is_vip") == 1);
+
+					/**
+					 * L2Abyss feature vote reward for this player
+					 */
+					player._voteReward = (rset.getInt("voteReward") == 1);
 
 					player.getStat().setExp(rset.getLong("exp"));
 					player.setExpBeforeDeath(rset.getLong("expBeforeDeath"));
@@ -13721,5 +13732,42 @@ public final class L2PcInstance extends L2Playable {
 	 */
 	public boolean isVip() {
 		return _isVip;
+	}
+
+	/**
+	 * L2Abyss feature
+	 * 
+	 * @return has reward if true player should be rewarded false otherwise
+	 */
+	public boolean hasReward() {
+		return _voteReward;
+	}
+
+	public void reward() {
+		L2Item template = ItemTable.getInstance().getTemplate(
+				Config.VOTE_REWARD_ITEM_ID);
+
+		if (template == null) {
+			LOG.error("VoteRewardSystem WARNING: item id "
+					+ Config.VOTE_REWARD_ITEM_ID + " does not exist.");
+			return;
+		}
+
+		_voteReward = false;
+		try (Connection con = ConnectionFactory.getInstance().getConnection();
+				PreparedStatement ps = con
+						.prepareStatement("UPDATE characters SET voteReward=? WHERE charId=?")) {
+			ps.setInt(1, 0);
+			ps.setInt(2, getObjectId());
+			ps.execute();
+		} catch (Exception e) {
+			LOG.error("Could not update character voteReward field: {}", e);
+		}
+
+		getInventory().addItem("VoteRewardSystem", Config.VOTE_REWARD_ITEM_ID,
+				Config.VOTE_REWARD_ITEM_QTY, this, null);
+
+		sendMessage("You have been rewarded with "
+				+ Config.VOTE_REWARD_ITEM_QTY + " " + template.getName() + "!");
 	}
 }

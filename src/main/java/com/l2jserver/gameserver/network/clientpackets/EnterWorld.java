@@ -444,6 +444,10 @@ public class EnterWorld extends L2GameClientPacket {
 				}
 			}
 		}
+		
+		if (Config.VOTE_REWARD_SYSTEM_ACTIVE && activeChar.hasReward()) {
+			activeChar.reward();
+		}
 
 		if (Config.PETITIONING_ALLOWED) {
 			PetitionManager.getInstance().checkPetitionMessages(activeChar);
