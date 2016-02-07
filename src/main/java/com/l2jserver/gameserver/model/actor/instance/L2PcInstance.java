@@ -6698,6 +6698,8 @@ public final class L2PcInstance extends L2Playable {
 					int clanId = rset.getInt("clanid");
 					if (clanId > 0) {
 						player.setClan(ClanTable.getInstance().getClan(clanId));
+					} else {
+						player.setClan(null);
 					}
 
 					if (player.getClan() != null) {
