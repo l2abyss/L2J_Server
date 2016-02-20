@@ -24,6 +24,7 @@ import com.l2jserver.gameserver.model.L2Crest;
 public final class PledgeCrest extends L2GameServerPacket
 {
 	private final int _crestId;
+	private final int _crestSize;
 	private final byte[] _data;
 	
 	public PledgeCrest(int crestId)
@@ -31,12 +32,14 @@ public final class PledgeCrest extends L2GameServerPacket
 		_crestId = crestId;
 		final L2Crest crest = CrestTable.getInstance().getCrest(crestId);
 		_data = crest != null ? crest.getData() : null;
+		_crestSize = _data.length;
 	}
 	
 	public PledgeCrest(int crestId, byte[] data)
 	{
 		_crestId = crestId;
 		_data = data;
+		_crestSize = _data.length;
 	}
 	
 	@Override
@@ -44,14 +47,7 @@ public final class PledgeCrest extends L2GameServerPacket
 	{
 		writeC(0x6A);
 		writeD(_crestId);
-		if (_data != null)
-		{
-			writeD(_data.length);
-			writeB(_data);
-		}
-		else
-		{
-			writeD(0);
-		}
+		writeD(_crestSize);
+		writeB(_data);
 	}
 }

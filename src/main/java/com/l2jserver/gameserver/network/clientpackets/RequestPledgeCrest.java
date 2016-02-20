@@ -18,6 +18,8 @@
  */
 package com.l2jserver.gameserver.network.clientpackets;
 
+import com.l2jserver.Config;
+import com.l2jserver.gameserver.data.sql.impl.CrestTable;
 import com.l2jserver.gameserver.network.serverpackets.PledgeCrest;
 
 /**
@@ -39,7 +41,29 @@ public final class RequestPledgeCrest extends L2GameClientPacket
 	@Override
 	protected void runImpl()
 	{
-		sendPacket(new PledgeCrest(_crestId));
+		if (_crestId == 0)
+		{
+			return;
+		}
+		
+		if (Config.DEBUG)
+		{
+			_log.fine("crestid " + _crestId + " requested");
+		}
+
+		byte[] data = CrestTable.getInstance().getCrest(_crestId).getData();
+
+		if (data != null)
+		{
+			sendPacket(new PledgeCrest(_crestId, data));
+		}
+		else
+		{
+			if (Config.DEBUG)
+			{
+					_log.fine("crest is missing:" + _crestId);
+			}
+		}
 	}
 	
 	@Override
