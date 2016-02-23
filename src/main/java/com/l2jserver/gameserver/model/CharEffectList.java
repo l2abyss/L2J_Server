@@ -1722,6 +1722,29 @@ public final class CharEffectList
 	 */
 	public boolean isAffected(EffectFlag flag)
 	{
-		return (_effectFlags & flag.getMask()) != 0;
+		return isAffected(flag.getMask());
+	}
+	
+	/**
+	 * Check if target is affected with special buff
+	 * @param flag of special buff
+	 * @return boolean true if affected
+	 */
+	private boolean isAffected(int flag)
+	{
+		return (_effectFlags & flag) != 0;
+	}
+	
+	/**
+	 * Remove effect flag from effects list
+	 * XOR operation
+	 * @param flag of special buff
+	 */
+	public void removeEffectFlag(int flag)
+	{
+		if (isAffected(flag))
+		{
+			_effectFlags ^= flag;
+		}
 	}
 }

@@ -1091,7 +1091,7 @@ public class L2CharacterAI extends AbstractAI
 				return false;
 			}
 			
-			if (_actor.isMovementDisabled())
+			if (_actor.isMovementDisabled() && _actor.isPlayer())
 			{
 				// If player is trying attack target but he cannot move to attack target
 				// change his intention to idle
@@ -1099,7 +1099,6 @@ public class L2CharacterAI extends AbstractAI
 				{
 					_actor.getAI().setIntention(CtrlIntention.AI_INTENTION_IDLE);
 				}
-				
 				return true;
 			}
 			

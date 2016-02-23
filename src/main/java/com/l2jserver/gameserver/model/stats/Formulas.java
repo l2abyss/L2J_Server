@@ -1346,7 +1346,7 @@ public final class Formulas
 			return false;
 		}
 		
-		if (skill.isDebuff() && (target.calcStat(Stats.DEBUFF_IMMUNITY, 0, attacker, skill) > 0))
+		if (skill.isDebuff() && ((target.calcStat(Stats.DEBUFF_IMMUNITY, 0, attacker, skill) > 0) || target.getEffectList().isAffectedBySkill(skill.getId())))
 		{
 			final SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.C1_RESISTED_YOUR_S2);
 			sm.addCharName(target);
