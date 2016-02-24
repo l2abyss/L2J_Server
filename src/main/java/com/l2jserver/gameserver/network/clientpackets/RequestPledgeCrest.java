@@ -20,6 +20,7 @@ package com.l2jserver.gameserver.network.clientpackets;
 
 import com.l2jserver.Config;
 import com.l2jserver.gameserver.data.sql.impl.CrestTable;
+import com.l2jserver.gameserver.model.L2Crest;
 import com.l2jserver.gameserver.network.serverpackets.PledgeCrest;
 
 /**
@@ -51,7 +52,12 @@ public final class RequestPledgeCrest extends L2GameClientPacket
 			_log.fine("crestid " + _crestId + " requested");
 		}
 
-		byte[] data = CrestTable.getInstance().getCrest(_crestId).getData();
+		byte[] data = null;
+		final L2Crest crest = CrestTable.getInstance().getCrest(_crestId);
+		if (crest != null)
+		{
+			data = CrestTable.getInstance().getCrest(_crestId).getData();
+		}
 
 		if (data != null)
 		{
