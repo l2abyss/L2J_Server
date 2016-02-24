@@ -13754,6 +13754,13 @@ public final class L2PcInstance extends L2Playable {
 					+ Config.VOTE_REWARD_ITEM_ID + " does not exist.");
 			return;
 		}
+		
+		if (!getInventory().validateCapacityByItemId(Config.VOTE_REWARD_ITEM_ID)) {
+			sendMessage("You could not be rewarded because your inventory is full. Store some items and log in again.");
+			LOG.error("VoteRewardSystem WARNING: player "
+					+ getName() + " couldn't be rewarded because his inventory is full.");
+			return;
+		}
 
 		_voteReward = false;
 		try (Connection con = ConnectionFactory.getInstance().getConnection();
