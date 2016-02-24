@@ -345,12 +345,12 @@ public final class BuffInfo
 		// Notify on exit.
 		for (AbstractEffect effect : _effects)
 		{
-			// Remove effect flag before execute onExit event
-			// Stun, sleep, paralyze... bug fix for summons AI
-			_effected.getEffectList().removeEffectFlag(effect.getEffectFlags());
 			// Instant effects shouldn't call onExit(..).
 			if ((effect != null) && !effect.isInstant())
 			{
+				// Remove effect flag before executing onExit event
+				// Stun, sleep, paralyze... bug fix for summons AI
+				_effected.getEffectList().removeEffectFlag(effect.getEffectFlags());
 				effect.onExit(this);
 			}
 		}
