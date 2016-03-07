@@ -163,6 +163,7 @@ import com.l2jserver.gameserver.model.actor.knownlist.PcKnownList;
 import com.l2jserver.gameserver.model.actor.stat.PcStat;
 import com.l2jserver.gameserver.model.actor.status.PcStatus;
 import com.l2jserver.gameserver.model.actor.tasks.player.DismountTask;
+import com.l2jserver.gameserver.model.actor.tasks.player.EndVipTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.FameTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.GameGuardCheckTask;
 import com.l2jserver.gameserver.model.actor.tasks.player.HuntingBonusTaskEnd;
@@ -267,6 +268,7 @@ import com.l2jserver.gameserver.network.serverpackets.ConfirmDlg;
 import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ExAutoSoulShot;
 import com.l2jserver.gameserver.network.serverpackets.ExBrExtraUserInfo;
+import com.l2jserver.gameserver.network.serverpackets.ExBrPremiumState;
 import com.l2jserver.gameserver.network.serverpackets.ExDominionWarStart;
 import com.l2jserver.gameserver.network.serverpackets.ExDuelUpdateUserInfo;
 import com.l2jserver.gameserver.network.serverpackets.ExFishingEnd;
@@ -863,7 +865,9 @@ public final class L2PcInstance extends L2Playable {
 	/**
 	 * L2Abyss feature is this character vip?
 	 * */
-	private boolean _isVip;
+	private int _vipLevel;
+	private long _vipExpiryTime;
+	private ScheduledFuture<?> _vipTask;
 
 	/**
 	 * L2Abyss vote reward system if true player should be rewarded false
@@ -6572,7 +6576,8 @@ public final class L2PcInstance extends L2Playable {
 					/**
 					 * L2Abyss feature is vip
 					 */
-					player._isVip = (rset.getInt("is_vip") == 1);
+					player._vipLevel = rset.getInt("vip_level");
+					player._vipExpiryTime = rset.getLong("vip_expiry_time");
 
 					/**
 					 * L2Abyss feature vote reward for this player
@@ -13730,10 +13735,85 @@ public final class L2PcInstance extends L2Playable {
 	/**
 	 * L2Abyss feature
 	 * 
-	 * @return is vip
+	 * <br>
+	 * Set vip level for this char (0, 1, 2...)
+	 */
+	public void setVipLevel(int lvl) {
+		_vipLevel = lvl;
+	}
+
+	/**
+	 * L2Abyss feature
+	 * <p style="color:red;font-weight:bold;">
+	 * Hight level function:
+	 * </p>
+	 * Set vip level and expiry date for this player, update in DB, check for
+	 * EndVipTask start and send UI update packet
+	 */
+	public void setVip(int lvl, long expiryTime) {
+		setVipLevel(lvl);
+		_vipExpiryTime = expiryTime;
+
+		checkVipTask();
+
+		sendPacket(new ExBrPremiumState(getObjectId(), isVip() ? 1 : 0));
+	}
+
+	/**
+	 * L2Abyss feature
+	 * 
+	 * @return boolean viplevel > 0
 	 */
 	public boolean isVip() {
-		return _isVip;
+		return _vipLevel > 0;
+	}
+
+	/**
+	 * L2Abyss feature
+	 * 
+	 * @return int - vip level (0, 1, 2...)
+	 */
+	public int getVipLevel() {
+		return _vipLevel;
+	}
+
+	/**
+	 * L2Abyss feature
+	 * 
+	 * @return long - vip expiry time
+	 */
+	public long getVipExpiryTime() {
+		return _vipExpiryTime;
+	}
+
+	public void checkVipTask() {
+		if (_vipTask != null) {
+			_vipTask.cancel(true);
+		}
+
+		final long taskTime = Math.max(0,
+				getVipExpiryTime() - System.currentTimeMillis());
+		if (taskTime == 0) {
+			setVipLevel(0);
+		} else {
+			_vipTask = ThreadPoolManager.getInstance().scheduleGeneral(
+					new EndVipTask(this), taskTime);
+		}
+
+		storeVipStatus();
+	}
+
+	public void storeVipStatus() {
+		try (Connection con = ConnectionFactory.getInstance().getConnection();
+				PreparedStatement ps = con
+						.prepareStatement("UPDATE characters SET vip_level=?, vip_expiry_time=? WHERE charId=?")) {
+			ps.setInt(1, getVipLevel());
+			ps.setLong(2, getVipExpiryTime());
+			ps.setInt(3, getObjectId());
+			ps.execute();
+		} catch (Exception e) {
+			LOG.error("Could not update character vip status: {}", e);
+		}
 	}
 
 	/**
@@ -13754,11 +13834,12 @@ public final class L2PcInstance extends L2Playable {
 					+ Config.VOTE_REWARD_ITEM_ID + " does not exist.");
 			return;
 		}
-		
-		if (!getInventory().validateCapacityByItemId(Config.VOTE_REWARD_ITEM_ID)) {
+
+		if (!getInventory()
+				.validateCapacityByItemId(Config.VOTE_REWARD_ITEM_ID)) {
 			sendMessage("You could not be rewarded because your inventory is full. Store some items and log in again.");
-			LOG.error("VoteRewardSystem WARNING: player "
-					+ getName() + " couldn't be rewarded because his inventory is full.");
+			LOG.error("VoteRewardSystem WARNING: player " + getName()
+					+ " couldn't be rewarded because his inventory is full.");
 			return;
 		}
 

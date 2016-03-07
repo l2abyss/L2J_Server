@@ -106,7 +106,8 @@ public enum InstanceType
 	// Custom
 	L2ClassMasterInstance(L2NpcInstance),
 	L2NpcBufferInstance(L2Npc),
-	L2EventMobInstance(L2Npc);
+	L2EventMobInstance(L2Npc),
+	L2AioNpcInstance(L2MerchantInstance);
 	
 	private final InstanceType _parent;
 	private final long _typeL;

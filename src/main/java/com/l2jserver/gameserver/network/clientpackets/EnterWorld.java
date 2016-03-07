@@ -65,6 +65,7 @@ import com.l2jserver.gameserver.network.serverpackets.ActionFailed;
 import com.l2jserver.gameserver.network.serverpackets.Die;
 import com.l2jserver.gameserver.network.serverpackets.EtcStatusUpdate;
 import com.l2jserver.gameserver.network.serverpackets.ExBasicActionList;
+import com.l2jserver.gameserver.network.serverpackets.ExBrPremiumState;
 import com.l2jserver.gameserver.network.serverpackets.ExGetBookMarkInfoPacket;
 import com.l2jserver.gameserver.network.serverpackets.ExNevitAdventEffect;
 import com.l2jserver.gameserver.network.serverpackets.ExNevitAdventPointInfoPacket;
@@ -332,6 +333,7 @@ public class EnterWorld extends L2GameClientPacket {
 
 		activeChar.checkRecoBonusTask();
 		activeChar.checkHuntingBonusTask();
+		activeChar.checkVipTask();
 
 		activeChar.broadcastUserInfo();
 
@@ -444,10 +446,6 @@ public class EnterWorld extends L2GameClientPacket {
 				}
 			}
 		}
-		
-		if (Config.VOTE_REWARD_SYSTEM_ACTIVE && activeChar.hasReward()) {
-			activeChar.reward();
-		}
 
 		if (Config.PETITIONING_ALLOWED) {
 			PetitionManager.getInstance().checkPetitionMessages(activeChar);
@@ -463,11 +461,18 @@ public class EnterWorld extends L2GameClientPacket {
 		activeChar.onPlayerEnter();
 
 		sendPacket(new SkillCoolTime(activeChar));
+		
+		// Premium status
+		sendPacket(new ExBrPremiumState(activeChar.getObjectId(), activeChar.isVip() ? 1 : 0));
+		
+		// Nevit system
 		sendPacket(new ExVoteSystemInfo(activeChar));
+		// Hunting bonus
 		sendPacket(new ExNevitAdventPointInfoPacket(
 				activeChar.getHuntingBonusPoints()));
 		sendPacket(new ExNevitAdventEffect(activeChar.getHuntingBonusTime()));
 		sendPacket(new ExNevitAdventTimeChange(-1)); // set paused
+		
 		sendPacket(new ExShowContactList(activeChar));
 
 		for (L2ItemInstance i : activeChar.getInventory().getItems()) {
@@ -530,6 +535,10 @@ public class EnterWorld extends L2GameClientPacket {
 		if (Config.WELCOME_MESSAGE_ENABLED) {
 			activeChar.sendPacket(new ExShowScreenMessage(
 					Config.WELCOME_MESSAGE_TEXT, Config.WELCOME_MESSAGE_TIME));
+		}
+		
+		if (Config.VOTE_REWARD_SYSTEM_ACTIVE && activeChar.hasReward()) {
+			activeChar.reward();
 		}
 
 		L2ClassMasterInstance.showQuestionMark(activeChar);
@@ -635,6 +644,7 @@ public class EnterWorld extends L2GameClientPacket {
 	 * @param string
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private String getText(String string) {
 		return new String(Base64.getDecoder().decode(string));
 	}
